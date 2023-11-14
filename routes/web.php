@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Recursos_HumanosController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\HumanResource\ManagementEmployees;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,6 +26,7 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
+
 Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
@@ -36,9 +37,12 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     // Route::get('/information_additional', fn () => Inertia::render('InformacionAdicional'))->name('information_additional');
-    Route::get('/information_additional',[Recursos_HumanosController::class, 'index_info_additional'])->name('employees.information');
+    Route::get('/management_employees',[ManagementEmployees::class, 'index'])->name('management.employees');
+    Route::get('/management_employees/information_additional',[ManagementEmployees::class, 'index_info_additional'])->name('management.employees.information');
+    Route::post('/management_employees/information_additional/create',[ManagementEmployees::class, 'create'])->name('management.employees.information.create');
+    Route::get('/management_employees/information_additional/details/{id}',[ManagementEmployees::class, 'details'])->name('management.employees.information.details');
 
-    Route::get('users', [Recursos_HumanosController::class, 'index_user'])->name('users.index');
+    Route::get('users', [UserController::class, 'index_user'])->name('users.index');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

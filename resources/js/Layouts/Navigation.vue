@@ -20,19 +20,6 @@
         </div>
 
         <nav class="mt-10" x-data="{ isMultiLevelMenuOpen: false }">
-            <!-- <nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                <template #icon>
-                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                    </svg>
-                </template>
-                Dashboard
-            </nav-link> -->
-
             <nav-link :href="route('users.index')" :active="route().current('users.index')">
                 <template #icon>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -45,15 +32,6 @@
                 Usuarios
             </nav-link>
 
-            <!-- <nav-link :href="route('recursos_humanos')" :active="route().current('recursos_humanos')">
-                <template #icon>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                    </svg>
-
-                </template>
-                Recursos Humanos
-            </nav-link> -->
             <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                 @click="showingRecursosHumanos = !showingRecursosHumanos">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -61,62 +39,20 @@
                 </svg>
                 <span class="mx-3">Recursos Humanos</span>
             </a>
-            <!-- <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingRecursosHumanos">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Users</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingRecursosHumanos">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('information_additional')">Informacion de Usuarios</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition> -->
 
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
-                <Link class="w-full" :href="route('users.index')">Gestion de Empleados</Link>
+                <Link class="w-full" :href="route('management.employees')">Gestion de Empleados</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
-                <Link class="w-full" :href="route('employees.information')">Nomina</Link>
+                <Link class="w-full" :href="route('management.employees.information')">Nomina</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
-                <Link class="w-full" :href="route('employees.information')">Formacion y Desarrollo</Link>
+                <Link class="w-full" :href="route('management.employees.information')">Formacion y Desarrollo</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
                 <Link class="w-full" :href="route('users.index')">Gestion de Vacaciones</Link>
             </MyTransition>
-            <!-- <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-                @click="showingTwoLevelMenu = !showingTwoLevelMenu">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z">
-                    </path>
-                </svg>
-                <span class="mx-3">Two-level menu</span>
-            </a>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingTwoLevelMenu">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('dashboard')">Child menu</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition> -->
+
             <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                 @click="showingFinance = !showingFinance">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -141,50 +77,6 @@
             <MyTransition :transitiondemonstration="showingFinance">
                 <Link class="w-full" :href="route('users.index')">Informe de Analisis Financiero</Link>
             </MyTransition>
-            <!-- <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingFinance">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Accounting</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingFinance">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Budget</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingFinance">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Expense Management</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingFinance">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Reports and Financial Analysis</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition> -->
 
             <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                 @click="showingInventory = !showingInventory">
@@ -208,61 +100,6 @@
             <MyTransition :transitiondemonstration="showingInventory">
                 <Link class="w-full" :href="route('users.index')">Integracion de Compras</Link>
             </MyTransition>
-            <!-- <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingInventory">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Inventory Control</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingInventory">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Supplier Management</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingInventory">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Movement History</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingInventory">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Inventory Reports</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingInventory">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Integration with Purchasing</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition> -->
 
             <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                 @click="showingProyectArea = !showingProyectArea">
@@ -287,61 +124,7 @@
             <MyTransition :transitiondemonstration="showingProyectArea">
                 <Link class="w-full" :href="route('users.index')">Informe de Proyecto</Link>
             </MyTransition>
-            <!-- <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingProyectArea">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Inventory Control</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingProyectArea">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Supplier Management</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingProyectArea">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Movement History</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingProyectArea">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Inventory Reports</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition>
-            <transition enter-to-class="transition-all duration-300 ease-in-out" enter-from-class="max-h-0 opacity-25"
-                leave-from-class="opacity-100 max-h-xl" leave-to-class="max-h-0 opacity-0">
-                <div v-show="showingProyectArea">
-                    <ul class="overflow-hidden p-2 mx-4 mt-2 space-y-2 text-sm font-medium text-white bg-gray-700 bg-opacity-50 rounded-md shadow-inner"
-                        aria-label="submenu">
-                        <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('users.index')">Integration with Purchasing</Link>
-                        </li>
-                    </ul>
-                </div>
-            </transition> -->
+
             <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                 @click="showingShoppingArea = !showingShoppingArea">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
