@@ -13,26 +13,29 @@ use App\Models\Health;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 use Inertia\Inertia;
 
 class ManagementEmployees extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
             'employees' => Employee::paginate()
         ]);
     }
 
-    public function index_info_additional(){
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesInformation', [
-            'users' => User::all()
-        ]);
+    public function index_info_additional()
+    {
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesInformation');
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $request->validate([
-            'id' => 'required',
-            'cropped_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'curriculum_vitae' => 'required|mimes:pdf,doc,docx|max:2048',
+            'cropped_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'gender' => 'required|string|in:Masculino,Femenino',
@@ -73,6 +76,10 @@ class ManagementEmployees extends Controller
             'accidents' => 'nullable|string|max:255',
             'vaccinations' => 'nullable|string|max:255',
         ]);
+        $document = $request->file('curriculum_vitae'); // Obtener el objeto de archivo
+        $documentName = time() . '.' . $document->getClientOriginalName(); // Generar un nombre único para el archivo
+        $document->storeAs('documents', $documentName); // Guardar el archivo en storage/app/documents   
+
         $croppedImage = $request->file('cropped_image');
         $imageName = 'imagen_recortada_' . time() . '.' . $croppedImage->getClientOriginalExtension();
         $croppedImage->move(public_path('image'), $imageName);
@@ -88,9 +95,9 @@ class ManagementEmployees extends Controller
             'dni' => $request->dni,
             'email' => $request->email,
             'phone1' => $request->phone1,
-            'phone2' => $request->phone2,            
+            'phone2' => $request->phone2,
         ]);
-    
+
         $employeeId = $employee->id;
 
         Contract::updateOrCreate([
@@ -104,6 +111,7 @@ class ManagementEmployees extends Controller
             'education_level' => $request->education_level,
             'education_status' => $request->education_status,
             'specialization' => $request->specialization,
+            'curriculum_vitae' => $documentName,
             'employee_id' => $employeeId,
         ]);
 
@@ -147,14 +155,39 @@ class ManagementEmployees extends Controller
             'employee_id' => $employeeId,
         ]);
 
-        return Inertia::render('HumanResource/ManagementEmployees/Employees', [
-            'employees' => Employee::paginate()
-        ]);
-        
+        return to_route('management.employees');
     }
 
-    public function details($id){
-        // dd('preuba');
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails');
+    public function details($id)
+    {
+        $details = Employee::with('contract', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
     }
+
+    public function download($filename)
+    {
+        $filePath = '/documents/' . $filename; // Ruta relativa desde 'storage/app'
+
+        // Verificar si el archivo existe
+        if (Storage::disk('local')->exists($filePath)) {
+            $file = Storage::disk('local')->get($filePath);
+
+            // Crear la respuesta para la descarga del archivo
+            $response = new Response($file, 200);
+
+            // Definir los encabezados para la descarga
+            $response->header('Content-Type', 'application/pdf'); // Cambia el tipo MIME según el tipo de archivo
+            $response->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+            return $response;
+        }
+
+        // Si el archivo no existe, puedes redirigir o manejar el error de otra forma
+        abort(404);       
+    }
+
+    // private function getFileLink($filePath)
+    // {
+    //     return asset(Storage::url($filePath));
+    // }
 }

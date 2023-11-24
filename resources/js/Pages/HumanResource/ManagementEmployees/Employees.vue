@@ -5,11 +5,11 @@
         <template #header>
             Empleados
         </template>
-
-        <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <button @click="add_information" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 Agregar Informacion
             </button>
+        <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+
             <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">

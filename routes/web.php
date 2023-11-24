@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/management_employees/information_additional',[ManagementEmployees::class, 'index_info_additional'])->name('management.employees.information');
     Route::post('/management_employees/information_additional/create',[ManagementEmployees::class, 'create'])->name('management.employees.information.create');
     Route::get('/management_employees/information_additional/details/{id}',[ManagementEmployees::class, 'details'])->name('management.employees.information.details');
+    Route::get('/management_employees/information_additional/details/download/{filename}',[ManagementEmployees::class,'download'])->name('management.employees.information.details.download');
 
     Route::get('users', [UserController::class, 'index_user'])->name('users.index');
 

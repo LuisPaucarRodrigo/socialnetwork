@@ -7,28 +7,12 @@
         </template>
         <form @submit.prevent="submit">
             <div class="space-y-12">
-                <div class="border-b border-gray-900/10 pb-3">
-                    <!-- <h2 class="text-base font-semibold leading-7 text-gray-900">Perfil</h2>
-                    <p class="mt-1 text-sm leading-6 text-gray-600">This information will be displayed publicly so be careful what you share.</p> -->
-
-                    <div class="mt-5 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div class="sm:col-span-2">
-                            <InputLabel for="users" class="font-medium leading-6 text-gray-900">Usuario</InputLabel>
-                            <div class="mt-2">
-                                <select id="users" v-model="form.id" autocomplete="user-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion Personal</h2>
                     <p class="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-                    <ModalImage v-model="form.cropped_image" @imagenRecortada="handleImagenRecortada"/>
-
+                        <ModalImage v-model="form.cropped_image" @imagenRecortada="handleImagenRecortada"/>
                         <InputError :message="form.errors.cropped_image" />
+
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-3">
                             <InputLabel for="first-name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
@@ -80,7 +64,7 @@
                         <div class="sm:col-span-2 sm:col-start-1">
                             <InputLabel for="dni" class="font-medium leading-6 text-gray-900">Documento Nacional de Identidad</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.dni" id="dni" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="text" v-model="form.dni" id="dni" maxlength="8" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.dni"/>
                             </div>
                         </div>
@@ -96,7 +80,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone1" class="font-medium leading-6 text-gray-900">Telefono 1</InputLabel>
                             <div class="mt-2">
-                            <TextInput type="text" v-model="form.phone1" id="phone1" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <TextInput type="text" v-model="form.phone1" id="phone1" autocomplete="postal-code" maxlength="9" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             <InputError :message="form.errors.phone1"/>
                         </div>
                         </div>
@@ -104,7 +88,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone2" class="font-medium leading-6 text-gray-900">Telefono 2</InputLabel>
                             <div class="mt-2">
-                            <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="postal-code" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="postal-code" maxlength="9" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             <InputError :message="form.errors.phone2"/>
                         </div>
                         </div>
@@ -153,7 +137,8 @@
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Educacion</h2>
                     <p class="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-
+                    <InputFile type="file" v-model="form.curriculum_vitae" id="curriculum_vitae" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <InputError :message="form.errors.curriculum_vitae" />
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-3">
                             <InputLabel for="education_level" class="font-medium leading-6 text-gray-900">Nivel Educativo</InputLabel>
@@ -257,7 +242,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="emergency_phone" class="font-medium leading-6 text-gray-900">Telefono:</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.emergency_phone" id="emergency_phone" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="text" v-model="form.emergency_phone" id="emergency_phone" maxlength="9" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.emergency_phone"/>
                             </div>
                         </div>
@@ -273,7 +258,7 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="family_dni" class="font-medium leading-6 text-gray-900">Documento Nacional de Identidad</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.family_dni" id="family_dni" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="text" v-model="form.family_dni" id="family_dni" maxlength="8" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.family_dni"/>
                             </div>
                         </div>
@@ -429,6 +414,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ModalImage from '@/Layouts/ModalImage.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
+import InputFile from '@/Components/InputFile.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
 
@@ -437,7 +423,7 @@ const props = defineProps({
 })
 
 const form = useForm({
-    id:'',
+    curriculum_vitae:null,
     cropped_image:'',
     name:'',
     last_name:'',
