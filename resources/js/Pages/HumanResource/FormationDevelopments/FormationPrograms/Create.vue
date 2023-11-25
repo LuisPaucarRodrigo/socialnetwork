@@ -1,5 +1,5 @@
 <template>
-    <Head title="Registro" />
+    <Head title="Registro de programas" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -39,7 +39,7 @@
                                 <InputError :message="form.errors.type" />
                             </div>
                         </div>
-                        
+
                         <div class="sm:col-span-3">
                             <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                             </InputLabel>
@@ -47,6 +47,34 @@
                                 <textarea required v-model="form.description" id="description"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                 <InputError :message="form.errors.description" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="month_year" class="font-medium leading-6 text-gray-900">Fecha
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="Date" v-model="form.month_year" id="month_year"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.month_year" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel for="trainings" class="font-medium leading-6 text-gray-900">Capacitaciones
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select required multiple v-model="form.trainings" id="trainings"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>
+                                        Select multiple ods
+                                        (ctrl+click)
+                                    </option>
+                                    <option v-for="item in trainings" :key="item.id" :value="item.id">
+                                        {{ item.name }}
+                                    </option>
+
+                                </select>
+                                <InputError :message="form.errors.trainings" />
                             </div>
                         </div>
                     </div>
@@ -68,20 +96,35 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
+import Swal from 'sweetalert2'
 
-// const props = defineProps({
-//     users: Object
-// })
+const { trainings } = defineProps({
+    trainings: Object
+})
 
-const form = useForm({
+const initialState = {
     name: '',
     type: '',
     description: '',
+    month_year: '',
+    trainings: []
+}
 
-})
-
+const form = useForm({...initialState})
 
 const submit = () => {
-    form.post(route('management.employees.formation_development.store'))
+    form.post(route('management.employees.formation_development.formation_programs.store'),
+    {
+        onSuccess: () => {
+            form.data = { ...initialState }
+            return Swal.fire({
+                title: "Éxito",
+                text: "Nuevo programa de formación creado",
+                icon: "success",
+            })
+        },
+    }
+    
+    )
 }
 </script>

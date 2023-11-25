@@ -12,7 +12,18 @@ class FormationProgram extends Model
     protected $fillable = [
         'name',
         'description',
-        'type'
+        'type',
+        'month_year'
     ];
+
+    public function trainings() 
+    {
+        return $this->belongsTo(Training::class);
+    }
+
+    public function employees() 
+    {
+        return $this->belongsToMany(Employee::class,'formation_program_employee', 'formation_program_id', 'employee_id');
+    }
 
 }

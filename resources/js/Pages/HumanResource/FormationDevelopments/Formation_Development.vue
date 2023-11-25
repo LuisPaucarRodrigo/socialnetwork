@@ -1,13 +1,57 @@
 
 <template>
-    <Head title="Gestion de Empleados" />
+    <Head title="Formación y Desarrollo" />
 
     <AuthenticatedLayout>
         <template #header>
             Formación y Desarrollo
         </template>
 
-        <div class="inline-block min-w-full">
+    
+        <div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Card 1 -->
+                <Link :href="route('management.employees.formation_development.formation_programs')"> 
+                    <!-- :href=""route('tu.ruta') -->
+                    <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
+                        <div>
+                            <h3 class="text-lg font-semibold">Programas de Formación</h3>
+                            <div class="mb-2">
+                                <!-- Icono de Heroicons para Vue -->
+                                <BookmarkSquareIcon class="h-6 w-6 text-blue-500" />
+                            </div>
+                        </div>
+                    </button>
+                </Link>
+                <Link > 
+                    <!-- :href=""route('tu.ruta') -->
+                    <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
+                        <div>
+                            <h3 class="text-lg font-semibold">Asigncación de programas</h3>
+                            <div class="mb-2">
+                                <!-- Icono de Heroicons para Vue -->
+                                <PaperAirplaneIcon class="h-6 w-6 text-blue-500" />
+                            </div>
+                        </div>
+                    </button>
+                </Link>
+                <Link :href="route('management.employees.formation_development.trainings')"> 
+                    <!-- :href=""route('tu.ruta') -->
+                    <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
+                        <div>
+                            <h3 class="text-lg font-semibold">Gestion de capacitaciones</h3>
+                            <div class="mb-2">
+                                <!-- Icono de Heroicons para Vue -->
+                                <ClipboardDocumentIcon class="h-6 w-6 text-blue-500" />
+                            </div>
+                        </div>
+                    </button>
+                </Link>
+            </div>
+        </div>
+
+
+    <!-- <div class="inline-block min-w-full">
             <div class="flex items-center">
                 <button @click="add_information" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
@@ -61,7 +105,7 @@
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
 
-                            <!-- <Link class="text-blue-900 whitespace-no-wrap" :href="route('management.formationPrograms.information.details',{ id: formationProgram.id })">Mas Detalles</Link> -->
+                            <Link class="text-blue-900 whitespace-no-wrap" :href="route('management.formationPrograms.information.details',{ id: formationProgram.id })">Mas Detalles</Link>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Link class="text-blue-900 whitespace-no-wrap flex items-center">Mas Detalles</Link>
                                 <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
@@ -76,7 +120,7 @@
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="formationPrograms.links" />
             </div>
-        </div>
+            </div> -->
     </AuthenticatedLayout>
 </template>
 
@@ -85,14 +129,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue'
-
-const props = defineProps({
-    formationPrograms: Object
-})
+import { BookmarkSquareIcon, ClipboardDocumentIcon, PaperAirplaneIcon } from '@heroicons/vue/24/solid'
 
 
-const add_information = () => {
-    router.get(route('management.employees.formation_development.create'));
 
-};
+// const props = defineProps({
+//     formationPrograms: Object
+// })
+
+
+// const add_information = () => {
+//     router.get(route('management.employees.formation_development.create'));
+
+// };
 </script>

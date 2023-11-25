@@ -52,7 +52,6 @@ export default {
   methods: {
     openModal() {
       this.modalVisible = true;
-      this.initCroppie();
     },
     closeModal() {
       this.modalVisible = false;

@@ -47,7 +47,7 @@
                 <Link class="w-full" :href="route('management.employees.information')">Nomina</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
-                <Link class="w-full" :href="route('management.employees.formation_development')">Formacion y Desarrollo</Link>
+                <Link class="w-full"  :href="route('management.employees.formation_development')">Formacion y Desarrollo</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
                 <Link class="w-full" :href="route('users.index')">Gestion de Vacaciones</Link>

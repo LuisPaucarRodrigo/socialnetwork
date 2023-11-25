@@ -33,6 +33,8 @@ class ManagementEmployees extends Controller
 
     public function create(Request $request)
     {
+
+        
         $request->validate([
             'curriculum_vitae' => 'required|mimes:pdf,doc,docx|max:2048',
             'cropped_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -97,6 +99,10 @@ class ManagementEmployees extends Controller
             'phone1' => $request->phone1,
             'phone2' => $request->phone2,
         ]);
+
+        if (!$employee->save()) {
+            dd("Error al guardar el empleado");
+        }
 
         $employeeId = $employee->id;
 
@@ -166,23 +172,14 @@ class ManagementEmployees extends Controller
 
     public function download($filename)
     {
-        $filePath = '/documents/' . $filename; // Ruta relativa desde 'storage/app'
-
-        // Verificar si el archivo existe
+        $filePath = '/documents/' . $filename; 
         if (Storage::disk('local')->exists($filePath)) {
             $file = Storage::disk('local')->get($filePath);
-
-            // Crear la respuesta para la descarga del archivo
             $response = new Response($file, 200);
-
-            // Definir los encabezados para la descarga
-            $response->header('Content-Type', 'application/pdf'); // Cambia el tipo MIME según el tipo de archivo
+            $response->header('Content-Type', 'application/pdf');
             $response->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-
             return $response;
         }
-
-        // Si el archivo no existe, puedes redirigir o manejar el error de otra forma
         abort(404);       
     }
 

@@ -47,8 +47,18 @@ Route::middleware('auth')->group(function () {
     
     //Formation Development program
     Route::get('/management_employees/formation_development',[FormationDevelopment::class, 'index'])->name('management.employees.formation_development');
-    Route::get('/management_employees/formation_development/create',[FormationDevelopment::class, 'create'])->name('management.employees.formation_development.create');
-    Route::post('/management_employees/formation_development/store',[FormationDevelopment::class, 'store'])->name('management.employees.formation_development.store');
+
+
+    //Formation Programas
+    Route::get('/management_employees/formation_development/formation_programs',[FormationDevelopment::class, 'formation_programs_index'])->name('management.employees.formation_development.formation_programs');
+    Route::get('/management_employees/formation_development/formation_programs/create',[FormationDevelopment::class, 'formation_programs_create'])->name('management.employees.formation_development.formation_programs.create');
+    Route::post('/management_employees/formation_development/formation_programs/store',[FormationDevelopment::class, 'formation_programs_store'])->name('management.employees.formation_development.formation_programs.store');
+
+    //Trainings
+    Route::get('/management_employees/formation_development/trainings',[FormationDevelopment::class, 'trainings_index'])->name('management.employees.formation_development.trainings');
+    Route::get('/management_employees/formation_development/trainings/create',[FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
+    Route::post('/management_employees/formation_development/trainings/store',[FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
+    
 
     Route::get('users', [UserController::class, 'index_user'])->name('users.index');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
