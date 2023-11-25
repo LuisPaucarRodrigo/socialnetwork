@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
+use App\Http\Controllers\HumanResource\FormationDevelopment;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,6 +42,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/management_employees/information_additional',[ManagementEmployees::class, 'index_info_additional'])->name('management.employees.information');
     Route::post('/management_employees/information_additional/create',[ManagementEmployees::class, 'create'])->name('management.employees.information.create');
     Route::get('/management_employees/information_additional/details/{id}',[ManagementEmployees::class, 'details'])->name('management.employees.information.details');
+    
+    
+    //Formation Development program
+    Route::get('/management_employees/formation_development',[FormationDevelopment::class, 'index'])->name('management.employees.formation_development');
+    Route::get('/management_employees/formation_development/create',[FormationDevelopment::class, 'create'])->name('management.employees.formation_development.create');
+    Route::post('/management_employees/formation_development/store',[FormationDevelopment::class, 'store'])->name('management.employees.formation_development.store');
+
+
 
     Route::get('users', [UserController::class, 'index_user'])->name('users.index');
 
