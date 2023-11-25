@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('education_level');
             $table->string('education_status');
             $table->string('specialization');
+            $table->string('curriculum_vitae');
             $table->foreignId('employee_id')->constrained();
             $table->timestamps();
         });

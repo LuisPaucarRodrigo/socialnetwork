@@ -1,9 +1,9 @@
 <template>
   <div>
-    <button @click="openModal" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+    <button @click="openModal" type="button"
+      class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
       Subir Foto
     </button>
-
     <!-- Modal -->
     <div v-show="modalVisible" class="py-2 fixed inset-0 z-50 flex items-center justify-center">
       <div class="modal-container flex items-center justify-center">
@@ -18,7 +18,8 @@
           <input type="file" id="imageInput" @change="loadImage" accept="image/*" class="hidden">
 
           <div class="mt-10 flex justify-end">
-            <button @click="cropAndSave" type="button" class="bg-blue-500 text-white py-2 px-4 rounded mr-2">Guardar</button>
+            <button @click="cropAndSave" type="button"
+              class="bg-blue-500 text-white py-2 px-4 rounded mr-2">Guardar</button>
             <button @click="closeModal" type="button" class="bg-gray-300 py-2 px-4 rounded">Close</button>
           </div>
         </div>
