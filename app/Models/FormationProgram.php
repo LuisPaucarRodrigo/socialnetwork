@@ -21,9 +21,14 @@ class FormationProgram extends Model
         return $this->belongsTo(Training::class);
     }
 
+    public function trainings_list() 
+    {
+        return $this->hasMany(Training::class);
+    }
+
     public function employees() 
     {
-        return $this->belongsToMany(Employee::class,'formation_program_employee', 'formation_program_id', 'employee_id');
+        return $this->belongsToMany(Employee::class,'employee_formation_program', 'formation_program_id', 'employee_id');
     }
 
 }

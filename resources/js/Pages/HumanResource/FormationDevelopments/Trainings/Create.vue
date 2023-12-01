@@ -56,25 +56,40 @@ import { Head, useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 
 const props = defineProps({
-    trainings: Object
+    training: Object
 })
 
 const initialState = {
     name: '',
     description: '',
 }
-const form = useForm({ ...initialState })
+const form = useForm({
+    ...initialState,
+    ...props.training,
+});
 
 const submit = () => {
-    form.post(route('management.employees.formation_development.trainings.store'), {
-        onSuccess: () => {
-            form.data = { ...initialState }
-            return Swal.fire({
-                title: "Éxito",
-                text: "Nueva capacitación añadida",
-                icon: "success",
+    if (props.training) {
+        form.post(route('management.employees.formation_development.trainings.store', {id: props.training.id}), {
+                onSuccess: () => {
+                    return Swal.fire({
+                        title: "Éxito",
+                        text: "Capcitación Editada",
+                        icon: "success",
+                    })
+                },
             })
-        },
-    })
+    } else {
+        form.post(route('management.employees.formation_development.trainings.store'), {
+            onSuccess: () => {
+                return Swal.fire({
+                    title: "Éxito",
+                    text: "Nueva capacitación añadida",
+                    icon: "success",
+                })
+            },
+        })
+        
+    }
 }
 </script>

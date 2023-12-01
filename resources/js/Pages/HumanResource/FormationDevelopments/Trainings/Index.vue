@@ -30,14 +30,13 @@
                             Descripción
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Acciones
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(training, i) in trainings.data" :key="training.id"
-                        class="text-gray-700">
+                    <tr v-for="(training, i) in trainings.data" :key="training.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
                         </td>
@@ -47,14 +46,22 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ training.description }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
 
                             <!-- <Link class="text-blue-900 whitespace-no-wrap"
                                 :href="route('management.formationPrograms.information.details', { id: training.id })">
                             Mas Detalles</Link> -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <Link class="text-blue-900 whitespace-no-wrap flex items-center">Mas Detalles</Link>
-                                
+                            <div class="flex space-x-3 justify-center">
+                                <Link>
+                                <EyeIcon class="h-6 w-6 text-teal-500" />
+                                </Link>
+                                <Link
+                                    :href="route('management.employees.formation_development.trainings.create', { id: training.id })">
+                                <PencilSquareIcon class="h-6 w-6 text-blue-500" />
+                                </Link>
+                                <button @click="delete_training(training.id)">
+                                    <TrashIcon class="h-6 w-6 text-red-500" />
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -72,8 +79,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
-import Modal from '@/Components/Modal.vue'
-import { BookmarkSquareIcon, ClipboardDocumentIcon, PaperAirplaneIcon } from '@heroicons/vue/24/solid'
+import { EyeIcon, TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import Swal from 'sweetalert2';
 
 const props = defineProps({
     trainings: Object
@@ -83,4 +90,35 @@ const props = defineProps({
 const add_information = () => {
     router.get(route('management.employees.formation_development.trainings.create'));
 }
+
+const delete_training = (id) => {
+    Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esto no se podrá deshacer",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.delete(`/management_employees/formation_development/trainings/delete/${id}`, {
+                onSuccess: () => {
+                    return Swal.fire({
+                        title: "Éxito",
+                        text: "Capacitación eliminada",
+                        icon: "success",
+                    })
+                },
+            })
+        
+        }
+    });
+
+
+
+}
+
+
 </script>

@@ -55,13 +55,16 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.type }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-<!-- 
-                            <Link class="text-blue-900 whitespace-no-wrap"
-                                :href="route('management.formationPrograms.information.details', { id: formationProgram.id })">
-                            Mas Detalles</Link> -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <Link class="text-blue-900 whitespace-no-wrap flex items-center">Mas Detalles</Link>
-                                
+                            <div class="flex space-x-3 justify-center">
+                                <Link :href="route('management.employees.formation_development.view',{id:formationProgram.id})">
+                                    <EyeIcon class="h-6 w-6 text-teal-500" />
+                                </Link>
+                                <Link>
+                                    <PencilSquareIcon class="h-6 w-6 text-blue-500" />
+                                </Link>
+                                <button @click="delete_program(formationProgram.id)">
+                                    <TrashIcon class="h-6 w-6 text-red-500" />
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -79,6 +82,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
+import { EyeIcon, TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import Swal from 'sweetalert2';
 
 const props = defineProps({
     formationPrograms: Object
@@ -88,4 +93,32 @@ const props = defineProps({
 const add_information = () => {
     router.get(route('management.employees.formation_development.formation_programs.create'));
 }
+
+const delete_program= (id) => {
+    Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esto no se podrá deshacer",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.delete(`/management_employees/formation_development/delete/${id}`, {
+                onSuccess: () => {
+                    return Swal.fire({
+                        title: "Éxito",
+                        text: "Programa eliminado",
+                        icon: "success",
+                    })
+                },
+            })
+        
+        }
+    });
+}
+
+
 </script>

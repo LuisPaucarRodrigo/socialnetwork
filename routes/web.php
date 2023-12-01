@@ -47,6 +47,14 @@ Route::middleware('auth')->group(function () {
     
     //Formation Development program
     Route::get('/management_employees/formation_development',[FormationDevelopment::class, 'index'])->name('management.employees.formation_development');
+    Route::get('/management_employees/formation_development/assignation-create',[FormationDevelopment::class, 'assignate_create'])->name('management.employees.formation_development.assignation.create');
+    Route::post('/management_employees/formation_development/assignation-store',[FormationDevelopment::class, 'assignate_store'])->name('management.employees.formation_development.assignation.store');
+
+
+    Route::get('/management_employees/formation_development/view/{id}',[FormationDevelopment::class, 'formation_programs_view'])->name('management.employees.formation_development.view');
+    Route::delete('/management_employees/formation_development/delete/{id}',[FormationDevelopment::class, 'formation_programs_destroy'])->name('management.employees.formation_development.delete');
+    Route::post('/management_employees/formation_development/delete-employee/',[FormationDevelopment::class, 'formation_programs_destroy_employee'])->name('management.employees.formation_development.employee.delete');
+
 
 
     //Formation Programas
@@ -56,8 +64,9 @@ Route::middleware('auth')->group(function () {
 
     //Trainings
     Route::get('/management_employees/formation_development/trainings',[FormationDevelopment::class, 'trainings_index'])->name('management.employees.formation_development.trainings');
-    Route::get('/management_employees/formation_development/trainings/create',[FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
+    Route::get('/management_employees/formation_development/trainings/create/{id?}',[FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
     Route::post('/management_employees/formation_development/trainings/store',[FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
+    Route::delete('/management_employees/formation_development/trainings/delete/{id}',[FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
     
 
     Route::get('users', [UserController::class, 'index_user'])->name('users.index');
