@@ -38,4 +38,8 @@ class Employee extends Model
     public function health(){
         return $this->hasOne(Health::class);
     }
+
+    public function formation_programs() {
+        return $this->belongsToMany(FormationProgram::class,'employee_formation_program', 'employee_id', 'formation_program_id');
+    }
 }
