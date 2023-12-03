@@ -44,7 +44,7 @@
                 <Link class="w-full" :href="route('management.employees')">Gestion de Empleados</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
-                <Link class="w-full" :href="route('management.employees.information')">Nomina</Link>
+                <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
                 <Link class="w-full" :href="route('management.employees.information')">Formacion y Desarrollo</Link>
@@ -89,9 +89,6 @@
                 <Link class="w-full" :href="route('users.index')">Control de Inventario</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingInventory">
-                <Link class="w-full" :href="route('users.index')">Gestion de Proveedores</Link>
-            </MyTransition>
-            <MyTransition :transitiondemonstration="showingInventory">
                 <Link class="w-full" :href="route('users.index')">Historial de Movimientos</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingInventory">
@@ -100,7 +97,6 @@
             <MyTransition :transitiondemonstration="showingInventory">
                 <Link class="w-full" :href="route('users.index')">Integracion de Compras</Link>
             </MyTransition>
-
             <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                 @click="showingProyectArea = !showingProyectArea">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -110,10 +106,10 @@
                 <span class="mx-3">Area de Proyectos</span>
             </a>
             <MyTransition :transitiondemonstration="showingProyectArea">
-                <Link class="w-full" :href="route('users.index')">Gestion de Proyectos</Link>
+                <Link class="w-full" :href="route('projectmanagement.index')">Gestion de Proyectos</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingProyectArea">
-                <Link class="w-full" :href="route('users.index')">Calendario de Proyectos</Link>
+                <Link class="w-full" :href="route('projectschedule.index')">Calendario de Proyectos</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingProyectArea">
                 <Link class="w-full" :href="route('users.index')">Seguimiento de Tareas</Link>
@@ -122,7 +118,7 @@
                 <Link class="w-full" :href="route('users.index')">Documentacionn de Proyectos</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingProyectArea">
-                <Link class="w-full" :href="route('users.index')">Informe de Proyecto</Link>
+                <Link class="w-full" :href="route('projectreports.index')">Informe de Proyecto</Link>
             </MyTransition>
 
             <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
@@ -133,16 +129,16 @@
                 <span class="mx-3">Area de Compras</span>
             </a>
             <MyTransition :transitiondemonstration="showingShoppingArea">
-                <Link class="w-full" :href="route('users.index')">Solicitud de Cotizaciones</Link>
+                <Link class="w-full" :href="route('purchasesrequest.index')">Solicitud de Cotizaciones</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingShoppingArea">
-                <Link class="w-full" :href="route('users.index')">Ordenes de compra</Link>
+                <Link class="w-full" :href="route('purchaseorders.index')">Ordenes de compra</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingShoppingArea">
-                <Link class="w-full" :href="route('users.index')">Gestion de Proveedores</Link>
+                <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingShoppingArea">
-                <Link class="w-full" :href="route('users.index')">Informe de Compras</Link>
+                <Link class="w-full" :href="route('purchasereports.index')">Informe de Compras</Link>
             </MyTransition>
         </nav>
     </div>

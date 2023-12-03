@@ -10,6 +10,7 @@ use App\Models\Emergency;
 use App\Models\Employee;
 use App\Models\Family;
 use App\Models\Health;
+use App\Models\Pension;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -27,12 +28,14 @@ class ManagementEmployees extends Controller
     }
 
     public function index_info_additional()
-    {
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesInformation');
+    {   
+        $pension = Pension::all();
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesInformation',['pensions' => $pension]);
     }
 
     public function create(Request $request)
     {
+        //dd($request->all());
         $request->validate([
             'curriculum_vitae' => 'required|mimes:pdf,doc,docx|max:2048',
             'cropped_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -45,7 +48,7 @@ class ManagementEmployees extends Controller
             'email' => 'required|email|max:255',
             'phone1' => 'required|numeric|digits:9',
             'phone2' => 'nullable|numeric|digits:9',
-            'pension_system' => 'required|string|in:ONP,INTEGRA,HABITAT,PROFUTURO,PRIMA,INTEGRAMX,HABITATMX,PROFUTUROMX,PRIMAMX',
+            'pension_system' => 'required|string',
             'basic_salary' => 'required|numeric',
             'hire_date' => 'required|date',
             'education_level' => 'required|string|in:Universidad,Instituto,Otros',
@@ -59,11 +62,11 @@ class ManagementEmployees extends Controller
             'emergency_lastname' => 'required|string|max:255',
             'emergency_relations' => 'required|string|max:255',
             'emergency_phone' => 'required|numeric|digits:9',
-            'family_dni' => 'required|numeric|digits:8',
-            'family_education' => 'required|string|in:Universidad,Instituto,Otros',
-            'family_relation' => 'required|string|max:255',
-            'family_name' => 'required|string|max:255',
-            'family_lastname' => 'required|string|max:255',
+            'familyDependents.*.family_dni' => 'required|numeric|digits:8',
+            'familyDependents.*.family_education' => 'required|string|in:Universidad,Instituto,Otros',
+            'familyDependents.*.family_relation' => 'required|string|max:255',
+            'familyDependents.*.family_name' => 'required|string|max:255',
+            'familyDependents.*.family_lastname' => 'required|string|max:255',
             'blood_group' => 'required|string|in:A+,A-,B+,B-,AB-,AB+,0+,0-',
             'weight' => 'required|string',
             'height' => 'required|string',
@@ -85,7 +88,7 @@ class ManagementEmployees extends Controller
         $croppedImage->move(public_path('image'), $imageName);
         $imageUrl = url('image/' . $imageName);
 
-        $employee = Employee::updateOrCreate([
+        $employee = Employee::create([
             'name' => $request->name,
             'lastname' => $request->last_name,
             'cropped_image' => $imageUrl,
@@ -100,14 +103,14 @@ class ManagementEmployees extends Controller
 
         $employeeId = $employee->id;
 
-        Contract::updateOrCreate([
-            'pension_system' => $request->pension_system,
+        Contract::create([
             'basic_salary' => $request->basic_salary,
             'hire_date' => $request->hire_date,
             'employee_id' => $employeeId,
+            'pension_id' => $request->pension_system,
         ]);
 
-        Education::updateOrCreate([
+        Education::create([
             'education_level' => $request->education_level,
             'education_status' => $request->education_status,
             'specialization' => $request->specialization,
@@ -115,7 +118,7 @@ class ManagementEmployees extends Controller
             'employee_id' => $employeeId,
         ]);
 
-        Address::updateOrCreate([
+        Address::create([
             'street_address' => $request->street_address,
             'department' => $request->department,
             'province' => $request->province,
@@ -123,7 +126,7 @@ class ManagementEmployees extends Controller
             'employee_id' => $employeeId,
         ]);
 
-        Emergency::updateOrCreate([
+        Emergency::create([
             'emergency_name' => $request->emergency_name,
             'emergency_lastname' => $request->emergency_lastname,
             'emergency_relations' => $request->emergency_relations,
@@ -131,16 +134,18 @@ class ManagementEmployees extends Controller
             'employee_id' => $employeeId,
         ]);
 
-        Family::updateOrCreate([
-            'family_dni' => $request->family_dni,
-            'family_education' => $request->family_education,
-            'family_relation' => $request->family_relation,
-            'family_name' => $request->family_name,
-            'family_lastname' => $request->family_lastname,
-            'employee_id' => $employeeId,
-        ]);
-
-        Health::updateOrCreate([
+        foreach ($request->familyDependents as $dependent) {
+            Family::create([
+                'family_dni' => $dependent['family_dni'],
+                'family_education' => $dependent['family_education'],
+                'family_relation' => $dependent['family_relation'],
+                'family_name' => $dependent['family_name'],
+                'family_lastname' => $dependent['family_lastname'],
+                'employee_id' => $employeeId,
+            ]);
+        }
+    
+        Health::create([
             'blood_group' => $request->blood_group,
             'weight' => $request->weight,
             'height' => $request->height,
@@ -158,9 +163,16 @@ class ManagementEmployees extends Controller
         return to_route('management.employees');
     }
 
+    public function destroy($id)
+    {
+        Employee::destroy($id);
+        return to_route('management.employees');
+    }
+
     public function details($id)
     {
-        $details = Employee::with('contract', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        $details = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        //dd($details);
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
     }
 
@@ -182,12 +194,7 @@ class ManagementEmployees extends Controller
             return $response;
         }
 
-        // Si el archivo no existe, puedes redirigir o manejar el error de otra forma
         abort(404);       
     }
 
-    // private function getFileLink($filePath)
-    // {
-    //     return asset(Storage::url($filePath));
-    // }
 }

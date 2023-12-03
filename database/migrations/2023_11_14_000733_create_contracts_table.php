@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->string('pension_system');
             $table->decimal('basic_salary', 10, 2);
             $table->date('hire_date');
-            $table->foreignId('employee_id')->constrained();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+            $table->foreignId('pension_id')->constrained('pensions');
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@
     </AuthenticatedLayout>
 </template>
   
-<script >
+<script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PersonalInformation from '@/Layouts/PersonalInformation.vue'
 import PrivateInformation from '@/Layouts/PrivateInformation.vue'

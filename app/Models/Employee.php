@@ -33,7 +33,7 @@ class Employee extends Model
         return $this->hasOne(Emergency::class);
     }
     public function family(){
-        return $this->hasOne(Family::class);
+        return $this->hasMany(Family::class);
     }
     public function health(){
         return $this->hasOne(Health::class);

@@ -31,31 +31,39 @@
                 </div>
             </div>
         </div>
-        <div class="text-lg font-semibold mb-4">Dependientes</div>
-        <div class="sm:flex lg:justify-between lg:gap-8 mb-8">
-            <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Nombre Completo</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.family.family_name }}
-                        {{ details.family.family_lastname }}</dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Relacion</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.family.family_relation
-                    }}</dd>
-                </div>
-            </div>
+        <div v-if="details.family && details.family.length">
+            <div class="text-lg font-semibold mb-4">Dependientes</div>
+            <div v-for="(familyMember, index) in details.family" :key="index">
+                <div class="sm:flex lg:justify-between lg:gap-8 mb-8">
+                    <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">Nombre Completo</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+                                familyMember.family_name }}
+                                {{ familyMember.family_lastname }}</dd>
+                        </div>
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">Relacion</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+                                familyMember.family_relation
+                            }}</dd>
+                        </div>
+                    </div>
 
-            <div class="sm:w-1/2 sm:pl-4">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Nivel Educativo</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.family.family_education
-                    }}</dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">DNI</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.family.family_dni }}
-                    </dd>
+                    <div class="sm:w-1/2 sm:pl-4">
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">Nivel Educativo</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+                                familyMember.family_education
+                            }}</dd>
+                        </div>
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">DNI</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+                                familyMember.family_dni }}
+                            </dd>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
