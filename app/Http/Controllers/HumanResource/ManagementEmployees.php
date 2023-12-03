@@ -101,6 +101,10 @@ class ManagementEmployees extends Controller
             'phone2' => $request->phone2,
         ]);
 
+        if (!$employee->save()) {
+            dd("Error al guardar el empleado");
+        }
+
         $employeeId = $employee->id;
 
         Contract::create([
@@ -178,22 +182,14 @@ class ManagementEmployees extends Controller
 
     public function download($filename)
     {
-        $filePath = '/documents/' . $filename; // Ruta relativa desde 'storage/app'
-
-        // Verificar si el archivo existe
+        $filePath = '/documents/' . $filename; 
         if (Storage::disk('local')->exists($filePath)) {
             $file = Storage::disk('local')->get($filePath);
-
-            // Crear la respuesta para la descarga del archivo
             $response = new Response($file, 200);
-
-            // Definir los encabezados para la descarga
-            $response->header('Content-Type', 'application/pdf'); // Cambia el tipo MIME según el tipo de archivo
+            $response->header('Content-Type', 'application/pdf');
             $response->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-
             return $response;
         }
-
         abort(404);       
     }
 
