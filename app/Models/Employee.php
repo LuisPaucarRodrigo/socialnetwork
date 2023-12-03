@@ -38,4 +38,7 @@ class Employee extends Model
     public function health(){
         return $this->hasOne(Health::class);
     }
+    public function vacation(){
+        return $this->hasMany(Vacation::class);
+    }
 }

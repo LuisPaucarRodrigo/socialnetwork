@@ -50,7 +50,7 @@
                 <Link class="w-full" :href="route('management.employees.information')">Formacion y Desarrollo</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingRecursosHumanos">
-                <Link class="w-full" :href="route('users.index')">Gestion de Vacaciones</Link>
+                <Link class="w-full" :href="route('management.vacation')">Gestion de Vacaciones</Link>
             </MyTransition>
 
             <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
