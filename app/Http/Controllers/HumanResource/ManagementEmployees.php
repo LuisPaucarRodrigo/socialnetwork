@@ -35,7 +35,6 @@ class ManagementEmployees extends Controller
 
     public function create(Request $request)
     {
-        //dd($request->all());
         $request->validate([
             'curriculum_vitae' => 'required|mimes:pdf,doc,docx|max:2048',
             'cropped_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -84,7 +83,7 @@ class ManagementEmployees extends Controller
         $document->storeAs('documents', $documentName); // Guardar el archivo en storage/app/documents   
 
         $croppedImage = $request->file('cropped_image');
-        $imageName = 'imagen_recortada_' . time() . '.' . $croppedImage->getClientOriginalExtension();
+        $imageName = 'imagen_' . time() . '.' . $croppedImage->getClientOriginalExtension();
         $croppedImage->move(public_path('image'), $imageName);
         $imageUrl = url('image/' . $imageName);
 
