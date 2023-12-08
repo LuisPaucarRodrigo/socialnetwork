@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('department');
             $table->string('province');
             $table->string('postal_code');
-            $table->foreignId('employee_id')->constrained();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

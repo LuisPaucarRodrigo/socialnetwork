@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('emergency_lastname');
             $table->string('emergency_relations');
             $table->string('emergency_phone');
-            $table->foreignId('employee_id')->constrained();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
