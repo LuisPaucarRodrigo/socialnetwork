@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('title');
             $table->text('product_description');
             $table->decimal('amount', 10, 2);
-            $table->date('due_date');
-            $table->string('state_orders')->default('');
+            $table->date('quote_deadline');
+            $table->string('purchase_image');
+            $table->string('response');
             $table->foreignId('provider_id')->constrained('providers')->onDelete('cascade');
             $table->timestamps();
         });
