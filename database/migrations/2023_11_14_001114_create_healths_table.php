@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('operations')->nullable();
             $table->string('accidents')->nullable();
             $table->string('vaccinations')->nullable();
-            $table->foreignId('employee_id')->constrained();
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
