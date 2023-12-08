@@ -71,7 +71,7 @@
             </MyTransition>
 
             <MyTransition :transitiondemonstration="showingFinance">
-                <Link class="w-full" :href="route('users.index')">Gestion de Gastos</Link>
+                <Link class="w-full" :href="route('managementexpense.index')">Gestion de Gastos</Link>
             </MyTransition>
 
             <MyTransition :transitiondemonstration="showingFinance">

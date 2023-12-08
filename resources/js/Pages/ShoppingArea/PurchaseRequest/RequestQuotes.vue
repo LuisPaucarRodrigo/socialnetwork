@@ -30,20 +30,27 @@
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="provider" class="text-sm font-medium leading-6 text-gray-900">Proveedores
                         </InputLabel>
-                        <select v-model="form.provider" id="provider"
+                        <select v-model="form.provider" id="provider" name=""
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <option>Seleccionar Proveedor</option>
+                            <option>Compañia | Contacto | Telefono1 - Telefono2</option>
                             <option v-for="provider in providers" :key="provider" :value="provider.id">{{
                                 provider.company_name }} | {{ provider.contact_name }} | {{ provider.phone1 }} - {{provider.phone2 }}
                             </option>
                         </select>
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">Fecha Limite de Aprobacion
+                        </InputLabel>
+                        <TextInput type="date" v-model="form.quote_deadline" id="da"
+                            class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
+                        <InputError :message="form.errors.quote_deadline" />
+                    </div>
+                    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="total_mount" class="text-sm font-medium leading-6 text-gray-900">Monto Total
                         </InputLabel>
-                        <TextInput type="text" v-model="form.total_mount" id="total_mount"
+                        <TextInput type="text" v-model="form.amount" id="total_mount"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
-                        <InputError :message="form.errors.total_mount" />
+                        <InputError :message="form.errors.amount" />
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="response" class="text-sm font-medium leading-6 text-gray-900">Respuestas
@@ -55,7 +62,7 @@
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="purchase_image" class="text-sm font-medium leading-6 text-gray-900">Imagen de
                             Cotizacion</InputLabel>
-                        <InputFile v-model="form.purchase_image" id="purchase_image"
+                        <InputFile type="file" v-model="form.purchase_image" id="purchase_image"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
                         <InputError :message="form.errors.purchase_image" />
                     </div>
@@ -83,13 +90,17 @@ const props = defineProps({
 })
 
 const form = useForm({
-    provider: 'Seleccionar Proveedor',
-    total_mount: '',
+    provider: 'Compañia | Contacto | Telefono1 - Telefono2',
+    project: props.purchases.project,
+    title: props.purchases.title,
+    product_description: props.purchases.product_description,
+    quote_deadline:'',
+    amount: '',
     response: '',
     purchase_image: ''
 })
 
 const submit = () => {
-    form.post(route('management.employees.information.create'))
+    form.post(route('purchasesrequest.orders'))
 }
 </script>
