@@ -16,6 +16,7 @@ use App\Http\Controllers\HumanResource\FormationDevelopment;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\VacationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,6 +111,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Vacation
+    Route::get('/management_vacation',[VacationController::class, 'index'])->name('management.vacation');
+    Route::get('/management_vacation/information_additional',[VacationController::class, 'index_info_additional'])->name('management.vacation.information');
+    Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit_info_additional'])->name('management.vacation.information.edit');
+    Route::post('/management_vacation/information_additional/create',[VacationController::class, 'create'])->name('management.vacation.information.create');
+    Route::put('/management_vacation/information_additional/{vacation}/update',[VacationController::class, 'update'])->name('management.vacation.information.update');
+    Route::delete('/management_vacation/information_additional/{vacation}/delete',[VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
 });
 
 require __DIR__ . '/auth.php';
