@@ -81,9 +81,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/finance/expencemanagement/details/{id}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
 
     Route::get('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
+    Route::get('/projectmanagement/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
+    Route::post('/projectmanagement/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
+    Route::get('/projectmanagement/update/{project_id}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
+    Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
+    Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
+
+
+
+
+
+
+
+
+
+
+
+
 
     Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
-
     Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
 
 
@@ -119,6 +135,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/management_vacation/information_additional/create',[VacationController::class, 'create'])->name('management.vacation.information.create');
     Route::put('/management_vacation/information_additional/{vacation}/update',[VacationController::class, 'update'])->name('management.vacation.information.update');
     Route::delete('/management_vacation/information_additional/{vacation}/delete',[VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 require __DIR__ . '/auth.php';
