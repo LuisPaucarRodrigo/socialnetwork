@@ -95,6 +95,13 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
+    public function project_destroy($project_id)
+    {
+        $project = Project::find($project_id);
+        $project->delete();
+        return redirect()->back();
+    }
+
 
 
 
