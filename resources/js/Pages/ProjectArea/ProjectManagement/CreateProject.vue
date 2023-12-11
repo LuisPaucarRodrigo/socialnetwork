@@ -21,26 +21,6 @@
                         <br>
                         <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                             <div class="sm:col-span-3">
-                                <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre del proyecto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <TextInput required type="text" v-model="form.name" id="name"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.name" />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel class="font-medium leading-6 text-gray-900">Código del proyecto:</InputLabel>
-                                <div class="mt-2">
-                                    <InputLabel class="font-medium leading-6 text-indigo-900">
-                                        {{ form.code }}
-                                    </InputLabel>
-                                    <input hidden v-model="form.code">
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
                                 <InputLabel for="start_date" class="font-medium leading-6 text-gray-900">Fecha de Inicio
                                 </InputLabel>
                                 <div class="mt-2">
@@ -59,7 +39,25 @@
                                     <InputError :message="form.errors.end_date" />
                                 </div>
                             </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre del proyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput required type="text" v-model="form.name" id="name"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.name" />
+                                </div>
+                            </div>
 
+                            <div class="sm:col-span-3">
+                                <InputLabel class="font-medium leading-6 text-gray-900">Código del proyecto:</InputLabel>
+                                <div class="mt-2">
+                                    <InputLabel class="font-medium leading-6 text-indigo-900">
+                                        {{ form.code }}
+                                    </InputLabel>
+                                    <input hidden v-model="form.code">
+                                </div>
+                            </div>
                             <div class="sm:col-span-3">
                                 <InputLabel for="priority" class="font-medium leading-6 text-gray-900">Prioridad
                                 </InputLabel>
@@ -257,11 +255,11 @@ const add_employee = () => {
                 },
                 onSuccess: () => {
                     alert('PERSONAL AGREGADO')
-                    form.employees.push(JSON.parse(JSON.stringify({    
+                    form.employees.push(JSON.parse(JSON.stringify({
                         name: employeeToAdd.value.employee.name,
                         lastname: employeeToAdd.value.employee.lastname,
-                        pivot:{charge: employeeToAdd.value.charge}
-                     })));
+                        pivot: { charge: employeeToAdd.value.charge }
+                    })));
                 }
             }
         )
