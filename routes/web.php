@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
+use App\Http\Controllers\ProjectArea\CalendarController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ProjectArea\ProjectScheduleController;
 use App\Http\Controllers\ProjectArea\ProjectReportsController;
@@ -141,7 +142,10 @@ Route::middleware('auth')->group(function () {
     
 
 
+    //Calendar
 
+    //Calendar
+    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
 
 
 
