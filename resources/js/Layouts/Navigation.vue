@@ -112,7 +112,7 @@
                 <Link class="w-full" :href="route('projectschedule.index')">Calendario de Proyectos</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingProyectArea">
-                <Link class="w-full" :href="route('users.index')">Seguimiento de Tareas</Link>
+                <Link class="w-full" :href="route('tasks.index')">Seguimiento de Tareas</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingProyectArea">
                 <Link class="w-full" :href="route('users.index')">Documentacionn de Proyectos</Link>

@@ -12,6 +12,7 @@ use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
 use App\Http\Controllers\ShoppingArea\PurchaseReportsController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
+use App\Http\Controllers\ProjectArea\TaskManagementController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -112,6 +113,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    //Tasks Management
+    Route::get('/tasks',[TaskManagementController::class,'index'])->name('tasks.index');
+    Route::get('/newtask',[TaskManagementController::class,'new'])->name('tasks.new');
+    Route::post('/createtask',[TaskManagementController::class,'create'])->name('tasks.create');
+    Route::get('/edittask',[TaskManagementController::class,'edit'])->name('tasks.edit');
+
 });
 
 require __DIR__ . '/auth.php';
