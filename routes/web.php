@@ -137,6 +137,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/newtask',[TaskManagementController::class,'new'])->name('tasks.new');
     Route::post('/createtask',[TaskManagementController::class,'create'])->name('tasks.create');
     Route::get('/edittask',[TaskManagementController::class,'edit'])->name('tasks.edit');
+    
+
+
     //Vacation
     Route::get('/management_vacation',[VacationController::class, 'index'])->name('management.vacation');
     Route::get('/management_vacation/information_additional',[VacationController::class, 'index_info_additional'])->name('management.vacation.information');

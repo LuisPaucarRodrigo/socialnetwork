@@ -22,4 +22,7 @@ class Project extends Model
     {
         return $this->belongsToMany(Employee::class,'project_employee')->withPivot('charge', 'id');
     }
+    public function tasks(){
+        return $this->hasMany(Tasks::class);
+    }
 }
