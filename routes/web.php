@@ -6,6 +6,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
+use App\Http\Controllers\ProjectArea\CalendarController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ProjectArea\ProjectScheduleController;
 use App\Http\Controllers\ProjectArea\ProjectReportsController;
@@ -119,9 +120,26 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
+    Route::get('/projectmanagement/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
+    Route::post('/projectmanagement/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
+    Route::get('/projectmanagement/update/{project_id}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
+    Route::delete('/projectmanagement/delete/{project_id}', [ProjectManagementController::class, 'project_destroy'])->name('projectmanagement.delete');
+    Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
+    Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
+
+
+
+
+
+
+
+
+
+
+
+
 
     Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
-
     Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
 });
 
@@ -144,6 +162,11 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
     Route::put('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
+
+
+    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
+
+
 });
 
 require __DIR__ . '/auth.php';
