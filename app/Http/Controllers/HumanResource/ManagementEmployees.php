@@ -100,9 +100,9 @@ class ManagementEmployees extends Controller
             'phone2' => $request->phone2,
         ]);
 
-        if (!$employee->save()) {
-            dd("Error al guardar el empleado");
-        }
+        // if (!$employee->save()) {
+        //     dd("Error al guardar el empleado");
+        // }
 
         $employeeId = $employee->id;
 

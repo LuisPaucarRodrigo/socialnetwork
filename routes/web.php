@@ -3,6 +3,7 @@
 use App\Http\Controllers\Finance\ExpenseManagementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\ManagementRolsController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
@@ -13,10 +14,11 @@ use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
 use App\Http\Controllers\ShoppingArea\PurchaseReportsController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
+use App\Http\Controllers\HumanResource\VacationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\VacationController;
+// use App\Http\Controllers\VacationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,12 +44,34 @@ Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // Route::get('/information_additional', fn () => Inertia::render('InformacionAdicional'))->name('information_additional');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware('auth', 'permission:UserManager')->group(function () {
+
+    Route::get('users', [UserController::class, 'index_user'])->name('users.index');
+    Route::get('users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('users/update/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::get('users/details/{id}', [UserController::class, 'details'])->name('users.details');
+    Route::delete('users/delete/{id}', [UserController::class, 'delete'])->name('users.destroy');
+
+    Route::get('rols', [ManagementRolsController::class, 'rols_index'])->name('rols.index');
+    Route::get('rols/create', [ManagementRolsController::class, 'create'])->name('rols.create');
+    Route::post('rols/store', [ManagementRolsController::class, 'store'])->name('rols.store');
+    Route::get('rols/edit/{id}', [ManagementRolsController::class, 'edit'])->name('rols.edit');
+    Route::put('rols/edit/{id}', [ManagementRolsController::class, 'update'])->name('rols.update');
+    Route::delete('rols/delete/{id}', [ManagementRolsController::class, 'delete'])->name('rols.delete');
+    Route::get('rols/details/{id}', [ManagementRolsController::class, 'details'])->name('rols.details');
+});
+
+Route::middleware('auth', 'permission:HumanResourceManager')->group(function () {
     Route::get('/management_employees', [ManagementEmployees::class, 'index'])->name('management.employees');
     Route::get('/management_employees/information_additional', [ManagementEmployees::class, 'index_info_additional'])->name('management.employees.information');
     Route::post('/management_employees/information_additional/create', [ManagementEmployees::class, 'create'])->name('management.employees.information.create');
@@ -76,17 +100,32 @@ Route::middleware('auth')->group(function () {
     Route::get('/management_employees/formation_development/trainings/create/{id?}', [FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
     Route::post('/management_employees/formation_development/trainings/store', [FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
     Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
+    //Vacation
+    Route::get('/management_vacation', [VacationController::class, 'index'])->name('management.vacation');
+    Route::get('/management_vacation/information_additional', [VacationController::class, 'index_info_additional'])->name('management.vacation.information');
+    Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit_info_additional'])->name('management.vacation.information.edit');
+    Route::post('/management_vacation/information_additional/create', [VacationController::class, 'create'])->name('management.vacation.information.create');
+    Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
+    Route::delete('/management_vacation/information_additional/{vacation}/delete', [VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
+});
 
+Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
     Route::get('/finance/expencemanagement/details/{id}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
+});
+Route::middleware('auth', 'permission:InventoryManager')->group(function () {
+});
 
+
+Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
 
     Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
 
     Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
+});
 
-
+Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest', [PurchaseRequestController::class, 'index'])->name('purchasesrequest.index');
     Route::get('/shopping_area/purchasesrequest/create_request', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
     Route::post('/shopping_area/purchasesrequest/store_request', [PurchaseRequestController::class, 'store'])->name('purchasesrequest.store');
@@ -105,20 +144,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
     Route::put('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
-
-
-    Route::get('users', [UserController::class, 'index_user'])->name('users.index');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    //Vacation
-    Route::get('/management_vacation',[VacationController::class, 'index'])->name('management.vacation');
-    Route::get('/management_vacation/information_additional',[VacationController::class, 'index_info_additional'])->name('management.vacation.information');
-    Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit_info_additional'])->name('management.vacation.information.edit');
-    Route::post('/management_vacation/information_additional/create',[VacationController::class, 'create'])->name('management.vacation.information.create');
-    Route::put('/management_vacation/information_additional/{vacation}/update',[VacationController::class, 'update'])->name('management.vacation.information.update');
-    Route::delete('/management_vacation/information_additional/{vacation}/delete',[VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
 });
 
 require __DIR__ . '/auth.php';
