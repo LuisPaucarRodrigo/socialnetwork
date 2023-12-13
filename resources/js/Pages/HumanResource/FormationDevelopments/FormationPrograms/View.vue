@@ -13,7 +13,7 @@
             <p><strong>Fecha:</strong> {{ formatMonthYear(formation_program.month_year) }}</p>
             <p><strong>Empleados:</strong></p>
             <ul>
-                
+
                 <div class="flex space-x-2" v-for="employee in formation_program.employees" :key="employee.id">
                     <p> {{ `${employee.name} ${employee.lastname}` }}</p>
                     <button @click="delete_employee(employee.id)">
@@ -63,21 +63,21 @@ const delete_employee = (id) => {
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
-            router.post(`/management_employees/formation_development/delete-employee/`, 
-            {
-                formation_program_id: formation_program.id,
-                employee_id: id
-            }
-            ,{
-                onSuccess: () => {
-                    return Swal.fire({
-                        title: "Éxito",
-                        text: "Capacitación eliminada",
-                        icon: "success",
-                    })
-                },
-            })
-        
+            router.post(`/management_employees/formation_development/delete-employee/`,
+                {
+                    formation_program_id: formation_program.id,
+                    employee_id: id
+                }
+                , {
+                    onSuccess: () => {
+                        return Swal.fire({
+                            title: "Éxito",
+                            text: "Capacitación eliminada",
+                            icon: "success",
+                        })
+                    },
+                })
+
         }
     });
 }

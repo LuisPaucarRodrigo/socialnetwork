@@ -82,17 +82,6 @@ const form = useForm({
 });
 
 const submit = () => {
-
-    
     form.post(route('management.employees.formation_development.assignation.store'))
-    //  {
-    //         onSuccess: () => {
-    //             return Swal.fire({
-    //                 title: "Éxito",
-    //                 text: "Asignación Realizada",
-    //                 icon: "success",
-    //             })
-    //         },
-    //     }
 }
 </script>
