@@ -5,42 +5,52 @@
             Nueva Tarea
         </template>
         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div class="sm:col-span-3">
+            <div class="sm:col-span-2">
                 <label for="project" class="block text-sm font-medium text-gray-700">Proyecto</label>
-                <select id="project" v-model="project"
+                <select v-model="form.project_id"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                    <option value="proyecto1">Proyecto 1</option>
-                    <option value="proyecto2">Proyecto 2</option>
-                    <option value="proyecto3">Proyecto 3</option>
+                    <option v-for="project in projects" :key="project.id" :value="project.id">
+                        {{ project.name }}
+                    </option>
                 </select>
             </div>
 
             <div class="sm:col-span-3">
-                <label for="task" class="block text-sm font-medium text-gray-700">Tarea</label>
-                <input type="text" id="task" v-model="task"
+                <label for="tasks" class="block text-sm font-medium text-gray-700">Tarea</label>
+                <input type="text" id="task" v-model="form.task"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                    <!--<InputError :message="form.errors.task" />-->
             </div>
+            <div class="sm:col-span-1">
+                <label for="task" class="block text-sm font-medium text-gray-700">Porcentaje</label>
+                <div class="flex">
+                    <input type="number" id="percentage" v-model="form.percentage"
+                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                    <span class="ml-2 self-center text-gray-500">%</span>
+                </div>
+            </div>
+
             <!-- Fecha de Inicio (date input) -->
             <div class="sm:col-span-2">
                 <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
-                <input type="date" id="startDate" v-model="startDate"
+                <input type="date" id="start_date" v-model="form.start_date"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
             </div>
 
             <!-- Fecha de Fin (date input) -->
             <div class="sm:col-span-2">
                 <label for="endDate" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
-                <input type="date" id="endDate" v-model="endDate"
+                <input type="date" id="end_date" v-model="form.end_date"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
             </div>
 
             <!-- Estado (select) -->
             <div class="sm:col-span-2">
                 <label for="status" class="block text-sm font-medium text-gray-700">Estado</label>
-                <select id="status" v-model="status"
+                <select v-model="form.status"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                     <option value="pendiente">Pendiente</option>
-                    <option value="en-proceso">En Proceso</option>
+                    <option value="proceso">En Proceso</option>
                     <option value="completado">Completado</option>
                 </select>
             </div>
@@ -58,7 +68,32 @@
   
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
+import InputError from '@/Components/InputError.vue'
+import { Head, useForm } from '@inertiajs/vue3';
+
+const props = defineProps({
+    projects: Object
+})
+
+const form = useForm({
+    project_id: '1',
+    task: '',
+    percentage: '',
+    start_date: '',
+    end_date: '',
+    status: 'pendiente',
+});
+
+
+const submitForm = () => {
+    form.post(route('tasks.create'), {
+        onError: (errors) => {
+            // Imprimir los errores de validación en la consola
+            console.log(form)
+            console.log('Errores de validación:', errors);
+        }
+    })
+}
 
 </script>
   
