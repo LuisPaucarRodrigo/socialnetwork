@@ -35,7 +35,7 @@
                             <Link :href="route('projectmanagement.update', {project_id:item.id})"  class="flex items-start">
                                 <PencilIcon class="h-4 w-4 text-teal-600"/>
                             </Link>
-                            <button class="flex items-start">
+                            <button class="flex items-start" @click="delete_project(item.id)">
                                 <TrashIcon class="h-4 w-4 text-red-500"/>
                             </button>
                         </div>
@@ -80,4 +80,9 @@ const { projects } = defineProps({
 const add_project = () => {
     router.get(route('projectmanagement.create'));
 }
+
+const delete_project = (id) => {
+    router.delete(route('projectmanagement.delete', {project_id:id}));
+}
+
 </script>

@@ -127,7 +127,7 @@
                     </div>
 
                 </div>
-                <div class="mt-6 flex items-center justify-end gap-x-6">
+                <div class="mt-3 flex items-center justify-end gap-x-6">
                     <button type="submit" :class="{ 'opacity-25': form.processing }"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                 </div>
@@ -247,6 +247,7 @@ const closeModal = () => {
     showModal.value = false;
 };
 const add_employee = () => {
+    console.log(project)
     if (project) {
         router.post(route('projectmanagement.add.employee', { project_id: project.id }), { ...employeeToAdd.value },
             {
@@ -263,9 +264,10 @@ const add_employee = () => {
                 }
             }
         )
-        return
+    } else {
+        form.employees.push(JSON.parse(JSON.stringify(employeeToAdd.value)))
+        employeeToAdd.value = JSON.parse(JSON.stringify(empInitState))
     }
-    employeeToAdd.value = JSON.parse(JSON.stringify(empInitState))
 }
 const delete_employee = (index) => {
     form.employees.splice(index, 1);
