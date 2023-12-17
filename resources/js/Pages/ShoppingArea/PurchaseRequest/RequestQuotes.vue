@@ -12,7 +12,7 @@
             <dl class="divide-y divide-gray-100">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Proyecto</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.project }}</dd>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.project.name }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Solicitud</dt>
@@ -26,14 +26,18 @@
                     <dt class="text-sm font-medium leading-6 text-gray-900">Descripcion</dt>
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.product_description }}</dd>
                 </div>
+                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt class="text-sm font-medium leading-6 text-gray-900">Estado</dt>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.state }}</dd>
+                </div>
                 <form @submit.prevent="submit">
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="provider" class="text-sm font-medium leading-6 text-gray-900">Proveedores
                         </InputLabel>
-                        <select v-model="form.provider" id="provider" name=""
+                        <select v-model="form.provider" id="provider"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             <option>Compañia | Contacto | Telefono1 - Telefono2</option>
-                            <option v-for="provider in providers" :key="provider" :value="provider.id">{{
+                            <option v-for="provider in providers" :key="provider" :value="provider.company_name">{{
                                 provider.company_name }} | {{ provider.contact_name }} | {{ provider.phone1 }} - {{provider.phone2 }}
                             </option>
                         </select>
@@ -41,7 +45,7 @@
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">Fecha Limite de Aprobacion
                         </InputLabel>
-                        <TextInput type="date" v-model="form.quote_deadline" id="da"
+                        <TextInput type="date" v-model="form.quote_deadline" id="quote_deadline"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
                         <InputError :message="form.errors.quote_deadline" />
                     </div>
@@ -91,9 +95,7 @@ const props = defineProps({
 
 const form = useForm({
     provider: 'Compañia | Contacto | Telefono1 - Telefono2',
-    project: props.purchases.project,
-    title: props.purchases.title,
-    product_description: props.purchases.product_description,
+    purchasing_request_id: props.purchases.id,
     quote_deadline:'',
     amount: '',
     response: '',
@@ -101,6 +103,6 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.post(route('purchasesrequest.orders'))
+    form.post(route('purchasesrequest.storequotes'))
 }
 </script>

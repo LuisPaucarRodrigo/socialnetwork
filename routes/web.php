@@ -77,6 +77,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/management_employees/information_additional', [ManagementEmployees::class, 'index_info_additional'])->name('management.employees.information');
     Route::post('/management_employees/information_additional/create', [ManagementEmployees::class, 'create'])->name('management.employees.information.create');
     Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.information.details');
+    Route::get('/management_employees/edit/{id}', [ManagementEmployees::class, 'edit'])->name('management.employees.edit');
     Route::delete('/management_employees/destroy/{id}', [ManagementEmployees::class, 'destroy'])->name('management.employees.destroy');
     Route::get('/management_employees/information_additional/details/download/{filename}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
 
@@ -127,17 +128,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
 
-
-
-
-
-
-
-
-
-
-
-
+    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
 
     Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
     Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
@@ -150,7 +141,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest/quotes/{id}', [PurchaseRequestController::class, 'index_quotes'])->name('purchasesrequest.quotes');
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
     Route::get('/shopping_area/purchasesrequest/details/{id}', [PurchaseRequestController::class, 'details'])->name('purchasingrequest.details');
-    Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'orders'])->name('purchasesrequest.orders');
+    Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'orders'])->name('purchasesrequest.storequotes');
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
 
@@ -162,9 +153,6 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
     Route::put('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
-
-
-    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
 
 
 });

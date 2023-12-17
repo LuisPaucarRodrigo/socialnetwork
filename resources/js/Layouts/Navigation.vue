@@ -48,6 +48,7 @@
                     <Link class="w-full" :href="route('rols.index')">Gestion de Roles</Link>
                 </MyTransition>
             </template>
+
             <template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingHumanResource = !showingHumanResource">
@@ -109,9 +110,7 @@
                     <span class="mx-3">Inventario</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingInventory">
-                    @can('InventoryManager')
                     <Link class="w-full" :href="route('users.index')">Control de Inventario</Link>
-                    @endcan
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('users.index')">Historial de Movimientos</Link>
@@ -124,7 +123,7 @@
                 </MyTransition>
             </template>
 
-            <template v-if="hasPermission('ProjectManager')|| hasPermission('Project')">
+            <template v-if="hasPermission('ProjectManager') || hasPermission('Project')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingProyectArea = !showingProyectArea">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -132,7 +131,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
                     </svg>
-
                     <span class="mx-3">Area de Proyectos</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingProyectArea">
@@ -151,7 +149,7 @@
                     <Link class="w-full" :href="route('projectreports.index')">Informe de Proyecto</Link>
                 </MyTransition>
             </template>
-            
+
             <template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingShoppingArea = !showingShoppingArea">
@@ -175,6 +173,7 @@
                     <Link class="w-full" :href="route('purchasereports.index')">Informe de Compras</Link>
                 </MyTransition>
             </template>
+            
         </nav>
     </div>
 </template>
