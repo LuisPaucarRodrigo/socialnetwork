@@ -61,7 +61,6 @@ class ProjectManagementController extends Controller
     }
     public function project_store(Request $request)
     {
-        //dd($request->all());
         $data = $request->validate([
             'name' => 'required',
             'code' => 'required',

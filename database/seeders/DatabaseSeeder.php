@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\Employee;
 use App\Models\Pension;
 use App\Models\Permission;
+use App\Models\Project;
 use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Role;
@@ -60,8 +61,10 @@ class DatabaseSeeder extends Seeder
             'role_id' => '1'
         ]);
         // User::factory()->count(20)->create();
-        Purchasing_request::factory()->count(10)->create();
+        Project::factory()->count(10)->create();
+        Purchasing_request::factory()->count(1)->create();
         Provider::factory()->count(10)->create();
+        
         $data = [
             [
                 'type' => 'HABITAT',
