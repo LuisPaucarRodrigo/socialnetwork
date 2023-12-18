@@ -19,14 +19,20 @@ class Tasks extends Model
     public static $rules = [
         'project_id' => 'required|exists:projects,id',
         'task' => 'required|string',
-        'percentage' => 'nullable|integer|min:0|max:100',
+        'percentage' => 'required|integer|min:0|max:100',
         'start_date' => 'required|date',
         'end_date' => 'required|date|after_or_equal:start_date',
-        'status' => 'required|in:pendiente,proceso,completado',
+        'status' => 'required|in:pendiente,proceso,completado,detenido',
     ];
 
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
+    }
+    public function taskComment(){
+        return $this->hasMany(TaskComment::class);
+    }
+    public function project_employee() {
+        return $this->belongsToMany(ProjectEmployee::class, 'task_employees');
     }
 }
