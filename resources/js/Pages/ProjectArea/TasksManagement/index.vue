@@ -28,11 +28,11 @@
                     <p class="text-gray-500">Seleccione un proyecto para ver las tareas.</p>
                 </template>
                 <template v-else>
-                    <template v-if="filteredTasks.length === 0">
+                    <template v-if="tasks.length === 0">
                         <p class="text-gray-500">Aun no hay tareas para el proyecto seleccionado.</p>
                     </template>
                     <template v-else>
-                        <div v-for="task in filteredTasks" :key="task.id" class="flex justify-between gap-x-6 py-5">
+                        <div v-for="task in tasks.data" :key="task.id" class="flex justify-between gap-x-6 py-5">
                             <a @click="edittask(task.id)" class="flex items-center gap-x-4 min-w-0">
                                 <div class="min-w-0 flex-auto">
                                     <p class="text-sm font-semibold leading-6 text-gray-900">{{ task.task }}</p>
@@ -68,6 +68,9 @@
                                     <EyeIcon class="text-white-900 h-4 w-4" style="stroke-width:3;" />
                                 </button>
                             </div>
+                        </div>
+                        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                            <pagination :links="tasks.links" />
                         </div>
 
                     </template>
@@ -112,6 +115,7 @@ import { ref, defineProps } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import { PlayIcon, PauseIcon, PlayPauseIcon, CheckIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/Components/Modal.vue';
+import Pagination from '@/Components/Pagination.vue'
 
 const props = defineProps({
     projects: Object,
@@ -119,7 +123,6 @@ const props = defineProps({
     project_id: String,
 })
 const selectedProjectId = ref(props.project_id);
-const filteredTasks = ref(props.tasks);
 const addTask = () => {
     router.get(route('tasks.new'));
 };

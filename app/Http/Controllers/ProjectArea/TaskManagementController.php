@@ -17,8 +17,7 @@ class TaskManagementController extends Controller
     public function index(Request $request)
     {
         $projectId = $request->route('id');
-        $tasks = Tasks::where('project_id',$projectId)->get();
-        //dd($tasks);
+        $tasks = Tasks::where('project_id',$projectId)->paginate(5);
         return Inertia::render('ProjectArea/TasksManagement/index', [
             'projects' => Project::all(),
             'tasks' => $tasks,
