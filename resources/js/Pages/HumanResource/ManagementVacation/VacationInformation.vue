@@ -95,9 +95,6 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import { ref, onMounted } from 'vue';
-
-
 
 const props = defineProps({
     vacations: Object,

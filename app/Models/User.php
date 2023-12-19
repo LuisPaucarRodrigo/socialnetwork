@@ -29,6 +29,7 @@ class User extends Authenticatable
         'dni',
         'platform',
         'password',
+        'role_id'
     ];
 
     /**
@@ -60,4 +61,48 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function hasPermission($permission)
+    {
+        $role = $this->role; // Obtener el único rol del usuario
+
+        if ($role) { // Verificar si el usuario tiene un rol asignado
+            return $role->permissions()->where('name', $permission)->exists();
+        }
+
+        return false; // Si el usuario no tiene un rol asignado, retorna falso
+    }
+
+    public function onePermission()
+    {
+        $role = $this->role; // Obtener el único rol del usuario
+
+        if ($role) { // Verificar si el usuario tiene un rol asignado
+            return $role->permissions()->pluck('name');
+        }
+
+        // No se encontraron permisos, retornar una colección vacía o null
+        return collect(); // o return null;
+    }
+
+    // public function hasPermission($permission)
+    // {
+    //     foreach ($this->roles as $role) {
+    //         if ($role->permissions->contains('name', $permission)) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
+
+    // public function hasRole($role)
+    // {
+    //     return $this->role()->where('name', $role)->exists();
+    // }
+
 }

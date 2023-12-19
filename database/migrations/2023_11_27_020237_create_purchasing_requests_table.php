@@ -10,13 +10,15 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+    {       
         Schema::create('purchasing_requests', function (Blueprint $table) {
-            $table->id();
-            $table->string('project')->nullable();
+            $table->id();   
             $table->string('title');
             $table->text('product_description');
             $table->date('due_date');
+            $table->string('state')->default('pendiente');
+            $table->text('response')->nullable();
+            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->timestamps();
         });
     }
