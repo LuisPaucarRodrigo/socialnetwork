@@ -164,7 +164,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="mt-6 flex gap-3 justify-end">
                         <button
                             class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
@@ -172,8 +171,6 @@
                         <button
                             class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
                             type="submit"> Agregar </button>
-
-
                     </div>
                 </form>
             </Modal>
@@ -186,7 +183,7 @@ import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue'
+import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
@@ -213,7 +210,7 @@ const form = useForm(
         :
         { ...initialState }
 )
-console.log(project)
+
 const submit = () => {
     form.post(route('projectmanagement.store'))
 }
@@ -284,6 +281,4 @@ const delete_already_employee = (pivot_id, index) => {
         }
     })
 }
-
-
 </script>

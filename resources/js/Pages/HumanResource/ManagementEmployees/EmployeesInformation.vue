@@ -26,9 +26,9 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="last_name" class="font-medium leading-6 text-gray-900">Apellido</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.last_name" id="last_name" autocomplete="family-name"
+                                <TextInput type="text" v-model="form.lastname" id="last_name" autocomplete="family-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.last_name" />
+                                <InputError :message="form.errors.lastname" />
                             </div>
                         </div>
 
@@ -497,18 +497,22 @@ import ModalImage from '@/Layouts/ModalImage.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
-import InputError from '@/Components/InputError.vue'
+import InputError from '@/Components/InputError.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
-    pensions: Object
+    pensions: Object,
+    employeesedit: {
+        type: Object,
+        default : null
+    }
 })
 
-const form = useForm({
+const initialState = {
     curriculum_vitae: null,
     cropped_image: '',
     name: '',
-    last_name: '',
+    lastname: '',
     gender: 'Masculino',
     state_civil: 'Casado(a)',
     birthdate: '',
@@ -542,7 +546,11 @@ const form = useForm({
     operations: '',
     accidents: '',
     vaccinations: '',
-})
+}
+
+const form = useForm(
+    props.employeesedit ? props.employeesedit : {...initialState}
+)
 
 const addDependent = () => {
     form.familyDependents.push({ family_dni: '', family_name: '', family_lastname: '', family_relation: '', family_education: 'Universidad' });

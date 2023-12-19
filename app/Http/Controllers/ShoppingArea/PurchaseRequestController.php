@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Purchase_order;
+use App\Models\Purchase_quote;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +14,7 @@ class PurchaseRequestController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', ['purchases' => Purchasing_request::paginate()]);
+        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', ['purchases' => Purchasing_request::with('project')->paginate()]);
     }
 
     public function create()
@@ -43,7 +44,7 @@ class PurchaseRequestController extends Controller
 
         return Inertia::render('ShoppingArea/PurchaseRequest/RequestQuotes', [
             'providers' => Provider::all(),
-            'purchases' => Purchasing_request::find($id),
+            'purchases' => Purchasing_request::with('project')->find($id),
         ]);
     }
 
@@ -55,16 +56,14 @@ class PurchaseRequestController extends Controller
 
     public function details($id)
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::find($id)]);
+        return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project')->find($id)]);
     }
 
     public function orders(Request $request)
     {   
         $request->validate([
             'provider' => 'required|string',
-            'project' => 'required|string',
-            'title' => 'required|string',
-            'product_description' => 'required|string',
+            'purchasing_request_id' => 'required|numeric',
             'amount' => 'required|string|numeric',
             'quote_deadline' => 'required|date',
             'response' => 'required|string',
@@ -76,15 +75,13 @@ class PurchaseRequestController extends Controller
         $croppedImage->move(public_path('image'), $imageName);
         $imageUrl = url('image/' . $imageName);
 
-        Purchase_order::create([
-            'provider_id' => $request->provider,
-            'project' => $request->project,
-            'title' => $request->title,
-            'product_description' => $request->product_description,
+        Purchase_quote::create([
+            'provider' => $request->provider,
             'amount' => $request->amount,
             'quote_deadline' => $request->quote_deadline,
             'response' => $request->response,
             'purchase_image' => $imageUrl,
+            'purchasing_request_id' => $request->purchasing_request_id,
         ]);
         return to_route('purchasesrequest.index');
     }

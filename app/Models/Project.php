@@ -25,4 +25,7 @@ class Project extends Model
     public function tasks(){
         return $this->hasMany(Tasks::class);
     }
+    public function purchasing_request(){
+        return $this->hasMany(Purchasing_request::class);
+    }
 }

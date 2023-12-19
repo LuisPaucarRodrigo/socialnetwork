@@ -34,7 +34,7 @@
                 <tbody>
                     <tr v-for="purchase in purchases.data" :key="purchase.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ purchase.project }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ purchase.project.name }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ purchase.title }}</p>
@@ -62,7 +62,7 @@
                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 </Link>
-                                <Link class="text-blue-900 whitespace-no-wrap"
+                                <Link v-if="purchase.project == null" class="text-blue-900 whitespace-no-wrap"
                                 :href="route('providersmanagement.edit', { id: purchase.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">

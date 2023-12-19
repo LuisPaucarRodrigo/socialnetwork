@@ -13,16 +13,19 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="company_name" class="font-medium leading-6 text-gray-900">Compañia</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.company_name" id="company_name" autocomplete="given-name"
+                                <TextInput type="text" v-model="form.company_name" id="company_name"
+                                    autocomplete="given-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.company_name" />
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="contact_name" class="font-medium leading-6 text-gray-900">Nombre de Contacto</InputLabel>
+                            <InputLabel for="contact_name" class="font-medium leading-6 text-gray-900">Nombre de Contacto
+                            </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.contact_name" id="contact_name" autocomplete="family-name"
+                                <TextInput type="text" v-model="form.contact_name" id="contact_name"
+                                    autocomplete="family-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.contact_name" />
                             </div>
@@ -49,7 +52,8 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone1" class="font-medium leading-6 text-gray-900">Telefono 1</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.phone1" id="phone1" maxlength="9" autocomplete="address-level1"
+                                <TextInput type="text" v-model="form.phone1" id="phone1" maxlength="9"
+                                    autocomplete="address-level1"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.phone1" />
                             </div>
@@ -58,7 +62,8 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone2" class="font-medium leading-6 text-gray-900">Telefono 2</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.phone2" id="phone2" maxlength="9" autocomplete="address-level1"
+                                <TextInput type="text" v-model="form.phone2" id="phone2" maxlength="9"
+                                    autocomplete="address-level1"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.phone2" />
                             </div>
