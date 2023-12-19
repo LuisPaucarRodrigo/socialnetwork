@@ -86,6 +86,9 @@
                 <span class="mx-3">Inventario</span>
             </a>
             <MyTransition :transitiondemonstration="showingInventory">
+                <Link class="w-full" :href="route('users.index')">Recursos de la Empresa</Link>
+            </MyTransition>
+            <MyTransition :transitiondemonstration="showingInventory">
                 <Link class="w-full" :href="route('users.index')">Control de Inventario</Link>
             </MyTransition>
             <MyTransition :transitiondemonstration="showingInventory">
