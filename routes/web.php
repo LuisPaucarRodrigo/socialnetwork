@@ -17,6 +17,7 @@ use App\Http\Controllers\ShoppingArea\PurchaseReportsController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
+use App\Http\Controllers\Inventory\ResourceManagementController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -191,6 +192,12 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 
     //Calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
+
+
+
+    //Resources
+    Route::get('/resources', [ResourceManagementController::class, 'index'])->name('resources.index'); 
+    Route::get('/resources/new', [ResourceManagementController::class, 'new'])->name('resources.new'); 
 
 
 
