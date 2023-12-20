@@ -44,6 +44,35 @@
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
         </form>
+        <Modal :show="showModal" :maxWidth="'md'">
+            <!-- Contenido del modal cuando no hay empleados -->
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    {{ titleModal }}
+                </h2>
+                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
+                <p class="mt-2 text-sm text-gray-500">
+                    {{ content }}
+                </p>
+                <div class="mt-6 flex justify-end">
+                    <!-- Estructura condicional para el botón -->
+                    <button
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
+                        type="button" @click="closeModal"> Cancelar
+                    </button>
+                    <button v-if="!training" @click="create()"
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
+                        type="button"> {{ textButton }}
+                    </button>
+
+                    <!-- Crear -->
+                    <button v-else @click="update(training.id)"
+                        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                        {{ textButton }}
+                    </button>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 
@@ -54,6 +83,8 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
+import Modal from '@/Components/Modal.vue';
+import { ref, defineProps } from 'vue';
 
 const props = defineProps({
     training: Object
@@ -68,28 +99,41 @@ const form = useForm({
     ...props.training,
 });
 
+const showModal = ref(false);
+const titleModal = ref(null);
+const content = ref(null);
+const textButton = ref(null);
+
+const openModalCreate = () => {
+    titleModal.value = 'Creacion de una nueva Capacitacion';
+    content.value = '¿Desea continuar con la creacion de una nueva Capacitacion?';
+    textButton.value = 'Continuar';
+    showModal.value = true;
+}
+const openModalSave = () => {
+    titleModal.value = 'Modificar la Capacitacion';
+    content.value = '¿Desea guardar los cambios realizados a esta Capacitacion?';
+    textButton.value = 'Guardar';
+    showModal.value = true;
+}
+const closeModal = () => {
+    showModal.value = false;
+}
+
+const update = (training_id) => {
+    console.log('editando',training_id)
+    form.post(route('management.employees.formation_development.trainings.store', { id: training_id }))
+}
+const create = () => {
+    console.log('creando')
+    form.post(route('management.employees.formation_development.trainings.store'))
+}
+
 const submit = () => {
     if (props.training) {
-        form.post(route('management.employees.formation_development.trainings.store', {id: props.training.id}), {
-                onSuccess: () => {
-                    return Swal.fire({
-                        title: "Éxito",
-                        text: "Capcitación Editada",
-                        icon: "success",
-                    })
-                },
-            })
+        openModalSave()
     } else {
-        form.post(route('management.employees.formation_development.trainings.store'), {
-            onSuccess: () => {
-                return Swal.fire({
-                    title: "Éxito",
-                    text: "Nueva capacitación añadida",
-                    icon: "success",
-                })
-            },
-        })
-        
+        openModalCreate()
     }
 }
 </script>

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('type');
             $table->integer('quantity');
             $table->text('description')->nullable();
-            $table->string('state');
+            $table->string('state')->default('Disponible');
             $table->date('adquisition_date');
             $table->string('current_location');
             $table->string('unique_identification')->unique();

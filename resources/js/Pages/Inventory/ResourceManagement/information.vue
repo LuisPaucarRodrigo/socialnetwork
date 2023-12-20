@@ -7,92 +7,190 @@
         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div class="sm:col-span-3">
                 <label for="project" class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input type="text" id="task"
+                <input type="text" id="name" v-model="newResource.name"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <!-- <InputError :message="form.errors.task" /> -->
+                <InputError :message="newResource.errors.name" />
             </div>
 
             <div class="sm:col-span-3">
                 <label for="task" class="block text-sm font-medium text-gray-700">Categoria</label>
                 <div class="flex">
-                    <select
+                    <select v-model="newResource.type"
                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                        <option value="pendiente">Hardware</option>
-                        <option value="proceso">Software</option>
-                        <option value="detenido">Vehiculo</option>
-                        <option value="detenido">Equipo de Oficina</option>
-                        <option value="completado">Equipo de Campo</option>
-                        <option value="detenido">Otros</option>
+                        <option disabled value="">Seleccione una categoria</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Software">Software</option>
+                        <option value="Vehiculo">Vehiculo</option>
+                        <option value="Equipo de Oficina">Equipo de Oficina</option>
+                        <option value="Equipo de Campo">Equipo de Campo</option>
+                        <option value="Otros">Otros</option>
                     </select>
                 </div>
-                <!-- <InputError :message="form.errors.percentage" /> -->
+                <InputError :message="newResource.errors.type" />
             </div>
             <div class="sm:col-span-2">
-                <label for="startDate" class="block text-sm font-medium text-gray-700">Codigo</label>
-                <input type="text" id="start_date"
+                <label for="unique_identification" class="block text-sm font-medium text-gray-700">Codigo</label>
+                <input :disabled="!!resource" type="text" id="unique_identification"
+                    v-model="newResource.unique_identification"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <!-- <InputError :message="form.errors.start_date" /> -->
+                <InputError :message="newResource.errors.unique_identification" />
             </div>
             <div class="sm:col-span-1">
-                <label for="tasks" class="block text-sm font-medium text-gray-700">Cantidad</label>
-                <input type="number" id="task"
+                <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad</label>
+                <input type="number" id="task" v-model="newResource.quantity"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <!-- <InputError :message="form.errors.task" /> -->
+                <InputError :message="newResource.errors.quantity" />
             </div>
             <!--Local -->
             <div class="sm:col-span-3">
                 <label for="task" class="block text-sm font-medium text-gray-700">Ubicacion</label>
                 <div class="flex">
-                    <select
+                    <select v-model="newResource.current_location"
                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                        <option value="1">Conproco</option>
-                        <option value="2">Social Network</option>
+                        <option disabled value="">Seleccione un Almacen</option>
+                        <option value="Conproco">Conproco</option>
+                        <option value="Social Network">Social Network</option>
                     </select>
                 </div>
-                <!-- <InputError :message="form.errors.percentage" /> -->
+                <InputError :message="newResource.errors.current_location" />
             </div>
 
             <!-- Fecha de Inicio (date input) -->
             <div class="sm:col-span-2">
                 <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de Adquisicion</label>
-                <input type="date" id="start_date"
+                <input type="date" id="adquisition_date" v-model="newResource.adquisition_date"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <!-- <InputError :message="form.errors.start_date" /> -->
+                <InputError :message="newResource.errors.adquisition_date" />
             </div>
-
+            <div class="sm:col-span-2">
+                <label for="tasks" class="block text-sm font-medium text-gray-700">Estado</label>
+                <input disabled type="text" id="task" v-model="newResource.state"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+            </div>
             <!-- Descricion (text-Area) -->
-            <div class="sm:col-span-4">
+            <div class="sm:col-span-5">
                 <label for="startDate" class="block text-sm font-medium text-gray-700">Descripcion</label>
-                <textarea type="text" id="start_date"
+                <textarea type="text" id="start_date" v-model="newResource.description"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300" />
                 <!-- <InputError :message="form.errors.start_date" /> -->
-            </div>
-            <div class="sm:col-span-1">
-                <label for="tasks" class="block text-sm font-medium text-gray-700">Estado</label>
-                <input type="number" id="task"
-                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <!-- <InputError :message="form.errors.task" /> -->
             </div>
 
         </div>
 
         <!-- Botón de enviar -->
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button @click="submitForm"
+            <button  @click="cancel()"
+                class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
+                Cancelar
+            </button>
+            <button v-if="resource" @click="openModalSaved()"
+                class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                Guardar
+            </button>
+
+            <button v-else @click="openModalAdded()"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Crear
             </button>
         </div>
+        <Modal :show="showmodal" :maxWidth="'md'">
+            <!-- Contenido del modal cuando no hay empleados -->
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    {{ titleModal }}
+                </h2>
+                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
+                <p class="mt-2 text-sm text-gray-500">
+                    {{ newResource.name }} {{ content }}
+                </p>
+                <div class="mt-6 flex justify-end">
+                    <!-- Estructura condicional para el botón -->
+                    <button
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
+                        type="button" @click="closeModal"> Cancelar
+                    </button>
+                    <button v-if="textButton === 'Crear'"
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
+                        type="button" @click="add_resource()"> Crear
+                    </button>
+                    <button v-else @click="update_resource(resource.id)"
+                        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, Link } from '@inertiajs/vue3';
-import Pagination from '@/Components/Pagination.vue'
-import { EyeIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { Head, router, Link, useForm } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
+import { ref, defineProps } from 'vue';
+import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
-    title: String
+    title: String,
+    resource: Object
 })
+const newResource = useForm({
+    name: '',
+    type: '',
+    quantity: '',
+    description: '',
+    state: 'Disponible',
+    adquisition_date: '',
+    current_location: '',
+    unique_identification: '',
+});
+
+if (props.resource) {
+    newResource.name = props.resource.name;
+    newResource.type = props.resource.type;
+    newResource.unique_identification = props.resource.unique_identification;
+    newResource.quantity = props.resource.quantity;
+    newResource.current_location = props.resource.current_location;
+    newResource.adquisition_date = props.resource.adquisition_date;
+    newResource.description = props.resource.description;
+}
+
+const add_resource = () => {
+    newResource.post(route('resource.create'), {
+        onError: () => {
+            closeModal()
+        }
+    })
+}
+const update_resource = (resourceId) => {
+    newResource.put(route('resource.update', { resourceId: resourceId }), {
+        onError: () => {
+            closeModal()
+        }
+    })
+}
+const cancel =()=>{
+    router.get(route('resources.index'))
+}
+
+const showmodal = ref(false);
+const titleModal = ref(null);
+const content = ref(null);
+const textButton = ref(null);
+
+const openModalAdded = () => {
+    titleModal.value = 'Agregar Nuevo Recurso';
+    content.value = 'se agregara a la lista de recursos';
+    textButton.value = 'Crear'
+    showmodal.value = true;
+}
+const openModalSaved = () => {
+    titleModal.value = 'Editar Recurso';
+    content.value = '¿Esta seguro de guardar los cambios?';
+    textButton.value = 'Guardar'
+    showmodal.value = true;
+}
+const closeModal = () => {
+    showmodal.value = false;
+}
 
 </script>

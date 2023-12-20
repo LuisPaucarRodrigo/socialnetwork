@@ -102,7 +102,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     //Trainings
     Route::get('/management_employees/formation_development/trainings', [FormationDevelopment::class, 'trainings_index'])->name('management.employees.formation_development.trainings');
     Route::get('/management_employees/formation_development/trainings/create/{id?}', [FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
-    Route::post('/management_employees/formation_development/trainings/store', [FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
+    Route::post('/management_employees/formation_development/trainings/store/{id?}', [FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
     Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
     //Vacation
     Route::get('/management_vacation', [VacationController::class, 'index'])->name('management.vacation');
@@ -198,6 +198,10 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     //Resources
     Route::get('/resources', [ResourceManagementController::class, 'index'])->name('resources.index'); 
     Route::get('/resources/new', [ResourceManagementController::class, 'new'])->name('resources.new'); 
+    Route::post('/resources/create', [ResourceManagementController::class, 'create'])->name('resource.create'); 
+    Route::get('/resources/edit/{resourceId}', [ResourceManagementController::class, 'edit'])->name('resource.edit');
+    Route::put('/resources/edit/{resourceId}', [ResourceManagementController::class, 'update'])->name('resource.update'); 
+    Route::delete('/resources/delete/{resourceId}', [ResourceManagementController::class, 'destroy'])->name('resource.delete'); 
 
 
 

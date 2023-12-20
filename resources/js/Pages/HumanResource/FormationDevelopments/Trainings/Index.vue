@@ -59,7 +59,7 @@
                                     :href="route('management.employees.formation_development.trainings.create', { id: training.id })">
                                 <PencilSquareIcon class="h-6 w-6 text-blue-500" />
                                 </Link>
-                                <button @click="delete_training(training.id)">
+                                <button @click="openModalDelete(training)">
                                     <TrashIcon class="h-6 w-6 text-red-500" />
                                 </button>
                             </div>
@@ -72,6 +72,27 @@
                 <pagination :links="trainings.links" />
             </div>
         </div>
+        <Modal :show="showModalDelete" :maxWidth="'md'">
+            <!-- Contenido del modal cuando no hay empleados -->
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Esta seguro?
+                </h2>
+                <p class="mt-2 text-sm text-gray-500">
+                    Se eliminara <b>{{ selectedTraining.name }}</b>. Esta accion no se podra revertir mas adelante.
+                </p>
+                <div class="mt-6 flex justify-end">
+                    <button
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
+                        type="button" @click="closeModal()"> Cancelar
+                    </button>
+                    <button
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
+                        type="button" @click="delete_program(selectedTraining.id)"> Eliminar
+                    </button>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 
@@ -81,6 +102,8 @@ import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
 import { EyeIcon, TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import Swal from 'sweetalert2';
+import Modal from '@/Components/Modal.vue';
+import { ref, defineProps } from 'vue';
 
 const props = defineProps({
     trainings: Object
@@ -91,33 +114,19 @@ const add_information = () => {
     router.get(route('management.employees.formation_development.trainings.create'));
 }
 
-const delete_training = (id) => {
-    Swal.fire({
-        title: "¿Estás seguro?",
-        text: "Esto no se podrá deshacer",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "Cancelar"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            router.delete(`/management_employees/formation_development/trainings/delete/${id}`, {
-                onSuccess: () => {
-                    return Swal.fire({
-                        title: "Éxito",
-                        text: "Capacitación eliminada",
-                        icon: "success",
-                    })
-                },
-            })
-        
-        }
-    });
+const showModalDelete = ref(false);
+const selectedTraining = ref(null);
 
+const openModalDelete = (training) => {
+    selectedTraining.value = training;
+    showModalDelete.value = true;
+}
+const closeModal = () => {
+    showModalDelete.value = false;
+}
 
-
+const delete_program = (id) => {
+    router.delete(`/management_employees/formation_development/trainings/delete/${id}`)
 }
 
 
