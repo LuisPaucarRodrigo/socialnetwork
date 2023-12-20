@@ -91,14 +91,14 @@ class FormationDevelopment extends Controller
         }
     }
 
-    public function trainings_store(Request $request)
+    public function trainings_store(Request $request, $id = null)
     {
         $data = $request->validate([
             'name' => 'required',
             'description' => 'required',
 
         ]);
-        Training::updateOrCreate($data);
+        Training::updateOrCreate(['id' => $id],$data);
         return redirect()->route('management.employees.formation_development.trainings');
     }
 
