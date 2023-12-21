@@ -5,20 +5,12 @@
             Gastos
         </template>
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-            <button @click="add_information" type="button"
-                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                + Agregar
-            </button>
             <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Proyecto
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Solicitud
+                            Proveedor
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -40,35 +32,34 @@
                 </thead>
                 <tbody>
                     <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests.project.name }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests.title }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests.product_description }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.amount }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.quote_deadline }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <div class="flex space-x-3 justify-center">
-                                <Link class="text-blue-900 whitespace-no-wrap"
-                                    :href="route('managementexpense.details', { id: expense.id })">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                    stroke="currentColor" class="w-6 h-6 text-teal-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                                </Link>
-                            </div>
-                        </td>
+                        <template v-if="expense.purchasing_request_id == null">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.provider }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.response }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.amount }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.quote_deadline }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex space-x-3 justify-center">
+                                    <Link class="text-blue-900 whitespace-no-wrap"
+                                        :href="route('managementexpense.details', { id: expense.id })">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    </Link>
+                                </div>
+                            </td>
+                        </template>
                     </tr>
                 </tbody>
             </table>

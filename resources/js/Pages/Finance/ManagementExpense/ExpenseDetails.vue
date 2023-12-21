@@ -44,9 +44,13 @@
                     :src="details.purchase_image" alt="Imagen de Cotización">
             </div>
         </div>
+        <button @click="sendReply('Aceptado')" type="button"
+            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+            Aceptar
+        </button>
         <button @click="check" type="button"
             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-            Verificar
+            Rechazar
         </button>
         <Modal :show="confirmOrden" @close="closeModal">
             <div class="p-6">
@@ -57,16 +61,16 @@
                     Agregar una razon en caso se rechaze la solicitud.
                 </p>
                 <div class="mt-6">
-                    <InputLabel for="password" value="Password" class="sr-only" />
-                    <TextInput id="co" ref="rejectOrden" v-model="form.coment" type="text" class="mt-1 block w-3/4"
-                        placeholder="Opcional" @keyup.enter="sendReply" />
+                    <InputLabel for="coment" value="Coment" class="sr-only" />
+                    <TextInput id="coment" ref="comentOrden" v-model="form.coment" type="text" class="mt-1 block w-3/4"
+                        placeholder="Coment" @keyup.enter="sendReply" />
                     <InputError :message="form.errors.coment" class="mt-2" />
                 </div>
                 <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Rechazar </SecondaryButton>
+                    <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
                     <PrimaryButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-                        @click="sendReply">
-                        Aceptar
+                        @click="sendReply('Rechazado')">
+                        Validar
                     </PrimaryButton>
                 </div>
             </div>
@@ -89,24 +93,26 @@ const props = defineProps({
 });
 
 const confirmOrden = ref(false);
-const rejectOrden = ref(null);
+const comentOrden = ref(null);
 
 const form = useForm({
     coment: '',
+    state: ''
 });
 
 const check = () => {
     confirmOrden.value = true;
-    nextTick(() => rejectOrden.value.focus());
+    nextTick(() => comentOrden.value.focus());
 };
 
-const sendReply = () => {
-    form.put(route('managementexpense.destroy'), {
+const sendReply = (state) => {
+    form.state = state
+    form.put(route('managementexpense.reviewed',props.details.id,form), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
-        onError: () => rejectOrden.value.focus(),
+        onError: () => comentOrden.value.focus(),
         onFinish: () => form.reset(),
-    });
+    }); 
 };
 
 const closeModal = () => {

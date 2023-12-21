@@ -18,8 +18,4 @@ class Provider extends Model
         'category',
         'segment',
     ];
-
-    public function contract(){
-        return $this->hasOne(Provider::class);
-    }
 }

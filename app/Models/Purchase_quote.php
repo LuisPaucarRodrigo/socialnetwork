@@ -19,4 +19,9 @@ class Purchase_quote extends Model
     {
         return $this->belongsTo(Purchasing_request::class, 'purchasing_request_id');
     }
+
+    public function purchase_order()
+    {
+        return $this->hasOne(Purchase_order::class);
+    }
 }
