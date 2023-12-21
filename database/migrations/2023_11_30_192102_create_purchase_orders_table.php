@@ -13,14 +13,9 @@ return new class extends Migration
     {
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
-            $table->string('project')->nullable();
-            $table->string('title');
-            $table->text('product_description');
-            $table->decimal('amount', 10, 2);
-            $table->date('quote_deadline');
-            $table->string('purchase_image');
-            $table->string('response');
-            $table->foreignId('provider_id')->constrained('providers')->onDelete('cascade');
+            $table->date('date_issue');
+            $table->string('state')->default('En Proceso');
+            $table->foreignId('purchase_quote_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

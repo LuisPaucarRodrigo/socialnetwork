@@ -66,7 +66,7 @@ class ManagementEmployees extends Controller
             'familyDependents.*.family_relation' => 'required|string|max:255',
             'familyDependents.*.family_name' => 'required|string|max:255',
             'familyDependents.*.family_lastname' => 'required|string|max:255',
-            'blood_group' => 'required|string|in:A+,A-,B+,B-,AB-,AB+,0+,0-',
+            'blood_group' => 'required|string|in:A+,A-,B+,B-,AB-,AB+,O+,O-',
             'weight' => 'required|string',
             'height' => 'required|string',
             'shoe_size' => 'required|string|max:10',

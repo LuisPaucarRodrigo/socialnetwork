@@ -60,7 +60,7 @@ class PurchaseRequestController extends Controller
     }
 
     public function orders(Request $request)
-    {   
+    {
         $request->validate([
             'provider' => 'required|string',
             'purchasing_request_id' => 'required|numeric',
@@ -83,6 +83,12 @@ class PurchaseRequestController extends Controller
             'purchase_image' => $imageUrl,
             'purchasing_request_id' => $request->purchasing_request_id,
         ]);
+
+        $purchasingRequest = Purchasing_request::find($request->purchasing_request_id);
+        $purchasingRequest -> update([
+            'state' => 'En Progreso'
+        ]);
+
         return to_route('purchasesrequest.index');
     }
 }
