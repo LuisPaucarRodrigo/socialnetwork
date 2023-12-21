@@ -46,6 +46,9 @@ class Employee extends Model
     }
     public function projects()
     {
-        return $this->belongsToMany(Project::class.'project_employee')->withPivot('charge');
+        return $this->belongsToMany(Project::class,'project_employee')->withPivot('charge');
+    }
+    public function project_employees() {
+        return $this->hasOne(ProjectEmployee::class);
     }
 }
