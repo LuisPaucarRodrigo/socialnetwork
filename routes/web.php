@@ -15,7 +15,9 @@ use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
 use App\Http\Controllers\ShoppingArea\PurchaseReportsController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
+use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
+use App\Http\Controllers\Inventory\ResourceManagementController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -99,7 +101,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     //Trainings
     Route::get('/management_employees/formation_development/trainings', [FormationDevelopment::class, 'trainings_index'])->name('management.employees.formation_development.trainings');
     Route::get('/management_employees/formation_development/trainings/create/{id?}', [FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
-    Route::post('/management_employees/formation_development/trainings/store', [FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
+    Route::post('/management_employees/formation_development/trainings/store/{id?}', [FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
     Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
     //Vacation
     Route::get('/management_vacation', [VacationController::class, 'index'])->name('management.vacation');
@@ -153,6 +155,60 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
     Route::put('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
+
+
+    Route::get('users', [UserController::class, 'index_user'])->name('users.index');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    //Tasks Management
+    Route::get('/tasks/{id?}',[TaskManagementController::class,'index'])->name('tasks.index');
+    Route::get('/newtask',[TaskManagementController::class,'new'])->name('tasks.new');
+    Route::post('/createtask',[TaskManagementController::class,'create'])->name('tasks.create');
+    Route::get('/edittask/{taskId}',[TaskManagementController::class,'edit'])->name('tasks.edit');
+    Route::post('/edittask/comment',[TaskManagementController::class,'comment'])->name('tasks.edit.comment');
+    Route::post('/edittask/add',[TaskManagementController::class,'add_employee'])->name('tasks.add.employee');
+    Route::post('/edittask/delete',[TaskManagementController::class,'delete_employee'])->name('tasks.delete.employee');
+    Route::get('/statustask/{taskId}/{status}',[TaskManagementController::class,'status_task'])->name('tasks.edit.status');
+    Route::delete('/deletetask/{taskId}/',[TaskManagementController::class,'delete_task'])->name('tasks.delete');
+
+
+
+    //Vacation
+    Route::get('/management_vacation',[VacationController::class, 'index'])->name('management.vacation');
+    Route::get('/management_vacation/information_additional',[VacationController::class, 'index_info_additional'])->name('management.vacation.information');
+    Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit_info_additional'])->name('management.vacation.information.edit');
+    Route::post('/management_vacation/information_additional/create',[VacationController::class, 'create'])->name('management.vacation.information.create');
+    Route::put('/management_vacation/information_additional/{vacation}/update',[VacationController::class, 'update'])->name('management.vacation.information.update');
+    Route::delete('/management_vacation/information_additional/{vacation}/delete',[VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
+
+
+    
+
+
+    //Calendar
+
+    //Calendar
+    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
+
+
+
+    //Resources
+    Route::get('/resources', [ResourceManagementController::class, 'index'])->name('resources.index'); 
+    Route::get('/resources/new', [ResourceManagementController::class, 'new'])->name('resources.new'); 
+    Route::post('/resources/create', [ResourceManagementController::class, 'create'])->name('resource.create'); 
+    Route::get('/resources/edit/{resourceId}', [ResourceManagementController::class, 'edit'])->name('resource.edit');
+    Route::put('/resources/edit/{resourceId}', [ResourceManagementController::class, 'update'])->name('resource.update'); 
+    Route::delete('/resources/delete/{resourceId}', [ResourceManagementController::class, 'destroy'])->name('resource.delete'); 
+
+
+
+
+
+
+
 
 
 });

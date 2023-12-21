@@ -110,6 +110,9 @@
                     <span class="mx-3">Inventario</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingInventory">
+                    <Link class="w-full" :href="route('resources.index')">Recursos de la Empresa</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('users.index')">Control de Inventario</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingInventory">
@@ -140,7 +143,7 @@
                     <Link class="w-full" :href="route('projectschedule.index')">Calendario de Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('users.index')">Seguimiento de Tareas</Link>
+                    <Link class="w-full" :href="route('tasks.index')">Seguimiento de Tareas</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('users.index')">Documentacionn de Proyectos</Link>
