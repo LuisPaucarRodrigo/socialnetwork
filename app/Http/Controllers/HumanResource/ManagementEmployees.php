@@ -39,7 +39,7 @@ class ManagementEmployees extends Controller
             'curriculum_vitae' => 'required|mimes:pdf,doc,docx|max:2048',
             'cropped_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
             'gender' => 'required|string|in:Masculino,Femenino',
             'state_civil' => 'required|string|in:Casado(a),Soltero(a),Viudo(a),Divorciado(a),Conviviente',
             'birthdate' => 'required|date',
@@ -66,7 +66,7 @@ class ManagementEmployees extends Controller
             'familyDependents.*.family_relation' => 'required|string|max:255',
             'familyDependents.*.family_name' => 'required|string|max:255',
             'familyDependents.*.family_lastname' => 'required|string|max:255',
-            'blood_group' => 'required|string|in:A+,A-,B+,B-,AB-,AB+,0+,0-',
+            'blood_group' => 'required|string|in:A+,A-,B+,B-,AB-,AB+,O+,O-',
             'weight' => 'required|string',
             'height' => 'required|string',
             'shoe_size' => 'required|string|max:10',
@@ -89,7 +89,7 @@ class ManagementEmployees extends Controller
 
         $employee = Employee::create([
             'name' => $request->name,
-            'lastname' => $request->last_name,
+            'lastname' => $request->lastname,
             'cropped_image' => $imageUrl,
             'gender' => $request->gender,
             'state_civil' => $request->state_civil,
@@ -99,10 +99,6 @@ class ManagementEmployees extends Controller
             'phone1' => $request->phone1,
             'phone2' => $request->phone2,
         ]);
-
-        if (!$employee->save()) {
-            dd("Error al guardar el empleado");
-        }
 
         $employeeId = $employee->id;
 
@@ -137,17 +133,19 @@ class ManagementEmployees extends Controller
             'employee_id' => $employeeId,
         ]);
 
-        foreach ($request->familyDependents as $dependent) {
-            Family::create([
-                'family_dni' => $dependent['family_dni'],
-                'family_education' => $dependent['family_education'],
-                'family_relation' => $dependent['family_relation'],
-                'family_name' => $dependent['family_name'],
-                'family_lastname' => $dependent['family_lastname'],
-                'employee_id' => $employeeId,
-            ]);
+        if ($request->filled('family')) {
+            foreach ($request->familyDependents as $dependent) {
+                Family::create([
+                    'family_dni' => $dependent['family_dni'],
+                    'family_education' => $dependent['family_education'],
+                    'family_relation' => $dependent['family_relation'],
+                    'family_name' => $dependent['family_name'],
+                    'family_lastname' => $dependent['family_lastname'],
+                    'employee_id' => $employeeId,
+                ]);
+            }
         }
-    
+
         Health::create([
             'blood_group' => $request->blood_group,
             'weight' => $request->weight,
@@ -166,6 +164,12 @@ class ManagementEmployees extends Controller
         return to_route('management.employees');
     }
 
+    public function edit($id)
+    {   
+        $employeesedit = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesInformation',['employeesedit' => $employeesedit]);
+    }
+
     public function destroy($id)
     {
         Employee::destroy($id);
@@ -176,7 +180,7 @@ class ManagementEmployees extends Controller
     {
         $details = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
         //dd($details);
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesInformation', ['details' => $details]);
     }
 
     public function download($filename)

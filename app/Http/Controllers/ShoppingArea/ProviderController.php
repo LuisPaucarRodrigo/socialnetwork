@@ -65,7 +65,7 @@ class ProviderController extends Controller
         ]);
 
         $provider = Provider::findOrFail($id);
-        $provider->update([
+        $provider -> update([
             'company_name' => $request->company_name,
             'contact_name' => $request->contact_name,
             'address' => $request->address,

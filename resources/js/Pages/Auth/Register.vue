@@ -1,75 +1,130 @@
 <template>
     <Head title="Register" />
 
-    <GuestLayout>
-        <Link href="/" class="flex items-center justify-center">
+    <AuthenticatedLayout>
+        <template #header>
+            Registro
+        </template>
+        <!-- <Link href="/" class="flex items-center justify-center">
             <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
-        </Link>
+            </Link> -->
 
         <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
-                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus autocomplete="name" />
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+            <div class="space-y-12">
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion</h2>
 
-            <div class="mt-3">
-                <InputLabel for="email" value="Email" />
-                <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autocomplete="username" />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div class="sm:col-span-2">
+                            <InputLabel for="name" value="Name" class="font-medium leading-6 text-gray-900" />
+                            <div class="mt-2">
+                                <TextInput id="name" type="text"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="form.name" required autofocus autocomplete="name" />
+                                <InputError class="mt-2" :message="form.errors.name" />
+                            </div>
+                        </div>
 
-            <div class="mt-3">
-                <InputLabel for="dni" value="DNI" />
-                <TextInput id="dni" type="text" class="mt-1 block w-full" v-model="form.dni" required autocomplete="dni" />
-                <InputError class="mt-2" :message="form.errors.dni" />
-            </div>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="email" value="Email" class="font-medium leading-6 text-gray-900" />
+                            <div class="mt-2">
+                                <TextInput id="email" type="email"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="form.email" required autocomplete="username" />
+                                <InputError class="mt-2" :message="form.errors.email" />
+                            </div>
+                        </div>
 
-            <div class="mt-3">
-                <InputLabel for="email" value="Platform" />
-                <TextInput id="platform" type="text" class="mt-1 block w-full" v-model="form.platform" required autocomplete="platform" />
-                <InputError class="mt-2" :message="form.errors.platform" />
-            </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="dni" value="DNI" class="font-medium leading-6 text-gray-900" />
+                            <div class="mt-2">
+                                <TextInput id="dni" type="text" maxlength="8"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="form.dni" required autocomplete="dni" />
+                                <InputError class="mt-2" :message="form.errors.dni" />
+                            </div>
+                        </div>
 
-            <div class="mt-3">
-                <InputLabel for="password" value="Password" />
-                <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="new-password" />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="platform" value="Plataforma" class="font-medium leading-6 text-gray-900" />
+                            <div class="mt-2">
+                                <select id="platform"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="form.platform" required autocomplete="platform">
+                                    <option disabled>Seleccionar Plataforma</option>
+                                    <option>Web</option>
+                                    <option>Movil</option>
+                                    <option>Ambos</option>
+                                </select>
+                                <InputError class="mt-2" :message="form.errors.platform" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="rols" class="font-medium leading-6 text-gray-900">Roles</InputLabel>
+                            <div class="mt-2">
+                                <select required v-model="form.rol" id="rols"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled>Seleccionar Rol</option>
+                                    <option v-for="rol in rols" :key="rol.id" :value="rol.id">
+                                        {{ `${rol.name} | ${rol.description}` }}
+                                    </option>
+                                </select>
+                                <InputError :message="form.errors.rol" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="password" value="Password" class="font-medium leading-6 text-gray-900" />
+                            <div class="mt-2">
+                                <TextInput id="password" type="password"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="form.password" required autocomplete="new-password" />
+                                <InputError class="mt-2" :message="form.errors.password" />
+                            </div>
+                        </div>
 
-            <div class="mt-3">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required autocomplete="new-password" />
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="password_confirmation" value="Confirm Password"
+                                class="font-medium leading-6 text-gray-900" />
+                            <div class="mt-2">
+                                <TextInput id="password_confirmation" type="password"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="form.password_confirmation" required autocomplete="new-password" />
+                                <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                            </div>
+                        </div>
 
-            <div class="mt-4 flex flex-col items-end">
-                <PrimaryButton class="w-full" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+                <button
+                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Register
-                </PrimaryButton>
-
-                <Link :href="route('login')" class="mt-4 text-sm text-gray-600 underline hover:text-gray-900">
-                    Already registered?
-                </Link>
+                </button>
             </div>
         </form>
-    </GuestLayout>
+    </AuthenticatedLayout>
 </template>
 
 <script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+
+const props = defineProps({
+    rols: Object
+})
 
 const form = useForm({
     name: '',
     email: '',
     dni: '',
-    platform: '',
+    platform: 'Seleccionar Plataforma',
+    rol: 'Seleccionar Rol',
     password: '',
     password_confirmation: '',
     terms: false,
