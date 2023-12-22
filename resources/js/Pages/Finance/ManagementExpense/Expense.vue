@@ -41,13 +41,13 @@
                 <tbody>
                     <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.project }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests.project.name }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.title }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests.title }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.product_description }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests.product_description }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ expense.amount }}</p>
