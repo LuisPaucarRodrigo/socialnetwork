@@ -19,7 +19,7 @@ class Purchasing_requestFactory extends Factory
     public function definition(): array
     {
         return [
-            'project' => fake()->sentence,
+            'project_id' => '1',
             'title' => fake()->sentence,
             'product_description' => fake()->paragraph,
             'due_date' => fake()->date(),

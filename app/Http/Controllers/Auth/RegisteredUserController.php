@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -21,7 +22,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register',['rols' => Role::all()]);
     }
 
     /**
@@ -30,12 +31,13 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
+    {   
         $request->validate([
             'name' => 'required|string|max:255',
             'dni' => 'required|string|max:8',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'platform' => 'required|string|max:255',
+            'rol' => 'required|numeric',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -44,12 +46,15 @@ class RegisteredUserController extends Controller
             'dni' => $request->dni,
             'email' => $request->email,
             'platform' => $request->platform,
+            'role_id' => $request->rol,
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        // event(new Registered($user));El event registered lo podria usar para verificar mi cuenta
 
-        Auth::login($user);
+        // Auth::login($user);
+
+        // return redirect(RouteServiceProvider::HOME);
 
         return redirect(RouteServiceProvider::HOME);
     }
