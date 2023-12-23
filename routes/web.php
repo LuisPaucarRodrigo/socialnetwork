@@ -17,10 +17,13 @@ use App\Http\Controllers\ShoppingArea\PurchaseReportsController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
+use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
+
 // use App\Http\Controllers\VacationController;
 
 /*
@@ -111,6 +114,18 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::post('/management_vacation/information_additional/create', [VacationController::class, 'create'])->name('management.vacation.information.create');
     Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
     Route::delete('/management_vacation/information_additional/{vacation}/delete', [VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
+
+    //Document
+    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::post('/documents', [DocumentController::class, 'create'])->name('documents.create');
+    Route::get('/documents/{document}/download', [DocumentController::class, 'downloadDocument'])->name('documents.download');
+    Route::get('/documents/{document}/preview', [DocumentController::class, 'showDocument'])->name('documents.show');
+    Route::delete('/documents/{document}/delete', [DocumentController::class, 'destroy'])->name('documents.destroy');
+
+    //DocumentSections
+    Route::get('/document_sections', [DocumentController::class, 'showSections'])->name('documents.sections');
+    Route::post('/document_sections', [DocumentController::class, 'storeSection'])->name('documents.storeSection');
+    Route::delete('/document_sections/{section}', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
 });
 
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
@@ -130,7 +145,9 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
 
+    //Calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
+    Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');   
 
     Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
     Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
@@ -190,8 +207,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 
     //Calendar
 
-    //Calendar
-    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
+    
 
 
 

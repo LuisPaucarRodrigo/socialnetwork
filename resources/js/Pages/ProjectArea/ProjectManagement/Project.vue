@@ -47,7 +47,7 @@
                     <div class="text-gray-500 text-sm">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas</Link>
-                            <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario</Link>
+                            <Link :href="route('projectscalendar.show', {project:item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario</Link>
                             <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Documentación
                             </Link>
                             <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Informes</Link>
