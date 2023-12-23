@@ -32,7 +32,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700">
-                        <template v-if="expense.purchasing_request_id == null">
+                        <template v-if="expense.purchasing_request_id != null">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ expense.provider }}</p>
                             </td>
@@ -50,11 +50,9 @@
                                     <Link class="text-blue-900 whitespace-no-wrap"
                                         :href="route('managementexpense.details', { id: expense.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                     </svg>
                                     </Link>
                                 </div>
@@ -68,62 +66,15 @@
                 <pagination :links="expenses.links" />
             </div>
         </div>
-        <Modal :show="confirmingexpenseDeletion">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Estas seguro de eliminar al proveedor?
-                </h2>
-
-                <p class="mt-1 text-sm text-gray-600">
-                    Se eliminara toda la informacion relacionada con el proveedor.
-                </p>
-
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
-
-                    <DangerButton class="ml-3" @click="deleteexpense()">
-                        Eliminar
-                    </DangerButton>
-                </div>
-            </div>
-        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
-import DangerButton from '@/Components/DangerButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import Modal from '@/Components/Modal.vue';
-import { Head, router, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
-
-const confirmingexpenseDeletion = ref(false);
-const expenseToDelete = ref(null);
+import { Head, Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     expenses: Object
 })
 
-const confirmexpenseDeletion = (expenseId) => {
-    expenseToDelete.value = expenseId;
-    confirmingexpenseDeletion.value = true;
-};
-
-const deleteexpense = () => {
-    const expenseId = expenseToDelete.value;
-    if (expenseId) {
-        router.delete(route('expensesmanagement.destroy', { id: expenseId }), {
-            onSuccess: () => closeModal()
-        });
-    }
-};
-
-const closeModal = () => {
-    confirmingexpenseDeletion.value = false;
-};
-
-const add_information = () => {
-    router.get(route('expensesmanagement.create'));
-};
 </script>
