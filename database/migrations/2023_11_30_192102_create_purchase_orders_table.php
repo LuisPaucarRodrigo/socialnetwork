@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
             $table->date('date_issue');
-            $table->string('state')->default('En Proceso');
+            $table->string('state')->default('Pendiente');
             $table->foreignId('purchase_quote_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
