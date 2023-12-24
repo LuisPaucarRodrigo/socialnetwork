@@ -151,21 +151,14 @@ const filteredDocuments = computed(() => {
   return props.documents.data.filter(document => document.section_id === selectedSection.value);
 });
 
-const submitForm = async () => {
+const submitForm = () => {
   try {
-    const formData = new FormData();
-    formData.append('document', form.document);
-    formData.append('section_id', form.section_id);
 
-    const response = await axios.post(route('documents.create'), formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    console.log(form);
+    const response = form.post(route('documents.create'));
 
     closeCreateDocumentModal();
     console.log(response);
-    window.location.reload()
   } catch (error) {
     console.error('Error al crear el documento:', error.message);
     console.error(error);
