@@ -51,7 +51,6 @@ class ProjectManagementController extends Controller
             $numberOfProjects = Project::whereMonth('start_date', $mes)
                 ->whereYear('start_date', $anio)
                 ->count();
-            //Log::info("Numero de proyectos => s".$numberOfProjects);
         }
         return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
             'employees' => Employee::select('id', 'name', 'lastname')->get(),
