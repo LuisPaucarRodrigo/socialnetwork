@@ -9,16 +9,36 @@
           class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
           Crear Nueva Sección
         </button>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-5">
-          <!-- Itera sobre las secciones recibidas como propiedades -->
-          <div v-for="section in sections" :key="section.id" class="bg-white p-4 rounded-md shadow">
-            <h2 class="text-xl font-semibold mb-2">{{ section.name }}</h2>
-            <!-- Agrega cualquier otra información que desees mostrar en la tarjeta -->
-            <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
-              <TrashIcon class="h-4 w-4" />
-            </button>
-          </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Nombre
+                </th>
+                <!-- Agrega más columnas según tus necesidades -->
+                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <!-- Itera sobre las secciones recibidas como propiedades -->
+              <tr v-for="section in sections" :key="section.id">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">{{ section.name }}</div>
+                </td>
+                <!-- Agrega cualquier otra información que desees mostrar en la tabla -->
+                <td class="px-6 py-4 whitespace-nowrap text-left">
+                  <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
+                    <TrashIcon class="h-4 w-4" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
       </div>
 
       <!-- Teleport para el modal -->
