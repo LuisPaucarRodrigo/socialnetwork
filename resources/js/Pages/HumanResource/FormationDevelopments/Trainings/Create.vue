@@ -82,9 +82,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
 import Modal from '@/Components/Modal.vue';
 import { ref, defineProps } from 'vue';
+
 
 const props = defineProps({
     training: Object

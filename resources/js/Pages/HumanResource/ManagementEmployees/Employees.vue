@@ -96,36 +96,20 @@
                 <pagination :links="employees.links" />
             </div>
         </div>
-        <Modal :show="confirmingUserDeletion">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Estas seguro de eliminar al Empleado?
-                </h2>
-                <p class="mt-1 text-sm text-gray-600">
-                    Se eliminara toda la informacion relacionada con el empleado.
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
-
-                    <DangerButton class="ml-3" @click="deleteEmployee()">
-                        Eliminar
-                    </DangerButton>
-                </div>
-            </div>
-        </Modal>
+        <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado"
+            :deleteText="deleteButtonText" :deleteFunction="deleteEmployee" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
-import DangerButton from '@/Components/DangerButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import Modal from '@/Components/Modal.vue';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue'; 
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const confirmingUserDeletion = ref(false);
+const deleteButtonText = 'Eliminar';
 const employeeToDelete = ref(null);
 
 const props = defineProps({

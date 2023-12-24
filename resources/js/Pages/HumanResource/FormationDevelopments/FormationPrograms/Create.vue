@@ -86,39 +86,18 @@
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
         </form>
-        <Modal :show="showModal" :maxWidth="'md'">
-            <!-- Contenido del modal cuando no hay empleados -->
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Creacion de nuevo Programa de Formacion
-                </h2>
-                <p class="mt-2 text-sm text-gray-500">
-                    ¿Desea continuar con la creacion del nuevo Programa de Formacion?
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
-                        type="button" @click="closeModal"> Cancelar
-                    </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="button" @click="submit"> Crear
-                    </button>
-                </div>
-            </div>
-        </Modal>
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="programa de formacion"
+            :nameText="'del nuevo programa de formacion'" :createFunction="submit" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ModalImage from '@/Layouts/ModalImage.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
-import { Head, useForm } from '@inertiajs/vue3';
-import Swal from 'sweetalert2'
-import Modal from '@/Components/Modal.vue';
+import { Head, useForm } from '@inertiajs/vue3'
 import { ref, defineProps } from 'vue';
 
 const { trainings } = defineProps({
@@ -136,14 +115,11 @@ const initialState = {
 const form = useForm({ ...initialState })
 
 const submit = () => {
-    form.post(route('management.employees.formation_development.formation_programs.store'),
-        {
-            onSuccess: () => {
-                form.data = { ...initialState }
-            },
-        }
-
-    )
+    form.post(route('management.employees.formation_development.formation_programs.store'), {
+        onSuccess: () => {
+            form.data = { ...initialState }
+        },
+    })
 }
 const showModal = ref(false);
 

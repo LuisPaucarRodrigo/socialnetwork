@@ -35,7 +35,8 @@
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex space-x-3 justify-center">
-                                <Link class="text-blue-900 whitespace-no-wrap" :href="route('rols.details', { id: rol.id })">
+                                <Link class="text-blue-900 whitespace-no-wrap"
+                                    :href="route('rols.details', { id: rol.id })">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor" class="w-6 h-6 text-teal-500">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -69,26 +70,8 @@
                 <pagination :links="rols.links" />
             </div>
         </div>
-        <Modal :show="confirmingRolDeletion">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Estas seguro de eliminar al Rol?
-                </h2>
-
-                <p class="mt-1 text-sm text-gray-600">
-                    Se eliminara toda la informacion relacionada con el rol.
-                </p>
-
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModalDelete"> Cancel </SecondaryButton>
-
-                    <DangerButton class="ml-3"
-                        @click="deleteRol()">
-                        Eliminar
-                    </DangerButton>
-                </div>
-            </div>
-        </Modal>
+        <ConfirmDeleteModal :confirmingDeletion="confirmingRolDeletion" itemType="rol" :deleteText="deleteButtonText"
+            :deleteFunction="deleteRol" @closeModal="closeModalRol" />
         <Modal :show="create_rol">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -105,8 +88,6 @@
                                     <InputError :message="form.errors.name" />
                                 </div>
                             </div>
-
-
                             <div>
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripcion
                                 </InputLabel>
@@ -116,7 +97,6 @@
                                     <InputError :message="form.errors.description" />
                                 </div>
                             </div>
-
                             <div>
                                 <InputLabel for="permission" class="font-medium leading-6 text-gray-900">Permisos
                                 </InputLabel>
@@ -151,14 +131,13 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const create_rol = ref(false);
 const confirmingRolDeletion = ref(false);
 const rolToDelete = ref(null);
-
 
 const form = useForm({
     name: '',
@@ -199,7 +178,7 @@ const deleteRol = () => {
     }
 };
 
-const closeModalDelete = () => {
+const closeModalRol = () => {
     confirmingRolDeletion.value = false;
 };
 
