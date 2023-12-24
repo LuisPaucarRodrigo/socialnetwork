@@ -24,7 +24,7 @@
                                 <InputLabel for="start_date" class="font-medium leading-6 text-gray-900">Fecha de Inicio
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="Date" v-model="form.start_date" id="start_date" @input="setCode"
+                                    <TextInput type="Date" v-model="form.start_date" id="start_date" 
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.start_date" />
                                 </div>
@@ -50,13 +50,15 @@
                             </div>
 
                             <div class="sm:col-span-3">
-                                <InputLabel class="font-medium leading-6 text-gray-900">Código del proyecto:</InputLabel>
-                                <div class="mt-2">
+                                <InputLabel class="font-medium leading-6 text-gray-900">Código del proyecto (Siglas):</InputLabel>
+                                <div class="mt-2 flex justify-center items-center gap-2">
                                     <InputLabel class="font-medium leading-6 text-indigo-900">
-                                        {{ form.code }}
+                                        {{ formatearFecha(form.start_date) }}
                                     </InputLabel>
-                                    <input hidden v-model="form.code">
+                                    <TextInput required type="text" v-model="form.code" id="name" placeholder="Ejemplos: MPr, ITD, etc."
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 </div>
+                                <InputError :message="form.errors.code" />
                             </div>
                             <div class="sm:col-span-3">
                                 <InputLabel for="priority" class="font-medium leading-6 text-gray-900">Prioridad
@@ -189,15 +191,13 @@ import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const { employees, start_date, numberOfProjects, project } = defineProps({
     employees: Object,
-    start_date: String,
-    numberOfProjects: Number,
     project: Object
 })
 
 const initialState = {
     name: '',
-    code: start_date ? `${formatearFecha(start_date)}${formatearNumero(numberOfProjects)}` : '',
-    start_date: start_date,
+    code: '',
+    start_date: '',
     end_date: '',
     priority: '',
     description: '',
@@ -206,29 +206,27 @@ const initialState = {
 
 const form = useForm(
     project ?
-        numberOfProjects != null ? { ...project, code: `${formatearFecha(start_date)}${formatearNumero(numberOfProjects)}`, start_date } : start_date ? { ...project, start_date } : project
+         {...project, code:project.code.substring(6)}
         :
         { ...initialState }
 )
 
 const submit = () => {
+    form.code = formatearFecha(form.start_date) + '-' + form.code
     form.post(route('projectmanagement.store'))
 }
 
 //code of the project
-const setCode = (e) => {
-    let sd = e.target.value
-    form.start_date = sd
-    project ? router.visit(`/projectmanagement/update/${project.id}?start_date=${sd}`) : router.visit(`/projectmanagement/create?start_date=${sd}`)
-}
+
+
+
 function formatearFecha(fecha) {
-    const date = new Date(fecha);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    return `${year}${month}`;
-}
-function formatearNumero(numero) {
-    return `#P${numero?.toString().padStart(2, '0')}`;
+    if (fecha) {
+        const date = new Date(fecha);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        return`${year}${month}`
+    }
 }
 
 //functions of modal

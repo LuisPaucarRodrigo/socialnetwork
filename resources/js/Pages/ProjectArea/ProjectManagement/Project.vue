@@ -46,11 +46,14 @@
                     </h3>
                     <div class="text-gray-500 text-sm">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas</Link>
+                            <Link :href="route('projectmanagement.resources', {project_id:item.id})"
+                            class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Recursos</Link>
                             <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario</Link>
                             <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Documentación
                             </Link>
-                            <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Informes</Link>
+                            <Link :href="route('projectmanagement.purchases_request.index',{
+                                project_id:item.id
+                            })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de compra</Link>
                         </div>
                     </div>
                 </div>
