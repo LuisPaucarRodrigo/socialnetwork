@@ -11,8 +11,20 @@ class PurchaseOrdersController extends Controller
 {
     public function index()
     {
-
         //dd(Purchase_order::with('purchase_quote.purchasing_requests')->get());
         return Inertia::render('ShoppingArea/PurchaseOrders/Orders', ['orders' => Purchase_order::with('purchase_quote.purchasing_requests.project')->paginate()]);
+    }
+
+    public function state(Request $request, $id)
+    {
+        $request->validate([
+            'state' => 'required'
+        ]);
+        $purchase_order = Purchase_order::find($id);
+        $purchase_order -> update([
+            'state' => $request->state
+        ]);
+
+        to_route('purchaseorders.index');
     }
 }

@@ -1,13 +1,11 @@
 <template>
     <Head title="Asignación de programas" />
-
     <AuthenticatedLayout>
         <template #header>
             Asignación de Capacitaciones
         </template>
         <form @submit.prevent="submit">
             <div class="space-y-12">
-                <!-- Linea de borde abajo -->
                 <div class="border-b border-gray-900/10 pb-3">
                 </div>
 
@@ -40,17 +38,16 @@
                                     <option disabled>
                                         Selecciona uno o varios
                                     </option>
-                                    <option v-for="formation_program in formation_programs" :key="formation_program.id" :value="formation_program.id">
+                                    <option v-for="formation_program in formation_programs" :key="formation_program.id"
+                                        :value="formation_program.id">
                                         {{ formation_program.name }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.formation_programs" />
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
                 <button type="submit" :class="{ 'opacity-25': form.processing }"
@@ -63,18 +60,13 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
 
 const props = defineProps({
     employees: Object,
     formation_programs: Object
 })
-
-console.log('Employees:', props.employees);
-console.log('Formation Programs:', props.formation_programs);
 
 const form = useForm({
     employees: [],
