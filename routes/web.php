@@ -129,6 +129,15 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::delete('/projectmanagement/delete/{project_id}', [ProjectManagementController::class, 'project_destroy'])->name('projectmanagement.delete');
     Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
+    Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
+    Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
+    Route::delete('/projectmanagement/resources/delete/{resource_id}', [ProjectManagementController::class, 'project_resources_delete'])->name('projectmanagement.resources.delete');
+
+    Route::get('/projectmanagement/purchases_request/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
+    Route::get('/projectmanagement/purchases_request/{project_id}', [ProjectManagementController::class, 'project_purchases_request_index'])->name('projectmanagement.purchases_request.index');
+
+
+
 
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
 
