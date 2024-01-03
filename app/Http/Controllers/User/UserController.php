@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,42 +12,32 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function index_user(){
+    public function index_user()
+    {
         return Inertia::render('Users/Index', [
             'users' => User::paginate()
         ]);
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         return Inertia::render('Users/UserEdit', [
             'users' => User::with('role')->find($id),
             'rols' => Role::all()
         ]);
     }
 
-    public function update(Request $request,$id){
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'dni' => 'required|string|max:8',
-            'email' => 'required|string|email|max:255',
-            'platform' => 'required|string|max:255',
-            'rol' => 'required|numeric',
-            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+    public function update(UpdateUserRequest $request, $id)
+    {
+        $validatedData = $request->validated();
         $user = User::findOrFail($id);
-        $user->update([
-            'name' => $request->name,
-            'dni' => $request->dni,
-            'email' => $request->email,
-            'platform' => $request->platform,
-            'role_id' => $request->rol,
-            // 'password' => Hash::make($request->password),
-        ]);
+        $user->update($validatedData);
 
         return to_route('users.index');
     }
 
-    public function delete(Request $request, $id){
+    public function delete(Request $request, $id)
+    {
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);
@@ -58,10 +49,10 @@ class UserController extends Controller
         }
     }
 
-    public function details($id){
+    public function details($id)
+    {
         return Inertia::render('Users/UserDetails', [
             'users' => User::with('role')->find($id)
         ]);
     }
-
 }

@@ -55,9 +55,8 @@
                             <Link :href="route('projectmanagement.resources', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Recursos
                             </Link>
-                            <Link :href="route('projectmanagement.purchases_request.index', {
-                                project_id: item.id
-                            })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de
+                            <Link :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de
                             compra</Link>
                         </div>
                     </div>

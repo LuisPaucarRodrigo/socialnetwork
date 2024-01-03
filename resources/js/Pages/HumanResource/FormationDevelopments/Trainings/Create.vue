@@ -44,18 +44,16 @@
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
         </form>
-        <Modal :show="showModal" :maxWidth="'md'">
+        <Modal :show="showModal">
             <!-- Contenido del modal cuando no hay empleados -->
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
                     {{ titleModal }}
                 </h2>
-                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
                 <p class="mt-2 text-sm text-gray-500">
                     {{ content }}
                 </p>
                 <div class="mt-6 flex justify-end">
-                    <!-- Estructura condicional para el botón -->
                     <button
                         class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
                         type="button" @click="closeModal"> Cancelar

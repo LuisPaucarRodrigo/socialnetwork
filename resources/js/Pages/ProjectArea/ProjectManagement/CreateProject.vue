@@ -24,7 +24,7 @@
                                 <InputLabel for="start_date" class="font-medium leading-6 text-gray-900">Fecha de Inicio
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="Date" v-model="form.start_date" id="start_date" 
+                                    <TextInput type="Date" v-model="form.start_date" id="start_date"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.start_date" />
                                 </div>
@@ -50,12 +50,14 @@
                             </div>
 
                             <div class="sm:col-span-3">
-                                <InputLabel class="font-medium leading-6 text-gray-900">Código del proyecto (Siglas):</InputLabel>
+                                <InputLabel class="font-medium leading-6 text-gray-900">Código del proyecto (Siglas):
+                                </InputLabel>
                                 <div class="mt-2 flex justify-center items-center gap-2">
                                     <InputLabel class="font-medium leading-6 text-indigo-900">
                                         {{ formatearFecha(form.start_date) }}
                                     </InputLabel>
-                                    <TextInput required type="text" v-model="form.code" id="name" placeholder="Ejemplos: MPr, ITD, etc."
+                                    <TextInput required type="text" v-model="form.code" id="name"
+                                        placeholder="Ejemplos: MPr, ITD, etc."
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 </div>
                                 <InputError :message="form.errors.code" />
@@ -206,7 +208,7 @@ const initialState = {
 
 const form = useForm(
     project ?
-         {...project, code:project.code.substring(6)}
+        { ...project, code: project.code.substring(6) }
         :
         { ...initialState }
 )
@@ -225,7 +227,7 @@ function formatearFecha(fecha) {
         const date = new Date(fecha);
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        return`${year}${month}`
+        return `${year}${month}`
     }
 }
 

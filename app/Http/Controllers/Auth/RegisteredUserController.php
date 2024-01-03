@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest\CreateUserRequest;
 use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -30,18 +31,9 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateUserRequest $request): RedirectResponse
     {   
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'dni' => 'required|string|max:8',
-            'email' => 'required|string|email|max:255|unique:'.User::class,
-            'platform' => 'required|string|max:255',
-            'rol' => 'required|numeric',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'dni' => $request->dni,
             'email' => $request->email,
@@ -53,8 +45,6 @@ class RegisteredUserController extends Controller
         // event(new Registered($user));El event registered lo podria usar para verificar mi cuenta
 
         // Auth::login($user);
-
-        // return redirect(RouteServiceProvider::HOME);
 
         return redirect(RouteServiceProvider::HOME);
     }

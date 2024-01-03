@@ -62,9 +62,9 @@
                 </p>
                 <div class="mt-6">
                     <InputLabel for="coment" value="Coment" class="sr-only" />
-                    <TextInput id="coment" ref="comentOrden" v-model="form.coment" type="text" class="mt-1 block w-3/4"
+                    <TextInput id="coment" ref="comentOrden" v-model="form.response" type="text" class="mt-1 block w-3/4"
                         placeholder="Coment" @keyup.enter="sendReply" />
-                    <InputError :message="form.errors.coment" class="mt-2" />
+                    <InputError :message="form.errors.response" class="mt-2" />
                 </div>
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
@@ -96,7 +96,7 @@ const confirmOrden = ref(false);
 const comentOrden = ref(null);
 
 const form = useForm({
-    coment: '',
+    response: '',
     state: ''
 });
 

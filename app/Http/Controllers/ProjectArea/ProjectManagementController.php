@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Models\Employee;
 use App\Models\Project;
 use App\Models\Resource;
@@ -18,7 +19,7 @@ class ProjectManagementController extends Controller
     public function index()
     {
         return Inertia::render('ProjectArea/ProjectManagement/Project', [
-            'projects' => Project::paginate(8),
+            'projects' => Project::paginate(),
         ]);
     }
 
@@ -43,16 +44,10 @@ class ProjectManagementController extends Controller
             'employees' => Employee::select('id', 'name', 'lastname')->get(),
         ]);
     }
-    public function project_store(Request $request)
+
+    public function project_store(CreateProjectRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required',
-            'code' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'priority' => 'required',
-            'description' => 'required',
-        ]);
+        $data = $request->validated();
         if ($request->id) {
             $project = Project::find($request->id);
             $project->update($data);
@@ -73,6 +68,7 @@ class ProjectManagementController extends Controller
         DB::table($tablaPivote)->where('id', $pivot_id)->delete();
         return redirect()->back();
     }
+
     public function project_add_employee(Request $request, $project_id)
     {
         $project = Project::find($project_id);
@@ -117,20 +113,15 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
-    public function project_purchases_request_index($project_id) {
+    public function project_purchases_request_index($project_id)
+    {
         $purchases = Purchasing_request::where('project_id', $project_id)->paginate();
-        return Inertia::render('ProjectArea/ProjectManagement/PurchaseRequest',[
-            'purchases'=> $purchases
+        return Inertia::render('ProjectArea/ProjectManagement/PurchaseRequest', [
+            'purchases' => $purchases
         ]);
     }
-    public function project_purchases_request_create($purchase_id = null) {
-        // $purchases = Purchasing_request::where('project_id', $project_id)->paginate();
+    public function project_purchases_request_create($purchase_id = null)
+    {
         return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest');
     }
-
-
-
-
-
-
 }
