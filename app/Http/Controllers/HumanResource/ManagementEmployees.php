@@ -78,9 +78,9 @@ class ManagementEmployees extends Controller
             'accidents' => 'nullable|string|max:255',
             'vaccinations' => 'nullable|string|max:255',
         ]);
-        $document = $request->file('curriculum_vitae'); // Obtener el objeto de archivo
-        $documentName = time() . '.' . $document->getClientOriginalName(); // Generar un nombre único para el archivo
-        $document->storeAs('documents', $documentName); // Guardar el archivo en storage/app/documents   
+        $document = $request->file('curriculum_vitae');
+        $documentName = time() . '.' . $document->getClientOriginalName();
+        $document->storeAs('documents', $documentName);
 
         $croppedImage = $request->file('cropped_image');
         $imageName = 'imagen_' . time() . '.' . $croppedImage->getClientOriginalExtension();

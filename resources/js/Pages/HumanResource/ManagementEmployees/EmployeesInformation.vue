@@ -570,9 +570,7 @@ const handleImagenRecortada = (imagenRecortada) => {
 
 const submit = () => {
     form.post(route('management.employees.information.create'), {
-        onError: (error) => {
-            console.log('errroorrrrrrrrrrrrrrrr',error)
-        }
+        onError: () => closeModal()
     })
 }
 

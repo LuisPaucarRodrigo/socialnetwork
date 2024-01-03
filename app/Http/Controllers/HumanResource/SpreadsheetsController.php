@@ -57,8 +57,6 @@ class SpreadsheetsController extends Controller
                 // Add other results here
             ];
         }
-        //dd($spreadsheet);
-        //dd($employees);
         return Inertia::render('HumanResource/Payroll/Spreadsheets', ['spreadsheets' => $spreadsheet]);
     }
 }

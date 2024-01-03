@@ -45,13 +45,6 @@
                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 </Link>
-                                <Link class="text-blue-900 whitespace-no-wrap" :href="route('rols.edit', { id: rol.id })">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                    stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                                </Link>
                                 <button type="button" @click="confirmRolsDeletion(rol.id)"
                                     class="text-blue-900 whitespace-no-wrap">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -77,7 +70,7 @@
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Crear Rol
                 </h2>
-                <form @submit.prevent="submit">
+                <form @submit.prevent="openModal">
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
                             <div>
@@ -121,10 +114,13 @@
                 </form>
             </div>
         </Modal>
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="rol"
+            :nameText="'del nuevo rol'" :createFunction="submit" @closeModal="close" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -134,6 +130,7 @@ import InputError from '@/Components/InputError.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+
 
 const create_rol = ref(false);
 const confirmingRolDeletion = ref(false);
@@ -160,7 +157,13 @@ const closeModal = () => {
 
 const submit = () => {
     form.post(route('rols.store'), {
-        onSuccess: () => closeModal()
+        onSuccess: () => {
+            closeModal();
+            close();
+        },
+        onError: () => {
+            close();
+        }
     })
 };
 
@@ -181,5 +184,13 @@ const deleteRol = () => {
 const closeModalRol = () => {
     confirmingRolDeletion.value = false;
 };
+const showModal = ref(false);
+
+const openModal = () => {
+    showModal.value = true;
+}
+const close = () => {
+    showModal.value = false;
+}
 
 </script>

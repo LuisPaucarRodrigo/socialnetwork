@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TaskRequest\CreateTaskCommentsRequest;
+use App\Http\Requests\TaskRequest\CreateTaskRequest;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Tasks;
@@ -31,6 +33,7 @@ class TaskManagementController extends Controller
             'projects' => Project::all(),
         ]);
     }
+    
     public function edit($taskId)
     {
         $task = Tasks::find($taskId);
@@ -46,26 +49,28 @@ class TaskManagementController extends Controller
             'added_employees' => $added_employees,
         ]);
     }
-    public function create(Request $request)
+
+    public function create(CreateTaskRequest $request)
     {
-        $task = Tasks::create($request->validate(Tasks::$rules));
+        $task = Tasks::create($request->validated());
         $projectId = $task->project_id;
         return redirect()->route('tasks.index',$projectId);
     }
 
-    public function comment(Request $request)
+    public function comment(CreateTaskCommentsRequest $request)
     {
-        $task = TaskComments::create($request->validate(TaskComments::$rules));
+        $task = TaskComments::create($request->validated());
         return back();
     }
+
     public function add_employee(Request $request)
     {
-        //dd($request);
         $projectEmployee = ProjectEmployee::find($request->project_employee_id);
         $task = Tasks::find($request->task_id);
         $projectEmployee->tasks()->attach($task);
         return back();
     }
+
     public function delete_employee(Request $request)
     {
         //dd($request);
@@ -74,6 +79,7 @@ class TaskManagementController extends Controller
         $projectEmployee->tasks()->detach($task);
         return back();
     }
+
     public function status_task($taskId,$status)
     {
         $task = Tasks::find($taskId);
@@ -87,6 +93,7 @@ class TaskManagementController extends Controller
         $task->update(['status' => $status]);
         return back();
     }
+
     public function delete_task($taskId)
     {
         $task = Tasks::find($taskId);
