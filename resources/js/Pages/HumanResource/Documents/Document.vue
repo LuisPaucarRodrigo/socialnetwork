@@ -1,13 +1,23 @@
 <template>
   <div>
-
     <Head title="Gestion de Documentos" />
-
     <AuthenticatedLayout>
+      <template #header>
+        Documentos
+      </template>
+      <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+        <div class="flex gap-4">
+          <button @click="openCreateDocumentModal" type="button"
+            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+            + Agregar Documento
+          </button>
+          <Link :href="route('documents.sections')" class="flex items-center text-indigo-600 hover:underline">
+          <ArchiveBoxIcon class="h-4 w-4" /> Gestionar Secciones
+          </Link>
+        </div>
+
+      </div>
       <div class="flex space-x-4">
-        <button @click="openCreateDocumentModal" class="flex items-center text-indigo-600 hover:underline">
-          <DocumentArrowUpIcon class="h-4 w-4" /> Agregar Documento
-        </button>
         <div class="flex items-center">
           <label for="selectElement" class="mr-2 text-sm text-indigo-600">Seleccione una sección:</label>
           <select v-model="selectedSection" id="selectElement"
@@ -16,9 +26,6 @@
             <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.name }}</option>
           </select>
         </div>
-        <Link :href="route('documents.sections')" class="flex items-center text-indigo-600 hover:underline">
-        <ArchiveBoxIcon class="h-4 w-4" /> Gestionar Secciones
-        </Link>
       </div>
 
 
@@ -99,7 +106,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputFile from '@/Components/InputFile.vue';
 import { ref, computed } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { TrashIcon, ArrowDownIcon, EyeIcon, DocumentArrowUpIcon, ArchiveBoxIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, ArrowDownIcon, EyeIcon, ArchiveBoxIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   sections: Object,
@@ -153,7 +160,6 @@ const filteredDocuments = computed(() => {
 
 const submitForm = () => {
   try {
-
     console.log(form);
     const response = form.post(route('documents.create'));
 
@@ -171,7 +177,6 @@ const handleFileChange = (event) => {
   const file = fileInput.files[0];
   form.document = file;
 };
-
 
 const confirmDeleteDocument = (documentId) => {
   console.log('Confirm delete document:', documentId);
