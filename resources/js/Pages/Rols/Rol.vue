@@ -58,7 +58,6 @@
                     </tr>
                 </tbody>
             </table>
-
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="rols.links" />
             </div>
