@@ -15,7 +15,7 @@
         </div>
     </Modal>
 </template>
-  
+
 <script>
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';

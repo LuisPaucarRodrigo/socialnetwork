@@ -53,8 +53,8 @@ class DocumentController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'document' => 'required|mimes:pdf,doc,docx|max:2048',
-            'section_id' => 'required',
+            'document' => 'required|mimes:pdf|max:2048',
+            'section_id' => 'required|numeric',
         ]);
 
         $document = $request->file('document');
@@ -76,20 +76,17 @@ class DocumentController extends Controller
         return response()->json($vacation->load('employee'));
     }
 
-    public function destroy(Document $document)
+    public function destroy(Document $id)
     {
-        $fileName = $document->title;
-
+        $fileName = $id->title;
         $filePath = storage_path("app/public/documents/HumanResource/$fileName");
         if (file_exists($filePath)) {
- 
             Storage::delete("public/documents/HumanResource/$fileName");
-            $document->delete();
+            $id->delete();
         } else {
             dd("El archivo no existe en la ruta: $filePath");
         }
-        
-        return redirect()->route('documents.index');
+        return to_route('documents.index');
     }
     
 

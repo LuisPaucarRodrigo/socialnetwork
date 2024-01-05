@@ -4,7 +4,7 @@
     class="block mt-1 w-full rounded-md form-input focus:border-indigo-600"
     @change="handleChange"
     ref="input"
-    accept=".pdf, .doc, .docx, .png, .jpeg, .jpg"
+    accept=".pdf, .png, .jpeg, .jpg"
   />
 </template>
 
