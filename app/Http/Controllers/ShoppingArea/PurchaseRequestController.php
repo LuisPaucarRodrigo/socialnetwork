@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\ShoppingArea;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PurchaseQuote\CreatePurchaseQuoteRequest;
+use App\Http\Requests\PurchaseQuoteRequest\CreatePurchaseQuoteRequest;
 use App\Http\Requests\PurchaseRequest\CreatePurchaseRequest;
 use App\Models\Purchasing_request;
 use App\Models\Provider;

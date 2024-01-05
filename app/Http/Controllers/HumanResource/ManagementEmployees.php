@@ -36,7 +36,7 @@ class ManagementEmployees extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'curriculum_vitae' => 'required|mimes:pdf,doc,docx|max:2048',
+            'curriculum_vitae' => 'required|mimes:pdf|max:2048',
             'cropped_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',

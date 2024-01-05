@@ -6,17 +6,14 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex gap-4">
-
                 <button @click="add_project" type="button"
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     + Agregar
                 </button>
-
                 <Link :href="route('projectscalendar.index')"
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 Calendario
                 </Link>
-
                 <button @click="add_project" type="button"
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     Filtro
@@ -42,7 +39,6 @@
                                 <TrashIcon class="h-4 w-4 text-red-500" />
                             </button>
                         </div>
-
                     </div>
                     <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
                         {{ item.name }}

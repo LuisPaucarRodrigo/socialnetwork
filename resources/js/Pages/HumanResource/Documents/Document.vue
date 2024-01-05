@@ -1,112 +1,116 @@
 <template>
-  <div>
-    <Head title="Gestion de Documentos" />
-    <AuthenticatedLayout>
-      <template #header>
-        Documentos
-      </template>
-      <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-        <div class="flex gap-4">
-          <button @click="openCreateDocumentModal" type="button"
-            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-            + Agregar Documento
-          </button>
-          <Link :href="route('documents.sections')" class="flex items-center text-indigo-600 hover:underline">
-          <ArchiveBoxIcon class="h-4 w-4" /> Gestionar Secciones
-          </Link>
-        </div>
-
-      </div>
-      <div class="flex space-x-4">
-        <div class="flex items-center">
+  <Head title="Gestion de Documentos" />
+  <AuthenticatedLayout>
+    <template #header>
+      Documentos
+    </template>
+    <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+      <div class="flex gap-4">
+        <button @click="openCreateDocumentModal" type="button"
+          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+          + Agregar Documento
+        </button>
+        <button @click="management_section" type="button"
+          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+          Gestionar Secciones
+        </button>
+        <div class="flex items-center ml-auto">
           <label for="selectElement" class="mr-2 text-sm text-indigo-600">Seleccione una sección:</label>
           <select v-model="selectedSection" id="selectElement"
-            class="rounded-md py-2 text-sm text-black hover:bg-gray-100 border-indigo-600">
-            <option value="" key="all">Todos</option>
+            class="rounded-md py-2 text-sm text-black border-indigo-600">
+            <option value="">Todos</option>
             <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.name }}</option>
           </select>
         </div>
       </div>
+    </div>
 
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mt-5">
+      <div v-for="document in filteredDocuments" :key="document.id" class="bg-white p-4 rounded-md shadow md:col-span-2">
+        <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ document.title }}</h2>
+        <div class="flex space-x-3 item-center">
+          <button @click="confirmDeleteDocument(document.id)" class="flex items-center text-red-600 hover:underline">
+            <TrashIcon class="h-4 w-4" />
+          </button>
+          <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
+            <ArrowDownIcon class="h-4 w-4 ml-1" />
+          </button>
+          <button @click="openPreviewDocumentModal(document.id)" class="flex items-center text-green-600 hover:underline">
+            <EyeIcon class="h-4 w-4 ml-1" />
+          </button>
+        </div>
+      </div>
+    </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mt-5">
-        <!-- Itera sobre las secciones recibidas como propiedades -->
-        <div v-for="document in filteredDocuments" :key="document.id"
-          class="bg-white p-4 rounded-md shadow md:col-span-2">
-          <h2 class="text-xl font-semibold mb-2">{{ document.title }}</h2>
-          <!-- Agrega cualquier otra información que desees mostrar en la tarjeta -->
-          <div class="flex items-center">
-            <button @click="confirmDeleteDocument(document.id)" class="flex items-center text-red-600 hover:underline">
-              <TrashIcon class="h-4 w-4" />
-            </button>
-            <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline"
-              style="margin-left: 1%;">
-              <ArrowDownIcon class="h-4 w-4 ml-1" />
-            </button>
-            <button @click="openPreviewDocumentModal(document.id)"
-              class="flex items-center text-green-600 hover:underline" style="margin-left: 2%;">
-              <EyeIcon class="h-4 w-4 ml-1" />
-            </button>
+    <teleport to="body">
+      <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
+        <div class="modal-container flex items-center justify-center">
+          <div class="modal-content bg-white p-5 rounded-md relative"
+            style="width: 100% !important; height: 60% !important;">
+
+            <button @click="closePreviewDocumentModal"
+              class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
+            <!-- Contenido del modal -->
+            <iframe :src="getDocumentUrl(documentToShow)" width="100%" height="100%"></iframe>
+            <!-- Cambiado a 100% de ancho y alto -->
           </div>
         </div>
       </div>
-
-      <teleport to="body">
-        <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-          <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
-          <div class="modal-container flex items-center justify-center">
-            <div class="modal-content bg-white p-5 rounded-md relative"
-              style="width: 100% !important; height: 60% !important;">
-
-              <button @click="closePreviewDocumentModal"
-                class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-              <!-- Contenido del modal -->
-              <iframe :src="getDocumentUrl(documentToShow)" width="100%" height="100%"></iframe>
-              <!-- Cambiado a 100% de ancho y alto -->
-            </div>
-          </div>
-        </div>
-      </teleport>
-
-
-      <!-- Modal para agregar documento -->
-      <teleport to="body">
-        <div v-if="isCreateDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-          <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closeCreateDocumentModal"></div>
-          <div class="modal-container flex items-center justify-center">
-            <div class="modal-content bg-white w-1/2 p-5 rounded-md relative">
-              <button @click="closeCreateDocumentModal"
-                class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-              <form @submit.prevent="submitForm" class="mt-5">
-                <label for="documentFile" class="text-gray-700">Documento:</label>
-                <InputFile @change="handleFileChange" id="documentFile"
-                  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                <InputError :message="form.errors.document" />
-
-                <label for="documentSection" class="text-gray-700">Sección:</label>
+    </teleport>
+    <Modal :show="create_document">
+      <div class="p-6">
+        <h2 class="text-base font-medium leading-7 text-gray-900">
+          Subir Documento
+        </h2>
+        <form @submit.prevent="openModal">
+          <div class="space-y-12">
+            <div class="border-b border-gray-900/10 pb-12">
+              <div>
+                <InputLabel for="documentFile" class="font-medium leading-6 text-gray-900">Documento</InputLabel>
+                <div class="mt-2">
+                  <InputFile type="file" v-model="form.document" id="documentFile"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <InputError :message="form.errors.document" />
+                </div>
+              </div>
+              <div>
+                <InputLabel for="documentSection" class="text-gray-700">Sección:</InputLabel>
                 <select v-model="form.section_id" id="documentSection" class="border rounded-md px-3 py-2 mb-3 w-full">
+                  <option value="">Seleccionar Seccion</option>
                   <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.name }}</option>
                 </select>
-
-                <button type="submit"
-                  class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                  Agregar Documento
-                </button>
-              </form>
+                <InputError :message="form.errors.section_id" />
+              </div>
+              <div class="mt-6 flex items-center justify-end gap-x-6">
+                <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                <button type="submit" :class="{ 'opacity-25': form.processing }"
+                  class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+              </div>
             </div>
           </div>
-        </div>
-      </teleport>
-    </AuthenticatedLayout>
-  </div>
+        </form>
+      </div>
+    </Modal>
+    <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="documento" :deleteFunction="deleteDocument"
+      @closeModal="closeModalDoc" />
+    <ConfirmCreateModal :confirmingcreation="showModal" itemType="documento" :nameText="'del nuevo documento'"
+      :createFunction="submit" @closeModal="close" />
+  </AuthenticatedLayout>
 </template>
   
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 import InputFile from '@/Components/InputFile.vue';
+import Modal from '@/Components/Modal.vue';
 import { ref, computed } from 'vue';
-import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { TrashIcon, ArrowDownIcon, EyeIcon, ArchiveBoxIcon } from '@heroicons/vue/24/outline';
+import { Head, useForm, router } from '@inertiajs/vue3';
+import { TrashIcon, ArrowDownIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   sections: Object,
@@ -115,20 +119,76 @@ const props = defineProps({
 
 const form = useForm({
   document: null,
-  section_id: null,
+  section_id: '',
 });
 
-const isCreateDocumentModalOpen = ref(false);
+const create_document = ref(false);
+const showModal = ref(false);
+const confirmingDocDeletion = ref(false);
+const docToDelete = ref(null);
+
 const documentToShow = ref(null);
-const selectedSection = ref(null);
+const selectedSection = ref('');
 const isPreviewDocumentModalOpen = ref(false);
 
-const openCreateDocumentModal = () => {
-  isCreateDocumentModalOpen.value = true;
+const management_section = () => {
+  router.get(route('documents.sections'));
 };
 
-const closeCreateDocumentModal = () => {
-  isCreateDocumentModalOpen.value = false;
+const openCreateDocumentModal = () => {
+  create_document.value = true;
+};
+
+const closeModal = () => {
+  create_document.value = false;
+};
+
+const submit = () => {
+  form.post(route('documents.create'), {
+    onSuccess: () => {
+      close();
+      closeModal();
+      form.reset();
+    },
+    onError: () => {
+      close();
+      form.reset();
+    },
+    onFinish: () => {
+      form.reset();
+    }
+  });
+};
+
+const openModal = () => {
+  showModal.value = true;
+}
+
+const close = () => {
+  showModal.value = false;
+}
+
+const confirmDeleteDocument = (documentId) => {
+  docToDelete.value = documentId;
+  confirmingDocDeletion.value = true;
+};
+
+const closeModalDoc = () => {
+  confirmingDocDeletion.value = false;
+};
+
+const deleteDocument = () => {
+  const docId = docToDelete.value;
+  if (docId) {
+    router.delete(route('documents.destroy', { id: docId }), {
+      onSuccess: () => closeModalDoc()
+    });
+  }
+};
+
+function downloadDocument(documentId) {
+  const backendDocumentUrl = route('documents.download', { document: documentId });
+  window.open(backendDocumentUrl, '_blank');
 };
 
 const closePreviewDocumentModal = () => {
@@ -138,13 +198,6 @@ const closePreviewDocumentModal = () => {
 function openPreviewDocumentModal(documentId) {
   documentToShow.value = documentId;
   isPreviewDocumentModalOpen.value = true;
-}
-
-function downloadDocument(documentId) {
-  const backendDocumentUrl = route('documents.download', { document: documentId });
-
-  // Abre una nueva ventana para descargar el archivo
-  window.open(backendDocumentUrl, '_blank');
 }
 
 function getDocumentUrl(documentId) {
@@ -158,37 +211,6 @@ const filteredDocuments = computed(() => {
   return props.documents.data.filter(document => document.section_id === selectedSection.value);
 });
 
-const submitForm = () => {
-  try {
-    console.log(form);
-    const response = form.post(route('documents.create'));
-
-    closeCreateDocumentModal();
-    console.log(response);
-  } catch (error) {
-    console.error('Error al crear el documento:', error.message);
-    console.error(error);
-    console.log(form);
-  }
-};
-
-const handleFileChange = (event) => {
-  const fileInput = event.target;
-  const file = fileInput.files[0];
-  form.document = file;
-};
-
-const confirmDeleteDocument = (documentId) => {
-  console.log('Confirm delete document:', documentId);
-  if (confirm('¿Estás seguro de que quieres eliminar este documento?')) {
-    deleteDocument(documentId);
-  }
-};
-
-const deleteDocument = async (documentId) => {
-  console.log('Deleting document:', documentId);
-  router.delete(`/documents/${documentId}/delete`);
-};
 </script>
   
 <style scoped>

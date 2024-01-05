@@ -62,8 +62,6 @@
                 <pagination :links="rols.links" />
             </div>
         </div>
-        <ConfirmDeleteModal :confirmingDeletion="confirmingRolDeletion" itemType="rol" :deleteText="deleteButtonText"
-            :deleteFunction="deleteRol" @closeModal="closeModalRol" />
         <Modal :show="create_rol">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -113,6 +111,8 @@
                 </form>
             </div>
         </Modal>
+        <ConfirmDeleteModal :confirmingDeletion="confirmingRolDeletion" itemType="rol" :deleteText="deleteButtonText"
+            :deleteFunction="deleteRol" @closeModal="closeModalRol" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="rol"
             :nameText="'del nuevo rol'" :createFunction="submit" @closeModal="close" />
     </AuthenticatedLayout>

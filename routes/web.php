@@ -117,7 +117,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::post('/documents', [DocumentController::class, 'create'])->name('documents.create');
     Route::get('/documents/{document}/download', [DocumentController::class, 'downloadDocument'])->name('documents.download');
     Route::get('/documents/{document}/preview', [DocumentController::class, 'showDocument'])->name('documents.show');
-    Route::delete('/documents/{document}/delete', [DocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::delete('/documents/{id}/delete', [DocumentController::class, 'destroy'])->name('documents.destroy');
 
     //DocumentSections
     Route::get('/document_sections', [DocumentController::class, 'showSections'])->name('documents.sections');
