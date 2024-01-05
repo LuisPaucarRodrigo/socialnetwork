@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Project;
 use App\Models\Vacation;
+use App\Models\Tasks;
 
 class CalendarController extends Controller
 {
@@ -54,9 +55,22 @@ class CalendarController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Vacation $vacation)
+    public function show(Project $project)
     {
-        //
+        // Obtén el proyecto específico por ID
+        $project = Project::with('tasks')->find($project->id);
+        //dd($project);
+        // Verifica si el proyecto fue encontrado
+        if (!$project) {
+            // Puedes manejar el caso en el que el proyecto no se encuentre, por ejemplo, redirigiendo o lanzando una excepción.
+            // Aquí se lanza una excepción como ejemplo.
+            throw new \Exception('Proyecto no encontrado');
+        }
+
+        // Renderiza la vista solo con el proyecto específico
+        return Inertia::render('ProjectArea/Calendar/TasksCalendar', [
+            'project' => $project,
+        ]);
     }
 
     /**

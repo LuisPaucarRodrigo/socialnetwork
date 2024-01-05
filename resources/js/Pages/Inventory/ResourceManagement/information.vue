@@ -62,11 +62,6 @@
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                 <InputError :message="newResource.errors.adquisition_date" />
             </div>
-            <div class="sm:col-span-2">
-                <label for="tasks" class="block text-sm font-medium text-gray-700">Estado</label>
-                <input disabled type="text" id="task" v-model="newResource.state"
-                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-            </div>
             <!-- Descricion (text-Area) -->
             <div class="sm:col-span-5">
                 <label for="startDate" class="block text-sm font-medium text-gray-700">Descripcion</label>
@@ -138,7 +133,6 @@ const newResource = useForm({
     type: '',
     quantity: '',
     description: '',
-    state: 'Disponible',
     adquisition_date: '',
     current_location: '',
     unique_identification: '',

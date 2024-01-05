@@ -28,4 +28,7 @@ class Project extends Model
     public function purchasing_request(){
         return $this->hasMany(Purchasing_request::class);
     }
+    public function resources(){
+        return $this->belongsToMany(Resource::class, 'project_resource')->withPivot('id','quantity', 'observation');
+    }
 }

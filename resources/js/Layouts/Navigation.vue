@@ -72,6 +72,9 @@
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('management.vacation')">Gestion de Vacaciones</Link>
                 </MyTransition>
+                <MyTransition :transitiondemonstration="showingHumanResource">
+                    <Link class="w-full" :href="route('documents.index')">Gestion de Documentos</Link>
+                </MyTransition>
             </template>
 
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
