@@ -53,13 +53,25 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
 
-const form = useForm({
+const initialState = {
     title: '',
     product_description: '',
     due_date: '',
+    project_id:project_id
+}
+
+const form = useForm( purchase_request? purchase_request: {...initialState})
+
+const { project_id, purchase_request } = defineProps({
+    project_id: Number,
+    purchase_request:Object
 })
 
 const submit = () => {
-    form.post(route('purchasesrequest.store'))
+    form.post(route('projectmanagement.purchases_request.store',{project_id}), {
+        onSuccess:()=>{
+            alert('registro realizado')
+        }
+    })
 }
 </script>
