@@ -51,7 +51,7 @@ class PurchaseRequestController extends Controller
     public function destroy($id)
     {
         Purchasing_request::destroy($id);
-        return to_route('purchasesrequest.index');
+        return redirect()->back();
     }
 
     public function details($id)

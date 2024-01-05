@@ -44,14 +44,16 @@
                     :src="details.purchase_image" alt="Imagen de Cotización">
             </div>
         </div>
-        <button @click="sendReply('Aceptado')" type="button"
-            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-            Aceptar
-        </button>
-        <button @click="check" type="button"
-            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-            Rechazar
-        </button>
+        <div v-if="details.purchasing_requests.state == 'En Progreso'" class="flex gap-2">
+            <button @click="sendReply('Aceptado')" type="button"
+                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                Aceptar
+            </button>
+            <button @click="check" type="button"
+                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                Rechazar
+            </button>
+        </div>
         <Modal :show="confirmOrden" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
@@ -92,12 +94,15 @@ const props = defineProps({
     details: Object
 });
 
+console.log(props.details)
+
 const confirmOrden = ref(false);
 const comentOrden = ref(null);
 
 const form = useForm({
     coment: '',
-    state: ''
+    state: '',
+    purchase_request_id: props.details.purchasing_requests.id
 });
 
 const check = () => {
