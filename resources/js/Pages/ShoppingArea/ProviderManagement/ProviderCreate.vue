@@ -4,7 +4,7 @@
         <template #header>
             Proveedor
         </template>
-        <form @submit.prevent="submit">
+        <form @submit.prevent="openModal()">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion</h2>
@@ -95,14 +95,18 @@
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
         </form>
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="proveedor"
+            :nameText="'del nuevo proveedor'" :createFunction="submit" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const form = useForm({
     company_name: '',
@@ -117,5 +121,14 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('providersmanagement.store'))
+}
+
+const showModal = ref(false);
+
+const openModal = () => {
+    showModal.value = true;
+}
+const closeModal = () => {
+    showModal.value = false;
 }
 </script>

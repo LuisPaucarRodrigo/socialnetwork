@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchase_orders', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->date('date_issue');
-            $table->string('state')->default('Pendiente');
-            $table->foreignId('purchase_quote_id')->constrained()->onDelete('cascade');
+            $table->foreignId('section_id')->constrained('document_sections');
+            $table->string('title');
+            // Agrega otras columnas según sea necesario
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchase_orders');
+        Schema::dropIfExists('documents');
     }
 };

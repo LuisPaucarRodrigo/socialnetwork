@@ -1,39 +1,33 @@
 <template>
-    <Head title="Gestion de Empleados" />
-
+    <Head title="Solicitudes del proyecto" />
     <AuthenticatedLayout>
         <template #header>
-            Empleados
+            Lista de solicitudes hlahlahaslh
         </template>
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-            <button @click="add_information" type="button"
+            <button @click="add_project" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
-
-            <table class="w-full whitespace-no-wrap md:overflow-x-hidden">
+            <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-
+                            Solicitud
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Nombre
+                            Descripción de producto
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Apellido
+                            Fecha Limite
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Email
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Telefono
+                            Estado
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -41,27 +35,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="employee in employees.data" :key="employee.id" class="text-gray-700">
+                    <tr v-for="purchase in purchases.data" :key="purchase.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
-                        </td>
-
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ purchase.title }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ employee.lastname }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ purchase.product_description }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ employee.email }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ purchase.due_date }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ employee.phone1 }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ purchase.state }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex space-x-3 justify-center">
                                 <Link class="text-blue-900 whitespace-no-wrap"
-                                    :href="route('management.employees.information.details', { id: employee.id })">
+                                    :href="route('purchasingrequest.details', { id: purchase.id })">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor" class="w-6 h-6 text-teal-500">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -70,15 +60,15 @@
                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 </Link>
-                                <Link class="text-blue-900 whitespace-no-wrap"
-                                    :href="route('management.employees.edit', { id: employee.id })">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                    stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
+                                <Link v-if="purchase.project == null" class="text-blue-900 whitespace-no-wrap"
+                                :href="route('providersmanagement.edit', { id: purchase.id })">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                    </svg>
                                 </Link>
-                                <button type="button" @click="confirmUserDeletion(employee.id)"
+                                <button type="button" @click="confirmPurchasesDeletion(purchase.id)"
                                     class="text-blue-900 whitespace-no-wrap">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -93,49 +83,66 @@
             </table>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="employees.links" />
+                <pagination :links="purchases.links" />
             </div>
         </div>
-        <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado"
-            :deleteText="deleteButtonText" :deleteFunction="deleteEmployee" @closeModal="closeModal" />
+        <Modal :show="confirmingPurchasesDeletion">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Estas seguro de eliminar la solicitud?
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600">
+                    Se eliminara toda la informacion relacionada con la solicitudr.
+                </p>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+
+                    <DangerButton class="ml-3" @click="deletePurchase()">
+                        Eliminar
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
-
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue'
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue'; 
+import Pagination from '@/Components/Pagination.vue';
+import DangerButton from '@/Components/DangerButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import Modal from '@/Components/Modal.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const confirmingUserDeletion = ref(false);
-const deleteButtonText = 'Eliminar';
-const employeeToDelete = ref(null);
+const confirmingPurchasesDeletion = ref(false);
+const purchaseToDelete = ref(null);
 
 const props = defineProps({
-    employees: Object
-})
+    purchases: Object
+});
 
-const confirmUserDeletion = (employeeId) => {
-    employeeToDelete.value = employeeId;
-    confirmingUserDeletion.value = true;
+const confirmPurchasesDeletion = (purchaseId) => {
+    purchaseToDelete.value = purchaseId;
+    confirmingPurchasesDeletion.value = true;
 };
 
-const deleteEmployee = () => {
-    const employeeId = employeeToDelete.value;
-    if (employeeId) {
-        router.delete(route('management.employees.destroy', { id: employeeId }), {
+const deletePurchase = () => {
+    const purchaseId = purchaseToDelete.value;
+    if (purchaseId) {
+        router.delete(route('purchasesrequest.destroy', { id: purchaseId }), {
             onSuccess: () => closeModal()
         });
     }
 };
 
 const closeModal = () => {
-    confirmingUserDeletion.value = false;
+    confirmingPurchasesDeletion.value = false;
 };
 
-const add_information = () => {
-    router.get(route('management.employees.information'));
-};
+const add_project = () => {
+    router.get(route('projectmanagement.purchases_request.create'));
+}
 
 </script>
