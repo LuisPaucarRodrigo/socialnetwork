@@ -38,8 +38,7 @@
                 <tbody>
                     <tr v-for="purchase in purchases.data" :key="purchase.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap"> {{ purchase.project.name }}
-                            </p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ purchase.project?.name }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ purchase.title }}</p>

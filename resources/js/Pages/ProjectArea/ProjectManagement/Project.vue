@@ -28,9 +28,9 @@
                             N° {{ item.code }}
                         </h2>
                         <div class="inline-flex justify-end gap-x-2">
-                            <Link class="flex items-start">
+                            <!-- <Link class="flex items-start">
                             <EyeIcon class="h-4 w-4 text-blue-700" />
-                            </Link>
+                            </Link> -->
                             <Link :href="route('projectmanagement.update', { project_id: item.id })"
                                 class="flex items-start">
                             <PencilIcon class="h-4 w-4 text-teal-600" />
@@ -45,15 +45,15 @@
                     </h3>
                     <div class="text-gray-500 text-sm">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas</Link>
+                            <!-- <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas</Link> -->
                             <Link :href="route('projectscalendar.show', { project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario</Link>
                             <Link :href="route('projectmanagement.resources', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Recursos
                             </Link>
                             <Link :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de
-                            compra</Link>
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
+                            Gastos</Link>
                         </div>
                     </div>
                 </div>
@@ -62,8 +62,6 @@
             <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
             </div>
-
-
         </div>
     </AuthenticatedLayout>
 </template>
