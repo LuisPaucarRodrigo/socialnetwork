@@ -25,9 +25,11 @@
         "@headlessui/vue": "^1.7.16",
         "@heroicons/vue": "^2.0.18",
         "@vue-hero-icons/outline": "^1.7.2",
+        "chart.js": "^4.4.1",
         "croppie": "^2.6.5",
         "pdfjs-dist": "^4.0.269",
         "pdfvuer": "^2.0.1",
-        "sweetalert2": "^11.10.1"
+        "sweetalert2": "^11.10.1",
+        "vue-chartjs": "^5.3.0"
     }
 }
