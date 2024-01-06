@@ -15,7 +15,8 @@ class Project extends Model
         'start_date',
         'end_date',
         'priority',
-        'description'
+        'description',
+        'initial_budget'
     ];
 
     public function employees()
@@ -30,5 +31,8 @@ class Project extends Model
     }
     public function resources(){
         return $this->belongsToMany(Resource::class, 'project_resource')->withPivot('id','quantity', 'observation');
+    }
+    public function budget_updates(){
+        return $this->hasMany(BudgetUpdates::class);
     }
 }
