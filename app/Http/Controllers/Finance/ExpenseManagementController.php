@@ -28,7 +28,7 @@ class ExpenseManagementController extends Controller
         $validateData = $request->validated();
         $purchasing = Purchasing_request::find($id);
         $purchasing->update($validateData);
-        
+
         if ($request->state == 'Aceptado') {
             $date_issue = Carbon::today();
             Purchase_order::create([
