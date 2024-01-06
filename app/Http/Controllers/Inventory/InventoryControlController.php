@@ -12,6 +12,8 @@ use App\Http\Requests\Inventory\NetworkEquipmentRequest;
 use App\Http\Requests\Inventory\MobileDeviceRequest;
 use App\Http\Requests\Inventory\ComponentAndMaterialRequest;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\Inventory\NetworkEquipmentImport;
 
 class InventoryControlController extends Controller
 {
@@ -19,6 +21,7 @@ class InventoryControlController extends Controller
     {
         return Inertia::render('Inventory/InventoryControl/Index');
     }
+    
     public function NetworkEquipment()
     {
         $networkEquipments = NetworkEquipment::all() ;
@@ -60,6 +63,23 @@ class InventoryControlController extends Controller
         $NetworkEquipment = NetworkEquipment::find($NeId);
         $NetworkEquipment->delete();
         return back();
+    }
+    public function ImportNetworkEquipment(Request $request)
+    {
+        //dd($request);
+        if ($request->has('importar')) {
+            //dd($request->importar);
+            try {
+                Excel::import(new NetworkEquipmentImport, $request->file('importar'));
+                dd("Correcto");
+                return back()->with('success', 'Los datos se importaron correctamente.');
+            } catch (\Exception $e) {
+                dd("Error");
+                return back()->with('error', 'Hubo un error al importar los datos. Por favor, verifica el archivo excel.');
+            }
+        } else {
+            return back();
+        }   
     }
 
     public function MobileDevices()

@@ -22,7 +22,7 @@
                 <label for="project" class="block text-sm font-medium text-gray-700">Numero de Serie</label>
                 <input :disabled="!!mobile_device" type="text" id="model" v-model="form.serie_number"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                    <InputError :message="form.errors.serie_number" />
+                <InputError :message="form.errors.serie_number" />
             </div>
 
             <div class="sm:col-span-2">
@@ -44,7 +44,7 @@
                 </div>
                 <InputError :message="form.errors.state" />
             </div>
-            
+
             <div class="sm:col-span-2">
                 <label for="project" class="block text-sm font-medium text-gray-700">Precio</label>
                 <input type="number" id="price" v-model="form.price"
@@ -59,27 +59,32 @@
                 class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
                 Cancelar
             </button>
-            <button v-if="mobile_device" @click="updatedForm(mobile_device.id)"
+            <button v-if="mobile_device" @click="openModal"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Guardar
             </button>
 
-            <button v-else @click="submitForm"
+            <button v-else @click="openModal(1)"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Crear
             </button>
         </div>
-
+        <ConfirmCreateModal :confirmingcreation="showCreateModal" itemType="" :nameText="'del Dispositivo Movil'"
+            :createFunction="submitForm" @closeModal="closeModal(1)" />
+        <ConfirmCreateModal :confirmingcreation="showUpdateModal" itemType="Dispositivo Movil" :nameText="'del Dispositivo Movil'"
+            :createFunction="updatedForm" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     title: String,
-    mobile_device:Object,
+    mobile_device: Object,
 })
 
 const form = useForm({
@@ -101,18 +106,38 @@ if (props.mobile_device) {
 
 const submitForm = () => {
     form.post(route('inventory.MobileDevices.create'), {
-        onError: (errors) => {
-            console.log(form)
-            console.log('Errores de validación:', errors);
+        onError: () => {
+            closeModal(1)
         }
     })
 }
-const updatedForm = (MdId) => {
-    form.put(route('inventory.MobileDevices.update', { MdId: MdId }))
+const updatedForm = () => {
+    form.put(route('inventory.MobileDevices.update', { MdId: props.mobile_device.id }), {
+        onError: () => {
+            closeModal()
+        }
+    })
 }
 const cancel = () => {
     router.get(route('inventory.MobileDevices.index'))
 }
 
+const showCreateModal = ref(false);
+const showUpdateModal = ref(false);
+
+const openModal = (modal) => {
+    if (modal === 1) {
+        showCreateModal.value = true;
+    } else {
+        showUpdateModal.value = true;
+    }
+}
+const closeModal = (modal) => {
+    if (modal === 1) {
+        showCreateModal.value = false;
+    } else {
+        showUpdateModal.value = false;
+    }
+}
 
 </script>

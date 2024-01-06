@@ -57,11 +57,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <button type="button" @click="edit_network_equipment(item.id)"
+                                    <button type="button" @click="edit_mobile_devices(item.id)"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <PencilIcon class="text-yellow-500 h-4 w-4"></PencilIcon>
                                     </button>
-                                    <button type="button" @click="delete_network_equipment(item.id)"
+                                    <button type="button" @click="confirm_delete_mobile_device(item.id)"
                                         class="text-red-900 whitespace-no-wrap">
                                         <TrashIcon class="text-red-500 h-4 w-4" />
                                     </button>
@@ -73,24 +73,47 @@
             </div>
         </div>
 
+        <ConfirmDeleteModal :confirmingDeletion="confirm_mobile_device" itemType="Dispositivo Movil"
+            :deleteText="deleteButtonText" :deleteFunction="delete_mobile_device" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, Link } from '@inertiajs/vue3';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     mobile_devices: Object
 })
+
+const confirm_mobile_device = ref(false);
+const deleteButtonText = 'Eliminar';
+const mobile_device_id = ref(null);
+
+const confirm_delete_mobile_device = (MdId) => {
+    mobile_device_id.value = MdId;
+    confirm_mobile_device.value = true;
+};
+
 const add_mobile_device = () => {
     router.get(route('inventory.MobileDevices.new'));
 }
-const edit_network_equipment = (MdId) => {
+const edit_mobile_devices = (MdId) => {
     router.get(route('inventory.MobileDevices.edit', { MdId: MdId }));
 }
-const delete_network_equipment = (MdId) => {
-    router.delete(route('inventory.MobileDevices.delete', { MdId: MdId }));
-}
+
+const delete_mobile_device = () => {
+    const MdId = mobile_device_id.value;
+    if (MdId) {
+        router.delete(route('inventory.MobileDevices.delete', { MdId: MdId }), {
+            onSuccess: () => closeModal()
+        });
+    }
+};
+const closeModal = () => {
+    confirm_mobile_device.value = false;
+};
 
 </script>
