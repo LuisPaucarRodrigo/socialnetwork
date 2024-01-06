@@ -8,6 +8,10 @@
         Presupuesto restante: S/. {{ remaining_budget }}
         <br>
         <br>
+        <div>
+            <canvas id="pieChart"></canvas>
+        </div>
+        <br>
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <table class="w-full whitespace-no-wrap">
                 <thead>
@@ -60,12 +64,92 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
+import { ref, onMounted } from 'vue';
+import { Chart, registerables } from 'chart.js/auto';
 import { Head, Link } from '@inertiajs/vue3';
+import { Pie } from 'vue-chartjs';
 
 const props = defineProps({
     expenses: Object,
     current_budget: Number,
     remaining_budget: Number
 })
+
+const updateChart = () => {
+  const ctx = document.getElementById('pieChart').getContext('2d');
+
+  // Verificar si el gráfico ya está creado
+  if (chartInstance.value) {
+    chartInstance.value.destroy();
+  }
+
+  const totalBudget = props.current_budget;
+
+  // Calcular los porcentajes y obtener los montos
+  const labels = props.expenses.data.map(expense => {
+    const amount = expense.purchase_quotes?.amount || 0;
+    const percentage = ((amount / totalBudget) * 100).toFixed(2);
+    return `${expense.purchase_quotes?.provider || 'Sin proveedor'} (${percentage}%)`;
+  });
+
+  const amounts = props.expenses.data.map(expense => {
+    return expense.purchase_quotes?.amount || 0;
+  });
+
+  // Agregar el presupuesto restante a la data
+  const remainingBudget = props.remaining_budget;
+  const dataWithRemainingBudget = [...amounts, remainingBudget];
+
+  // Crear un nuevo gráfico con los datos actualizados
+  chartInstance.value = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: [...labels, 'Presupuesto Restante'],
+      datasets: [{
+        data: dataWithRemainingBudget,
+        backgroundColor: [...props.expenses.data.map(_ => getRandomColor()), '#808080'], // Color gris para el presupuesto restante
+        hoverBackgroundColor: [...props.expenses.data.map(_ => getRandomColor()), '#808080'],
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      tooltips: {
+        callbacks: {
+          label: (tooltipItem, data) => {
+            const dataset = data.datasets[tooltipItem.datasetIndex];
+            const label = data.labels[tooltipItem.index] || '';
+            const value = dataset.data[tooltipItem.index];
+            return `${label}: S/. ${value}`;
+          },
+        },
+      },
+    },
+  });
+};
+
+
+onMounted(() => {
+  // Ejemplo de uso, asegúrate de pasar los datos reales desde tus props
+  updateChart();
+});
+
+Chart.register(...registerables);
+
+const chartOptions = ref({
+  responsive: true,
+  maintainAspectRatio: false,
+});
+
+const chartInstance = ref(null);
+
+const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
 
 </script>
