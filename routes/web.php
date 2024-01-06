@@ -163,9 +163,12 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
     Route::delete('/projectmanagement/resources/delete/{resource_id}', [ProjectManagementController::class, 'project_resources_delete'])->name('projectmanagement.resources.delete');
 
-    Route::get('/projectmanagement/purchases_request/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
     Route::get('/projectmanagement/purchases_request/{project_id}', [ProjectManagementController::class, 'project_purchases_request_index'])->name('projectmanagement.purchases_request.index');
+    Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
+    Route::post('/projectmanagement/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
 
+    Route::get('/projectmanagement/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
+    
     //Tasks Management
     Route::get('/tasks/{id?}', [TaskManagementController::class, 'index'])->name('tasks.index');
     Route::get('/newtask', [TaskManagementController::class, 'new'])->name('tasks.new');

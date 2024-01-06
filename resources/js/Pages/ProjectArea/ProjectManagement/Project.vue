@@ -57,8 +57,7 @@
                             </Link>
                             <Link :href="route('projectmanagement.purchases_request.index', {
                                 project_id: item.id
-                            })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de
-                            compra</Link>
+                            })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y Gastos</Link>
                         </div>
                     </div>
                 </div>
