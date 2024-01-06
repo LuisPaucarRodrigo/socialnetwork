@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Models\Employee;
 use App\Models\Project;
+use App\Models\BudgetUpdate;
 use App\Models\Resource;
 use App\Models\ProjectResource;
 use App\Models\Purchasing_request;
@@ -49,6 +50,9 @@ class ProjectManagementController extends Controller
     public function project_store(CreateProjectRequest $request)
     {
         $data = $request->validated();
+
+        $data['initial_budget'] = 0;
+
         if ($request->id) {
             $project = Project::find($request->id);
             $project->update($data);
@@ -153,15 +157,33 @@ class ProjectManagementController extends Controller
         return redirect()->route('projectmanagement.purchases_request.index', ['project_id' => $request->project_id]);
     }
 
-    public function project_expenses($project_id) {
-        return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
-            'expenses' => Purchasing_request::with('purchase_quotes.purchase_order')
+    public function project_expenses(Project $project_id) {
+
+        $last_update = BudgetUpdate::where('project_id', $project_id->id)
+            ->with('project')
+            ->with('user')
+            ->orderByDesc('id') // Ordenar por ID en orden descendente
+            ->first();
+
+        $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
+
+        $expenses = Purchasing_request::with('purchase_quotes.purchase_order')
             ->has('purchase_quotes.purchase_order')
-            ->where([['project_id', $project_id],['state','Aceptado']])
+            ->where([['project_id', $project_id->id],['state','Aceptado']])
             ->whereHas('purchase_quotes.purchase_order', function ($query) {
                 $query->where('state', 'Completada');
-            })
-            ->paginate(),
+            });
+
+        $total_expenses = $expenses->get()->sum(function ($expense) {
+            return $expense->purchase_quotes->amount;
+        });
+
+        $remaining_budget = $current_budget - $total_expenses;    
+
+        return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
+            'current_budget' => $current_budget,
+            'remaining_budget' => $remaining_budget,
+            'expenses' => $expenses->paginate(),
         ]);
     }
 }

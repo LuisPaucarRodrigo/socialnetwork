@@ -25,6 +25,7 @@ class ProjectFactory extends Factory
             'end_date' => fake()->date(),
             'priority' => fake()->randomElement(['Alta', 'Media', 'Baja']),
             'description' => fake()->paragraph(3),
+            'initial_budget' => 0,
         ];
     }
 }
