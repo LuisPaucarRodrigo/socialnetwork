@@ -19,6 +19,7 @@ use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
+use App\Http\Controllers\Inventory\InventoryControlController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -138,6 +139,32 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/resources/edit/{resourceId}', [ResourceManagementController::class, 'edit'])->name('resource.edit');
     Route::put('/resources/edit/{resourceId}', [ResourceManagementController::class, 'update'])->name('resource.update');
     Route::delete('/resources/delete/{resourceId}', [ResourceManagementController::class, 'destroy'])->name('resource.delete');
+
+    //Inventory
+    Route::get('/inventory', [InventoryControlController::class, 'index'])->name('inventory.index');
+    //NetworkEquipment
+    Route::get('/inventory/NetworkEquipment', [InventoryControlController::class, 'NetworkEquipment'])->name('inventory.NetworkEquipment.index');
+    Route::get('/inventory/NetworkEquipment/new', [InventoryControlController::class, 'NewNetworkEquipment'])->name('inventory.NetworkEquipment.new');
+    Route::post('/inventory/NetworkEquipment/create', [InventoryControlController::class, 'CreateNetworkEquipment'])->name('inventory.NetworkEquipment.create');
+    Route::get('/inventory/NetworkEquipment/edit/{NeId}', [InventoryControlController::class, 'EditNetworkEquipment'])->name('inventory.NetworkEquipment.edit');
+    Route::put('/inventory/NetworkEquipment/edit/{NeId}', [InventoryControlController::class, 'UpdateNetworkEquipment'])->name('inventory.NetworkEquipment.update');
+    Route::delete('/inventory/NetworkEquipment/delete/{NeId}', [InventoryControlController::class, 'DeleteNetworkEquipment'])->name('inventory.NetworkEquipment.delete');
+    Route::post('/inventory/NetworkEquipment/import', [InventoryControlController::class, 'ImportNetworkEquipment'])->name('inventory.NetworkEquipment.import');
+
+    Route::get('/inventory/MobileDevices', [InventoryControlController::class, 'MobileDevices'])->name('inventory.MobileDevices.index');
+    Route::get('/inventory/MobileDevices/new', [InventoryControlController::class, 'NewMobileDevices'])->name('inventory.MobileDevices.new');
+    Route::post('/inventory/MobileDevices/create', [InventoryControlController::class, 'CreateMobileDevices'])->name('inventory.MobileDevices.create');
+    Route::get('/inventory/MobileDevices/edit/{MdId}', [InventoryControlController::class, 'EditMobileDevices'])->name('inventory.MobileDevices.edit');
+    Route::put('/inventory/MobileDevices/edit/{MdId}', [InventoryControlController::class, 'UpdateMobileDevices'])->name('inventory.MobileDevices.update');
+    Route::delete('/inventory/MobileDevices/delete/{MdId}', [InventoryControlController::class, 'DeleteMobileDevices'])->name('inventory.MobileDevices.delete');
+    
+
+    Route::get('/inventory/ComponentsAndMaterials', [InventoryControlController::class, 'ComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.index');
+    Route::get('/inventory/ComponentsAndMaterials/new', [InventoryControlController::class, 'NewComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.new');
+    Route::post('/inventory/ComponentsAndMaterials/create', [InventoryControlController::class, 'CreateComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.create');
+    Route::get('/inventory/ComponentsAndMaterials/edit/{CmId}', [InventoryControlController::class, 'EditComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.edit');
+    Route::put('/inventory/ComponentsAndMaterials/edit/{CmId}', [InventoryControlController::class, 'UpdateComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.update');
+    Route::delete('/inventory/ComponentsAndMaterials/delete/{CmId}', [InventoryControlController::class, 'DeleteComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.delete');
 });
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {
