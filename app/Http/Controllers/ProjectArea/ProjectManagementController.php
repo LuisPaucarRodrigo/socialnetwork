@@ -53,6 +53,9 @@ class ProjectManagementController extends Controller
             'priority' => 'required',
             'description' => 'required',
         ]);
+
+        $data['initial_budget'] = 0;
+
         if ($request->id) {
             $project = Project::find($request->id);
             $project->update($data);
