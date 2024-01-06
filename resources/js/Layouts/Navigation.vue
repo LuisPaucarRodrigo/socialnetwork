@@ -116,7 +116,7 @@
                     <Link class="w-full" :href="route('resources.index')">Recursos de la Empresa</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('users.index')">Control de Inventario</Link>
+                    <Link class="w-full" :href="route('inventory.index')">Control de Inventario</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('users.index')">Historial de Movimientos</Link>
