@@ -92,7 +92,7 @@
                     <Link class="w-full" :href="route('users.index')">Contabilidad</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
-                    <Link class="w-full" :href="route('users.index')">Presupuestos</Link>
+                    <Link class="w-full" :href="route('selectproject.index')">Presupuestos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('managementexpense.index')">Gestion de Gastos</Link>

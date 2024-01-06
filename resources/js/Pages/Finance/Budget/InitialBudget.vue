@@ -11,10 +11,10 @@
             <!-- Si el presupuesto inicial no es igual a 0, muestra el presupuesto inicial y actual -->
             <p v-else class="text-xl font-semibold text-gray-700">
                 Presupuesto Inicial: S/. {{ props.project.initial_budget }}
-                <br>
-                <br>
-                Presupuesto Actual: S/. {{ props.budgetUpdate.new_budget }}
             </p>
+            <br>
+            <p v-if="props.budgetUpdate" class="text-xl font-semibold text-gray-700">Presupuesto Actual: S/. {{ props.budgetUpdate.new_budget }}</p>
+            <p v-else></p>
         </div>
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
