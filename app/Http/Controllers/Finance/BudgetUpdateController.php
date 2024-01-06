@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
 use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
 
 class BudgetUpdateController extends Controller
 {
@@ -26,12 +27,12 @@ class BudgetUpdateController extends Controller
     }
 
     public function create(Request $request, Project $project){
+        $user_id = Auth::id();  
         $request->validate([
             'new_budget' => 'required',
             'project_id' => 'required',
             'reason' => 'required',
             'update_date' => 'required',
-            'user_id' => 'required',
             'approved_update_date' => 'required',
         ]);
         $budget_update = BudgetUpdate::create([
@@ -39,7 +40,7 @@ class BudgetUpdateController extends Controller
             'project_id' => $request->project_id,
             'reason' => $request->reason,
             'update_date' => $request->update_date,
-            'user_id' => $request->user_id,
+            'user_id' => $user_id,
             'approved_update_date' => $request->approved_update_date,    
         ]);
 
