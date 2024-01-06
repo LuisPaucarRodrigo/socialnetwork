@@ -61,7 +61,7 @@
                                         class="text-blue-900 whitespace-no-wrap">
                                         <PencilIcon class="text-yellow-500 h-4 w-4"></PencilIcon>
                                     </button>
-                                    <button type="button" @click="delete_component_or_material(item.id)"
+                                    <button type="button" @click="confirm_delete_component_or_material(item.id)"
                                         class="text-red-900 whitespace-no-wrap">
                                         <TrashIcon class="text-red-500 h-4 w-4" />
                                     </button>
@@ -72,24 +72,45 @@
                 </table>
             </div>
         </div>
-
+        <ConfirmDeleteModal :confirmingDeletion="confirm_component_or_material" itemType="Componente o Material"
+            :deleteText="deleteButtonText" :deleteFunction="delete_component_or_material" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, Link } from '@inertiajs/vue3';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     components_or_materials: Object
 })
+
+const confirm_component_or_material = ref(false);
+const deleteButtonText = 'Eliminar';
+const component_or_material_id = ref(null);
+
+const confirm_delete_component_or_material = (CmId) => {
+    component_or_material_id.value = CmId;
+    confirm_component_or_material.value = true;
+};
+
 const add_component_or_material = () => {
     router.get(route('inventory.ComponentsAndMaterials.new'));
 }
 const edit_component_or_material = (CmId) => {
     router.get(route('inventory.ComponentsAndMaterials.edit', { CmId: CmId }));
 }
-const delete_component_or_material = (CmId) => {
-    router.delete(route('inventory.ComponentsAndMaterials.delete', { CmId: CmId }));
-}
+const delete_component_or_material = () => {
+    const CmId = component_or_material_id.value;
+    if (CmId) {
+        router.delete(route('inventory.ComponentsAndMaterials.delete', { CmId: CmId }), {
+            onSuccess: () => closeModal()
+        });
+    }
+};
+const closeModal = () => {
+    confirm_component_or_material.value = false;
+};
 </script>

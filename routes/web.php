@@ -198,13 +198,6 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
 
 
-<<<<<<< HEAD
-    Route::get('users', [UserController::class, 'index_user'])->name('users.index');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-
     //Tasks Management
     Route::get('/tasks/{id?}',[TaskManagementController::class,'index'])->name('tasks.index');
     Route::get('/newtask',[TaskManagementController::class,'new'])->name('tasks.new');
@@ -227,25 +220,6 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::delete('/management_vacation/information_additional/{vacation}/delete',[VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
 
 
-    
-
-
-    //Calendar
-
-    //Calendar
-    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
-
-
-
-    //Resources
-    Route::get('/resources', [ResourceManagementController::class, 'index'])->name('resources.index'); 
-    Route::get('/resources/new', [ResourceManagementController::class, 'new'])->name('resources.new'); 
-    Route::post('/resources/create', [ResourceManagementController::class, 'create'])->name('resource.create'); 
-    Route::get('/resources/edit/{resourceId}', [ResourceManagementController::class, 'edit'])->name('resource.edit');
-    Route::put('/resources/edit/{resourceId}', [ResourceManagementController::class, 'update'])->name('resource.update'); 
-    Route::delete('/resources/delete/{resourceId}', [ResourceManagementController::class, 'destroy'])->name('resource.delete'); 
-
-
     //Inventory
     Route::get('/inventory', [InventoryControlController::class, 'index'])->name('inventory.index');
     //NetworkEquipment
@@ -255,6 +229,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/inventory/NetworkEquipment/edit/{NeId}', [InventoryControlController::class, 'EditNetworkEquipment'])->name('inventory.NetworkEquipment.edit');
     Route::put('/inventory/NetworkEquipment/edit/{NeId}', [InventoryControlController::class, 'UpdateNetworkEquipment'])->name('inventory.NetworkEquipment.update');
     Route::delete('/inventory/NetworkEquipment/delete/{NeId}', [InventoryControlController::class, 'DeleteNetworkEquipment'])->name('inventory.NetworkEquipment.delete');
+    Route::post('/inventory/NetworkEquipment/import', [InventoryControlController::class, 'ImportNetworkEquipment'])->name('inventory.NetworkEquipment.import');
 
     Route::get('/inventory/MobileDevices', [InventoryControlController::class, 'MobileDevices'])->name('inventory.MobileDevices.index');
     Route::get('/inventory/MobileDevices/new', [InventoryControlController::class, 'NewMobileDevices'])->name('inventory.MobileDevices.new');
@@ -273,8 +248,6 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 
 
 
-=======
->>>>>>> main
 
 });
 

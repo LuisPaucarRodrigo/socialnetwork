@@ -22,7 +22,7 @@
                 <label for="project" class="block text-sm font-medium text-gray-700">Cantidad</label>
                 <input type="number" id="model" v-model="form.quantity"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                    <InputError :message="form.errors.quantity" />
+                <InputError :message="form.errors.quantity" />
             </div>
 
             <div class="sm:col-span-2">
@@ -44,7 +44,7 @@
                 </div>
                 <InputError :message="form.errors.state" />
             </div>
-            
+
             <div class="sm:col-span-2">
                 <label for="project" class="block text-sm font-medium text-gray-700">Precio</label>
                 <input type="number" id="price" v-model="form.price"
@@ -59,27 +59,32 @@
                 class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
                 Cancelar
             </button>
-            <button v-if="component_or_material" @click="updatedForm(component_or_material.id)"
+            <button v-if="component_or_material" @click="openModal()"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Guardar
             </button>
 
-            <button v-else @click="submitForm"
+            <button v-else @click="openModal(1)"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Crear
             </button>
         </div>
-
+        <ConfirmCreateModal :confirmingcreation="showCreateModal" itemType="Componente o Material" :nameText="'del componente o material'"
+            :createFunction="submitForm" @closeModal="closeModal(1)" />
+        <ConfirmCreateModal :confirmingcreation="showUpdateModal" itemType="Componente o Material" :nameText="'del componente o material'"
+            :createFunction="updatedForm" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     title: String,
-    component_or_material:Object,
+    component_or_material: Object,
 })
 const form = useForm({
     name: '',
@@ -100,17 +105,38 @@ if (props.component_or_material) {
 
 const submitForm = () => {
     form.post(route('inventory.ComponentsAndMaterials.create'), {
-        onError: (errors) => {
-            console.log(form)
-            console.log('Errores de validación:', errors);
+        onError: () => {
+            closeModal(1)
         }
     })
 }
 const updatedForm = (CmId) => {
-    form.put(route('inventory.ComponentsAndMaterials.update', { CmId: CmId }))
+    form.put(route('inventory.ComponentsAndMaterials.update', { CmId: props.component_or_material.id }), {
+        onError: () => {
+            closeModal()
+        }
+    })
 }
 const cancel = () => {
     router.get(route('inventory.ComponentsAndMaterials.index'))
+}
+
+const showCreateModal = ref(false);
+const showUpdateModal = ref(false);
+
+const openModal = (modal) => {
+    if (modal === 1) {
+        showCreateModal.value = true;
+    } else {
+        showUpdateModal.value = true;
+    }
+}
+const closeModal = (modal) => {
+    if (modal === 1) {
+        showCreateModal.value = false;
+    } else {
+        showUpdateModal.value = false;
+    }
 }
 
 </script>
