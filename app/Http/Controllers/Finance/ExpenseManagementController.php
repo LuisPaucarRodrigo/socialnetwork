@@ -28,7 +28,7 @@ class ExpenseManagementController extends Controller
         $request->validate([
             'state' => 'required|string|in:Aceptado,Rechazado'
         ]);
-        $purchasing = Purchasing_request::find($id);
+        $purchasing = Purchasing_request::find($request->purchase_request_id);
         $purchasing->update([
             'state' => $request->state,
             'response' => $request->coment
