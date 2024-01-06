@@ -4,7 +4,8 @@
         <template #header>
             Gastos
         </template>
-        Presupuesto: S/. 10000.00
+        Presupuesto actual: S/. {{ current_budget }} <br>
+        Presupuesto restante: S/. {{ remaining_budget }}
         <br>
         <br>
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
@@ -62,7 +63,9 @@ import Pagination from '@/Components/Pagination.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
 const props = defineProps({
-    expenses: Object
+    expenses: Object,
+    current_budget: Number,
+    remaining_budget: Number
 })
 
 </script>
