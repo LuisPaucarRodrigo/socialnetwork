@@ -30,8 +30,6 @@ class DocumentController extends Controller
         DocumentSection::create([
             'name' => $request->name,
         ]);
-
-        return to_route('documents.sections');
     }
 
     public function destroySection(DocumentSection $section)
@@ -62,13 +60,10 @@ class DocumentController extends Controller
 
         $document->storeAs('public/documents/HumanResource/', $documentName); // Guardar el archivo en public/documents/HumanResource
 
-        // Crear el documento en la base de datos
         Document::create([
             'section_id' => $request->section_id,
             'title' => $documentName,
         ]);
-
-        return to_route('documents.index');
     }
 
     public function show(Vacation $vacation)

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Provider;
+namespace App\Http\Requests\ProviderRequest;
 
+use App\Models\Provider;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateProviderRequest extends FormRequest
@@ -25,9 +26,9 @@ class CreateProviderRequest extends FormRequest
             'company_name' => 'required|string|max:255',
             'contact_name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone1' => 'required|numeric|digits:9',
-            'phone2' => 'nullable|numeric|digits:9',
-            'email' => 'required|email|max:255',
+            'phone1' => 'required|numeric|digits:9|unique:'.Provider::class,
+            'phone2' => 'nullable|numeric|digits:9|unique:'.Provider::class,
+            'email' => 'required|email|max:255|unique:'.Provider::class,
             'category' => 'required|string|max:255',
             'segment' => 'required|string|max:255',
         ];

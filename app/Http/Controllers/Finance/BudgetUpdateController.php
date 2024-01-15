@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BudgetUpdateController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Project $project)
     {
         $budget_updates = BudgetUpdate::where('project_id', $project->id)

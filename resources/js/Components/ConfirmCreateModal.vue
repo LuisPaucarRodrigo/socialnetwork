@@ -1,30 +1,28 @@
 <template>
-    <Modal :show="confirmingcreation">
+    <Modal :show="confirmingcreation" :maxWidth="'sm'">
         <div class="p-6">
-            <h2 class="text-lg font-medium text-gray-900">
-                Creacion de nuevo {{ itemType }}.
-            </h2>
-            <p class="mt-1 text-sm text-gray-600">
-                ¿Desea continuar con la creacion {{ nameText == null ? itemType : nameText
-                }}?
-            </p>
-            <div class="mt-6 flex justify-end">
-                <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-                <PrimaryButton class="ml-3" @click="createItem">{{ createText }}</PrimaryButton>
+            <div class="text-center">
+                <div class="bg-green-200 rounded-full h-12 w-12 flex mx-auto items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                </div>
+                <h2 class="pt-5 text-lg font-medium text-gray-900">
+                    Creación de nuevo {{ itemType }} exitosa.
+                </h2>
+                <p class="mt-1 text-sm text-gray-600">
+                    ¡El {{ itemType }} se creó correctamente!
+                </p>
             </div>
         </div>
     </Modal>
 </template>
-
 <script>
 import Modal from '@/Components/Modal.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 export default {
     components: {
-        Modal,
-        PrimaryButton,
-        SecondaryButton
+        Modal
     },
     props: {
         confirmingcreation: {
@@ -35,28 +33,7 @@ export default {
             type: String,
             required: true
         },
-        createText: {
-            type: String,
-            default: 'Continuar'
-        },
-        nameText: {
-            type: String,
-            default: null
-        },
-        createFunction: {
-            type: Function,
-            required: true
-        }
     },
-    emits: ['closeModal'],
-    methods: {
-        closeModal() {
-            this.$emit('closeModal');
-        },
-        createItem() {
-            this.createFunction();
-        }
-    }
 };
 </script>
   

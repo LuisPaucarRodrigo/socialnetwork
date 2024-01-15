@@ -39,8 +39,7 @@ class InventoryControlController extends Controller
     }
     public function CreateNetworkEquipment(NetworkEquipmentRequest $request)
     {
-        $NetworkEquipment = NetworkEquipment::create($request->validated());
-        return redirect()->route('inventory.NetworkEquipment.index');
+        NetworkEquipment::create($request->validated());
     }
     public function EditNetworkEquipment($NeId)
     {
@@ -96,12 +95,13 @@ class InventoryControlController extends Controller
             'title'=>'Nuevo Dipositivo Movil',
         ]);
     }
+
     public function CreateMobileDevices(MobileDeviceRequest $request)
     {
-        //dd($request->validate());
-        $MovileDevice = MobileDevice::create($request->validated());
-        return redirect()->route('inventory.MobileDevices.index');
+
+        MobileDevice::create($request->validated());
     }
+
     public function EditMobileDevices($MdId)
     {
         $MobileDevice = MobileDevice::find($MdId);
@@ -110,12 +110,14 @@ class InventoryControlController extends Controller
             'title'=>'Modificar Información del Dipositivo Movil',
         ]);
     }
+
     public function UpdateMobileDevices(MobileDeviceRequest $request, $MdId)
     {
         $MobileDevice = MobileDevice::find($MdId);
         $MobileDevice->update($request->all());
         return redirect()->route('inventory.MobileDevices.index');
     }
+
     public function DeleteMobileDevices($MdId)
     {
         $MovileDevice = MobileDevice::find($MdId);
@@ -130,17 +132,20 @@ class InventoryControlController extends Controller
             'components_or_materials' => $ComponentsOrMaterials
         ]);
     }
+
     public function NewComponentsAndMaterials()
     {
         return Inertia::render('Inventory/InventoryControl/ComponentsAndMaterials/Information',[
             'title'=>'Nuevo Componente o Material',
         ]);
     }
+
     public function CreateComponentsAndMaterials(ComponentAndMaterialRequest $request)
     {
-        $ComponentAndMaterial = ComponentOrMaterial::create($request->validated());
-        return redirect()->route('inventory.ComponentsAndMaterials.index');
+        ComponentOrMaterial::create($request->validated());
+
     }
+    
     public function EditComponentsAndMaterials($CmId)
     {
         $ComponentOrMaterial = ComponentOrMaterial::find($CmId);
@@ -149,12 +154,14 @@ class InventoryControlController extends Controller
             'component_or_material' => $ComponentOrMaterial
         ]);
     }
+
     public function UpdateComponentsAndMaterials(ComponentAndMaterialRequest $request, $CmId)
     {
         $ComponentOrMaterial = ComponentOrMaterial::find($CmId);
         $ComponentOrMaterial->update($request->all());
         return redirect()->route('inventory.ComponentsAndMaterials.index');
     }
+
     public function DeleteComponentsAndMaterials($CmId)
     {
         $ComponentOrMaterial = ComponentOrMaterial::find($CmId);

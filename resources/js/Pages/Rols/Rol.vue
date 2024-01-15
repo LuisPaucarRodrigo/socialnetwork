@@ -67,7 +67,7 @@
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Crear Rol
                 </h2>
-                <form @submit.prevent="openModal">
+                <form @submit.prevent="submit">
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
                             <div>
@@ -111,35 +111,34 @@
                 </form>
             </div>
         </Modal>
-        <ConfirmDeleteModal :confirmingDeletion="confirmingRolDeletion" itemType="rol" :deleteText="deleteButtonText"
+        <ConfirmDeleteModal :confirmingDeletion="confirmingRolDeletion" itemType="rol"
             :deleteFunction="deleteRol" @closeModal="closeModalRol" />
-        <ConfirmCreateModal :confirmingcreation="showModal" itemType="rol"
-            :nameText="'del nuevo rol'" :createFunction="submit" @closeModal="close" />
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="rol" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import Pagination from '@/Components/Pagination.vue';
-import Modal from '@/Components/Modal.vue';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
+import Pagination from '@/Components/Pagination.vue';
+import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
-
+import { Head, Link, useForm, router } from '@inertiajs/vue3';
 
 const create_rol = ref(false);
 const confirmingRolDeletion = ref(false);
 const rolToDelete = ref(null);
+const showModal = ref(false);
 
 const form = useForm({
     name: '',
     description: '',
     permission: []
-})
+});
 
 const props = defineProps({
     rols: Object,
@@ -158,7 +157,11 @@ const submit = () => {
     form.post(route('rols.store'), {
         onSuccess: () => {
             closeModal();
-            close();
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('rols.index'))
+            }, 2000);
         },
         onError: () => {
             close();
@@ -175,7 +178,7 @@ const deleteRol = () => {
     const rolId = rolToDelete.value;
     if (rolId) {
         router.delete(route('rols.delete', { id: rolId }), {
-            onSuccess: () => closeModalDelete()
+            onSuccess: () => closeModalRol()
         });
     }
 };
@@ -183,13 +186,5 @@ const deleteRol = () => {
 const closeModalRol = () => {
     confirmingRolDeletion.value = false;
 };
-const showModal = ref(false);
-
-const openModal = () => {
-    showModal.value = true;
-}
-const close = () => {
-    showModal.value = false;
-}
 
 </script>

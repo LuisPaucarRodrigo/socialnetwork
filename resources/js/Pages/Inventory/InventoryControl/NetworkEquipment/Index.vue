@@ -11,11 +11,6 @@
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 mr-5">
                     + Agregar
                 </button>
-
-                <!-- <button @click="open_file_modal()" type="button"
-                    class="rounded-md bg-green-500 px-4 py-2 text-center text-sm text-white hover:bg-green-400">
-                    Importar Datos
-                </button> -->
             </div>
 
             <div class="talwing mt-4">
@@ -108,9 +103,9 @@
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, Link } from '@inertiajs/vue3';
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import { Head, router } from '@inertiajs/vue3';
+import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 

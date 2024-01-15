@@ -40,7 +40,7 @@ class FormationDevelopment extends Controller
     public function formation_programs_store(FormationProgramRequest $request)
     {
         $data = $request->validated();
-        $formationProgram = FormationProgram::updateOrCreate($data);
+        $formationProgram = FormationProgram::create($data);
         Training::whereIn('id', $request['trainings'])
             ->update(['formation_program_id' => $formationProgram->id]);
         return redirect()->route('management.employees.formation_development.formation_programs');
@@ -95,7 +95,9 @@ class FormationDevelopment extends Controller
 
         ]);
         Training::updateOrCreate(['id' => $id], $data);
-        return redirect()->route('management.employees.formation_development.trainings');
+        if ($id = null) {
+            return redirect()->route('management.employees.formation_development.trainings');
+        }
     }
 
     public function trainings_destroy($id)
@@ -138,11 +140,8 @@ class FormationDevelopment extends Controller
             $employee = Employee::find($employeeId);
 
             if ($employee) {
-                // Asigna los programas de formación al empleado
                 $employee->formation_programs()->sync($formationProgramIds);
             }
         }
-
-        return redirect()->route('management.employees.formation_development');
     }
 }

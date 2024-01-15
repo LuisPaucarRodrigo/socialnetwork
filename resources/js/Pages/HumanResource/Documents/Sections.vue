@@ -46,7 +46,7 @@
           <h2 class="text-base font-medium leading-7 text-gray-900">
             Agregar Seccion
           </h2>
-          <form @submit.prevent="openModal">
+          <form @submit.prevent="submit">
             <div class="space-y-12">
               <div class="border-b border-gray-900/10 pb-12">
                 <div>
@@ -68,8 +68,7 @@
           </form>
         </div>
       </Modal>
-      <ConfirmCreateModal :confirmingcreation="showModal" itemType="seccion de documentos"
-        :nameText="'de la nueva seccion de documentos'" :createFunction="submit" @closeModal="closeModal" />
+      <ConfirmCreateModal :confirmingcreation="showModal" itemType="seccion de documentos" />
       <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="seccion" :deleteFunction="deleteSection"
         @closeModal="closeModalSection" />
     </AuthenticatedLayout>
@@ -88,6 +87,8 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import { ref, defineProps } from 'vue';
 import Modal from '@/Components/Modal.vue';
+
+const showModal = ref(false);
 
 const props = defineProps({
   sections: Object,
@@ -109,12 +110,16 @@ const closeCreateSectionModal = () => {
   isCreateSectionModalOpen.value = false;
 };
 
-const submit = async () => {
+const submit = () => {
   form.post(route('documents.storeSection'), {
     onSuccess: () => {
       closeCreateSectionModal();
-      closeModal();
       form.reset();
+      showModal.value = true
+      setTimeout(() => {
+        showModal.value = false;
+        router.visit(route('documents.sections'))
+      }, 2000);
     },
     onError: () => {
       closeModal();
@@ -141,13 +146,5 @@ const deleteSection = async () => {
 
 };
 
-const showModal = ref(false);
-
-const openModal = () => {
-  showModal.value = true;
-}
-const closeModal = () => {
-  showModal.value = false;
-}
 </script>
   

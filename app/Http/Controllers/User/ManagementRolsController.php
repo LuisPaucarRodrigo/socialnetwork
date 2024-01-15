@@ -7,6 +7,7 @@ use App\Http\Requests\RolRequest\CreateRolRequest;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class ManagementRolsController extends Controller
@@ -29,10 +30,7 @@ class ManagementRolsController extends Controller
             'name' => $request->name,
             'description' => $request->description,
         ]);
-
         $role->permissions()->attach($request->permission);
-
-        return to_route('rols.index');
     }
 
     public function delete($id)

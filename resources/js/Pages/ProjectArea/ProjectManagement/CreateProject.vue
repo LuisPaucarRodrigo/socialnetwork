@@ -10,7 +10,6 @@
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
                 <div class="pt-1">
-                    <!-- Linea de borde abajo -->
                     <div class="border-b border-gray-900/10 mb-2">
                     </div>
 
@@ -125,7 +124,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -135,7 +133,7 @@
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                 </div>
             </form>
-            <Modal :show="showModal">
+            <Modal :show="showModalMember">
                 <form class="p-6" @submit.prevent="add_employee">
                     <h2 class="text-lg font-medium text-gray-900">
                         Agregar un miembro del equipo
@@ -179,17 +177,22 @@
                 </form>
             </Modal>
         </div>
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType=" proyecto" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+
+
+const showModal = ref(false)
 
 const { employees, start_date, numberOfProjects, project } = defineProps({
     employees: Object,
@@ -215,12 +218,20 @@ const form = useForm(
 
 const submit = () => {
     form.code = formatearFecha(form.start_date) + '-' + form.code
-    form.post(route('projectmanagement.store'))
+    form.post(route('projectmanagement.store'),{
+        onSuccess: () => {
+            closeModal();
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('projectmanagement.index'))
+            }, 2000);
+        },
+        onError: () => {
+            close();
+        }
+    })
 }
-
-//code of the project
-
-
 
 function formatearFecha(fecha) {
     if (fecha) {
@@ -231,16 +242,15 @@ function formatearFecha(fecha) {
     }
 }
 
-//functions of modal
-const showModal = ref(false);
+const showModalMember = ref(false);
 const empInitState = { employee: '', charge: '' }
 const employeeToAdd = ref(JSON.parse(JSON.stringify(empInitState)))
 
 const showToAddEmployee = () => {
-    showModal.value = true;
+    showModalMember.value = true;
 }
 const closeModal = () => {
-    showModal.value = false;
+    showModalMember.value = false;
 };
 const add_employee = () => {
     console.log(project)
@@ -269,7 +279,6 @@ const delete_employee = (index) => {
     form.employees.splice(index, 1);
 }
 
-//delete memeber for a create project
 const delete_already_employee = (pivot_id, index) => {
     router.delete(route('projectmanagement.delete.employee', { pivot_id }), {
         onError: () => {

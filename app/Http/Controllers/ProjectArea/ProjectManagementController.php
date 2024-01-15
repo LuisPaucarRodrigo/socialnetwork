@@ -64,7 +64,6 @@ class ProjectManagementController extends Controller
                 $project->employees()->attach($empId['id'], ['charge' => $employee['charge']]);
             }
         }
-        return redirect()->route('projectmanagement.index');
     }
 
     public function project_delete_employee($pivot_id)
@@ -154,7 +153,6 @@ class ProjectManagementController extends Controller
         } else { 
             Purchasing_request::create($data);
         }
-        return redirect()->route('projectmanagement.purchases_request.index', ['project_id' => $request->project_id]);
     }
 
     public function project_expenses(Project $project_id) {

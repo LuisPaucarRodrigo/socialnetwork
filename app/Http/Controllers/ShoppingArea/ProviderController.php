@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\ShoppingArea;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Provider\CreateProviderRequest;
-use App\Http\Requests\Provider\UpdateProviderRequest;
+use App\Http\Requests\ProviderRequest\UpdateProviderRequest;
+use App\Http\Requests\ProviderRequest\CreateProviderRequest;
 use App\Models\Provider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class ProviderController extends Controller
@@ -25,7 +26,6 @@ class ProviderController extends Controller
     {
         $validatedData = $request->validated();
         Provider::create($validatedData);
-        return to_route('providersmanagement.index');
     }
 
     public function edit($id)
