@@ -1,11 +1,10 @@
 <template>
     <Head title="Registro de programas" />
-
     <AuthenticatedLayout>
         <template #header>
             Registro de Programas de Formación
         </template>
-        <form @submit.prevent="openModal()">
+        <form @submit.prevent="submit">
             <div class="space-y-12">
                 <!-- Linea de borde abajo -->
                 <div class="border-b border-gray-900/10 pb-3">
@@ -86,8 +85,7 @@
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
         </form>
-        <ConfirmCreateModal :confirmingcreation="showModal" itemType="programa de formacion"
-            :nameText="'del nuevo programa de formacion'" :createFunction="submit" @closeModal="closeModal" />
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="programa de formacion" />
     </AuthenticatedLayout>
 </template>
 
@@ -96,9 +94,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue'
-import { Head, useForm } from '@inertiajs/vue3'
+import InputError from '@/Components/InputError.vue';
+import { Head, useForm, router } from '@inertiajs/vue3'
 import { ref, defineProps } from 'vue';
+
+const showModal = ref(false);
 
 const { trainings } = defineProps({
     trainings: Object
@@ -112,21 +112,19 @@ const initialState = {
     trainings: []
 }
 
-const form = useForm({ ...initialState })
+const form = useForm({ ...initialState });
 
 const submit = () => {
     form.post(route('management.employees.formation_development.formation_programs.store'), {
         onSuccess: () => {
             form.data = { ...initialState }
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('management.employees.formation_development.formation_programs'))
+            }, 2000);
         },
     })
 }
-const showModal = ref(false);
 
-const openModal = () => {
-    showModal.value = true;
-}
-const closeModal = () => {
-    showModal.value = false;
-}
 </script>

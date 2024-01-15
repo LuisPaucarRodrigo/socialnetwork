@@ -16,18 +16,19 @@ class ResourceManagementController extends Controller
             'resources' => $resources,
         ]);
     }
-    //Nuevo Recurso
-    public function new(Request $request)
+
+    public function new()
     {
         return Inertia::render('Inventory/ResourceManagement/information', [
             'title' => 'Nuevo Recurso',
         ]);
     }
+    
     public function create(Request $request)
     {
         $validatedData = $request->validate(Resource::rules());
         Resource::create($validatedData);
-        return to_route('resources.index');
+        
     }
 
     public function edit($resourceId)

@@ -161,7 +161,6 @@ class ManagementEmployees extends Controller
             'employee_id' => $employeeId,
         ]);
 
-        return to_route('management.employees');
     }
 
     public function edit($id)
@@ -179,8 +178,7 @@ class ManagementEmployees extends Controller
     public function details($id)
     {
         $details = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
-        //dd($details);
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesInformation', ['details' => $details]);
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
     }
 
     public function download($filename)

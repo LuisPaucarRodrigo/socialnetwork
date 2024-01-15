@@ -3,7 +3,7 @@
 
     <AuthenticatedLayout>
         <template #header>
-            Registro de capacitaciones
+            {{ titleModal }} de capacitaciones
         </template>
         <form @submit.prevent="submit">
             <div class="space-y-12">
@@ -44,8 +44,7 @@
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
         </form>
-        <Modal :show="showModal">
-            <!-- Contenido del modal cuando no hay empleados -->
+        <!-- <Modal :show="showModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
                     {{ titleModal }}
@@ -62,27 +61,25 @@
                         class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
                         type="button"> {{ textButton }}
                     </button>
-
-                    <!-- Crear -->
                     <button v-else @click="update(training.id)"
                         class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                         {{ textButton }}
                     </button>
                 </div>
             </div>
-        </Modal>
+        </Modal> -->
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="capacitacion" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue'
-import { Head, useForm } from '@inertiajs/vue3';
-import Modal from '@/Components/Modal.vue';
+import InputError from '@/Components/InputError.vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, defineProps } from 'vue';
-
 
 const props = defineProps({
     training: Object
@@ -98,40 +95,50 @@ const form = useForm({
 });
 
 const showModal = ref(false);
-const titleModal = ref(null);
-const content = ref(null);
-const textButton = ref(null);
+const titleModal = props.training ? "Actualizacion":"Registro";
+// const content = ref(null);
+// const textButton = ref(null);
 
-const openModalCreate = () => {
-    titleModal.value = 'Creacion de una nueva Capacitacion';
-    content.value = '¿Desea continuar con la creacion de una nueva Capacitacion?';
-    textButton.value = 'Continuar';
-    showModal.value = true;
-}
-const openModalSave = () => {
-    titleModal.value = 'Modificar la Capacitacion';
-    content.value = '¿Desea guardar los cambios realizados a esta Capacitacion?';
-    textButton.value = 'Guardar';
-    showModal.value = true;
-}
-const closeModal = () => {
-    showModal.value = false;
-}
+// const openModalCreate = () => {
+//     titleModal.value = 'Creacion de una nueva Capacitacion';
+//     content.value = '¿Desea continuar con la creacion de una nueva Capacitacion?';
+//     textButton.value = 'Continuar';
+//     showModal.value = true;
+// }
+
+// const openModalSave = () => {
+//     titleModal.value = 'Modificar la Capacitacion';
+//     content.value = '¿Desea guardar los cambios realizados a esta Capacitacion?';
+//     textButton.value = 'Guardar';
+//     showModal.value = true;
+// }
+
+// const closeModal = () => {
+//     showModal.value = false;
+// }
 
 const update = (training_id) => {
-    console.log('editando',training_id)
     form.post(route('management.employees.formation_development.trainings.store', { id: training_id }))
 }
+
 const create = () => {
-    console.log('creando')
-    form.post(route('management.employees.formation_development.trainings.store'))
+    form.post(route('management.employees.formation_development.trainings.store'),{
+        onSuccess: () => {
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('management.employees.formation_development.trainings'))
+            },2000);
+        }
+    })
 }
 
 const submit = () => {
     if (props.training) {
-        openModalSave()
+        update(props.training.id)
     } else {
-        openModalCreate()
+        create()
     }
 }
+
 </script>

@@ -29,14 +29,14 @@
       <div v-for="document in filteredDocuments" :key="document.id" class="bg-white p-4 rounded-md shadow md:col-span-2">
         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ document.title }}</h2>
         <div class="flex space-x-3 item-center">
-          <button @click="confirmDeleteDocument(document.id)" class="flex items-center text-red-600 hover:underline">
-            <TrashIcon class="h-4 w-4" />
+          <button @click="openPreviewDocumentModal(document.id)" class="flex items-center text-green-600 hover:underline">
+            <EyeIcon class="h-4 w-4 ml-1" />
           </button>
           <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
-          <button @click="openPreviewDocumentModal(document.id)" class="flex items-center text-green-600 hover:underline">
-            <EyeIcon class="h-4 w-4 ml-1" />
+          <button @click="confirmDeleteDocument(document.id)" class="flex items-center text-red-600 hover:underline">
+            <TrashIcon class="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -45,25 +45,22 @@
     <teleport to="body">
       <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
         <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
-        <div class="modal-container flex items-center justify-center">
-          <div class="modal-content bg-white p-5 rounded-md relative"
-            style="width: 100% !important; height: 60% !important;">
-
+        <div class="flex items-center justify-center h-full w-3/4">
+          <div class="bg-white p-5 rounded-md relative w-full h-3/5" >
             <button @click="closePreviewDocumentModal"
               class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-            <!-- Contenido del modal -->
-            <iframe :src="getDocumentUrl(documentToShow)" width="100%" height="100%"></iframe>
-            <!-- Cambiado a 100% de ancho y alto -->
+            <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
           </div>
         </div>
       </div>
     </teleport>
+
     <Modal :show="create_document">
       <div class="p-6">
         <h2 class="text-base font-medium leading-7 text-gray-900">
           Subir Documento
         </h2>
-        <form @submit.prevent="openModal">
+        <form @submit.prevent="submit">
           <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
               <div>
@@ -94,8 +91,7 @@
     </Modal>
     <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="documento" :deleteFunction="deleteDocument"
       @closeModal="closeModalDoc" />
-    <ConfirmCreateModal :confirmingcreation="showModal" itemType="documento" :nameText="'del nuevo documento'"
-      :createFunction="submit" @closeModal="close" />
+    <ConfirmCreateModal :confirmingcreation="showModal" itemType="documento" />
   </AuthenticatedLayout>
 </template>
   
@@ -146,12 +142,15 @@ const closeModal = () => {
 const submit = () => {
   form.post(route('documents.create'), {
     onSuccess: () => {
-      close();
       closeModal();
       form.reset();
+      showModal.value = true
+      setTimeout(() => {
+        showModal.value = false;
+        router.visit(route('documents.index'))
+      }, 2000);
     },
     onError: () => {
-      close();
       form.reset();
     },
     onFinish: () => {
@@ -159,14 +158,6 @@ const submit = () => {
     }
   });
 };
-
-const openModal = () => {
-  showModal.value = true;
-}
-
-const close = () => {
-  showModal.value = false;
-}
 
 const confirmDeleteDocument = (documentId) => {
   docToDelete.value = documentId;
@@ -212,27 +203,5 @@ const filteredDocuments = computed(() => {
 });
 
 </script>
-  
-<style scoped>
-/* Estilos para las cards y otros estilos según sea necesario */
-.document-card {
-  /* Estilos para las cards de documentos */
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  /* Otros estilos según sea necesario */
-}
 
-.modal-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 150%;
-  width: 75%;
-}
-
-.modal-content {
-  width: 100%;
-}
-</style>
   

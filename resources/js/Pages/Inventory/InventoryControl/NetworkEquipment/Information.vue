@@ -71,28 +71,27 @@
                 class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
                 Cancelar
             </button>
-            <button v-if="network_equipment" @click="openModal()"
+            <button v-if="network_equipment" @click="updatedForm"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Guardar
             </button>
 
-            <button v-else @click="openModal(1)"
+            <button v-else @click="submitForm"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Crear
             </button>
         </div>
-        <ConfirmCreateModal :confirmingcreation="showCreateModal" itemType="Equipo de Red" :nameText="'del Equipo de Red'"
-            :createFunction="submitForm" @closeModal="closeModal(1)" />
-        <ConfirmCreateModal :confirmingcreation="showUpdateModal" itemType="Equipo de Red" :nameText="'del Equipo de Red'"
-            :createFunction="updatedForm" @closeModal="closeModal" />
+        <ConfirmCreateModal :confirmingcreation="showCreateModal" itemType="Equipo de Red" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, Link, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import { ref } from 'vue';
+
+const showCreateModal = ref(false);
 
 const props = defineProps({
     providers: Object,
@@ -121,36 +120,20 @@ if (props.network_equipment) {
 
 const submitForm = () => {
     form.post(route('inventory.NetworkEquipment.create'), {
-        onError: () => {
-            closeModal(1)
+        onSuccess: () => {
+            showCreateModal.value = true
+            setTimeout(() => {
+                showCreateModal.value = false
+                router.visit(route('inventory.NetworkEquipment.index'))
+            },2000)
         }
     })
 }
 const updatedForm = () => {
-    form.put(route('inventory.NetworkEquipment.update', { NeId: props.network_equipment.id }),{
-        onError: () => {
-            closeModal()
-        }
-    })
+    form.put(route('inventory.NetworkEquipment.update', { NeId: props.network_equipment.id }))
 }
 const cancel = () => {
     router.get(route('inventory.NetworkEquipment.index'))
 }
-const showCreateModal = ref(false);
-const showUpdateModal = ref(false);
 
-const openModal = (modal) => {
-    if (modal === 1){
-        showCreateModal.value = true;
-    }else{
-        showUpdateModal.value = true;
-    }
-}
-const closeModal = (modal) => {
-    if (modal === 1){
-        showCreateModal.value = false;
-    }else{
-        showUpdateModal.value = false;
-    }
-}
 </script>
