@@ -44,14 +44,16 @@
                     :src="details.purchase_image" alt="Imagen de Cotización">
             </div>
         </div>
-        <button @click="sendReply('Aceptado')" type="button"
-            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-            Aceptar
-        </button>
-        <button @click="check" type="button"
-            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-            Rechazar
-        </button>
+        <div v-if="details.purchasing_requests.state == 'En Progreso'" class="flex gap-2">
+            <button @click="sendReply('Aceptado')" type="button"
+                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                Aceptar
+            </button>
+            <button @click="check" type="button"
+                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                Rechazar
+            </button>
+        </div>
         <Modal :show="confirmOrden" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
@@ -62,9 +64,9 @@
                 </p>
                 <div class="mt-6">
                     <InputLabel for="coment" value="Coment" class="sr-only" />
-                    <TextInput id="coment" ref="comentOrden" v-model="form.coment" type="text" class="mt-1 block w-3/4"
+                    <TextInput id="coment" ref="comentOrden" v-model="form.response" type="text" class="mt-1 block w-3/4"
                         placeholder="Coment" @keyup.enter="sendReply" />
-                    <InputError :message="form.errors.coment" class="mt-2" />
+                    <InputError :message="form.errors.response" class="mt-2" />
                 </div>
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
@@ -96,8 +98,8 @@ const confirmOrden = ref(false);
 const comentOrden = ref(null);
 
 const form = useForm({
-    coment: '',
-    state: ''
+    response: '',
+    state: '',
 });
 
 const check = () => {
@@ -107,7 +109,7 @@ const check = () => {
 
 const sendReply = (state) => {
     form.state = state
-    form.put(route('managementexpense.reviewed',props.details.id,form), {
+    form.put(route('managementexpense.reviewed',props.details.purchasing_requests.id,form), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => comentOrden.value.focus(),

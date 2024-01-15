@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ExpenseRequest\ReviewedExpenseRequest;
 use App\Models\Purchase_order;
 use App\Models\Purchase_quote;
 use App\Models\Purchasing_request;
@@ -22,17 +23,12 @@ class ExpenseManagementController extends Controller
         return Inertia::render('Finance/ManagementExpense/ExpenseDetails', ['details' => Purchase_quote::with('purchasing_requests.project')->find($id)]);
     }
 
-    public function reviewed(Request $request, $id)
+    public function reviewed(ReviewedExpenseRequest $request, $id)
     {   
-        //dd($request->all());
-        $request->validate([
-            'state' => 'required|string|in:Aceptado,Rechazado'
-        ]);
+        $validateData = $request->validated();
         $purchasing = Purchasing_request::find($id);
-        $purchasing->update([
-            'state' => $request->state,
-            'response' => $request->coment
-        ]);
+        $purchasing->update($validateData);
+
         if ($request->state == 'Aceptado') {
             $date_issue = Carbon::today();
             Purchase_order::create([

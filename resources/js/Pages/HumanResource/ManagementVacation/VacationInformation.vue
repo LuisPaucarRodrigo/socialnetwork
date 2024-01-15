@@ -148,7 +148,6 @@ const submit = () => {
     if (route().params.vacation) {
         form.put(route('management.vacation.information.update', form));
     } else {
-        // Lógica para crear nueva información
         form.post(route('management.vacation.information.create'));
     }
 };

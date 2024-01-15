@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HumanResource;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FormationRequest\FormationProgramRequest;
 use App\Models\FormationProgram;
 use App\Models\Training;
 use App\Models\Employee;
@@ -36,15 +37,10 @@ class FormationDevelopment extends Controller
         ]);
     }
 
-    public function formation_programs_store(Request $request)
+    public function formation_programs_store(FormationProgramRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required',
-            'month_year' => 'required',
-            'type' => 'required',
-            'description' => 'required',
-        ]);
-        $formationProgram = FormationProgram::updateOrCreate($data);
+        $data = $request->validated();
+        $formationProgram = FormationProgram::create($data);
         Training::whereIn('id', $request['trainings'])
             ->update(['formation_program_id' => $formationProgram->id]);
         return redirect()->route('management.employees.formation_development.formation_programs');
@@ -98,8 +94,10 @@ class FormationDevelopment extends Controller
             'description' => 'required',
 
         ]);
-        Training::updateOrCreate(['id' => $id],$data);
-        return redirect()->route('management.employees.formation_development.trainings');
+        Training::updateOrCreate(['id' => $id], $data);
+        if ($id = null) {
+            return redirect()->route('management.employees.formation_development.trainings');
+        }
     }
 
     public function trainings_destroy($id)
@@ -107,11 +105,6 @@ class FormationDevelopment extends Controller
         $training = Training::find($id);
         $training->delete();
         return Inertia::location(route('management.employees.formation_development.trainings'));
-    }
-
-    public function assignate()
-    {
-
     }
 
     public function assignate_employee_fprogram(Request $request)
@@ -147,12 +140,8 @@ class FormationDevelopment extends Controller
             $employee = Employee::find($employeeId);
 
             if ($employee) {
-                // Asigna los programas de formación al empleado
                 $employee->formation_programs()->sync($formationProgramIds);
             }
         }
-
-        return redirect()->route('management.employees.formation_development');
     }
-
 }

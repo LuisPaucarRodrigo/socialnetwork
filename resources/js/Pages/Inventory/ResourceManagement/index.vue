@@ -68,7 +68,7 @@
                                         class="text-blue-900 whitespace-no-wrap">
                                         <PencilIcon class="text-yellow-500 h-4 w-4"></PencilIcon>
                                     </button>
-                                    <button type="button" @click="openModalDelete(item)"
+                                    <button type="button" @click="openModalDelete(item.id)"
                                         class="text-red-900 whitespace-no-wrap">
                                         <TrashIcon class="text-red-500 h-4 w-4" />
                                     </button>
@@ -83,42 +83,24 @@
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="resources.links" />
         </div>
-        <Modal :show="showModalDelete" :maxWidth="'md'">
-            <!-- Contenido del modal cuando no hay empleados -->
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    ¿Esta seguro de eliminar el Recurso?
-                </h2>
-                <p class="mt-2 text-sm text-gray-500">
-                    Se eliminara <b>{{ selectedResource.name }}</b>. Esta accion no se podra revertir mas adelante.
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
-                        type="button" @click="closeModal()"> Cancelar
-                    </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="button" @click="delete_resource(selectedResource.id)"> Eliminar
-                    </button>
-                </div>
-            </div>
-        </Modal>
+        <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="recurso" 
+            :deleteFunction="delete_resource" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 <script setup>
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, Link } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue'
-import Modal from '@/Components/Modal.vue';
 import { ref, defineProps } from 'vue';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+
+const showModalDelete = ref(false);
+const selectedResource = ref(null);
 
 const props = defineProps({
     resources: Object
 })
-
-console.log(props.resources)
 
 const add_resource = () => {
     router.get(route('resources.new'));
@@ -126,12 +108,14 @@ const add_resource = () => {
 const editResource = (resourceId) => {
     router.get(route('resource.edit', { resourceId: resourceId }));
 }
-const delete_resource = (resourceId) => {
-    router.delete(route('resource.delete', { resourceId: resourceId }));
-    closeModal();
+const delete_resource = () => {
+    const resourceId = selectedResource.value
+    router.delete(route('resource.delete', { resourceId: resourceId }),{
+        onSuccess: () => {
+            closeModal();
+        }
+    });
 }
-const showModalDelete = ref(false);
-const selectedResource = ref(null);
 
 const openModalDelete = (resourceId) => {
     selectedResource.value = resourceId;

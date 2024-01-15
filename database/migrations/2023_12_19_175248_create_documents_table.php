@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('section_id')->constrained('document_sections');
             $table->string('title');
-            // Agrega otras columnas según sea necesario
+            $table->foreignId('section_id')->constrained('document_sections');
             $table->timestamps();
         });
     }

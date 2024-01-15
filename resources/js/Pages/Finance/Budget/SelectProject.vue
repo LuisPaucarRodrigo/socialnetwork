@@ -5,10 +5,9 @@
             Selección del Proyecto
         </template>
         <div class="relative inline-block">
-            <!-- Tu código para el select -->
             <select v-model="selectedProjectId"
                 class="block w-full sm:w-48 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring focus:border-blue-300">
-                <option value="null" selected disabled>Seleccione un proyecto</option>
+                <option value="" selected disabled>Seleccione un proyecto</option>
                 <option v-for="project in projects" :key="project.id" :value="project.id">
                     {{ project.name }}
                 </option>
@@ -26,23 +25,19 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, defineProps } from 'vue';
-import { Head, router, Link } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 
 const props = defineProps({
     projects: Object,
-    project_id: String,
 });
 
-const selectedProjectId = ref(props.project_id);
+const selectedProjectId = ref("");
 
 const goToBudget = () => {
-    console.log(selectedProjectId.value);
     if (selectedProjectId.value) {
         router.get(route('initialbudget.index', { project: selectedProjectId.value }));
     } else {
-        console.error('Por favor, seleccione un proyecto.');
-        return '#'; // Otra opción podría ser usar una URL válida o simplemente '#'
+        return '#';
     }
 };
-
 </script>

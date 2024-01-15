@@ -54,15 +54,19 @@
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
         </form>
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="asignacion de programa" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue'
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
+const showModal = ref(false);
 const props = defineProps({
     employees: Object,
     formation_programs: Object
@@ -74,6 +78,14 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('management.employees.formation_development.assignation.store'))
+    form.post(route('management.employees.formation_development.assignation.store'),{
+        onSuccess: () => {
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('management.employees.formation_development'))
+            }, 2000);
+        }
+    })
 }
 </script>
