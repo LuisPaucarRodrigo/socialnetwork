@@ -5,7 +5,7 @@
         <template #header>
             Perfil
         </template>
-        <form @submit.prevent="openModal()">
+        <form @submit.prevent="submit">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion Personal</h2>
@@ -120,8 +120,10 @@
                             <div class="mt-2">
                                 <select v-model="form.pension_system" id="pension_system" autocomplete="pension-regime"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option v-for="pension in pensions" :key="pension" :value="pension.id">{{ pension.type }}</option>
+                                    <option v-for="pension in pensions" :key="pension" :value="pension.id">{{ pension.type
+                                    }}</option>
                                 </select>
+                                <InputError :message="form.errors.pension_system" />
                             </div>
                         </div>
 
@@ -225,7 +227,7 @@
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.province" id="province" autocomplete="address-level1"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.provinde" />
+                                <InputError :message="form.errors.province" />
                             </div>
                         </div>
 
@@ -488,8 +490,7 @@
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
             </div>
         </form>
-        <ConfirmCreateModal :confirmingcreation="showModal" itemType="empleado"
-            :nameText="'del nuevo empleado'" :createFunction="submit" @closeModal="closeModal" />
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="empleado" />
     </AuthenticatedLayout>
 </template>
 
@@ -501,18 +502,20 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+
+const showModal = ref(false);
 
 const props = defineProps({
     pensions: Object,
     employeesedit: {
         type: Object,
-        default : null
+        default: null
     }
 })
 
-const initialState = {
+const form = useForm({
     curriculum_vitae: null,
     cropped_image: '',
     name: '',
@@ -550,11 +553,7 @@ const initialState = {
     operations: '',
     accidents: '',
     vaccinations: '',
-}
-
-const form = useForm(
-    props.employeesedit ? props.employeesedit : {...initialState}
-)
+})
 
 const addDependent = () => {
     form.familyDependents.push({ family_dni: '', family_name: '', family_lastname: '', family_relation: '', family_education: 'Universidad' });
@@ -570,18 +569,17 @@ const handleImagenRecortada = (imagenRecortada) => {
 
 const submit = () => {
     form.post(route('management.employees.information.create'), {
-        onError: (error) => {
-            console.log('errroorrrrrrrrrrrrrrrr',error)
+        onSuccess: () => {
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('management.employees'))
+            }, 2000);
+        },
+        onError: () => {
+            closeModal()
         }
     })
 }
 
-const showModal = ref(false);
-
-const openModal = () => {
-    showModal.value = true;
-}
-const closeModal = () => {
-    showModal.value = false;
-}
 </script>

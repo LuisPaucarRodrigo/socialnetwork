@@ -12,10 +12,7 @@ class TaskComments extends Model
         'task_id',
         'comment',
     ];
-    public static $rules = [
-        'task_id' => 'required|exists:tasks,id',
-        'comment' => 'required|string',
-    ];
+
     public function tasks()
     {
         return $this->belongsTo(Tasks::class, 'task_id');

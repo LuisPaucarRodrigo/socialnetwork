@@ -88,18 +88,18 @@
 
                     <span class="mx-3">Finanzas</span>
                 </a>
-                <MyTransition :transitiondemonstration="showingFinance">
+                <!-- <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('users.index')">Contabilidad</Link>
-                </MyTransition>
+                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingFinance">
-                    <Link class="w-full" :href="route('users.index')">Presupuestos</Link>
+                    <Link class="w-full" :href="route('selectproject.index')">Presupuestos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('managementexpense.index')">Gestion de Gastos</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingFinance">
+                <!-- <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('users.index')">Informe de Analisis Financiero</Link>
-                </MyTransition>
+                </MyTransition> -->
             </template>
 
             <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
@@ -116,17 +116,17 @@
                     <Link class="w-full" :href="route('resources.index')">Recursos de la Empresa</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('users.index')">Control de Inventario</Link>
+                    <Link class="w-full" :href="route('inventory.index')">Control de Inventario</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingInventory">
+                <!-- <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('users.index')">Historial de Movimientos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('users.index')">Informe de Inventario</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingInventory">
+                </MyTransition> -->
+                <!-- <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('users.index')">Integracion de Compras</Link>
-                </MyTransition>
+                </MyTransition> -->
             </template>
 
             <template v-if="hasPermission('ProjectManager') || hasPermission('Project')">
@@ -142,18 +142,18 @@
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectmanagement.index')">Gestion de Proyectos</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
+                <!-- <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectschedule.index')">Calendario de Proyectos</Link>
-                </MyTransition>
+                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('tasks.index')">Seguimiento de Tareas</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
+                <!-- <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('users.index')">Documentacionn de Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectreports.index')">Informe de Proyecto</Link>
-                </MyTransition>
+                </MyTransition> -->
             </template>
 
             <template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
@@ -175,9 +175,9 @@
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingShoppingArea">
+                <!-- <MyTransition :transitiondemonstration="showingShoppingArea">
                     <Link class="w-full" :href="route('purchasereports.index')">Informe de Compras</Link>
-                </MyTransition>
+                </MyTransition> -->
             </template>
             
         </nav>

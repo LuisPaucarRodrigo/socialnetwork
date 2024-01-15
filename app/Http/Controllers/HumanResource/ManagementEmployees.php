@@ -36,7 +36,7 @@ class ManagementEmployees extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'curriculum_vitae' => 'required|mimes:pdf,doc,docx|max:2048',
+            'curriculum_vitae' => 'required|mimes:pdf|max:2048',
             'cropped_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
@@ -78,9 +78,9 @@ class ManagementEmployees extends Controller
             'accidents' => 'nullable|string|max:255',
             'vaccinations' => 'nullable|string|max:255',
         ]);
-        $document = $request->file('curriculum_vitae'); // Obtener el objeto de archivo
-        $documentName = time() . '.' . $document->getClientOriginalName(); // Generar un nombre único para el archivo
-        $document->storeAs('documents', $documentName); // Guardar el archivo en storage/app/documents   
+        $document = $request->file('curriculum_vitae');
+        $documentName = time() . '.' . $document->getClientOriginalName();
+        $document->storeAs('documents', $documentName);
 
         $croppedImage = $request->file('cropped_image');
         $imageName = 'imagen_' . time() . '.' . $croppedImage->getClientOriginalExtension();
@@ -161,7 +161,6 @@ class ManagementEmployees extends Controller
             'employee_id' => $employeeId,
         ]);
 
-        return to_route('management.employees');
     }
 
     public function edit($id)
@@ -179,8 +178,7 @@ class ManagementEmployees extends Controller
     public function details($id)
     {
         $details = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
-        //dd($details);
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesInformation', ['details' => $details]);
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
     }
 
     public function download($filename)

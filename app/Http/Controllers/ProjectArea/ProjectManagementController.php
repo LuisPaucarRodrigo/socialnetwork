@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Models\Employee;
 use App\Models\Project;
+use App\Models\BudgetUpdate;
 use App\Models\Resource;
 use App\Models\ProjectResource;
 use App\Models\Purchasing_request;
+use App\Models\Purchase_quote;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +21,7 @@ class ProjectManagementController extends Controller
     public function index()
     {
         return Inertia::render('ProjectArea/ProjectManagement/Project', [
-            'projects' => Project::paginate(8),
+            'projects' => Project::paginate(),
         ]);
     }
 
@@ -43,16 +46,10 @@ class ProjectManagementController extends Controller
             'employees' => Employee::select('id', 'name', 'lastname')->get(),
         ]);
     }
-    public function project_store(Request $request)
+
+    public function project_store(CreateProjectRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required',
-            'code' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'priority' => 'required',
-            'description' => 'required',
-        ]);
+        $data = $request->validated();
 
         $data['initial_budget'] = 0;
 
@@ -67,7 +64,6 @@ class ProjectManagementController extends Controller
                 $project->employees()->attach($empId['id'], ['charge' => $employee['charge']]);
             }
         }
-        return redirect()->route('projectmanagement.index');
     }
 
     public function project_delete_employee($pivot_id)
@@ -76,6 +72,7 @@ class ProjectManagementController extends Controller
         DB::table($tablaPivote)->where('id', $pivot_id)->delete();
         return redirect()->back();
     }
+
     public function project_add_employee(Request $request, $project_id)
     {
         $project = Project::find($project_id);
@@ -113,6 +110,7 @@ class ProjectManagementController extends Controller
         ProjectResource::create($request->all());
         return redirect()->back();
     }
+    
     public function project_resources_delete($resource_id)
     {
         $resource = ProjectResource::find($resource_id);
@@ -120,20 +118,70 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
-    public function project_purchases_request_index($project_id) {
+    public function project_purchases_request_index($project_id)
+    {
         $purchases = Purchasing_request::where('project_id', $project_id)->paginate();
         return Inertia::render('ProjectArea/ProjectManagement/PurchaseRequest',[
-            'purchases'=> $purchases
+            'purchases'=> $purchases,
+            'project_id'=> $project_id,
         ]);
     }
-    public function project_purchases_request_create($purchase_id = null) {
-        // $purchases = Purchasing_request::where('project_id', $project_id)->paginate();
-        return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest');
+
+    public function project_purchases_request_create($project_id, $purchase_id = null) {
+        if ($purchase_id){
+            $purchase_request = Purchasing_request::find($purchase_id);
+            return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest', [
+                'project_id'=>$project_id,
+                'purchase_request'=>$purchase_request
+            ]);
+        }
+        return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest', [
+            'project_id'=>$project_id
+        ]);
     }
 
+    public function project_purchases_request_store(Request $request) {
+        $data = $request->validate([
+            'title' => 'required',
+            'product_description' => 'required',
+            'due_date' => 'required',
+            'project_id' => 'required',
+        ]);
+        if ($request->id) {
+            $purchase_request = Purchasing_request::find($request->id);
+            $purchase_request->update($data);
+        } else { 
+            Purchasing_request::create($data);
+        }
+    }
 
+    public function project_expenses(Project $project_id) {
 
+        $last_update = BudgetUpdate::where('project_id', $project_id->id)
+            ->with('project')
+            ->with('user')
+            ->orderByDesc('id') // Ordenar por ID en orden descendente
+            ->first();
 
+        $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
+        $expenses = Purchasing_request::with('purchase_quotes.purchase_order')
+            ->has('purchase_quotes.purchase_order')
+            ->where([['project_id', $project_id->id],['state','Aceptado']])
+            ->whereHas('purchase_quotes.purchase_order', function ($query) {
+                $query->where('state', 'Completada');
+            });
 
+        $total_expenses = $expenses->get()->sum(function ($expense) {
+            return $expense->purchase_quotes->amount;
+        });
+
+        $remaining_budget = $current_budget - $total_expenses;    
+
+        return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
+            'current_budget' => $current_budget,
+            'remaining_budget' => $remaining_budget,
+            'expenses' => $expenses->paginate(),
+        ]);
+    }
 }

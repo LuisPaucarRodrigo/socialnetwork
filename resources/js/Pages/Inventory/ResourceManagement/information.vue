@@ -67,9 +67,8 @@
                 <label for="startDate" class="block text-sm font-medium text-gray-700">Descripcion</label>
                 <textarea type="text" id="start_date" v-model="newResource.description"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300" />
-                <!-- <InputError :message="form.errors.start_date" /> -->
+                <InputError :message="newResource.errors.description" />
             </div>
-
         </div>
 
         <!-- Botón de enviar -->
@@ -78,28 +77,24 @@
                 class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
                 Cancelar
             </button>
-            <button v-if="resource" @click="openModalSaved()"
+            <button v-if="resource" @click="update_resource(resource.id)"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Guardar
             </button>
-
-            <button v-else @click="openModalAdded()"
+            <button v-else @click="add_resource()"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Crear
             </button>
         </div>
-        <Modal :show="showmodal" :maxWidth="'md'">
-            <!-- Contenido del modal cuando no hay empleados -->
+        <!-- <Modal :show="showmodal" :maxWidth="'md'">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
                     {{ titleModal }}
                 </h2>
-                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
                 <p class="mt-2 text-sm text-gray-500">
                     {{ newResource.name }} {{ content }}
                 </p>
                 <div class="mt-6 flex justify-end">
-                    <!-- Estructura condicional para el botón -->
                     <button
                         class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
                         type="button" @click="closeModal"> Cancelar
@@ -114,20 +109,24 @@
                     </button>
                 </div>
             </div>
-        </Modal>
+        </Modal> -->
+        <ConfirmCreateModal :confirmingcreation="showmodal" itemType="recurso" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import Modal from '@/Components/Modal.vue';
-import { ref, defineProps } from 'vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputError from '@/Components/InputError.vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
+import { ref, defineProps } from 'vue';
+
+const showmodal = ref(false);
 
 const props = defineProps({
     title: String,
     resource: Object
 })
+
 const newResource = useForm({
     name: '',
     type: '',
@@ -150,39 +149,47 @@ if (props.resource) {
 
 const add_resource = () => {
     newResource.post(route('resource.create'), {
+        onSuccess: () => {
+            showmodal.value = true
+            setTimeout(()=> {
+                showmodal.value = false
+                router.visit(route('resources.index'))
+            },2000)
+        },
         onError: () => {
             closeModal()
         }
     })
-}
+};
+
 const update_resource = (resourceId) => {
     newResource.put(route('resource.update', { resourceId: resourceId }), {
         onError: () => {
             closeModal()
         }
     })
-}
+};
+
 const cancel =()=>{
     router.get(route('resources.index'))
-}
+};
 
-const showmodal = ref(false);
-const titleModal = ref(null);
-const content = ref(null);
-const textButton = ref(null);
+// const titleModal = ref(null);
+// const content = ref(null);
+// const textButton = ref(null);
 
-const openModalAdded = () => {
-    titleModal.value = 'Agregar Nuevo Recurso';
-    content.value = 'se agregara a la lista de recursos';
-    textButton.value = 'Crear'
-    showmodal.value = true;
-}
-const openModalSaved = () => {
-    titleModal.value = 'Editar Recurso';
-    content.value = '¿Esta seguro de guardar los cambios?';
-    textButton.value = 'Guardar'
-    showmodal.value = true;
-}
+// const openModalAdded = () => {
+//     titleModal.value = 'Agregar Nuevo Recurso';
+//     content.value = 'se agregara a la lista de recursos';
+//     textButton.value = 'Crear'
+//     showmodal.value = true;
+// }
+// const openModalSaved = () => {
+//     titleModal.value = 'Editar Recurso';
+//     content.value = '¿Esta seguro de guardar los cambios?';
+//     textButton.value = 'Guardar'
+//     showmodal.value = true;
+// }
 const closeModal = () => {
     showmodal.value = false;
 }

@@ -43,8 +43,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option v-for="item in resources" :key="item.id" :value="item.id">{{
-                                        item.unique_identification }} - {{
-        item.name }}</option>
+                                        item.unique_identification }} - {{ item.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -84,13 +83,15 @@
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
+import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+
+const showModal = ref(false);
 
 const { project, resources } = defineProps({
     project: Object,
@@ -117,10 +118,6 @@ const submit = () => {
     })
 }
 
-
-//functions of modal
-const showModal = ref(false);
-
 const showToAddEmployee = () => {
     showModal.value = true;
 }
@@ -128,16 +125,14 @@ const closeModal = () => {
     showModal.value = false;
 };
 
-
-//delete memeber for a create project
 const delete_resource = (resource_id) => {
     router.delete(route('projectmanagement.resources.delete', { resource_id }), {
+        onSuccess: () => {
+            alert('Recurso removido del proyecto')
+        },
         onError: () => {
             alert('SERVER ERROR')
         },
-        onSuccess: () => {
-            alert('Recurso removido del proyecto')
-        }
     })
 }
 
