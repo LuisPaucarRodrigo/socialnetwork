@@ -9,10 +9,14 @@ class Document extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['title', 'section_id'];
+    protected $fillable = ['title', 'section_id', 'subdivision_id'];
 
     public function section()
     {
         return $this->belongsTo(DocumentSection::class);
+    }
+    public function subdivision()
+    {
+        return $this->belongsTo(Subdivision::class);
     }
 }
