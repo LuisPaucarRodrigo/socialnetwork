@@ -142,8 +142,6 @@ const submit2 = () => {
     form2.project_id = props.project.id;
     form2.user_id = 1;
 
-    console.log(form2);
-
     form2.post(route('budgetupdates.create', { project: props.project.id }, form2));
 
 

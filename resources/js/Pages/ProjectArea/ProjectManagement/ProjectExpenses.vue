@@ -5,8 +5,10 @@
             Gastos
         </template>
         Presupuesto actual: S/. {{ current_budget }} <br>
-        Presupuesto restante: S/. {{ remaining_budget }}
+        Presupuesto restante: S/. {{ remaining_budget - project.materials_costs }}
         <br>
+        Total gastos : S/. {{ remaining_budget }}<br>
+        Costo de Componentes y Materiales: S/. {{ project.materials_costs }}
         <br>
         <div>
             <canvas id="pieChart"></canvas>
@@ -71,13 +73,11 @@ import { Pie } from 'vue-chartjs';
 
 const props = defineProps({
     expenses: Object,
+    project:Object,
     current_budget: Number,
     remaining_budget: Number
 })
 
-console.log(props.expenses)
-console.log(props.current_budget)
-console.log(props.remaining_budget)
 
 
 const updateChart = () => {

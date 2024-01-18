@@ -19,6 +19,8 @@ class Project extends Model
         'initial_budget'
     ];
 
+    protected $appends = ['remaining_budget','materials_costs'];
+
     public function employees()
     {
         return $this->belongsToMany(Employee::class,'project_employee')->withPivot('charge', 'id');
@@ -32,11 +34,26 @@ class Project extends Model
     public function resources(){
         return $this->belongsToMany(Resource::class, 'project_resource')->withPivot('id','quantity', 'observation');
     }
+    public function network_equipments(){
+        return $this->belongsToMany(NetworkEquipment::class, 'project_network_equipment')->withPivot('id','observation');
+    }
+    public function components_or_materials(){
+        return $this->belongsToMany(ComponentOrMaterial::class, 'project_componentormaterial')->withPivot('id','quantity','observation');
+    }
+    public function getMaterialsCostsAttribute()
+    {
+        return $this->components_or_materials()->get()->sum(function ($component) {
+            return $component->pivot->quantity * $component->price;
+        });
+    }
+
+
+
     public function budget_updates(){
         return $this->hasMany(BudgetUpdate::class);
     }
 
-    protected $appends = ['remaining_budget'];
+    
     public function getRemainingBudgetAttribute()
     {
         $lastUpdate = $this->budget_updates()->latest()->first(); // Obtén la última actualización del presupuesto
@@ -62,6 +79,6 @@ class Project extends Model
                 return $expense->purchase_quotes[0]['amount'] ?? 0;
             });
 
-        return $currentBudget - $totalExpenses;
+        return $currentBudget - $totalExpenses - $this->materials_costs;
     }
 }

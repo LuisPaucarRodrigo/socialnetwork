@@ -49,7 +49,7 @@
                             <Link :href="route('projectscalendar.show', { project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario</Link>
                             <Link :href="route('projectmanagement.resources', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Recursos
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Inventario
                             </Link>
                             <Link :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
