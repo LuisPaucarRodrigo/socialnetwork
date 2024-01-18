@@ -8,7 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Purchasing_request extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'product_description', 'due_date', 'state', 'response', 'project_id'];
+    protected $fillable = [
+        'title', 
+        'product_description', 
+        'due_date', 
+        'state', 
+        'response', 
+        'project_id'
+    ];
 
     public function project()
     {
@@ -17,7 +24,7 @@ class Purchasing_request extends Model
 
     public function purchase_quotes()
     {
-        return $this->hasOne(Purchase_quote::class);
+        return $this->hasMany(Purchase_quote::class);
     }
 }
 

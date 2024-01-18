@@ -75,6 +75,8 @@ const { projects } = defineProps({
     projects: Object,
 })
 
+console.log(projects)
+
 const add_project = () => {
     router.get(route('projectmanagement.create'));
 }

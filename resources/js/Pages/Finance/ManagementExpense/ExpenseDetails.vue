@@ -94,12 +94,15 @@ const props = defineProps({
     details: Object
 });
 
+console.log(props.details)
+
 const confirmOrden = ref(false);
 const comentOrden = ref(null);
 
 const form = useForm({
     response: '',
     state: '',
+    purchase_quote_id: props.details.id
 });
 
 const check = () => {
