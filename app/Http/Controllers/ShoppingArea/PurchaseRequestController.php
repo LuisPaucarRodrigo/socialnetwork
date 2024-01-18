@@ -33,7 +33,6 @@ class PurchaseRequestController extends Controller
 
     public function index_quotes($id)
     {
-
         return Inertia::render('ShoppingArea/PurchaseRequest/RequestQuotes', [
             'providers' => Provider::all(),
             'purchases' => Purchasing_request::with('project')->find($id),
@@ -73,5 +72,9 @@ class PurchaseRequestController extends Controller
         ]);
 
         return to_route('purchasesrequest.index');
+    }
+
+    public function reject_request (Request $request, Purchasing_request $id) {
+        $id->update(['state'=>'Rechazado']);
     }
 }

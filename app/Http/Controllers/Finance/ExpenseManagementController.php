@@ -33,7 +33,7 @@ class ExpenseManagementController extends Controller
             $date_issue = Carbon::today();
             Purchase_order::create([
                 'date_issue' => $date_issue,
-                'purchase_quote_id' => $id
+                'purchase_quote_id' => $request->purchase_quote_id
             ]);
         };
 

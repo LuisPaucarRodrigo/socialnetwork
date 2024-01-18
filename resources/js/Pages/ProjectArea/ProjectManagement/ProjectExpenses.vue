@@ -39,16 +39,16 @@
                     <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700">
                         <template v-if="expense.id != null">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchase_quotes?.provider }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchase_quotes[0]?.provider }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ expense.product_description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchase_quotes.amount }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchase_quotes[0].amount }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchase_quotes.purchase_order.state }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchase_quotes[0]?.purchase_order?.state }}</p>
                             </td>
                         </template>
                     </tr>
@@ -74,6 +74,11 @@ const props = defineProps({
     current_budget: Number,
     remaining_budget: Number
 })
+
+console.log(props.expenses)
+console.log(props.current_budget)
+console.log(props.remaining_budget)
+
 
 const updateChart = () => {
   const ctx = document.getElementById('pieChart').getContext('2d');
