@@ -18,4 +18,10 @@ class NetworkEquipment extends Model
         'supplier',
         'price',
     ];
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_network_equipment')
+            ->withPivot('id', 'observation');
+    }
 }
