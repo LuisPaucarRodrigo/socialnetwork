@@ -1,7 +1,7 @@
 <template>
     <div>
   
-      <Head title="Gestion de Secciones" />
+      <Head title="Gestion de Apartados" />
       <AuthenticatedLayout>
         <template #header>
           Gestión de Apartados
@@ -87,8 +87,9 @@
   import InputError from '@/Components/InputError.vue';
   import { Head, useForm, router, Link } from '@inertiajs/vue3';
   import { TrashIcon, EyeIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
-  import { ref, defineProps } from 'vue';
+  import { ref, defineProps, onMounted } from 'vue';
   import Modal from '@/Components/Modal.vue';
+  import axios from 'axios';
   
   const showModal = ref(false);
   

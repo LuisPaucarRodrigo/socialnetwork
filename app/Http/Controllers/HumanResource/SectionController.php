@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Section;
 use App\Models\SubSection;
+use App\Events\MyEvent;
+use Carbon\Carbon;
 
 class SectionController extends Controller
 {
@@ -48,6 +50,14 @@ class SectionController extends Controller
         ]);
     }
 
+    public function showSubSection(SubSection $subSection)
+    {
+        $subSection->load('section');
+        return Inertia::render('HumanResource/AlarmManagement/SubSectionInformation', [
+            'subSection' => $subSection,
+        ]);
+    }
+
     public function storeSubSection(Request $request)
     {
         $request->validate([
@@ -66,11 +76,48 @@ class SectionController extends Controller
         ]);
     }
 
+    public function updateSubSection(Request $request, SubSection $subSection)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'start_date' => 'required',
+            'end_date' => 'required',
+        ]);
+
+        // Actualizar los campos de la subsección con los datos del formulario
+        $subSection->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'requirements' => $request->requirements,
+            'section_id' => $request->section_id,
+        ]);
+    }
+
+
     public function destroySubSection(SubSection $subSection)
     {
         $subSection->delete();
         return to_route('sections.subSections');
     }
 
+    public function doTask()
+    {
+        // Obtener la fecha actual ajustada por el desfase
+        $currentDate = Carbon::now();
+        $currentDateUpdate = $currentDate->subHours(5);
+        // Obtener todos los SubSection que están a punto de vencerse (por ejemplo, en los próximos 3 días)
+        $subSections = SubSection::where('end_date', '>=', $currentDateUpdate)
+            ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 3 días
+            ->get(); // Obtener una colección de resultados
+
+        $totalSubSections = $subSections->count();
+
+        return response()->json([
+            'totalSubSections' => $totalSubSections,
+            'subSections' => $subSections,
+        ]);
+    }
 
 }

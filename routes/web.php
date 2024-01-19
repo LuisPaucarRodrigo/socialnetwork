@@ -139,8 +139,11 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
 
      //SubSections
      Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
+     Route::get('/subSections/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
      Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
-     Route::delete('/subSections/{subSection}', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
+     Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
+     Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
+     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
 });
 
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
