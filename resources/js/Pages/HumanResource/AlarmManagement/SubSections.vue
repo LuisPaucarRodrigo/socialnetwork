@@ -1,5 +1,5 @@
 <template>
-    <Head title="Gestion de Documentos" />
+    <Head title="Gestion de Miembros" />
     <AuthenticatedLayout>
       <template #header>
         Miembros de los apartados
@@ -48,9 +48,11 @@
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.end_date }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.section.name }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                <button @click="openEditSubSectionModal(subSection)" class="text-green-600 hover:underline mr-2"><EyeIcon class="h-4 w-4 ml-1" /></button>
-                <button @click="openEditSubSectionModal(subSection)" class="text-orange-200 hover:underline mr-2"><PencilIcon class="h-4 w-4 ml-1" /></button>
-                <button @click="confirmDeleteSubSection(subSection.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
+                <div class="flex items-center">
+                    <Link :href="route('sections.subSection', {subSection: subSection.id})" class="text-green-600 hover:underline mr-2"><EyeIcon class="h-4 w-4 ml-1" /></Link>
+                    <button @click="openEditSubSectionModal(subSection)" class="text-orange-200 hover:underline mr-2"><PencilIcon class="h-4 w-4 ml-1" /></button>
+                    <button @click="confirmDeleteSubSection(subSection.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
+                </div>
             </td>
             </tr>
         </tbody>
@@ -120,9 +122,80 @@
                   <InputError :message="form.errors.section_id" />
                 </div>
                 <div class="mt-6 flex items-center justify-end gap-x-6">
-                  <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                  <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
                   <button type="submit" :class="{ 'opacity-25': form.processing }"
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </Modal>
+
+      <Modal :show="editSubSectionModal">
+        <div class="p-6">
+          <h2 class="text-base font-medium leading-7 text-gray-900">
+            Editar miembro
+          </h2>
+          <form @submit.prevent="submitEdit">
+            <div class="space-y-12">
+              <div class="border-b border-gray-900/10 pb-12">
+
+                <div>
+                  <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
+                  <div class="mt-2">
+                    <input type="text" v-model="form.name" id="name"
+                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <InputError :message="form.errors.name" />
+                  </div>
+                </div>
+
+                <div>
+                  <InputLabel for="description" class="font-medium leading-6 text-gray-900 mt-3">Descripción</InputLabel>
+                  <div class="mt-2">
+                    <textarea v-model="form.description" id="description"
+                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  </div>
+                </div>
+                
+                <div>
+                  <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio</InputLabel>
+                  <div class="mt-2">
+                    <input type="date" v-model="form.start_date" id="start_date"
+                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <InputError :message="form.errors.start_date" />
+                  </div>
+                </div>
+
+                <div>
+                  <InputLabel for="end_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de Fin</InputLabel>
+                  <div class="mt-2">
+                    <input type="date" v-model="form.end_date" id="end_date"
+                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <InputError :message="form.errors.end_date" />
+                  </div>
+                </div>
+
+                <div>
+                  <InputLabel for="requirements" class="font-medium leading-6 text-gray-900 mt-3">Requerimientos</InputLabel>
+                  <div class="mt-2">
+                    <textarea v-model="form.requirements" id="requirements"
+                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  </div>
+                </div>
+
+                <div>
+                  <InputLabel for="Section" class="text-gray-700 mt-3">Sección:</InputLabel>
+                  <select v-model="form.section_id" id="Section" class="border rounded-md px-3 py-2 mb-3 w-full">
+                    <option value="">Seleccionar Seccion</option>
+                    <option v-for="section in props.sections" :key="section.id" :value="section.id">{{ section.name }}</option>
+                  </select>
+                  <InputError :message="form.errors.section_id" />
+                </div>
+                <div class="mt-6 flex items-center justify-end gap-x-6">
+                  <SecondaryButton @click="closeEditModal"> Cancelar </SecondaryButton>
+                  <button type="submit" :class="{ 'opacity-25': form.processing }"
+                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Actualizar</button>
                 </div>
               </div>
             </div>
@@ -133,19 +206,21 @@
       <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Apartado" :deleteFunction="deleteSubSection"
         @closeModal="closeModalDoc" />
       <ConfirmCreateModal :confirmingcreation="showModal" itemType="Apartado" />
+      <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Apartado" />
     </AuthenticatedLayout>
   </template>
     
   <script setup>
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+  import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
   import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import InputError from '@/Components/InputError.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import Modal from '@/Components/Modal.vue';
   import { ref, computed, watch } from 'vue';
-  import { Head, useForm, router } from '@inertiajs/vue3';
+  import { Head, useForm, router, Link } from '@inertiajs/vue3';
   import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
   const props = defineProps({
@@ -154,6 +229,7 @@
   });
   
   const form = useForm({
+    id: '',
     name: '',
     description: '',
     start_date: '',
@@ -164,9 +240,12 @@
   
   const create_subSection = ref(false);
   const showModal = ref(false);
+  const showModalEdit = ref(false);
   const confirmingDocDeletion = ref(false);
   const docToDelete = ref(null);
   const selectedSection = ref('');
+  const editSubSectionModal = ref(false);
+  const editingSubSection = ref(null);
   
   const management_section = () => {
     router.get(route('sections.sections'));
@@ -175,10 +254,33 @@
   const openCreateSubSectionModal = () => {
     create_subSection.value = true;
   };
-  
+
+  const openEditSubSectionModal = (subSection) => {
+    // Copia de los datos de la subsección existente al formulario
+    editingSubSection.value = JSON.parse(JSON.stringify(subSection));
+    form.id = editingSubSection.value.id;
+    form.name = editingSubSection.value.name;
+    form.description = editingSubSection.value.description;
+    form.start_date = editingSubSection.value.start_date;
+    form.end_date = editingSubSection.value.end_date;
+    form.requirements = editingSubSection.value.requirements;
+    form.section_id = editingSubSection.value.section_id;
+
+    editSubSectionModal.value = true;
+  };
+    
   const closeModal = () => {
     create_subSection.value = false;
   };
+
+  const closeEditModal = () => {
+    // Restablecer los valores del formulario
+    form.reset();
+
+    // Cerrar el modal de edición
+    editSubSectionModal.value = false;
+  };
+
   
   const submit = () => {
     form.post(route('sections.storeSubSection'), {
@@ -188,6 +290,26 @@
         showModal.value = true
         setTimeout(() => {
           showModal.value = false;
+          router.visit(route('sections.subSections'))
+        }, 2000);
+      },
+      onError: () => {
+        form.reset();
+      },
+      onFinish: () => {
+        form.reset();
+      }
+    });
+  };
+
+  const submitEdit = () => {
+    form.put(route('sections.updateSubSection', {subSection: form.id}, form), {
+      onSuccess: () => {
+        closeModal();
+        form.reset();
+        showModalEdit.value = true
+        setTimeout(() => {
+          showModalEdit.value = false;
           router.visit(route('sections.subSections'))
         }, 2000);
       },
