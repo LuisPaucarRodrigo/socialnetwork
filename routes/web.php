@@ -22,6 +22,7 @@ use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
+use App\Http\Controllers\Inventory\WarehousesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -193,6 +194,19 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/ComponentsAndMaterials/edit/{CmId}', [InventoryControlController::class, 'EditComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.edit');
     Route::put('/inventory/ComponentsAndMaterials/edit/{CmId}', [InventoryControlController::class, 'UpdateComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.update');
     Route::delete('/inventory/ComponentsAndMaterials/delete/{CmId}', [InventoryControlController::class, 'DeleteComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.delete');
+
+    //warehouses
+    Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');
+    Route::get('/inventory/warehouses/{warehouse}', [WarehousesController::class, 'showWarehouse'])->name('warehouses.warehouse');
+    Route::post('/inventory/warehouses', [WarehousesController::class, 'storeWarehouse'])->name('warehouses.storeWarehouse');
+    Route::put('/inventory/warehouses/{warehouse}/update', [WarehousesController::class, 'updateWarehouse'])->name('warehouses.updateWarehouse');
+    Route::delete('/inventory/warehouses/{warehouse}/destroy', [WarehousesController::class, 'destroyWarehouse'])->name('warehouses.destroyWarehouse');
+
+    //headers
+    Route::get('/inventory/headers', [WarehousesController::class, 'showHeaders'])->name('warehouses.headers');
+    Route::post('/inventory/headers', [WarehousesController::class, 'storeHeader'])->name('warehouses.storeHeader');
+    Route::delete('/inventory/headers/{header}/destroy', [WarehousesController::class, 'destroyHeader'])->name('warehouses.destroyHeader');
+
 });
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {
