@@ -189,7 +189,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
 
     Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
-    Route::delete('/projectmanagement/resources/delete/{resource_id}', [ProjectManagementController::class, 'project_resources_delete'])->name('projectmanagement.resources.delete');
+    Route::post('/projectmanagement/resources/return/{id}', [ProjectManagementController::class, 'project_resources_return'])->name('projectmanagement.resources.return');
 
     Route::post('/projectmanagement/networkequipments', [ProjectManagementController::class, 'project_network_equipment_store'])->name('projectmanagement.networkequipments.store');
     Route::delete('/projectmanagement/networkequipments/delete/{network_equipment_id}', [ProjectManagementController::class, 'project_network_equipment_delete'])->name('projectmanagement.networkequipments.delete');
