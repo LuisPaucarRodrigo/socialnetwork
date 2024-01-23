@@ -15,6 +15,7 @@ use App\Models\Resource;
 use App\Models\ProjectResource;
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
+use App\Models\ResourceHistorial;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -91,7 +92,7 @@ class ProjectManagementController extends Controller
     }
 
     public function project_resources($project_id){
-        $project = Project::with(['resources','network_equipments','components_or_materials'])->find($project_id);
+        $project = Project::with(['resources','network_equipments','components_or_materials', 'resource_historials.resource'])->find($project_id);
         $resources = Resource::all();
         $resourcesDisponibles = $resources->filter(function ($resource) {
             return $resource->state === 'Disponible';
@@ -112,9 +113,13 @@ class ProjectManagementController extends Controller
         if ($resource->leftover < $request->quantity) {
             return response()->json(['error' => 'Cantidad excedida, recarga la página'], 500);
         }
-        ProjectResource::create($request->all());
+        $data = $request->all();
+        ProjectResource::create($data);
+        $data['type'] = 'Asignamiento';
+        ResourceHistorial::create($data);
         return redirect()->back();
     }
+
     public function project_network_equipment_store(Request $request){
         $network_equipment = NetworkEquipment::find($request->network_equipment_id);
         ProjectNetworkEquipment::create($request->all());
@@ -133,11 +138,29 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
-    public function project_resources_delete($resource_id){
-        $resource = ProjectResource::find($resource_id);
-        $resource->delete();
+
+
+
+    public function project_resources_return(Request $request, $id){
+        $data = $request->all();
+        $data['type'] = 'Devolución';
+        $project_resource = ProjectResource::find($id);
+        if($project_resource->quantity < $request->quantity){
+            return response()->json(['error' => 'Cantidad excedida, recarga la página'], 500);
+        } else if ($project_resource->quantity == $request->quantity) {
+            $project_resource->delete();
+            ResourceHistorial::create($data);
+        } else {
+            $left = $project_resource->quantity - $request->quantity;
+            $project_resource->update(['quantity' => $left]);
+            ResourceHistorial::create($data);
+        }
         return redirect()->back();
     }
+
+
+
+
     public function project_network_equipment_delete($network_equipment_id){
         $network_equipment = ProjectNetworkEquipment::find($network_equipment_id);
         $ne = NetworkEquipment::find($network_equipment->network_equipment_id);

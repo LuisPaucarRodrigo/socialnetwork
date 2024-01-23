@@ -25,6 +25,10 @@ class Resource extends Model
     protected $appends = ['state', 'leftover'];
     protected $hidden = ['projects'];
 
+    public function resource_historials(){
+        return $this->hasMany(ResourceHistorial::class, 'resource_id');
+    }
+
     public function getStateAttribute()
     {
         $totalQuantityInProjects = $this->projects->sum('pivot.quantity');
