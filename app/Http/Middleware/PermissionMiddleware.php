@@ -47,7 +47,9 @@ class PermissionMiddleware
             return redirect ('/projectmanagement');
         } elseif ($user->hasPermission('PurchasingManager')) {
             return redirect ('/shopping_area/purchasesrequest');
-        }  else {
+        } elseif ($user->hasPermission('Administration')) {
+            return redirect ('/management_employees');
+        } else {
             abort(403, 'No tienes el rol requerido para acceder.');
         }
     }

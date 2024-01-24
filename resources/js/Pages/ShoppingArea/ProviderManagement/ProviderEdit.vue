@@ -90,6 +90,6 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('providersmanagement.update', props.providers.id), form)
+    form.put(route('providersmanagement.update', props.providers.id),form)
 }
 </script>

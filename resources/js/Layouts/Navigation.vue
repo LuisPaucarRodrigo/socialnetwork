@@ -49,7 +49,7 @@
                 </MyTransition>
             </template>
 
-            <template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
+            <template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource') || hasPermission('Administration')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingHumanResource = !showingHumanResource">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -102,7 +102,7 @@
                 </MyTransition> -->
             </template>
 
-            <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
+            <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory') || hasPermission('Administration')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingInventory = !showingInventory">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -113,7 +113,7 @@
                     <span class="mx-3">Inventario</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('resources.index')">Recursos de la Empresa</Link>
+                    <Link class="w-full" :href="route('resources.index')">Activos de la Empresa</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('inventory.index')">Control de Inventario</Link>

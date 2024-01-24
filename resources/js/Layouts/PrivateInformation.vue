@@ -21,7 +21,7 @@
             <div class="sm:w-1/2 sm:pl-4">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Codigo Postal</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.postal_code }}
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.address }}
                     </dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -67,26 +67,32 @@
                 </div>
             </div>
         </div>
-        <div class="text-lg font-semibold mb-4">Emergencia</div>
-        <div class="sm:flex lg:justify-between lg:gap-8">
-            <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Nombre Completo</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                        details.emergency.emergency_name }} {{ details.emergency.emergency_lastname }}</dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Relacion</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                        details.emergency.emergency_relations }}</dd>
-                </div>
-            </div>
-
-            <div class="sm:w-1/2 sm:pl-4">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Telefono</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                        details.emergency.emergency_phone }}</dd>
+        <div v-if="details.emergency && details.emergency.length">
+            <div class="text-lg font-semibold mb-4">Emergencia</div>
+            <div v-for="(contacts, index) in details.emergency" :key="index">
+                <div class="sm:flex lg:justify-between lg:gap-8 mb-8">
+                    <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">Nombre Completo</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+                                contacts.emergency_name }} {{ contacts.emergency_lastname }}
+                            </dd>
+                        </div>
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">Relacion</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+                                contacts.emergency_relations }}
+                            </dd>
+                        </div>
+                    </div>
+                    <div class="sm:w-1/2 sm:pl-4">
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">Telefono</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+                                contacts.emergency_phone }}
+                            </dd>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

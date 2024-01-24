@@ -6,16 +6,16 @@
         </template>
         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div class="sm:col-span-3">
-                <label for="project" class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input type="text" id="name" v-model="newResource.name"
+                <label for="description" class="block text-sm font-medium text-gray-700">Descripcion</label>
+                <input type="text" id="description" v-model="newResource.description"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <InputError :message="newResource.errors.name" />
+                <InputError :message="newResource.errors.description" />
             </div>
 
             <div class="sm:col-span-3">
-                <label for="task" class="block text-sm font-medium text-gray-700">Categoria</label>
+                <label for="type" class="block text-sm font-medium text-gray-700">Categoria</label>
                 <div class="flex">
-                    <select v-model="newResource.type"
+                    <select v-model="newResource.type" id="type"
                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                         <option disabled value="">Seleccione una categoria</option>
                         <option value="Hardware">Hardware</option>
@@ -35,17 +35,17 @@
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                 <InputError :message="newResource.errors.unique_identification" />
             </div>
-            <div class="sm:col-span-1">
-                <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad</label>
-                <input type="number" id="task" v-model="newResource.quantity"
+            <div class="sm:col-span-2">
+                <label for="serial_number" class="block text-sm font-medium text-gray-700">Numero de Serie</label>
+                <input type="text" id="serial_number" v-model="newResource.serial_number"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <InputError :message="newResource.errors.quantity" />
+                <InputError :message="newResource.errors.serial_number" />
             </div>
             <!--Local -->
-            <div class="sm:col-span-3">
-                <label for="task" class="block text-sm font-medium text-gray-700">Ubicacion</label>
+            <div class="sm:col-span-2">
+                <label for="current_location" class="block text-sm font-medium text-gray-700">Ubicacion</label>
                 <div class="flex">
-                    <select v-model="newResource.current_location"
+                    <select v-model="newResource.current_location" id="current_location"
                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                         <option disabled value="">Seleccione un Almacen</option>
                         <option value="Conproco">Conproco</option>
@@ -57,17 +57,41 @@
 
             <!-- Fecha de Inicio (date input) -->
             <div class="sm:col-span-2">
-                <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de Adquisicion</label>
+                <label for="adquisition_date" class="block text-sm font-medium text-gray-700">Fecha de Recepcion</label>
                 <input type="date" id="adquisition_date" v-model="newResource.adquisition_date"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                 <InputError :message="newResource.errors.adquisition_date" />
             </div>
+            <div class="sm:col-span-2">
+                <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad</label>
+                <input type="number" id="quantity" v-model="newResource.quantity"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                <InputError :message="newResource.errors.quantity" />
+            </div>
+            <div class="sm:col-span-2 sm:col-start-1">
+                <label for="unit_price" class="block text-sm font-medium text-gray-700">Precio Unitario Nuevo</label>
+                <input type="number" maxlength="4" id="unit_price" v-model="newResource.unit_price" :disabled="resource"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                <InputError :message="newResource.errors.unit_price" />
+            </div>
+            <div v-if="resource" class="sm:col-span-2">
+                <label for="depreciation" class="block text-sm font-medium text-gray-700">Depreciacion Anual(%)</label>
+                <input type="number" id="depreciation" v-model="newResource.depreciation" @input="depreciation($event)"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                <InputError :message="newResource.errors.depreciation" />
+            </div>
+            <div v-if="resource" class="sm:col-span-2">
+                <label for="unit_price_depreciation" class="block text-sm font-medium text-gray-700">Precio Depreciado</label>
+                <input type="number" disabled id="unit_price_depreciation" v-model="newResource.unit_price_depreciation"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                <InputError :message="newResource.errors.unit_price_depreciation" />
+            </div>
             <!-- Descricion (text-Area) -->
             <div class="sm:col-span-5">
-                <label for="startDate" class="block text-sm font-medium text-gray-700">Descripcion</label>
-                <textarea type="text" id="start_date" v-model="newResource.description"
+                <label for="observations" class="block text-sm font-medium text-gray-700">Observaciones</label>
+                <textarea type="text" id="observations" v-model="newResource.observations"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300" />
-                <InputError :message="newResource.errors.description" />
+                <InputError :message="newResource.errors.observations" />
             </div>
         </div>
 
@@ -128,23 +152,34 @@ const props = defineProps({
 })
 
 const newResource = useForm({
-    name: '',
-    type: '',
-    quantity: '',
     description: '',
+    type: '',
+    serial_number:'',
+    quantity: '',
+    unit_price: '',
+    depreciation: '',
+    unit_price_depreciation: '',
+    observations: '',
     adquisition_date: '',
     current_location: '',
     unique_identification: '',
 });
 
 if (props.resource) {
-    newResource.name = props.resource.name;
+    newResource.description = props.resource.description;
     newResource.type = props.resource.type;
+    newResource.serial_number = props.resource.serial_number;
     newResource.unique_identification = props.resource.unique_identification;
     newResource.quantity = props.resource.quantity;
+    newResource.unit_price = props.resource.unit_price;
+    newResource.depreciation = props.resource.depreciation;
     newResource.current_location = props.resource.current_location;
     newResource.adquisition_date = props.resource.adquisition_date;
-    newResource.description = props.resource.description;
+    newResource.observations = props.resource.observations;
+}
+
+const depreciation = (event) => {
+    newResource.unit_price_depreciation = newResource.unit_price - ((event.target.value * 0.01) * newResource.unit_price);
 }
 
 const add_resource = () => {

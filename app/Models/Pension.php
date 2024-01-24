@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Pension extends Model
 {
     use HasFactory;
-    public function contracts(){
+    protected $fillable = [
+        'type',
+        'values',
+    ];
+    public function contracts()
+    {
         return $this->hasMany(Contract::class);
     }
 }

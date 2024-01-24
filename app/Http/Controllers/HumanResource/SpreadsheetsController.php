@@ -5,6 +5,7 @@ namespace App\Http\Controllers\HumanResource;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Pension;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,12 +16,16 @@ class SpreadsheetsController extends Controller
         $employees = Employee::with('contract', 'contract.pension')->get();
         $spreadsheet = [];
         foreach ($employees as $employee) {
-            $total_income = $employee->contract->basic_salary + 0 + 0;
+            $state = $employee->contract->state;
+            $truncated_vacations = $employee->contract->fired_date !== null && $employee->contract->state === 'Inactive'
+                ? floor(Carbon::parse($employee->contract->fired_date)->diffInYears(Carbon::parse($employee->contract->hire_date)) * 15) * ($employee->contract->basic_salary / 30)
+                : 0;
+            $total_income = $employee->contract->basic_salary + $truncated_vacations;
             $snp = ($employee->contract->pension->type == 'ONP') ? 100 * ($employee->contract->pension->values) : 0;
             $snp_onp = ($employee->contract->pension->type == 'ONP') ? $total_income * $employee->contract->pension->values : 0;
             $commission = ($employee->contract->pension->type == 'ONP') ? 0 : 100 * ($employee->contract->pension->values);
             $commission_on_ra = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * $employee->contract->pension->values;
-            $seg = ($employee->contract->pension->type == 'ONP') ? 0 : number_format(100 * 0.0184,2);
+            $seg = ($employee->contract->pension->type == 'ONP') ? 0 : number_format(100 * 0.0184, 2);
             $insurance_premium = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * 0.0184;
             $mandatory_contribution = ($employee->contract->pension->type == 'ONP') ? 0 : 100 * 0.1;
             $mandatory_contribution_amount = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * 0.1;
@@ -31,13 +36,13 @@ class SpreadsheetsController extends Controller
             $total_contribution = $health + $life_ley;
 
             $spreadsheet[] = [
+                'state' => $state,
                 'dni' => $employee->dni,
                 'name' => $employee->name,
                 'pension_reg' => $employee->contract->pension->type,
                 'salary' => $employee->contract->basic_salary,
                 'hire_date' => $employee->contract->hire_date,
-                'truncated_vacations' => 0,
-                'maternity_subsidy' => 0,
+                'truncated_vacations' => $truncated_vacations,
                 'total_income' => $total_income,
                 'total_pension_base' => $total_income,
                 'snp' => $snp,
@@ -53,10 +58,27 @@ class SpreadsheetsController extends Controller
                 'health' => $health,
                 'life_ley' => $life_ley,
                 'total_contribution' => $total_contribution
-
-                // Add other results here
             ];
         }
         return Inertia::render('HumanResource/Payroll/Spreadsheets', ['spreadsheets' => $spreadsheet]);
+    }
+
+    public function edit()
+    {
+        $pensions = Pension::all();
+        return Inertia::render('HumanResource/Payroll/PensionSystem', ['pensions' => $pensions]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        // dd($request->all());
+        $request->validate([
+            'value' => 'required'
+        ]);
+        $pension_system = Pension::find($id);
+        $pension_system->update([
+            'values' => $request->value
+        ]);
+        return to_route('pension_system.edit');
     }
 }
