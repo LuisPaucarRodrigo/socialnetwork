@@ -19,8 +19,10 @@ use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
 use App\Http\Controllers\HumanResource\DocumentController;
+use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
+use App\Http\Controllers\Inventory\WarehousesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -131,6 +133,24 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/document_sections', [DocumentController::class, 'showSections'])->name('documents.sections');
     Route::post('/document_sections', [DocumentController::class, 'storeSection'])->name('documents.storeSection');
     Route::delete('/document_sections/{section}', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
+
+    //Subdivisions
+    Route::get('/document_sections/{section}/subdivisions', [DocumentController::class, 'showSubdivisions'])->name('documents.subdivisions');
+    Route::post('/document_sections/{section}/subdivisions', [DocumentController::class, 'storeSubdivision'])->name('documents.storeSubdivision');
+    Route::delete('/document_sections/{section}/subdivisions/{subdivision}', [DocumentController::class, 'destroySubdivision'])->name('documents.destroySubdivision');
+
+    //Sections
+    Route::get('/sections', [SectionController::class, 'showSections'])->name('sections.sections');
+    Route::post('/sections', [SectionController::class, 'storeSection'])->name('sections.storeSection');
+    Route::delete('/sections/{section}', [SectionController::class, 'destroySection'])->name('sections.destroySection');
+
+     //SubSections
+     Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
+     Route::get('/subSections/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
+     Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
+     Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
+     Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
+     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
 });
 
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
@@ -181,6 +201,19 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/ComponentsAndMaterials/edit/{CmId}', [InventoryControlController::class, 'EditComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.edit');
     Route::put('/inventory/ComponentsAndMaterials/edit/{CmId}', [InventoryControlController::class, 'UpdateComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.update');
     Route::delete('/inventory/ComponentsAndMaterials/delete/{CmId}', [InventoryControlController::class, 'DeleteComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.delete');
+
+    //warehouses
+    Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');
+    Route::get('/inventory/warehouses/{warehouse}', [WarehousesController::class, 'showWarehouse'])->name('warehouses.warehouse');
+    Route::post('/inventory/warehouses', [WarehousesController::class, 'storeWarehouse'])->name('warehouses.storeWarehouse');
+    Route::put('/inventory/warehouses/{warehouse}/update', [WarehousesController::class, 'updateWarehouse'])->name('warehouses.updateWarehouse');
+    Route::delete('/inventory/warehouses/{warehouse}/destroy', [WarehousesController::class, 'destroyWarehouse'])->name('warehouses.destroyWarehouse');
+
+    //headers
+    Route::get('/inventory/headers', [WarehousesController::class, 'showHeaders'])->name('warehouses.headers');
+    Route::post('/inventory/headers', [WarehousesController::class, 'storeHeader'])->name('warehouses.storeHeader');
+    Route::delete('/inventory/headers/{header}/destroy', [WarehousesController::class, 'destroyHeader'])->name('warehouses.destroyHeader');
+
 });
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {
@@ -223,6 +256,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest/create_request', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
     Route::post('/shopping_area/purchasesrequest/store_request', [PurchaseRequestController::class, 'store'])->name('purchasesrequest.store');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}', [PurchaseRequestController::class, 'index_quotes'])->name('purchasesrequest.quotes');
+    Route::get('/shopping_area/purchasesrequest/quotes/{id}/preview', [PurchaseRequestController::class, 'showDocument'])->name('purchasesrequest.show');
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
     Route::get('/shopping_area/purchasesrequest/details/{id}', [PurchaseRequestController::class, 'details'])->name('purchasingrequest.details');
     Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'quote'])->name('purchasesrequest.storequotes');
@@ -238,7 +272,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
     Route::put('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
-
+    
 });
 
 require __DIR__ . '/auth.php';
