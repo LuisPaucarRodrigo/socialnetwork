@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Contract extends Model
 {
     use HasFactory;
-    protected $fillable=['basic_salary','hire_date','employee_id','pension_id'];
+    protected $fillable=['basic_salary','state','days_taken','hire_date','fired_date','employee_id','pension_id'];
 
     public function pension()
     {

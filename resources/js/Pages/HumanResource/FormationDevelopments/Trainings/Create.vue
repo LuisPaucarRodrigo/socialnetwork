@@ -118,7 +118,11 @@ const titleModal = props.training ? "Actualizacion":"Registro";
 // }
 
 const update = (training_id) => {
-    form.post(route('management.employees.formation_development.trainings.store', { id: training_id }))
+    form.post(route('management.employees.formation_development.trainings.store', { id: training_id }),{
+        onSuccess: () => {
+            router.visit(route('management.employees.formation_development.trainings'))
+        }
+    })
 }
 
 const create = () => {
