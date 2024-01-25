@@ -1,9 +1,9 @@
 <template>
-    <Head title="Gestion de Vacaciones" />
+    <Head title="Gestion de Vacaciones y Permisos" />
 
     <AuthenticatedLayout>
         <template #header>
-            Gestión de Vacaciones
+            Gestión de Vacaciones y Permisos
         </template>
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
@@ -16,6 +16,10 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Empleado
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Tipo
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -34,6 +38,9 @@
                     <tr v-for="item in vacations.data" :key="item.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.employee.name + " " + item.employee.lastname }}</p>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">{{ item.type }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.start_date }}</p>

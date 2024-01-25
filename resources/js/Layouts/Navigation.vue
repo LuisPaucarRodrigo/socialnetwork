@@ -70,7 +70,7 @@
                     </Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('management.vacation')">Gestion de Vacaciones</Link>
+                    <Link class="w-full" :href="route('management.vacation')">Gestión de Vacaciones y Permisos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('documents.index')">Gestion de Documentos</Link>
@@ -263,7 +263,7 @@ export default {
         async fetchSubSectionsCount() {
             try {
                 const response = await axios.get('/doTask');
-                this.subSectionsCount = response.data.totalSubSections; // Ajusta según la estructura de tu respuesta del backend
+                this.subSectionsCount = response.data.totalSubSections;
                 this.subSectionsPorVencer = response.data.subSections;
             } catch (error) {
                 console.error('Error al obtener el contador de subsecciones:', error);
@@ -273,7 +273,6 @@ export default {
     mounted() {
         // Realiza la primera llamada al montar el componente
         this.fetchSubSectionsCount();
-
         // Configura el intervalo para realizar la petición cada 10 segundos
         setInterval(() => {
             this.fetchSubSectionsCount();

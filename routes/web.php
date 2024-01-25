@@ -144,13 +144,13 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::post('/sections', [SectionController::class, 'storeSection'])->name('sections.storeSection');
     Route::delete('/sections/{section}', [SectionController::class, 'destroySection'])->name('sections.destroySection');
 
-     //SubSections
-     Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
-     Route::get('/subSections/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
-     Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
-     Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
-     Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
-     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
+    //SubSections
+    Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
+    Route::get('/subSections/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
+    Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
+    Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
+    Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
+    Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
 });
 
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
@@ -193,7 +193,7 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/MobileDevices/edit/{MdId}', [InventoryControlController::class, 'EditMobileDevices'])->name('inventory.MobileDevices.edit');
     Route::put('/inventory/MobileDevices/edit/{MdId}', [InventoryControlController::class, 'UpdateMobileDevices'])->name('inventory.MobileDevices.update');
     Route::delete('/inventory/MobileDevices/delete/{MdId}', [InventoryControlController::class, 'DeleteMobileDevices'])->name('inventory.MobileDevices.delete');
-    
+
 
     Route::get('/inventory/ComponentsAndMaterials', [InventoryControlController::class, 'ComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.index');
     Route::get('/inventory/ComponentsAndMaterials/new', [InventoryControlController::class, 'NewComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.new');
@@ -213,7 +213,6 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/headers', [WarehousesController::class, 'showHeaders'])->name('warehouses.headers');
     Route::post('/inventory/headers', [WarehousesController::class, 'storeHeader'])->name('warehouses.storeHeader');
     Route::delete('/inventory/headers/{header}/destroy', [WarehousesController::class, 'destroyHeader'])->name('warehouses.destroyHeader');
-
 });
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {
@@ -232,7 +231,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
     Route::post('/projectmanagement/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
     Route::get('/projectmanagement/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
-    
+
     //Tasks Management
     Route::get('/tasks/{id?}', [TaskManagementController::class, 'index'])->name('tasks.index');
     Route::get('/newtask', [TaskManagementController::class, 'new'])->name('tasks.new');
@@ -244,8 +243,8 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/statustask/{taskId}/{status}', [TaskManagementController::class, 'status_task'])->name('tasks.edit.status');
     Route::delete('/deletetask/{taskId}/', [TaskManagementController::class, 'delete_task'])->name('tasks.delete');
     //Calendar
-    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
-    Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');   
+    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');
+    Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');
 
     Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
     Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
@@ -272,7 +271,6 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
     Route::put('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
-    
 });
 
 require __DIR__ . '/auth.php';
