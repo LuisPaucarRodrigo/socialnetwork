@@ -10,10 +10,6 @@
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     + Agregar
                 </button>
-                <button @click="management_headers" type="button"
-                    class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
-                    Gestionar cabeceras
-                </button>
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -78,15 +74,6 @@
                     <input type="text" v-model="form.location" id="location"
                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     <InputError :message="form.errors.location" />
-                  </div>
-                </div>
-                
-                <div>
-                  <InputLabel for="capacity" class="font-medium leading-6 text-gray-900 mt-3">Capacidad</InputLabel>
-                  <div class="mt-2">
-                    <input type="number" v-model="form.capacity" id="capacity"
-                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                    <InputError :message="form.errors.capacity" />
                   </div>
                 </div>
 
@@ -165,15 +152,6 @@
                     <InputError :message="formEdit.errors.location" />
                   </div>
                 </div>
-                
-                <div>
-                  <InputLabel for="capacity" class="font-medium leading-6 text-gray-900 mt-3">Capacidad</InputLabel>
-                  <div class="mt-2">
-                    <input type="number" v-model="formEdit.capacity" id="capacity"
-                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                    <InputError :message="formEdit.errors.capacity" />
-                  </div>
-                </div>
 
                 <div>
                   <InputLabel for="manager" class="font-medium leading-6 text-gray-900 mt-3">Encargado</InputLabel>
@@ -236,7 +214,6 @@
     id: '',
     name: '',
     location: '',
-    capacity: '',
     manager: '',
     header_ids: [],
   });
@@ -245,7 +222,6 @@
     id: '',
     name: '',
     location: '',
-    capacity: '',
     manager: '',
     header_ids: [],
     headers: null
@@ -259,10 +235,6 @@
   const editWarehouseModal = ref(false);
   const editingWarehouse = ref(null);
   
-  const management_headers = () => {
-    router.get(route('warehouses.headers'));
-  };
-  
   const openCreateWarehouseModal = () => {
     create_warehouse.value = true;
   };
@@ -273,7 +245,7 @@
     formEdit.id = editingWarehouse.value.id;
     formEdit.name = editingWarehouse.value.name;
     formEdit.location = editingWarehouse.value.location;
-    formEdit.capacity = editingWarehouse.value.capacity;
+
     formEdit.manager = editingWarehouse.value.manager;
 
     // Filtra los warehouse_headers asociados al almacén específico

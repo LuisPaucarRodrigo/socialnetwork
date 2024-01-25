@@ -12,6 +12,7 @@ use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Header;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -101,5 +102,43 @@ class DatabaseSeeder extends Seeder
         ];
         Pension::insert($data);
         // Employee::factory()->count(1000)->create();
+
+        $headerData = [
+            ['name' => 'Guía de Remisión', 'type' => 'text'],
+            ['name' => 'Guía Recibida', 'type' => 'text'],
+            ['name' => 'Guía de Traspaso CONPROCO', 'type' => 'text'],
+            ['name' => 'Guía de Traspaso CICSA-CONPROCO', 'type' => 'text'],
+            ['name' => 'Proyecto Asignado', 'type' => 'text'],
+            ['name' => 'Código SAP', 'type' => 'text'],
+            ['name' => 'Fecha', 'type' => 'text'],
+            ['name' => 'Cantidad', 'type' => 'text'],
+            ['name' => 'Unidad de Medida Base', 'type' => 'text'],
+            ['name' => 'Descripción del Producto', 'type' => 'text'],
+            ['name' => 'C/Proyecto/Almacén', 'type' => 'text'],
+            ['name' => 'Número de Serie', 'type' => 'text'],
+            ['name' => 'Servicio', 'type' => 'text'],
+            ['name' => 'Fecha de Salida', 'type' => 'text'],
+            ['name' => 'Cliente', 'type' => 'text'],
+            ['name' => 'Observación', 'type' => 'text'],
+            ['name' => 'Modo', 'type' => 'text'],
+            ['name' => 'Fecha de Ingreso', 'type' => 'text'],
+            ['name' => 'Fecha de Traspaso', 'type' => 'text'],
+            ['name' => 'Código AX', 'type' => 'text'],
+            ['name' => 'Localidad Origen', 'type' => 'text'],
+            ['name' => 'Traspaso Recibido', 'type' => 'text'],
+            ['name' => 'Total', 'type' => 'text'],
+            ['name' => 'Usado', 'type' => 'text'],
+            ['name' => 'Sobra', 'type' => 'text'],
+            ['name' => 'Localidad de Destino', 'type' => 'text'],
+            ['name' => 'Resumen', 'type' => 'text'],
+            ['name' => 'Contratista', 'type' => 'text'],
+            ['name' => 'Ciudad', 'type' => 'text'],
+            ['name' => 'Código', 'type' => 'text'],
+            ['name' => 'Requerimiento', 'type' => 'text'],
+            ['name' => 'Cantidad Enviada', 'type' => 'text'],
+            ['name' => 'Precio', 'type' => 'text'],
+            ['name' => 'Factura', 'type' => 'text'],
+        ];
+        Header::insert($headerData);
     }
 }

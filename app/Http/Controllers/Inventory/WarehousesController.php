@@ -11,34 +11,7 @@ use App\Models\Header;
 
 class WarehousesController extends Controller
 {
-    
-    //Headers
-    public function showHeaders()
-    {
-        $headers = Header::all();
-        return Inertia::render('Inventory/WarehouseManagement/Headers', [
-            'headers' => $headers
-        ]);
-    }
-
-    public function storeHeader(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-
-        Header::create([
-            'name' => $request->name,
-        ]);
-    }
-
-    public function destroyHeader(Header $header)
-    {
-        $header->delete();
-        return to_route('warehouses.headers');
-    }
-
-    //SubSections
+    //Warehouses
     public function showWarehouses()
     {
         $warehouses = Warehouse::all();
@@ -64,7 +37,6 @@ class WarehousesController extends Controller
         $request->validate([
             'name' => 'required|string',
             'location' => 'required',
-            'capacity' => 'required',
             'manager' => 'required',
             'header_ids' => 'array',
         ]);
@@ -72,7 +44,6 @@ class WarehousesController extends Controller
         $warehouse = Warehouse::create([
             'name' => $request->name,
             'location' => $request->location,
-            'capacity' => $request->capacity,
             'manager' => $request->manager,
         ]);
     
@@ -85,7 +56,6 @@ class WarehousesController extends Controller
         $request->validate([
             'name' => 'required|string',
             'location' => 'required',
-            'capacity' => 'required',
             'manager' => 'required',
             'header_ids' => 'array',
         ]);
@@ -93,7 +63,6 @@ class WarehousesController extends Controller
         $warehouse->update([
             'name' => $request->name,
             'location' => $request->location,
-            'capacity' => $request->capacity,
             'manager' => $request->manager,
         ]);
 
