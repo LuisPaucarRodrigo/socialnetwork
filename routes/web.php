@@ -120,6 +120,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit_info_additional'])->name('management.vacation.information.edit');
     Route::post('/management_vacation/information_additional/create', [VacationController::class, 'create'])->name('management.vacation.information.create');
     Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
+    Route::get('/management_vacation/information_additional/{vacation}/decline', [VacationController::class, 'decline'])->name('management.vacation.information.decline');
     Route::delete('/management_vacation/information_additional/{vacation}/delete', [VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
 
     //Document

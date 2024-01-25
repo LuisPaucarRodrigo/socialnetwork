@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('employee_id');
             $table->string('type');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->integer('   ');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->time('start_permissions')->nullable();
+            $table->time('end_permissions')->nullable();
             $table->date('start_date_accepted')->nullable();
             $table->date('end_date_accepted')->nullable();
-            $table->string('reason');
+            $table->text('reason');
             $table->boolean('status');
             $table->timestamps();
 

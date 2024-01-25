@@ -21,9 +21,7 @@ class VacationController extends Controller
     }
 
     public function index_info_additional(){
-        $vacations = Vacation::with('employee')->paginate();
-        return Inertia::render('HumanResource/ManagementVacation/VacationInformation', [
-            'vacations' => $vacations,
+        return Inertia::render('HumanResource/ManagementVacation/VacationInformation', [ 
             'employees' => Employee::all()
         ]);
     }
@@ -37,23 +35,18 @@ class VacationController extends Controller
     }
 
     public function create(Request $request){
-        $request->validate([
-            'employee_id' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'reason' => 'required',
-            'status' => 'required',
+        $validateData = $request->validate([
+            'employee_id' => 'required|numeric',
+            'type' => 'required|in:Vacaciones,Permisos',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after:start_date',
+            'start_permissions' => 'nullable|date_format:H:i',
+            'end_permissions' => 'nullable|date_format:H:i|after:start_permissions',
+            'reason' => 'required|string',
+            'status' => 'required|boolean',
         ]);
 
-        Vacation::create([
-            'employee_id' => $request->employee_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'start_date_accepted' => $request->start_date_accepted,
-            'end_date_accepted' => $request->end_date_accepted,
-            'reason' => $request->reason,
-            'status' => $request->status,          
-        ]);
+        Vacation::create($validateData);
 
         return to_route('management.vacation');
     }
