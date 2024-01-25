@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('vacation', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_id');
+            $table->string('type');
             $table->date('start_date');
             $table->date('end_date');
+            $table->integer('   ');
             $table->date('start_date_accepted')->nullable();
             $table->date('end_date_accepted')->nullable();
             $table->string('reason');
