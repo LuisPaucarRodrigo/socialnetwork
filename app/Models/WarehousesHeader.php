@@ -12,6 +12,7 @@ class WarehousesHeader extends Model
     protected $fillable = [
         'warehouse_id',
         'header_id',
+        'content'
     ];
 
     public function header()

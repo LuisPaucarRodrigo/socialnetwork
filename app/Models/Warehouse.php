@@ -13,6 +13,7 @@ class Warehouse extends Model
         'name',
         'location',
         'capacity',
+        'manager'
     ];
 
     public function headers()
@@ -20,4 +21,8 @@ class Warehouse extends Model
         return $this->belongsToMany(Header::class, 'warehouses_headers', 'warehouse_id', 'header_id')->withTimestamps();
     }
     
+    public function warehouseHeaders()
+    {
+        return $this->hasMany(WarehousesHeader::class, 'warehouse_id');
+    }
 }

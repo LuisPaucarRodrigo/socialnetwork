@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('warehouse_id')->constrained('warehouses')->onDelete('cascade');
             $table->foreignId('header_id')->constrained('headers')->onDelete('cascade');
+            $table->string('content')->nullable();
             $table->timestamps();
         });
     }
