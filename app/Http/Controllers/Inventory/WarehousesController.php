@@ -65,6 +65,7 @@ class WarehousesController extends Controller
             'name' => 'required|string',
             'location' => 'required',
             'capacity' => 'required',
+            'manager' => 'required',
             'header_ids' => 'array',
         ]);
 
@@ -72,6 +73,7 @@ class WarehousesController extends Controller
             'name' => $request->name,
             'location' => $request->location,
             'capacity' => $request->capacity,
+            'manager' => $request->manager,
         ]);
     
         // Asocia las cabeceras seleccionadas con el almacén
@@ -84,6 +86,7 @@ class WarehousesController extends Controller
             'name' => 'required|string',
             'location' => 'required',
             'capacity' => 'required',
+            'manager' => 'required',
             'header_ids' => 'array',
         ]);
 
@@ -91,6 +94,7 @@ class WarehousesController extends Controller
             'name' => $request->name,
             'location' => $request->location,
             'capacity' => $request->capacity,
+            'manager' => $request->manager,
         ]);
 
         // Sincroniza las cabeceras seleccionadas con el almacén
@@ -103,5 +107,39 @@ class WarehousesController extends Controller
         $warehouse->delete();
         return to_route('warehouses.warehouses');
     }
+
+
+    public function showWarehouseHeader(Warehouse $warehouse)
+    {
+        $warehouse->load(['headers', 'warehouseHeaders']);
+        return Inertia::render('Inventory/WarehouseManagement/WarehouseHeader', [
+            'warehouse' => $warehouse,
+        ]);
+    }
+
+    public function storeWarehouseHeader(Warehouse $warehouse, Request $request)
+    {
+        $request->validate([
+            'contentIds' => 'required|array',
+        ]);
+
+        // Obtenemos las cabeceras asociadas al almacén
+        $warehouseHeaders = WarehousesHeader::where('warehouse_id', $warehouse->id)->get();
+
+        // Iteramos sobre cada almacén y actualizamos el contenido según lo proporcionado en el request
+        foreach ($warehouseHeaders as $warehouseHeader) {
+            // Obtenemos el id de la cabecera actual
+            $headerId = $warehouseHeader->header_id;
+
+            // Verificamos si existe el id de la cabecera en el request
+            if (isset($request->contentIds[$headerId])) {
+                // Actualizamos el contenido
+                $warehouseHeader->update([
+                    'content' => $request->contentIds[$headerId],
+                ]);
+            }
+        }
+    }
+
 
 }
