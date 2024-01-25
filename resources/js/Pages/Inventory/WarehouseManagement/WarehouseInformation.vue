@@ -21,6 +21,10 @@
             <div class="text-lg font-semibold">Capacidad:</div>
             <div class="text-lg text-gray-500">{{ props.warehouse.capacity }}</div>
         </div>
+        <div class="flex gap-2 items-center">
+            <div class="text-lg font-semibold">Encargado:</div>
+            <div class="text-lg text-gray-500">{{ props.warehouse.manager }}</div>
+        </div>
         <div class="flex flex-col gap-2 ">
             <div class="text-lg font-semibold">Cabeceras:</div>
             <div v-if="props.warehouse.headers.length === 0" class="text-lg text-gray-500">No hay cabeceras asociadas.</div>

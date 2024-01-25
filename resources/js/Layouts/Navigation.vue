@@ -65,6 +65,7 @@
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
                 </MyTransition>
+                
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('management.employees.formation_development')">Formacion y Desarrollo
                     </Link>
@@ -74,6 +75,9 @@
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('documents.index')">Gestion de Documentos</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingHumanResource">
+                    <Link class="w-full" :href="route('sections.subSections')">Gestión de Alarmas</Link>
                 </MyTransition>
             </template>
 

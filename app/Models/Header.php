@@ -11,6 +11,7 @@ class Header extends Model
 
     protected $fillable = [
         'name',
+        'type'
     ];
 
     public function warehouses()
