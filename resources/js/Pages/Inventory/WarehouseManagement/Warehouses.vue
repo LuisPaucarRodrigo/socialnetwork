@@ -4,50 +4,56 @@
       <template #header>
         Gestión de almacenes
       </template>
-      <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-        <div class="flex gap-4">
-          <button @click="openCreateWarehouseModal" type="button"
-            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-            + Agregar Alamcén
-          </button>
-          <button @click="management_headers" type="button"
-            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-            Gestionar Cabeceras
-          </button>
-        </div>
-      </div>
-
-    <!-- Tabla para mostrar las subsecciones -->
-    <div class="mt-5">
-    <div class="overflow-x-auto mt-3">
-        <table class="w-full whitespace-no-wrap">
-        <thead>
-            <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-            <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Nombre</th>
-            <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Ubicación</th>
-            <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Capacidad</th>
-            <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="warehouse in props.warehouses" :key="warehouse.id" class="text-gray-700">
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ warehouse.name }}</td>
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ warehouse.location }}</td>
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ warehouse.capacity }}</td>
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                <div class="flex items-center">
-                    <Link :href="route('warehouses.warehouse', {warehouse: warehouse})" class="text-green-600 hover:underline mr-2"><EyeIcon class="h-4 w-4 ml-1" /></Link>
-                    <button @click="openEditWarehouseModal(warehouse)" class="text-orange-200 hover:underline mr-2"><PencilIcon class="h-4 w-4 ml-1" /></button>
-                    <button @click="confirmDeleteWarehouse(warehouse.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
+      <div class="min-w-full p-3 rounded-lg shadow">
+            <div class="flex gap-4">
+                <button @click="openCreateWarehouseModal" type="button"
+                    class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                    + Agregar
+                </button>
+                <button @click="management_headers" type="button"
+                    class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                    Gestionar cabeceras
+                </button>
+            </div>
+            <br>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div v-for="item in props.warehouses" :key="item.id"
+                    class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
+                    <div class="grid grid-cols-2">
+                        <h2 class="text-sm font-semibold mb-3">
+                            {{ item.name }}
+                        </h2>
+                        <div class="inline-flex justify-end gap-x-0 mb-4">
+                            <!-- <Link class="flex items-start">
+                            <EyeIcon class="h-4 w-4 text-blue-700" />
+                            </Link> -->
+                            <Link :href="route('warehouses.warehouse', {warehouse: item})" class="text-green-600 hover:underline"><EyeIcon class="h-4 w-4 ml-1" /></Link>
+                            <button @click="openEditWarehouseModal(item)" class="text-orange-400 hover:underline mx-2"><PencilIcon class="h-4 w-4 ml-1" /></button>
+                            <button @click="confirmDeleteWarehouse(item.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
+                        Ubicación: {{ item.location }}
+                    </h3>
+                    <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
+                        Encargado: {{ item.manager }}
+                    </h3>
+                    <div class="text-gray-500 text-sm">
+                        <div class="grid grid-cols-1 gap-y-1">
+                            <!-- <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas</Link> -->
+                            <Link
+                                :href="route('warehouses.warehouseHeader', {warehouse: item})"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Agregar</Link>
+                        </div>
+                    </div>
                 </div>
-            </td>
-            </tr>
-        </tbody>
-        </table>
-    </div>
-    </div>
+            </div>
+            <br>
+            <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+                <pagination :links="warehouses.links" />
+            </div>
+        </div>
 
-  
       <Modal :show="create_warehouse">
         <div class="p-6">
           <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -85,6 +91,29 @@
                 </div>
 
                 <div>
+                  <InputLabel for="manager" class="font-medium leading-6 text-gray-900 mt-3">Encargado</InputLabel>
+                  <div class="mt-2">
+                    <input type="text" v-model="form.manager" id="manager"
+                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <InputError :message="form.errors.manager" />
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <InputLabel for="headers" class="font-medium leading-6 text-gray-900">Cabeceras
+                  </InputLabel>
+                    <select required multiple v-model="form.header_ids" id="headers"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 mt-3">
+                        <option disabled>
+                          Selecciona una o varias
+                        </option>
+                        <option v-for="header in headers" :key="header.id" :value="header.id">
+                          {{ header.name }}
+                        </option>
+                    </select>
+                  <InputError :message="form.errors.header_ids" />
+                </div>
+                <!--<div>
                     <div v-for="(headerId, index) in selectedHeaders" :key="index">
                     <InputLabel for="header" class="text-gray-700 mt-3">Cabecera {{ index + 1 }}:</InputLabel>
                     <select v-model="form.header_ids[index]" id="header" class="border rounded-md px-3 py-2 mb-3 w-full">
@@ -97,7 +126,7 @@
 
                     <button @click.prevent="addHeaderField" class="rounded-md bg-indigo-600 mt-2 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Añadir Cabecera</button>
 
-                </div>
+                </div>-->
 
                 <div class="mt-6 flex items-center justify-end gap-x-6">
                   <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
@@ -147,41 +176,24 @@
                 </div>
 
                 <div>
-                    <div>
-                    </div>
-    <div v-for="(header, index) in formEdit.headers" :key="index">
-      <InputLabel :for="`header-${index}`" class="text-gray-700 mt-3">Cabecera {{ index + 1 }}:</InputLabel>
-      <select
-        v-model="formEdit.headers[index].id"
-        :id="`header-${index}`"
-        class="border rounded-md px-3 py-2 mb-3 w-full"
-      >
-        <option value="">Seleccionar Cabecera</option>
-        <option
-          v-for="headerOption in props.headers"
-          :key="headerOption.id"
-          :value="headerOption.id"
-        >
-          {{ headerOption.name }}
-        </option>
-      </select>
-
-      <button
-        @click.prevent="removeHeaderFieldEdit(index)"
-        class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-divhover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      >
-        Eliminar Cabecera
-      </button>
-    </div>
-
-    <button
-      @click.prevent="addHeaderFieldEdit"
-      class="rounded-md bg-indigo-600 mt-2 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-    >
-      Añadir Cabecera
-    </button>
-  </div>
-
+                  <InputLabel for="manager" class="font-medium leading-6 text-gray-900 mt-3">Encargado</InputLabel>
+                  <div class="mt-2">
+                    <input type="text" v-model="formEdit.manager" id="manager"
+                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <InputError :message="formEdit.errors.manager" />
+                  </div>
+                </div>
+                
+                <div class="mt-3">
+                  <InputLabel for="headers" class="font-medium leading-6 text-gray-900">Cabeceras</InputLabel>
+                  <select required multiple v-model="formEdit.header_ids" id="headers" class="block w-full ...">
+                    <option disabled>Selecciona una o varias</option>
+                    <option v-for="header in headers" :key="header.id" :value="header.id">
+                      {{ header.name }}
+                    </option>
+                  </select>
+                  <InputError :message="formEdit.errors.header_ids" />
+                </div>
 
                 <div class="mt-6 flex items-center justify-end gap-x-6">
                   <SecondaryButton @click="closeEditModal"> Cancelar </SecondaryButton>
@@ -225,6 +237,7 @@
     name: '',
     location: '',
     capacity: '',
+    manager: '',
     header_ids: [],
   });
 
@@ -233,6 +246,7 @@
     name: '',
     location: '',
     capacity: '',
+    manager: '',
     header_ids: [],
     headers: null
   });
@@ -245,49 +259,6 @@
   const editWarehouseModal = ref(false);
   const editingWarehouse = ref(null);
   
-  //create
-
-  const selectedHeaders = ref([]);
-
-  const addHeaderField = () => {
-    const newHeaderId = ''; // Reemplaza con la lógica para obtener el ID de la cabecera seleccionada
-
-    // Agrega el nuevo ID al formulario
-    form.header_ids.push(newHeaderId);
-    console.log(form)
-    console.log(form.header_ids)
-    // Agrega un nuevo elemento al array de selectedHeaders para mostrar otro campo de selección en el formulario
-    selectedHeaders.value.push('');
-    };
-
-const removeHeaderField = (index) => {
-  // Elimina el valor de form.header_ids en la posición dada por index
-  form.header_ids.splice(index, 1);
-
-  // Elimina el valor correspondiente de selectedHeaders
-  selectedHeaders.value.splice(index, 1);
-};
-
-//edit
-const selectedHeadersEdit = ref([]);
-
-const addHeaderFieldEdit = () => {
-  // Obtén el nuevo ID de cabecera seleccionado
-  const newHeaderId = '';
-    
-  // Agrega un nuevo objeto al array de form.headers con el nuevo ID
-  formEdit.headers.push({ id: newHeaderId });
-  
-};
-
-const removeHeaderFieldEdit = (index) => {
-  // Elimina el valor de form.header_ids en la posición dada por index
-  formEdit.header_ids.splice(index, 1);
-
-  // Elimina el objeto correspondiente de form.headers
-  formEdit.headers.splice(index, 1);
-};
-
   const management_headers = () => {
     router.get(route('warehouses.headers'));
   };
@@ -297,32 +268,30 @@ const removeHeaderFieldEdit = (index) => {
   };
 
   const openEditWarehouseModal = (warehouse) => {
-  // Copia de los datos de la subsección existente al formulario
-  editingWarehouse.value = JSON.parse(JSON.stringify(warehouse));
-  formEdit.id = editingWarehouse.value.id;
-  formEdit.name = editingWarehouse.value.name;
-  formEdit.location = editingWarehouse.value.location;
-  formEdit.capacity = editingWarehouse.value.capacity;
+    // Copia de los datos de la subsección existente al formulario
+    editingWarehouse.value = JSON.parse(JSON.stringify(warehouse));
+    formEdit.id = editingWarehouse.value.id;
+    formEdit.name = editingWarehouse.value.name;
+    formEdit.location = editingWarehouse.value.location;
+    formEdit.capacity = editingWarehouse.value.capacity;
+    formEdit.manager = editingWarehouse.value.manager;
 
-  // Filtra los warehouse_headers asociados al almacén específico
-  const warehouseHeaders = props.warehouse_headers.filter((wh) => wh.warehouse_id === warehouse.id);
+    // Filtra los warehouse_headers asociados al almacén específico
+    const warehouseHeaders = props.warehouse_headers.filter((wh) => wh.warehouse_id === warehouse.id);
 
-  // Almacena directamente los objetos de cabecera en form.headers
-  formEdit.headers = warehouseHeaders.map((wh) => wh.header);
+    // Almacena directamente los objetos de cabecera en formEdit.headers
+    formEdit.headers = warehouseHeaders.map((wh) => wh.header);
 
-  // Almacena las ids de los headers en form.header_ids
-  formEdit.header_ids = formEdit.headers.map((header) => header.id);
+    // Almacena las ids de los headers en formEdit.header_ids
+    formEdit.header_ids = formEdit.headers.map((header) => header.id);
 
-  // Imprime los datos para depuración
-  console.log(formEdit.headers);
-  console.log(formEdit.header_ids);
+    // Imprime los datos para depuración
+    console.log(formEdit.headers);
+    console.log(formEdit.header_ids);
 
-  // Abre el modal de edición
-  editWarehouseModal.value = true;
-};
-
-
-
+    // Abre el modal de edición
+    editWarehouseModal.value = true;
+  };
 
     
   const closeModal = () => {
@@ -360,7 +329,6 @@ const removeHeaderFieldEdit = (index) => {
   };
 
   const submitEdit = () => {
-    formEdit.header_ids = formEdit.headers.map((header) => header.id);
     console.log(formEdit.header_ids);
     formEdit.put(route('warehouses.updateWarehouse', {warehouse: formEdit.id}, formEdit), {
       onSuccess: () => {
@@ -398,7 +366,6 @@ const removeHeaderFieldEdit = (index) => {
       });
     }
   };
-
 
   </script>
   
