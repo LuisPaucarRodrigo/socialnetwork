@@ -32,6 +32,10 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Estado
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         </th>
                     </tr>
                 </thead>
@@ -45,15 +49,45 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.type }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ item.start_date ? item.start_date : item.start_permissions }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ item.start_date ? item.start_date :
+                                item.start_permissions }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ item.end_date ? item.end_date : item.end_permissions }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ item.end_date ? item.end_date :
+                                item.end_permissions }}</p>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">{{ item.status }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex space-x-3 justify-center">
-                                <Link :href="route('management.vacation.information.edit', { id: item.id })"
-                                    class="text-blue-900 whitespace-no-wrap">Mas Detalles</Link>
+                                <Link class="text-blue-900 whitespace-no-wrap"
+                                    :href="route('management.vacation.information.details', { id: item.id })">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" class="w-6 h-6 text-teal-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                </Link>
+                                <Link v-if="item.status == 'Pendiente'" class="text-blue-900 whitespace-no-wrap"
+                                    :href="route('management.vacation.information.edit', { id: item.id })">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                                </Link>
+                                <Link v-if="item.status == 'Pendiente'"
+                                    :href="route('management.vacation.information.review', { id: item.id })"
+                                    class="text-blue-900 whitespace-no-wrap">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                </svg>
+                                </Link>
                                 <button type="button" @click="confirmDeletion(item.id)"
                                     class="text-blue-900 whitespace-no-wrap">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -72,8 +106,8 @@
                 <pagination :links="vacations.links" />
             </div>
         </div>
-        <ConfirmDeleteModal :confirmingDeletion="confirmingDeletion" itemType="vaciones"
-            :deleteFunction="deleteitem" @closeModal="closeModal" />
+        <ConfirmDeleteModal :confirmingDeletion="confirmingDeletion" itemType="vacaciones" :deleteFunction="deleteitem"
+            @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 
@@ -90,10 +124,9 @@ const props = defineProps({
 
 const confirmingDeletion = ref(false);
 const itemDelete = ref(null);
-const hours_date = ref(null);
 
 const add_information = () => {
-    router.get(route('management.vacation.information'));
+    router.get(route('management.vacation.information.create'));
 };
 
 const confirmDeletion = (itemId) => {
@@ -102,9 +135,9 @@ const confirmDeletion = (itemId) => {
 };
 
 const deleteitem = () => {
-    const itemDelete = itemDelete.value;
-    if (itemDelete) {
-        router.delete(route('management.vacation.information.destroy', { vacation: itemDelete }), {
+    const Delete = itemDelete.value;
+    if (Delete) {
+        router.delete(route('management.vacation.information.destroy', { vacation: Delete }), {
             onSuccess: () => closeModal()
         });
     }

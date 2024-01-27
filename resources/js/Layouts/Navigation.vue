@@ -208,11 +208,9 @@
                     </MyTransition>
                 </div>
             </template>
-            
         </nav>
     </div>
 </template>
-
 <script>
 import NavLink from '@/Components/NavLink.vue';
 import MyTransition from '@/Components/MyTransition.vue'
@@ -274,10 +272,9 @@ export default {
             }
         },
     },
+    
     mounted() {
-        // Realiza la primera llamada al montar el componente
         this.fetchSubSectionsCount();
-        // Configura el intervalo para realizar la petición cada 10 segundos
         setInterval(() => {
             this.fetchSubSectionsCount();
         }, 60000);

@@ -17,6 +17,7 @@ class Employee extends Model
         'birthdate',
         'dni',
         'email',
+        'email_company',
         'phone1',
         'phone2'
         ];
