@@ -116,11 +116,14 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
     //Vacation
     Route::get('/management_vacation', [VacationController::class, 'index'])->name('management.vacation');
-    Route::get('/management_vacation/information_additional', [VacationController::class, 'index_info_additional'])->name('management.vacation.information');
-    Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit_info_additional'])->name('management.vacation.information.edit');
-    Route::post('/management_vacation/information_additional/create', [VacationController::class, 'create'])->name('management.vacation.information.create');
+    Route::get('/management_vacation/information_additional', [VacationController::class, 'create'])->name('management.vacation.information.create');
+    Route::post('/management_vacation/information_additional/sttore', [VacationController::class, 'store'])->name('management.vacation.information.store');
+    Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit'])->name('management.vacation.information.edit');
     Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
-    Route::get('/management_vacation/information_additional/{vacation}/decline', [VacationController::class, 'decline'])->name('management.vacation.information.decline');
+    Route::get('/management_vacation/information_additional/{vacation}/review', [VacationController::class, 'review'])->name('management.vacation.information.review');
+    Route::put('/management_vacation/information_additional/{vacation}/reviewed', [VacationController::class, 'reviewed'])->name('management.vacation.information.reviewed');
+    Route::get('/management_vacation/information_additional/{vacation}/details', [VacationController::class, 'details'])->name('management.vacation.information.details');
+    Route::get('/management_vacation/information_additional/{id}/decline', [VacationController::class, 'decline'])->name('management.vacation.information.decline');
     Route::delete('/management_vacation/information_additional/{vacation}/delete', [VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
 
     //Document

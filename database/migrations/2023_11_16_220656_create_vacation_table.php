@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('start_date_accepted')->nullable();
             $table->date('end_date_accepted')->nullable();
             $table->text('reason');
-            $table->boolean('status');
+            $table->string('status')->default('Pendiente');
             $table->timestamps();
 
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');

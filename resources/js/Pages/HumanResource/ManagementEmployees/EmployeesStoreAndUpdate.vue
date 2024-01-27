@@ -92,6 +92,16 @@
                             </div>
                         </div>
 
+                        <div class="sm:col-span-4">
+                            <InputLabel for="email_company" class="font-medium leading-6 text-gray-900">Correo Electronico de Empresa
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="email" id="email_company" v-model="form.email_company" autocomplete="email_company"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.email_company" />
+                            </div>
+                        </div>
+
                         <div class="sm:col-span-2">
                             <InputLabel for="phone1" class="font-medium leading-6 text-gray-900">Telefono 1</InputLabel>
                             <div class="mt-2">
@@ -105,7 +115,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone2" class="font-medium leading-6 text-gray-900">Telefono 2</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="postal-code"
+                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="phone2"
                                     maxlength="9"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.phone2" />
@@ -550,6 +560,7 @@ const form = useForm({
     birthdate: '',
     dni: '',
     email: '',
+    email_company: '',
     phone1: '',
     phone2: '',
     pension_system: '',
@@ -587,6 +598,7 @@ if (props.employees) {
     form.birthdate = props.employees.birthdate;
     form.dni = props.employees.dni;
     form.email = props.employees.email;
+    form.email_company = props.employees.email_company;
     form.phone1 = props.employees.phone1;
     form.phone2 = props.employees.phone2;
     form.pension_system = props.employees.contract.pension.id;

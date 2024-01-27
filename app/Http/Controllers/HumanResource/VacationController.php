@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Employee;
 use App\Models\User;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 class VacationController extends Controller
 {
@@ -20,21 +21,13 @@ class VacationController extends Controller
         ]);
     }
 
-    public function index_info_additional(){
-        return Inertia::render('HumanResource/ManagementVacation/VacationInformation', [ 
+    public function create(){
+        return Inertia::render('HumanResource/ManagementVacation/CreateAndUpdate', [ 
             'employees' => Employee::all()
         ]);
     }
 
-    public function edit_info_additional(Vacation $vacation)
-    {
-        return Inertia::render('HumanResource/ManagementVacation/VacationInformation', [
-            'vacation' => $vacation,
-            'employees' => Employee::all()
-        ]);
-    }
-
-    public function create(Request $request){
+    public function store(Request $request){
         $validateData = $request->validate([
             'employee_id' => 'required|numeric',
             'type' => 'required|in:Vacaciones,Permisos',
@@ -43,54 +36,75 @@ class VacationController extends Controller
             'start_permissions' => 'nullable|date_format:H:i',
             'end_permissions' => 'nullable|date_format:H:i|after:start_permissions',
             'reason' => 'required|string',
-            'status' => 'required|boolean',
         ]);
 
         Vacation::create($validateData);
-
         return to_route('management.vacation');
     }
 
-    public function store(Request $request)
-    {
-        $vacation = new Vacation;
-        $vacation->employee_id = $request->employee_id;
-        $vacation->start_date = $request->start_date;
-        $vacation->end_date = $request->end_date;
-        $vacation->reason = $request->reason;
-        $vacation->save();
-        $data = [
-            'message' => 'Vacation stores succesfully',
-            'vacation' => $vacation
-        ];
-        return response()->json($data);
+    public function edit($vacation)
+    {   
+        return Inertia::render('HumanResource/ManagementVacation/CreateAndUpdate', [
+            'vacation' => Vacation::with('employee')->find($vacation),
+        ]);
     }
 
-    public function show(Vacation $vacation)
-    {
-        return response()->json($vacation->load('employee'));
+    public function update(Request $request,$id)
+    {   
+        $vacation = Vacation::find($id);
+        $validateData = $request->validate([
+            'type' => 'required|in:Vacaciones,Permisos',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after:start_date',
+            'start_permissions' => 'nullable',
+            'end_permissions' => 'nullable|after:start_permissions',
+            'start_date_accepted' => 'nullable|date',
+            'end_date_accepted' => 'nullable|date|after:start_date_accepted',
+            'reason' => 'required|string',
+        ]);
+        $vacation->update($validateData);
+        return to_route('management.vacation');
     }
 
-    public function update(Request $request, Vacation $vacation)
+    public function review(Vacation $vacation)
     {
+        
+        return Inertia::render('HumanResource/ManagementVacation/Details',[
+            'vacation' => $vacation,
+            'details' => Vacation::with('employee')->find($vacation -> id),
+        ]);
+    }
+
+    public function details ($vacation)
+    {   
+        $details = Vacation::with('employee')->find($vacation);
+        return Inertia::render('HumanResource/ManagementVacation/Details',[
+            'details' => $details
+        ]);
+    }
+
+    public function reviewed(Request $request, $vacation)
+    {   
         $request->validate([
-            'employee_id' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'reason' => 'required',
-            'status' => 'required',
+            'start_date_accepted' => 'nullable|date',
+            'end_date_accepted' => 'nullable|date|after:start_date_accepted'
         ]);
 
+        $reviewed = Vacation::find($vacation);
+        $reviewed -> update([
+            'start_date_accepted' => $request->start_date_accepted,
+            'end_date_accepted' => $request->end_date_accepted,
+            'status' => 'Aceptado'
+        ]);
+        return to_route('management.vacation');
+    }
+
+    public function decline($id)
+    {   
+        $vacation = Vacation::find($id);
         $vacation->update([
-            'employee_id' => $request->employee_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'start_date_accepted' => $request->start_date,
-            'end_date_accepted' => $request->end_date,
-            'reason' => $request->reason,
-            'status' => $request->status,          
+            'status' => 'Rechazado'
         ]);
-
         return to_route('management.vacation');
     }
 

@@ -52,6 +52,7 @@ class ManagementEmployees extends Controller
             'birthdate' => 'required|date',
             'dni' => 'required|numeric|digits:8|unique:' . Employee::class,
             'email' => 'required|email|max:255|unique:' . Employee::class,
+            'email_company' => 'required|email|max:255|unique:' . Employee::class,
             'phone1' => 'required|numeric|digits:9|unique:' . Employee::class,
             'phone2' => 'nullable|numeric|digits:9|unique:' . Employee::class,
             'maternity_subsidy' => 'nullable',
@@ -109,6 +110,7 @@ class ManagementEmployees extends Controller
                 'birthdate' => $request->birthdate,
                 'dni' => $request->dni,
                 'email' => $request->email,
+                'email_company' => $request->email_company,
                 'phone1' => $request->phone1,
                 'phone2' => $request->phone2,
             ]);
@@ -205,6 +207,7 @@ class ManagementEmployees extends Controller
                 'birthdate' => $request->birthdate,
                 'dni' => $request->dni,
                 'email' => $request->email,
+                'email_company' => $request->email_company,
                 'phone1' => $request->phone1,
                 'phone2' => $request->phone2,
             ]);
