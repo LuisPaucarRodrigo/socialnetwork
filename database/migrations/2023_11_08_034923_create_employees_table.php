@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->string("lastname");
-            $table->string("cropped_image");
+            $table->string("cropped_image")->nullable();
             $table->string("gender");
             $table->string("state_civil");
             $table->date("birthdate");

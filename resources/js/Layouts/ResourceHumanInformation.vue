@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="sm:flex lg:justify-between lg:gap-8">
+    <div v-if="details.education.curriculum_vitae" class="sm:flex lg:justify-between lg:gap-8">
       <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium leading-6 text-gray-900">Curriculum Vitae</dt>
@@ -64,7 +64,7 @@
                       clip-rule="evenodd" />
                   </svg>
                   <div class="ml-4 flex min-w-0 flex-1 gap-2">
-                    <span class="truncate font-medium">{{ formatoArchivo(details.education.curriculum_vitae)}}</span>
+                    <span class="truncate font-medium">{{ formatoArchivo(details.education.curriculum_vitae) }}</span>
                   </div>
                 </div>
                 <div class="ml-4 flex-shrink-0">

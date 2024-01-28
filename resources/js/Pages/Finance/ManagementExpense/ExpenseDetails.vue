@@ -38,14 +38,16 @@
                     <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Limite</dt>
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.quote_deadline }}</dd>
                 </div>
-                <button @click="openPreviewDocumentModal(details.id)" class="flex items-center text-green-600 hover:underline mb-5">
-                    Previsualizar <EyeIcon class="h-4 w-4 ml-1" />
-                </button>
+                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt class="text-sm font-medium leading-6 text-gray-900">Archivo Adjunto</dt>
+                    <button @click="openPreviewDocumentModal(details.id)"
+                        class="flex items-center text-green-600 hover:underline mb-5">
+                        Previsualizar
+                        <EyeIcon class="h-4 w-4 ml-1" />
+                    </button>
+                </div>
             </dl>
-        
         </div>
-
-
         <div v-if="details.purchasing_requests.state == 'En Progreso'" class="flex gap-2">
             <button @click="sendReply('Aceptado')" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
@@ -79,16 +81,15 @@
                 </div>
             </div>
         </Modal>
-
         <teleport to="body">
             <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
                 <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
                 <div class="flex items-center justify-center h-full w-3/4">
-                <div class="bg-white p-5 rounded-md relative w-full h-3/5" >
-                    <button @click="closePreviewDocumentModal"
-                    class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-                    <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
-                </div>
+                    <div class="bg-white p-5 rounded-md relative w-full h-3/5">
+                        <button @click="closePreviewDocumentModal"
+                            class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
+                        <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
+                    </div>
                 </div>
             </div>
         </teleport>
@@ -125,12 +126,12 @@ const check = () => {
 
 const sendReply = (state) => {
     form.state = state
-    form.put(route('managementexpense.reviewed',props.details.purchasing_requests.id,form), {
+    form.put(route('managementexpense.reviewed', props.details.purchasing_requests.id, form), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => comentOrden.value.focus(),
         onFinish: () => form.reset(),
-    }); 
+    });
 };
 
 const closeModal = () => {
@@ -139,18 +140,18 @@ const closeModal = () => {
 };
 
 function getDocumentUrl(documentId) {
-  return route('purchasesrequest.show', { id: documentId });
+    return route('purchasesrequest.show', { id: documentId });
 }
 
 const documentToShow = ref(null);
 const isPreviewDocumentModalOpen = ref(false);
 
 const closePreviewDocumentModal = () => {
-  isPreviewDocumentModalOpen.value = false;
+    isPreviewDocumentModalOpen.value = false;
 };
 
 function openPreviewDocumentModal(documentId) {
-  documentToShow.value = documentId;
-  isPreviewDocumentModalOpen.value = true;
+    documentToShow.value = documentId;
+    isPreviewDocumentModalOpen.value = true;
 }
 </script>
