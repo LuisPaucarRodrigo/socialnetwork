@@ -43,8 +43,8 @@ class ManagementEmployees extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'curriculum_vitae' => 'required|mimes:pdf|max:2048',
-            'cropped_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'curriculum_vitae' => 'nullable|mimes:pdf|max:2048',
+            'cropped_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'gender' => 'required|string|in:Masculino,Femenino',
@@ -65,7 +65,7 @@ class ManagementEmployees extends Controller
             'street_address' => 'required|string|max:255',
             'department' => 'required|string|max:255',
             'province' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
 
             'emergencyContacts.*.emergency_name' => 'required|string|max:255',
             'emergencyContacts.*.emergency_lastname' => 'required|string|max:255',
@@ -90,102 +90,108 @@ class ManagementEmployees extends Controller
             'accidents' => 'required|string|max:255',
             'vaccinations' => 'required|string|max:255',
         ]);
-        DB::beginTransaction();
-        try {
+        // DB::beginTransaction();
+        // try {
+            
+        //     DB::commit();
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     $errorMessage = $e->getMessage();
+        //     Log::error($errorMessage);
+        // }
+        $imageUrl = null;
+        $documentName = null;
+        if ($request->filled('curriculum_vitae')) {
             $document = $request->file('curriculum_vitae');
             $documentName = time() . '. ' . $document->getClientOriginalName();
             $document->storeAs('documents', $documentName);
+        }
 
+        if ($request->filled('cropped_image')) {
             $croppedImage = $request->file('cropped_image');
             $imageName = 'imagen_' . time() . '. ' . $croppedImage->getClientOriginalExtension();
             $croppedImage->move(public_path('image'), $imageName);
             $imageUrl = url('image/' . $imageName);
-
-            $employee = Employee::create([
-                'name' => $request->name,
-                'lastname' => $request->lastname,
-                'cropped_image' => $imageUrl,
-                'gender' => $request->gender,
-                'state_civil' => $request->state_civil,
-                'birthdate' => $request->birthdate,
-                'dni' => $request->dni,
-                'email' => $request->email,
-                'email_company' => $request->email_company,
-                'phone1' => $request->phone1,
-                'phone2' => $request->phone2,
-            ]);
-
-            $employeeId = $employee->id;
-
-            Contract::create([
-                'maternity_subsidy' => $request->maternity_subsidy,
-                'basic_salary' => $request->basic_salary,
-                'hire_date' => $request->hire_date,
-                'employee_id' => $employeeId,
-                'pension_id' => $request->pension_system,
-            ]);
-
-            Education::create([
-                'education_level' => $request->education_level,
-                'education_status' => $request->education_status,
-                'specialization' => $request->specialization,
-                'curriculum_vitae' => $documentName,
-                'employee_id' => $employeeId,
-            ]);
-
-            Address::create([
-                'street_address' => $request->street_address,
-                'department' => $request->department,
-                'province' => $request->province,
-                'address' => $request->address,
-                'employee_id' => $employeeId,
-            ]);
-
-            if ($request->filled('emergencyContacts')) {
-                foreach ($request->emergencyContacts as $emergency) {
-                    Emergency::create([
-                        'emergency_name' => $emergency['emergency_name'],
-                        'emergency_lastname' => $emergency['emergency_lastname'],
-                        'emergency_relations' => $emergency['emergency_relations'],
-                        'emergency_phone' => $emergency['emergency_phone'],
-                        'employee_id' => $employeeId,
-                    ]);
-                }
-            };
-
-            if ($request->filled('familyDependents')) {
-                foreach ($request->familyDependents as $dependent) {
-                    Family::create([
-                        'family_dni' => $dependent['family_dni'],
-                        'family_education' => $dependent['family_education'],
-                        'family_relation' => $dependent['family_relation'],
-                        'family_name' => $dependent['family_name'],
-                        'family_lastname' => $dependent['family_lastname'],
-                        'employee_id' => $employeeId,
-                    ]);
-                }
-            };
-
-            Health::create([
-                'blood_group' => $request->blood_group,
-                'weight' => $request->weight,
-                'height' => $request->height,
-                'shoe_size' => $request->shoe_size,
-                'shirt_size' => $request->shirt_size,
-                'pants_size' => $request->pants_size,
-                'medical_condition' => $request->medical_condition,
-                'allergies' => $request->allergies,
-                'operations' => $request->operations,
-                'accidents' => $request->accidents,
-                'vaccinations' => $request->vaccinations,
-                'employee_id' => $employeeId,
-            ]);
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $errorMessage = $e->getMessage();
-            Log::error($errorMessage);
         }
+        $employee = Employee::create([
+            'name' => $request->name,
+            'lastname' => $request->lastname,
+            'cropped_image' => $imageUrl,
+            'gender' => $request->gender,
+            'state_civil' => $request->state_civil,
+            'birthdate' => $request->birthdate,
+            'dni' => $request->dni,
+            'email' => $request->email,
+            'email_company' => $request->email_company,
+            'phone1' => $request->phone1,
+            'phone2' => $request->phone2,
+        ]);
+
+        $employeeId = $employee->id;
+
+        Contract::create([
+            'maternity_subsidy' => $request->maternity_subsidy,
+            'basic_salary' => $request->basic_salary,
+            'hire_date' => $request->hire_date,
+            'employee_id' => $employeeId,
+            'pension_id' => $request->pension_system,
+        ]);
+
+        Education::create([
+            'education_level' => $request->education_level,
+            'education_status' => $request->education_status,
+            'specialization' => $request->specialization,
+            'curriculum_vitae' => $documentName,
+            'employee_id' => $employeeId,
+        ]);
+
+        Address::create([
+            'street_address' => $request->street_address,
+            'department' => $request->department,
+            'province' => $request->province,
+            'district' => $request->district,
+            'employee_id' => $employeeId,
+        ]);
+
+        if ($request->filled('emergencyContacts')) {
+            foreach ($request->emergencyContacts as $emergency) {
+                Emergency::create([
+                    'emergency_name' => $emergency['emergency_name'],
+                    'emergency_lastname' => $emergency['emergency_lastname'],
+                    'emergency_relations' => $emergency['emergency_relations'],
+                    'emergency_phone' => $emergency['emergency_phone'],
+                    'employee_id' => $employeeId,
+                ]);
+            }
+        };
+
+        if ($request->filled('familyDependents')) {
+            foreach ($request->familyDependents as $dependent) {
+                Family::create([
+                    'family_dni' => $dependent['family_dni'],
+                    'family_education' => $dependent['family_education'],
+                    'family_relation' => $dependent['family_relation'],
+                    'family_name' => $dependent['family_name'],
+                    'family_lastname' => $dependent['family_lastname'],
+                    'employee_id' => $employeeId,
+                ]);
+            }
+        };
+
+        Health::create([
+            'blood_group' => $request->blood_group,
+            'weight' => $request->weight,
+            'height' => $request->height,
+            'shoe_size' => $request->shoe_size,
+            'shirt_size' => $request->shirt_size,
+            'pants_size' => $request->pants_size,
+            'medical_condition' => $request->medical_condition,
+            'allergies' => $request->allergies,
+            'operations' => $request->operations,
+            'accidents' => $request->accidents,
+            'vaccinations' => $request->vaccinations,
+            'employee_id' => $employeeId,
+        ]);
     }
 
     public function edit($id)
@@ -229,7 +235,7 @@ class ManagementEmployees extends Controller
                 'street_address' => $request->street_address,
                 'department' => $request->department,
                 'province' => $request->province,
-                'address' => $request->address,
+                'district' => $request->district,
             ]);
 
             if ($request->filled('emergencyContacts')) {
@@ -281,7 +287,7 @@ class ManagementEmployees extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             $errorMessage = $e->getMessage();
-            Log::error($errorMessage) ;
+            Log::error($errorMessage);
         }
     }
 
@@ -299,7 +305,7 @@ class ManagementEmployees extends Controller
     }
 
     public function fired(FiredContractEmployees $request, $id)
-    {   
+    {
         $validateData = $request->validated();
         $contract = Contract::where('employee_id', $id)->first();
         $contract->update($validateData);

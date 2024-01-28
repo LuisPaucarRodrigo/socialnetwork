@@ -16,10 +16,11 @@ class SpreadsheetsController extends Controller
         $employees = Employee::with('contract', 'contract.pension')->get();
         $spreadsheet = [];
         foreach ($employees as $employee) {
+            // dd(floor(Carbon::parse($employee->contract->fired_date)->diffInYears(Carbon::parse($employee->contract->hire_date))));
             $state = $employee->contract->state;
-            $truncated_vacations = $employee->contract->fired_date !== null && $employee->contract->state === 'Inactive'
-                ? floor(Carbon::parse($employee->contract->fired_date)->diffInYears(Carbon::parse($employee->contract->hire_date)) * 15) * ($employee->contract->basic_salary / 30)
-                : 0;
+            $truncated_vacations = floor($employee->contract->fired_date !== null && $employee->contract->state === 'Inactive'
+                ? (Carbon::parse($employee->contract->fired_date)->floatDiffInYears(Carbon::parse($employee->contract->hire_date)) * 15) * ($employee->contract->basic_salary / 30)
+                : 0);
             $total_income = $employee->contract->basic_salary + $truncated_vacations;
             $snp = ($employee->contract->pension->type == 'ONP') ? 100 * ($employee->contract->pension->values) : 0;
             $snp_onp = ($employee->contract->pension->type == 'ONP') ? $total_income * $employee->contract->pension->values : 0;

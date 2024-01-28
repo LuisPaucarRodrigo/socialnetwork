@@ -62,9 +62,9 @@ class DatabaseSeeder extends Seeder
             'role_id' => '1'
         ]);
         // User::factory()->count(20)->create();
-        Project::factory()->count(10)->create();
-        Purchasing_request::factory()->count(1)->create();
-        Provider::factory()->count(10)->create();
+        // Project::factory()->count(10)->create();
+        // Purchasing_request::factory()->count(1)->create();
+        // Provider::factory()->count(10)->create();
         
         $data = [
             [

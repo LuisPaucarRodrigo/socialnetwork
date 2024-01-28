@@ -93,10 +93,12 @@
                         </div>
 
                         <div class="sm:col-span-4">
-                            <InputLabel for="email_company" class="font-medium leading-6 text-gray-900">Correo Electronico de Empresa
+                            <InputLabel for="email_company" class="font-medium leading-6 text-gray-900">Correo Electronico
+                                de Empresa
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="email" id="email_company" v-model="form.email_company" autocomplete="email_company"
+                                <TextInput type="email" id="email_company" v-model="form.email_company"
+                                    autocomplete="email_company"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.email_company" />
                             </div>
@@ -115,8 +117,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone2" class="font-medium leading-6 text-gray-900">Telefono 2</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="phone2"
-                                    maxlength="9"
+                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="phone2" maxlength="9"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.phone2" />
                             </div>
@@ -230,16 +231,14 @@
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <InputLabel for="department" class="font-medium leading-6 text-gray-900">Departamento
+                            <InputLabel for="address" class="font-medium leading-6 text-gray-900">Distrito
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.department" id="department"
-                                    autocomplete="address-level2"
+                                <TextInput type="text" v-model="form.district" id="address" autocomplete="postal-code"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.department" />
+                                <InputError :message="form.errors.district" />
                             </div>
                         </div>
-
                         <div class="sm:col-span-2">
                             <InputLabel for="province" class="font-medium leading-6 text-gray-900">Provincia</InputLabel>
                             <div class="mt-2">
@@ -248,14 +247,14 @@
                                 <InputError :message="form.errors.province" />
                             </div>
                         </div>
-
                         <div class="sm:col-span-2">
-                            <InputLabel for="address" class="font-medium leading-6 text-gray-900">Direccion
+                            <InputLabel for="department" class="font-medium leading-6 text-gray-900">Departamento
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.address" id="address" autocomplete="postal-code"
+                                <TextInput type="text" v-model="form.department" id="department"
+                                    autocomplete="address-level2"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.address" />
+                                <InputError :message="form.errors.department" />
                             </div>
                         </div>
                     </div>
@@ -282,7 +281,7 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="emergency.emergency_name" id="emergency_name"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <!-- <InputError :message="form.errors.emergency_name" /> -->
+                                    <InputError :message="form.errors['emergencyContacts.' + index + '.emergency_name']" />
                                 </div>
                             </div>
 
@@ -292,7 +291,8 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="emergency.emergency_lastname" id="emergency_lastname"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <!-- <InputError :message="form.errors.emergency_lastname" /> -->
+                                    <InputError
+                                        :message="form.errors['emergencyContacts.' + index + '.emergency_lastname']" />
                                 </div>
                             </div>
 
@@ -302,7 +302,8 @@
                                 <div class="mt-2">
                                     <input type="text" v-model="emergency.emergency_relations" id="emergency_relations"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <!-- <InputError :message="form.errors.emergency_relations" /> -->
+                                    <InputError
+                                        :message="form.errors['emergencyContacts.' + index + '.emergency_relations']" />
                                 </div>
                             </div>
 
@@ -313,7 +314,7 @@
                                     <TextInput type="text" v-model="emergency.emergency_phone" id="emergency_phone"
                                         maxlength="9"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <!-- <InputError :message="form.errors.emergency_phone" /> -->
+                                    <InputError :message="form.errors['emergencyContacts.' + index + '.emergency_phone']" />
                                 </div>
                             </div>
                         </div>
@@ -340,7 +341,7 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="dependent.family_dni" id="family_dni" maxlength="8"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.family_dni" />
+                                    <InputError :message="form.errors['familyDependents.' + index + '.family_dni']" />
                                 </div>
                             </div>
 
@@ -356,7 +357,7 @@
                                         <option>Instituto</option>
                                         <option>Otros</option>
                                     </select>
-                                    <!-- <InputError :message="form.errors.family_education" /> -->
+                                    <InputError :message="form.errors['familyDependents.' + index + '.family_education']" />
                                 </div>
                             </div>
 
@@ -366,7 +367,7 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="dependent.family_relation" id="family_relation"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <!-- <InputError :message="form.errors.family_relation" /> -->
+                                    <InputError :message="form.errors['familyDependents.' + index + '.family_relation']" />
                                 </div>
                             </div>
 
@@ -376,7 +377,7 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="dependent.family_name" id="family_name"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <!-- <InputError :message="form.errors.family_name" /> -->
+                                    <InputError :message="form.errors['familyDependents.' + index + '.family_name']" />
                                 </div>
                             </div>
 
@@ -386,10 +387,9 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="dependent.family_lastname" id="family_lastname"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <!-- <InputError :message="form.errors.family_lastname" /> -->
+                                    <InputError :message="form.errors['familyDependents.' + index + '.family_lastname']" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -544,7 +544,7 @@ const showModal = ref(false);
 
 const props = defineProps({
     pensions: Object,
-    employees:{
+    employees: {
         typpe: Object,
         requerid: false
     }
@@ -572,7 +572,7 @@ const form = useForm({
     street_address: '',
     department: '',
     province: '',
-    address: '',
+    district: '',
     emergencyContacts: [],
     familyDependents: [],
     blood_group: '',
@@ -610,7 +610,7 @@ if (props.employees) {
     form.street_address = props.employees.address.street_address;
     form.department = props.employees.address.department;
     form.province = props.employees.address.province;
-    form.address = props.employees.address.address;
+    form.district = props.employees.address.district;
     form.emergencyContacts = props.employees.emergency;
     form.familyDependents = props.employees.family;
     form.blood_group = props.employees.health.blood_group;
@@ -658,18 +658,18 @@ const handleImagenRecortada = (imagenRecortada) => {
 };
 
 const submit = () => {
-    if(props.employees){
-        form.put(route('management.employees.update', props.employees.id),form)
-    }else{
+    if (props.employees) {
+        form.put(route('management.employees.update', props.employees.id), form)
+    } else {
         form.post(route('management.employees.information.create'), {
-        onSuccess: () => {
-            showModal.value = true
-            setTimeout(() => {
-                showModal.value = false;
-                router.visit(route('management.employees'))
-            }, 2000);
-        }
-    })
+            onSuccess: () => {
+                showModal.value = true
+                setTimeout(() => {
+                    showModal.value = false;
+                    router.visit(route('management.employees'))
+                }, 2000);
+            }
+        })
     }
 }
 
