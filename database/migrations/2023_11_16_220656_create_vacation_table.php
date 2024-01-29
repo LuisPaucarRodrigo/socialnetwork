@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->time('start_permissions')->nullable();
             $table->time('end_permissions')->nullable();
+            $table->string('doc_permission')->nullable();
             $table->date('start_date_accepted')->nullable();
             $table->date('end_date_accepted')->nullable();
             $table->text('reason');
