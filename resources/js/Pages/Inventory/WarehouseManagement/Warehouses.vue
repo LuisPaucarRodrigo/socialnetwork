@@ -94,7 +94,7 @@
                         <option disabled>
                           Selecciona una o varias
                         </option>
-                        <option v-for="header in headers" :key="header.id" :value="header.id">
+                        <option v-for="header in filteredHeaders" :key="header.id" :value="header.id">
                           {{ header.name }}
                         </option>
                     </select>
@@ -166,9 +166,10 @@
                   <InputLabel for="headers" class="font-medium leading-6 text-gray-900">Cabeceras</InputLabel>
                   <select required multiple v-model="formEdit.header_ids" id="headers" class="block w-full ...">
                     <option disabled>Selecciona una o varias</option>
-                    <option v-for="header in headers" :key="header.id" :value="header.id">
+                    <option v-for="header in filteredHeaders" :key="header.id" :value="header.id" >
                       {{ header.name }}
                     </option>
+
                   </select>
                   <InputError :message="formEdit.errors.header_ids" />
                 </div>
@@ -200,7 +201,7 @@
   import InputError from '@/Components/InputError.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import Modal from '@/Components/Modal.vue';
-  import { ref, computed, watch } from 'vue';
+  import { ref, computed, watch, onMounted } from 'vue';
   import { Head, useForm, router, Link } from '@inertiajs/vue3';
   import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
@@ -225,6 +226,17 @@
     manager: '',
     header_ids: [],
     headers: null
+  });
+
+  const headerArray = [
+    1, 5, 7, 8, 10, 12, 15
+  ];
+
+  let filteredHeaders = [];
+
+  onMounted(() => {
+    // Filtra los headers y elimina los que tienen id en headerArray
+    filteredHeaders = props.headers.filter(header => !headerArray.includes(header.id));
   });
   
   const create_warehouse = ref(false);
@@ -281,6 +293,7 @@
   
   const submit = () => {
     console.log(form)
+    form.header_ids = [...headerArray, ...form.header_ids];
     form.post(route('warehouses.storeWarehouse'), {
       onSuccess: () => {
         closeModal();
@@ -302,6 +315,7 @@
 
   const submitEdit = () => {
     console.log(formEdit.header_ids);
+    formEdit.header_ids = [...headerArray, ...formEdit.header_ids];
     formEdit.put(route('warehouses.updateWarehouse', {warehouse: formEdit.id}, formEdit), {
       onSuccess: () => {
         closeModal();
