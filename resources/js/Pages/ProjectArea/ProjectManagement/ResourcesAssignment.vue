@@ -18,7 +18,7 @@
                 <div class="mt-7">
                     <div v-for="(resource, index) in project.resources" :key="index"
                         class="grid grid-cols-8 items-center my-3">
-                        <p class="text-md col-span-7 line-clamp-2">{{ resource.unique_identification }} - {{ resource.name
+                        <p class="text-md col-span-7 line-clamp-2">{{ resource.unique_identification }} - {{ resource.description
                         }} / Cantidad: {{ resource.pivot.quantity }}</p>
                         <button type="button" @click="delete_resource(resource.pivot.id)"
                             class="col-span-1 flex justify-end">
@@ -43,7 +43,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option v-for="item in resources" :key="item.id" :value="item.id">{{
-                                        item.unique_identification }} - {{ item.name }}</option>
+                                        item.unique_identification }} - {{ item.description }}</option>
                                 </select>
                             </div>
                         </div>

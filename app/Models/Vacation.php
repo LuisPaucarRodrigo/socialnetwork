@@ -11,8 +11,12 @@ class Vacation extends Model
     protected $table = 'vacation';
     protected $fillable = [
         'employee_id',
+        'type',
         'start_date',
         'end_date',
+        'start_permissions',
+        'end_permissions',
+        'doc_permission',
         'start_date_accepted',
         'end_date_accepted',
         'reason',

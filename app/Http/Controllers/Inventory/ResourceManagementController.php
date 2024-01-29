@@ -19,8 +19,15 @@ class ResourceManagementController extends Controller
 
     public function new()
     {
-        return Inertia::render('Inventory/ResourceManagement/information', [
-            'title' => 'Nuevo Recurso',
+        return Inertia::render('Inventory/ResourceManagement/storeAndUpdate', [
+            'title' => 'Nuevo Activo',
+        ]);
+    }
+
+    public function details($id)
+    {
+        return Inertia::render('Inventory/ResourceManagement/details', [
+            'details' => Resource::find($id),
         ]);
     }
     
@@ -34,8 +41,8 @@ class ResourceManagementController extends Controller
     public function edit($resourceId)
     {
         $resource = Resource::find($resourceId);
-        return Inertia::render('Inventory/ResourceManagement/information', [
-            'title' => 'Editar Recurso',
+        return Inertia::render('Inventory/ResourceManagement/storeAndUpdate', [
+            'title' => 'Editar Activo',
             'resource' => $resource,
         ]);
     }

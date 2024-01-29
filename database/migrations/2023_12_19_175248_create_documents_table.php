@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('section_id')->constrained('document_sections');
+            $table->foreignId('section_id')->constrained('document_sections')->onDelete('cascade');
+            $table->foreignId('subdivision_id')->constrained('subdivisions')->onDelete('cascade');
             $table->timestamps();
         });
     }

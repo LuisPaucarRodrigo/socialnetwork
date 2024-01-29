@@ -56,14 +56,13 @@ class PurchaseRequestController extends Controller
         $croppedImage = $request->file('purchase_image');
         $imageName = 'purchase_image' . time() . '.' . $croppedImage->getClientOriginalExtension();
         $croppedImage->move(public_path('image'), $imageName);
-        $imageUrl = url('image/' . $imageName);
 
         Purchase_quote::create([
             'provider' => $request->provider,
             'amount' => $request->amount,
             'quote_deadline' => $request->quote_deadline,
             'response' => $request->response,
-            'purchase_image' => $imageUrl,
+            'purchase_image' => $imageName,
             'purchasing_request_id' => $request->purchasing_request_id,
         ]);
 
@@ -73,5 +72,15 @@ class PurchaseRequestController extends Controller
         ]);
 
         return to_route('purchasesrequest.index');
+    }
+    public function showDocument(Purchase_quote $id)
+    {
+        $fileName = $id->purchase_image;
+        $filePath = public_path("image/$fileName");
+        if (!file_exists($filePath)) {
+            abort(404, 'Documento no encontrado');
+        }
+
+        return response()->file($filePath);
     }
 }
