@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="sm:flex lg:justify-between lg:gap-8">
+    <div v-if="details.education.curriculum_vitae" class="sm:flex lg:justify-between lg:gap-8">
       <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium leading-6 text-gray-900">Curriculum Vitae</dt>
@@ -64,8 +64,7 @@
                       clip-rule="evenodd" />
                   </svg>
                   <div class="ml-4 flex min-w-0 flex-1 gap-2">
-                    <span class="truncate font-medium">{{ details.education.curriculum_vitae }}</span>
-                    <!-- <span class="flex-shrink-0 text-gray-400">2.4mb</span> -->
+                    <span class="truncate font-medium">{{ formatoArchivo(details.education.curriculum_vitae) }}</span>
                   </div>
                 </div>
                 <div class="ml-4 flex-shrink-0">
@@ -82,10 +81,9 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 import { Link } from '@inertiajs/vue3';
-import axios from 'axios';
 export default {
   props: {
     details: {
@@ -97,27 +95,14 @@ export default {
     Link,
   },
   methods: {
-    downloadFile(filename) {
-      // Hacer una petición al endpoint de descarga en el backend utilizando el nombre de la ruta
-      axios({
-        method: 'get',
-        url: route('management.employees.information.details.download', { filename }), // Usar el nombre de la ruta y pasar el nombre del archivo
-        responseType: 'blob', // Indicar el tipo de respuesta como blob (para archivos)
-      })
-        .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', filename);
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch(error => {
-          console.error('Error al descargar el archivo', error);
-        });
-    }
-  }
+    formatoArchivo(value) {
+      const startIndex = value.indexOf(' ');
+      if (startIndex !== -1) {
+        return value.substring(startIndex);
+      }
+      return value;
+    },
+  },
 }
-
 </script>
   

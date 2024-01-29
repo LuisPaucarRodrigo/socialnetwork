@@ -17,6 +17,7 @@ class Employee extends Model
         'birthdate',
         'dni',
         'email',
+        'email_company',
         'phone1',
         'phone2'
         ];
@@ -30,7 +31,7 @@ class Employee extends Model
         return $this->hasOne(Address::class);
     }
     public function emergency(){
-        return $this->hasOne(Emergency::class);
+        return $this->hasMany(Emergency::class);
     }
     public function family(){
         return $this->hasMany(Family::class);

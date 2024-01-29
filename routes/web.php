@@ -19,8 +19,10 @@ use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
 use App\Http\Controllers\HumanResource\DocumentController;
+use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
+use App\Http\Controllers\Inventory\WarehousesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -83,9 +85,15 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::post('/management_employees/information_additional/create', [ManagementEmployees::class, 'create'])->name('management.employees.information.create');
     Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.information.details');
     Route::get('/management_employees/edit/{id}', [ManagementEmployees::class, 'edit'])->name('management.employees.edit');
+    Route::put('/management_employees/update/{id}', [ManagementEmployees::class, 'update'])->name('management.employees.update');
     Route::delete('/management_employees/destroy/{id}', [ManagementEmployees::class, 'destroy'])->name('management.employees.destroy');
+    Route::put('/management_employees/fired/{id}', [ManagementEmployees::class, 'fired'])->name('management.employees.fired');
     Route::get('/management_employees/information_additional/details/download/{filename}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
+
+    //Nomina
     Route::get('/management_employees/spreadsheets', [SpreadsheetsController::class, 'index'])->name('spreadsheets.index');
+    Route::get('/management_employees/pension_system/edit', [SpreadsheetsController::class, 'edit'])->name('pension_system.edit');
+    Route::put('/management_employees/pension_system/update/{id}', [SpreadsheetsController::class, 'update'])->name('pension_system.update');
 
     //Formation Development program
     Route::get('/management_employees/formation_development', [FormationDevelopment::class, 'index'])->name('management.employees.formation_development');
@@ -106,12 +114,18 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/management_employees/formation_development/trainings/create/{id?}', [FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
     Route::post('/management_employees/formation_development/trainings/store/{id?}', [FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
     Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
+
     //Vacation
     Route::get('/management_vacation', [VacationController::class, 'index'])->name('management.vacation');
-    Route::get('/management_vacation/information_additional', [VacationController::class, 'index_info_additional'])->name('management.vacation.information');
-    Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit_info_additional'])->name('management.vacation.information.edit');
-    Route::post('/management_vacation/information_additional/create', [VacationController::class, 'create'])->name('management.vacation.information.create');
+    Route::get('/management_vacation/information_additional', [VacationController::class, 'create'])->name('management.vacation.information.create');
+    Route::post('/management_vacation/information_additional/sttore', [VacationController::class, 'store'])->name('management.vacation.information.store');
+    Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit'])->name('management.vacation.information.edit');
     Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
+    Route::get('/management_vacation/information_additional/{vacation}/review', [VacationController::class, 'review'])->name('management.vacation.information.review');
+    Route::put('/management_vacation/information_additional/{vacation}/reviewed', [VacationController::class, 'reviewed'])->name('management.vacation.information.reviewed');
+    Route::get('/management_vacation/information_additional/{vacation}/details', [VacationController::class, 'details'])->name('management.vacation.information.details');
+    Route::get('/management_vacation/information_additional/{id}/showDocument', [VacationController::class, 'showDocument'])->name('management.vacation.information.documents.show');
+    Route::get('/management_vacation/information_additional/{id}/decline', [VacationController::class, 'decline'])->name('management.vacation.information.decline');
     Route::delete('/management_vacation/information_additional/{vacation}/delete', [VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
 
     //Document
@@ -125,6 +139,24 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/document_sections', [DocumentController::class, 'showSections'])->name('documents.sections');
     Route::post('/document_sections', [DocumentController::class, 'storeSection'])->name('documents.storeSection');
     Route::delete('/document_sections/{section}', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
+
+    //Subdivisions
+    Route::get('/document_sections/{section}/subdivisions', [DocumentController::class, 'showSubdivisions'])->name('documents.subdivisions');
+    Route::post('/document_sections/{section}/subdivisions', [DocumentController::class, 'storeSubdivision'])->name('documents.storeSubdivision');
+    Route::delete('/document_sections/{section}/subdivisions/{subdivision}', [DocumentController::class, 'destroySubdivision'])->name('documents.destroySubdivision');
+
+    //Sections
+    Route::get('/sections', [SectionController::class, 'showSections'])->name('sections.sections');
+    Route::post('/sections', [SectionController::class, 'storeSection'])->name('sections.storeSection');
+    Route::delete('/sections/{section}', [SectionController::class, 'destroySection'])->name('sections.destroySection');
+
+    //SubSections
+    Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
+    Route::get('/subSections/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
+    Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
+    Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
+    Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
+    Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
 });
 
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
@@ -144,8 +176,9 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     //Resources
     Route::get('/resources', [ResourceManagementController::class, 'index'])->name('resources.index');
     Route::get('/resources/new', [ResourceManagementController::class, 'new'])->name('resources.new');
+    Route::get('/resources/details/{id}', [ResourceManagementController::class, 'details'])->name('resources.details');
     Route::post('/resources/create', [ResourceManagementController::class, 'create'])->name('resource.create');
-    Route::get('/resources/edit/{resourceId}', [ResourceManagementController::class, 'edit'])->name('resource.edit');
+    Route::get('/resources/edit/{resourceId}', [ResourceManagementController::class, 'edit'])->name('resources.edit');
     Route::put('/resources/edit/{resourceId}', [ResourceManagementController::class, 'update'])->name('resource.update');
     Route::delete('/resources/delete/{resourceId}', [ResourceManagementController::class, 'destroy'])->name('resource.delete');
 
@@ -166,7 +199,7 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/MobileDevices/edit/{MdId}', [InventoryControlController::class, 'EditMobileDevices'])->name('inventory.MobileDevices.edit');
     Route::put('/inventory/MobileDevices/edit/{MdId}', [InventoryControlController::class, 'UpdateMobileDevices'])->name('inventory.MobileDevices.update');
     Route::delete('/inventory/MobileDevices/delete/{MdId}', [InventoryControlController::class, 'DeleteMobileDevices'])->name('inventory.MobileDevices.delete');
-    
+
 
     Route::get('/inventory/ComponentsAndMaterials', [InventoryControlController::class, 'ComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.index');
     Route::get('/inventory/ComponentsAndMaterials/new', [InventoryControlController::class, 'NewComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.new');
@@ -174,6 +207,20 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/ComponentsAndMaterials/edit/{CmId}', [InventoryControlController::class, 'EditComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.edit');
     Route::put('/inventory/ComponentsAndMaterials/edit/{CmId}', [InventoryControlController::class, 'UpdateComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.update');
     Route::delete('/inventory/ComponentsAndMaterials/delete/{CmId}', [InventoryControlController::class, 'DeleteComponentsAndMaterials'])->name('inventory.ComponentsAndMaterials.delete');
+
+    //warehouses
+    Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');
+    Route::get('/inventory/warehouses/{warehouse}', [WarehousesController::class, 'showWarehouse'])->name('warehouses.warehouse');
+    Route::get('/inventory/warehouses/{warehouse}/header', [WarehousesController::class, 'showWarehouseHeader'])->name('warehouses.warehouseHeader');
+    Route::post('/inventory/warehouses/{warehouse}/header', [WarehousesController::class, 'storeWarehouseHeader'])->name('warehouses.storeWarehouseHeader');
+    Route::post('/inventory/warehouses', [WarehousesController::class, 'storeWarehouse'])->name('warehouses.storeWarehouse');
+    Route::put('/inventory/warehouses/{warehouse}/update', [WarehousesController::class, 'updateWarehouse'])->name('warehouses.updateWarehouse');
+    Route::delete('/inventory/warehouses/{warehouse}/destroy', [WarehousesController::class, 'destroyWarehouse'])->name('warehouses.destroyWarehouse');
+
+    //headers
+    Route::get('/inventory/headers', [WarehousesController::class, 'showHeaders'])->name('warehouses.headers');
+    Route::post('/inventory/headers', [WarehousesController::class, 'storeHeader'])->name('warehouses.storeHeader');
+    Route::delete('/inventory/headers/{header}/destroy', [WarehousesController::class, 'destroyHeader'])->name('warehouses.destroyHeader');
 });
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {
@@ -192,7 +239,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
     Route::post('/projectmanagement/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
     Route::get('/projectmanagement/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
-    
+
     //Tasks Management
     Route::get('/tasks/{id?}', [TaskManagementController::class, 'index'])->name('tasks.index');
     Route::get('/newtask', [TaskManagementController::class, 'new'])->name('tasks.new');
@@ -204,8 +251,8 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/statustask/{taskId}/{status}', [TaskManagementController::class, 'status_task'])->name('tasks.edit.status');
     Route::delete('/deletetask/{taskId}/', [TaskManagementController::class, 'delete_task'])->name('tasks.delete');
     //Calendar
-    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');  
-    Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');   
+    Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');
+    Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');
 
     Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
     Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
@@ -216,6 +263,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest/create_request', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
     Route::post('/shopping_area/purchasesrequest/store_request', [PurchaseRequestController::class, 'store'])->name('purchasesrequest.store');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}', [PurchaseRequestController::class, 'index_quotes'])->name('purchasesrequest.quotes');
+    Route::get('/shopping_area/purchasesrequest/quotes/{id}/preview', [PurchaseRequestController::class, 'showDocument'])->name('purchasesrequest.show');
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
     Route::get('/shopping_area/purchasesrequest/details/{id}', [PurchaseRequestController::class, 'details'])->name('purchasingrequest.details');
     Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'quote'])->name('purchasesrequest.storequotes');
@@ -231,7 +279,6 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
     Route::put('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
-
 });
 
 require __DIR__ . '/auth.php';

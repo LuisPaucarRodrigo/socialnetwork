@@ -9,10 +9,14 @@ class Resource extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
-        'type',
-        'quantity',
         'description',
+        'type',
+        'serial_number',
+        'quantity',
+        'unit_price',
+        'depreciation',
+        'unit_price_depreciation',
+        'observations',
         'adquisition_date',
         'current_location',
         'unique_identification',
@@ -39,10 +43,12 @@ class Resource extends Model
     public static function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
             'type' => 'required|string|max:255',
+            'serial_number' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
-            'description' => 'nullable|string',
+            'unit_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'observations' => 'nullable|string',
             'adquisition_date' => 'required|date',
             'current_location' => 'required|string|max:255',
             'unique_identification' => 'required|string|unique:resources|max:255',
@@ -51,10 +57,14 @@ class Resource extends Model
     public static function updateRules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'type' => ['sometimes', 'string', 'max:255'],
-            'quantity' => ['sometimes', 'integer', 'min:1'],
-            'description' => ['nullable', 'string'],
+            'description' => ['required','string','max:255'],
+            'type' => ['sometimes','string','max:255'],
+            'serial_number' => ['required','string','max:255'],
+            'quantity' => ['sometimes','integer', 'min:1'],
+            'unit_price' => ['required','numeric','regex:/^\d+(\.\d{1,2})?$/'],
+            'depreciation' => ['sometimes','nullable','numeric'],
+            'unit_price_depreciation' => ['sometimes','nullable','numeric'],
+            'observations' => ['nullable', 'string'],
             'adquisition_date' => ['sometimes', 'date'],
             'current_location' => ['sometimes', 'string', 'max:255'],
         ];

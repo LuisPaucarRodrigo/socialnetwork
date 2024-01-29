@@ -16,7 +16,6 @@
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -85,6 +84,14 @@
                                             d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                     </svg>
                                 </button>
+                                <button type="button" @click="confirmFired(employee.id)"
+                                    class="text-blue-900 whitespace-no-wrap">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
+                                    </svg>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -95,30 +102,96 @@
                 <pagination :links="employees.links" />
             </div>
         </div>
-        <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado"
-            :deleteText="deleteButtonText" :deleteFunction="deleteEmployee" @closeModal="closeModal" />
+        <Modal :show="showModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Despido del Empleado
+                </h2>
+                <form @submit.prevent="submit">
+                    <div class="border-b border-gray-900/10 pb-12">
+                        <div class="mt-2">
+                            <InputLabel for="fired_date" class="font-medium leading-6 text-gray-900">Fecha de Deceso:
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="date" id="fired_date" v-model="form.fired_date"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.fired_date" />
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <InputLabel for="days_taken" class="font-medium leading-6 text-gray-900">Dias Tomados:
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" id="days_taken" v-model="form.days_taken"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.days_taken" />
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeCreateSectionModal"> Cancel </SecondaryButton>
+                            <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+        <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado" :deleteText="deleteButtonText"
+            :deleteFunction="deleteEmployee" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue'
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue'; 
-import { Head, Link, router } from '@inertiajs/vue3';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import Pagination from '@/Components/Pagination.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import InputError from '@/Components/InputError.vue';
 
 const confirmingUserDeletion = ref(false);
 const deleteButtonText = 'Eliminar';
 const employeeToDelete = ref(null);
+const employeeToFired = ref(null);
+const showModal = ref(false);
 
 const props = defineProps({
     employees: Object
 })
 
+const form = useForm({
+    fired_date: '',
+    days_taken: '',
+    state: 'Inactive'
+})
+
+const submit = () => {
+    form.put(route('management.employees.fired',employeeToFired.value), form,{
+        onSuccess: () => {
+            showModal.value = false;
+            router.visit(route('management.employees'))
+        },
+
+    })
+}
 const confirmUserDeletion = (employeeId) => {
     employeeToDelete.value = employeeId;
     confirmingUserDeletion.value = true;
 };
+
+const confirmFired = (firedId) => {
+    employeeToFired.value = firedId
+    showModal.value = true
+}
+
+const closeCreateSectionModal = () => {
+    showModal.value = false
+}
 
 const deleteEmployee = () => {
     const employeeId = employeeToDelete.value;

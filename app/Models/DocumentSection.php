@@ -15,4 +15,8 @@ class DocumentSection extends Model
     {
         return $this->hasMany(Document::class);
     }
+    public function subdivisions()
+    {
+        return $this->hasMany(Subdivision::class);
+    }
 }

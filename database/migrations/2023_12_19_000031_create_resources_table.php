@@ -14,10 +14,14 @@ return new class extends Migration
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name');
+            $table->string('description');
             $table->string('type');
+            $table->string('serial_number');
             $table->integer('quantity');
-            $table->text('description')->nullable();
+            $table->decimal('unit_price', 10, 2);
+            $table->integer('depreciation')->nullable();
+            $table->decimal('unit_price_depreciation',10,2)->nullable();
+            $table->text('observations')->nullable();
             $table->date('adquisition_date');
             $table->string('current_location');
             $table->string('unique_identification')->unique();

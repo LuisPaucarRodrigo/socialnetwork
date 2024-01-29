@@ -31,9 +31,14 @@
                   <div class="text-sm font-medium text-gray-900">{{ section.name }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-left">
-                  <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
-                    <TrashIcon class="h-4 w-4" />
-                  </button>
+                  <div class="flex items-center space-x-2">
+                    <Link :href="route('documents.subdivisions', { section: section.id })" class="text-green-600 hover:underline">
+                      <EyeIcon class="h-4 w-4" />
+                    </Link>
+                    <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
+                      <TrashIcon class="h-4 w-4" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -83,8 +88,8 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
-import { TrashIcon } from '@heroicons/vue/24/outline';
+import { Head, useForm, router, Link } from '@inertiajs/vue3';
+import { TrashIcon, EyeIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
 import { ref, defineProps } from 'vue';
 import Modal from '@/Components/Modal.vue';
 
