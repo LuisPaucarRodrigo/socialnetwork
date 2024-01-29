@@ -55,7 +55,20 @@
                                 <InputError :message="form.errors.end_date" />
                             </div>
                         </div>
-                        <div v-if="permissions" class="sm:col-span-2">
+                        <div v-if="hoursAndDays" class="sm:col-span-2">
+                            <InputLabel for="hours_and_days" class="font-medium leading-6 text-gray-900">Horas o Dias
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.hours_and_days" id="hours_and_days" @change="hours_And_Days($event)"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccione un Tipo</option>
+                                    <option>Dias</option>
+                                    <option>Horas</option>
+                                </select>
+                                <InputError :message="form.errors.hours_and_days" />
+                            </div>
+                        </div>
+                        <div v-if="permissionshours" class="sm:col-span-2">
                             <InputLabel for="start_permissions" class="font-medium leading-6 text-gray-900">Horas de Inicio
                             </InputLabel>
                             <div class="mt-2">
@@ -64,16 +77,37 @@
                                 <InputError :message="form.errors.start_permissions" />
                             </div>
                         </div>
-                        <div v-if="permissions" class="sm:col-span-2">
+                        <div v-if="permissionshours" class="sm:col-span-2">
                             <InputLabel for="end_permissions" class="font-medium leading-6 text-gray-900">Horas de
                                 Culminacion
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="time" v-model="form.end_permissions" id="end_permissions"
+                                <TextInput type="datetime-local" v-model="form.end_permissions" id="end_permissions"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.end_permissions" />
                             </div>
                         </div>
+
+                        <div v-if="permissionsdayshours" class="sm:col-span-2">
+                            <InputLabel for="start_permissions" class="font-medium leading-6 text-gray-900">Horas de Inicio
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="time" v-model="form.start_permissions" id="start_permissions"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.start_permissions" />
+                            </div>
+                        </div>
+                        <div v-if="permissionsdayshours" class="sm:col-span-2">
+                            <InputLabel for="end_permissions" class="font-medium leading-6 text-gray-900">Horas de
+                                Culminacion
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="datetime-local" v-model="form.end_permissions" id="end_permissions"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.end_permissions" />
+                            </div>
+                        </div>
+
                         <div v-if="permissions" class="sm:col-span-3 sm:col-start-1">
                             <InputLabel for="doc_permission" class="font-medium leading-6 text-gray-900">Documentacion
                             </InputLabel>
@@ -123,15 +157,23 @@ const props = defineProps({
 });
 
 const vacations = ref(false)
-const permissions = ref(false)
+const hoursAndDays = ref(false)
+const permissionshours = ref(false)
+const permissionsdayshours = ref(false)
+
 
 const type_vacations_permissions = (event) => {
-    event.target.value == 'Vacaciones' ? (vacations.value = true, permissions.value = false) : (permissions.value = true, vacations.value = false);
+    event.target.value == 'Vacaciones' ? (vacations.value = true, hoursAndDays.value = false) : (hoursAndDays.value = true, vacations.value = false);
+}
+
+const hours_And_Days = (event) => {
+    event.target.value == 'Horas' ? (permissionshours.value = true, permissionsdayshours.value = false) : (permissionsdayshours.value = true, permissionshours.value = false);
 }
 
 const form = useForm({
     employee_id: '',
     type: '',
+    hours_and_days: '',
     start_date: '',
     end_date: '',
     start_permissions: '',
@@ -147,6 +189,7 @@ if (props.vacation) {
     props.vacation.type == 'Permisos' ? permissions.value = true : vacations.value = true
     form.employee_id = props.vacation.employee.name;
     form.type = props.vacation.type;
+    form.hours_and_days = props.vacation.hours_and_days;
     form.start_date = props.vacation.start_date;
     form.end_date = props.vacation.end_date;
     form.start_permissions = props.vacation.start_permissions;
