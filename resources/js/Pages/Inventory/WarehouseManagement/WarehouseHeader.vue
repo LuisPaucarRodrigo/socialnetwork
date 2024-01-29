@@ -17,14 +17,86 @@
                   <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.name }}</InputLabel>
                   <div class="mt-2">
                     <input
-                      :type="header.type"
+                      :type="header.type == 'double' ? 'number' : header.type"
                       v-model="form.contentIds[header.id]"
+                      :step="header.type == 'double' ? 0.01 : 1"
                       id="header"
                       class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
                     />
                     <InputError :message="form.errors.contentIds" />
                   </div>
                 </div>
+
+                <div class="flex flex-col gap-2">
+                  <InputLabel for="total" class="font-medium leading-6 text-gray-900 mt-2">Total</InputLabel>
+                  <div class="mt-2">
+                    <input
+                      type="number"
+                      step="0.01"
+                      readonly
+                      disabled
+                      id="total"
+                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <InputLabel for="used" class="font-medium leading-6 text-gray-900 mt-2">Usado</InputLabel>
+                  <div class="mt-2">
+                    <input
+                      type="number"
+                      step="0.01"
+                      id="used"
+                      readonly
+                      disabled
+                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <InputLabel for="remain" class="font-medium leading-6 text-gray-900 mt-2">Sobra</InputLabel>
+                  <div class="mt-2">
+                    <input
+                      type="number"
+                      step="0.01"
+                      id="remain"
+                      readonly
+                      disabled
+                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <InputLabel for="amount sent" class="font-medium leading-6 text-gray-900 mt-2">Cantidad Enviada</InputLabel>
+                  <div class="mt-2">
+                    <input
+                      type="number"
+                      step="0.01"
+                      id="amount sent"
+                      readonly
+                      disabled
+                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                  <InputLabel for="maintenance" class="font-medium leading-6 text-gray-900 mt-2">Mantenimiento</InputLabel>
+                  <div class="mt-2">
+                    <input
+                      type="number"
+                      step="0.01"
+                      id="maintenance"
+                      readonly
+                      disabled
+                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2"
+                    />
+                  </div>
+                </div>
+
               </div>
   
               <div class="mt-6 flex items-center justify-end gap-x-6">
