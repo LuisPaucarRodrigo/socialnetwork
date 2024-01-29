@@ -16,6 +16,7 @@ class Vacation extends Model
         'end_date',
         'start_permissions',
         'end_permissions',
+        'doc_permission',
         'start_date_accepted',
         'end_date_accepted',
         'reason',

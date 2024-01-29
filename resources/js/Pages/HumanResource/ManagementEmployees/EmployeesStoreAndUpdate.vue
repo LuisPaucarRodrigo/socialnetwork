@@ -552,7 +552,7 @@ const props = defineProps({
 
 const form = useForm({
     curriculum_vitae: null,
-    cropped_image: '',
+    cropped_image: null,
     name: '',
     lastname: '',
     gender: '',

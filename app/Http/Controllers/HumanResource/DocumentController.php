@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    
+
     //Sections
 
     public function showSections()
@@ -121,7 +121,7 @@ class DocumentController extends Controller
         }
         return to_route('documents.index');
     }
-    
+
 
     public function downloadDocument(Document $document)
     {
@@ -138,12 +138,11 @@ class DocumentController extends Controller
     public function showDocument(Document $document)
     {
         $fileName = $document->title;
-        $filePath = storage_path("app/public/documents/HumanResource/$fileName");
-        if (!file_exists($filePath)) {
-            abort(404, 'Documento no encontrado');
+        $filePath = '/documents/HumanResource/' . $fileName;
+        if (Storage::disk('public')->exists($filePath)) {
+            $file = storage_path("app/public/documents/HumanResource/$fileName");
+            return response()->file($file);
         }
-
-        return response()->file($filePath);
+        abort(404, 'Documento no encontrado');
     }
-
 }

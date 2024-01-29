@@ -7,7 +7,8 @@ use App\Models\Vacation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Employee;
-use App\Models\User;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 class VacationController extends Controller
@@ -28,17 +29,33 @@ class VacationController extends Controller
     }
 
     public function store(Request $request){
-        $validateData = $request->validate([
+        $request->validate([
             'employee_id' => 'required|numeric',
             'type' => 'required|in:Vacaciones,Permisos',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after:start_date',
             'start_permissions' => 'nullable|date_format:H:i',
             'end_permissions' => 'nullable|date_format:H:i|after:start_permissions',
+            'doc_permission' => 'nullable|mimes:pdf|max:2048',
             'reason' => 'required|string',
         ]);
+        $documentName = null;
+        if ($request->file('doc_permission')) {
+            $document = $request->file('doc_permission');
+            $documentName = time() . '. ' . $document->getClientOriginalName();
+            $document->storeAs('documents/permissions/', $documentName);
+        }
 
-        Vacation::create($validateData);
+        Vacation::create([
+            'employee_id' => $request->employee_id,
+            'type' => $request->type,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'start_permissions' => $request->start_permissions,
+            'end_permissions' => $request->end_permissions,
+            'doc_permission' => $documentName,
+            'reason' => $request->reason,
+        ]);
         return to_route('management.vacation');
     }
 
@@ -110,7 +127,38 @@ class VacationController extends Controller
 
     public function destroy(Vacation $vacation)
     {
-        $vacation->delete();
+        $filePath = storage_path("app/documents/permissions/$vacation->doc_permission");
+        if(file_exists($filePath))  {
+            Storage::delete("documents/permissions/$vacation->doc_permission");
+            $vacation->delete();
+        }else{
+            abort(404, 'Documento no encontrado');
+        }
+        
         return to_route('management.vacation');
+    }
+
+    public function download($filename)
+    {
+        $filePath = '/documents/permissions/' . $filename;
+        if (Storage::disk('local')->exists($filePath)) {
+            $file = Storage::disk('local')->get($filePath);
+            $response = new Response($file, 200);
+            $response->header('Content-Type', 'application/pdf');
+            $response->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            return $response;
+        }
+        abort(404);
+    }
+
+    public function showDocument(Vacation $id)
+    {
+        $fileName = $id->doc_permission;
+        $filePath = '/documents/permissions/' . $fileName;
+        if (Storage::disk('local')->exists($filePath)) {
+            $file = storage_path("app/documents/Permissions/$fileName");
+            return response()->file($file);
+        }
+        abort(404, 'Documento no encontrado');
     }
 }

@@ -13,7 +13,6 @@ use App\Models\Employee;
 use App\Models\Family;
 use App\Models\Health;
 use App\Models\Pension;
-use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -42,6 +41,7 @@ class ManagementEmployees extends Controller
 
     public function create(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'curriculum_vitae' => 'nullable|mimes:pdf|max:2048',
             'cropped_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -92,7 +92,7 @@ class ManagementEmployees extends Controller
         ]);
         // DB::beginTransaction();
         // try {
-            
+
         //     DB::commit();
         // } catch (\Exception $e) {
         //     DB::rollBack();
@@ -101,13 +101,13 @@ class ManagementEmployees extends Controller
         // }
         $imageUrl = null;
         $documentName = null;
-        if ($request->filled('curriculum_vitae')) {
+        if ($request->file('curriculum_vitae')) {
             $document = $request->file('curriculum_vitae');
             $documentName = time() . '. ' . $document->getClientOriginalName();
-            $document->storeAs('documents', $documentName);
+            $document->storeAs('documents/curriculum_vitae/', $documentName);
         }
 
-        if ($request->filled('cropped_image')) {
+        if ($request->file('cropped_image')) {
             $croppedImage = $request->file('cropped_image');
             $imageName = 'imagen_' . time() . '. ' . $croppedImage->getClientOriginalExtension();
             $croppedImage->move(public_path('image'), $imageName);
@@ -294,12 +294,12 @@ class ManagementEmployees extends Controller
     public function destroy($id)
     {
         $education = Education::where('employee_id', $id)->first();
-        $filePath = storage_path("app/documents/$education->curriculum_vitae");
+        $filePath = storage_path("app/documents/curriculum_vitae/$education->curriculum_vitae");
         if (file_exists($filePath)) {
-            Storage::delete("documents/$education->curriculum_vitae");
+            Storage::delete("documents/curriculum_vitae/$education->curriculum_vitae");
             Employee::destroy($id);
         } else {
-            dd("El archivo no existe en la ruta: $filePath");
+            abort(404, 'Documento no encontrado');
         }
         return to_route('management.employees');
     }
@@ -319,13 +319,11 @@ class ManagementEmployees extends Controller
 
     public function download($filename)
     {
-        $filePath = '/documents/' . $filename;
+        $filePath = '/documents/curriculum_vitae/' . $filename;
         if (Storage::disk('local')->exists($filePath)) {
-            $file = Storage::disk('local')->get($filePath);
-            $response = new Response($file, 200);
-            $response->header('Content-Type', 'application/pdf');
-            $response->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-            return $response;
+            return response()->download(storage_path("app/{$filePath}"), $filename, [
+                'Content-Type' => 'application/pdf',
+            ]);
         }
         abort(404);
     }

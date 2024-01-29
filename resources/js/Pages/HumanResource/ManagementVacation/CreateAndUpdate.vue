@@ -19,7 +19,7 @@
                                     <option v-for="employee in employees" :key="employee.id" :value="employee.id">{{
                                         employee.name + " " + employee.lastname }}</option>
                                 </select>
-                                <TextInput v-if="vacation" type="text" v-model="form.employee_id" id="employee" disabled         
+                                <TextInput v-if="vacation" type="text" v-model="form.employee_id" id="employee" disabled
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.employee_id" />
                             </div>
@@ -50,8 +50,7 @@
                             <InputLabel for="end_date" class="font-medium leading-6 text-gray-900">Fecha de Culminación
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="Date" :value="form.end_date" v-model="form.end_date" id="end_date"
-                                    autocomplete="address-level1"
+                                <TextInput type="Date" v-model="form.end_date" id="end_date" autocomplete="address-level1"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.end_date" />
                             </div>
@@ -60,8 +59,7 @@
                             <InputLabel for="start_permissions" class="font-medium leading-6 text-gray-900">Horas de Inicio
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="time" :value="form.start_permissions" v-model="form.start_permissions"
-                                    id="start_permissions"
+                                <TextInput type="time" v-model="form.start_permissions" id="start_permissions"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.start_permissions" />
                             </div>
@@ -71,11 +69,17 @@
                                 Culminacion
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="time" :value="form.end_permissions" v-model="form.end_permissions"
-                                    id="end_permissions"
+                                <TextInput type="time" v-model="form.end_permissions" id="end_permissions"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.end_permissions" />
                             </div>
+                        </div>
+                        <div v-if="permissions" class="sm:col-span-3 sm:col-start-1">
+                            <InputLabel for="doc_permission" class="font-medium leading-6 text-gray-900">Documentacion
+                            </InputLabel>
+                            <InputFile type="file" v-model="form.doc_permission" id="doc_permission"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <InputError :message="form.errors.doc_permission" />
                         </div>
                         <div class="sm:col-span-3">
                             <InputLabel for="reason" class="font-medium leading-6 text-gray-900">Razón</InputLabel>
@@ -100,9 +104,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import InputFile from '@/Components/InputFile.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -120,10 +125,6 @@ const props = defineProps({
 const vacations = ref(false)
 const permissions = ref(false)
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
 const type_vacations_permissions = (event) => {
     event.target.value == 'Vacaciones' ? (vacations.value = true, permissions.value = false) : (permissions.value = true, vacations.value = false);
 }
@@ -135,6 +136,7 @@ const form = useForm({
     end_date: '',
     start_permissions: '',
     end_permissions: '',
+    doc_permission: '',
     start_date_accepted: '',
     end_date_accepted: '',
     reason: '',
@@ -149,6 +151,7 @@ if (props.vacation) {
     form.end_date = props.vacation.end_date;
     form.start_permissions = props.vacation.start_permissions;
     form.end_permissions = props.vacation.end_permissions;
+    form.doc_permission = props.vacation.doc_permission;
     form.start_date_accepted = props.vacation.start_date_accepted;
     form.end_date_accepted = props.vacation.end_date_accepted;
     form.reason = props.vacation.reason;
@@ -156,7 +159,7 @@ if (props.vacation) {
 
 const submit = () => {
     if (props.vacation) {
-        form.put(route('management.vacation.information.update',props.vacation.id), form);
+        form.put(route('management.vacation.information.update', props.vacation.id), form);
     } else {
         form.post(route('management.vacation.information.store'));
     }
