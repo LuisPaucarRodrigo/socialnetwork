@@ -11,15 +11,21 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'warehouse_id'
     ];
 
     public function warehouse()
     {
-        return $this->belongsToMany(Warehouse::class, 'warehouses_headers', 'warehouse_id', 'product_id')->withTimestamps();
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
     
-    public function warehouseHeaders()
+    public function productHeaders()
     {
-        return $this->hasMany(WarehousesHeader::class, 'product_id');
+        return $this->hasMany(ProductsHeader::class, 'product_id');
+    }
+
+    public function headers()
+    {
+        return $this->belongsToMany(Header::class, 'products_headers', 'product_id', 'header_id')->withTimestamps();
     }
 }
