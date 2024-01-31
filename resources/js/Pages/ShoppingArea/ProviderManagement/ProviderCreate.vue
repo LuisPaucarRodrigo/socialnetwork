@@ -128,6 +128,9 @@ const submit = () => {
                 showModal.value = false;
                 router.visit(route('providersmanagement.index'))
             }, 2000);
+        },
+        onError: () => {
+            alert('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
         }
     })
 };

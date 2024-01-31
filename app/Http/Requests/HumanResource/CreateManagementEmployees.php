@@ -5,7 +5,7 @@ namespace App\Http\Requests\HumanResource;
 use App\Models\Employee;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateManagementEmployees extends FormRequest
+class CreateManagementEmployees extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,11 +30,11 @@ class UpdateManagementEmployees extends FormRequest
             'gender' => 'required|string|in:Masculino,Femenino',
             'state_civil' => 'required|string|in:Casado(a),Soltero(a),Viudo(a),Divorciado(a),Conviviente',
             'birthdate' => 'required|date',
-            'dni' => 'required|numeric|digits:8',
-            'email' => 'required|email|max:255',
-            'email_company' => 'required|email|max:255',
-            'phone1' => 'required|numeric|digits:9',
-            'phone2' => 'nullable|numeric|digits:9',
+            'dni' => 'required|numeric|digits:8|unique:' . Employee::class,
+            'email' => 'required|email|max:255|unique:' . Employee::class,
+            'email_company' => 'required|email|max:255|unique:' . Employee::class,
+            'phone1' => 'required|numeric|digits:9|unique:' . Employee::class,
+            'phone2' => 'nullable|numeric|digits:9|unique:' . Employee::class,
             'pension_system' => 'required|numeric',
             'basic_salary' => 'required|numeric',
             'hire_date' => 'required|date',

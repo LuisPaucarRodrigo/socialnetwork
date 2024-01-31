@@ -167,12 +167,8 @@
                         </div>
                     </div>
                     <div class="mt-6 flex gap-3 justify-end">
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                            type="button" @click="closeModal"> Cerrar </button>
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                            type="submit"> Agregar </button>
+                        <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                        <PrimaryButton type="submit"> Agregar </PrimaryButton>
                     </div>
                 </form>
             </Modal>
@@ -190,6 +186,8 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 
 const showModal = ref(false)
@@ -218,7 +216,7 @@ const form = useForm(
 
 const submit = () => {
     form.code = formatearFecha(form.start_date) + '-' + form.code
-    form.post(route('projectmanagement.store'),{
+    form.post(route('projectmanagement.store'), {
         onSuccess: () => {
             closeModal();
             showModal.value = true
@@ -253,7 +251,6 @@ const closeModal = () => {
     showModalMember.value = false;
 };
 const add_employee = () => {
-    console.log(project)
     if (project) {
         router.post(route('projectmanagement.add.employee', { project_id: project.id }), { ...employeeToAdd.value },
             {
@@ -261,7 +258,7 @@ const add_employee = () => {
                     alert('SERVER ERROR')
                 },
                 onSuccess: () => {
-                    alert('PERSONAL AGREGADO')
+                    alert('Personal Agregado')
                     form.employees.push(JSON.parse(JSON.stringify({
                         name: employeeToAdd.value.employee.name,
                         lastname: employeeToAdd.value.employee.lastname,
@@ -285,7 +282,7 @@ const delete_already_employee = (pivot_id, index) => {
             alert('SERVER ERROR')
         },
         onSuccess: () => {
-            alert('PERSONAL REMOVIDO')
+            alert('Personal Removido')
             form.employees.splice(index, 1);
         }
     })

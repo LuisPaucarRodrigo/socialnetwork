@@ -93,7 +93,7 @@
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="resources.links" />
         </div>
-        <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="recurso" :deleteFunction="delete_resource"
+        <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="activo" :deleteFunction="delete_resource"
             @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>

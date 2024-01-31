@@ -8,9 +8,7 @@
       <div class="modal-container flex items-center justify-center">
         <div class="bg-white rounded p-10">
           <h2 class="text-lg font-semibold">Seleccionar Perfil</h2>
-
           <div ref="imageContainer" class="mt-4"></div>
-
           <label for="imageInput" class="bg-white text-gray border py-2 px-4 rounded mt-4 cursor-pointer">
             Browse
           </label>

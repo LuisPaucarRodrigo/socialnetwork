@@ -5,10 +5,6 @@
         <template #header>
             Registro
         </template>
-        <!-- <Link href="/" class="flex items-center justify-center">
-            <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
-            </Link> -->
-
         <form @submit.prevent="submit">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
@@ -53,8 +49,6 @@
                                     v-model="form.platform" required autocomplete="platform">
                                     <option disabled>Seleccionar Plataforma</option>
                                     <option>Web</option>
-                                    <option>Movil</option>
-                                    <option>Ambos</option>
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.platform" />
                             </div>
@@ -105,19 +99,24 @@
                 </button>
             </div>
         </form>
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="usuario" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const props = defineProps({
     rols: Object
 })
+
+const showModal = ref(false);
 
 const form = useForm({
     name: '',
@@ -132,6 +131,16 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('register'), {
+        onSuccess: () => {
+            showModal.value = true;
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('users.index'))
+            }, 2000);
+        },
+        onError: () => {
+            alert('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
+        },
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };

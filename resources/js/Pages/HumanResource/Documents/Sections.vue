@@ -32,8 +32,9 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-left">
                   <div class="flex items-center space-x-2">
-                    <Link :href="route('documents.subdivisions', { section: section.id })" class="text-green-600 hover:underline">
-                      <EyeIcon class="h-4 w-4" />
+                    <Link :href="route('documents.subdivisions', { section: section.id })"
+                      class="text-green-600 hover:underline">
+                    <EyeIcon class="h-4 w-4" />
                     </Link>
                     <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
                       <TrashIcon class="h-4 w-4" />
@@ -146,7 +147,8 @@ const deleteSection = async () => {
   router.delete(route('documents.destroySection', { section: sectionId }), {
     onSuccess: () => {
       closeModalSection();
-    }
+    },
+
   })
 
 };
