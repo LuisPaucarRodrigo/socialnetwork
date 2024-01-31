@@ -134,7 +134,7 @@
                 </div>
             </div>
         </Modal> -->
-        <ConfirmCreateModal :confirmingcreation="showmodal" itemType="recurso" />
+        <ConfirmCreateModal :confirmingcreation="showmodal" itemType="activo" />
     </AuthenticatedLayout>
 </template>
 <script setup>

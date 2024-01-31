@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(CreateUserRequest $request): RedirectResponse
+    public function store(CreateUserRequest $request)
     {   
         User::create([
             'name' => $request->name,
@@ -46,6 +46,6 @@ class RegisteredUserController extends Controller
 
         // Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        // return redirect(RouteServiceProvider::HOME);
     }
 }

@@ -101,9 +101,6 @@ onMounted(() => {
   console.log('Form Data:', form.contentIds);
 });
 
-
-
-
 const submit = () => {
   console.log(form.contentIds)
   form.post(route('warehouses.storeWarehouseHeader', { warehouse: props.warehouse.id }), {

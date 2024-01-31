@@ -66,8 +66,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { ref, onMounted } from 'vue';
 import { Chart, registerables } from 'chart.js/auto';
-import { Head, Link } from '@inertiajs/vue3';
-import { Pie } from 'vue-chartjs';
+import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
     expenses: Object,

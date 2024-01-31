@@ -9,12 +9,9 @@ use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\ProjectArea\CalendarController;
 use App\Http\Controllers\Finance\BudgetUpdateController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
-use App\Http\Controllers\ProjectArea\ProjectScheduleController;
-use App\Http\Controllers\ProjectArea\ProjectReportsController;
 use App\Http\Controllers\ShoppingArea\PurchaseRequestController;
 use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
-use App\Http\Controllers\ShoppingArea\PurchaseReportsController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
@@ -63,7 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+         
 Route::middleware('auth', 'permission:UserManager')->group(function () {
 
     Route::get('users', [UserController::class, 'index_user'])->name('users.index');
@@ -253,9 +250,6 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     //Calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');
     Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');
-
-    Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
-    Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
 });
 
 Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
@@ -270,8 +264,6 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
     Route::put('/shopping_area/purchaseorders/state/{id}', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
-
-    Route::get('/shopping_area/purchasereports', [PurchaseReportsController::class, 'index'])->name('purchasereports.index');
 
     Route::get('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');

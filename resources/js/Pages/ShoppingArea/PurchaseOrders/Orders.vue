@@ -39,7 +39,7 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ order.date_issue }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <select id="selectState" @change="updateState(order.id, $event.target.value)">
+                            <select id="selectState" @change="updateState(order.id, $event.target.value)" :disabled="order.state == 'Completada'">
                                 <option selected disabled>{{ order.state }}</option>
                                 <option>Pendiente</option>
                                 <option>En Proceso</option>

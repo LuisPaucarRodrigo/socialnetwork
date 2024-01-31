@@ -24,8 +24,9 @@ class BudgetUpdateController extends Controller
         ]);
     }
 
-    public function create(Request $request, Project $project){
-        $user_id = Auth::id();  
+    public function create(Request $request, Project $project)
+    {
+        $user_id = Auth::id();
         $request->validate([
             'new_budget' => 'required',
             'project_id' => 'required',
@@ -33,13 +34,13 @@ class BudgetUpdateController extends Controller
             'update_date' => 'required',
             'approved_update_date' => 'required',
         ]);
-        $budget_update = BudgetUpdate::create([
+        BudgetUpdate::create([
             'new_budget' => $request->new_budget,
             'project_id' => $request->project_id,
             'reason' => $request->reason,
             'update_date' => $request->update_date,
             'user_id' => $user_id,
-            'approved_update_date' => $request->approved_update_date,    
+            'approved_update_date' => $request->approved_update_date,
         ]);
 
         return to_route('initialbudget.index', ['project' => $project->id]);
@@ -75,11 +76,10 @@ class BudgetUpdateController extends Controller
         ]);
 
         $project->update([
-            'initial_budget' => $request->initial_budget,    
+            'initial_budget' => $request->initial_budget,
         ]);
 
         return to_route('initialbudget.index', ['project' => $project->id]);
-
     }
 
     public function selectProject()
@@ -88,5 +88,4 @@ class BudgetUpdateController extends Controller
             'projects' => Project::all()
         ]);
     }
-
 }

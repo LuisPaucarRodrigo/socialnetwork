@@ -2,41 +2,39 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout>
         <template #header>
-            Asignación de Recursos
+            Asignación de Activos
         </template>
         <div class=" lg:w-1/2 p-3 rounded-lg shadow">
-
             <div class="sm:col-span-3">
                 <div class="flex gap-2">
-                    <h3 class="text-lg leading-6 text-gray-900">Añadir Recursos
+                    <h3 class="text-lg leading-6 text-gray-900">Añadir Activos
                     </h3>
                     <button @click="showToAddEmployee" type="button">
                         <PlusCircleIcon class="text-lg text-indigo-800 h-7 w-7 hover:text-purple-400" />
                     </button>
                 </div>
-
                 <div class="mt-7">
                     <div v-for="(resource, index) in project.resources" :key="index"
                         class="grid grid-cols-8 items-center my-3">
-                        <p class="text-md col-span-7 line-clamp-2">{{ resource.unique_identification }} - {{ resource.description
+                        <p class="text-md col-span-7 line-clamp-2">{{ resource.unique_identification }} - {{
+                            resource.description
                         }} / Cantidad: {{ resource.pivot.quantity }}</p>
                         <button type="button" @click="delete_resource(resource.pivot.id)"
                             class="col-span-1 flex justify-end">
                             <TrashIcon class="text-red-500 h-5 w-5" />
                         </button>
-                        <div class="border-b col-span-8 border-gray-900/10"></div>
+                        
                     </div>
                 </div>
             </div>
-
             <Modal :show="showModal">
                 <form class="p-6" @submit.prevent="submit">
                     <h2 class="text-lg font-medium text-gray-900">
-                        Solo recursos disponibles
+                        Solo activos disponibles
                     </h2>
                     <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                         <div class="sm:col-span-3">
-                            <InputLabel for="resource_id" class="font-medium leading-6 text-gray-900">Recuso
+                            <InputLabel for="resource_id" class="font-medium leading-6 text-gray-900">Activos
                             </InputLabel>
                             <div class="mt-2">
                                 <select required id="resource_id" v-model="form.resource_id"
@@ -69,12 +67,8 @@
 
                     </div>
                     <div class="mt-6 flex gap-3 justify-end">
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                            type="button" @click="closeModal"> Cerrar </button>
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                            type="submit"> Agregar </button>
+                        <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                        <PrimaryButton type="submit"> Agregar </PrimaryButton>
                     </div>
                 </form>
             </Modal>
@@ -90,6 +84,8 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModal = ref(false);
 
@@ -135,6 +131,4 @@ const delete_resource = (resource_id) => {
         },
     })
 }
-
-console.log(resources)
 </script>

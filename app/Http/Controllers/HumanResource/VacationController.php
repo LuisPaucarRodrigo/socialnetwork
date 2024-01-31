@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\HumanResource;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\VacationRequest\CreateVacationRequest;
+use App\Http\Requests\VacationRequest\UpdateVacationRequest;
 use App\Models\Vacation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -22,23 +24,15 @@ class VacationController extends Controller
         ]);
     }
 
-    public function create(){
-        return Inertia::render('HumanResource/ManagementVacation/CreateAndUpdate', [ 
+    public function create()
+    {
+        return Inertia::render('HumanResource/ManagementVacation/CreateAndUpdate', [
             'employees' => Employee::all()
         ]);
     }
 
-    public function store(Request $request){
-        $request->validate([
-            'employee_id' => 'required|numeric',
-            'type' => 'required|in:Vacaciones,Permisos',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after:start_date',
-            'start_permissions' => 'nullable|date_format:H:i',
-            'end_permissions' => 'nullable|date_format:H:i|after:start_permissions',
-            'doc_permission' => 'nullable|mimes:pdf|max:2048',
-            'reason' => 'required|string',
-        ]);
+    public function store(CreateVacationRequest $request)
+    {
         $documentName = null;
         if ($request->file('doc_permission')) {
             $document = $request->file('doc_permission');
@@ -56,59 +50,50 @@ class VacationController extends Controller
             'doc_permission' => $documentName,
             'reason' => $request->reason,
         ]);
-        return to_route('management.vacation');
     }
 
     public function edit($vacation)
-    {   
+    {
         return Inertia::render('HumanResource/ManagementVacation/CreateAndUpdate', [
             'vacation' => Vacation::with('employee')->find($vacation),
+            'employees' => Employee::all()
         ]);
     }
 
-    public function update(Request $request,$id)
-    {   
+    public function update(UpdateVacationRequest $request, $id)
+    {
         $vacation = Vacation::find($id);
-        $validateData = $request->validate([
-            'type' => 'required|in:Vacaciones,Permisos',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after:start_date',
-            'start_permissions' => 'nullable',
-            'end_permissions' => 'nullable|after:start_permissions',
-            'start_date_accepted' => 'nullable|date',
-            'end_date_accepted' => 'nullable|date|after:start_date_accepted',
-            'reason' => 'required|string',
-        ]);
+        $validateData = $request->validated();
         $vacation->update($validateData);
         return to_route('management.vacation');
     }
 
     public function review(Vacation $vacation)
     {
-        
-        return Inertia::render('HumanResource/ManagementVacation/Details',[
+
+        return Inertia::render('HumanResource/ManagementVacation/Details', [
             'vacation' => $vacation,
-            'details' => Vacation::with('employee')->find($vacation -> id),
+            'details' => Vacation::with('employee')->find($vacation->id),
         ]);
     }
 
-    public function details ($vacation)
-    {   
+    public function details($vacation)
+    {
         $details = Vacation::with('employee')->find($vacation);
-        return Inertia::render('HumanResource/ManagementVacation/Details',[
+        return Inertia::render('HumanResource/ManagementVacation/Details', [
             'details' => $details
         ]);
     }
 
     public function reviewed(Request $request, $vacation)
-    {   
+    {
         $request->validate([
             'start_date_accepted' => 'nullable|date',
             'end_date_accepted' => 'nullable|date|after:start_date_accepted'
         ]);
 
         $reviewed = Vacation::find($vacation);
-        $reviewed -> update([
+        $reviewed->update([
             'start_date_accepted' => $request->start_date_accepted,
             'end_date_accepted' => $request->end_date_accepted,
             'status' => 'Aceptado'
@@ -117,7 +102,7 @@ class VacationController extends Controller
     }
 
     public function decline($id)
-    {   
+    {
         $vacation = Vacation::find($id);
         $vacation->update([
             'status' => 'Rechazado'
@@ -127,14 +112,15 @@ class VacationController extends Controller
 
     public function destroy(Vacation $vacation)
     {
-        $filePath = storage_path("app/documents/permissions/$vacation->doc_permission");
-        if(file_exists($filePath))  {
-            Storage::delete("documents/permissions/$vacation->doc_permission");
-            $vacation->delete();
-        }else{
-            abort(404, 'Documento no encontrado');
+        if ($vacation->type == "Permisos") {
+            $filePath = storage_path("app/documents/permissions/$vacation->doc_permission");
+            if(file_exists($filePath))  {
+                Storage::delete("documents/permissions/$vacation->doc_permission");
+            }else{
+                abort(404, 'Documento no encontrado');
+            }
         }
-        
+        $vacation->delete();
         return to_route('management.vacation');
     }
 
@@ -156,7 +142,7 @@ class VacationController extends Controller
         $fileName = $id->doc_permission;
         $filePath = '/documents/permissions/' . $fileName;
         if (Storage::disk('local')->exists($filePath)) {
-            $file = storage_path("app/documents/Permissions/$fileName");
+            $file = storage_path("app/documents/permissions/$fileName");
             return response()->file($file);
         }
         abort(404, 'Documento no encontrado');

@@ -14,10 +14,6 @@
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 Calendario
                 </Link>
-                <button @click="add_project" type="button"
-                    class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
-                    Filtro
-                </button>
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -28,14 +24,11 @@
                             N° {{ item.code }}
                         </h2>
                         <div class="inline-flex justify-end gap-x-2">
-                            <!-- <Link class="flex items-start">
-                            <EyeIcon class="h-4 w-4 text-blue-700" />
-                            </Link> -->
                             <Link :href="route('projectmanagement.update', { project_id: item.id })"
                                 class="flex items-start">
                             <PencilIcon class="h-4 w-4 text-teal-600" />
                             </Link>
-                            <button class="flex items-start" @click="delete_project(item.id)">
+                            <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
                                 <TrashIcon class="h-4 w-4 text-red-500" />
                             </button>
                         </div>
@@ -45,13 +38,14 @@
                     </h3>
                     <div class="text-gray-500 text-sm">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <!-- <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas</Link> -->
                             <Link :href="route('projectscalendar.show', { project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario</Link>
-                            <Link :href="route('projectmanagement.resources', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Recursos
+                            <Link v-if="item.initial_budget"
+                                :href="route('projectmanagement.resources', { project_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Activos
                             </Link>
-                            <Link :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
+                            <Link v-if="item.initial_budget"
+                                :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                         </div>
@@ -63,24 +57,42 @@
                 <pagination :links="projects.links" />
             </div>
         </div>
+        <ConfirmDeleteModal :confirmingDeletion="confirmingProjectDeletion" itemType="proyecto"
+            :deleteFunction="delete_project" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, Link } from '@inertiajs/vue3';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import Pagination from '@/Components/Pagination.vue'
-import { EyeIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { Head, router, Link } from '@inertiajs/vue3';
+import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ref } from 'vue';
 
 const { projects } = defineProps({
     projects: Object,
 })
 
+const confirmingProjectDeletion = ref(false);
+const projectToDelete = ref('');
+
 const add_project = () => {
     router.get(route('projectmanagement.create'));
 }
 
-const delete_project = (id) => {
-    router.delete(route('projectmanagement.delete', { project_id: id }));
+const delete_project = () => {
+    const projectId = projectToDelete.value;
+    router.delete(route('projectmanagement.delete', { project_id: projectId }), {
+        onSuccess: () => closeModal()
+    });
 }
 
+const confirmProjectDeletion = (employeeId) => {
+    projectToDelete.value = employeeId;
+    confirmingProjectDeletion.value = true;
+};
+
+const closeModal = () => {
+    confirmingProjectDeletion.value = false;
+};
 </script>

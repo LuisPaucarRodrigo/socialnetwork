@@ -2,7 +2,7 @@
   <Head title="Calendario" />
   <AuthenticatedLayout>
     <h1>Calendario de Proyectos</h1>
-    <FullCalendar :options="calendarOptions"/>
+    <FullCalendar :options="calendarOptions" />
     <teleport to="body">
       <div v-if="selectedEvent" class="modal-overlay" @click="closeModal">
         <div class="modal" :class="{ 'show': showModal }" @click.stop>
@@ -14,14 +14,12 @@
             <p>Start: {{ selectedEvent.start }}</p>
             <p>End: {{ selectedEvent.end }}</p>
             <p>Additional Info: {{ selectedEvent.description }}</p>
-            <div class="center-link"> <!-- Agregamos un contenedor con clases de Flexbox -->
-              <Link
-                :href="route('projectscalendar.show', { project: selectedEvent.project_id })"
-                class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white"
-              >
-                Ir a Calendario de Tareas del Proyecto
+            <div class="center-link">
+              <Link :href="route('projectscalendar.show', { project: selectedEvent.project_id })"
+                class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+              Ir a Calendario de Tareas del Proyecto
               </Link>
-            </div>            
+            </div>
           </div>
         </div>
       </div>
@@ -31,11 +29,11 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ref } from 'vue';
+import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const selectedEvent = ref(null);
 const showModal = ref(false);
@@ -49,7 +47,7 @@ const handleDateClick = (arg) => {
 };
 
 const handleEventClick = (arg) => {
-  selectedEvent.value = { 
+  selectedEvent.value = {
     title: arg.event.title,
     start: arg.event.start,
     end: arg.event.end,
@@ -70,19 +68,19 @@ const colorSet = ['#0979b0', '#0cb7f2', '#7cdaf9', '#b6ffff'];
 let colorIndex = 0;
 
 const getColorFromSet = () => {
-const color = colorSet[colorIndex];
-colorIndex = (colorIndex + 1) % colorSet.length; // Incrementa el índice y vuelve a 0 cuando se alcanza la longitud del conjunto
-return color;
+  const color = colorSet[colorIndex];
+  colorIndex = (colorIndex + 1) % colorSet.length; // Incrementa el índice y vuelve a 0 cuando se alcanza la longitud del conjunto
+  return color;
 };
 
 const events = ref(props.projects.map((project) => ({
-title: project.name,
-start: project.start_date + "T11:30:00",
-end: project.end_date + "T11:30:00",
-color: getColorFromSet(),
-description: project.description,
-project_id: project.id,
-textColor: 'black',
+  title: project.name,
+  start: project.start_date + "T11:30:00",
+  end: project.end_date + "T11:30:00",
+  color: getColorFromSet(),
+  description: project.description,
+  project_id: project.id,
+  textColor: 'black',
 
 })));
 
@@ -105,31 +103,37 @@ const calendarOptions = ref({
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo negro sutilmente semitransparente */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fondo negro sutilmente semitransparente */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
-  transition: background-color 0.3s ease; /* Transición suave */
+  transition: background-color 0.3s ease;
+  /* Transición suave */
 }
 
 .modal {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  opacity: 0; /* Inicialmente invisible */
-  transition: opacity 0.5s ease; /* Transición suave */
+  opacity: 0;
+  /* Inicialmente invisible */
+  transition: opacity 0.5s ease;
+  /* Transición suave */
   z-index: 1000;
 }
 
 .center-link {
-display: flex;
-justify-content: center;
-margin-top: 20px; /* Puedes ajustar el margen según sea necesario */
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  /* Puedes ajustar el margen según sea necesario */
 }
 
 .modal.show {
-  opacity: 1; /* Mostrar el modal */
+  opacity: 1;
+  /* Mostrar el modal */
 }
 
 .modal-header {
@@ -144,15 +148,16 @@ margin-top: 20px; /* Puedes ajustar el margen según sea necesario */
   cursor: pointer;
   color: #555;
 }
+
 .event-title {
-  text-align: center; /* Centrar el texto */
-  font-weight: bold; /* Hacer el texto en negrita */
+  text-align: center;
+  /* Centrar el texto */
+  font-weight: bold;
+  /* Hacer el texto en negrita */
 }
 
-h1{
+h1 {
   font-weight: bold;
   font-size: x-large;
 }
-
-/* Otros estilos si es necesario */
 </style>

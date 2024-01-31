@@ -36,7 +36,7 @@
                         </InputLabel>
                         <select v-model="form.provider" id="provider"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <option>Compañia | Contacto | Telefono1 - Telefono2</option>
+                            <option value="" disabled>Compañia | Contacto | Telefono1 - Telefono2</option>
                             <option v-for="provider in providers" :key="provider" :value="provider.company_name">{{
                                 provider.company_name }} | {{ provider.contact_name }} | {{ provider.phone1 }} - {{provider.phone2 }}
                             </option>
@@ -64,7 +64,7 @@
                         <InputError :message="form.errors.response" />
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <InputLabel for="purchase_image" class="text-sm font-medium leading-6 text-gray-900">Imagen de
+                        <InputLabel for="purchase_image" class="text-sm font-medium leading-6 text-gray-900">Documento de de
                             Cotizacion</InputLabel>
                         <InputFile type="file" v-model="form.purchase_image" id="purchase_image"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
@@ -94,7 +94,7 @@ const props = defineProps({
 })
 
 const form = useForm({
-    provider: 'Compañia | Contacto | Telefono1 - Telefono2',
+    provider: '',
     purchasing_request_id: props.purchases.id,
     quote_deadline:'',
     amount: '',

@@ -10,7 +10,6 @@
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
-
             <table class="w-full whitespace-no-wrap md:overflow-x-hidden">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -43,7 +42,6 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                         </td>
-
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
                         </td>
