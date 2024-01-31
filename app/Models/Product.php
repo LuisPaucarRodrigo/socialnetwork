@@ -14,6 +14,48 @@ class Product extends Model
         'warehouse_id'
     ];
 
+    protected $appends = ['total_assigned_to_projects', 'total_available', 'state'];
+
+    public function projects(){
+        return $this->belongsToMany(Project::class,'project_product');
+    }
+    public function project_product(){
+        return $this->hasMany(ProjectProduct::class,'project_product');
+    }
+
+    public function getTotalAssignedToProjectsAttribute(){
+        return $this->projects()->sum('project_product.quantity');
+    }
+
+    public function getTotalAvailableAttribute () {
+        $quantity = $this->productHeaders()->where('header_id', 8)->first();
+        return $quantity->content - $this->total_assigned_to_projects;
+    }
+
+    public function getStateAttribute () {
+        return $this->total_available > 0 ? 'Disponible' : 'No disponible';
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function warehouse()
     {
         return $this->belongsTo(Warehouse::class, 'warehouse_id');

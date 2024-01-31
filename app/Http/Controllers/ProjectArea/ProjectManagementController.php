@@ -5,12 +5,15 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Models\Employee;
+use App\Models\Product;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
+use App\Models\ProjectProduct;
 use App\Models\Resource;
 use App\Models\ProjectResource;
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -160,7 +163,7 @@ class ProjectManagementController extends Controller
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
             ->with('project')
             ->with('user')
-            ->orderByDesc('id') // Ordenar por ID en orden descendente
+            ->orderByDesc('id') 
             ->first();
 
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
@@ -184,4 +187,42 @@ class ProjectManagementController extends Controller
             'expenses' => $expenses->paginate(),
         ]);
     }
+
+
+
+
+
+
+    public function project_product_index ($project_id) {
+        $assigned_products = ProjectProduct::where('project_id', $project_id)
+            ->with('product')
+            ->paginate(10);
+        $warehouses = Warehouse::all();
+        return Inertia::render('ProjectArea/ProjectManagement/ProjectProducts', [
+            'assigned_products'=> $assigned_products,
+            'warehouses' => $warehouses,
+            'project_id'=> $project_id
+        ]);
+    }
+
+    public function warehouse_products ($warehouse_id) {
+        $warehouse_products = Product::where('warehouse_id', $warehouse_id)
+            ->get()
+            ->filter(function ($product) {
+                return $product->state === 'Disponible';
+            });;
+        return response()->json($warehouse_products);
+    }
+
+    public function project_product_store (Request $request){
+        $data = $request->validate([
+            'project_id' => 'required',
+            'product_id' => 'required',
+            'quantity' => 'required',
+            'observation' => 'required',
+        ]);
+        ProjectProduct::create($data);
+        return redirect()->back();
+    }
+
 }

@@ -33,6 +33,28 @@ class Project extends Model
         return $this->belongsToMany(Resource::class, 'project_resource')->withPivot('id','quantity', 'observation');
     }
     public function budget_updates(){
-        return $this->hasMany(BudgetUpdates::class);
+        return $this->hasMany(BudgetUpdate::class);
     }
+
+
+
+    public function products () {
+        return $this->belongsToMany(Product::class, 'project_product');
+    }
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
 }

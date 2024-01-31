@@ -53,10 +53,15 @@ class ProductController extends Controller
         ]);
     }
 
-    public function destroy(Warehouse $warehouse, Product $product)
-    {
+    public function destroy(Warehouse $warehouse, Product $product) {
         $product->delete();
         return to_route('warehouses.products', ['warehouse' => $warehouse->id]);
+    }
+
+    public function outputs_index($warehouse) {
+        $projects_product = Product::where('warehouse_id', $warehouse)
+            ->with('product')
+            ->paginate(10);
     }
 
 }

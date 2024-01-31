@@ -55,22 +55,21 @@
     </AuthenticatedLayout>
   </template>
     
-  <script setup>
-  import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-  import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-  import { ref, onMounted } from 'vue';
-  import { Head, useForm, router, Link } from '@inertiajs/vue3';
-  import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import { ref, onMounted } from 'vue';
+import { Head, useForm, router, Link } from '@inertiajs/vue3';
+import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
-  const props = defineProps({
-    products: Object,
-    warehouse: Object
+const props = defineProps({
+  products: Object,
+  warehouse: Object
 });
 
+console.log(props.products)
+
 const productHeaders = props.products.flatMap(product => product.product_headers);
-console.log(productHeaders);
-
-
   const confirmingDocDeletion = ref(false);
   const docToDelete = ref(null);
   
