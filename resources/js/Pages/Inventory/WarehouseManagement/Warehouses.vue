@@ -38,7 +38,7 @@
                         <div class="grid grid-cols-1 gap-y-1">
                             <!-- <Link class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas</Link> -->
                             <Link
-                                :href="route('warehouses.warehouseHeader', {warehouse: item})"
+                                :href="route('warehouses.products', {warehouse: item})"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Agregar</Link>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                 <div class="mt-3">
                   <InputLabel for="headers" class="font-medium leading-6 text-gray-900">Cabeceras
                   </InputLabel>
-                    <select required multiple v-model="form.header_ids" id="headers"
+                    <select multiple v-model="form.header_ids" id="headers"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 mt-3">
                         <option disabled>
                           Selecciona una o varias
@@ -164,7 +164,7 @@
                 
                 <div class="mt-3">
                   <InputLabel for="headers" class="font-medium leading-6 text-gray-900">Cabeceras</InputLabel>
-                  <select required multiple v-model="formEdit.header_ids" id="headers" class="block w-full ...">
+                  <select multiple v-model="formEdit.header_ids" id="headers" class="block w-full ...">
                     <option disabled>Selecciona una o varias</option>
                     <option v-for="header in filteredHeaders" :key="header.id" :value="header.id" >
                       {{ header.name }}
@@ -229,7 +229,7 @@
   });
 
   const headerArray = [
-    1, 5, 7, 8, 10, 12, 15
+    1, 5, 7, 10, 12, 15
   ];
 
   let filteredHeaders = [];

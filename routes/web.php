@@ -23,6 +23,7 @@ use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
 use App\Http\Controllers\Inventory\WarehousesController;
+use App\Http\Controllers\Inventory\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -217,10 +218,11 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::put('/inventory/warehouses/{warehouse}/update', [WarehousesController::class, 'updateWarehouse'])->name('warehouses.updateWarehouse');
     Route::delete('/inventory/warehouses/{warehouse}/destroy', [WarehousesController::class, 'destroyWarehouse'])->name('warehouses.destroyWarehouse');
 
-    //headers
-    Route::get('/inventory/headers', [WarehousesController::class, 'showHeaders'])->name('warehouses.headers');
-    Route::post('/inventory/headers', [WarehousesController::class, 'storeHeader'])->name('warehouses.storeHeader');
-    Route::delete('/inventory/headers/{header}/destroy', [WarehousesController::class, 'destroyHeader'])->name('warehouses.destroyHeader');
+    //products
+    Route::get('/inventory/warehouses/{warehouse}/product', [ProductController::class, 'index'])->name('warehouses.products');
+    Route::get('/inventory/warehouses/{warehouse}/product/create', [ProductController::class, 'create'])->name('warehouses.createProduct');
+    Route::post('/inventory/warehouses/{warehouse}/product/create', [ProductController::class, 'store'])->name('warehouses.storeProduct');
+    Route::delete('/inventory/warehouses/{warehouse}/product/{product}/destroy', [ProductController::class, 'destroy'])->name('warehouses.destroyProduct');
 });
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {

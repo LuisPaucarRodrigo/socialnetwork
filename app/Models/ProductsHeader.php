@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WarehousesHeader extends Model
+class ProductsHeader extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'warehouse_id',
+        'product_id',
         'header_id',
+        'content'
     ];
 
     public function header()
@@ -19,9 +20,9 @@ class WarehousesHeader extends Model
         return $this->belongsTo(Header::class, 'header_id');
     }
 
-    public function warehouse()
+    public function product()
     {
-        return $this->belongsTo(Warehouse::class, 'warehouse_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
     
 }
