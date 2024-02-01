@@ -223,6 +223,9 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     //products
     Route::get('/inventory/warehouses/{warehouse}/product', [ProductController::class, 'index'])->name('warehouses.products');
     Route::get('/inventory/warehouses/{warehouse}/product/create', [ProductController::class, 'create'])->name('warehouses.createProduct');
+    Route::get('/inventory/warehouses/{warehouse}/product/{product}/edit', [ProductController::class, 'edit'])->name('warehouses.editProduct');
+    Route::put('/inventory/warehouses/{warehouse}/product/{product}/edit', [ProductController::class, 'update'])->name('warehouses.updateProduct');
+    Route::get('/inventory/warehouses/{warehouse}/product/{product}/show', [ProductController::class, 'show'])->name('warehouses.showProduct');
     Route::post('/inventory/warehouses/{warehouse}/product/create', [ProductController::class, 'store'])->name('warehouses.storeProduct');
     Route::delete('/inventory/warehouses/{warehouse}/product/{product}/destroy', [ProductController::class, 'destroy'])->name('warehouses.destroyProduct');
     //outputs
