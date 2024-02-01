@@ -199,7 +199,6 @@ class ProjectManagementController extends Controller
         ->with([
             'product',
             'output_project_product' => function ($query) {
-                // Personalizar la carga de output_project_product aquí, por ejemplo, utilizando take(5) para cargar solo los primeros 5 resultados.
                 $query->whereDoesntHave('liquidation');
             },
         ])
@@ -233,6 +232,11 @@ class ProjectManagementController extends Controller
             'observation' => 'required',
         ]);
         ProjectProduct::create($data);
+        return redirect()->back();
+    }
+
+    public function warehouse_products_delete (ProjectProduct $assigned) {
+        $assigned->delete();
         return redirect()->back();
     }
 

@@ -15,7 +15,7 @@ class Product extends Model
         'warehouse_id'
     ];
 
-    protected $appends = ['total_assigned_to_projects', 'total_available', 'state'];
+    protected $appends = ['total_assigned_to_projects', 'total_available', 'state', 'total_sent_quantity_projects', 'total_refund_quantity_projects', 'total_used_quantity_projects'];
 
     public function projects(){
         return $this->belongsToMany(Project::class,'project_product');
@@ -27,18 +27,35 @@ class Product extends Model
 
 
     public function project_product(){
-        return $this->hasMany(ProjectProduct::class)->withPivot('quantity_with_liquidation');
+        return $this->hasMany(ProjectProduct::class);
     }
     public function getTotalAssignedToProjectsAttribute(){
         return $this->projects()->sum('project_product.quantity');
     }
 
+    public function getTotalSentQuantityProjectsAttribute(){
+        $total = $this->project_product()->get()->sum(function ($item) {
+            return $item->total_output_project_product ?? 0;
+        });
+        return $total;
+    }
 
+    public function getTotalRefundQuantityProjectsAttribute(){
+        $total = $this->project_product()->get()->sum(function ($item) {
+            return $item->total_refund_quantity ?? 0;
+        });
+        return $total;
+    }
 
-
+    public function getTotalUsedQuantityProjectsAttribute(){
+        $total = $this->project_product()->get()->sum(function ($item) {
+            return $item->total_used_quantity ?? 0;
+        });
+        return $total;
+    }
     public function getTotalAvailableAttribute () {
         $quantity = $this->productHeaders()->where('header_id', 8)->first();
-        return $quantity->content - $this->total_assigned_to_projects;
+        return $quantity->content - $this->total_assigned_to_projects + $this->total_refund_quantity_projects;
     }
 
 

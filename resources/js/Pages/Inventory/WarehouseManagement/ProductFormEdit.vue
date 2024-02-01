@@ -32,34 +32,39 @@
                   </div>
                 </div>
                 <div class="flex flex-col gap-2">
-                  <InputLabel for="total" class="font-medium leading-6 text-gray-900 mt-2">Total</InputLabel>
+                  <InputLabel for="total" class="font-medium leading-6 text-gray-900 mt-2">Total (Disponible)</InputLabel>
                   <div class="mt-2">
-                    <input type="number" step="0.01" readonly disabled id="total"
+                    <input type="number" step="0.01" readonly disabled id="total" :value="product.total_available"
                       class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2 bg-blue-100" />
                   </div>
                 </div>
+
                 <div class="flex flex-col gap-2">
-                  <InputLabel for="used" class="font-medium leading-6 text-gray-900 mt-2">Usado</InputLabel>
-                  <div class="mt-2">
-                    <input type="number" step="0.01" id="used" readonly disabled
-                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2 bg-blue-100" />
-                  </div>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <InputLabel for="remain" class="font-medium leading-6 text-gray-900 mt-2">Sobra</InputLabel>
-                  <div class="mt-2">
-                    <input type="number" step="0.01" id="remain" readonly disabled
-                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2 bg-blue-100" />
-                  </div>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <InputLabel for="amount sent" class="font-medium leading-6 text-gray-900 mt-2">Cantidad Enviada
+                  <InputLabel for="amount sent" class="font-medium leading-6 text-gray-900 mt-2">
+                    Cantidad: Asignados | Enviados | Por enviar
                   </InputLabel>
                   <div class="mt-2">
-                    <input type="number" step="0.01" id="amount sent" readonly disabled
+                    <input id="amount sent" readonly
+                      :value="`${props.product.total_assigned_to_projects} | ${props.product.total_sent_quantity_projects} | ${props.product.total_assigned_to_projects - props.product.total_sent_quantity_projects}`"
                       class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2 bg-blue-100" />
                   </div>
                 </div>
+
+                <div class="flex flex-col gap-2">
+                  <InputLabel for="used" class="font-medium leading-6 text-gray-900 mt-2">Total Usado</InputLabel>
+                  <div class="mt-2">
+                    <input type="number" step="0.01" id="used" readonly disabled :value="product.total_used_quantity_projects"
+                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2 bg-blue-100" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <InputLabel for="remain" class="font-medium leading-6 text-gray-900 mt-2">Total Cantidad Devuelta</InputLabel>
+                  <div class="mt-2">
+                    <input type="number" step="0.01" id="remain" readonly disabled :value="product.total_refund_quantity_projects"
+                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2 bg-blue-100" />
+                  </div>
+                </div>
+                
                 <div class="flex flex-col gap-2">
                   <InputLabel for="maintenance" class="font-medium leading-6 text-gray-900 mt-2">Mantenimiento</InputLabel>
                   <div class="mt-2">
@@ -95,6 +100,7 @@
     headers: Object,
     warehouse: Object
   });
+  console.log(props.product)
   
 
   const showModal = ref(false);
@@ -116,9 +122,6 @@
     }
   }
 });
-
-
-
     
   const submit = () => {
     console.log(form.contentIds);
@@ -144,5 +147,6 @@
   const closeModal = () => {
     router.visit(route('warehouses.products', { warehouse: props.warehouse.id}))
   };
+
   </script>
   

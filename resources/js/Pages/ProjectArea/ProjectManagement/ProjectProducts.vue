@@ -68,21 +68,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <Link class="text-blue-900 whitespace-no-wrap"
-                                        href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    </Link>
-                                    <button type="button"
-                                        class="text-blue-900 whitespace-no-wrap">
-                                        <PencilIcon class="text-yellow-500 h-4 w-4"></PencilIcon>
-                                    </button>
-                                    <button type="button"
+                                    <button v-if="item.is_deletable" type="button" @click="confirmDelete(item.id)"
                                         class="text-red-900 whitespace-no-wrap">
                                         <TrashIcon class="text-red-500 h-4 w-4" />
                                     </button>
@@ -229,6 +215,8 @@
                     </div>
                 </form>
             </Modal>
+            <ConfirmDeleteModal :confirmingDeletion="confirmingDeletion" itemType="Asignación de producto" :deleteFunction="deleteAssigned"
+            @closeModal="closeModalDoc" />
 
             <SuccessOperationModal :confirming="successAsignation" title="Producto asignado" message="La asignación fue exitosa" />
             <SuccessOperationModal :confirming="successAsignationLiquidate" title="Producto liquidado" message="La liquidación fue exitosa" />
@@ -239,13 +227,14 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Pagination from '@/Components/Pagination.vue'
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
@@ -257,6 +246,7 @@ const {assigned_products, warehouses, project_id} = defineProps({
     warehouses: Object,
     project_id: String
 })
+console.log(assigned_products.data)
 
 //Modal functions
 const showModal = ref(false);
@@ -373,5 +363,27 @@ const sufficientQuantity = (form) => {
     let product = warehouseProducts.value.find((i) => i.id == form.product_id)
     return form.quantity <= product.total_available;
 }
+
+
+//delete
+const confirmingDeletion = ref(false);
+const assignedToDelete = ref(null);
+const confirmDelete= (assigned_id) => {
+    assignedToDelete.value = assigned_id;
+    confirmingDeletion.value = true;
+};
+const closeModalDoc = () => {
+    confirmingDeletion.value = false;
+};
+const deleteAssigned = () => {
+    const assigned_id = assignedToDelete.value;
+    if (assigned_id) {
+      router.delete(route('projectmanagement.products.delete', { assigned: assigned_id }), {
+        onSuccess: () => {
+            closeModalDoc()
+        }
+      });
+    }
+  };
 
 </script>
