@@ -67,7 +67,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formatearFecha(item.created_at) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex space-x-3 justify-center">
+                                <div v-if="item.state === 'Incompleto'" class="flex space-x-3 justify-center">
                                     <button class="text-blue-900 whitespace-no-wrap" @click="showToAddProduct(item.id, item.quantity, item.total_output_project_product)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
@@ -145,7 +145,7 @@ const {project_products, warehouse} = defineProps({
     warehouse: String
 
 })
-console.log(warehouse)
+console.log(project_products)
 
 
 //Modal functions

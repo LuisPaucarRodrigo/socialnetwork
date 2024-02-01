@@ -90,7 +90,14 @@ class ProductController extends Controller
         return Inertia::render('Inventory/WarehouseManagement/OutputsHistory', [
             'output_products' => $output_products,
             'warehouse' => $warehouse
-    ]);
-}
+        ]);
+    }
+    public function output_delete(OutputProjectProduct $output) {
+        $output->delete();
+        return redirect()->back();
+    }
+
+
+
 
 }
