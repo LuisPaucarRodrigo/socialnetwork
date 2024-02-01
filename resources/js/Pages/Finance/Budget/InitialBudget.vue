@@ -6,7 +6,7 @@
             Información del Proyecto
         </template>
         <div class="mt-4">
-            <p v-if="props.project.initial_budget === 0" class="text-xl font-semibold text-gray-700">No hay presupuesto
+            <p v-if="props.project.initial_budget == null" class="text-xl font-semibold text-gray-700">No hay presupuesto
                 definido</p>
             <p v-else class="text-xl font-semibold text-gray-700">
                 Presupuesto Inicial: S/. {{ props.project.initial_budget }}
@@ -19,7 +19,7 @@
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <!-- Dos opciones adicionales -->
-            <div v-if="props.project.initial_budget === 0" class="flex justify-end px-5 py-3">
+            <div v-if="props.project.initial_budget == null" class="flex justify-end px-5 py-3">
                 <button @click="openModal" class="text-blue-600 hover:underline mr-4">Definir Presupuesto</button>
             </div>
             <div v-else class="flex justify-end px-5 py-3">

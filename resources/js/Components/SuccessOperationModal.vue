@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="confirmingFunction" :maxWidth="'sm'">
+    <Modal :show="confirming" :maxWidth="'sm'">
         <div class="p-6">
             <div class="text-center">
                 <div class="bg-green-200 rounded-full h-12 w-12 flex mx-auto items-center justify-center">
@@ -9,7 +9,7 @@
                     </svg>
                 </div>
                 <h2 class="pt-5 text-lg font-medium text-gray-900">
-                     {{ title }}
+                    {{ title }}
                 </h2>
                 <p class="mt-1 text-sm text-gray-600">
                     {{ message }}
@@ -25,7 +25,7 @@ export default {
         Modal
     },
     props: {
-        confirmingFunction: {
+        confirming: {
             type: Boolean,
             required: true
         },
@@ -37,7 +37,7 @@ export default {
             type: String,
             required: true
         },
-    },
-};
+    }
+}
 </script>
   

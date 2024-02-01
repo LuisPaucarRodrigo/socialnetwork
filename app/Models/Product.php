@@ -11,15 +11,86 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'warehouse_id'
     ];
 
     public function warehouse()
     {
-        return $this->belongsToMany(Warehouse::class, 'warehouses_headers', 'warehouse_id', 'product_id')->withTimestamps();
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
     
-    public function warehouseHeaders()
+    public function productHeaders()
     {
-        return $this->hasMany(WarehousesHeader::class, 'product_id');
+        return $this->hasMany(ProductsHeader::class, 'product_id');
     }
+
+    public function headers()
+    {
+        return $this->belongsToMany(Header::class, 'products_headers', 'product_id', 'header_id')->withTimestamps();
+    }
+
+    protected $appends = ['total_assigned_to_projects', 'total_available', 'state', 'total_sent_quantity_projects', 'total_refund_quantity_projects', 'total_used_quantity_projects'];
+
+    public function projects(){
+        return $this->belongsToMany(Project::class,'project_product');
+    }
+
+    public function getStateAttribute () {
+        return $this->total_available > 0 ? 'Disponible' : 'No disponible';
+    }
+
+    public function project_product(){
+        return $this->hasMany(ProjectProduct::class);
+    }
+
+    public function getTotalAssignedToProjectsAttribute(){
+        return $this->projects()->sum('project_product.quantity');
+    }
+
+    public function getTotalSentQuantityProjectsAttribute(){
+        $total = $this->project_product()->get()->sum(function ($item) {
+            return $item->total_output_project_product ?? 0;
+        });
+        return $total;
+    }
+
+    public function getTotalRefundQuantityProjectsAttribute(){
+        $total = $this->project_product()->get()->sum(function ($item) {
+            return $item->total_refund_quantity ?? 0;
+        });
+        return $total;
+    }
+
+    public function getTotalUsedQuantityProjectsAttribute(){
+        $total = $this->project_product()->get()->sum(function ($item) {
+            return $item->total_used_quantity ?? 0;
+        });
+        return $total;
+    }
+    
+    public function getTotalAvailableAttribute () {
+        $quantity = $this->productHeaders()->where('header_id', 8)->first();
+        return $quantity->content - $this->total_assigned_to_projects + $this->total_refund_quantity_projects;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
 }

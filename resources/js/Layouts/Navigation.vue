@@ -113,9 +113,9 @@
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('resources.index')">Activos de la Empresa</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingInventory">
+                <!-- <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('inventory.index')">Control de Inventario</Link>
-                </MyTransition>
+                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('warehouses.warehouses')">Gestión de Almacenes</Link>
                 </MyTransition>
