@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -17,11 +18,11 @@ class Product extends Model
     protected $appends = ['total_assigned_to_projects', 'total_available', 'state'];
 
     public function projects(){
-        return $this->belongsToMany(Project::class,'project_product');
+        return $this->belongsToMany(Project::class,'project_product')->withPivot('quantity_with_liquidation');
     }
 
     public function getTotalAssignedToProjectsAttribute(){
-        return $this->projects()->sum('project_product.quantity');
+        return $this->projects()->sum('project_product.quantity_with_liquidation');
     }
 
     public function getTotalAvailableAttribute () {
