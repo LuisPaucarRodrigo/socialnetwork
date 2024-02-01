@@ -18,4 +18,9 @@ class OutputProjectProduct extends Model
     public function project_product () {
         return $this->belongsTo(ProjectProduct::class);
     }
+
+    public function liquidation() {
+        return $this->hasOne(Liquidation::class);
+    }
+
 }
