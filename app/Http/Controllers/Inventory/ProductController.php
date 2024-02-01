@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
+use App\Models\OutputProjectProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Warehouse;
 use App\Models\WarehousesHeader;
+use App\Models\ProjectProduct;
 use App\Models\Header;
 use App\Models\Product;
 use App\Models\ProductsHeader;
@@ -59,9 +61,23 @@ class ProductController extends Controller
     }
 
     public function outputs_index($warehouse) {
-        $projects_product = Product::where('warehouse_id', $warehouse)
+            $project_products = ProjectProduct::whereHas('product', function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse);
+            })
             ->with('product')
             ->paginate(10);
+        return Inertia::render('Inventory/WarehouseManagement/Outputs', [
+            'project_products' => $project_products
+        ]);
+    }
+    public function outputs_store(Request $request) {
+        $data = $request->validate([
+            'project_product_id' => 'required',
+            'quantity' => 'required',
+            'observation' => 'required',
+        ]);
+        OutputProjectProduct::create($data);
+        return redirect()->back();
     }
 
 }
