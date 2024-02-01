@@ -68,7 +68,6 @@ const props = defineProps({
   warehouse: Object
 });
 
-console.log(props.products)
 
 const productHeaders = props.products.flatMap(product => product.product_headers);
   const confirmingDocDeletion = ref(false);
