@@ -19,9 +19,6 @@ class Product extends Model
     public function projects(){
         return $this->belongsToMany(Project::class,'project_product');
     }
-    public function project_product(){
-        return $this->hasMany(ProjectProduct::class,'project_product');
-    }
 
     public function getTotalAssignedToProjectsAttribute(){
         return $this->projects()->sum('project_product.quantity');

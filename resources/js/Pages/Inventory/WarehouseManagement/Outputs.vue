@@ -2,15 +2,15 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout>
         <template #header>
-            Productos asignados
+            Registrar Salidas
         </template>
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button type="button" @click="showToAddProduct"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
-                    + Agregar
-                </button>
+                <Link type="button" href="#"
+                    class="rounded-md bg-teal-600 px-4 py-2 text-center text-sm text-white hover:bg-teal-500 ">
+                    historial de salidas
+                </Link>
             </div>
             <div class="talwing mt-4">
                 <table class="w-full whitespace-no-wrap">
@@ -43,7 +43,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in assigned_products.data" :key="item.id" :class="[
+                        <tr v-for="item in project_products.data" :key="item.id" :class="[
                             'text-gray-700',
                             { 
                                 'border-l-4': true, 
@@ -52,7 +52,7 @@
                             }
                         ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.product.name }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.product?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
@@ -68,25 +68,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <Link class="text-blue-900 whitespace-no-wrap"
-                                        href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    </Link>
-                                    <button type="button"
-                                        class="text-blue-900 whitespace-no-wrap">
-                                        <PencilIcon class="text-yellow-500 h-4 w-4"></PencilIcon>
+                                    <button class="text-blue-900 whitespace-no-wrap" @click="showToAddProduct(item.id, item.quantity, item.total_output_project_product)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                        </svg>
                                     </button>
-                                    <button type="button"
-                                        class="text-red-900 whitespace-no-wrap">
-                                        <TrashIcon class="text-red-500 h-4 w-4" />
-                                    </button>
-
                                 </div>
                             </td>
                         </tr>
@@ -95,43 +81,15 @@
             </div>
         </div>
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-            <pagination :links="assigned_products.links" />
+            <pagination :links="project_products.links" />
         </div>
 
         <Modal :show="showModal" >
                 <form class="p-6" @submit.prevent="submit">
                     <h2 class="text-lg font-medium text-gray-900">
-                        Solo productos disponibles
+                        Registrar la salida
                     </h2>
                     <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                        <div class="sm:col-span-3">
-                            <InputLabel for="resource_id" class="font-medium leading-6 text-gray-900">Almacenes
-                            </InputLabel>
-                            <div class="mt-2">
-                                <select required id="resource_id" @change="handleWarehouseChange"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled selected value="">Seleccione uno</option>
-                                    <option v-for="item in warehouses" :key="item.id" :value="item.id">{{ item.name }}</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel for="product_id" class="font-medium leading-6 text-gray-900">Productos
-                            </InputLabel>
-                            <div class="mt-2">
-                                <select required id="product_id" v-model="form.product_id"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled  value="">Seleccione uno</option>
-                                    <option v-for="item in warehouseProducts" :key="item.id" :value="item.id">
-                                        {{ item.name }} - 
-                                        {{ 
-                                            item.total_available
-                                        }}</option>
-                                </select>
-                            </div>
-                        </div>
-
                         <div class="sm:col-span-3">
                             <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                             <div class="mt-2">
@@ -162,7 +120,7 @@
                     </div>
                 </form>
             </Modal>
-            <SuccessOperationModal :confirming="successAsignation" title="Producto asignado" message="La asignación fue exitosa" />
+            <SuccessOperationModal :confirming="successAsignation" title="Salida registrada" message="Salida registrada de forma exitosa" />
             <ErrorOperationModal :showError="errorAsignation" title="Cantidad Excedida"
             message="No es una cantidad válida" />
     </AuthenticatedLayout>
@@ -179,58 +137,46 @@ import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import axios from 'axios';
 
 
 
-const {assigned_products, warehouses, project_id} = defineProps({
-    assigned_products: Object,
-    warehouses: Object,
-    project_id: String
+const {project_products} = defineProps({
+    project_products: Object,
 })
+
 
 
 //Modal functions
 const showModal = ref(false);
-const showToAddProduct = () => {
+const showToAddProduct = (id, quantity, sent_quantity) => {
     showModal.value = true;
+    form.project_product_id = id
+    form.quantity = quantity - sent_quantity
 }
 const closeModal = () => {
     showModal.value = false;
 };
 
-//Load warehouse's product
-const warehouseProducts = ref([])
-const handleWarehouseChange = (e) => {
-  let warehouse_id = e.target.value
-  axios.get(route('projectmanagement.warehouse_products',{warehouse_id}))
-    .then(response => {
-        warehouseProducts.value = response.data; 
-    })
-    .catch(error => {
-      console.error('Error al cargar la data:', error);
-    });
-};
 
 //form
 const successAsignation = ref(false)
 const errorAsignation = ref(false)
 const initialState = {
-    project_id: project_id,
-    product_id:'',
+    project_product_id: '',
     quantity:'',
     observation:''
 }
 const form = useForm({ ...initialState })
 const submit = () => {
     if (sufficientQuantity(form)){
-        form.post(route('projectmanagement.products.store'), {
+        form.post(route('projectmanagement.outputs.store'), {
             onSuccess: () => {
                 form.reset();
                 successAsignation.value = true
                 setTimeout(() => {
                     successAsignation.value = false
                 },2000)
+                closeModal()
             }
         })
     } else{
@@ -251,8 +197,9 @@ function formatearFecha(fecha) {
 }
 
 const sufficientQuantity = (form) => {
-    let product = warehouseProducts.value.find((i) => i.id == form.product_id)
-    return form.quantity <= product.total_available;
+    const arrayValues = Object.values(project_products.data);
+    let product = arrayValues.find((i) => i.id == form.project_product_id)
+    return form.quantity <= product.quantity;
 }
 
 </script>
