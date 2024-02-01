@@ -24,19 +24,25 @@ class ExpenseManagementController extends Controller
     }
 
     public function reviewed(ReviewedExpenseRequest $request, $id)
-    {   
-        $validateData = $request->validated();
-        $purchasing = Purchasing_request::find($id);
-        $purchasing->update($validateData);
-
-        if ($request->state == 'Aceptado') {
+    {
+        $purchaseQuote = Purchase_quote::with('purchasing_requests')->find($id);
+        if ($request->state == "Aceptado") {
             $date_issue = Carbon::today();
             Purchase_order::create([
                 'date_issue' => $date_issue,
                 'purchase_quote_id' => $id
             ]);
-        };
+            $otherQuotes = Purchase_quote::where('id', '!=', $id)
+                ->get();
+            foreach ($otherQuotes as $otherQuote) {
+                $otherQuote->delete();
+            }
 
-        return to_route('managementexpense.index');
+            $purchaseQuote->purchasing_requests->update(['state' => 'Aceptado']);
+            
+        } else {
+            $purchaseQuote->delete();
+        }
+        return redirect()->route('managementexpense.index');
     }
 }

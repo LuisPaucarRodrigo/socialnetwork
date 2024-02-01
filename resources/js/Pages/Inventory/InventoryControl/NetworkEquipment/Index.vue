@@ -159,6 +159,5 @@ const ImportData = () => {
             console.log(error)
         }
     })
-    console.log("enviado")
 }
 </script>

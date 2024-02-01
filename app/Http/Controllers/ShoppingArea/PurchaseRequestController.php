@@ -33,7 +33,6 @@ class PurchaseRequestController extends Controller
 
     public function index_quotes($id)
     {
-
         return Inertia::render('ShoppingArea/PurchaseRequest/RequestQuotes', [
             'providers' => Provider::all(),
             'purchases' => Purchasing_request::with('project')->find($id),
@@ -73,6 +72,7 @@ class PurchaseRequestController extends Controller
 
         return to_route('purchasesrequest.index');
     }
+    
     public function showDocument(Purchase_quote $id)
     {
         $fileName = $id->purchase_image;
@@ -82,5 +82,10 @@ class PurchaseRequestController extends Controller
         }
 
         return response()->file($filePath);
+    }
+
+    public function reject_request(Purchasing_request $id)
+    {
+        $id->update(['state' => 'Rechazado']);
     }
 }

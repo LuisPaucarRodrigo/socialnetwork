@@ -44,6 +44,9 @@
                                 :href="route('projectmanagement.resources', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Activos
                             </Link>
+                            <!-- <Link v-if="item.initial_budget" :href="route('projectmanagement.resources', { project_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Inventario
+                            </Link> -->
                             <Link v-if="item.initial_budget"
                                 :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
