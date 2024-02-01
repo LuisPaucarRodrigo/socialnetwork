@@ -106,7 +106,6 @@ const {output_products, warehouse} = defineProps({
     warehouse: String
 })
 
-console.log(output_products.data)
 
 
 //Modal functions

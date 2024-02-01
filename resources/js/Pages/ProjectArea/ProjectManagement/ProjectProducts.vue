@@ -258,7 +258,6 @@ const {assigned_products, warehouses, project_id} = defineProps({
     project_id: String
 })
 
-console.log(assigned_products);
 //Modal functions
 const showModal = ref(false);
 const showModalLiquidate = ref(false);
@@ -289,6 +288,7 @@ const handleOutputProjectProductChange = (event) => {
 
 const closeModal = () => {
     showModal.value = false;
+    form.reset()
 };
 
 const closeModalLiquidate = () => {
