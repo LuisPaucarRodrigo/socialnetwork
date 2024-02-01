@@ -61,7 +61,7 @@ const initialState = {
     project_id:project_id
 }
 
-const form = useForm( purchase_request? purchase_request: {...initialState})
+const form = useForm( purchase_request ? purchase_request: {...initialState})
 
 const { project_id, purchase_request } = defineProps({
     project_id: String,

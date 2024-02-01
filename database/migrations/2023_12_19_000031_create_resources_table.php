@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2);
             $table->integer('depreciation')->nullable();
+            $table->integer('price_rent')->nullable();
             $table->decimal('unit_price_depreciation',10,2)->nullable();
             $table->text('observations')->nullable();
             $table->date('adquisition_date');

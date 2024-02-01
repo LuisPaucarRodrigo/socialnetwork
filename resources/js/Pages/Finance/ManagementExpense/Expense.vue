@@ -10,7 +10,15 @@
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Proyecto
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Proveedor
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Producto
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -34,7 +42,13 @@
                     <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700">
                         <template v-if="expense.purchasing_request_id != null">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests?.project.name }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ expense.provider }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests?.product_description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ expense.response }}</p>
@@ -47,7 +61,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <Link class="text-blue-900 whitespace-no-wrap"
+                                    <Link v-if="expense.purchasing_requests.state != 'Aceptado'" class="text-blue-900 whitespace-no-wrap"
                                         :href="route('managementexpense.details', { id: expense.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

@@ -189,7 +189,6 @@ import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-
 const showModal = ref(false)
 
 const { employees, start_date, numberOfProjects, project } = defineProps({
@@ -209,7 +208,7 @@ const initialState = {
 
 const form = useForm(
     project ?
-        { ...project, code: project.code.substring(6) }
+        { ...project, code: project.code.substring(7) }
         :
         { ...initialState }
 )

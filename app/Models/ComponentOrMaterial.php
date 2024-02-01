@@ -16,4 +16,22 @@ class ComponentOrMaterial extends Model
         'adquisition_date',
         'price',
     ];
+
+    protected $appends = ['total_price','leftover'];
+
+    public function getTotalPriceAttribute() {
+        return $this->quantity * $this->price;
+    }
+
+    public function getLeftoverAttribute()
+    {
+        $totalQuantityInProjects = $this->projects->sum('pivot.quantity');
+        return $this->quantity - $totalQuantityInProjects;
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_componentormaterial')
+            ->withPivot('id','quantity', 'observation');
+    }
 }

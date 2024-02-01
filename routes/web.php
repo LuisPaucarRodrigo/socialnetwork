@@ -229,8 +229,32 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
     Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
+
+
+
     Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
-    Route::delete('/projectmanagement/resources/delete/{resource_id}', [ProjectManagementController::class, 'project_resources_delete'])->name('projectmanagement.resources.delete');
+    Route::post('/projectmanagement/resources/return/{id}', [ProjectManagementController::class, 'project_resources_return'])->name('projectmanagement.resources.return');
+
+    Route::post('/projectmanagement/networkequipments', [ProjectManagementController::class, 'project_network_equipment_store'])->name('projectmanagement.networkequipments.store');
+    Route::delete('/projectmanagement/networkequipments/delete/{network_equipment_id}', [ProjectManagementController::class, 'project_network_equipment_delete'])->name('projectmanagement.networkequipments.delete');
+
+    Route::post('/projectmanagement/componentormaterials', [ProjectManagementController::class, 'project_componentmaterial_store'])->name('projectmanagement.componentormaterials.store');
+    Route::delete('/projectmanagement/componentormaterials/delete/{component_or_material_id}', [ProjectManagementController::class, 'project_componentmaterial_delete'])->name('projectmanagement.componentormaterials.delete');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     Route::get('/projectmanagement/purchases_request/{project_id}', [ProjectManagementController::class, 'project_purchases_request_index'])->name('projectmanagement.purchases_request.index');
     Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
@@ -261,6 +285,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
     Route::get('/shopping_area/purchasesrequest/details/{id}', [PurchaseRequestController::class, 'details'])->name('purchasingrequest.details');
     Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'quote'])->name('purchasesrequest.storequotes');
+    Route::post('/shopping_area/purchasesrequest/reject/{id}', [PurchaseRequestController::class, 'reject_request'])->name('purchasesrequest.reject_request');
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
     Route::put('/shopping_area/purchaseorders/state/{id}', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');

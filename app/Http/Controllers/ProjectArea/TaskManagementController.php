@@ -19,7 +19,7 @@ class TaskManagementController extends Controller
     public function index(Request $request)
     {
         $projectId = $request->route('id');
-        $tasks = Tasks::where('project_id',$projectId)->paginate(5);
+        $tasks = Tasks::where('project_id', $projectId)->paginate(5);
         return Inertia::render('ProjectArea/TasksManagement/index', [
             'projects' => Project::all(),
             'tasks' => $tasks,
@@ -29,22 +29,22 @@ class TaskManagementController extends Controller
 
     public function new()
     {
-        return Inertia::render('ProjectArea/TasksManagement/newTask',[
+        return Inertia::render('ProjectArea/TasksManagement/newTask', [
             'projects' => Project::all(),
         ]);
     }
-    
+
     public function edit($taskId)
     {
         $task = Tasks::find($taskId);
         $employees = Project::with('employees')
             ->find($task->project_id);
         $comment = TaskComments::where('task_id', $taskId)->get();
-        $added_employees = Tasks::with('project_employee','project_employee.employee_information'.'')->where('id', $taskId)->first();
-        return Inertia::render('ProjectArea/TasksManagement/editTask',[
+        $added_employees = Tasks::with('project_employee', 'project_employee.employee_information' . '')->where('id', $taskId)->first();
+        return Inertia::render('ProjectArea/TasksManagement/editTask', [
             'tasks' => $task,
             'projectEmployee' => $employees,
-            'comments' =>$comment,
+            'comments' => $comment,
             'employees' => $employees,
             'added_employees' => $added_employees,
         ]);
@@ -54,12 +54,12 @@ class TaskManagementController extends Controller
     {
         $task = Tasks::create($request->validated());
         $projectId = $task->project_id;
-        return redirect()->route('tasks.index',$projectId);
+        return redirect()->route('tasks.index', $projectId);
     }
 
     public function comment(CreateTaskCommentsRequest $request)
     {
-        $task = TaskComments::create($request->validated());
+        TaskComments::create($request->validated());
         return back();
     }
 
@@ -80,7 +80,7 @@ class TaskManagementController extends Controller
         return back();
     }
 
-    public function status_task($taskId,$status)
+    public function status_task($taskId, $status)
     {
         $task = Tasks::find($taskId);
         if ($status === 'start') {
@@ -99,6 +99,6 @@ class TaskManagementController extends Controller
         $task = Tasks::find($taskId);
         $projectId = $task->project_id;
         $task->delete();
-        return redirect()->route('tasks.index',$projectId);
+        return redirect()->route('tasks.index', $projectId);
     }
 }

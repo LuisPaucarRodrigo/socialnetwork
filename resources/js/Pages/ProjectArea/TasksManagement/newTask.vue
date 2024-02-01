@@ -95,7 +95,6 @@ const submitForm = () => {
     form.post(route('tasks.create'), {
         onError: (errors) => {
             // Imprimir los errores de validación en la consola
-            console.log(form)
             console.log('Errores de validación:', errors);
         }
     })
