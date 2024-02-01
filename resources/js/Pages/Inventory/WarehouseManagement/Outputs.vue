@@ -143,10 +143,7 @@ import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 const {project_products, warehouse} = defineProps({
     project_products: Object,
     warehouse: String
-
 })
-console.log(project_products)
-
 
 //Modal functions
 const showModal = ref(false);
