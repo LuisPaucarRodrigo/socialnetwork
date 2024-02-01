@@ -55,6 +55,61 @@ class ProductController extends Controller
         ]);
     }
 
+    public function edit(Warehouse $warehouse, Product $product)
+    {
+        $headers = $warehouse->headers;
+        $product->load(['productHeaders', 'productHeaders.header']);
+        $product_headers = $product->productHeaders;
+        return Inertia::render('Inventory/WarehouseManagement/ProductFormEdit', [
+            'product' => $product,
+            'warehouse' => $warehouse,
+            'headers' => $product_headers->load('header'),
+        ]);
+    }
+
+    public function show(Warehouse $warehouse, Product $product)
+    {
+        $headers = $warehouse->headers;
+        $product->load(['productHeaders', 'productHeaders.header']);
+        $product_headers = $product->productHeaders;
+        return Inertia::render('Inventory/WarehouseManagement/ProductInformation', [
+            'product' => $product,
+            'warehouse' => $warehouse,
+            'headers' => $product_headers->load('header'),
+        ]);
+    }
+
+    public function update(Warehouse $warehouse, Product $product, Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+        ]);
+
+        $product->update([
+            'name' => $request->name,
+        ]);
+
+        // Eliminar los productHeaders existentes
+        $product->productHeaders()->delete();
+
+        // Crear las nuevas productHeaders proporcionadas en la solicitud
+        foreach ($request->contentIds as $headerId => $content) {
+            // Verificar si el header existe
+            $headerExists = Header::where('id', $headerId)->exists();
+
+            if ($headerExists) {
+                ProductsHeader::create([
+                    'product_id' => $product->id,
+                    'header_id' => $headerId,
+                    'content' => $content,
+                ]);
+            } else {
+                // Manejar el caso donde el header no existe
+            }
+        }
+    }
+
+
     public function destroy(Warehouse $warehouse, Product $product) {
         $product->delete();
         return to_route('warehouses.products', ['warehouse' => $warehouse->id]);
