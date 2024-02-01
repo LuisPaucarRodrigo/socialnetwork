@@ -67,7 +67,8 @@ class ProductController extends Controller
             ->with('product')
             ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Outputs', [
-            'project_products' => $project_products
+            'project_products' => $project_products,
+            'warehouse' => $warehouse
         ]);
     }
     public function outputs_store(Request $request) {
@@ -79,5 +80,17 @@ class ProductController extends Controller
         OutputProjectProduct::create($data);
         return redirect()->back();
     }
+
+    public function outputs_history_index($warehouse) {
+        $output_products = OutputProjectProduct::whereHas('project_product.product', function ($query) use ($warehouse) {
+            $query->where('warehouse_id', $warehouse);
+        })
+        ->with(['project_product.product', 'project_product.project'])
+        ->paginate(10);
+        return Inertia::render('Inventory/WarehouseManagement/OutputsHistory', [
+            'output_products' => $output_products,
+            'warehouse' => $warehouse
+    ]);
+}
 
 }

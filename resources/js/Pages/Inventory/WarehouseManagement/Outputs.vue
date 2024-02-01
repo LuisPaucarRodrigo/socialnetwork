@@ -7,7 +7,7 @@
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <Link type="button" href="#"
+                <Link type="button" :href="route('warehouses.outputs_history', {warehouse: warehouse})"
                     class="rounded-md bg-teal-600 px-4 py-2 text-center text-sm text-white hover:bg-teal-500 ">
                     historial de salidas
                 </Link>
@@ -140,10 +140,12 @@ import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 
 
-const {project_products} = defineProps({
+const {project_products, warehouse} = defineProps({
     project_products: Object,
-})
+    warehouse: String
 
+})
+console.log(warehouse)
 
 
 //Modal functions
@@ -199,7 +201,7 @@ function formatearFecha(fecha) {
 const sufficientQuantity = (form) => {
     const arrayValues = Object.values(project_products.data);
     let product = arrayValues.find((i) => i.id == form.project_product_id)
-    return form.quantity <= product.quantity;
+    return form.quantity <= (product.quantity - product.total_output_project_product);
 }
 
 </script>
