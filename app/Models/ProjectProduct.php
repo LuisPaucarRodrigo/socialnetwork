@@ -27,6 +27,9 @@ class ProjectProduct extends Model
     public function product(){
         return $this->belongsTo(Product::class);
     }
+    public function project(){
+        return $this->belongsTo(Project::class);
+    }
     public function getStateAttribute(){
         return $this->quantity - $this->total_output_project_product == 0 ? 'Completo' : 'Incompleto';
     }
