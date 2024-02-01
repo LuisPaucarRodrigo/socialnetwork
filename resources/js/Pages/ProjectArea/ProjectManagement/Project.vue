@@ -38,19 +38,20 @@
                     </h3>
                     <div class="text-gray-500 text-sm">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link :href="route('projectscalendar.show', { project: item.id })"
+                            <Link v-if="item.initial_budget" :href="route('projectscalendar.show', { project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario</Link>
                             <Link v-if="item.initial_budget"
                                 :href="route('projectmanagement.resources', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Activos
                             </Link>
-                            <!-- <Link v-if="item.initial_budget" :href="route('projectmanagement.resources', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Inventario
-                            </Link> -->
                             <Link v-if="item.initial_budget"
                                 :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
+                            <Link v-if="item.initial_budget"
+                                :href="route('projectmanagement.products', { project_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Productos
+                            </Link>
                         </div>
                     </div>
                 </div>

@@ -24,4 +24,9 @@ class Warehouse extends Model
     {
         return $this->hasMany(WarehousesHeader::class, 'warehouse_id');
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'product_id');
+    }
 }

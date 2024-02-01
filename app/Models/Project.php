@@ -88,4 +88,26 @@ class Project extends Model
 
         return $currentBudget - $totalExpenses - $this->materials_costs;
     }
+
+
+
+    public function products () {
+        return $this->belongsToMany(Product::class, 'project_product');
+    }
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
 }
