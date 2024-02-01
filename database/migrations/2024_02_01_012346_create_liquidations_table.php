@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('liquidations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_product_id')->constrained('project_product')->onDelete('cascade');
+            $table->foreignId('output_project_product_id')->constrained('output_project_product')->onDelete('cascade');
             $table->string('liquidated_quantity');
             $table->string('refund_quantity');
             $table->text('observations');

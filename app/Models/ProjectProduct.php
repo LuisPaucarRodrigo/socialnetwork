@@ -16,15 +16,15 @@ class ProjectProduct extends Model
         'observation',
     ];
 
-    protected $appends = ['total_output_project_product', 'state', 'quantity_with_liquidation'];
+    protected $appends = ['total_output_project_product', 'state'];
 
     public function liquidation() {
         return $this->hasMany(Liquidation::class);
     }
 
-    public function getQuantityWithLiquidationAttribute() {
-        return $this->total_output_project_product - $this->liquidation()->sum('liquidated_quantity');
-    }
+    //public function getQuantityWithLiquidationAttribute() {
+    //    return $this->total_output_project_product - $this->liquidation()->sum('liquidated_quantity');
+    //}
 
     public function output_project_product () {
         return $this->hasMany(OutputProjectProduct::class);
@@ -38,5 +38,5 @@ class ProjectProduct extends Model
     public function getStateAttribute(){
         return $this->quantity - $this->total_output_project_product == 0 ? 'Completo' : 'Incompleto';
     }
-
+    
 }

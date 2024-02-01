@@ -22,7 +22,7 @@ class Product extends Model
     }
 
     public function getTotalAssignedToProjectsAttribute(){
-        return $this->projects()->sum('project_product.quantity_with_liquidation');
+        return $this->projects()->sum('project_product.quantity');
     }
 
     public function getTotalAvailableAttribute () {
