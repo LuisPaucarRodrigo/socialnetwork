@@ -193,17 +193,28 @@ class ProjectManagementController extends Controller
 
 
 
-    public function project_product_index ($project_id) {
-        $assigned_products = ProjectProduct::where('project_id', $project_id)
-            ->with('product')
-            ->paginate(10);
-        $warehouses = Warehouse::all();
-        return Inertia::render('ProjectArea/ProjectManagement/ProjectProducts', [
-            'assigned_products'=> $assigned_products,
-            'warehouses' => $warehouses,
-            'project_id'=> $project_id
-        ]);
-    }
+    public function project_product_index($project_id)
+{
+    $assigned_products = ProjectProduct::where('project_id', $project_id)
+        ->with([
+            'product',
+            'output_project_product' => function ($query) {
+                // Personalizar la carga de output_project_product aquí, por ejemplo, utilizando take(5) para cargar solo los primeros 5 resultados.
+                $query->whereDoesntHave('liquidation');
+            },
+        ])
+        
+        ->paginate(10);
+
+    $warehouses = Warehouse::all();
+
+    return Inertia::render('ProjectArea/ProjectManagement/ProjectProducts', [
+        'assigned_products' => $assigned_products,
+        'warehouses' => $warehouses,
+        'project_id' => $project_id
+    ]);
+}
+
 
     public function warehouse_products ($warehouse_id) {
         $warehouse_products = Product::where('warehouse_id', $warehouse_id)

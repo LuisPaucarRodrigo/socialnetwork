@@ -10,7 +10,7 @@ class Liquidation extends Model
     use HasFactory;
     protected $table = 'liquidations';
     protected $fillable = [
-        'project_product_id',
+        'output_project_product_id',
         'liquidated_quantity',
         'refund_quantity',
         'observations'
