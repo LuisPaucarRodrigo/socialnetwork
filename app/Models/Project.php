@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Project extends Model
 {
@@ -19,7 +20,7 @@ class Project extends Model
         'initial_budget'
     ];
 
-    protected $appends = ['remaining_budget','materials_costs'];
+    protected $appends = ['remaining_budget','materials_costs','total_assigned_product_costs'];
 
     public function employees()
     {
@@ -40,10 +41,6 @@ class Project extends Model
 
     public function resource_historials(){
         return $this->hasMany(ResourceHistorial::class, 'project_id');
-    }
-
-    public function network_equipments(){
-        return $this->belongsToMany(NetworkEquipment::class, 'project_network_equipment')->withPivot('id','observation');
     }
 
     public function components_or_materials(){
@@ -92,14 +89,20 @@ class Project extends Model
 
 
     public function products () {
-        return $this->belongsToMany(Product::class, 'project_product')->withPivot('quantity_with_liquidation');
+        return $this->belongsToMany(Product::class, 'project_product');
+    }
+
+    public function getTotalAssignedProductCostsAttribute () {
+        $total = $this->products()->get()->sum(function ($item){
+                return $item->unit_price * $item->total_assigned_to_projects;
+            }
+        );
+        return $total;
     }
 
 
 
     
-
-
 
 
 

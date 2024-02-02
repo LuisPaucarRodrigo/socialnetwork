@@ -96,13 +96,9 @@ onMounted(() => {
     form.contentIds[warehouseHeader.header_id] = warehouseHeader.content || '';
   });
 
-  // Imprime los datos
-  console.log('Warehouse Data:', props.warehouse);
-  console.log('Form Data:', form.contentIds);
 });
 
 const submit = () => {
-  console.log(form.contentIds)
   form.post(route('warehouses.storeWarehouseHeader', { warehouse: props.warehouse.id }), {
     onSuccess: () => {
       closeModal();

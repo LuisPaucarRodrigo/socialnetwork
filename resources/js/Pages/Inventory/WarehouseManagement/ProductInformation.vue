@@ -29,9 +29,7 @@
                     </div>
                   </div>
                 </div>
-                <!-- Otras secciones de información aquí -->
               </div>
-              <!-- Botones de acción aquí -->
             </div>
           </div>
         </div>
