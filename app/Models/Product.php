@@ -15,6 +15,10 @@ class Product extends Model
         'warehouse_id'
     ];
 
+    public function getUnitPriceAttribute() {
+        return floatval($this->productHeaders()->where('header_id', 29)->first()->content)/$this->productHeaders()->where('header_id', 8)->first()->content;
+    }
+
     public function warehouse()
     {
         return $this->belongsTo(Warehouse::class, 'warehouse_id');
@@ -30,7 +34,7 @@ class Product extends Model
         return $this->belongsToMany(Header::class, 'products_headers', 'product_id', 'header_id')->withTimestamps();
     }
 
-    protected $appends = ['total_assigned_to_projects', 'total_available', 'state', 'total_sent_quantity_projects', 'total_refund_quantity_projects', 'total_used_quantity_projects'];
+    protected $appends = ['unit_price','total_assigned_to_projects', 'total_available', 'state', 'total_sent_quantity_projects', 'total_refund_quantity_projects', 'total_used_quantity_projects'];
 
     public function projects(){
         return $this->belongsToMany(Project::class,'project_product');

@@ -115,7 +115,6 @@
     form.name = props.product.name;
 
     if (props.product.product_headers && Array.isArray(props.product.product_headers)) {
-      // Recorre las cabeceras y asigna los valores a contentIds
       for (const header of props.product.product_headers) {
         form.contentIds[header.header.id] = header.content;
       }

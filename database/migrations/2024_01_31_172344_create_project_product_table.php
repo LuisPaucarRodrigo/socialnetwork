@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('project_id')
-                ->nullable()
                 ->constrained('projects')
                 ->onDelete('cascade');
             $table->foreignId('product_id')
