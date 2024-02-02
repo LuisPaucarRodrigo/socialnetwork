@@ -15,6 +15,10 @@
                     class="rounded-md bg-teal-600 px-4 py-2 text-center text-sm text-white hover:bg-teal-500">
                     Gastos
                 </button>
+                <Link :href="route('projectmanagement.additionalCosts', { project_id: props.project_id })"
+                class="rounded-md bg-gray-600 px-4 py-2 text-center text-sm text-white hover:bg-gray-500">
+                    Gastos Adicionales
+                </Link>
             </div>
             <table class="w-full whitespace-no-wrap">
                 <thead>
