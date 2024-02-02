@@ -14,7 +14,7 @@ class WarehousesController extends Controller
     //Warehouses
     public function showWarehouses()
     {
-        $warehouses = Warehouse::all();
+        $warehouses = Warehouse::paginate();
         $headers = Header::all();
         $warehouse_headers = WarehousesHeader::with('header')->get();
         return Inertia::render('Inventory/WarehouseManagement/Warehouses', [
@@ -50,26 +50,6 @@ class WarehousesController extends Controller
         // Asocia las cabeceras seleccionadas con el almacén
         $warehouse->headers()->attach($request->header_ids);
     }
-
-    public function updateWarehouse(Request $request, Warehouse $warehouse)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'location' => 'required',
-            'manager' => 'required',
-            'header_ids' => 'array',
-        ]);
-
-        $warehouse->update([
-            'name' => $request->name,
-            'location' => $request->location,
-            'manager' => $request->manager,
-        ]);
-
-        // Sincroniza las cabeceras seleccionadas con el almacén
-        $warehouse->headers()->sync($request->header_ids);
-    }
-
 
     public function destroyWarehouse(Warehouse $warehouse)
     {

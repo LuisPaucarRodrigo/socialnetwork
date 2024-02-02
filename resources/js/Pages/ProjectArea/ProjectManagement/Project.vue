@@ -38,20 +38,27 @@
                     </h3>
                     <div class="text-gray-500 text-sm">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link v-if="item.initial_budget" :href="route('projectscalendar.show', { project: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario</Link>
+                            <Link v-if="item.initial_budget" 
+                                :href="route('projectscalendar.show', { project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
+                            </Link>
+                            <span v-else class="text-gray-400">Calendario</span>
                             <Link v-if="item.initial_budget"
                                 :href="route('projectmanagement.resources', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Activos
                             </Link>
+                            <span v-else class="text-gray-400">Asignar Activos</span>
                             <Link v-if="item.initial_budget"
                                 :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
+                            <span v-else class="text-gray-400">Compras y Gastos</span>
                             <Link v-if="item.initial_budget"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Productos
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Asignar Productos
                             </Link>
+                            <span v-else class="text-gray-400">Asignar Productos</span>
                         </div>
                     </div>
                 </div>
@@ -76,6 +83,8 @@ import { ref } from 'vue';
 const { projects } = defineProps({
     projects: Object,
 })
+
+console.log(projects.data)
 
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');

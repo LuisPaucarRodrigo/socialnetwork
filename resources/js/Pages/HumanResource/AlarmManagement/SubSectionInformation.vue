@@ -44,15 +44,11 @@
 </template>
   
 <script setup>
-import { Head, useForm, router, Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
   subSection: Object,
 });
-
-const log = () => {
-  console.log(props.subSection);
-};
 
 </script>

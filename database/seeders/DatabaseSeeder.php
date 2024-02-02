@@ -139,6 +139,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Precio', 'type' => 'double'],
             ['name' => 'Factura', 'type' => 'text'],
             ['name' => 'RUC', 'type' => 'number'],
+            ['name' => 'Precio en Presupuesto', 'type' => 'bolean'],
         ];
         Header::insert($headerData);
     }
