@@ -42,10 +42,6 @@ class Project extends Model
         return $this->hasMany(ResourceHistorial::class, 'project_id');
     }
 
-    public function network_equipments(){
-        return $this->belongsToMany(NetworkEquipment::class, 'project_network_equipment')->withPivot('id','observation');
-    }
-
     public function components_or_materials(){
         return $this->belongsToMany(ComponentOrMaterial::class, 'project_componentormaterial')->withPivot('id','quantity','observation');
     }

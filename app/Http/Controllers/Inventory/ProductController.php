@@ -18,7 +18,7 @@ class ProductController extends Controller
     //Warehouses
     public function index(Warehouse $warehouse)
     {
-        $products = Product::where('warehouse_id', $warehouse->id)->with('productHeaders')->get();
+        $products = Product::where('warehouse_id', $warehouse->id)->with('productHeaders')->paginate();
         return Inertia::render('Inventory/WarehouseManagement/Product', [
             'products' => $products,
             'warehouse' => $warehouse
@@ -48,7 +48,6 @@ class ProductController extends Controller
     public function create(Warehouse $warehouse)
     {
         $headers = $warehouse->headers;
-        //dd($headers);
         return Inertia::render('Inventory/WarehouseManagement/ProductForm', [
             'headers' => $headers,
             'warehouse' => $warehouse
@@ -88,7 +87,6 @@ class ProductController extends Controller
         $product->update([
             'name' => $request->name,
         ]);
-
         // Eliminar los productHeaders existentes
         $product->productHeaders()->delete();
 
