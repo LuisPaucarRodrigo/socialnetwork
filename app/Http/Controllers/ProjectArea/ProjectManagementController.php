@@ -95,18 +95,17 @@ class ProjectManagementController extends Controller
 
     public function project_resources($project_id)
     {
-        $project = Project::with(['resources', 'network_equipments', 'components_or_materials', 'resource_historials.resource'])->find($project_id);
+        $project = Project::with(['resources', 'components_or_materials', 'resource_historials.resource'])->find($project_id);
         $resources = Resource::all();
         $resourcesDisponibles = $resources->filter(function ($resource) {
             return $resource->state === 'Disponible';
         });
-        $network_equipments = NetworkEquipment::all()->where('state', 'Disponible');
+
         $components_or_materials = ComponentOrMaterial::all()->where('state', 'Disponible');
 
         return Inertia::render('ProjectArea/ProjectManagement/ResourcesAssignment', [
             'project' => $project,
             'resources' => $resourcesDisponibles,
-            'network_equipments' => $network_equipments,
             'components_or_materials' => $components_or_materials,
         ]);
     }
@@ -130,13 +129,6 @@ class ProjectManagementController extends Controller
         $resource->delete();
     }
 
-    public function project_network_equipment_store(Request $request)
-    {
-        $network_equipment = NetworkEquipment::find($request->network_equipment_id);
-        ProjectNetworkEquipment::create($request->all());
-        $network_equipment->update(['state' => 'Ocupado']);
-        return redirect()->back();
-    }
     public function project_componentmaterial_store(Request $request)
     {
         $component_or_material = ComponentOrMaterial::find($request->component_or_material_id);
@@ -168,17 +160,6 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
-
-
-
-    public function project_network_equipment_delete($network_equipment_id)
-    {
-        $network_equipment = ProjectNetworkEquipment::find($network_equipment_id);
-        $ne = NetworkEquipment::find($network_equipment->network_equipment_id);
-        $network_equipment->delete();
-        $ne->update(['state' => 'Disponible']);
-        return redirect()->back();
-    }
     public function project_componentmaterial_delete($component_or_material_id)
     {
         $componente_or_material = ProjectComponentOrMaterial::find($component_or_material_id);
@@ -244,9 +225,6 @@ class ProjectManagementController extends Controller
 
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
-        // $expenses = Purchasing_request::with('purchase_quotes.purchase_order')
-        //     ->has('purchase_quotes.purchase_order')
-        //     ->where([['project_id', $project_id->id], ['state', 'Aceptado']])
         $expenses = Purchasing_request::with([
             'purchase_quotes' => function ($query) {
                 $query->whereHas('purchase_order', function ($subQuery) {

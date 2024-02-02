@@ -86,18 +86,12 @@
 
                     <span class="mx-3">Finanzas</span>
                 </a>
-                <!-- <MyTransition :transitiondemonstration="showingFinance">
-                    <Link class="w-full" :href="route('users.index')">Contabilidad</Link>
-                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('selectproject.index')">Presupuestos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('managementexpense.index')">Gestion de Gastos</Link>
                 </MyTransition>
-                <!-- <MyTransition :transitiondemonstration="showingFinance">
-                    <Link class="w-full" :href="route('users.index')">Informe de Analisis Financiero</Link>
-                </MyTransition> -->
             </template>
 
             <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory') || hasPermission('Administration')">
@@ -113,21 +107,9 @@
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('resources.index')">Activos de la Empresa</Link>
                 </MyTransition>
-                <!-- <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('inventory.index')">Control de Inventario</Link>
-                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('warehouses.warehouses')">Gestión de Almacenes</Link>
                 </MyTransition>
-                <!-- <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('users.index')">Historial de Movimientos</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('users.index')">Informe de Inventario</Link>
-                </MyTransition> -->
-                <!-- <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('users.index')">Integracion de Compras</Link>
-                </MyTransition> -->
             </template>
 
             <template v-if="hasPermission('ProjectManager') || hasPermission('Project')">
@@ -143,18 +125,9 @@
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectmanagement.index')">Gestion de Proyectos</Link>
                 </MyTransition>
-                <!-- <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('projectschedule.index')">Calendario de Proyectos</Link>
-                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('tasks.index')">Seguimiento de Tareas</Link>
                 </MyTransition>
-                <!-- <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('users.index')">Documentacionn de Proyectos</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('projectreports.index')">Informe de Proyecto</Link>
-                </MyTransition> -->
             </template>
 
             <template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
@@ -176,9 +149,6 @@
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
                 </MyTransition>
-                <!-- <MyTransition :transitiondemonstration="showingShoppingArea">
-                    <Link class="w-full" :href="route('purchasereports.index')">Informe de Compras</Link>
-                </MyTransition> -->
             </template>
             
             <template v-if="hasPermission('UserManager')">
