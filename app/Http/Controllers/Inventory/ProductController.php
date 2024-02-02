@@ -18,7 +18,7 @@ class ProductController extends Controller
     //Warehouses
     public function index(Warehouse $warehouse)
     {
-        $products = Product::where('warehouse_id', $warehouse->id)->with('productHeaders')->get();
+        $products = Product::where('warehouse_id', $warehouse->id)->with('productHeaders')->paginate(8);
         return Inertia::render('Inventory/WarehouseManagement/Product', [
             'products' => $products,
             'warehouse' => $warehouse

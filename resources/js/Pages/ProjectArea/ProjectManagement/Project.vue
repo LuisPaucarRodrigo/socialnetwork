@@ -77,6 +77,8 @@ const { projects } = defineProps({
     projects: Object,
 })
 
+console.log(projects.data)
+
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
 

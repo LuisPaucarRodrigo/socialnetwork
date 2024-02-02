@@ -13,7 +13,7 @@
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div v-for="item in props.products" :key="item.id"
+                <div v-for="item in products.data" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
                         <h2 class="text-sm font-semibold mb-3">
@@ -58,6 +58,7 @@
     
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Pagination from '@/Components/Pagination.vue'
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref, onMounted } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
@@ -69,7 +70,7 @@ const props = defineProps({
 });
 
 
-const productHeaders = props.products.flatMap(product => product.product_headers);
+const productHeaders = props.products.data.flatMap(product => product.product_headers);
   const confirmingDocDeletion = ref(false);
   const docToDelete = ref(null);
   

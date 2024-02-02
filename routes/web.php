@@ -289,6 +289,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
     Route::get('/projectmanagement/warehouse_products/{warehouse_id}', [ProjectManagementController::class, 'warehouse_products'])->name('projectmanagement.warehouse_products');
     Route::post('/projectmanagement/products/store', [ProjectManagementController::class, 'project_product_store'])->name('projectmanagement.products.store');
+    Route::put('/projectmanagement/products/update/{project_product}', [ProjectManagementController::class, 'project_product_update'])->name('projectmanagement.products.update');
     Route::delete('/projectmanagement/warehouse_products/{assigned}', [ProjectManagementController::class, 'warehouse_products_delete'])->name('projectmanagement.products.delete');
 
 

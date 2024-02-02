@@ -14,7 +14,7 @@ class WarehousesController extends Controller
     //Warehouses
     public function showWarehouses()
     {
-        $warehouses = Warehouse::all();
+        $warehouses = Warehouse::paginate(8);
         $headers = Header::all();
         $warehouse_headers = WarehousesHeader::with('header')->get();
         return Inertia::render('Inventory/WarehouseManagement/Warehouses', [
