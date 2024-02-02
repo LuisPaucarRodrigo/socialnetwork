@@ -9,12 +9,13 @@ use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\ProjectArea\CalendarController;
 use App\Http\Controllers\Finance\BudgetUpdateController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
+use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\ProjectScheduleController;
+use App\Http\Controllers\ProjectArea\AdditionalCostsController;
 use App\Http\Controllers\ProjectArea\ProjectReportsController;
 use App\Http\Controllers\ShoppingArea\PurchaseRequestController;
 use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
-use App\Http\Controllers\ShoppingArea\PurchaseReportsController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
 use App\Http\Controllers\Inventory\WarehousesController;
+use App\Http\Controllers\Inventory\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -63,7 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+         
 Route::middleware('auth', 'permission:UserManager')->group(function () {
 
     Route::get('users', [UserController::class, 'index_user'])->name('users.index');
@@ -217,10 +219,22 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::put('/inventory/warehouses/{warehouse}/update', [WarehousesController::class, 'updateWarehouse'])->name('warehouses.updateWarehouse');
     Route::delete('/inventory/warehouses/{warehouse}/destroy', [WarehousesController::class, 'destroyWarehouse'])->name('warehouses.destroyWarehouse');
 
-    //headers
-    Route::get('/inventory/headers', [WarehousesController::class, 'showHeaders'])->name('warehouses.headers');
-    Route::post('/inventory/headers', [WarehousesController::class, 'storeHeader'])->name('warehouses.storeHeader');
-    Route::delete('/inventory/headers/{header}/destroy', [WarehousesController::class, 'destroyHeader'])->name('warehouses.destroyHeader');
+    //products
+    Route::get('/inventory/warehouses/{warehouse}/product', [ProductController::class, 'index'])->name('warehouses.products');
+    Route::get('/inventory/warehouses/{warehouse}/product/create', [ProductController::class, 'create'])->name('warehouses.createProduct');
+    Route::get('/inventory/warehouses/{warehouse}/product/{product}/edit', [ProductController::class, 'edit'])->name('warehouses.editProduct');
+    Route::put('/inventory/warehouses/{warehouse}/product/{product}/edit', [ProductController::class, 'update'])->name('warehouses.updateProduct');
+    Route::get('/inventory/warehouses/{warehouse}/product/{product}/show', [ProductController::class, 'show'])->name('warehouses.showProduct');
+    Route::post('/inventory/warehouses/{warehouse}/product/create', [ProductController::class, 'store'])->name('warehouses.storeProduct');
+    Route::delete('/inventory/warehouses/{warehouse}/product/{product}/destroy', [ProductController::class, 'destroy'])->name('warehouses.destroyProduct');
+    //outputs
+    Route::get('/inventory/warehouses/{warehouse}/outputs', [ProductController::class, 'outputs_index'])->name('warehouses.outputs');
+    Route::post('/inventory/warehouses//outputs/store', [ProductController::class, 'outputs_store'])->name('projectmanagement.outputs.store');
+    Route::get('/inventory/warehouses/{warehouse}/outputs_history', [ProductController::class, 'outputs_history_index'])->name('warehouses.outputs_history');
+    Route::delete('/inventory/warehouses/output_delete/{output}', [ProductController::class, 'output_delete'])->name('warehouses.output_delete');
+    
+
+
 });
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {
@@ -232,13 +246,52 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
     Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
+
+
+
     Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
-    Route::delete('/projectmanagement/resources/delete/{resource_id}', [ProjectManagementController::class, 'project_resources_delete'])->name('projectmanagement.resources.delete');
+    Route::post('/projectmanagement/resources/return/{id}', [ProjectManagementController::class, 'project_resources_return'])->name('projectmanagement.resources.return');
+
+    Route::post('/projectmanagement/networkequipments', [ProjectManagementController::class, 'project_network_equipment_store'])->name('projectmanagement.networkequipments.store');
+    Route::delete('/projectmanagement/networkequipments/delete/{network_equipment_id}', [ProjectManagementController::class, 'project_network_equipment_delete'])->name('projectmanagement.networkequipments.delete');
+
+    Route::post('/projectmanagement/componentormaterials', [ProjectManagementController::class, 'project_componentmaterial_store'])->name('projectmanagement.componentormaterials.store');
+    Route::delete('/projectmanagement/componentormaterials/delete/{component_or_material_id}', [ProjectManagementController::class, 'project_componentmaterial_delete'])->name('projectmanagement.componentormaterials.delete');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     Route::get('/projectmanagement/purchases_request/{project_id}', [ProjectManagementController::class, 'project_purchases_request_index'])->name('projectmanagement.purchases_request.index');
     Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
     Route::post('/projectmanagement/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
     Route::get('/projectmanagement/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
+
+    //additional_cost
+    Route::get('/projectmanagement/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'index'])->name('projectmanagement.additionalCosts');
+    Route::post('/projectmanagement/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'store'])->name('projectmanagement.storeAdditionalCost');
+    Route::put('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/update', [AdditionalCostsController::class, 'update'])->name('projectmanagement.updateAdditionalCost');
+    Route::delete('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/destroy', [AdditionalCostsController::class, 'destroy'])->name('projectmanagement.deleteAdditionalCost');
+
+    Route::get('/projectmanagement/products/{project_id}', [ProjectManagementController::class, 'project_product_index'])->name('projectmanagement.products');
+    Route::post('/projectmanagement/products/{project_id}/liquidate', [LiquidationController::class, 'store'])->name('projectmanagement.productsLiquidate');
+
+    Route::get('/projectmanagement/warehouse_products/{warehouse_id}', [ProjectManagementController::class, 'warehouse_products'])->name('projectmanagement.warehouse_products');
+    Route::post('/projectmanagement/products/store', [ProjectManagementController::class, 'project_product_store'])->name('projectmanagement.products.store');
+    Route::delete('/projectmanagement/warehouse_products/{assigned}', [ProjectManagementController::class, 'warehouse_products_delete'])->name('projectmanagement.products.delete');
+
+
 
     //Tasks Management
     Route::get('/tasks/{id?}', [TaskManagementController::class, 'index'])->name('tasks.index');
@@ -253,9 +306,6 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     //Calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');
     Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');
-
-    Route::get('/projectschedule', [ProjectScheduleController::class, 'index'])->name('projectschedule.index');
-    Route::get('/projectreports', [ProjectReportsController::class, 'index'])->name('projectreports.index');
 });
 
 Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
@@ -267,11 +317,10 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
     Route::get('/shopping_area/purchasesrequest/details/{id}', [PurchaseRequestController::class, 'details'])->name('purchasingrequest.details');
     Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'quote'])->name('purchasesrequest.storequotes');
+    Route::post('/shopping_area/purchasesrequest/reject/{id}', [PurchaseRequestController::class, 'reject_request'])->name('purchasesrequest.reject_request');
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
     Route::put('/shopping_area/purchaseorders/state/{id}', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
-
-    Route::get('/shopping_area/purchasereports', [PurchaseReportsController::class, 'index'])->name('purchasereports.index');
 
     Route::get('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');

@@ -51,7 +51,7 @@
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex space-x-3 justify-center">
-                                <Link v-if="purchase.state == 'pendiente'" class="text-blue-900 whitespace-no-wrap"
+                                <Link v-if="purchase.state == 'pendiente' || purchase.state == 'En Progreso'" class="text-blue-900 whitespace-no-wrap"
                                     :href="route('purchasesrequest.quotes', { id: purchase.id })">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor" class="w-6 h-6">

@@ -23,6 +23,8 @@ class UpdateManagementEmployees extends FormRequest
     public function rules(): array
     {
         return [
+            'curriculum_vitae' => 'nullable|mimes:pdf|max:2048',
+            'cropped_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'gender' => 'required|string|in:Masculino,Femenino',
@@ -30,9 +32,9 @@ class UpdateManagementEmployees extends FormRequest
             'birthdate' => 'required|date',
             'dni' => 'required|numeric|digits:8',
             'email' => 'required|email|max:255',
+            'email_company' => 'required|email|max:255',
             'phone1' => 'required|numeric|digits:9',
             'phone2' => 'nullable|numeric|digits:9',
-            'maternity_subsidy' => 'nullable',
             'pension_system' => 'required|numeric',
             'basic_salary' => 'required|numeric',
             'hire_date' => 'required|date',
@@ -42,7 +44,7 @@ class UpdateManagementEmployees extends FormRequest
             'street_address' => 'required|string|max:255',
             'department' => 'required|string|max:255',
             'province' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
 
             'emergencyContacts.*.emergency_name' => 'required|string|max:255',
             'emergencyContacts.*.emergency_lastname' => 'required|string|max:255',

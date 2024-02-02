@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text('product_description');
             $table->date('due_date');
             $table->string('state')->default('pendiente');
-            $table->text('response')->nullable();
             $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->timestamps();
         });

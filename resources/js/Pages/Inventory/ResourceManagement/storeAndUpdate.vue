@@ -81,12 +81,32 @@
                 <InputError :message="newResource.errors.depreciation" />
             </div>
             <div v-if="resource" class="sm:col-span-2">
-                <label for="unit_price_depreciation" class="block text-sm font-medium text-gray-700">Precio Depreciado</label>
+                <label for="unit_price_depreciation" class="block text-sm font-medium text-gray-700">Precio
+                    Depreciado</label>
                 <input type="number" disabled id="unit_price_depreciation" v-model="newResource.unit_price_depreciation"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                 <InputError :message="newResource.errors.unit_price_depreciation" />
             </div>
             <!-- Descricion (text-Area) -->
+            <div v-if="!resource" class="sm:col-span-2">
+                <label for="rent" class="block text-sm font-medium text-gray-700">Si tiene un precio especial para
+                    alquiler</label>
+                <div class="flex">
+                    <select id="rent" @change="rent_active($event)"
+                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                        <option disabled value="">Seleccione</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Renta">Renta</option>
+                    </select>
+                </div>
+            </div>
+            <div v-if="rent" class="sm:col-span-2">
+                <label for="price_rent" class="block text-sm font-medium text-gray-700">Precio
+                    Depreciado</label>
+                <input type="number" id="price_rent" v-model="newResource.price_rent"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                <InputError :message="newResource.errors.price_rent" />
+            </div>
             <div class="sm:col-span-5">
                 <label for="observations" class="block text-sm font-medium text-gray-700">Observaciones</label>
                 <textarea type="text" id="observations" v-model="newResource.observations"
@@ -97,7 +117,7 @@
 
         <!-- Botón de enviar -->
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button  @click="cancel()"
+            <button @click="cancel()"
                 class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
                 Cancelar
             </button>
@@ -134,7 +154,7 @@
                 </div>
             </div>
         </Modal> -->
-        <ConfirmCreateModal :confirmingcreation="showmodal" itemType="recurso" />
+        <ConfirmCreateModal :confirmingcreation="showmodal" itemType="activo" />
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -145,6 +165,7 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, defineProps } from 'vue';
 
 const showmodal = ref(false);
+const rent = ref(false);
 
 const props = defineProps({
     title: String,
@@ -154,11 +175,12 @@ const props = defineProps({
 const newResource = useForm({
     description: '',
     type: '',
-    serial_number:'',
+    serial_number: '',
     quantity: '',
     unit_price: '',
     depreciation: '',
     unit_price_depreciation: '',
+    price_rent: '',
     observations: '',
     adquisition_date: '',
     current_location: '',
@@ -186,10 +208,10 @@ const add_resource = () => {
     newResource.post(route('resource.create'), {
         onSuccess: () => {
             showmodal.value = true
-            setTimeout(()=> {
+            setTimeout(() => {
                 showmodal.value = false
                 router.visit(route('resources.index'))
-            },2000)
+            }, 2000)
         },
         onError: () => {
             closeModal()
@@ -205,9 +227,13 @@ const update_resource = (resourceId) => {
     })
 };
 
-const cancel =()=>{
+const cancel = () => {
     router.get(route('resources.index'))
 };
+
+const rent_active = (event) => {
+    event.target.value == 'Renta' ? rent.value = true : rent.value = false;
+}
 
 // const titleModal = ref(null);
 // const content = ref(null);

@@ -13,21 +13,19 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="employee" class="font-medium leading-6 text-gray-900">Empleado</InputLabel>
                             <div class="mt-2">
-                                <select v-if="vacation == null" v-model="form.employee_id" id="employee"
+                                <select v-model="form.employee_id" id="employee" :disabled="vacation"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccione un Empleado</option>
                                     <option v-for="employee in employees" :key="employee.id" :value="employee.id">{{
                                         employee.name + " " + employee.lastname }}</option>
                                 </select>
-                                <TextInput v-if="vacation" type="text" v-model="form.employee_id" id="employee" disabled
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.employee_id" />
                             </div>
                         </div>
                         <div class="sm:col-span-3">
                             <InputLabel for="type" class="font-medium leading-6 text-gray-900">Tipo</InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.type" id="type" @change="type_vacations_permissions($event)"
+                                <select v-model="form.type" id="type" @change="type_vacations_permissions($event)" :disabled="vacation"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccione un Tipo</option>
                                     <option>Vacaciones</option>
@@ -55,29 +53,16 @@
                                 <InputError :message="form.errors.end_date" />
                             </div>
                         </div>
-                        <div v-if="hoursAndDays" class="sm:col-span-2">
-                            <InputLabel for="hours_and_days" class="font-medium leading-6 text-gray-900">Horas o Dias
-                            </InputLabel>
-                            <div class="mt-2">
-                                <select v-model="form.hours_and_days" id="hours_and_days" @change="hours_And_Days($event)"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="" disabled>Seleccione un Tipo</option>
-                                    <option>Dias</option>
-                                    <option>Horas</option>
-                                </select>
-                                <InputError :message="form.errors.hours_and_days" />
-                            </div>
-                        </div>
-                        <div v-if="permissionshours" class="sm:col-span-2">
+                        <div v-if="permissions" class="sm:col-span-2">
                             <InputLabel for="start_permissions" class="font-medium leading-6 text-gray-900">Horas de Inicio
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="time" v-model="form.start_permissions" id="start_permissions"
+                                <TextInput type="datetime-local" v-model="form.start_permissions" id="start_permissions"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.start_permissions" />
                             </div>
                         </div>
-                        <div v-if="permissionshours" class="sm:col-span-2">
+                        <div v-if="permissions" class="sm:col-span-2">
                             <InputLabel for="end_permissions" class="font-medium leading-6 text-gray-900">Horas de
                                 Culminacion
                             </InputLabel>
@@ -87,28 +72,7 @@
                                 <InputError :message="form.errors.end_permissions" />
                             </div>
                         </div>
-
-                        <div v-if="permissionsdayshours" class="sm:col-span-2">
-                            <InputLabel for="start_permissions" class="font-medium leading-6 text-gray-900">Horas de Inicio
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="time" v-model="form.start_permissions" id="start_permissions"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.start_permissions" />
-                            </div>
-                        </div>
-                        <div v-if="permissionsdayshours" class="sm:col-span-2">
-                            <InputLabel for="end_permissions" class="font-medium leading-6 text-gray-900">Horas de
-                                Culminacion
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="datetime-local" v-model="form.end_permissions" id="end_permissions"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.end_permissions" />
-                            </div>
-                        </div>
-
-                        <div v-if="permissions" class="sm:col-span-3 sm:col-start-1">
+                        <div v-if="permissions && !vacation" class="sm:col-span-3 sm:col-start-1">
                             <InputLabel for="doc_permission" class="font-medium leading-6 text-gray-900">Documentacion
                             </InputLabel>
                             <InputFile type="file" v-model="form.doc_permission" id="doc_permission"
@@ -132,6 +96,7 @@
                         vacation ? 'Actualizar' : 'Crear' }}</button>
             </div>
         </form>
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="vacaciones y permisos" />
     </AuthenticatedLayout>
 </template>
 
@@ -141,13 +106,14 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputFile from '@/Components/InputFile.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 
 const props = defineProps({
     employees: {
         type: Object,
-        required: false
+        required: true
     },
     vacation: {
         type: Object,
@@ -157,23 +123,16 @@ const props = defineProps({
 });
 
 const vacations = ref(false)
-const hoursAndDays = ref(false)
-const permissionshours = ref(false)
-const permissionsdayshours = ref(false)
-
+const permissions = ref(false)
+const showModal = ref(false);
 
 const type_vacations_permissions = (event) => {
-    event.target.value == 'Vacaciones' ? (vacations.value = true, hoursAndDays.value = false) : (hoursAndDays.value = true, vacations.value = false);
-}
-
-const hours_And_Days = (event) => {
-    event.target.value == 'Horas' ? (permissionshours.value = true, permissionsdayshours.value = false) : (permissionsdayshours.value = true, permissionshours.value = false);
+    event.target.value == 'Vacaciones' ? (vacations.value = true, permissions.value = false) : (permissions.value = true, vacations.value = false);
 }
 
 const form = useForm({
     employee_id: '',
     type: '',
-    hours_and_days: '',
     start_date: '',
     end_date: '',
     start_permissions: '',
@@ -187,9 +146,8 @@ const form = useForm({
 
 if (props.vacation) {
     props.vacation.type == 'Permisos' ? permissions.value = true : vacations.value = true
-    form.employee_id = props.vacation.employee.name;
+    form.employee_id = props.vacation.employee.id;
     form.type = props.vacation.type;
-    form.hours_and_days = props.vacation.hours_and_days;
     form.start_date = props.vacation.start_date;
     form.end_date = props.vacation.end_date;
     form.start_permissions = props.vacation.start_permissions;
@@ -204,7 +162,18 @@ const submit = () => {
     if (props.vacation) {
         form.put(route('management.vacation.information.update', props.vacation.id), form);
     } else {
-        form.post(route('management.vacation.information.store'));
+        form.post(route('management.vacation.information.store'), {
+            onSuccess: () => {
+                showModal.value = true
+                setTimeout(() => {
+                    showModal.value = false;
+                    router.visit(route('management.vacation'))
+                }, 2000);
+            },
+            onError: () => {
+                alert('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
+            }
+        })
     }
 };
 

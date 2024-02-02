@@ -162,9 +162,6 @@ const props = defineProps({
     added_employees: Object,
 })
 
-console.log(props.tasks.status)
-
-
 const { tasks } = props;
 const newcomment = useForm({
     task_id: tasks.id,

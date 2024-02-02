@@ -15,6 +15,7 @@ class Resource extends Model
         'quantity',
         'unit_price',
         'depreciation',
+        'price_rent',
         'unit_price_depreciation',
         'observations',
         'adquisition_date',
@@ -28,6 +29,10 @@ class Resource extends Model
     }
     protected $appends = ['state', 'leftover'];
     protected $hidden = ['projects'];
+
+    public function resource_historials(){
+        return $this->hasMany(ResourceHistorial::class, 'resource_id');
+    }
 
     public function getStateAttribute()
     {
@@ -50,6 +55,7 @@ class Resource extends Model
             'unit_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'observations' => 'nullable|string',
             'adquisition_date' => 'required|date',
+            'price_rent' => 'nullable|numeric',
             'current_location' => 'required|string|max:255',
             'unique_identification' => 'required|string|unique:resources|max:255',
         ];
