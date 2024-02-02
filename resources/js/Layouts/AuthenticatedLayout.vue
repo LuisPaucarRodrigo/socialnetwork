@@ -2,7 +2,7 @@
     <div class="flex h-screen bg-gray-100 font-roboto">
         <Navigation />
 
-        <div class="flex flex-1 flex-col overflow-hidden">
+        <div class="flex flex-1 flex-col overflow-auto">
             <Header />
 
             <main class="flex-1 overflow-y-auto overflow-x-auto bg-gray-100">

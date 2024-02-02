@@ -1,6 +1,5 @@
 <template>
     <div>
-  
       <Head title="Gestion de Secciones" />
       <AuthenticatedLayout>
         <template #header>
