@@ -24,7 +24,8 @@
                             <EyeIcon class="h-4 w-4 text-blue-700" />
                             </Link> -->
                             <!--<Link :href="route('warehouses.warehouse', {warehouse: item})" class="text-green-600 hover:underline"><EyeIcon class="h-4 w-4 ml-1" /></Link>-->
-                            <button @click="openEditWarehouseModal(item)" class="text-orange-400 hover:underline mx-2"><PencilIcon class="h-4 w-4 ml-1" /></button>
+                            <Link :href="route('warehouses.showProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-green-400 hover:underline"><EyeIcon class="h-4 w-4 ml-1" /></Link>
+                            <Link :href="route('warehouses.editProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-orange-400 hover:underline mx-2"><PencilIcon class="h-4 w-4 ml-1" /></Link>
                             <button @click="confirmDeleteProduct(item.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
                         </div>
                     </div>
@@ -67,7 +68,6 @@ const props = defineProps({
   warehouse: Object
 });
 
-console.log(props.products)
 
 const productHeaders = props.products.flatMap(product => product.product_headers);
   const confirmingDocDeletion = ref(false);

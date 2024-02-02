@@ -232,7 +232,7 @@
   });
 
   const headerArray = [
-    1, 5, 7,8, 10, 12, 15
+    1, 5, 7, 8, 10, 12, 15, 29
   ];
 
   let filteredHeaders = [];
