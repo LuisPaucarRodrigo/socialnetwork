@@ -16,11 +16,11 @@ class ProjectProduct extends Model
         'observation',
     ];
 
-    protected $appends = ['total_output_project_product', 'state', 'is_deletable','total_refund_quantity', 'total_used_quantity'];
-
     public function liquidation() {
         return $this->hasMany(Liquidation::class);
     }
+
+    protected $appends = ['total_output_project_product', 'state', 'is_deletable', 'is_editable','total_refund_quantity', 'total_used_quantity'];
 
     public function getTotalRefundQuantityAttribute() {
         $outputProjectProducts = $this->output_project_product()->with('liquidation')->get();
@@ -55,6 +55,9 @@ class ProjectProduct extends Model
     }
     public function getIsDeletableAttribute(){
         return $this->output_project_product()->get()->isEmpty();
+    }
+    public function getIsEditableAttribute(){
+        return ($this->total_output_project_product != 0)&&($this->state != 'Completo');
     }
     
 }

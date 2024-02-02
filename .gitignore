@@ -3,6 +3,9 @@
 /public/build
 /public/hot
 /public/storage
+/storage/app/public/documents/HumanResource
+/storage/app/documents/curriculum_vitae
+/storage/app/documents/permissions
 /storage/*.key
 /vendor
 .env

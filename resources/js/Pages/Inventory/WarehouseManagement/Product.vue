@@ -20,10 +20,6 @@
                             {{ item.name }}
                         </h2>
                         <div class="inline-flex justify-end gap-x-0 mb-4">
-                            <!-- <Link class="flex items-start">
-                            <EyeIcon class="h-4 w-4 text-blue-700" />
-                            </Link> -->
-                            <!--<Link :href="route('warehouses.warehouse', {warehouse: item})" class="text-green-600 hover:underline"><EyeIcon class="h-4 w-4 ml-1" /></Link>-->
                             <Link :href="route('warehouses.showProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-green-400 hover:underline"><EyeIcon class="h-4 w-4 ml-1" /></Link>
                             <Link :href="route('warehouses.editProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-orange-400 hover:underline mx-2"><PencilIcon class="h-4 w-4 ml-1" /></Link>
                             <button @click="confirmDeleteProduct(item.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
@@ -41,8 +37,6 @@
                             N° de Serie: {{ productHeader.content }}
                         </h3>
                     </div>
-
-                    
                 </div>
             </div>
             <br>
@@ -58,11 +52,11 @@
     
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Pagination from '@/Components/Pagination.vue'
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
-import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
   products: Object,
