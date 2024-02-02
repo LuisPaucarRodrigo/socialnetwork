@@ -19,11 +19,11 @@ return new class extends Migration
             $table->string('shoe_size');
             $table->string('shirt_size');
             $table->string('pants_size');
-            $table->string('medical_condition')->nullable();
-            $table->string('allergies')->nullable();
-            $table->string('operations')->nullable();
-            $table->string('accidents')->nullable();
-            $table->string('vaccinations')->nullable();
+            $table->string('medical_condition');
+            $table->string('allergies');
+            $table->string('operations');
+            $table->string('accidents');
+            $table->string('vaccinations');
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

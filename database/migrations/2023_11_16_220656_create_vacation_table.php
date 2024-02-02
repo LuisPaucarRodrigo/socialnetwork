@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('type');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->time('start_permissions')->nullable();
-            $table->time('end_permissions')->nullable();
-            $table->string('doc_permission')->nullable();
+            $table->datetime('start_permissions')->nullable();
+            $table->datetime('end_permissions')->nullable();
             $table->date('start_date_accepted')->nullable();
             $table->date('end_date_accepted')->nullable();
+            $table->string('doc_permission')->nullable();
             $table->text('reason');
             $table->string('status')->default('Pendiente');
             $table->timestamps();

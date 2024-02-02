@@ -547,7 +547,7 @@ const props = defineProps({
     employees: {
         typpe: Object,
         requerid: false
-    }
+    },
 })
 
 const form = useForm({
@@ -589,8 +589,8 @@ const form = useForm({
 })
 
 if (props.employees) {
-    form.curriculum_vitae = props.employees.curriculum_vitae;
-    form.cropped_image = props.employees.cropped_image;
+    form.curriculum_vitae = null;
+    form.cropped_image = null;
     form.name = props.employees.name;
     form.lastname = props.employees.lastname;
     form.gender = props.employees.gender;
@@ -668,9 +668,12 @@ const submit = () => {
                     showModal.value = false;
                     router.visit(route('management.employees'))
                 }, 2000);
+            },
+            onError: () => {
+                alert('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
             }
         })
     }
-}
+} 
 
 </script>

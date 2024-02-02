@@ -53,12 +53,12 @@
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 Aceptar
             </button>
-            <button @click="check" type="button"
+            <button @click="sendReply('Rechazado')" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 Rechazar
             </button>
         </div>
-        <Modal :show="confirmOrden" @close="closeModal">
+        <!-- <Modal :show="confirmOrden" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
                     Enviar un Comentario
@@ -80,7 +80,7 @@
                     </PrimaryButton>
                 </div>
             </div>
-        </Modal>
+        </Modal> -->
         <teleport to="body">
             <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
                 <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
@@ -111,33 +111,35 @@ const props = defineProps({
     details: Object
 });
 
-const confirmOrden = ref(false);
+// const confirmOrden = ref(false);
 const comentOrden = ref(null);
 
 const form = useForm({
     response: '',
     state: '',
+    purchase_quote_id: props.details.id
 });
 
-const check = () => {
-    confirmOrden.value = true;
-    nextTick(() => comentOrden.value.focus());
-};
+// const check = () => {
+//     confirmOrden.value = true;
+//     nextTick(() => comentOrden.value.focus());
+// };
 
 const sendReply = (state) => {
     form.state = state
-    form.put(route('managementexpense.reviewed', props.details.purchasing_requests.id, form), {
+    form.put(route('managementexpense.reviewed', { id: props.details.id }), form, {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => comentOrden.value.focus(),
+        // onSuccess: () => closeModal(),
+        // onError: () => comentOrden.value.focus(),
         onFinish: () => form.reset(),
     });
+
 };
 
-const closeModal = () => {
-    confirmOrden.value = false;
-    form.reset();
-};
+// const closeModal = () => {
+//     confirmOrden.value = false;
+//     form.reset();
+// };
 
 function getDocumentUrl(documentId) {
     return route('purchasesrequest.show', { id: documentId });

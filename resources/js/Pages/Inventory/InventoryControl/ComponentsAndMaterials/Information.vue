@@ -45,7 +45,7 @@
             </div>
 
             <div class="sm:col-span-2">
-                <label for="project" class="block text-sm font-medium text-gray-700">Precio</label>
+                <label for="project" class="block text-sm font-medium text-gray-700">Precio Unitario</label>
                 <input type="number" id="price" v-model="form.price"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                 <InputError :message="form.errors.price" />
