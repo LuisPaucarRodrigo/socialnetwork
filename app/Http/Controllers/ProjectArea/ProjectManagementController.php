@@ -318,9 +318,17 @@ class ProjectManagementController extends Controller
         ProjectProduct::create($data);
         return redirect()->back();
     }
+    public function project_product_update(ProjectProduct $project_product){
+        $output_quantity = $project_product->total_output_project_product;
+        if ($output_quantity != 0){
+            $project_product->update([
+                'quantity' => $output_quantity
+            ]);
+        }
+        return redirect()->back();
+    }
 
-    public function warehouse_products_delete(ProjectProduct $assigned)
-    {
+    public function warehouse_products_delete(ProjectProduct $assigned){
         $assigned->delete();
         return redirect()->back();
     }
