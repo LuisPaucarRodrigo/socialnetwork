@@ -159,6 +159,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
     Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
+    Route::get('/doTask2', [SectionController::class, 'doTask2'])->name('sections.task2');
 });
 
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
