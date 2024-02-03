@@ -88,24 +88,11 @@
                 <InputError :message="newResource.errors.unit_price_depreciation" />
             </div>
             <!-- Descricion (text-Area) -->
-            <div v-if="!resource" class="sm:col-span-2">
-                <label for="rent" class="block text-sm font-medium text-gray-700">Si tiene un precio especial para
+            <div v-if="!resource" class="sm:col-span-2 sm:col-start-1">
+                <label for="conditional_rent" class="block text-sm font-medium text-gray-700">Si tiene un precio especial para
                     alquiler</label>
-                <div class="flex">
-                    <select id="rent" @change="rent_active($event)"
-                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                        <option disabled value="">Seleccione</option>
-                        <option value="Normal">Normal</option>
-                        <option value="Renta">Renta</option>
-                    </select>
-                </div>
-            </div>
-            <div v-if="rent" class="sm:col-span-2">
-                <label for="price_rent" class="block text-sm font-medium text-gray-700">Precio
-                    Depreciado</label>
-                <input type="number" id="price_rent" v-model="newResource.price_rent"
-                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <InputError :message="newResource.errors.price_rent" />
+                <input type="checkbox" id="conditional_rent" v-model="newResource.conditional_rent"
+                    class="mt-1 block py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
             </div>
             <div class="sm:col-span-5">
                 <label for="observations" class="block text-sm font-medium text-gray-700">Observaciones</label>
@@ -130,30 +117,6 @@
                 Crear
             </button>
         </div>
-        <!-- <Modal :show="showmodal" :maxWidth="'md'">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    {{ titleModal }}
-                </h2>
-                <p class="mt-2 text-sm text-gray-500">
-                    {{ newResource.name }} {{ content }}
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
-                        type="button" @click="closeModal"> Cancelar
-                    </button>
-                    <button v-if="textButton === 'Crear'"
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="button" @click="add_resource()"> Crear
-                    </button>
-                    <button v-else @click="update_resource(resource.id)"
-                        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-                        Guardar
-                    </button>
-                </div>
-            </div>
-        </Modal> -->
         <ConfirmCreateModal :confirmingcreation="showmodal" itemType="activo" />
     </AuthenticatedLayout>
 </template>
@@ -165,7 +128,6 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, defineProps } from 'vue';
 
 const showmodal = ref(false);
-const rent = ref(false);
 
 const props = defineProps({
     title: String,
@@ -180,7 +142,7 @@ const newResource = useForm({
     unit_price: '',
     depreciation: '',
     unit_price_depreciation: '',
-    price_rent: '',
+    conditional_rent: false,
     observations: '',
     adquisition_date: '',
     current_location: '',
@@ -197,6 +159,7 @@ if (props.resource) {
     newResource.depreciation = props.resource.depreciation;
     newResource.current_location = props.resource.current_location;
     newResource.adquisition_date = props.resource.adquisition_date;
+    newResource.conditional_rent = props.resource.conditional_rent;
     newResource.observations = props.resource.observations;
 }
 
@@ -231,26 +194,6 @@ const cancel = () => {
     router.get(route('resources.index'))
 };
 
-const rent_active = (event) => {
-    event.target.value == 'Renta' ? rent.value = true : rent.value = false;
-}
-
-// const titleModal = ref(null);
-// const content = ref(null);
-// const textButton = ref(null);
-
-// const openModalAdded = () => {
-//     titleModal.value = 'Agregar Nuevo Recurso';
-//     content.value = 'se agregara a la lista de recursos';
-//     textButton.value = 'Crear'
-//     showmodal.value = true;
-// }
-// const openModalSaved = () => {
-//     titleModal.value = 'Editar Recurso';
-//     content.value = '¿Esta seguro de guardar los cambios?';
-//     textButton.value = 'Guardar'
-//     showmodal.value = true;
-// }
 const closeModal = () => {
     showmodal.value = false;
 }

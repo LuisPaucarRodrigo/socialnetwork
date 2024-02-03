@@ -15,7 +15,7 @@ class Resource extends Model
         'quantity',
         'unit_price',
         'depreciation',
-        'price_rent',
+        'conditional_rent',
         'unit_price_depreciation',
         'observations',
         'adquisition_date',
@@ -55,7 +55,7 @@ class Resource extends Model
             'unit_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'observations' => 'nullable|string',
             'adquisition_date' => 'required|date',
-            'price_rent' => 'nullable|numeric',
+            'conditional_rent' => 'required|boolean',
             'current_location' => 'required|string|max:255',
             'unique_identification' => 'required|string|unique:resources|max:255',
         ];
@@ -72,6 +72,7 @@ class Resource extends Model
             'unit_price_depreciation' => ['sometimes','nullable','numeric'],
             'observations' => ['nullable', 'string'],
             'adquisition_date' => ['sometimes', 'date'],
+            'conditional_rent' => ['required', 'boolean'],
             'current_location' => ['sometimes', 'string', 'max:255'],
         ];
     }
