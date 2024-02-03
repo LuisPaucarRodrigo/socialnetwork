@@ -74,7 +74,8 @@ const props = defineProps({
     expenses: Object,
     project:Object,
     current_budget: Number,
-    remaining_budget: Number
+    remaining_budget: Number,
+    additionalCosts: Object
 })
 
 const updateChart = () => {
@@ -98,19 +99,19 @@ const updateChart = () => {
     return expense.purchase_quotes?.amount || 0;
   });
 
-  // Agregar el presupuesto restante a la data
+  // Agregar el presupuesto restante y los costos adicionales a la data
   const remainingBudget = props.remaining_budget;
-  const dataWithRemainingBudget = [...amounts, remainingBudget];
+  const additionalCosts = additionalCostsTotal.value || 0;
+  const dataWithRemainingBudget = [...amounts, remainingBudget, additionalCosts];
 
   // Crear un nuevo gráfico con los datos actualizados
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: [...labels, 'Presupuesto Restante'],
+      labels: [...labels, 'Presupuesto Restante', 'Costos Adicionales'],
       datasets: [{
         data: dataWithRemainingBudget,
-        backgroundColor: [...props.expenses.data.map(_ => getRandomColor()), '#808080'], // Color gris para el presupuesto restante
-        hoverBackgroundColor: [...props.expenses.data.map(_ => getRandomColor()), '#808080'],
+        backgroundColor: [...props.expenses.data.map(_ => getRandomColor()), '#808080', getRandomColor()],
       }],
     },
     options: {
@@ -122,7 +123,7 @@ const updateChart = () => {
             const dataset = data.datasets[tooltipItem.datasetIndex];
             const label = data.labels[tooltipItem.index] || '';
             const value = dataset.data[tooltipItem.index];
-            return `${label}: S/. ${value}`;
+            return `${label}: S/. ${value.toFixed(2)}`;
           },
         },
       },
@@ -130,8 +131,11 @@ const updateChart = () => {
   });
 };
 
+const additionalCostsTotal = ref(0);
+
 onMounted(() => {
-  // Ejemplo de uso, asegúrate de pasar los datos reales desde tus props
+  // Calcular la suma de los montos en additionalCosts
+  additionalCostsTotal.value = props.additionalCosts.reduce((total, cost) => total + cost.amount, 0);
   updateChart();
 });
 

@@ -218,7 +218,7 @@ const formEdit = useForm({
 });
 
 const headerArray = [
-  1, 5, 7, 8, 10, 12, 15, 29
+  1, 5, 7, 8, 10, 12, 15, 29, 32
 ];
 
 let filteredHeaders = [];

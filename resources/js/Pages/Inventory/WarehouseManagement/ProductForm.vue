@@ -23,11 +23,11 @@
                 </div>
 
                 <div v-for="header in headers" :key="header.id" class="flex flex-col gap-2">
-                  <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.name }}</InputLabel>
+                  <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.type == 'boolean' ? '¿Usar precio distinto en proyectos?' : header.name }}</InputLabel>
                   <div class="mt-2">
-                    <input :type="header.type == 'double' ? 'number' : header.type" v-model="form.contentIds[header.id]"
+                    <input :type="verifyType(header.type)" v-model="form.contentIds[header.id]"
                       :step="header.type == 'double' ? 0.01 : 1" id="header"
-                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2" />
+                      :class="header.type == 'boolean' ? 'block w-9 h-9 rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2' : 'block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2'" />
                     <InputError :message="form.errors.contentIds" />
                   </div>
                 </div>
@@ -99,11 +99,12 @@
   
   const form = useForm({
     name: '',
-    contentIds: {},
+    contentIds: {32: false},
   });
     
   const submit = () => {
     console.log(form.contentIds);
+
     form.post(route('warehouses.storeProduct', { warehouse: props.warehouse.id }), {
       onSuccess: () => {
         closeModal();
@@ -126,5 +127,21 @@
   const closeModal = () => {
     router.visit(route('warehouses.products', { warehouse: props.warehouse.id}))
   };
+
+  const verifyType = (type) => {
+      if (type == 'double'){
+        return 'number'
+      }else if (type == 'boolean'){
+        return 'checkbox'
+      }else if(type == 'number'){
+        return 'number'
+      }else if(type == 'date'){
+        return 'date'
+      }
+      else{
+        return 'text'
+      }
+  }
+
   </script>
   

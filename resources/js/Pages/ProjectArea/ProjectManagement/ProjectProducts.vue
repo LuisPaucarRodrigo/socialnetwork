@@ -11,6 +11,9 @@
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
+                <Link class="rounded-md rounded bg-indigo-600 px-4 py-3 text-center text-sm text-white hover:bg-indigo-500 mx-2" :href="route('projectmanagement.liquidateTable', {project_id: project_id })">
+                    Historial de Liquidaciones
+                </Link>
             </div>
             <div class="talwing mt-4">
                 <table class="w-full whitespace-no-wrap">
@@ -254,7 +257,7 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Pagination from '@/Components/Pagination.vue'
 import InputLabel from '@/Components/InputLabel.vue';

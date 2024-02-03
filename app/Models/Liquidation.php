@@ -16,9 +16,24 @@ class Liquidation extends Model
         'observations'
     ];
 
-    public function project_product()
+    protected $appends = ['product'];
+
+    public function output_project_product()
     {
-        return $this->belongsTo(ProjectProduct::class, 'project_product_id');
+        return $this->belongsTo(OutputProjectProduct::class, 'output_project_product_id');
     }
 
+    public function getProjectProductAttribute()
+    {
+        return $this->output_project_product->project_product;
+    }
+
+    public function getProductAttribute()
+    {
+        return $this->project_product->product;
+    }
+    public function getProjectAttribute()
+    {
+        return $this->project_product->project;
+    }
 }
