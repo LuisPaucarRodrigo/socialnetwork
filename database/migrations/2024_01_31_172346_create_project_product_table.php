@@ -22,6 +22,7 @@ return new class extends Migration
                 ->constrained('products')
                 ->onDelete('cascade');
             $table->integer('quantity');
+            $table->double('total_price')->nullable();
             $table->text('observation')->nullable();
         });
     }
