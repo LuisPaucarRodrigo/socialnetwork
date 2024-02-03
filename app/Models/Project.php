@@ -20,7 +20,7 @@ class Project extends Model
         'initial_budget'
     ];
 
-    protected $appends = ['total_price_sum','remaining_budget', 'materials_costs', 'total_assigned_product_costs'];
+    protected $appends = ['total_assigned_resources_costs','remaining_budget', 'materials_costs', 'total_assigned_product_costs'];
 
     public function employees()
     {
@@ -107,7 +107,7 @@ class Project extends Model
         return $this->hasMany(ProjectResource::class, 'project_id');
     }
 
-    public function getTotalPriceSumAttribute()
+    public function getTotalAssignedResourcesCostsAttribute()
     {
         return $this->projectResources()->sum('total_price');
     }
@@ -117,13 +117,16 @@ class Project extends Model
         return $this->belongsToMany(Product::class, 'project_product');
     }
 
-    public function getTotalAssignedProductCostsAttribute()
-    {
-        $total = $this->products()->get()->sum(
-            function ($item) {
-                return $item->unit_price * $item->total_assigned_to_projects;
+    public function getTotalAssignedProductCostsAttribute(){
+        $totalCost = $this->projectProducts()->with('product')->get()->sum(function($item) {
+            if ($item->product->has_different_price) {
+                return $item->total_price;
+            } else {
+                return $item->product->unit_price * $item->quantity;
             }
-        );
-        return $total;
+        });
+        return $totalCost; 
     }
+    
+
 }

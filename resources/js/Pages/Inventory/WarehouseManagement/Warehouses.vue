@@ -185,7 +185,6 @@ const closeModal = () => {
 
 
 const submit = () => {
-  console.log(form)
   form.header_ids = [...headerArray, ...form.header_ids];
   form.post(route('warehouses.storeWarehouse'), {
     onSuccess: () => {

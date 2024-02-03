@@ -168,7 +168,6 @@ const closeModal = () => {
 };
 
 const submit = () => {
-  console.log(form);
   form.post(route('documents.create'), {
     onSuccess: () => {
       closeModal();

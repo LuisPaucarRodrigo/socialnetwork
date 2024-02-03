@@ -218,30 +218,6 @@ class ProjectManagementController extends Controller
 
     public function project_expenses(Project $project_id)
     {
-        $projectProducts = $project_id->projectProducts()->with('product.productHeaders')->get();
-
-        $productArray = [];
-        $contentArray = [];
-
-        foreach ($projectProducts as $projectProduct) {
-            // Accede a la relación 'product' de cada ProjectProduct
-            $product = $projectProduct->product;
-
-            // Agrega el objeto product al array
-            $productArray[] = $product;
-
-            // Accede a la relación 'productHeaders' de cada Product
-            $productHeaders = $product->productHeaders;
-
-            // Filtra los elementos de 'productHeaders' cuyo 'header_id' sea 29
-            $filteredHeaders = $productHeaders->where('header_id', 29);
-
-            // Agrega el contenido de 'content' al array
-            $contentArray[] = $filteredHeaders->pluck('content')->toArray();
-        }
-
-        // $productArray ahora contiene todos los objetos de productos asociados al proyecto
-        // $contentArray contiene los contenidos de 'ProductsHeader' con 'header_id' igual a 29
 
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
             ->with('project')
@@ -270,6 +246,9 @@ class ProjectManagementController extends Controller
         });
 
         $total_expenses += $project_id->additionalCosts->sum('amount');
+        $additionalCosts = $project_id->additionalCosts->sum('amount');
+
+
 
         $remaining_budget = $current_budget - $total_expenses;
 
@@ -277,9 +256,7 @@ class ProjectManagementController extends Controller
             'current_budget' => $current_budget,
             'remaining_budget' => $remaining_budget,
             'project' => $project_id,
-            'expenses' => $expenses->paginate(),
-            'additionalCosts' => $project_id->additionalCosts,
-            'products' => $productArray
+            'additionalCosts' => $additionalCosts,
         ]);
     }
 

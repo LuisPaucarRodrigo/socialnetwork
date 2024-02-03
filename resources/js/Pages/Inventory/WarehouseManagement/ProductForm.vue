@@ -103,7 +103,6 @@ const form = useForm({
 });
   
 const submit = () => {
-  console.log(form.contentIds);
 
   form.post(route('warehouses.storeProduct', { warehouse: props.warehouse.id }), {
     onSuccess: () => {

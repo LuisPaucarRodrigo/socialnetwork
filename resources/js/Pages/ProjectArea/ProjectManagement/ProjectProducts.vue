@@ -124,7 +124,7 @@
                             <InputLabel for="product_id" class="font-medium leading-6 text-gray-900">Productos
                             </InputLabel>
                             <div class="mt-2">
-                                <select required id="product_id" v-model="form.product_id"
+                                <select required id="product_id" v-model="form.product_id"  @change="handleTotalPriceVisibility"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled  value="">Seleccione uno</option>
                                     <option v-for="item in warehouseProducts" :key="item.id" :value="item.id">
@@ -146,7 +146,7 @@
                         </div>
 
 
-                        <div class="sm:col-span-3">
+                        <div v-if="enableInput" class="sm:col-span-3">
                             <InputLabel for="total_price" class="font-medium leading-6 text-gray-900">Precio a descontar en Proyecto</InputLabel>
                             <div class="mt-2">
                                 <TextInput id="total_price" type="number" min="1" step="0.01" v-model="form.total_price"
@@ -276,7 +276,6 @@ const {assigned_products, warehouses, project_id} = defineProps({
     warehouses: Object,
     project_id: String
 })
-console.log(assigned_products.data)
 
 //Modal functions
 const showModal = ref(false);
@@ -357,6 +356,7 @@ const submit = () => {
                 warehouseProducts.value = []
                 let almacen_select = document.getElementById('almacen_id')
                 almacen_select.value = ""
+                enableInput.value = false
                 setTimeout(() => {
                     successAsignation.value = false
                 },1500)
@@ -441,5 +441,15 @@ const updateAssignatedProduct = () => {
     })
 }
 
+
+//has different price
+const enableInput = ref(false)
+const handleTotalPriceVisibility = (e) =>{
+    let product = warehouseProducts.value.find((i) => i.id == form.product_id)
+    enableInput.value = product.has_different_price
+    if (form.total_price) {
+        form.total_price =  null
+    }
+}
 
 </script>
