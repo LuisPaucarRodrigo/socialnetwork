@@ -108,4 +108,6 @@ const confirmProjectDeletion = (employeeId) => {
 const closeModal = () => {
     confirmingProjectDeletion.value = false;
 };
+
+
 </script>
