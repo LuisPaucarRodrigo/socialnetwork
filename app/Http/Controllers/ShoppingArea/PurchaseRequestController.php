@@ -26,7 +26,7 @@ class PurchaseRequestController extends Controller
 
     public function store(CreatePurchaseRequest $request)
     {
-        $validateData = $request->validate();
+        $validateData = $request->validated();
         Purchasing_request::create($validateData);
         return to_route('purchasesrequest.index');
     }
