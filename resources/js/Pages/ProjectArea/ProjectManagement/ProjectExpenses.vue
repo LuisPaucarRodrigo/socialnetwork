@@ -5,16 +5,19 @@
             Gastos
         </template>
         Presupuesto actual: S/. {{ current_budget }} <br>
-        Presupuesto restante: S/. {{ remaining_budget - project.materials_costs }}
+        Presupuesto restante: S/. {{ remainingBudget.toFixed(2) }}
         <br>
-        Total gastos : S/. {{ remaining_budget }}<br>
-        Costo de Componentes y Materiales: S/. {{ project.materials_costs }}
+        <br>
+        Total gastos en activos: S/. {{ project.total_assigned_resources_costs.toFixed(2) }}<br>
+        Total gastos en productos: S/. {{ project.total_assigned_product_costs.toFixed(2) }}<br>
+        Gastos adicionales: S/. {{ additionalCosts }}
+        <br>
         <br>
         <div>
             <canvas id="pieChart"></canvas>
         </div>
         <br>
-        <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+        <div v-if="false" class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -70,12 +73,19 @@ import { ref, onMounted } from 'vue';
 import { Chart, registerables } from 'chart.js/auto';
 import { Head } from '@inertiajs/vue3';
 
-const props = defineProps({
-    expenses: Object,
+const { project, current_budget, remaining_budget, additionalCosts} = defineProps({
     project:Object,
     current_budget: Number,
-    remaining_budget: Number
+    remaining_budget: Number,
+    additionalCosts: Number
 })
+
+console.log(project)
+console.log(current_budget)
+const expenses = {data:[], links:[]}
+
+const remainingBudget = current_budget - project.total_assigned_resources_costs - project.total_assigned_product_costs - additionalCosts;
+
 
 const updateChart = () => {
   const ctx = document.getElementById('pieChart').getContext('2d');
@@ -85,32 +95,23 @@ const updateChart = () => {
     chartInstance.value.destroy();
   }
 
-  const totalBudget = props.current_budget;
+  const totalBudget = current_budget;
 
   // Calcular los porcentajes y obtener los montos
-  const labels = props.expenses.data.map(expense => {
-    const amount = expense.purchase_quotes?.amount || 0;
-    const percentage = ((amount / totalBudget) * 100).toFixed(2);
-    return `${expense.purchase_quotes?.provider || 'Sin proveedor'} (${percentage}%)`;
-  });
 
-  const amounts = props.expenses.data.map(expense => {
-    return expense.purchase_quotes?.amount || 0;
-  });
-
-  // Agregar el presupuesto restante a la data
-  const remainingBudget = props.remaining_budget;
-  const dataWithRemainingBudget = [...amounts, remainingBudget];
+  // Agregar el presupuesto restante y los costos adicionales a la data\
+  
+  
+  const dataWithRemainingBudget = [remainingBudget, additionalCosts, project.total_assigned_resources_costs, project.total_assigned_product_costs ];
 
   // Crear un nuevo gráfico con los datos actualizados
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: [...labels, 'Presupuesto Restante'],
+      labels: ['Presupuesto Restante', 'Costos Adicionales', 'Costos de Activos', 'Costos de Productos'],
       datasets: [{
         data: dataWithRemainingBudget,
-        backgroundColor: [...props.expenses.data.map(_ => getRandomColor()), '#808080'], // Color gris para el presupuesto restante
-        hoverBackgroundColor: [...props.expenses.data.map(_ => getRandomColor()), '#808080'],
+        backgroundColor: [getRandomColor(),getRandomColor(),getRandomColor(),getRandomColor()],
       }],
     },
     options: {
@@ -122,7 +123,7 @@ const updateChart = () => {
             const dataset = data.datasets[tooltipItem.datasetIndex];
             const label = data.labels[tooltipItem.index] || '';
             const value = dataset.data[tooltipItem.index];
-            return `${label}: S/. ${value}`;
+            return `${label}: S/. ${value.toFixed(2)}`;
           },
         },
       },
@@ -130,8 +131,8 @@ const updateChart = () => {
   });
 };
 
+
 onMounted(() => {
-  // Ejemplo de uso, asegúrate de pasar los datos reales desde tus props
   updateChart();
 });
 

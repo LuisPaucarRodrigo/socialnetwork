@@ -83,8 +83,8 @@ import { ref } from 'vue';
 const { projects } = defineProps({
     projects: Object,
 })
-
 console.log(projects.data)
+
 
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
@@ -108,4 +108,6 @@ const confirmProjectDeletion = (employeeId) => {
 const closeModal = () => {
     confirmingProjectDeletion.value = false;
 };
+
+
 </script>

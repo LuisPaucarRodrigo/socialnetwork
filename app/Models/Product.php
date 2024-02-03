@@ -34,7 +34,7 @@ class Product extends Model
         return $this->belongsToMany(Header::class, 'products_headers', 'product_id', 'header_id')->withTimestamps();
     }
 
-    protected $appends = ['unit_price','total_assigned_to_projects', 'total_available', 'state', 'total_sent_quantity_projects', 'total_refund_quantity_projects', 'total_used_quantity_projects'];
+    protected $appends = ['unit_price','total_assigned_to_projects', 'total_available', 'state', 'has_different_price', 'total_sent_quantity_projects', 'total_refund_quantity_projects', 'total_used_quantity_projects'];
 
     public function projects(){
         return $this->belongsToMany(Project::class,'project_product');
@@ -42,6 +42,9 @@ class Product extends Model
 
     public function getStateAttribute () {
         return $this->total_available > 0 ? 'Disponible' : 'No disponible';
+    }
+    public function getHasDifferentPriceAttribute () {
+        return $this->productHeaders()->where('header_id',32 )->first()->content == '1'? true: false;
     }
 
     public function project_product(){

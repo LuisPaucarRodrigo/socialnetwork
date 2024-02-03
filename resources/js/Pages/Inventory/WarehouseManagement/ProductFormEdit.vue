@@ -100,8 +100,7 @@
     headers: Object,
     warehouse: Object
   });
-  console.log(props.product)
-  
+
 
   const showModal = ref(false);
   
@@ -123,7 +122,6 @@
 });
     
   const submit = () => {
-    console.log(form.contentIds);
     form.put(route('warehouses.updateProduct', { warehouse: props.warehouse.id, product: props.product.id }), {
       onSuccess: () => {
         closeModal();

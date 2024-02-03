@@ -29,7 +29,7 @@ class ProjectManagementController extends Controller
     public function index()
     {
         return Inertia::render('ProjectArea/ProjectManagement/Project', [
-            'projects' => Project::paginate(),
+            'projects' => Project::with('resources')->paginate(),
         ]);
     }
 
@@ -112,6 +112,11 @@ class ProjectManagementController extends Controller
 
     public function project_resources_store(Request $request)
     {
+        if ($request->total_price === null) {
+            $price_resource = Resource::find($request->resource_id);
+            $request->merge(['total_price' => $price_resource->unit_price]);
+        }
+
         $resource = Resource::find($request->resource_id);
         if ($resource->leftover < $request->quantity) {
             return response()->json(['error' => 'Cantidad excedida, recarga la página'], 500);
@@ -122,6 +127,7 @@ class ProjectManagementController extends Controller
         ResourceHistorial::create($data);
         return redirect()->back();
     }
+
 
     public function project_resources_delete($resource_id)
     {
@@ -188,7 +194,7 @@ class ProjectManagementController extends Controller
                 'purchase_request' => $purchase_request
             ]);
         }
-        
+
         return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest', [
             'project_id' => $project_id,
         ]);
@@ -239,13 +245,18 @@ class ProjectManagementController extends Controller
             return $expense->purchase_quotes[0]['amount'];
         });
 
+        $total_expenses += $project_id->additionalCosts->sum('amount');
+        $additionalCosts = $project_id->additionalCosts->sum('amount');
+
+
+
         $remaining_budget = $current_budget - $total_expenses;
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'remaining_budget' => $remaining_budget,
             'project' => $project_id,
-            'expenses' => $expenses->paginate(),
+            'additionalCosts' => $additionalCosts,
         ]);
     }
 
@@ -289,12 +300,14 @@ class ProjectManagementController extends Controller
             'quantity' => 'required',
             'observation' => 'required',
         ]);
+        $data['total_price'] = $request->total_price;
         ProjectProduct::create($data);
         return redirect()->back();
     }
-    public function project_product_update(ProjectProduct $project_product){
+    public function project_product_update(ProjectProduct $project_product)
+    {
         $output_quantity = $project_product->total_output_project_product;
-        if ($output_quantity != 0){
+        if ($output_quantity != 0) {
             $project_product->update([
                 'quantity' => $output_quantity
             ]);
@@ -302,7 +315,8 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
-    public function warehouse_products_delete(ProjectProduct $assigned){
+    public function warehouse_products_delete(ProjectProduct $assigned)
+    {
         $assigned->delete();
         return redirect()->back();
     }

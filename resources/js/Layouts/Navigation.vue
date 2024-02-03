@@ -153,7 +153,7 @@
             
             <template v-if="hasPermission('UserManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-                    @click="showingMembers = !showingMembers">
+                    @click="toggleMembers">
                     <div v-if="subSectionsCount >= 1">
                         <svg class="w-6 h-6 text-red-600 dark:text-red" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z"/>
@@ -164,12 +164,32 @@
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z"/>
                         </svg>
                     </div>
-                    <span class=" ml-2.5">Miembros por vencer: {{ subSectionsCount }}</span>
+                    <span class=" ml-2.5">Por vencer: {{ subSectionsCount7 + subSectionsCount}}</span>
                 </a>
-                <div v-for="subSection in subSectionsPorVencer" :key="subSection.id">
-                    <MyTransition :transitiondemonstration="showingMembers">
-                        <Link class="w-full" :href="route('sections.subSection', {subSection: subSection.id})">{{ subSection.name }}</Link>
+                <div class="mb-4">
+
+                    <MyTransition v-for="subSection in subSectionsPorVencer" :key="subSection.id" :transitiondemonstration="showingMembers">
+                        <Link class="w-full flex items-center" :href="route('sections.subSection', {subSection: subSection.id})">
+                            <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z"/>
+                            </svg>
+                            <span>{{ subSection.name }}</span>
+                            
+                        </Link>
                     </MyTransition>
+
+                    <MyTransition v-for="subSection in subSectionsPorVencer7" :key="subSection.id" :transitiondemonstration="showingMembers7">
+                        <Link class="w-full flex items-center" :href="route('sections.subSection', {subSection: subSection.id})">
+                            <svg class="w-4 h-4 mr-2 text-yellow-400 dark:text-red" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z"/>
+                            </svg>
+                            <span>{{ subSection.name }}</span>
+                            
+                        </Link>
+                    </MyTransition>
+
+
+                    
                 </div>
             </template>
         </nav>
@@ -198,7 +218,9 @@ export default {
     data() {
         return {
             subSectionsCount: 0,
+            subSectionsCount7: 0,
             subSectionsPorVencer: [],
+            subSectionsPorVencer7: [],
         };
     },
 
@@ -210,6 +232,7 @@ export default {
         let showingProyectArea = ref(false)
         let showingShoppingArea = ref(false)
         let showingMembers = ref(false)
+        let showingMembers7 = ref(false)
         return {
             showingUsersAndRols,
             showingHumanResource,
@@ -218,6 +241,7 @@ export default {
             showingProyectArea,
             showingShoppingArea,
             showingMembers,
+            showingMembers7
         }
     },
 
@@ -235,12 +259,29 @@ export default {
                 console.error('Error al obtener el contador de subsecciones:', error);
             }
         },
+
+        async fetchSubSectionsCount7() {
+            try {
+                const response = await axios.get('/doTask2');
+                this.subSectionsCount7 = response.data.totalSubSections;
+                this.subSectionsPorVencer7 = response.data.subSections;
+            } catch (error) {
+                console.error('Error al obtener el contador de subsecciones:', error);
+            }
+        },
+        toggleMembers() {
+        this.showingMembers7 = !this.showingMembers7;
+        this.showingMembers = !this.showingMembers;
+  }
+        
     },
     
     mounted() {
         this.fetchSubSectionsCount();
+        this.fetchSubSectionsCount7();
         setInterval(() => {
             this.fetchSubSectionsCount();
+            this.fetchSubSectionsCount7();
         }, 60000);
     },
 

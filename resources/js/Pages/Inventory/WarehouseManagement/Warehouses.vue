@@ -114,66 +114,7 @@
         </form>
       </div>
     </Modal>
-
-    <Modal :show="editWarehouseModal">
-      <div class="p-6">
-        <h2 class="text-base font-medium leading-7 text-gray-900">
-          Editar Alamcén
-        </h2>
-        <form @submit.prevent="submitEdit">
-          <div class="space-y-12">
-            <div class="border-b border-gray-900/10 pb-12">
-
-              <div>
-                <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
-                <div class="mt-2">
-                  <input type="text" v-model="formEdit.name" id="name"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <InputError :message="formEdit.errors.name" />
-                </div>
-              </div>
-
-              <div>
-                <InputLabel for="location" class="font-medium leading-6 text-gray-900 mt-3">Ubicación</InputLabel>
-                <div class="mt-2">
-                  <input type="text" v-model="formEdit.location" id="location"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <InputError :message="formEdit.errors.location" />
-                </div>
-              </div>
-
-              <div>
-                <InputLabel for="manager" class="font-medium leading-6 text-gray-900 mt-3">Encargado</InputLabel>
-                <div class="mt-2">
-                  <input type="text" v-model="formEdit.manager" id="manager"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <InputError :message="formEdit.errors.manager" />
-                </div>
-              </div>
-
-              <div class="mt-3">
-                <InputLabel for="headers" class="font-medium leading-6 text-gray-900">Cabeceras</InputLabel>
-                <select multiple v-model="formEdit.header_ids" id="headers" class="block w-full ...">
-                  <option disabled>Selecciona una o varias</option>
-                  <option v-for="header in filteredHeaders" :key="header.id" :value="header.id">
-                    {{ header.name }}
-                  </option>
-
-                </select>
-                <InputError :message="formEdit.errors.header_ids" />
-              </div>
-
-              <div class="mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeEditModal"> Cancelar </SecondaryButton>
-                <button type="submit" :class="{ 'opacity-25': form.processing }"
-                  class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </Modal>
-
+   
     <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Almacén" :deleteFunction="deleteWarehouse"
       @closeModal="closeModalDoc" />
     <ConfirmCreateModal :confirmingcreation="showModal" itemType="Almacén" />
@@ -218,7 +159,7 @@ const formEdit = useForm({
 });
 
 const headerArray = [
-  1, 5, 7, 8, 10, 12, 15, 29
+  1, 5, 7, 8, 10, 12, 15, 29, 32
 ];
 
 let filteredHeaders = [];
@@ -244,7 +185,6 @@ const closeModal = () => {
 
 
 const submit = () => {
-  console.log(form)
   form.header_ids = [...headerArray, ...form.header_ids];
   form.post(route('warehouses.storeWarehouse'), {
     onSuccess: () => {

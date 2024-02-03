@@ -20,33 +20,48 @@ class Project extends Model
         'initial_budget'
     ];
 
-    protected $appends = ['remaining_budget','materials_costs','total_assigned_product_costs'];
+    protected $appends = ['total_assigned_resources_costs','remaining_budget', 'materials_costs', 'total_assigned_product_costs'];
 
     public function employees()
     {
-        return $this->belongsToMany(Employee::class,'project_employee')->withPivot('charge', 'id');
+        return $this->belongsToMany(Employee::class, 'project_employee')->withPivot('charge', 'id');
     }
 
-    public function tasks(){
+    public function projectProducts()
+    {
+        return $this->hasMany(ProjectProduct::class);
+    }
+
+    public function tasks()
+    {
         return $this->hasMany(Tasks::class);
     }
 
-    public function purchasing_request(){
+    public function additionalCosts()
+    {
+        return $this->hasMany(AdditionalCost::class);
+    }
+
+    public function purchasing_request()
+    {
         return $this->hasMany(Purchasing_request::class);
     }
 
-    public function resources(){
-        return $this->belongsToMany(Resource::class, 'project_resource')->withPivot('id','quantity', 'observation');
+    public function resources()
+    {
+        return $this->belongsToMany(Resource::class, 'project_resource')->withPivot('id', 'quantity', 'observation');
     }
 
-    public function resource_historials(){
+    public function resource_historials()
+    {
         return $this->hasMany(ResourceHistorial::class, 'project_id');
     }
 
-    public function components_or_materials(){
-        return $this->belongsToMany(ComponentOrMaterial::class, 'project_componentormaterial')->withPivot('id','quantity','observation');
+    public function components_or_materials()
+    {
+        return $this->belongsToMany(ComponentOrMaterial::class, 'project_componentormaterial')->withPivot('id', 'quantity', 'observation');
     }
-    
+
     public function getMaterialsCostsAttribute()
     {
         return $this->components_or_materials()->get()->sum(function ($component) {
@@ -54,10 +69,11 @@ class Project extends Model
         });
     }
 
-    public function budget_updates(){
+    public function budget_updates()
+    {
         return $this->hasMany(BudgetUpdate::class);
     }
-    
+
     public function getRemainingBudgetAttribute()
     {
         $lastUpdate = $this->budget_updates()->latest()->first(); // Obtén la última actualización del presupuesto
@@ -86,31 +102,31 @@ class Project extends Model
         return $currentBudget - $totalExpenses - $this->materials_costs;
     }
 
+    public function projectResources()
+    {
+        return $this->hasMany(ProjectResource::class, 'project_id');
+    }
 
+    public function getTotalAssignedResourcesCostsAttribute()
+    {
+        return $this->projectResources()->sum('total_price');
+    }
 
-    public function products () {
+    public function products()
+    {
         return $this->belongsToMany(Product::class, 'project_product');
     }
 
-    public function getTotalAssignedProductCostsAttribute () {
-        $total = $this->products()->get()->sum(function ($item){
-                return $item->unit_price * $item->total_assigned_to_projects;
+    public function getTotalAssignedProductCostsAttribute(){
+        $totalCost = $this->projectProducts()->with('product')->get()->sum(function($item) {
+            if ($item->product->has_different_price) {
+                return $item->total_price;
+            } else {
+                return $item->product->unit_price * $item->quantity;
             }
-        );
-        return $total;
+        });
+        return $totalCost; 
     }
-
-
-
     
-
-
-
-
-
-
-
-
-
 
 }

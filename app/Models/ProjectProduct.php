@@ -14,6 +14,7 @@ class ProjectProduct extends Model
         'product_id',        
         'quantity',
         'observation',
+        'total_price'
     ];
 
     public function liquidation() {
