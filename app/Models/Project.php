@@ -27,8 +27,17 @@ class Project extends Model
         return $this->belongsToMany(Employee::class,'project_employee')->withPivot('charge', 'id');
     }
 
+    public function projectProducts()
+    {
+        return $this->hasMany(ProjectProduct::class);
+    }
+
     public function tasks(){
         return $this->hasMany(Tasks::class);
+    }
+
+    public function additionalCosts(){
+        return $this->hasMany(AdditionalCost::class);
     }
 
     public function purchasing_request(){

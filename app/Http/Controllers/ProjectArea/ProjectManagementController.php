@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 namespace App\Http\Controllers\ProjectArea;
 
@@ -212,6 +212,20 @@ class ProjectManagementController extends Controller
 
     public function project_expenses(Project $project_id)
     {
+        $projectProducts = $project_id->projectProducts()->with('product')->get();
+
+        $productArray = [];
+
+        foreach ($projectProducts as $projectProduct) {
+            // Accede a la relación 'product' de cada ProjectProduct
+            $product = $projectProduct->product()->with('productHeaders')->get();
+
+            // Agrega el objeto product al array
+            $productArray[] = $product;
+        }
+
+        // $productArray ahora contiene todos los objetos de productos asociados al proyecto
+        dd($productArray);
 
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
             ->with('project')
@@ -239,6 +253,8 @@ class ProjectManagementController extends Controller
             return $expense->purchase_quotes[0]['amount'];
         });
 
+        $total_expenses += $project_id->additionalCosts->sum('amount');
+
         $remaining_budget = $current_budget - $total_expenses;
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
@@ -246,6 +262,8 @@ class ProjectManagementController extends Controller
             'remaining_budget' => $remaining_budget,
             'project' => $project_id,
             'expenses' => $expenses->paginate(),
+            'additionalCosts' => $project_id->additionalCosts,
+            'products' => $productArray
         ]);
     }
 
