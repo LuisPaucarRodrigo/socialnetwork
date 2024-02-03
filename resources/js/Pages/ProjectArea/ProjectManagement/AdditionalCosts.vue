@@ -145,7 +145,6 @@
     project_id: Object,
   });
 
-  console.log(props.project_id)
 
   const form = useForm({
     id: '',
