@@ -28,4 +28,14 @@ class LiquidationController extends Controller
         return redirect()->back();
     }
 
+    public function index($project_id)
+    {
+        $liquidations = Liquidation::whereHas('output_project_product.project_product', function ($query) use ($project_id) {
+            $query->where('project_id', $project_id);
+        })->with('output_project_product.project_product')->paginate(5);
+
+        return Inertia::render('ProjectArea/ProjectManagement/Liquidations', [
+            'liquidations' => $liquidations,
+        ]);
+    }
 }

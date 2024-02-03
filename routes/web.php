@@ -257,6 +257,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
     Route::get('/projectmanagement/products/{project_id}', [ProjectManagementController::class, 'project_product_index'])->name('projectmanagement.products');
     Route::post('/projectmanagement/products/{project_id}/liquidate', [LiquidationController::class, 'store'])->name('projectmanagement.productsLiquidate');
+    Route::get('/projectmanagement/products/{project_id}/liquidateTable', [LiquidationController::class, 'index'])->name('projectmanagement.liquidateTable');
 
     Route::get('/projectmanagement/warehouse_products/{warehouse_id}', [ProjectManagementController::class, 'warehouse_products'])->name('projectmanagement.warehouse_products');
     Route::post('/projectmanagement/products/store', [ProjectManagementController::class, 'project_product_store'])->name('projectmanagement.products.store');

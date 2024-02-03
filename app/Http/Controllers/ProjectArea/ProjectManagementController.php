@@ -212,20 +212,32 @@ class ProjectManagementController extends Controller
 
     public function project_expenses(Project $project_id)
     {
-        $projectProducts = $project_id->projectProducts()->with('product')->get();
+        $projectProducts = $project_id->projectProducts()->with('product.productHeaders')->get();
 
         $productArray = [];
+        $contentArray = [];
 
         foreach ($projectProducts as $projectProduct) {
             // Accede a la relación 'product' de cada ProjectProduct
-            $product = $projectProduct->product()->with('productHeaders')->get();
+            $product = $projectProduct->product;
 
             // Agrega el objeto product al array
             $productArray[] = $product;
+
+            // Accede a la relación 'productHeaders' de cada Product
+            $productHeaders = $product->productHeaders;
+
+            // Filtra los elementos de 'productHeaders' cuyo 'header_id' sea 29
+            $filteredHeaders = $productHeaders->where('header_id', 29);
+
+            // Agrega el contenido de 'content' al array
+            $contentArray[] = $filteredHeaders->pluck('content')->toArray();
         }
 
         // $productArray ahora contiene todos los objetos de productos asociados al proyecto
-        dd($productArray);
+        // $contentArray contiene los contenidos de 'ProductsHeader' con 'header_id' igual a 29
+        dd($productArray, $contentArray);
+
 
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
             ->with('project')
