@@ -11,7 +11,7 @@
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
-                <Link class="rounded-md rounded bg-indigo-600 px-4 py-3 text-center text-sm text-white hover:bg-indigo-500 mx-2" :href="route('projectmanagement.liquidateTable', {project_id: project_id })">
+                <Link type="button" class="rounded-md rounded bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 mx-2" :href="route('projectmanagement.liquidateTable', {project_id: project_id })">
                     Historial de Liquidaciones
                 </Link>
             </div>
