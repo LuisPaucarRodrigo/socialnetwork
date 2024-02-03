@@ -289,6 +289,7 @@ class ProjectManagementController extends Controller
             'quantity' => 'required',
             'observation' => 'required',
         ]);
+        $data['total_price'] = $request->total_price;
         ProjectProduct::create($data);
         return redirect()->back();
     }
