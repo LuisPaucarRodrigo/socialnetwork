@@ -23,7 +23,7 @@
               </div>
 
               <div v-for="header in headers" :key="header.id" class="flex flex-col gap-2">
-                <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.type == 'boolean' ? '¿Usar precio distinto en proyectos?' : header.name }}</InputLabel>
+                <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.type == 'boolean' ? '¿Usar distinto precio en proyectos?' : header.name }}</InputLabel>
                 <div class="mt-2">
                   <input :type="verifyType(header.type)" v-model="form.contentIds[header.id]"
                     :step="header.type == 'double' ? 0.01 : 1" id="header"
