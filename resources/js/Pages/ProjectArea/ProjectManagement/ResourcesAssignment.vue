@@ -4,10 +4,6 @@
         <template #header>
             Asignación de Activos
         </template>
-        <!-- <div class=" lg:w-1/2 p-3 rounded-lg shadow">
-            <div class="sm:col-span-3">
-                <div class="flex gap-2">
-                    <h3 class="text-lg leading-6 text-gray-900">Añadir Activos -->
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
             <div class="p-3 lg:col-span-2 rounded-lg shadow">
                 <div class="sm:col-span-3">
@@ -105,56 +101,6 @@
                 </div>
             </div>
 
-            <!-- <div class="sm:col-span-3 mt-10">
-                <div class="flex gap-2">
-                    <h3 class="text-lg leading-6 text-gray-900 font-bold">Añadir Equipos
-                    </h3>
-                    <button @click="showToAddEmployee2" type="button">
-                        <PlusCircleIcon class="text-lg text-indigo-800 h-7 w-7 hover:text-purple-400" />
-                    </button>
-                </div>
-                <div class="mt-7">
-                    <div v-for="(network_equipment, index) in project.network_equipments" :key="index"
-                        class="grid grid-cols-8 items-center my-3">
-                        <p class="text-md col-span-7 line-clamp-2">{{ resource.unique_identification }} - {{
-                            resource.description
-                        }} / Cantidad: {{ resource.pivot.quantity }}</p>
-                        <button type="button" @click="delete_resource(resource.pivot.id)"
-                        <p class="text-md col-span-7 line-clamp-2">{{ network_equipment.model }} - {{ network_equipment.serie_number
-                        }} / {{ network_equipment.name }}</p>
-                        <button type="button" @click="delete_network_equipment(network_equipment.pivot.id)"
-                            class="col-span-1 flex justify-end">
-                            <TrashIcon class="text-red-500 h-5 w-5" />
-                        </button>
-                        
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="sm:col-span-3 mt-10">
-                <div class="flex gap-2">
-                    <h3 class="text-lg leading-6 text-gray-900 font-bold">Añadir Materiales
-                    </h3>
-                    <button @click="showToAddEmployee3" type="button">
-                        <PlusCircleIcon class="text-lg text-indigo-800 h-7 w-7 hover:text-purple-400" />
-                    </button>
-                </div>
-
-                <div class="mt-7">
-                    <div v-for="(component_or_material, index) in project.components_or_materials" :key="index"
-                        class="grid grid-cols-8 items-center my-3">
-                        <p class="text-md col-span-7 line-clamp-2">{{ component_or_material.name
-                        }} / Cantidad: {{ component_or_material.pivot.quantity }}</p>
-                        <button type="button" @click="delete_components_materials(component_or_material.pivot.id)"
-                            class="col-span-1 flex justify-end">
-                            <TrashIcon class="text-red-500 h-5 w-5" />
-                        </button>
-                        <div class="border-b col-span-8 border-gray-900/10"></div>
-                    </div>
-                </div>
-            </div> -->
-
             <!-- Agregar -->
             <Modal :show="showModal">
                 <form class="p-6" @submit.prevent="submit">
@@ -167,10 +113,10 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select required id="resource_id" v-model="form.resource_id"
+                                    @change="conditional_rent($event)"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option v-for="item in resources" :key="item.id" :value="item.id">
-                                        <!-- {{ item.unique_identification }} - {{ item.description }} -->
                                         {{ item.unique_identification }} - {{ item.description }} ({{ item.leftover }})
                                     </option>
                                 </select>
@@ -183,6 +129,16 @@
                                 <TextInput id="quantity" type="number" min="1"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     v-model="form.quantity" />
+                            </div>
+                        </div>
+
+                        <div v-if="input_rent" class="sm:col-span-3">
+                            <InputLabel for="input_rent" class="font-medium leading-6 text-gray-900">Precio de Alquiler
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput id="input_rent" type="number" min="1"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="form.total_price" />
                             </div>
                         </div>
 
@@ -340,12 +296,13 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { Head, useForm } from '@inertiajs/vue3';
+import { PlusCircleIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModal = ref(false);
+const input_rent = ref(false);
 // const showModal2 = ref(false);
 // const showModal3 = ref(false);
 
@@ -355,13 +312,13 @@ const { project, resources, network_equipments, components_or_materials } = defi
     network_equipments: Object,
     components_or_materials: Object
 })
-// console.log(components_or_materials)
 
 //Recursos
 const initialState = {
     project_id: project.id,
     resource_id: '',
     quantity: '',
+    total_price: '',
     observation: '',
 }
 const form = useForm(
@@ -415,7 +372,9 @@ function formatFecha(fecha) {
     return new Date(fecha).toLocaleDateString(undefined, options);
 }
 
-
+const conditional_rent = (event) => {
+    resources.find(item => item.id == event.target.value).conditional_rent == true ? input_rent.value = true : input_rent.value = false;
+}
 
 
 

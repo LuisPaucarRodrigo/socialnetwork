@@ -14,5 +14,7 @@ class ProjectResource extends Model
         'resource_id',
         'quantity',
         'observation',
+        'total_price'
     ];
+    
 }
