@@ -39,10 +39,11 @@ const closeModal = () => {
     <section class="space-y-6">
         <header>
             <h2 class="text-lg font-medium text-gray-900">
-Eliminar cuenta</h2>
+                Eliminar cuenta</h2>
 
             <p class="mt-1 text-sm text-gray-600">
-                Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán permanentemente. Antes de eliminar
+                Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán permanentemente. Antes de
+                eliminar
                 su cuenta, descargue cualquier dato o información que desee conservar.
             </p>
         </header>
@@ -63,15 +64,8 @@ Eliminar cuenta</h2>
                 <div class="mt-6">
                     <InputLabel for="password" value="Password" class="sr-only" />
 
-                    <TextInput
-                        id="password"
-                        ref="passwordInput"
-                        v-model="form.password"
-                        type="password"
-                        class="mt-1 block w-3/4"
-                        placeholder="Password"
-                        @keyup.enter="deleteUser"
-                    />
+                    <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
+                        class="mt-1 block w-3/4" placeholder="Password" @keyup.enter="deleteUser" />
 
                     <InputError :message="form.errors.password" class="mt-2" />
                 </div>
@@ -79,12 +73,8 @@ Eliminar cuenta</h2>
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
 
-                    <DangerButton
-                        class="ml-3"
-                        :class="{ 'opacity-25': form.processing }"
-                        :disabled="form.processing"
-                        @click="deleteUser"
-                    >
+                    <DangerButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+                        @click="deleteUser">
                         Delete Account
                     </DangerButton>
                 </div>
