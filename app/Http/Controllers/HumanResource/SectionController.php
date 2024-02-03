@@ -107,9 +107,29 @@ class SectionController extends Controller
         // Obtener la fecha actual ajustada por el desfase
         $currentDate = Carbon::now();
         $currentDateUpdate = $currentDate->subHours(5);
-        // Obtener todos los SubSection que están a punto de vencerse (por ejemplo, en los próximos 3 días)
-        $subSections = SubSection::where('end_date', '>=', $currentDateUpdate)
-            ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 3 días
+
+        // Obtener todos los SubSection que están a punto de vencerse en los próximos 3 días y los que ya vencieron
+        $subSections = SubSection::where('end_date', '<=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 3 días y fechas pasadas
+            ->get(); // Obtener una colección de resultados
+
+        $totalSubSections = $subSections->count();
+
+        return response()->json([
+            'totalSubSections' => $totalSubSections,
+            'subSections' => $subSections,
+        ]);
+    }
+
+
+    public function doTask2()
+    {
+        // Obtener la fecha actual ajustada por el desfase
+        $currentDate = Carbon::now();
+        $currentDateUpdate = $currentDate->subHours(5);
+
+        // Obtener todos los SubSection que están a punto de vencerse entre los próximos 4 y 7 días
+        $subSections = SubSection::where('end_date', '>=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 4 días
+            ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(7)) // Ajustado para considerar los próximos 7 días
             ->get(); // Obtener una colección de resultados
 
         $totalSubSections = $subSections->count();
