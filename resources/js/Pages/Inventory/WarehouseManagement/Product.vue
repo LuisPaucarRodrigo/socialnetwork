@@ -12,33 +12,67 @@
                 </button>
             </div>
             <br>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div v-for="item in props.products.data" :key="item.id"
-                    class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-2">
-                        <h2 class="text-sm font-semibold mb-3">
-                            {{ item.name }}
-                        </h2>
-                        <div class="inline-flex justify-end gap-x-0 mb-4">
-                            <Link :href="route('warehouses.showProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-green-400 hover:underline"><EyeIcon class="h-4 w-4 ml-1" /></Link>
-                            <Link :href="route('warehouses.editProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-orange-400 hover:underline mx-2"><PencilIcon class="h-4 w-4 ml-1" /></Link>
-                            <button @click="confirmDeleteProduct(item.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
-                        </div>
-                    </div>
-
+            
+            <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+    <table class="w-full whitespace-no-wrap overflow-auto">
+        <thead>
+            <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    Nombre
+                </th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    Proyecto Asignado
+                </th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    Fecha
+                </th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    N° de Serie
+                </th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="item in props.products.data" :key="item.id" class="text-gray-700 border-b">
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                    <h2 class="text-sm font-semibold">{{ item.name }}</h2>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                     <div v-for="productHeader in productHeaders" :key="productHeader.id">         
-                        <h3 v-if="productHeader.header_id === 5 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-                            Proyecto Asignado: {{ productHeader.content }}
-                        </h3>
-                        <h3 v-if="productHeader.header_id === 7 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-                            Fecha: {{ productHeader.content }}
-                        </h3>
-                        <h3 v-if="productHeader.header_id === 12 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-                            N° de Serie: {{ productHeader.content }}
+                        <h3 v-if="productHeader.header_id === 5 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1">
+                            {{ productHeader.content }}
                         </h3>
                     </div>
-                </div>
-            </div>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                    <div v-for="productHeader in productHeaders" :key="productHeader.id">         
+                        <h3 v-if="productHeader.header_id === 7 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1">
+                            {{ productHeader.content }}
+                        </h3>
+                    </div>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                  <div v-for="productHeader in productHeaders" :key="productHeader.id">         
+                        <h3 v-if="productHeader.header_id === 12 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1">
+                            {{ productHeader.content }}
+                        </h3>
+                    </div>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                    <div class="inline-flex justify-end gap-x-0">
+                        <Link :href="route('warehouses.showProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-green-400 hover:underline"><EyeIcon class="h-4 w-4 ml-1" /></Link>
+                        <Link :href="route('warehouses.editProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-orange-400 hover:underline mx-2"><PencilIcon class="h-4 w-4 ml-1" /></Link>
+                        <button @click="confirmDeleteProduct(item.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
             <br>
             <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="products.links" />
