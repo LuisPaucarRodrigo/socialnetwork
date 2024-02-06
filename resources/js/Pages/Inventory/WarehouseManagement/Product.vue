@@ -37,31 +37,31 @@
         <tbody>
             <tr v-for="item in props.products.data" :key="item.id" class="text-gray-700 border-b">
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                    <h2 class="text-sm font-semibold mb-3">{{ item.name }}</h2>
+                    <h2 class="text-sm font-semibold">{{ item.name }}</h2>
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                     <div v-for="productHeader in productHeaders" :key="productHeader.id">         
-                        <h3 v-if="productHeader.header_id === 5 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
+                        <h3 v-if="productHeader.header_id === 5 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1">
                             {{ productHeader.content }}
                         </h3>
                     </div>
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                     <div v-for="productHeader in productHeaders" :key="productHeader.id">         
-                        <h3 v-if="productHeader.header_id === 7 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
+                        <h3 v-if="productHeader.header_id === 7 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1">
                             {{ productHeader.content }}
                         </h3>
                     </div>
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                   <div v-for="productHeader in productHeaders" :key="productHeader.id">         
-                        <h3 v-if="productHeader.header_id === 12 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
+                        <h3 v-if="productHeader.header_id === 12 && productHeader.product_id === item.id" class="text-sm font-semibold text-gray-700 line-clamp-1">
                             {{ productHeader.content }}
                         </h3>
                     </div>
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                    <div class="inline-flex justify-end gap-x-0 mb-4">
+                    <div class="inline-flex justify-end gap-x-0">
                         <Link :href="route('warehouses.showProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-green-400 hover:underline"><EyeIcon class="h-4 w-4 ml-1" /></Link>
                         <Link :href="route('warehouses.editProduct', {warehouse: props.warehouse.id, product: item.id})" class="text-orange-400 hover:underline mx-2"><PencilIcon class="h-4 w-4 ml-1" /></Link>
                         <button @click="confirmDeleteProduct(item.id)" class="text-red-600 hover:underline"><TrashIcon class="h-4 w-4" /></button>
