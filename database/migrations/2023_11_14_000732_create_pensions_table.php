@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->decimal('values', 10, 4);
+            $table->decimal('values_seg', 10, 4);
             $table->timestamps();
         });
     }

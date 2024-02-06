@@ -32,7 +32,7 @@ class CreateManagementEmployees extends FormRequest
             'birthdate' => 'required|date',
             'dni' => 'required|numeric|digits:8|unique:' . Employee::class,
             'email' => 'required|email|max:255|unique:' . Employee::class,
-            'email_company' => 'required|email|max:255|unique:' . Employee::class,
+            'email_company' => 'nullable|email|max:255|unique:' . Employee::class,
             'phone1' => 'required|numeric|digits:9|unique:' . Employee::class,
             'phone2' => 'nullable|numeric|digits:9|unique:' . Employee::class,
             'pension_system' => 'required|numeric',

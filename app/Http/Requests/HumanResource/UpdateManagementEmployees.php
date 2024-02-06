@@ -32,7 +32,7 @@ class UpdateManagementEmployees extends FormRequest
             'birthdate' => 'required|date',
             'dni' => 'required|numeric|digits:8',
             'email' => 'required|email|max:255',
-            'email_company' => 'required|email|max:255',
+            'email_company' => 'nullable|email|max:255',
             'phone1' => 'required|numeric|digits:9',
             'phone2' => 'nullable|numeric|digits:9',
             'pension_system' => 'required|numeric',

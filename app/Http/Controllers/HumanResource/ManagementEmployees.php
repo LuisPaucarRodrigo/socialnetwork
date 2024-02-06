@@ -29,17 +29,17 @@ class ManagementEmployees extends Controller
     public function index()
     {
         $employees = Employee::whereHas('contract', function ($query) {
-            $query->where('state', 'active');
+            $query->where('state', 'Active');
         })->paginate();
 
         $employees->each(function ($employee) {
-            $employee->cropped_image = url('storage/image/' . $employee->cropped_image);
+            $employee->cropped_image = url('/image/profile/' . $employee->cropped_image);
         });
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
             'employees' => $employees,
         ]);
     }
-    
+
     public function index_info_additional()
     {
         $pension = Pension::all();
@@ -52,16 +52,18 @@ class ManagementEmployees extends Controller
         try {
             $imageUrl = null;
             $documentName = null;
-            if ($request->file('curriculum_vitae')) {
+            // Procesar y almacenar el curriculum vitae
+            if ($request->hasFile('curriculum_vitae')) {
                 $document = $request->file('curriculum_vitae');
-                $documentName = time() . '. ' . $document->getClientOriginalName();
-                $document->storeAs('documents/curriculum_vitae/', $documentName);
+                $documentName = time() . '.' . $document->getClientOriginalName();
+                $document->move(public_path('documents/curriculum_vitae/'), $documentName);
             }
 
-            if ($request->file('cropped_image')) {
+            // Procesar y almacenar la imagen
+            if ($request->hasFile('cropped_image')) {
                 $croppedImage = $request->file('cropped_image');
                 $imageUrl = time() . '.' . $croppedImage->getClientOriginalName();
-                $croppedImage->storeAs('public/image/', $imageUrl);
+                $croppedImage->move(public_path('image/profile/'), $imageUrl);
             }
 
             $employee = Employee::create([
@@ -250,19 +252,20 @@ class ManagementEmployees extends Controller
         $education = Education::where('employee_id', $id)->first();
         $employee = Employee::find($id);
         if ($employee->cropped_image != null) {
-            $filePath = "public/image/{$employee->cropped_image}";
-            if (Storage::exists($filePath)) {
-                Storage::delete($filePath);
+            $filePath = "image/profile/{$employee->cropped_image}";
+            $path = public_path($filePath);
+            if (file_exists($path)) {
+                unlink($path);
             } else {
-                abort(404, 'Imagen no encontrado');
+                abort(404, 'Imagen no encontrada');
             }
         }
-        
         if ($education->curriculum_vitae != null) {
             $filePath = "documents/curriculum_vitae/{$education->curriculum_vitae}";
+            $path = public_path($filePath);
 
-            if (Storage::exists($filePath)) {
-                Storage::delete($filePath);
+            if (file_exists($path)) {
+                unlink($path);
             } else {
                 abort(404, 'Documento no encontrado');
             }
@@ -277,6 +280,7 @@ class ManagementEmployees extends Controller
         $validateData = $request->validated();
         $contract = Contract::where('employee_id', $id)->first();
         $contract->update($validateData);
+        
     }
 
     public function details($id)
@@ -287,9 +291,11 @@ class ManagementEmployees extends Controller
 
     public function download($filename)
     {
-        $filePath = '/documents/curriculum_vitae/' . $filename;
-        if (Storage::disk('local')->exists($filePath)) {
-            return response()->download(storage_path("app/{$filePath}"), $filename, [
+        $filePath = 'documents/curriculum_vitae/' . $filename;
+
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->download($path, $filename, [
                 'Content-Type' => 'application/pdf',
             ]);
         }

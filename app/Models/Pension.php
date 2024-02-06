@@ -11,6 +11,7 @@ class Pension extends Model
     protected $fillable = [
         'type',
         'values',
+        'values_seg',
     ];
     public function contracts()
     {
