@@ -100,7 +100,7 @@
                 <pagination :links="employees.links" />
             </div>
         </div>
-        <Modal :show="showModal">
+        <Modal :show="showModalFired">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Despido del Empleado
@@ -126,7 +126,7 @@
                             </div>
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="closeCreateSectionModal"> Cancel </SecondaryButton>
+                            <SecondaryButton @click="closeFiredModal"> Cancel </SecondaryButton>
                             <button type="submit" :class="{ 'opacity-25': form.processing }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar
                             </button>
@@ -156,7 +156,7 @@ const confirmingUserDeletion = ref(false);
 const deleteButtonText = 'Eliminar';
 const employeeToDelete = ref(null);
 const employeeToFired = ref(null);
-const showModal = ref(false);
+const showModalFired = ref(false);
 
 const props = defineProps({
     employees: Object
@@ -169,14 +169,15 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.put(route('management.employees.fired',employeeToFired.value), form,{
+    router.put(route('management.employees.fired',employeeToFired.value), form,{
         onSuccess: () => {
-            showModal.value = false;
-            router.visit(route('management.employees'))
-        },
+            closeFiredModal();
+            router.visit(route('management.employees'));
+        }
 
     })
 }
+
 const confirmUserDeletion = (employeeId) => {
     employeeToDelete.value = employeeId;
     confirmingUserDeletion.value = true;
@@ -184,11 +185,12 @@ const confirmUserDeletion = (employeeId) => {
 
 const confirmFired = (firedId) => {
     employeeToFired.value = firedId
-    showModal.value = true
+    showModalFired.value = true
 }
 
-const closeCreateSectionModal = () => {
-    showModal.value = false
+const closeFiredModal = () => {
+    console.log('dfdff');
+    showModalFired.value = false
 }
 
 const deleteEmployee = () => {

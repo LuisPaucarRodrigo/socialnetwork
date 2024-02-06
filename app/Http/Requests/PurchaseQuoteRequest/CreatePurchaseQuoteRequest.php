@@ -27,7 +27,7 @@ class CreatePurchaseQuoteRequest extends FormRequest
             'amount' => 'required|string|numeric',
             'quote_deadline' => 'required|date',
             'response' => 'required|string',
-            'purchase_image' => 'required|mimes:pdf|max:2048'
+            'purchase_doc' => 'required|mimes:pdf|max:2048'
         ];
     }
 }

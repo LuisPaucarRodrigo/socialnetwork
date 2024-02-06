@@ -74,9 +74,9 @@
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="purchase_image" class="text-sm font-medium leading-6 text-gray-900">Documento de de
                             Cotizacion</InputLabel>
-                        <InputFile type="file" v-model="form.purchase_image" id="purchase_image"
+                        <InputFile type="file" v-model="form.purchase_doc" id="purchase_image"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
-                        <InputError :message="form.errors.purchase_image" />
+                        <InputError :message="form.errors.purchase_doc" />
                     </div>
                     <div v-if="purchases.state == 'pendiente' || purchases.state == 'En Progreso'"
                         class="mt-6 flex items-center justify-end gap-x-6">
@@ -143,7 +143,7 @@ const form = useForm({
     quote_deadline: '',
     amount: '',
     response: '',
-    purchase_image: ''
+    purchase_doc: ''
 })
 
 const showError = ref(false)
@@ -172,7 +172,6 @@ const closeModal = () => {
 };
 const reject_quote = (id) => {
     process.value = true
-    console.log
     router.post(route('purchasesrequest.reject_request', { id }), null, {
         onSuccess: () => {
             process.value = false

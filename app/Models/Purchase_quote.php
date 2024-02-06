@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Purchase_quote extends Model
 {
     use HasFactory;
-    protected $fillable = ['provider','amount', 'quote_deadline', 'purchase_image', 'response', 'purchasing_request_id'];
+    protected $fillable = ['provider','amount', 'quote_deadline', 'purchase_doc', 'response', 'purchasing_request_id'];
 
     public function provider(){
         return $this->belongsTo(Provider::class, 'provider_id');

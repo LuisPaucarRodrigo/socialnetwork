@@ -16,6 +16,10 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Valor
                         </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Valor_seg
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,6 +30,11 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <TextInput type="text" id="values" :value="pension.values"
                                 @change="handleInputChange(pension.id, $event)"
+                                class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500" />
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <TextInput type="text" id="values" :value="pension.values_seg"
+                                @change="handleInputChangeSeg(pension.id, $event)"
                                 class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500" />
                         </td>
                     </tr>
@@ -50,6 +59,13 @@ const props = defineProps({
 const handleInputChange = (pensionId, event) => {
     const newValue = event.target.value;
     router.put(route('pension_system.update', { id: pensionId }), {
+        value: newValue
+    })
+}
+
+const handleInputChangeSeg = (pensionId, event) => {
+    const newValue = event.target.value;
+    router.put(route('pension_system_seg.update', { id: pensionId }), {
         value: newValue
     })
 }

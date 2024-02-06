@@ -9,9 +9,12 @@ use App\Models\Vacation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Employee;
+use BaconQrCode\Renderer\Path\Move;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+
+use function PHPUnit\Framework\fileExists;
 
 class VacationController extends Controller
 {
@@ -34,10 +37,10 @@ class VacationController extends Controller
     public function store(CreateVacationRequest $request)
     {
         $documentName = null;
-        if ($request->file('doc_permission')) {
+        if ($request->hasFile('doc_permission')) {
             $document = $request->file('doc_permission');
-            $documentName = time() . '. ' . $document->getClientOriginalName();
-            $document->storeAs('documents/permissions/', $documentName);
+            $documentName = time() . '.' . $document->getClientOriginalName();
+            $document->move(public_path('documents/permissions/'), $documentName);
         }
 
         Vacation::create([
@@ -111,12 +114,13 @@ class VacationController extends Controller
     }
 
     public function destroy(Vacation $vacation)
-    {
+    {   
         if ($vacation->type == "Permisos") {
-            $filePath = storage_path("app/documents/permissions/$vacation->doc_permission");
-            if(file_exists($filePath))  {
-                Storage::delete("documents/permissions/$vacation->doc_permission");
-            }else{
+            $filePath = "documents/permissions/$vacation->doc_permission";
+            $path = public_path($filePath);
+            if (file_exists($filePath)) {
+                unlink($path);
+            } else {
                 abort(404, 'Documento no encontrado');
             }
         }
@@ -127,12 +131,11 @@ class VacationController extends Controller
     public function download($filename)
     {
         $filePath = '/documents/permissions/' . $filename;
-        if (Storage::disk('local')->exists($filePath)) {
-            $file = Storage::disk('local')->get($filePath);
-            $response = new Response($file, 200);
-            $response->header('Content-Type', 'application/pdf');
-            $response->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-            return $response;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->download($path, $filename, [
+                'Content-Type' => 'application/pdf',
+            ]);
         }
         abort(404);
     }
@@ -140,11 +143,14 @@ class VacationController extends Controller
     public function showDocument(Vacation $id)
     {
         $fileName = $id->doc_permission;
-        $filePath = '/documents/permissions/' . $fileName;
-        if (Storage::disk('local')->exists($filePath)) {
-            $file = storage_path("app/documents/permissions/$fileName");
-            return response()->file($file);
+        $filePath = 'documents/permissions/' . $fileName;
+
+        $path = public_path($filePath);
+
+        if (file_exists($path)) {
+            return response()->file($path);
         }
+
         abort(404, 'Documento no encontrado');
     }
 }

@@ -58,29 +58,6 @@
                 Rechazar
             </button>
         </div>
-        <!-- <Modal :show="confirmOrden" @close="closeModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Enviar un Comentario
-                </h2>
-                <p class="mt-1 text-sm text-gray-600">
-                    Agregar una razon en caso se rechaze la solicitud.
-                </p>
-                <div class="mt-6">
-                    <InputLabel for="coment" value="Coment" class="sr-only" />
-                    <TextInput id="coment" ref="comentOrden" v-model="form.response" type="text" class="mt-1 block w-3/4"
-                        placeholder="Coment" @keyup.enter="sendReply" />
-                    <InputError :message="form.errors.response" class="mt-2" />
-                </div>
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
-                    <PrimaryButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-                        @click="sendReply('Rechazado')">
-                        Validar
-                    </PrimaryButton>
-                </div>
-            </div>
-        </Modal> -->
         <teleport to="body">
             <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
                 <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
@@ -97,14 +74,8 @@
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import InputError from '@/Components/InputError.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
+import { ref } from 'vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
