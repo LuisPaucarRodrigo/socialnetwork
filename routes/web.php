@@ -133,8 +133,8 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::delete('/management_vacation/information_additional/{vacation}/delete', [VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
 
     //Document
-    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
-    Route::post('/documents', [DocumentController::class, 'create'])->name('documents.create');
+    Route::get('/documents/index', [DocumentController::class, 'index'])->name('documents.index');
+    Route::post('/documents/store', [DocumentController::class, 'create'])->name('documents.create');
     Route::get('/documents/{document}/download', [DocumentController::class, 'downloadDocument'])->name('documents.download');
     Route::get('/documents/{document}/preview', [DocumentController::class, 'showDocument'])->name('documents.show');
     Route::delete('/documents/{id}/delete', [DocumentController::class, 'destroy'])->name('documents.destroy');

@@ -144,9 +144,7 @@ class VacationController extends Controller
     {
         $fileName = $id->doc_permission;
         $filePath = 'documents/permissions/' . $fileName;
-
         $path = public_path($filePath);
-
         if (file_exists($path)) {
             return response()->file($path);
         }
