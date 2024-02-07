@@ -26,7 +26,9 @@
                 <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.type == 'boolean' ? '¿Usar distinto precio en proyectos?' : header.name }}</InputLabel>
                 <div class="mt-2">
                   <input :type="verifyType(header.type)" v-model="form.contentIds[header.id]"
-                    :step="header.type == 'double' ? 0.01 : 1" id="header"
+                    :step="header.type == 'double' ? 0.01 : 1"
+                    :required="header.id === 8" :min="header.id == 8 ? 1 : 0"
+                    id="header"
                     :class="header.type == 'boolean' ? 'block w-9 h-9 rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2' : 'block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2'" />
                   <InputError :message="form.errors.contentIds" />
                 </div>
@@ -99,7 +101,17 @@ const showModal = ref(false);
 
 const form = useForm({
   name: '',
-  contentIds: {32: false},
+  contentIds: {
+    1: '',
+    5: '',
+    7: '',
+    8: 1,
+    10: '',
+    12: '',
+    15: '',
+    29: '',
+    32: false
+  }
 });
   
 const submit = () => {
