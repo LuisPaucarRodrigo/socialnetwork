@@ -91,11 +91,12 @@ class DocumentController extends Controller
             'section_id' => 'required|numeric',
             'subdivision_id' => 'required|numeric',
         ]);
-
-        $document = $request->file('document');
-        $documentName = time() . '_' . $document->getClientOriginalName(); // Generar un nombre único para el archivo
-
-        $document->storeAs('public/documents/HumanResource/', $documentName); // Guardar el archivo en public/documents/HumanResource
+        $documentName = null;
+        if ($request->hasFile('document')) {
+            $document = $request->file('document');
+            $documentName = time() . '_' . $document->getClientOriginalName();
+            $document->move(public_path('documents/documents/'), $documentName);
+        }
 
         Document::create([
             'section_id' => $request->section_id,
@@ -112,9 +113,10 @@ class DocumentController extends Controller
     public function destroy(Document $id)
     {
         $fileName = $id->title;
-        $filePath = storage_path("app/public/documents/HumanResource/$fileName");
-        if (file_exists($filePath)) {
-            Storage::delete("public/documents/HumanResource/$fileName");
+        $filePath = "documents/documents/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            unlink($path);
             $id->delete();
         } else {
             dd("El archivo no existe en la ruta: $filePath");
@@ -126,22 +128,21 @@ class DocumentController extends Controller
     public function downloadDocument(Document $document)
     {
         $fileName = $document->title;
-        $filePath = storage_path("app/public/documents/HumanResource/$fileName");
-
-        if (!$fileName) {
-            abort(404, 'Documento no encontrado');
+        $filePath = "documents/documents/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->download($filePath, $fileName);
         }
-
-        return response()->download($filePath, $fileName);
+        abort(404, 'Documento no encontrado');
     }
 
     public function showDocument(Document $document)
     {
         $fileName = $document->title;
-        $filePath = '/documents/HumanResource/' . $fileName;
-        if (Storage::disk('public')->exists($filePath)) {
-            $file = storage_path("app/public/documents/HumanResource/$fileName");
-            return response()->file($file);
+        $filePath = '/documents/documents/' . $fileName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->file($path);
         }
         abort(404, 'Documento no encontrado');
     }
