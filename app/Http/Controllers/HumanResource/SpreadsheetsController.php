@@ -26,8 +26,8 @@ class SpreadsheetsController extends Controller
             $snp_onp = ($employee->contract->pension->type == 'ONP') ? $total_income * $employee->contract->pension->values : 0;
             $commission = ($employee->contract->pension->type == 'ONP') ? 0 : 100 * ($employee->contract->pension->values);
             $commission_on_ra = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * $employee->contract->pension->values;
-            $seg = ($employee->contract->pension->type == 'ONP') ? 0 : number_format(100 * 0.0184, 2);
-            $insurance_premium = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * 0.0184;
+            $seg = ($employee->contract->pension->type == 'ONP') ? 0 : number_format(100 * $employee->contract->pension->values_seg, 2);
+            $insurance_premium = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * $employee->contract->pension->values_seg;
             $mandatory_contribution = ($employee->contract->pension->type == 'ONP') ? 0 : 100 * 0.1;
             $mandatory_contribution_amount = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * 0.1;
             $total_discount = $snp_onp + $commission_on_ra + $insurance_premium + $mandatory_contribution_amount;
@@ -42,7 +42,7 @@ class SpreadsheetsController extends Controller
                 'name' => $employee->name,
                 'pension_reg' => $employee->contract->pension->type,
                 'salary' => $employee->contract->basic_salary,
-                'hire_date' => $employee->contract->hire_date,
+                'hire_date' => $employee->contract->hire_date ? Carbon::parse($employee->contract->hire_date)->format('d/m/Y') : null,
                 'truncated_vacations' => $truncated_vacations,
                 'total_income' => $total_income,
                 'total_pension_base' => $total_income,
@@ -79,6 +79,19 @@ class SpreadsheetsController extends Controller
         $pension_system = Pension::find($id);
         $pension_system->update([
             'values' => $request->value
+        ]);
+        return to_route('pension_system.edit');
+    }
+
+    public function update_seg(Request $request, $id)
+    {
+        // dd($request->all());
+        $request->validate([
+            'value' => 'required'
+        ]);
+        $pension_system = Pension::find($id);
+        $pension_system->update([
+            'values_seg' => $request->value
         ]);
         return to_route('pension_system.edit');
     }

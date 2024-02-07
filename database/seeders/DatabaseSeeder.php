@@ -70,34 +70,42 @@ class DatabaseSeeder extends Seeder
             [
                 'type' => 'HABITAT',
                 'values' => 0.0147,
+                'values_seg' => 0.0184,
             ],
             [
                 'type' => 'INTEGRA',
                 'values' => 0.0155,
+                'values_seg' => 0.0184,
             ],
             [
                 'type' => 'PRIMA',
                 'values' => 0.0160,
+                'values_seg' => 0.0184,
             ],
             [
                 'type' => 'PROFUTURO',
                 'values' => 0.0169,
+                'values_seg' => 0.0184,
             ],
             [
                 'type' => 'HABITATMX',
                 'values' => 0,
+                'values_seg' => 0.0184,
             ],
             [
                 'type' => 'INTEGRAMX',
                 'values' => 0,
+                'values_seg' => 0.0184,
             ],
             [
                 'type' => 'PRIMAMX',
                 'values' => 0,
+                'values_seg' => 0.0184,
             ],
             [
                 'type' => 'PROFUTUROMX',
                 'values' => 0,
+                'values_seg' => 0.0184,
             ],
         ];
         Pension::insert($data);

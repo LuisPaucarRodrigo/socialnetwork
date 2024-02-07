@@ -120,6 +120,7 @@
     <ConfirmCreateModal :confirmingcreation="showModal" itemType="Almacén" />
 
   </AuthenticatedLayout>
+  
 </template>
   
 <script setup>

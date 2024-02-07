@@ -83,7 +83,7 @@
   import TextInput from '@/Components/TextInput.vue';
   import InputError from '@/Components/InputError.vue';
   import { Head, useForm, router } from '@inertiajs/vue3';
-  import { TrashIcon, EyeIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
+  import { TrashIcon } from '@heroicons/vue/24/outline';
   import { ref, defineProps } from 'vue';
   import Modal from '@/Components/Modal.vue';
   
@@ -118,7 +118,7 @@
         showModal.value = true
         setTimeout(() => {
           showModal.value = false;
-          router.visit(route('documents.subdivisions'))
+          router.visit(route('documents.subdivisions', {section: props.section.id}))
         }, 2000);
       },
       onError: () => {

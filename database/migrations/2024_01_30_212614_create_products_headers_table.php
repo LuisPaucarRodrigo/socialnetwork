@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('header_id')->constrained('headers')->onDelete('cascade');
-            $table->string('content');
+            $table->string('content')->nullable();
             $table->timestamps();
         });
     }

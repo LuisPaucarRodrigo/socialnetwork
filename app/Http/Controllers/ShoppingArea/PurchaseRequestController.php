@@ -51,17 +51,20 @@ class PurchaseRequestController extends Controller
     }
 
     public function quote(CreatePurchaseQuoteRequest $request)
-    {
-        $croppedImage = $request->file('purchase_image');
-        $imageName = 'purchase_image' . time() . '.' . $croppedImage->getClientOriginalExtension();
-        $croppedImage->move(public_path('image'), $imageName);
+    {   
+        $imageName =  null;
+        if($request->hasFile('purchase_doc')){
+            $croppedImage = $request->file('purchase_doc');
+            $imageName = 'purchase_doc' . time() . '.' . $croppedImage->getClientOriginalExtension();
+            $croppedImage->move(public_path('documents/quote/'), $imageName);
+        }
 
         Purchase_quote::create([
             'provider' => $request->provider,
             'amount' => $request->amount,
             'quote_deadline' => $request->quote_deadline,
             'response' => $request->response,
-            'purchase_image' => $imageName,
+            'purchase_doc' => $imageName,
             'purchasing_request_id' => $request->purchasing_request_id,
         ]);
 
@@ -75,13 +78,13 @@ class PurchaseRequestController extends Controller
     
     public function showDocument(Purchase_quote $id)
     {
-        $fileName = $id->purchase_image;
-        $filePath = public_path("image/$fileName");
-        if (!file_exists($filePath)) {
-            abort(404, 'Documento no encontrado');
+        $fileName = $id->purchase_doc;
+        $filePath = public_path("documents/quote/$fileName");
+        if (file_exists($filePath)) {
+            return response()->file($filePath);
         }
-
-        return response()->file($filePath);
+        abort(404, 'Documento no encontrado');
+        
     }
 
     public function reject_request(Purchasing_request $id)

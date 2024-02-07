@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('provider');
             $table->decimal('amount', 10, 2);
             $table->date('quote_deadline');
-            $table->string('purchase_image');
+            $table->string('purchase_doc');
             $table->string('response');
             $table->foreignId('purchasing_request_id')->constrained()->onDelete('cascade');
             $table->timestamps();
