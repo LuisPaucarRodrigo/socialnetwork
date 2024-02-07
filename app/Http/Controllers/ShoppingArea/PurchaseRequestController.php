@@ -80,11 +80,11 @@ class PurchaseRequestController extends Controller
     {
         $fileName = $id->purchase_doc;
         $filePath = public_path("documents/quote/$fileName");
-        if (!file_exists($filePath)) {
-            abort(404, 'Documento no encontrado');
+        if (file_exists($filePath)) {
+            return response()->file($filePath);
         }
-
-        return response()->file($filePath);
+        abort(404, 'Documento no encontrado');
+        
     }
 
     public function reject_request(Purchasing_request $id)

@@ -291,10 +291,11 @@ class ManagementEmployees extends Controller
 
     public function download($filename)
     {
-        $filePath = 'documents/curriculum_vitae/' . $filename;
+        $filePath = '/documents/curriculum_vitae/' . $filename;
 
         $path = public_path($filePath);
         if (file_exists($path)) {
+            
             return response()->download($path, $filename, [
                 'Content-Type' => 'application/pdf',
             ]);

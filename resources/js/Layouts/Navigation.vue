@@ -71,7 +71,7 @@
                     <Link class="w-full" :href="route('documents.index')">Gestion de Documentos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('sections.subSections')">Gestión de Alarmas</Link>
+                    <Link class="w-full" :href="route('sections.subSections')">Gestión de Alarmas RRHH</Link>
                 </MyTransition>
             </template>
 
