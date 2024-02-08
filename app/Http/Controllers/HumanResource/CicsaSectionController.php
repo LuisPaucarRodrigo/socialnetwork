@@ -5,18 +5,18 @@ namespace App\Http\Controllers\HumanResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Section;
-use App\Models\SubSection;
+use App\Models\CicsaSection;
+use App\Models\CicsaSubSection;
 use Carbon\Carbon;
 
-class SectionController extends Controller
+class CicsaSectionController extends Controller
 {
     
     //Sections
     public function showSections()
     {
-        $sections = Section::all();
-        return Inertia::render('HumanResource/AlarmManagement/Sections', [
+        $sections = CicsaSection::all();
+        return Inertia::render('HumanResource/AlarmManagement/CicsaSections', [
             'sections' => $sections
         ]);
     }
@@ -27,32 +27,32 @@ class SectionController extends Controller
             'name' => 'required|string',
         ]);
 
-        Section::create([
+        CicsaSection::create([
             'name' => $request->name,
         ]);
     }
 
-    public function destroySection(Section $section)
+    public function destroySection(CicsaSection $section)
     {
         $section->delete();
-        return to_route('sections.sections');
+        return to_route('sections.cicsaSections');
     }
 
     //SubSections
     public function showSubSections()
     {
-        $subSections = SubSection::with('section')->paginate();
-        $sections = Section::all();
-        return Inertia::render('HumanResource/AlarmManagement/SubSections', [
+        $subSections = CicsaSubSection::with('cicsa_section')->paginate();
+        $sections = CicsaSection::all();
+        return Inertia::render('HumanResource/AlarmManagement/CicsaSubSections', [
             'subSections' => $subSections,
             'sections' => $sections
         ]);
     }
 
-    public function showSubSection(SubSection $subSection)
+    public function showSubSection(CicsaSubSection $subSection)
     {
-        $subSection->load('section');
-        return Inertia::render('HumanResource/AlarmManagement/SubSectionInformation', [
+        $subSection->load('cicsa_section');
+        return Inertia::render('HumanResource/AlarmManagement/CicsaSubSectionInformation', [
             'subSection' => $subSection,
         ]);
     }
@@ -65,17 +65,17 @@ class SectionController extends Controller
             'end_date' => 'required',
         ]);
 
-        SubSection::create([
+        CicsaSubSection::create([
             'name' => $request->name,
             'description' => $request->description,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'requirements' => $request->requirements,
-            'section_id' => $request->section_id,
+            'cicsa_section_id' => $request->cicsa_section_id,
         ]);
     }
 
-    public function updateSubSection(Request $request, SubSection $subSection)
+    public function updateSubSection(Request $request, CicsaSubSection $subSection)
     {
         $request->validate([
             'name' => 'required|string',
@@ -90,15 +90,15 @@ class SectionController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'requirements' => $request->requirements,
-            'section_id' => $request->section_id,
+            'cicsa_section_id' => $request->cicsa_section_id,
         ]);
     }
 
 
-    public function destroySubSection(SubSection $subSection)
+    public function destroySubSection(CicsaSubSection $subSection)
     {
         $subSection->delete();
-        return to_route('sections.subSections');
+        return to_route('sections.cicsaSubSections');
     }
 
     public function doTask()
@@ -108,7 +108,7 @@ class SectionController extends Controller
         $currentDateUpdate = $currentDate->subHours(5);
 
         // Obtener todos los SubSection que están a punto de vencerse en los próximos 3 días y los que ya vencieron
-        $subSections = SubSection::where('end_date', '<=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 3 días y fechas pasadas
+        $subSections = CicsaSubSection::where('end_date', '<=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 3 días y fechas pasadas
             ->get(); // Obtener una colección de resultados
 
         $totalSubSections = $subSections->count();
@@ -127,7 +127,7 @@ class SectionController extends Controller
         $currentDateUpdate = $currentDate->subHours(5);
 
         // Obtener todos los SubSection que están a punto de vencerse entre los próximos 4 y 7 días
-        $subSections = SubSection::where('end_date', '>=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 4 días
+        $subSections = CicsaSubSection::where('end_date', '>=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 4 días
             ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(7)) // Ajustado para considerar los próximos 7 días
             ->get(); // Obtener una colección de resultados
 
