@@ -10,6 +10,12 @@
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
+
+            <button @click="openScheduleModal" type="button"
+                class="mx-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                Horario
+            </button>
+
             <table class="w-full whitespace-no-wrap overflow-auto">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -135,8 +141,73 @@
                 </form>
             </div>
         </Modal>
+
+        <Modal :show="showModalSchedule">
+            <div class="p-8">
+                <h2 class="text-lg font-medium leading-7 text-gray-900"> 
+                    {{ props.fileExists ? 'Actualizar Horario' : 'Agregar Horario' }}
+                </h2>
+                <form @submit.prevent="submitSchedule">
+                    <div class="space-y-8">
+                        <div class="border-b border-gray-900/10 pb-8" v-if="!props.fileExists">
+                            <div>
+                                <div class="mt-4">
+                                    <InputFile type="file" v-model="formSchedule.document" id="documentFile" accept=".xlsx"
+                                        class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.document" />
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            
+                            <div>
+                                <div class="mt-4">
+                                    <InputFile type="file" v-model="formSchedule.document" id="documentFile" accept=".xlsx"
+                                        class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.document" />
+                                </div>
+                            </div>
+                            <h2 class="text-lg font-medium leading-7 text-gray-900 mt-4">
+                                Horario
+                            </h2>
+                            <div class="mt-4" style="max-height: 600px; overflow-y: auto;"> 
+                                <table v-if="excelData"
+                                    class="w-full whitespace-no-wrap overflow-auto border border-gray-200">
+                                    <thead>
+                                        <tr class="border-b bg-gray-50 text-left text-sm font-semibold uppercase tracking-wide text-gray-500">
+                                            <th v-for="header in excelData[0]" :key="header"
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
+                                                {{ header }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in excelData" :key="index" class="text-gray-700">
+                                            <td v-for="cell in row" :key="cell"
+                                                class="border-b border-gray-200 bg-white px-6 py-4 text-sm">
+                                                {{ cell }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p v-else class="mt-2">Cargando archivo...</p>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeScheduleModal"> Cancel </SecondaryButton>
+                            <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado" :deleteText="deleteButtonText"
             :deleteFunction="deleteEmployee" @closeModal="closeModal" />
+        <ConfirmCreateModal :confirmingcreation="createSchedule" itemType="Horario" />
+        <ConfirmUpdateModal :confirmingupdate="updateSchedule" itemType="Horario" />
     </AuthenticatedLayout>
 </template>
 
@@ -145,27 +216,41 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Pagination from '@/Components/Pagination.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import InputFile from '@/Components/InputFile.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import InputError from '@/Components/InputError.vue';
+import * as XLSX from 'xlsx';
+
 
 const confirmingUserDeletion = ref(false);
 const deleteButtonText = 'Eliminar';
 const employeeToDelete = ref(null);
 const employeeToFired = ref(null);
 const showModalFired = ref(false);
+const createSchedule = ref(false);
+const updateSchedule = ref(false);
+const showModalSchedule = ref(false);
 
 const props = defineProps({
-    employees: Object
+    employees: Object,
+    fileExists: Boolean,
+    filePath: String
 })
 
 const form = useForm({
     fired_date: '',
     days_taken: '',
     state: 'Inactive'
+})
+
+const formSchedule = useForm({
+    document: null
 })
 
 const submit = () => {
@@ -177,6 +262,47 @@ const submit = () => {
 
     })
 }
+
+const submitSchedule = () => {
+
+    if(props.fileExists){
+        formSchedule.post(route('management.employees.updateSchedule'), {
+        onSuccess: () => {
+            closeScheduleModal();
+            formSchedule.reset();
+            updateSchedule.value = true
+            setTimeout(() => {
+            updateSchedule.value = false;
+            router.visit(route('management.employees'))
+            }, 2000);
+        },
+        onError: () => {
+            formSchedule.reset();
+        },
+        onFinish: () => {
+            formSchedule.reset();
+        }
+        });
+    }else{
+        formSchedule.post(route('management.employees.addSchedule'), {
+        onSuccess: () => {
+            closeScheduleModal();
+            formSchedule.reset();
+            createSchedule.value = true
+            setTimeout(() => {
+            createSchedule.value = false;
+            router.visit(route('management.employees'))
+            }, 2000);
+        },
+        onError: () => {
+            formSchedule.reset();
+        },
+        onFinish: () => {
+            formSchedule.reset();
+        }
+        });
+    }
+  };
 
 const confirmUserDeletion = (employeeId) => {
     employeeToDelete.value = employeeId;
@@ -209,5 +335,48 @@ const closeModal = () => {
 const add_information = () => {
     router.get(route('management.employees.information'));
 };
+
+
+const openScheduleModal = () => {
+    showModalSchedule.value = true;
+  };
+
+  const closeScheduleModal = () => {
+    showModalSchedule.value = false;
+  };
+
+  const excelData = ref(null);
+
+  const loadExcelFile = async () => {
+  try {
+    // Obtener el archivo Excel directamente utilizando la ruta
+    const response = await axios.get('http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx', {
+      responseType: 'blob' // Especificar el tipo de respuesta como blob para manejar archivos binarios
+    });
+    
+    // Convertir la respuesta a un ArrayBuffer
+    const arrayBuffer = await response.data.arrayBuffer();
+    
+    // Leer el ArrayBuffer como un libro de trabajo de Excel
+    const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+
+    // Obtener el nombre de la primera hoja
+    const sheetName = workbook.SheetNames[0];
+
+    // Obtener los datos de la hoja como JSON
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+
+    // Asignar los datos al ref excelData
+    excelData.value = sheetData;
+  } catch (error) {
+    console.error('Error al cargar el archivo:', error);
+    excelData.value = null;
+  }
+};
+
+
+onMounted(() => {
+  loadExcelFile();
+});
 
 </script>

@@ -35,8 +35,14 @@ class ManagementEmployees extends Controller
         $employees->each(function ($employee) {
             $employee->cropped_image = url('/image/profile/' . $employee->cropped_image);
         });
+
+        $filePath = public_path('documents/schedule/EmployeesSchedule.xlsx');
+        $fileExists = File::exists($filePath);
+
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
             'employees' => $employees,
+            'fileExists' => $fileExists,
+            'filePath' => $filePath
         ]);
     }
 
@@ -301,4 +307,41 @@ class ManagementEmployees extends Controller
         }
         abort(404);
     }
+
+    public function uploadSchedule(Request $request){
+
+        $request->validate([
+            'document' => 'required|mimes:xlsx',
+        ]);
+
+        if ($request->hasFile('document')) {
+            $document = $request->file('document');
+            $documentName = 'EmployeesSchedule.xlsx';
+            $document->move(public_path('documents/schedule/'), $documentName);
+        }
+    }
+
+    public function updateSchedule(Request $request)
+    {
+        $request->validate([
+            'document' => 'required|mimes:xlsx',
+        ]);
+
+        if ($request->hasFile('document')) {
+            // Eliminar el archivo anterior si existe
+            $filePath = "documents/schedule/EmployeesSchedule.xlsx";
+            $path = public_path($filePath);
+            if (file_exists($path)) {
+                unlink($path);
+            } else {
+                dd("El archivo no existe en la ruta: $filePath");
+            }
+
+            // Mover el nuevo archivo al mismo directorio con el mismo nombre
+            $document = $request->file('document');
+            $documentName = 'EmployeesSchedule.xlsx';
+            $document->move(public_path('documents/schedule/'), $documentName);
+        }
+    }
+
 }
