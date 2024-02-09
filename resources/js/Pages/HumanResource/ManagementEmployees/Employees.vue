@@ -167,9 +167,12 @@
                                     <InputError :message="form.errors.document" />
                                 </div>
                             </div>
-                            <h2 class="text-lg font-medium leading-7 text-gray-900 mt-4">
+                            <h2 class="text-lg font-medium leading-7 text-gray-900 my-4">
                                 Horario
                             </h2>
+                            <a href="http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx" class="rounded-md bg-gray-200 px-6 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
+                                Descargar Archivo
+                            </a>
                             <div class="mt-4" style="max-height: 600px; overflow-y: auto;"> 
                                 <table v-if="excelData"
                                     class="w-full whitespace-no-wrap overflow-auto border border-gray-200">
@@ -373,7 +376,6 @@ const openScheduleModal = () => {
     excelData.value = null;
   }
 };
-
 
 onMounted(() => {
   loadExcelFile();
