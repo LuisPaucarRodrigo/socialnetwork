@@ -167,34 +167,6 @@
                                     <InputError :message="form.errors.document" />
                                 </div>
                             </div>
-                            <h2 class="text-lg font-medium leading-7 text-gray-900 my-4">
-                                Horario
-                            </h2>
-                            <a href="http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx" class="rounded-md bg-gray-200 px-6 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
-                                Descargar Archivo
-                            </a>
-                            <div class="mt-4" style="max-height: 600px; overflow-y: auto;"> 
-                                <table v-if="excelData"
-                                    class="w-full whitespace-no-wrap overflow-auto border border-gray-200">
-                                    <thead>
-                                        <tr class="border-b bg-gray-50 text-left text-sm font-semibold uppercase tracking-wide text-gray-500">
-                                            <th v-for="header in excelData[0]" :key="header"
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
-                                                {{ header }}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(row, index) in excelData" :key="index" class="text-gray-700">
-                                            <td v-for="cell in row" :key="cell"
-                                                class="border-b border-gray-200 bg-white px-6 py-4 text-sm">
-                                                {{ cell }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <p v-else class="mt-2">Cargando archivo...</p>
-                            </div>
                         </div>
                         <div class="mt-8 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeScheduleModal"> Cancel </SecondaryButton>
@@ -339,7 +311,6 @@ const add_information = () => {
     router.get(route('management.employees.information'));
 };
 
-
 const openScheduleModal = () => {
     showModalSchedule.value = true;
   };
@@ -347,38 +318,5 @@ const openScheduleModal = () => {
   const closeScheduleModal = () => {
     showModalSchedule.value = false;
   };
-
-  const excelData = ref(null);
-
-  const loadExcelFile = async () => {
-  try {
-    // Obtener el archivo Excel directamente utilizando la ruta
-    const response = await axios.get('http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx', {
-      responseType: 'blob' // Especificar el tipo de respuesta como blob para manejar archivos binarios
-    });
-    
-    // Convertir la respuesta a un ArrayBuffer
-    const arrayBuffer = await response.data.arrayBuffer();
-    
-    // Leer el ArrayBuffer como un libro de trabajo de Excel
-    const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
-
-    // Obtener el nombre de la primera hoja
-    const sheetName = workbook.SheetNames[0];
-
-    // Obtener los datos de la hoja como JSON
-    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
-
-    // Asignar los datos al ref excelData
-    excelData.value = sheetData;
-  } catch (error) {
-    console.error('Error al cargar el archivo:', error);
-    excelData.value = null;
-  }
-};
-
-onMounted(() => {
-  loadExcelFile();
-});
 
 </script>
