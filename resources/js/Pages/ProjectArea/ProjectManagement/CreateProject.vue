@@ -232,10 +232,10 @@ const submit = () => {
 
 function formatearFecha(fecha) {
     if (fecha) {
-        const date = new Date(fecha);
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        return `${year}${month}`
+        const partesFecha = fecha.split('-');
+        const year = partesFecha[0];
+        const month = partesFecha[1];
+        return `${year}${month}`;
     }
 }
 
