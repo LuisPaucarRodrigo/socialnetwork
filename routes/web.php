@@ -21,7 +21,7 @@ use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\SectionController;
-use App\Http\Controllers\HumanResource\CicsaSectionController;
+use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
 use App\Http\Controllers\Inventory\WarehousesController;
@@ -163,20 +163,6 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
     Route::get('/doTask2', [SectionController::class, 'doTask2'])->name('sections.task2');
-
-    //CicsaSections
-    Route::get('/cicsaSections', [CicsaSectionController::class, 'showSections'])->name('sections.cicsaSections');
-    Route::post('/cicsaSections', [CicsaSectionController::class, 'storeSection'])->name('sections.cicsaStoreSection');
-    Route::delete('/cicsaSections/{section}', [CicsaSectionController::class, 'destroySection'])->name('sections.cicsaDestroySection');
-
-    //CicsaSubSections
-    Route::get('/cicsaSubSections', [CicsaSectionController::class, 'showSubSections'])->name('sections.cicsaSubSections');
-    Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'showSubSection'])->name('sections.cicsaSubSection');
-    Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
-    Route::put('/cicsaSubSections/{subSection}/update', [CicsaSectionController::class, 'updateSubSection'])->name('sections.cicsaUpdateSubSection');
-    Route::delete('/cicsaSubSections/{subSection}/delete', [CicsaSectionController::class, 'destroySubSection'])->name('sections.cicsaDestroySubSection');
-    Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
-    Route::get('/cicsaDoTask2', [CicsaSectionController::class, 'doTask2'])->name('sections.cicsaTask2');
 });
 
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
@@ -238,15 +224,25 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
     Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
 
-
-
     Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
     Route::post('/projectmanagement/resources/return/{id}', [ProjectManagementController::class, 'project_resources_return'])->name('projectmanagement.resources.return');
 
     Route::post('/projectmanagement/componentormaterials', [ProjectManagementController::class, 'project_componentmaterial_store'])->name('projectmanagement.componentormaterials.store');
     Route::delete('/projectmanagement/componentormaterials/delete/{component_or_material_id}', [ProjectManagementController::class, 'project_componentmaterial_delete'])->name('projectmanagement.componentormaterials.delete');
 
+    //CicsaSections
+    Route::get('/cicsaSections', [CicsaSectionController::class, 'showSections'])->name('sections.cicsaSections');
+    Route::post('/cicsaSections', [CicsaSectionController::class, 'storeSection'])->name('sections.cicsaStoreSection');
+    Route::delete('/cicsaSections/{section}', [CicsaSectionController::class, 'destroySection'])->name('sections.cicsaDestroySection');
 
+    //CicsaSubSections
+    Route::get('/cicsaSubSections', [CicsaSectionController::class, 'showSubSections'])->name('sections.cicsaSubSections');
+    Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'showSubSection'])->name('sections.cicsaSubSection');
+    Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
+    Route::put('/cicsaSubSections/{subSection}/update', [CicsaSectionController::class, 'updateSubSection'])->name('sections.cicsaUpdateSubSection');
+    Route::delete('/cicsaSubSections/{subSection}/delete', [CicsaSectionController::class, 'destroySubSection'])->name('sections.cicsaDestroySubSection');
+    Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
+    Route::get('/cicsaDoTask2', [CicsaSectionController::class, 'doTask2'])->name('sections.cicsaTask2');
 
 
 
