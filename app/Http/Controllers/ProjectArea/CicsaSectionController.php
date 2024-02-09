@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\HumanResource;
+namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,12 +11,12 @@ use Carbon\Carbon;
 
 class CicsaSectionController extends Controller
 {
-    
+
     //Sections
     public function showSections()
     {
         $sections = CicsaSection::all();
-        return Inertia::render('HumanResource/AlarmManagement/CicsaSections', [
+        return Inertia::render('ProjectArea/AlarmManagement/CicsaSections', [
             'sections' => $sections
         ]);
     }
@@ -43,7 +43,7 @@ class CicsaSectionController extends Controller
     {
         $subSections = CicsaSubSection::with('cicsa_section')->paginate();
         $sections = CicsaSection::all();
-        return Inertia::render('HumanResource/AlarmManagement/CicsaSubSections', [
+        return Inertia::render('ProjectArea/AlarmManagement/CicsaSubSections', [
             'subSections' => $subSections,
             'sections' => $sections
         ]);
@@ -52,7 +52,7 @@ class CicsaSectionController extends Controller
     public function showSubSection(CicsaSubSection $subSection)
     {
         $subSection->load('cicsa_section');
-        return Inertia::render('HumanResource/AlarmManagement/CicsaSubSectionInformation', [
+        return Inertia::render('ProjectArea/AlarmManagement/CicsaSubSectionInformation', [
             'subSection' => $subSection,
         ]);
     }
@@ -61,8 +61,8 @@ class CicsaSectionController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'start_date' => 'required',
-            'end_date' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
         CicsaSubSection::create([
@@ -79,8 +79,9 @@ class CicsaSectionController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'start_date' => 'required',
-            'end_date' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+
         ]);
 
         // Actualizar los campos de la subsección con los datos del formulario
@@ -138,5 +139,4 @@ class CicsaSectionController extends Controller
             'subSections' => $subSections,
         ]);
     }
-
 }
