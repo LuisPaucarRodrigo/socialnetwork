@@ -29,22 +29,112 @@
           <dropdown-link :href="route('profile.edit')">
             Perfil
           </dropdown-link>
-
+          <div class="dropdown">
+            <div class="dropdown-menu">
+              <button @click="openScheduleModal"
+                class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                Horario
+              </button>
+            </div>
+          </div>
           <dropdown-link class="w-full text-left" :href="route('logout')" method="post" as="button">
             Cerrar sesión
           </dropdown-link>
         </template>
       </dropdown>
     </div>
+    <Modal :show="showModalSchedule">
+      <div class="p-8">
+        <h2 class="text-lg font-medium leading-7 text-gray-900 mb-3">
+          Horario
+        </h2>
+        <div class="space-y-8">
+          <div v-if="fileExists">
+            <a href="http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx"
+              class="rounded-md bg-gray-200 px-6 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
+              Descargar Archivo
+            </a>
+            <div class="mt-4" style="max-height: 600px; overflow-y: auto;">
+              <table v-if="excelData" class="w-full whitespace-no-wrap overflow-auto border border-gray-200">
+                <thead>
+                  <tr class="border-b bg-gray-50 text-left text-sm font-semibold uppercase tracking-wide text-gray-500">
+                    <th v-for="header in excelData[0]" :key="header"
+                      class="border-b-2 border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
+                      {{ header }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row, index) in excelData" :key="index" class="text-gray-700">
+                    <td v-for="cell in row" :key="cell" class="border-b border-gray-200 bg-white px-6 py-4 text-sm">
+                      {{ cell }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <p v-else class="mt-2">Cargando archivo...</p>
+            </div>
+          </div>
+          <div v-else>
+            Horario no Disponible
+          </div>
+          <div class="mt-8 flex items-center justify-end gap-x-6">
+            <button @click="closeScheduleModal"> Cerrar </button>
+          </div>
+        </div>
+      </div>
+    </Modal>
   </header>
 </template>
-  
 <script setup>
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-
+import { ref, onMounted } from 'vue'
+import Modal from '@/Components/Modal.vue';
+import * as XLSX from 'xlsx';
 // const goBack = () => {
-//   window.history.back(); // Retrocede en el historial
+//   window.history.back();
 // };
+
+const showModalSchedule = ref(false);
+
+const openScheduleModal = () => {
+  showModalSchedule.value = true;
+};
+
+const closeScheduleModal = () => {
+  showModalSchedule.value = false;
+};
+
+
+const excelData = ref(null);
+const fileExists = ref(null);
+const loadExcelFile = async () => {
+  try {
+    const response = await axios.get('http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx', {
+      responseType: 'blob'
+    });
+
+    const arrayBuffer = await response.data.arrayBuffer();
+
+    const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+
+    const sheetName = workbook.SheetNames[0];
+
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+
+    excelData.value = sheetData;
+    fileExists.value = true;
+  } catch (error) {
+    console.error('Error al cargar el archivo:', error); // Aquí puedes personalizar cómo manejar los errores
+    excelData.value = null;
+  }
+};
+
+// Llamar a la función loadExcelFile cada 5 segundos
+onMounted(() => {
+  loadExcelFile();
+});
+
 </script>
   
