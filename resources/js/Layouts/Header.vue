@@ -11,10 +11,10 @@
 
       <!-- Botón para volver -->
       <!-- <button @click="goBack" class="ml-4 text-gray-500 focus:outline-none">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-          </svg>
-        </button> -->
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button> -->
     </div>
 
     <div class="flex items-center">
@@ -89,28 +89,30 @@
 <script setup>
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import Modal from '@/Components/Modal.vue';
 import * as XLSX from 'xlsx';
+
 // const goBack = () => {
 //   window.history.back();
+//   window.onpopstate = function (event) {
+//     location.reload();
+//   };
 // };
 
-const showModalSchedule = ref(false);
 
-const openScheduleModal = () => {
-  showModalSchedule.value = true;
-};
+const showModalSchedule = ref(false);
+const excelData = ref(null);
+const fileExists = ref(null);
 
 const closeScheduleModal = () => {
   showModalSchedule.value = false;
 };
 
-
-const excelData = ref(null);
-const fileExists = ref(null);
-const loadExcelFile = async () => {
+const openScheduleModal = async () => {
+  showModalSchedule.value = true;
   try {
+    // Realiza la solicitud solo cuando se abre el modal
     const response = await axios.get('http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx', {
       responseType: 'blob'
     });
@@ -126,15 +128,10 @@ const loadExcelFile = async () => {
     excelData.value = sheetData;
     fileExists.value = true;
   } catch (error) {
-    console.error('Error al cargar el archivo:', error); // Aquí puedes personalizar cómo manejar los errores
     excelData.value = null;
   }
 };
 
-// Llamar a la función loadExcelFile cada 5 segundos
-onMounted(() => {
-  loadExcelFile();
-});
 
 </script>
   
