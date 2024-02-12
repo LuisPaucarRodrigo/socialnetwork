@@ -16,8 +16,8 @@
                     Gastos
                 </button>
                 <Link :href="route('projectmanagement.additionalCosts', { project_id: props.project.id })"
-                class="rounded-md bg-gray-600 px-4 py-2 text-center text-sm text-white hover:bg-gray-500">
-                    Gastos Adicionales
+                    class="rounded-md bg-gray-600 px-4 py-2 text-center text-sm text-white hover:bg-gray-500">
+                Gastos Adicionales
                 </Link>
             </div>
             <table class="w-full whitespace-no-wrap">
@@ -100,6 +100,12 @@
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="purchases.links" />
             </div>
+        </div>
+        <div class="mt-6 flex items-center justify-between gap-x-6">
+            <a :href="route('projectmanagement.index')"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Atras
+            </a>
         </div>
         <Modal :show="confirmingPurchasesDeletion">
             <div class="p-6">

@@ -18,16 +18,16 @@
                 <div class="mt-2">
                   <input type="text" id="name" v-model="form.name"
                     class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2" />
-                    <InputError :message="form.errors.name" />
-                  </div>
+                  <InputError :message="form.errors.name" />
+                </div>
               </div>
 
               <div v-for="header in headers" :key="header.id" class="flex flex-col gap-2">
-                <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.type == 'boolean' ? '¿Usar distinto precio en proyectos?' : header.name }}</InputLabel>
+                <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.type == 'boolean' ?
+                  '¿Usar distinto precio en proyectos?' : header.name }}</InputLabel>
                 <div class="mt-2">
                   <input :type="verifyType(header.type)" v-model="form.contentIds[header.id]"
-                    :step="header.type == 'double' ? 0.01 : 1"
-                    :required="header.id === 8" :min="header.id == 8 ? 1 : 0"
+                    :step="header.type == 'double' ? 0.01 : 1" :required="header.id === 8" :min="header.id == 8 ? 1 : 0"
                     id="header"
                     :class="header.type == 'boolean' ? 'block w-9 h-9 rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2' : 'block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2'" />
                   <InputError :message="form.errors.contentIds" />
@@ -70,8 +70,11 @@
                 </div>
               </div>
             </div>
-            <div class="mt-6 flex items-center justify-end gap-x-6">
-              <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
+            <div class="mt-6 flex items-center justify-between gap-x-6">
+              <button @click="closeModal" type="button"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Cancelar
+              </button>
               <button type="submit" :class="{ 'opacity-25': form.processing }"
                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Guardar
@@ -88,8 +91,7 @@
 import { Head, useForm, router } from '@inertiajs/vue3';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
@@ -113,7 +115,7 @@ const form = useForm({
     32: false
   }
 });
-  
+
 const submit = () => {
 
   form.post(route('warehouses.storeProduct', { warehouse: props.warehouse.id }), {
@@ -123,7 +125,7 @@ const submit = () => {
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('warehouses.products', { warehouse: props.warehouse.id}))
+        router.visit(route('warehouses.products', { warehouse: props.warehouse.id }))
       }, 2000);
     },
     onError: () => {
@@ -136,22 +138,22 @@ const submit = () => {
 };
 
 const closeModal = () => {
-  router.visit(route('warehouses.products', { warehouse: props.warehouse.id}))
+  router.visit(route('warehouses.products', { warehouse: props.warehouse.id }))
 };
 
 const verifyType = (type) => {
-    if (type == 'double'){
-      return 'number'
-    }else if (type == 'boolean'){
-      return 'checkbox'
-    }else if(type == 'number'){
-      return 'number'
-    }else if(type == 'date'){
-      return 'date'
-    }
-    else{
-      return 'text'
-    }
+  if (type == 'double') {
+    return 'number'
+  } else if (type == 'boolean') {
+    return 'checkbox'
+  } else if (type == 'number') {
+    return 'number'
+  } else if (type == 'date') {
+    return 'date'
+  }
+  else {
+    return 'text'
+  }
 }
 
 </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ShoppingArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseQuoteRequest\CreatePurchaseQuoteRequest;
 use App\Http\Requests\PurchaseRequest\CreatePurchaseRequest;
+use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
 use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Purchase_order;
@@ -21,21 +22,42 @@ class PurchaseRequestController extends Controller
 
     public function create()
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/CreateRequest');
+        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest');
     }
 
     public function store(CreatePurchaseRequest $request)
     {
         $validateData = $request->validated();
         Purchasing_request::create($validateData);
+    }
+
+    public function edit($id)
+    {
+        $purchases = Purchasing_request::find($id);
+        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+            'purchases' => $purchases,
+        ]);
+    }
+    public function update(UpdatePurchaseRequest $request, $id)
+    {   
+        $validateData = $request->validated();
+        $purchases = Purchasing_request::findOrFail($id);
+        $purchases->update($validateData);
+
         return to_route('purchasesrequest.index');
     }
 
-    public function index_quotes($id)
+    public function index_quotes(Purchasing_request $id)
     {
+        $purchases = null;
+        if ($id->project_id) {
+            $purchases = Purchasing_request::with('project')->find($id->id);
+        } else {
+            $purchases = Purchasing_request::find($id->id);
+        }
         return Inertia::render('ShoppingArea/PurchaseRequest/RequestQuotes', [
             'providers' => Provider::all(),
-            'purchases' => Purchasing_request::with('project')->find($id),
+            'purchases' => $purchases
         ]);
     }
 
@@ -45,15 +67,19 @@ class PurchaseRequestController extends Controller
         return redirect()->back();
     }
 
-    public function details($id)
+    public function details(Purchasing_request $id)
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project')->find($id)]);
+        if ($id->project_id) {
+            return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project')->find($id->id)]);
+        } else {
+            return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::find($id->id)]);
+        }
     }
 
     public function quote(CreatePurchaseQuoteRequest $request)
-    {   
+    {
         $imageName =  null;
-        if($request->hasFile('purchase_doc')){
+        if ($request->hasFile('purchase_doc')) {
             $croppedImage = $request->file('purchase_doc');
             $imageName = 'purchase_doc' . time() . '.' . $croppedImage->getClientOriginalExtension();
             $croppedImage->move(public_path('documents/quote/'), $imageName);
@@ -75,7 +101,7 @@ class PurchaseRequestController extends Controller
 
         return to_route('purchasesrequest.index');
     }
-    
+
     public function showDocument(Purchase_quote $id)
     {
         $fileName = $id->purchase_doc;
@@ -84,7 +110,6 @@ class PurchaseRequestController extends Controller
             return response()->file($filePath);
         }
         abort(404, 'Documento no encontrado');
-        
     }
 
     public function reject_request(Purchasing_request $id)

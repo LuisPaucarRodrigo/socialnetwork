@@ -6,7 +6,7 @@
         </template>
         <div class="mt-6 border-t border-gray-100 flex flex-col md:flex-row">
             <dl class="divide-y divide-gray-100 md:w-1/2 md:mr-4">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div v-if="details.purchasing_requests.project" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Proyecto</dt>
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
                         details.purchasing_requests.project.name }}</dd>
@@ -82,35 +82,20 @@ const props = defineProps({
     details: Object
 });
 
-// const confirmOrden = ref(false);
-const comentOrden = ref(null);
-
 const form = useForm({
     response: '',
     state: '',
     purchase_quote_id: props.details.id
 });
 
-// const check = () => {
-//     confirmOrden.value = true;
-//     nextTick(() => comentOrden.value.focus());
-// };
-
 const sendReply = (state) => {
     form.state = state
     form.put(route('managementexpense.reviewed', { id: props.details.id }), form, {
         preserveScroll: true,
-        // onSuccess: () => closeModal(),
-        // onError: () => comentOrden.value.focus(),
         onFinish: () => form.reset(),
     });
 
 };
-
-// const closeModal = () => {
-//     confirmOrden.value = false;
-//     form.reset();
-// };
 
 function getDocumentUrl(documentId) {
     return route('purchasesrequest.show', { id: documentId });

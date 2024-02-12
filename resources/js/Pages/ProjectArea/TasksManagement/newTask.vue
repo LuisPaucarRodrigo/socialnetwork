@@ -61,7 +61,11 @@
         </div>
 
         <!-- Botón de enviar -->
-        <div class="mt-6 flex items-center justify-end gap-x-6">
+        <div class="mt-6 flex items-center justify-between gap-x-6">
+            <a :href="route('tasks.index')"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Atras
+            </a>
             <button @click="submitForm"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Enviar
@@ -75,7 +79,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+
 
 const props = defineProps({
     projects: Object
@@ -94,7 +98,6 @@ const form = useForm({
 const submitForm = () => {
     form.post(route('tasks.create'), {
         onError: (errors) => {
-            // Imprimir los errores de validación en la consola
             console.log('Errores de validación:', errors);
         }
     })
