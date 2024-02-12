@@ -39,35 +39,15 @@
                 </div>
 
             </div>
-            <div class="mt-6 flex items-center justify-end gap-x-6">
+            <div class="mt-6 flex items-center justify-between gap-x-6">
+                <a :href="route('management.employees.formation_development.trainings')"
+                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    Atras
+                </a>
                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
         </form>
-        <!-- <Modal :show="showModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    {{ titleModal }}
-                </h2>
-                <p class="mt-2 text-sm text-gray-500">
-                    {{ content }}
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
-                        type="button" @click="closeModal"> Cancelar
-                    </button>
-                    <button v-if="!training" @click="create()"
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="button"> {{ textButton }}
-                    </button>
-                    <button v-else @click="update(training.id)"
-                        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-                        {{ textButton }}
-                    </button>
-                </div>
-            </div>
-        </Modal> -->
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="capacitacion" />
     </AuthenticatedLayout>
 </template>
@@ -95,30 +75,10 @@ const form = useForm({
 });
 
 const showModal = ref(false);
-const titleModal = props.training ? "Actualizacion":"Registro";
-// const content = ref(null);
-// const textButton = ref(null);
-
-// const openModalCreate = () => {
-//     titleModal.value = 'Creacion de una nueva Capacitacion';
-//     content.value = '¿Desea continuar con la creacion de una nueva Capacitacion?';
-//     textButton.value = 'Continuar';
-//     showModal.value = true;
-// }
-
-// const openModalSave = () => {
-//     titleModal.value = 'Modificar la Capacitacion';
-//     content.value = '¿Desea guardar los cambios realizados a esta Capacitacion?';
-//     textButton.value = 'Guardar';
-//     showModal.value = true;
-// }
-
-// const closeModal = () => {
-//     showModal.value = false;
-// }
+const titleModal = props.training ? "Actualizacion" : "Registro";
 
 const update = (training_id) => {
-    form.post(route('management.employees.formation_development.trainings.store', { id: training_id }),{
+    form.post(route('management.employees.formation_development.trainings.store', { id: training_id }), {
         onSuccess: () => {
             router.visit(route('management.employees.formation_development.trainings'))
         }
@@ -126,13 +86,13 @@ const update = (training_id) => {
 }
 
 const create = () => {
-    form.post(route('management.employees.formation_development.trainings.store'),{
+    form.post(route('management.employees.formation_development.trainings.store'), {
         onSuccess: () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
                 router.visit(route('management.employees.formation_development.trainings'))
-            },2000);
+            }, 2000);
         }
     })
 }

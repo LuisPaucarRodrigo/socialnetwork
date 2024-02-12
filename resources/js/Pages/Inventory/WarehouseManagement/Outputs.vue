@@ -7,9 +7,9 @@
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <Link type="button" :href="route('warehouses.outputs_history', {warehouse: warehouse})"
+                <Link type="button" :href="route('warehouses.outputs_history', { warehouse: warehouse })"
                     class="rounded-md bg-teal-600 px-4 py-2 text-center text-sm text-white hover:bg-teal-500 ">
-                    historial de salidas
+                historial de salidas
                 </Link>
             </div>
             <div class="talwing mt-4">
@@ -45,10 +45,10 @@
                     <tbody>
                         <tr v-for="item in project_products.data" :key="item.id" :class="[
                             'text-gray-700',
-                            { 
-                                'border-l-4': true, 
-                                'border-green-500': item.state === 'Completo', 
-                                'border-red-500': item.state === 'Incompleto' 
+                            {
+                                'border-l-4': true,
+                                'border-green-500': item.state === 'Completo',
+                                'border-red-500': item.state === 'Incompleto'
                             }
                         ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -68,9 +68,12 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div v-if="item.state === 'Incompleto'" class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900 whitespace-no-wrap" @click="showToAddProduct(item.id, item.quantity, item.total_output_project_product)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    <button class="text-blue-900 whitespace-no-wrap"
+                                        @click="showToAddProduct(item.id, item.quantity, item.total_output_project_product)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                                         </svg>
                                     </button>
                                 </div>
@@ -83,46 +86,49 @@
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="project_products.links" />
         </div>
-
-        <Modal :show="showModal" >
-                <form class="p-6" @submit.prevent="submit">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Registrar la salida
-                    </h2>
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                        <div class="sm:col-span-3">
-                            <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
-                            <div class="mt-2">
-                                <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                     />
-                            </div>
+        <div class="mt-6 flex items-center justify-between gap-x-6">
+            <a :href="route('warehouses.warehouses')"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Atras
+            </a>
+        </div>
+        <Modal :show="showModal">
+            <form class="p-6" @submit.prevent="submit">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Registrar la salida
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div class="sm:col-span-3">
+                        <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
+                        <div class="mt-2">
+                            <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
+                    </div>
 
-                        <div class="sm:col-span-3">
-                            <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
-                            </InputLabel>
-                            <div class="mt-2">
-                                <textarea id="observation" type="text" v-model="form.observation"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                   />
-                            </div>
+                    <div class="sm:col-span-3">
+                        <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
+                        </InputLabel>
+                        <div class="mt-2">
+                            <textarea id="observation" type="text" v-model="form.observation"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
+                    </div>
 
-                    </div>
-                    <div class="mt-6 flex gap-3 justify-end">
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                            type="button" @click="closeModal"> Cerrar </button>
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                            type="submit"> Agregar </button>
-                    </div>
-                </form>
-            </Modal>
-            <SuccessOperationModal :confirming="successAsignation" title="Salida registrada" message="Salida registrada de forma exitosa" />
-            <ErrorOperationModal :showError="errorAsignation" title="Cantidad Excedida"
-            message="No es una cantidad válida" />
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <button
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
+                        type="button" @click="closeModal"> Cerrar </button>
+                    <button
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
+                        type="submit"> Agregar </button>
+                </div>
+            </form>
+        </Modal>
+        <SuccessOperationModal :confirming="successAsignation" title="Salida registrada"
+            message="Salida registrada de forma exitosa" />
+        <ErrorOperationModal :showError="errorAsignation" title="Cantidad Excedida" message="No es una cantidad válida" />
     </AuthenticatedLayout>
 </template>
 
@@ -140,7 +146,7 @@ import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 
 
-const {project_products, warehouse} = defineProps({
+const { project_products, warehouse } = defineProps({
     project_products: Object,
     warehouse: String
 })
@@ -162,37 +168,37 @@ const successAsignation = ref(false)
 const errorAsignation = ref(false)
 const initialState = {
     project_product_id: '',
-    quantity:'',
-    observation:''
+    quantity: '',
+    observation: ''
 }
 const form = useForm({ ...initialState })
 const submit = () => {
-    if (sufficientQuantity(form)){
+    if (sufficientQuantity(form)) {
         form.post(route('projectmanagement.outputs.store'), {
             onSuccess: () => {
                 form.reset();
                 successAsignation.value = true
                 setTimeout(() => {
                     successAsignation.value = false
-                },2000)
+                }, 2000)
                 closeModal()
             }
         })
-    } else{
+    } else {
         errorAsignation.value = true
         setTimeout(() => {
             errorAsignation.value = false
-        },1500)
+        }, 1500)
     }
 }
 
 //formatear fecha and check quantity
 function formatearFecha(fecha) {
-  const date = new Date(fecha);
-  const dia = date.getDate().toString().padStart(2, '0');
-  const mes = (date.getMonth() + 1).toString().padStart(2, '0');
-  const año = date.getFullYear();
-  return `${dia}/${mes}/${año}`;
+    const date = new Date(fecha);
+    const dia = date.getDate().toString().padStart(2, '0');
+    const mes = (date.getMonth() + 1).toString().padStart(2, '0');
+    const año = date.getFullYear();
+    return `${dia}/${mes}/${año}`;
 }
 
 const sufficientQuantity = (form) => {

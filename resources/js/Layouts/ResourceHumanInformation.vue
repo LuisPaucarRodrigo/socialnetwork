@@ -68,10 +68,13 @@
                   </div>
                 </div>
                 <div class="ml-4 flex-shrink-0">
-                  <a :href="'/management_employees/information_additional/details/download/' + details.education.curriculum_vitae"
-                    class="font-medium text-indigo-600 hover:text-indigo-500">
-                    Download
-                  </a>
+                  <button @click="downloadDocument(details.id)" class="flex items-center text-blue-600 hover:underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                  </button>
                 </div>
               </li>
             </ul>
@@ -96,12 +99,16 @@ export default {
   },
   methods: {
     formatoArchivo(value) {
-      const startIndex = value.indexOf(' ');
+      const startIndex = value.indexOf('._');
       if (startIndex !== -1) {
-        return value.substring(startIndex);
+        return value.substring(startIndex + 2);
       }
       return value;
     },
+    downloadDocument(documentId) {
+      const backendDocumentUrl = route('management.employees.information.details.download', { id: documentId });
+      window.open(backendDocumentUrl, '_blank');
+    }
   },
 }
 </script>
