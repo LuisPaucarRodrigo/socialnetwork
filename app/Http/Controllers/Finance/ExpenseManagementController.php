@@ -33,13 +33,15 @@ class ExpenseManagementController extends Controller
                 'purchase_quote_id' => $id
             ]);
             $otherQuotes = Purchase_quote::where('id', '!=', $id)
+                ->whereHas('purchasing_requests', function ($query) use ($purchaseQuote) {
+                    $query->where('purchasing_request_id', $purchaseQuote->purchasing_request_id);
+                })
                 ->get();
             foreach ($otherQuotes as $otherQuote) {
                 $otherQuote->delete();
             }
 
             $purchaseQuote->purchasing_requests->update(['state' => 'Aceptado']);
-            
         } else {
             $purchaseQuote->delete();
         }

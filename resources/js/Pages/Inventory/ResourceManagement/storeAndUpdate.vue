@@ -89,7 +89,8 @@
             </div>
             <!-- Descricion (text-Area) -->
             <div v-if="!resource" class="sm:col-span-2 sm:col-start-1">
-                <label for="conditional_rent" class="block text-sm font-medium text-gray-700">Si tiene un precio especial para
+                <label for="conditional_rent" class="block text-sm font-medium text-gray-700">Si tiene un precio especial
+                    para
                     alquiler</label>
                 <input type="checkbox" id="conditional_rent" v-model="newResource.conditional_rent"
                     class="mt-1 block py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
@@ -103,18 +104,14 @@
         </div>
 
         <!-- Botón de enviar -->
-        <div class="mt-6 flex items-center justify-end gap-x-6">
+        <div class="mt-6 flex items-center justify-between gap-x-6">
             <button @click="cancel()"
                 class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
-                Cancelar
+                Atras
             </button>
-            <button v-if="resource" @click="update_resource(resource.id)"
+            <button @click="add_resource()"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-                Guardar
-            </button>
-            <button v-else @click="add_resource()"
-                class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-                Crear
+                {{ resource ? "Guardar" : "Crear" }}
             </button>
         </div>
         <ConfirmCreateModal :confirmingcreation="showmodal" itemType="activo" />
@@ -168,26 +165,26 @@ const depreciation = (event) => {
 }
 
 const add_resource = () => {
-    newResource.post(route('resource.create'), {
-        onSuccess: () => {
-            showmodal.value = true
-            setTimeout(() => {
-                showmodal.value = false
-                router.visit(route('resources.index'))
-            }, 2000)
-        },
-        onError: () => {
-            closeModal()
-        }
-    })
-};
-
-const update_resource = (resourceId) => {
-    newResource.put(route('resource.update', { resourceId: resourceId }), {
-        onError: () => {
-            closeModal()
-        }
-    })
+    if (props.resource) {
+        newResource.put(route('resource.update', { resourceId: props.resource.id }), {
+            onError: () => {
+                closeModal()
+            }
+        })
+    } else {
+        newResource.post(route('resource.create'), {
+            onSuccess: () => {
+                showmodal.value = true
+                setTimeout(() => {
+                    showmodal.value = false
+                    router.visit(route('resources.index'))
+                }, 2000)
+            },
+            onError: () => {
+                closeModal()
+            }
+        })
+    }
 };
 
 const cancel = () => {

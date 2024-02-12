@@ -1,5 +1,5 @@
 <template>
-    <Head title="Tarea1" />
+    <Head title="Tarea" />
     <AuthenticatedLayout>
         <template #header>
             {{ tasks.task }}
@@ -52,7 +52,6 @@
                     </button>
                 </div>
 
-
                 <div class="mt-2">
                     <div v-for="item in added_employees.project_employee" class="grid grid-cols-8 items-center my-2">
                         <p class=" text-sm col-span-7 line-clamp-2">{{ item.employee_information.name }} : {{ item.charge }}
@@ -68,7 +67,11 @@
                 </div>
             </div>
         </div>
-        <div class="mt-6 flex items-center justify-end gap-x-6">
+        <div class="mt-6 flex items-center justify-between gap-x-6">
+            <a :href="route('tasks.index', { id: tasks.id })"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Atras
+            </a>
             <button type="submit" v-if="tasks.status === 'pendiente'" @click="openModalDelete()"
                 class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Eliminar</button>
         </div>
@@ -148,7 +151,7 @@
   
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -236,7 +239,7 @@ const delete_task = (taskId) => {
 const openModalDelete = () => {
     showModalDelete.value = true;
 }
-const closeModalDelete = () =>{
+const closeModalDelete = () => {
     showModalDelete.value = false;
 }
 

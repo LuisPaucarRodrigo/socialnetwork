@@ -20,12 +20,5 @@
 <script setup>
 import Header from '@/Layouts/Header.vue';
 import Navigation from '@/Layouts/Navigation.vue';
-// import { onMounted } from 'vue'; 
 
-// onMounted(() => {
-//     const timestamp = new Date().getTime(); // Obtenemos el tiempo actual en milisegundos
-//     const url = new URL(window.location.href); // Obtenemos la URL actual del navegador
-//     url.searchParams.set('timestamp', timestamp); // Añadimos un parámetro llamado 'timestamp' con el valor de la marca de tiempo
-//     window.history.replaceState({}, '', url); // Actualizamos la URL en el historial del navegador
-// });
 </script>
