@@ -33,8 +33,8 @@
                     <tbody>
                         <tr v-for="item in liquidations.data" :key="item.id" :class="[
                             'text-gray-700',
-                            { 
-                                'border-l-4': true, 
+                            {
+                                'border-l-4': true,
                             }
                         ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -55,28 +55,26 @@
             </div>
         </div>
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-            <pagination :links="liquidations.links"/>
+            <pagination :links="liquidations.links" />
         </div>
-
+        <div class="mt-6 flex items-center justify-between gap-x-6">
+            <a :href="route('projectmanagement.products', { id: liquidations.current_page })"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Atras
+            </a>
+        </div>
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue'
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import Modal from '@/Components/Modal.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import ConfirmateModal from '@/Components/ConfirmateModal.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import axios from 'axios';
 
 const props = defineProps({
     liquidations: Object,
 });
+
+console.log(props.liquidations);
 
 </script>

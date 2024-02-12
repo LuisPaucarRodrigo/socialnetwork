@@ -65,6 +65,12 @@
                 <pagination :links="trainings.links" />
             </div>
         </div>
+        <div class="mt-6 flex items-center justify-between gap-x-6">
+            <a :href="route('management.employees.formation_development')"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Atras
+            </a>
+        </div>
         <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="capacitacion" :nameText="name"
             :deleteFunction="delete_training" @closeModal="closeModal" />
     </AuthenticatedLayout>

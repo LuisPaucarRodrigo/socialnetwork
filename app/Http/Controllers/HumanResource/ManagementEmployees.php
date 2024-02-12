@@ -61,14 +61,14 @@ class ManagementEmployees extends Controller
             // Procesar y almacenar el curriculum vitae
             if ($request->hasFile('curriculum_vitae')) {
                 $document = $request->file('curriculum_vitae');
-                $documentName = time() . '.' . $document->getClientOriginalName();
+                $documentName = time() . '._' . $document->getClientOriginalName();
                 $document->move(public_path('documents/curriculum_vitae/'), $documentName);
             }
 
             // Procesar y almacenar la imagen
             if ($request->hasFile('cropped_image')) {
                 $croppedImage = $request->file('cropped_image');
-                $imageUrl = time() . '.' . $croppedImage->getClientOriginalName();
+                $imageUrl = time() . '._' . $croppedImage->getClientOriginalName();
                 $croppedImage->move(public_path('image/profile/'), $imageUrl);
             }
 
@@ -295,15 +295,14 @@ class ManagementEmployees extends Controller
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
     }
 
-    public function download($filename)
-    {
-        $filePath = '/documents/curriculum_vitae/' . $filename;
+    public function download(Education $id)
+    {   
+        $filename = $id->curriculum_vitae;
+        $filePath = 'documents/curriculum_vitae/' . $filename;
         $path = public_path($filePath);
+        
         if (file_exists($path)) {
-            
-            return response()->download($path, $filename, [
-                'Content-Type' => 'application/pdf',
-            ]);
+            return response()->download($filePath, $filename);
         }
         abort(404);
     }
