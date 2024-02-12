@@ -30,7 +30,7 @@
                     <tr v-for="order in orders.data" :key="order.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{
-                                order.purchase_quote.purchasing_requests.project.name }}</p>
+                                order.purchase_quote.purchasing_requests.project?.name }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ order.purchase_quote.response }}</p>

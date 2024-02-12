@@ -16,7 +16,7 @@
                 Horario
             </button>
 
-            <table class="w-full whitespace-no-wrap overflow-auto">
+            <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
