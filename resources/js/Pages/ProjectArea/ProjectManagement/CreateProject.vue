@@ -128,7 +128,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-3 flex items-center justify-end gap-x-6">
+                <div class="mt-3 flex items-center justify-between gap-x-6">
+                    <a :href="route('projectmanagement.index')"
+                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        Atras
+                    </a>
                     <button type="submit" :class="{ 'opacity-25': form.processing }"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                 </div>
@@ -232,10 +236,10 @@ const submit = () => {
 
 function formatearFecha(fecha) {
     if (fecha) {
-        const date = new Date(fecha);
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        return `${year}${month}`
+        const partesFecha = fecha.split('-');
+        const year = partesFecha[0];
+        const month = partesFecha[1];
+        return `${year}${month}`;
     }
 }
 

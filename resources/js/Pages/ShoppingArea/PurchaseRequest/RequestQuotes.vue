@@ -4,17 +4,13 @@
         <template #header>
             Cotizaciones
         </template>
-        <div class="px-4 sm:px-0">
-            <h3 class="text-base font-semibold leading-7 text-gray-900">Applicant Information</h3>
-            <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Personal details and application.</p>
-        </div>
         <div class="mt-6 border-t border-gray-100">
             <dl class="divide-y divide-gray-100">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div v-if="purchases.project" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Proyecto</dt>
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.project.name }}</dd>
                 </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div v-if="purchases.project" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Presupuesto restante</dt>
                     <dd class="mt-1 text-sm leading-6 text-green-700 sm:col-span-2 sm:mt-0">S./ {{
                         purchases.project.remaining_budget }}</dd>
@@ -84,7 +80,9 @@
                             class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                             :disabled="process">Rechazar</button>
                         <button type="submit" :class="{ 'opacity-25': form.processing }"
-                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cotizado</button>
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            Cotizado
+                        </button>
                     </div>
                 </form>
             </dl>
@@ -112,7 +110,7 @@
                 </div>
             </div>
         </Modal>
-        <SuccessOperationModal :confirmingFunction="successRejection" title="Rechazo exitoso"
+        <SuccessOperationModal :confirming="successRejection" title="Rechazo exitoso"
             message="La solicitud de compra ha sido rechazada" />
         <ErrorOperationModal :showError="showError" title="Presupuesto excedido"
             message="La cantidad sobrepasa el presupuesto restante" />
@@ -148,7 +146,8 @@ const form = useForm({
 
 const showError = ref(false)
 const submit = () => {
-    if (form.amount > props.purchases.project.remaining_budget) {
+    
+    if (props.purchases.project && form.amount > props.purchases.project.remaining_budget) {
         showError.value = true
         setTimeout(() => {
             showError.value = false;

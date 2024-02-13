@@ -17,8 +17,8 @@
         </div>
     </div>
 </template>
-
 <script setup>
 import Header from '@/Layouts/Header.vue';
 import Navigation from '@/Layouts/Navigation.vue';
+
 </script>

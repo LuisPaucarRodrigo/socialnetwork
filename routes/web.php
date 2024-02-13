@@ -21,6 +21,7 @@ use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\SectionController;
+use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
 use App\Http\Controllers\Inventory\WarehousesController;
@@ -90,8 +91,11 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::put('/management_employees/update/{id}', [ManagementEmployees::class, 'update'])->name('management.employees.update');
     Route::delete('/management_employees/destroy/{id}', [ManagementEmployees::class, 'destroy'])->name('management.employees.destroy');
     Route::put('/management_employees/fired/{id}', [ManagementEmployees::class, 'fired'])->name('management.employees.fired');
-    Route::get('/management_employees/information_additional/details/download/{filename}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
-
+    Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
+    
+    //Schedule
+    Route::post('/management_employees/addSchedule', [ManagementEmployees::class, 'uploadSchedule'])->name('management.employees.addSchedule');
+    Route::post('/management_employees/updateSchedule', [ManagementEmployees::class, 'updateSchedule'])->name('management.employees.updateSchedule');
     //Nomina
     Route::get('/management_employees/spreadsheets', [SpreadsheetsController::class, 'index'])->name('spreadsheets.index');
     Route::get('/management_employees/pension_system/edit', [SpreadsheetsController::class, 'edit'])->name('pension_system.edit');
@@ -122,7 +126,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     //Vacation
     Route::get('/management_vacation', [VacationController::class, 'index'])->name('management.vacation');
     Route::get('/management_vacation/information_additional', [VacationController::class, 'create'])->name('management.vacation.information.create');
-    Route::post('/management_vacation/information_additional/sttore', [VacationController::class, 'store'])->name('management.vacation.information.store');
+    Route::post('/management_vacation/information_additional/store', [VacationController::class, 'store'])->name('management.vacation.information.store');
     Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit'])->name('management.vacation.information.edit');
     Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
     Route::get('/management_vacation/information_additional/{vacation}/review', [VacationController::class, 'review'])->name('management.vacation.information.review');
@@ -223,15 +227,25 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
     Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
 
-
-
     Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
     Route::post('/projectmanagement/resources/return/{id}', [ProjectManagementController::class, 'project_resources_return'])->name('projectmanagement.resources.return');
 
     Route::post('/projectmanagement/componentormaterials', [ProjectManagementController::class, 'project_componentmaterial_store'])->name('projectmanagement.componentormaterials.store');
     Route::delete('/projectmanagement/componentormaterials/delete/{component_or_material_id}', [ProjectManagementController::class, 'project_componentmaterial_delete'])->name('projectmanagement.componentormaterials.delete');
 
+    //CicsaSections
+    Route::get('/cicsaSections', [CicsaSectionController::class, 'showSections'])->name('sections.cicsaSections');
+    Route::post('/cicsaSections', [CicsaSectionController::class, 'storeSection'])->name('sections.cicsaStoreSection');
+    Route::delete('/cicsaSections/{section}', [CicsaSectionController::class, 'destroySection'])->name('sections.cicsaDestroySection');
 
+    //CicsaSubSections
+    Route::get('/cicsaSubSections', [CicsaSectionController::class, 'showSubSections'])->name('sections.cicsaSubSections');
+    Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'showSubSection'])->name('sections.cicsaSubSection');
+    Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
+    Route::put('/cicsaSubSections/{subSection}/update', [CicsaSectionController::class, 'updateSubSection'])->name('sections.cicsaUpdateSubSection');
+    Route::delete('/cicsaSubSections/{subSection}/delete', [CicsaSectionController::class, 'destroySubSection'])->name('sections.cicsaDestroySubSection');
+    Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
+    Route::get('/cicsaDoTask2', [CicsaSectionController::class, 'doTask2'])->name('sections.cicsaTask2');
 
 
 
@@ -287,6 +301,8 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest', [PurchaseRequestController::class, 'index'])->name('purchasesrequest.index');
     Route::get('/shopping_area/purchasesrequest/create_request', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
     Route::post('/shopping_area/purchasesrequest/store_request', [PurchaseRequestController::class, 'store'])->name('purchasesrequest.store');
+    Route::get('/shopping_area/purchasesrequest/edit/{id}', [PurchaseRequestController::class, 'edit'])->name('purchasesrequest.edit');
+    Route::put('/shopping_area/purchasesrequest/update/{id}', [PurchaseRequestController::class, 'update'])->name('purchasesrequest.update');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}', [PurchaseRequestController::class, 'index_quotes'])->name('purchasesrequest.quotes');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}/preview', [PurchaseRequestController::class, 'showDocument'])->name('purchasesrequest.show');
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');

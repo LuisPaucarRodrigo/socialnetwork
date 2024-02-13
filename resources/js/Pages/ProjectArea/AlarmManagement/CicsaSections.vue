@@ -1,17 +1,17 @@
 <template>
   <div>
 
-    <Head title="Gestion de Secciones" />
+    <Head title="Gestion de Apartados" />
     <AuthenticatedLayout>
       <template #header>
-        Gestión de Secciones
+        Gestión de Apartados
       </template>
       <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
         <button @click="openCreateSectionModal"
           class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-          Crear Nueva Sección
+          Crear Nuevo Apartado
         </button>
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto mt-5">
           <table class="min-w-full divide-y divide-gray-200">
             <thead>
               <tr>
@@ -32,10 +32,6 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-left">
                   <div class="flex items-center space-x-2">
-                    <Link :href="route('documents.subdivisions', { section: section.id })"
-                      class="text-green-600 hover:underline">
-                    <EyeIcon class="h-4 w-4" />
-                    </Link>
                     <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
                       <TrashIcon class="h-4 w-4" />
                     </button>
@@ -47,16 +43,22 @@
         </div>
 
       </div>
+      <div class="mt-6 flex items-center justify-between gap-x-6">
+        <a :href="route('sections.cicsaSubSections')"
+          class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          Atras
+        </a>
+      </div>
       <Modal :show="isCreateSectionModalOpen">
         <div class="p-6">
           <h2 class="text-base font-medium leading-7 text-gray-900">
-            Agregar Seccion
+            Agregar Apartado
           </h2>
           <form @submit.prevent="submit">
             <div class="space-y-12">
               <div class="border-b border-gray-900/10 pb-12">
                 <div>
-                  <InputLabel for="name" class="font-medium leading-6 text-gray-900">Agregar nueva sección:
+                  <InputLabel for="name" class="font-medium leading-6 text-gray-900">Agregar nuevo apartado:
                   </InputLabel>
                   <div class="mt-2">
                     <TextInput type="text" v-model="form.name" id="name" autocomplete="address-level1"
@@ -74,19 +76,13 @@
           </form>
         </div>
       </Modal>
-      <ConfirmCreateModal :confirmingcreation="showModal" itemType="seccion de documentos" />
-      <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="seccion" :deleteFunction="deleteSection"
+      <ConfirmCreateModal :confirmingcreation="showModal" itemType="Sección de Cicsa" />
+      <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="Sección de Cicsa" :deleteFunction="deleteSection"
         @closeModal="closeModalSection" />
-      <div class="mt-6 flex items-center justify-between gap-x-6">
-        <a :href="route('documents.index')"
-          class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          Atras
-        </a>
-      </div>
     </AuthenticatedLayout>
   </div>
 </template>
-  
+    
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -95,8 +91,8 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { TrashIcon, EyeIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
+import { Head, useForm, router } from '@inertiajs/vue3';
+import { TrashIcon  } from '@heroicons/vue/24/outline';
 import { ref, defineProps } from 'vue';
 import Modal from '@/Components/Modal.vue';
 
@@ -123,14 +119,14 @@ const closeCreateSectionModal = () => {
 };
 
 const submit = () => {
-  form.post(route('documents.storeSection'), {
+  form.post(route('sections.cicsaStoreSection'), {
     onSuccess: () => {
       closeCreateSectionModal();
       form.reset();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('documents.sections'))
+        router.visit(route('sections.cicsaSections'))
       }, 2000);
     },
     onError: () => {
@@ -150,14 +146,13 @@ const closeModalSection = () => {
 
 const deleteSection = async () => {
   const sectionId = sectionToDelete.value;
-  router.delete(route('documents.destroySection', { section: sectionId }), {
+  router.delete(route('sections.cicsaDestroySection', { section: sectionId }), {
     onSuccess: () => {
       closeModalSection();
-    },
-
+    }
   })
 
 };
 
 </script>
-  
+    
