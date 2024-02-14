@@ -290,7 +290,6 @@ const confirmFired = (firedId) => {
 }
 
 const closeFiredModal = () => {
-    console.log('dfdff');
     showModalFired.value = false
 }
 

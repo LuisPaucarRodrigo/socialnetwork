@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('unit_type');
             $table->decimal('cost',4,2);
-            $table->foreignId('customervisit_id')->constrained()->onDelete();
+            $table->foreignId('customervisit_id')->constrained()->nullable()->onDelete('cascade');
             $table->timestamps();
         });
     }
