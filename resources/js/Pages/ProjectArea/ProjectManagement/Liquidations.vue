@@ -38,16 +38,16 @@
                 </thead>
                 <tbody>
                     <template v-for="item in assigned_products.data">
-                    <template v-if="item.state === 'Completo'  && item.output_project_product.length > 0">
-                        <tr :key="item.id" :class="[
-                            'text-gray-700',
-                            {
-                                'border-l-4': true,
-                                'border-green-500': item.state === 'Completo',
-                                'border-red-500': item.state === 'Incompleto'
-                            }
-                        ]">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <template v-if="item.state === 'Completo' && item.output_project_product.length > 0">
+                            <tr :key="item.id" :class="[
+                                'text-gray-700',
+                                {
+                                    'border-l-4': true,
+                                    'border-green-500': item.state === 'Completo',
+                                    'border-red-500': item.state === 'Incompleto'
+                                }
+                            ]">
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ item.product.name }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -56,8 +56,8 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ item.total_output_project_product }}</p>
                                 </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                   <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ formatearFecha(item.created_at) }}</p>
@@ -68,11 +68,11 @@
                                             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                                             Liquidar
                                         </button>
-                                </div>
-                            </td>
-                        </tr>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
                     </template>
-                </template>
 
                 </tbody>
             </table>
@@ -128,7 +128,8 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.liquidated_quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.liquidated_quantity - item.refund_quantity }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.liquidated_quantity -
+                                    item.refund_quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.refund_quantity }}</p>
@@ -140,10 +141,10 @@
                     </tbody>
                 </table>
             </div>
-            </div>
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+        </div>
+        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="liquidations.links" />
-            </div>
+        </div>
 
         <div class="mt-6 flex items-center justify-between gap-x-6">
             <a :href="route('projectmanagement.index')"
@@ -215,7 +216,7 @@
         </Modal>
         <SuccessOperationModal :confirming="successAsignationLiquidate" title="Producto liquidado"
             message="La liquidación fue exitosa" />
-   
+
     </AuthenticatedLayout>
 </template>
 
