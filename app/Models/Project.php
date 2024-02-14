@@ -17,7 +17,8 @@ class Project extends Model
         'end_date',
         'priority',
         'description',
-        'status'
+        'status',
+        'preproject_id'
     ];
 
     protected $appends = ['total_assigned_resources_costs','remaining_budget', 'materials_costs', 'total_assigned_product_costs','total_refund_product_costs_no_different_price', 'total_product_costs_with_liquidation','initial_budget'];
@@ -132,6 +133,10 @@ class Project extends Model
             }
         });
         return $totalCost; 
+    }
+
+    public function preproject() {
+        return $this->belongsTo(Preproject::class, 'preproject_id');
     }
     
 
