@@ -9,7 +9,7 @@
     <br>
     <br>
     Total gastos en activos: S/. {{ project.total_assigned_resources_costs.toFixed(2) }}<br>
-    Total gastos en productos: S/. {{ project.total_assigned_product_costs.toFixed(2) }}<br>
+    Total gastos en productos: S/. {{ project.total_product_costs_with_liquidation.toFixed(2) }}<br>
     Gastos adicionales: S/. {{ additionalCosts }}
     <br>
     <br>
@@ -86,11 +86,13 @@ const { project, current_budget, remaining_budget, additionalCosts } = definePro
   additionalCosts: Number
 })
 
+
+
 console.log(project)
 console.log(current_budget)
 const expenses = { data: [], links: [] }
 
-const remainingBudget = current_budget - project.total_assigned_resources_costs - project.total_assigned_product_costs - additionalCosts;
+const remainingBudget = current_budget - project.total_assigned_resources_costs - project.total_product_costs_with_liquidation - additionalCosts;
 
 
 const updateChart = () => {
@@ -108,7 +110,7 @@ const updateChart = () => {
   // Agregar el presupuesto restante y los costos adicionales a la data\
 
 
-  const dataWithRemainingBudget = [remainingBudget, additionalCosts, project.total_assigned_resources_costs, project.total_assigned_product_costs];
+  const dataWithRemainingBudget = [remainingBudget, additionalCosts, project.total_assigned_resources_costs, project.total_product_costs_with_liquidation];
 
   // Crear un nuevo gráfico con los datos actualizados
   chartInstance.value = new Chart(ctx, {
