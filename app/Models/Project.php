@@ -17,10 +17,15 @@ class Project extends Model
         'end_date',
         'priority',
         'description',
-        'initial_budget'
+        'status'
     ];
 
-    protected $appends = ['total_assigned_resources_costs','remaining_budget', 'materials_costs', 'total_assigned_product_costs'];
+    protected $appends = ['total_assigned_resources_costs','remaining_budget', 'materials_costs', 'total_assigned_product_costs', 'initial_budget'];
+
+    public function getInitialBudgetAttribute()
+    {
+        return 0;
+    }
 
     public function employees()
     {

@@ -18,7 +18,9 @@ class ProductController extends Controller
     //Warehouses
     public function index(Warehouse $warehouse)
     {
-        $products = Product::where('warehouse_id', $warehouse->id)->with('productHeaders')->paginate();
+        $products = Product::where('warehouse_id', $warehouse->id)
+                       ->with('productHeaders', 'productHeaders.header')
+                       ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Product', [
             'products' => $products,
             'warehouse' => $warehouse
@@ -50,19 +52,8 @@ class ProductController extends Controller
         $headers = $warehouse->headers;
         return Inertia::render('Inventory/WarehouseManagement/ProductForm', [
             'headers' => $headers,
-            'warehouse' => $warehouse
-        ]);
-    }
-
-    public function edit(Warehouse $warehouse, Product $product)
-    {
-        $headers = $warehouse->headers;
-        $product->load(['productHeaders', 'productHeaders.header']);
-        $product_headers = $product->productHeaders;
-        return Inertia::render('Inventory/WarehouseManagement/ProductFormEdit', [
-            'product' => $product,
             'warehouse' => $warehouse,
-            'headers' => $product_headers->load('header'),
+            'products' => $warehouse->products,
         ]);
     }
 
@@ -77,36 +68,6 @@ class ProductController extends Controller
             'headers' => $product_headers->load('header'),
         ]);
     }
-
-    public function update(Warehouse $warehouse, Product $product, Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-
-        $product->update([
-            'name' => $request->name,
-        ]);
-        // Eliminar los productHeaders existentes
-        $product->productHeaders()->delete();
-
-        // Crear las nuevas productHeaders proporcionadas en la solicitud
-        foreach ($request->contentIds as $headerId => $content) {
-            // Verificar si el header existe
-            $headerExists = Header::where('id', $headerId)->exists();
-
-            if ($headerExists) {
-                ProductsHeader::create([
-                    'product_id' => $product->id,
-                    'header_id' => $headerId,
-                    'content' => $content,
-                ]);
-            } else {
-                // Manejar el caso donde el header no existe
-            }
-        }
-    }
-
 
     public function destroy(Warehouse $warehouse, Product $product) {
         $product->delete();

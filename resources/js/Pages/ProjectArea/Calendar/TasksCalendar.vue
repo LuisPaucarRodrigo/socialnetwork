@@ -11,9 +11,9 @@
           </div>
           <div class="modal-content">
             <h3 class="event-title">{{ selectedEvent.title }}</h3>
-            <p>Start: {{ selectedEvent.start }}</p>
-            <p>End: {{ selectedEvent.end }}</p>
-            <p>Additional Info: {{ selectedEvent.description }}</p>
+            <p>Fecha de inicio: {{ formatDate(selectedEvent.start) }}</p>
+            <p>Fecha de fin: {{ formatDate(selectedEvent.end) }}</p>
+            <p>Estado: {{ selectedEvent.description }}</p>
           </div>
         </div>
       </div>
@@ -47,8 +47,8 @@ const handleDateClick = (arg) => {
 const handleEventClick = (arg) => {
   selectedEvent.value = {
     title: arg.event.title,
-    start: arg.event.start,
-    end: arg.event.end,
+    start: arg.event.extendedProps.start_date,
+    end: arg.event.extendedProps.end_date,
     description: arg.event.extendedProps.description || '',
   };
   showModal.value = true;
@@ -70,21 +70,35 @@ const getColorFromSet = () => {
   return color;
 };
 
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('es-ES');
+};
+
 const calendarOptions = {
   plugins: [dayGridPlugin, interactionPlugin],
   initialView: 'dayGridMonth',
   dateClick: handleDateClick,
   eventClick: handleEventClick,
+  eventTimeFormat: {
+    hour: 'numeric',
+    minute: '2-digit',
+    omitZeroMinute: true,
+    meridiem: false
+  },
   events: project.tasks.map((task) => ({
     title: task.task,
-    start: task.start_date + 'T11:30:00',
-    end: task.end_date + 'T11:30:00',
+    start: new Date(task.start_date).toISOString().split('T')[0],
+    end: new Date(new Date(task.end_date).getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0],
     color: getColorFromSet(),
     description: task.status,
+    start_date: task.start_date + 'T00:00:01',
+    end_date: task.end_date + 'T00:00:01',
     textColor: 'black',
   })),
   locale: 'ES',
 };
+
 </script>
   
   
