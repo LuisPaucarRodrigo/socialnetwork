@@ -24,6 +24,5 @@ class PurchaseOrdersController extends Controller
             'state' => $request->state
         ]);
 
-        to_route('purchaseorders.index');
     }
 }
