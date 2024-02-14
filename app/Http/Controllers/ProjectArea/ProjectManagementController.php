@@ -298,9 +298,9 @@ class ProjectManagementController extends Controller
             'project_id' => 'required',
             'product_id' => 'required',
             'quantity' => 'required',
-            'observation' => 'required',
+            'observation' => 'nullable|string',
         ]);
-        $data['total_price'] = $request->total_price;
+        $data['unit_price'] = $request->total_price;
         ProjectProduct::create($data);
         return redirect()->back();
     }

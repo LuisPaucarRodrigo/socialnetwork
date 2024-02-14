@@ -20,7 +20,7 @@ class Project extends Model
         'initial_budget'
     ];
 
-    protected $appends = ['total_assigned_resources_costs','remaining_budget', 'materials_costs', 'total_assigned_product_costs'];
+    protected $appends = ['total_assigned_resources_costs','remaining_budget', 'materials_costs', 'total_assigned_product_costs','total_refund_product_costs_no_different_price', 'total_product_costs_with_liquidation'];
 
     public function employees()
     {
@@ -102,25 +102,25 @@ class Project extends Model
         return $currentBudget - $totalExpenses - $this->materials_costs;
     }
 
-    public function projectResources()
-    {
+    public function projectResources(){
         return $this->hasMany(ProjectResource::class, 'project_id');
     }
 
-    public function getTotalAssignedResourcesCostsAttribute()
-    {
+
+    public function getTotalAssignedResourcesCostsAttribute(){
         return $this->projectResources()->sum('total_price');
     }
 
-    public function products()
-    {
+
+    public function products(){
         return $this->belongsToMany(Product::class, 'project_product');
     }
+
 
     public function getTotalAssignedProductCostsAttribute(){
         $totalCost = $this->projectProducts()->with('product')->get()->sum(function($item) {
             if ($item->product->has_different_price) {
-                return $item->total_price;
+                return $item->unit_price * $item->quantity;
             } else {
                 return $item->product->unit_price * $item->quantity;
             }
@@ -129,4 +129,28 @@ class Project extends Model
     }
     
 
+    public function getTotalRefundProductCostsNoDifferentPriceAttribute(){
+        $totalCost = $this->projectProducts()->with('product')->get()->sum(function($item) {
+            if (!$item->product->has_different_price) {
+                return $item->total_refund_quantity * $item->product->unit_price;
+            }
+        });
+        return $totalCost; 
+    }
+
+
+    public function getTotalUsedProductCostsDifferentPriceAttribute(){
+        $totalCost = $this->projectProducts()->with('product')->get()->sum(function($item) {
+            if ($item->product->has_different_price) {
+                return ($item->total_used_quantity * $item->product->unit_price) - ($item->total_used_quantity * $item->unit_price);
+            }
+        });
+        return $totalCost; 
+    }
+
+    
+    public function getTotalProductCostsWithLiquidationAttribute(){
+        return $this->getTotalAssignedProductCostsAttribute() - $this->getTotalRefundProductCostsNoDifferentPriceAttribute() +
+                $this->getTotalUsedProductCostsDifferentPriceAttribute(); 
+    }
 }

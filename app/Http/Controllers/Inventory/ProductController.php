@@ -128,7 +128,7 @@ class ProductController extends Controller
         $data = $request->validate([
             'project_product_id' => 'required',
             'quantity' => 'required',
-            'observation' => 'required',
+            'observation' => 'nullable|string',
         ]);
         OutputProjectProduct::create($data);
         return redirect()->back();

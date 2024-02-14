@@ -62,6 +62,7 @@ class Product extends Model
         return $total;
     }
 
+
     public function getTotalRefundQuantityProjectsAttribute(){
         $total = $this->project_product()->get()->sum(function ($item) {
             return $item->total_refund_quantity ?? 0;
@@ -69,6 +70,7 @@ class Product extends Model
         return $total;
     }
 
+    
     public function getTotalUsedQuantityProjectsAttribute(){
         $total = $this->project_product()->get()->sum(function ($item) {
             return $item->total_used_quantity ?? 0;
