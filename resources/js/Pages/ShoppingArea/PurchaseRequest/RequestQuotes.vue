@@ -135,6 +135,8 @@ const props = defineProps({
     providers: Object
 })
 
+console.log(props.purchases);
+
 const form = useForm({
     provider: '',
     purchasing_request_id: props.purchases.id,
