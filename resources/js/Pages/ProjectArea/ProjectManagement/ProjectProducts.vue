@@ -12,7 +12,7 @@
                     + Agregar
                 </button>
                 <Link type="button"
-                    class="rounded-md rounded bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 mx-2"
+                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 mx-2"
                     :href="route('projectmanagement.liquidateTable', { project_id: project_id })">
                 Historial de Liquidaciones
                 </Link>
@@ -130,17 +130,19 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="product_id" class="font-medium leading-6 text-gray-900">Productos
-                        </InputLabel>
+                        <div class="flex justify-start items-center">
+                            <InputLabel for="product_id" class="font-medium leading-6 text-gray-900 mr-auto">Producto
+                            </InputLabel>
+                            <InputLabel v-if="form.product_id !== ''" for="product_id" class="font-medium leading-6 text-slate-500  ml-auto">Disponible: {{ productFinded?.total_available }}
+                            </InputLabel>
+                        </div>
                         <div class="mt-2">
                             <select required id="product_id" v-model="form.product_id" @change="handleTotalPriceVisibility"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione uno</option>
                                 <option v-for="item in warehouseProducts" :key="item.id" :value="item.id">
-                                    {{ item.name }} -
-                                    {{
-                                        item.total_available
-                                    }}</option>
+                                    {{ item.name }}
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -148,14 +150,14 @@
                     <div class="sm:col-span-3">
                         <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
+                            <TextInput id="quantity" type="number" min="1" v-model="form.quantity" :max="productFinded ? productFinded.total_available : null"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
 
 
                     <div v-if="enableInput" class="sm:col-span-3">
-                        <InputLabel for="total_price" class="font-medium leading-6 text-gray-900">Precio a descontar en
+                        <InputLabel for="total_price" class="font-medium leading-6 text-gray-900">Precio unitario a descontar en
                             Proyecto</InputLabel>
                         <div class="mt-2">
                             <TextInput id="total_price" type="number" min="1" step="0.01" v-model="form.total_price"
@@ -316,6 +318,7 @@ const handleOutputProjectProductChange = (event) => {
 };
 
 const closeModal = () => {
+    warehouseProducts.value = []
     showModal.value = false;
     form.reset()
 };
@@ -453,9 +456,11 @@ const updateAssignatedProduct = () => {
 
 
 //has different price
+const productFinded = ref(null)
 const enableInput = ref(false)
 const handleTotalPriceVisibility = (e) => {
     let product = warehouseProducts.value.find((i) => i.id == form.product_id)
+    productFinded.value = product
     enableInput.value = product.has_different_price
     if (form.total_price) {
         form.total_price = null
