@@ -55,21 +55,67 @@
                 <pagination :links="orders.links" />
             </div>
         </div>
+        <Modal :show="showModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Estás seguro de completar la orden de compra?
+                </h2>
+                <p class="mt-1 text-sm text-gray-600">
+                    La orden de compra sera completada. Esta accion
+                    se podra revertir mas adelante.
+                </p>
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
+                    <DangerButton class="ml-3" @click="updateState(id,state)">Confirmar</DangerButton>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 import Pagination from '@/Components/Pagination.vue';
+import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
+
+const showModal = ref(false);
+const id = ref(null);
+const state = ref(null);
 
 const props = defineProps({
     orders: Object
 })
 
-const updateState = (stateid, newState) => {
-    const data = {
-        state: newState
-    };
-    router.put(route('purchaseorders.state', { id: stateid }), data)
+const updateState = async (stateid, newState) => {
+    id.value = stateid;
+    state.value = newState;
+    const data = { state: state.value };
+
+    if (state.value === "Completada") {
+        showModal.value = true;
+    } else {
+        await sendStateUpdate(data);
+    }
+}
+
+const sendStateUpdate = async (data) => {
+    try {
+        await router.put(route('purchaseorders.state', { id: id.value }), data);
+        router.visit(route('purchaseorders.index'));
+    } catch (error) {
+        console.error('Error updating state:', error);
+    }
+}
+
+const closeModal = () => {
+    showModal.value = false
+}
+
+const confirmUpdate = async () => {
+    await sendStateUpdate({ state: "Completada" });
+    showModal.value = false;
 }
 </script>
