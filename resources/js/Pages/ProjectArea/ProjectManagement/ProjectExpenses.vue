@@ -87,9 +87,6 @@ const { project, current_budget, remaining_budget, additionalCosts } = definePro
 })
 
 
-
-console.log(project)
-console.log(current_budget)
 const expenses = { data: [], links: [] }
 
 const remainingBudget = current_budget - project.total_assigned_resources_costs - project.total_product_costs_with_liquidation - additionalCosts;
