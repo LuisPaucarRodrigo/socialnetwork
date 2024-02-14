@@ -11,9 +11,9 @@
           </div>
           <div class="modal-content">
             <h3 class="event-title">{{ selectedEvent.title }}</h3><br>
-            <p>Start: {{ selectedEvent.start }}</p>
-            <p>End: {{ selectedEvent.end }}</p>
-            <p>Additional Info: {{ selectedEvent.description }}</p>
+            <p>Fecha de inicio: {{ formatDate(selectedEvent.start) }}</p>
+            <p>Fecha de fin: {{ formatDate(selectedEvent.end) }}</p>
+            <p>Descripción: {{ selectedEvent.description }}</p>
             <div class="center-link">
               <Link :href="route('projectscalendar.show', { project: selectedEvent.project_id })"
                 class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
@@ -55,8 +55,8 @@ const handleDateClick = (arg) => {
 const handleEventClick = (arg) => {
   selectedEvent.value = {
     title: arg.event.title,
-    start: arg.event.start,
-    end: arg.event.end,
+    start: arg.event.extendedProps.start_date,
+    end: arg.event.extendedProps.end_date,
     description: arg.event.extendedProps.description || '',
     project_id: arg.event.extendedProps.project_id || '',
   };
@@ -81,14 +81,20 @@ const getColorFromSet = () => {
 
 const events = ref(props.projects.map((project) => ({
   title: project.name,
-  start: project.start_date + "T11:30:00",
-  end: project.end_date + "T11:30:00",
+  start: new Date(project.start_date).toISOString().split('T')[0],
+  end: new Date(new Date(project.end_date).getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0],
   color: getColorFromSet(),
+  start_date: project.start_date + 'T00:00:01',
+  end_date: project.end_date + 'T00:00:01',
   description: project.description,
   project_id: project.id,
   textColor: 'black',
-
 })));
+
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('es-ES');
+};
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin],

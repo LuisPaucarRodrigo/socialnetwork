@@ -11,11 +11,7 @@
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
-                <Link type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 mx-2"
-                    :href="route('projectmanagement.liquidateTable', { project_id: project_id })">
-                Historial de Liquidaciones
-                </Link>
+
             </div>
             <table class="w-full whitespace-no-wrap">
                 <thead>
@@ -88,11 +84,6 @@
                                             d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                     </svg>
 
-                                </button>
-
-                                <button type="button" @click="showToLiquidate(item)"
-                                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
-                                    Liquidar
                                 </button>
 
                             </div>
@@ -191,67 +182,6 @@
         </Modal>
 
 
-        <Modal :show="showModalLiquidate">
-            <form class="p-6" @submit.prevent="submitLiquidate">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Liquidacion del producto
-                </h2>
-                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-
-                    <div class="sm:col-span-3">
-                        <InputLabel for="resource_id" class="font-medium leading-6 text-gray-900">Seleccionar salida
-                        </InputLabel>
-                        <div class="mt-2">
-                            <select required id="resource_id" v-model="form.output_project_product_id"
-                                @change="handleOutputProjectProductChange"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled selected value="">Seleccione uno</option>
-                                <option v-for="(item, index) in selectValues.output_project_product" :key="item.id"
-                                    :value="item.id">Cantidad de Salida: {{ item.quantity }}</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <InputLabel for="liquidated_quantity" class="font-medium leading-6 text-gray-900">Cantidad liquidada
-                        </InputLabel>
-                        <div class="mt-2">
-                            <TextInput id="liquidated_quantity" type="number" readonly min="1"
-                                v-model="formLiquidate.liquidated_quantity"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        </div>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <InputLabel for="refund_quantity" class="font-medium leading-6 text-gray-900">Cantidad devuelta
-                        </InputLabel>
-                        <div class="mt-2">
-                            <TextInput id="refund_quantity" type="number" min="0" :max="formLiquidate.liquidated_quantity"
-                                v-model="formLiquidate.refund_quantity"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        </div>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <InputLabel for="observations" class="font-medium leading-6 text-gray-900">Observaciones
-                        </InputLabel>
-                        <div class="mt-2">
-                            <textarea id="observations" type="text" v-model="formLiquidate.observations"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        </div>
-                    </div>
-
-                </div>
-                <div class="mt-6 flex gap-3 justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                        type="button" @click="closeModalLiquidate"> Cerrar </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="submit"> Agregar </button>
-                </div>
-            </form>
-        </Modal>
         <ConfirmDeleteModal :confirmingDeletion="confirmingDeletion" itemType="Asignación de producto"
             :deleteFunction="deleteAssigned" @closeModal="closeModalDoc" />
 
@@ -261,8 +191,6 @@
 
         <SuccessOperationModal :confirming="successAsignation" title="Producto asignado"
             message="La asignación fue exitosa" />
-        <SuccessOperationModal :confirming="successAsignationLiquidate" title="Producto liquidado"
-            message="La liquidación fue exitosa" />
         <ErrorOperationModal :showError="errorAsignation" title="Cantidad Excedida" message="No es una cantidad válida" />
     </AuthenticatedLayout>
 </template>
@@ -291,31 +219,10 @@ const { assigned_products, warehouses, project_id } = defineProps({
 
 //Modal functions
 const showModal = ref(false);
-const showModalLiquidate = ref(false);
 
 const showToAddProduct = () => {
     showModal.value = true;
 }
-
-const selectValues = ref([])
-
-const showToLiquidate = (item) => {
-    selectValues.value = item;
-    showModalLiquidate.value = true;
-}
-
-const selectedOutputProjectProductQuantity = ref(null);
-
-const handleOutputProjectProductChange = (event) => {
-    const selectedOutputProductId = event.target.value;
-    formLiquidate.output_project_product_id = selectedOutputProductId;
-    const selectedOutputProductArray = Object.values(selectValues.value.output_project_product);
-    const selectedOutputProduct = selectedOutputProductArray.find(item => item.id == selectedOutputProductId);
-    if (selectedOutputProduct) {
-        selectedOutputProjectProductQuantity.value = selectedOutputProduct.quantity;
-        formLiquidate.liquidated_quantity = selectedOutputProjectProductQuantity.value;
-    }
-};
 
 const closeModal = () => {
     warehouseProducts.value = []
@@ -352,13 +259,6 @@ const initialState = {
 }
 const form = useForm({ ...initialState })
 
-const formLiquidate = useForm({
-    output_project_product_id: '',
-    liquidated_quantity: null,
-    refund_quantity: null,
-    observations: '',
-    selectedOutputProduct: null,
-})
 
 const submit = () => {
     if (sufficientQuantity(form)) {
@@ -382,20 +282,6 @@ const submit = () => {
             errorAsignation.value = false
         }, 1500)
     }
-}
-const successAsignationLiquidate = ref(false);
-
-const submitLiquidate = () => {
-    formLiquidate.post(route('projectmanagement.productsLiquidate', { project_id: project_id }), {
-        onSuccess: () => {
-            formLiquidate.reset();
-            successAsignationLiquidate.value = true
-            setTimeout(() => {
-                successAsignationLiquidate.value = false
-                closeModalLiquidate();
-            }, 2000)
-        }
-    })
 }
 
 //formatear fecha and check quantity

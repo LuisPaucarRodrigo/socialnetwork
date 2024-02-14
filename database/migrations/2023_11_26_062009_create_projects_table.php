@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->string('priority');
             $table->text('description');
-            $table->float('initial_budget')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }
