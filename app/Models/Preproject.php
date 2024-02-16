@@ -22,7 +22,7 @@ class Preproject extends Model
         return $this->belongsTo(Employee::class, 'customervisit_id');
     }
 
-    public function preproject() {
+    public function project() {
         return $this->HasOne(Project::class);
     }
 }
