@@ -12,7 +12,7 @@ class Customervisit extends Model
     protected $fillable = [
         'customer',
         'phone',
-        'descritpion',
+        'description',
         'address',
         'date',
         'observation',
