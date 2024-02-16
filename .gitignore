@@ -9,6 +9,7 @@
 /public/documents/schedule/
 /public/documents/quote/
 /public/image/profile/
+/public/image/facades/
 /storage/*.key
 /vendor
 .env

@@ -13,6 +13,7 @@ use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\ProjectScheduleController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
 use App\Http\Controllers\ProjectArea\ProjectReportsController;
+use App\Http\Controllers\ProjectArea\PreProjectController;
 use App\Http\Controllers\ShoppingArea\PurchaseRequestController;
 use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
@@ -251,7 +252,15 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/cicsaDoTask2', [CicsaSectionController::class, 'doTask2'])->name('sections.cicsaTask2');
 
 
-
+    //PreProjects
+    Route::get('/visits', [PreProjectController::class, 'showVisits'])->name('preprojects.visits');
+    Route::post('/visits/store', [PreProjectController::class, 'storeVisits'])->name('preprojects.storeVisit');
+    Route::delete('/visits/{customer_visit}/destroy', [PreProjectController::class, 'destroyVisit'])->name('preprojects.destroyVisit');
+    Route::get('/visits/{customer_visit}', [PreProjectController::class, 'showVisitFacade'])->name('preprojects.previewVisit');
+    Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+    Route::post('/preprojects/create', [PreProjectController::class, 'store'])->name('preprojects.store');
+    Route::put('/preprojects/{preproject}/update', [PreProjectController::class, 'update'])->name('preprojects.update');
+    Route::delete('/preprojects/{preproject}/destroy', [PreProjectController::class, 'destroy'])->name('preprojects.destroy');
 
 
 
