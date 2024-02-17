@@ -20,7 +20,7 @@
                             N° {{ item.code }}
                         </h2>
                         <div class="inline-flex justify-end gap-x-2">
-                            <button @click="openEditPreprojectModal(item)" class="text-orange-200 hover:underline mb-4 flex items-start">
+                            <button @click="openEditPreprojectModal(item)" class="text-green-600 hover:underline mb-4 flex items-start">
                                 <PencilIcon class="h-4 w-4" />
                             </button>
                             <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
@@ -33,11 +33,17 @@
                     </h3>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
                         <div>
-                            <Link href="#" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Informe fotográfico
+                            <Link :href="route('preprojects.photoreport.index', {preproject_id:item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Informe fotográfico
+                            </Link>
+                        </div>
+                        <div>
+                            <Link :href="route('preprojects.providersquotes.index',{
+                                preproject_id: item.id
+                            })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización de proveedores
                             </Link>
                         </div>
                         <div v-if="item.has_photo_report">
-                            <Link :href="route('preprojects.quote', {preproject_id: item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizacion
+                            <Link :href="route('preprojects.quote', {preproject_id: item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización para proyecto
                             </Link>
                         </div>
                     </div>
@@ -188,8 +194,7 @@ const { preprojects, visits} = defineProps({
 })
 
 
-
-const form = useForm({
+const initial_state = {
     customer:'',
     code:'',
     phone:'',
@@ -198,6 +203,9 @@ const form = useForm({
     date:'',
     observation:'',
     facade:null,
+}
+const form = useForm({
+    ...initial_state
 });
 
 const submit = () => {
@@ -253,14 +261,15 @@ const closeCreatePreprojectModal = () => {
 
 const openEditPreprojectModal = (preproject) => {
     form.defaults({
-        ...preproject, code: preproject.code.slice(9)
+        ...preproject, code: preproject.code.slice(9), facade:null
     })
     form.reset()
-    previewFacade.value = form.facade
+    previewFacade.value = preproject.facade
     edit_preproject.value = true;
 }
 
 const closeEditPreprojectModal = () => {
+    form.defaults(initial_state)
     form.reset();
     edit_preproject.value = false;
 }

@@ -9,7 +9,7 @@
                     </svg>
                 </div>
                 <h2 class="pt-5 text-lg font-medium text-gray-900">
-                    Creación de nuevo {{ itemType }} exitosa.
+                    Creación de nuevo(a) {{ itemType }} exitosa.
                 </h2>
                 <p class="mt-1 text-sm text-gray-600">
                     ¡El {{ itemType }} se creó correctamente!
