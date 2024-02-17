@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('preprojects', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('customer');
+            $table->string('code');
+            $table->string('phone',9);
             $table->string('description');
-            $table->string('unit_type');
-            $table->decimal('cost',4,2);
-            $table->foreignId('customervisit_id')->constrained()->nullable()->onDelete('cascade');
+            $table->string('address');
+            $table->date('date');
+            $table->string('observation');
+            $table->string('facade');
             $table->timestamps();
         });
     }
