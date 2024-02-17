@@ -125,6 +125,9 @@
                     <span class="mx-3">Area de Proyectos</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="route('preprojects.index')">Anteproyectos</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectmanagement.index')">Gestion de Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
@@ -132,12 +135,6 @@
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('sections.cicsaSubSections')">Gestión de Alarmas Cicsa</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('preprojects.visits')">Visitas</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('preprojects.index')">Anteproyectos</Link>
                 </MyTransition>
             </template>
 
