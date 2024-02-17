@@ -259,9 +259,16 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/visits/{customer_visit}', [PreProjectController::class, 'showVisitFacade'])->name('preprojects.previewVisit');
     Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
     Route::post('/preprojects/create', [PreProjectController::class, 'store'])->name('preprojects.store');
-    Route::put('/preprojects/{preproject}/update', [PreProjectController::class, 'update'])->name('preprojects.update');
+    Route::post('/preprojects/{preproject}/update', [PreProjectController::class, 'update'])->name('preprojects.update');
     Route::delete('/preprojects/{preproject}/destroy', [PreProjectController::class, 'destroy'])->name('preprojects.destroy');
+    Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
 
+
+    Route::get('/preprojects/{preproject_id}/quote', [PreProjectController::class, 'quote'])->name('preprojects.quote');
+    Route::post('/preprojects/quote_store/{quote_id?}', [PreProjectController::class, 'quote_store'])->name('preprojects.quote.store');
+    Route::delete('/preprojects/quote_delete/{quote_item_id}', [PreProjectController::class, 'quote_item_delete'])->name('preprojects.quote.item.delete');
+    Route::post('/preprojects/quote_item_store', [PreProjectController::class, 'quote_item_store'])->name('preprojects.quote.item.store');
+    
 
 
 
