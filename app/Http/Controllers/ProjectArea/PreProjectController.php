@@ -11,6 +11,7 @@ use App\Models\PreProjectQuoteItem;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PreProjectController extends Controller
 {
@@ -182,7 +183,7 @@ class PreProjectController extends Controller
     }
 
 
-    public function quote_store (Request $request, $quote_id) {
+    public function quote_store (Request $request, $quote_id=null) {
         $data = $request->validate([
             "name"=>'required',
             "date"=>'required',
@@ -192,6 +193,7 @@ class PreProjectController extends Controller
             "deliverable_time"=>'required',
             "validity_time"=>'required',
             "observations"=>'required',
+            "preproject_id" => 'required'
         ]);
         if ($quote_id){
             $quote = PreProjectQuote::find($quote_id);
@@ -228,5 +230,12 @@ class PreProjectController extends Controller
         return redirect()->back();
     }
 
+    public function getPDF(Preproject $preproject)
+    {
+        $preproject = $preproject->load('quote.items');
+        $pdf = Pdf::loadView('pdf.CotizationPDF', compact('preproject'));
+        return $pdf->stream();
+        //return view('pdf.CotizationPDF', compact('preproject'));
+    }
 
 }
