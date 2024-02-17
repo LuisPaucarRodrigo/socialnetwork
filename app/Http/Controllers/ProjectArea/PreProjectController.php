@@ -4,13 +4,16 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
+use App\Models\PhotoReport;
 use App\Models\Preproject;
 use App\Models\Customervisit;
+use App\Models\PreprojectProvidersQuote;
 use App\Models\PreProjectQuote;
 use App\Models\PreProjectQuoteItem;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PreProjectController extends Controller
 {
@@ -133,11 +136,12 @@ class PreProjectController extends Controller
             'date' => 'required',
             'code' => 'required',
             'observation' => 'required',
+            'facade'=> 'nullable|sometimes|file|mimes:pdf,jpeg,png,jpg',
         ]);
         $preprojectYear = date('Y', strtotime($preproject->date));
         $requestYear = date('Y', strtotime($request->date));
         if ($preprojectYear == $requestYear) {
-            $data ['code'] = substr($preproject->code,0, 9).$data['code'];
+            $data ['code'] = substr($preproject->code,0, 9).strtoupper($data['code']);
         } else {
             $data ['code'] = $this->getCode($data['date'],$data['code']);
         }
@@ -154,7 +158,9 @@ class PreProjectController extends Controller
             $facadeName = time() . '_' . $facade->getClientOriginalName();
             $facade->move(public_path('image/facades/'), $facadeName);
             $data['facade'] = $facadeName;
-        } 
+        } else{
+            unset($data['facade']);
+        }
         $preproject->update($data);
         return redirect()->back();
     }
@@ -182,7 +188,7 @@ class PreProjectController extends Controller
     }
 
 
-    public function quote_store (Request $request, $quote_id) {
+    public function quote_store (Request $request, $quote_id=null) {
         $data = $request->validate([
             "name"=>'required',
             "date"=>'required',
@@ -192,6 +198,7 @@ class PreProjectController extends Controller
             "deliverable_time"=>'required',
             "validity_time"=>'required',
             "observations"=>'required',
+            'preproject_id'=>'required'
         ]);
         if ($quote_id){
             $quote = PreProjectQuote::find($quote_id);
@@ -229,4 +236,164 @@ class PreProjectController extends Controller
     }
 
 
+    // ------------------------------- PHOTO REPORT -------------------------------
+
+    public function photoreport_index($preproject_id) {
+        return Inertia::render('ProjectArea/ProjectManagement/PhotoReport', [
+            'preproject'=> Preproject::find($preproject_id),
+            'photoreport'=> PhotoReport::where('preproject_id',$preproject_id)->first(),
+        ]);
+    }
+
+
+    public function photoreport_store(Request $request) {
+        $data = $request->validate([
+            'excel_report' => 'sometimes|file|mimes:xls,xlsx', 
+            'pdf_report'   => 'sometimes|file|mimes:pdf',
+            'preproject_id'=> 'required',
+        ]);
+        if($request->hasfile('excel_report')){
+            $excel_report = $request->file('excel_report');
+            $er_name = time() . '_' . $excel_report->getClientOriginalName();
+            $excel_report->move(public_path('documents/photoreports/'), $er_name);
+            $data ['excel_report'] = $er_name;
+        }
+        if($request->hasfile('pdf_report')){
+            $pdf_report = $request->file('pdf_report');
+            $pr_name = time() . '_' . $pdf_report->getClientOriginalName();
+            $pdf_report->move(public_path('documents/photoreports/'), $pr_name);
+            $data ['pdf_report'] = $pr_name;
+        }
+        PhotoReport::create($data);
+        return redirect()->back();
+    }
+
+
+    public function photoreport_update (Request $request, PhotoReport $photoreport) {
+        $data = $request->validate([
+            'excel_report' => 'nullable|sometimes|file|mimes:xls,xlsx', 
+            'pdf_report'   => 'nullable|sometimes|file|mimes:pdf',
+        ]);
+        foreach ($data as $key => $value) {
+            if ($request->hasFile($key)){
+                $this->file_delete($photoreport->$key,'documents/photoreports/');
+                $data[$key] = $this->file_store($request->file($key),'documents/photoreports/');
+            } else {
+                unset($data[$key]);
+            }
+        }
+        $photoreport->update($data);
+        return redirect()->back();
+    }
+
+
+    public function photoreport_delete(PhotoReport $photoreport){
+        $files = [
+            $photoreport->excel_report,
+            $photoreport->pdf_report
+        ];
+        foreach ($files as $file){
+            $file_path = "documents/photoreports/$file";
+            $path = public_path($file_path);
+            if (file_exists($path)) unlink($path);
+        }
+        $photoreport->delete();
+        return redirect()->back();
+    }
+
+
+    public function file_delete($filename, $path) {
+        $file_path = $path.$filename;
+        $path = public_path($file_path);
+        if (file_exists($path)) unlink($path);
+    }
+    public function file_store($file, $path ) {
+        $name = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path($path), $name);
+        return $name;
+    }
+
+
+    public function downloadPR($report_name){
+        $fileName = $report_name;
+        $filePath = "documents/photoreports/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->download($filePath, $fileName);
+        }
+        abort(404, 'Documento no encontrado');
+    }
+
+
+    public function showPR($report_name){
+        $fileName = $report_name;
+        $filePath = 'documents/photoreports/' . $fileName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->file($path);
+        }
+        abort(404, 'Documento no encontrado');
+    }
+
+
+
+     // ------------------------------- PROVIDER QUOTE -------------------------------
+
+     public function preproject_providersquotes_index ($preproject_id) {
+        return Inertia::render('ProjectArea/ProjectManagement/PreprojectProvidersQuotes', [
+            'providersquotes'=> PreprojectProvidersQuote::where('preproject_id', $preproject_id)->paginate(12),
+            'preproject' => Preproject::find( $preproject_id ),
+        ]);
+     }
+
+
+     public function preproject_providersquotes_store (Request $request){
+        $data = $request->validate([
+            'provider_quote' => 'required|file|mimes:pdf,jpeg,png,jpg', 
+            'preproject_id'=> 'required',
+        ]);
+        if($request->hasFile('provider_quote')){
+            $filename = $this->file_store($request->file('provider_quote'), 'documents/providers_quote/');
+            $data['provider_quote'] = $filename;
+        }
+        PreprojectProvidersQuote::create($data);
+        return redirect()->back();
+     }
+
+
+     public function preproject_providersquotes_delete (PreprojectProvidersQuote $providerquote_id) {
+        $this->file_delete($providerquote_id->provider_quote, 'documents/providers_quote/');
+        $providerquote_id->delete();
+        return redirect()->back();
+     }
+
+
+     public function preproject_providersquotes_show (PreprojectProvidersQuote $providerquote_id){
+        $name = $providerquote_id->provider_quote;
+        $path = 'documents/providers_quote/' . $name;
+        $path = public_path($path);
+        if (file_exists($path)) {
+            return response()->file($path);
+        }
+        abort(404, 'Documento no encontrado');
+     }
+
+
+     public function preproject_providersquotes_download(PreprojectProvidersQuote $providerquote_id){
+        $fileName = $providerquote_id->provider_quote;
+        $filePath = "documents/providers_quote/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->download($filePath, $fileName);
+        }
+        abort(404, 'Documento no encontrado');
+    }
+
+
+
+    public function generarPDF(){
+        $data = [];
+        $pdf = PDF::loadView('pdf_export', $data);
+        return $pdf->download('archivo-pdf.pdf');
+    }
 }
