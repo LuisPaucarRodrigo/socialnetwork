@@ -158,7 +158,8 @@
                                     Cancelar </SecondaryButton>
                                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
-                            </div>
+                                    
+                                </div>
                         </div>
                     </div>
                 </form>
@@ -187,6 +188,7 @@ import { ref, computed } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+
 
 const { preprojects, visits} = defineProps({
     preprojects: Object,
@@ -295,5 +297,7 @@ const previewFacade = ref(null)
 function handleFacadeChange (e) {
     form.facade = e.target.files[0]
 }
+
+
 
 </script>

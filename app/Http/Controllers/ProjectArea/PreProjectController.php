@@ -12,7 +12,6 @@ use App\Models\PreProjectQuote;
 use App\Models\PreProjectQuoteItem;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use App\Models\Project;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PreProjectController extends Controller
@@ -235,6 +234,13 @@ class PreProjectController extends Controller
         return redirect()->back();
     }
 
+    public function getPDF(Preproject $preproject)
+    {
+        $preproject = $preproject->load('quote.items');
+        $pdf = Pdf::loadView('pdf.CotizationPDF', compact('preproject'));
+        return $pdf->stream();
+        //return view('pdf.CotizationPDF', compact('preproject'));
+    }
 
     // ------------------------------- PHOTO REPORT -------------------------------
 
