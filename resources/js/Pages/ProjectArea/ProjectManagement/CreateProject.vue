@@ -179,10 +179,10 @@
         </div>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType=" proyecto" />
 
-        <SuccessOperationModal :confirming="showPersonalAddModal" :title="`Item de valorización creado.`"
-            :message="`El item de valorización fue creado.`" />
-        <SuccessOperationModal :confirming="showPersonalRemoveModal" :title="`Item de valorización removido.`"
-            :message="`El item de valorización fue removido.`" />
+        <SuccessOperationModal :confirming="showPersonalAddModal" :title="`Personal creado.`"
+            :message="`El personal fue añadido.`" />
+        <SuccessOperationModal :confirming="showPersonalRemoveModal" :title="`Personal removido.`"
+            :message="`El personal fue removido.`"/>
     </AuthenticatedLayout>
 </template>
 <script setup>

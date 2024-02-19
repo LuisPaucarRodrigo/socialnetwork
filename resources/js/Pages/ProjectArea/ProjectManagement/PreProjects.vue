@@ -117,7 +117,7 @@
                                 <InputLabel for="date" class="mt-4 font-medium leading-6 text-gray-900">Código de proyecto
                                 </InputLabel>
                                 <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
-                                <p class="text-gray-400">CCCCC -> 5 inciales cliente | PPPPP -> 5 inciales proyecto</p>
+                                <p class="text-gray-400">CCCCC -> 5 iniciales cliente | PPPPP -> 5 iniciales proyecto</p>
                                 <div class="mt-2 flex justify-center items-center gap-2">
                                     <input required type="text" v-model="form.code" id="name"  pattern="[a-zA-Z]{5}-[a-zA-Z]{5}" maxlength="11"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 uppercase" />
