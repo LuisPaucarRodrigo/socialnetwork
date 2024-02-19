@@ -169,9 +169,8 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v
-                                                    v-for="(item, index) in (form.items)"
-                                                    :key="index" class="text-gray-700">
+                                                <tr v v-for="(item, index) in (form.items)" :key="index"
+                                                    class="text-gray-700">
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p>
                                                             {{ index }}
@@ -221,13 +220,14 @@
                         </div>
                     </div>
                 </div>
-                
+
 
 
 
 
                 <div class="mt-3 flex items-center justify-end gap-x-6">
-                    <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })" target="_blank" rel="noopener noreferrer"
+                    <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
+                        target="_blank" rel="noopener noreferrer"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         Exportar a PDF
                     </a>
@@ -307,7 +307,14 @@
                 </form>
             </Modal>
         </div>
-        <SuccessOperationModal :confirming="showModal" title="Recurso asignado" message="La asignación fue exitosa" />
+        <SuccessOperationModal :confirming="showModal" :title="`Cotización ${preproject.quote ? 'actuallizada' : 'creada'}`"
+            :message="`La cotización para cliente fue ${preproject.quote ? 'actuallizada' : 'creada'}`" />
+
+        <SuccessOperationModal :confirming="showItemAddModal" :title="`Item de valorización creado.`"
+            :message="`El item de valorización fue creado.`" />
+        <SuccessOperationModal :confirming="showItemRemoveModal" :title="`Item de valorización removido.`"
+            :message="`El item de valorización fue removido.`" />
+
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -384,6 +391,11 @@ const itemInitialState = {
 }
 const itemToAdd = ref(JSON.parse(JSON.stringify(itemInitialState)))
 
+
+const showItemAddModal = ref(false);
+const showItemRemoveModal = ref(false);
+
+
 const showToAddItem = () => {
     showModalMember.value = true;
 }
@@ -398,7 +410,10 @@ const addItem = () => {
                     alert('SERVER ERROR')
                 },
                 onSuccess: () => {
-                    alert('Personal Agregado')
+                    showItemAddModal.value = true
+                    setTimeout(() => {
+                        showItemAddModal.value = false;
+                    }, 1500);
                     form.items.push({
                         ...itemToAdd.value
                     });
@@ -409,20 +424,23 @@ const addItem = () => {
         form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
         itemToAdd.value = JSON.parse(JSON.stringify(itemInitialState))
     }
-
-    
 }
+
+
 const deleteItem = (index) => {
     form.items.splice(index, 1);
 }
 
 const deleteAlreadyItem = (id, index) => {
-    router.delete(route('preprojects.quote.item.delete', { quote_item_id:id }), {
+    router.delete(route('preprojects.quote.item.delete', { quote_item_id: id }), {
         onError: () => {
             alert('SERVER ERROR')
         },
         onSuccess: () => {
-            alert('item Removido')
+            showItemRemoveModal.value = true
+            setTimeout(() => {
+                showItemRemoveModal.value = false;
+            }, 1500);
             form.employees.splice(index, 1);
         }
     })
