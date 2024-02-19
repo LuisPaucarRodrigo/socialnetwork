@@ -12,22 +12,39 @@ class Project extends Model
     use HasFactory;
     protected $table = 'projects';
     protected $fillable = [
-        'name',
-        'code',
-        'start_date',
-        'end_date',
         'priority',
         'description',
         'status',
         'preproject_id'
     ];
 
-    protected $appends = ['total_assigned_resources_costs',  'total_used_resources_costs','remaining_budget', 'total_assigned_product_costs','total_refund_product_costs_no_different_price', 'total_product_costs_with_liquidation','initial_budget', 'total_resources_costs_with_liquidation', 'total_employee_costs'];
+    protected $appends = ['total_assigned_resources_costs',  'total_used_resources_costs','remaining_budget', 'total_assigned_product_costs','total_refund_product_costs_no_different_price', 'total_product_costs_with_liquidation','initial_budget', 'total_resources_costs_with_liquidation', 'total_employee_costs','name','code', 'start_date', 'end_date',];
 
 
     public function getInitialBudgetAttribute(){
         return 0;
     }
+
+    public function getNameAttribute() {
+        return "nombre";
+    }
+
+    
+    public function getCodeAttribute() {
+        return "codigo";
+    }
+    
+    public function getStartDateAttribute() {
+        return "01/01/2023";
+    }
+    
+    public function getEndDateAttribute() {
+        return "01/01/2024";
+    }
+
+
+
+
 
     public function employees(){
         return $this->belongsToMany(Employee::class, 'project_employee')->withPivot('charge', 'id');

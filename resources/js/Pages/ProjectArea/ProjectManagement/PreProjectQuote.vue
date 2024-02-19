@@ -310,8 +310,8 @@
         <SuccessOperationModal :confirming="showModal" :title="`Cotización ${preproject.quote ? 'actuallizada' : 'creada'}`"
             :message="`La cotización para cliente fue ${preproject.quote ? 'actuallizada' : 'creada'}`" />
 
-        <SuccessOperationModal :confirming="showItemAddModal" :title="`Item de valorización creado.`"
-            :message="`El item de valorización fue creado.`" />
+        <SuccessOperationModal :confirming="showItemAddModal" :title="`Item de valorización añadido.`"
+            :message="`El item de valorización fue añadido.`" />
         <SuccessOperationModal :confirming="showItemRemoveModal" :title="`Item de valorización removido.`"
             :message="`El item de valorización fue removido.`" />
 

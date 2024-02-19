@@ -98,10 +98,10 @@
         </div>
       </Modal>
   
-      <ConfirmDeleteModal :confirmingDeletion="confirmReportDelete" itemType="informe fotográfico" :deleteFunction="deleteDocument"
+      <ConfirmDeleteModal :confirmingDeletion="confirmReportDelete" itemType="informe fotográfico" :deleteFunction="()=>deleteDocument(photoreport?.id)"
         @closeModal="closeModalDoc" />
       <ConfirmCreateModal :confirmingcreation="showModal" itemType="informe fotográfico" />
-      <ConfirmUpdateModal :confirmingcreation="showModalUpdate" itemType="informe fotográfico" />
+      <ConfirmUpdateModal :confirmingupdate="showModalUpdate" itemType="informe fotográfico" />
     </AuthenticatedLayout>
   </template>
     
@@ -123,8 +123,6 @@
     photoreport: Object,
     preproject: Object
   });
-
-  console.log(photoreport)
 
   const initial_state = {
     excel_report: null,
@@ -154,7 +152,7 @@
   };
   
   const submit = () => {
-    let url = preproject ?route('preprojects.photoreport.update', {photoreport:photoreport.id}) :route('preprojects.photoreport.store')
+    let url = preproject.photoreport ?route('preprojects.photoreport.update', {photoreport:photoreport.id}) :route('preprojects.photoreport.store')
     form.post(url, {
       onSuccess: () => {
         closeModal();
@@ -182,8 +180,8 @@
   const closeModalDoc = () => {
     confirmReportDelete.value = false;
   };
-  const deleteDocument = () => {
-    router.delete(route('preprojects.photoreport.delete', { photoreport: photoreport.id }), {
+  const deleteDocument = (id) => {
+    router.delete(route('preprojects.photoreport.delete', { photoreport: id }), {
       onSuccess: () => closeModalDoc()
     });
 
