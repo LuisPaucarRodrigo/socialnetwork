@@ -66,7 +66,7 @@
                 </p>
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-                    <DangerButton class="ml-3" @click="updateState(id,state)">Confirmar</DangerButton>
+                    <DangerButton class="ml-3" @click="confirmUpdate">Confirmar</DangerButton>
                 </div>
             </div>
         </Modal>
@@ -102,12 +102,14 @@ const updateState = async (stateid, newState) => {
 }
 
 const sendStateUpdate = async (data) => {
-    try {
-        await router.put(route('purchaseorders.state', { id: id.value }), data);
-        router.visit(route('purchaseorders.index'));
-    } catch (error) {
-        console.error('Error updating state:', error);
-    }
+    router.put(route('purchaseorders.state', { id: id.value }), data, {
+        onSuccess: () => {
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('purchaseorders.index'))
+            }, 2000);
+        }
+    })
 }
 
 const closeModal = () => {

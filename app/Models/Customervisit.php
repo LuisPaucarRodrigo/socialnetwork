@@ -22,4 +22,8 @@ class Customervisit extends Model
     public function preproject() {
         return $this->HasOne(Preproject::class);
     }
+
+    public function imagepreproject() {
+        return $this->HasMany(Imagespreproject::class);
+    }
 }
