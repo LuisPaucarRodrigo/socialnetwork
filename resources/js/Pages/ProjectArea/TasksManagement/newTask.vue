@@ -18,7 +18,11 @@
             <div class="sm:col-span-3">
                 <label for="tasks" class="block text-sm font-medium text-gray-700">Tarea</label>
                 <input type="text" id="task" v-model="form.task"
-                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+                    list="tasksList" />
+                <datalist id="tasksList">
+                    <option v-for="task in tasks" :value="task.task" :key="task.id"></option>
+                </datalist>
                 <InputError :message="form.errors.task" />
             </div>
             <div class="sm:col-span-1">
@@ -81,12 +85,13 @@ import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
 
 
-const props = defineProps({
-    projects: Object
+const { projects, tasks } = defineProps({
+    projects: Object,
+    tasks: Object
 })
 
 const form = useForm({
-    project_id: '1',
+    project_id: '',
     task: '',
     percentage: '',
     start_date: '',

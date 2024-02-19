@@ -52,4 +52,8 @@ class Employee extends Model
     public function project_employees() {
         return $this->hasOne(ProjectEmployee::class);
     }
+
+    public function getSalaryPerDayAttribute() {
+        return $this->contract()->first()->basic_salary/30;
+    }
 }

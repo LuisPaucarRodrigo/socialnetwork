@@ -125,7 +125,7 @@
                     <span class="mx-3">Area de Proyectos</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('customervisitmanagement.index')">Gestion de Visitas al cliente</Link>
+                    <Link class="w-full" :href="route('preprojects.index')">Anteproyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectmanagement.index')">Gestion de Proyectos</Link>
