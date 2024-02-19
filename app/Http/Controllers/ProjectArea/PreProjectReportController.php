@@ -5,13 +5,14 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Models\Customervisit;
 use App\Models\Imagespreproject;
+use App\Models\Preproject;
 use Illuminate\Http\Request;
 
 class PreProjectReportController extends Controller
 {
     public function index()
     {
-        $customers = Customervisit::all();
+        $customers = Preproject::all();
         return response()->json($customers);
     }
 

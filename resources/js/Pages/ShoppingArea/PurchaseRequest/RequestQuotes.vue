@@ -185,7 +185,6 @@ const reject_quote = (id) => {
         },
         onError: (errors) => {
             alert('Algo salió mal')
-            console.log(errors)
         }
     })
 }

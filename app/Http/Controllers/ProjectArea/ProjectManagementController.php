@@ -13,6 +13,7 @@ use App\Models\BudgetUpdate;
 use App\Models\ProjectComponentOrMaterial;
 use App\Models\ProjectNetworkEquipment;
 use App\Models\ProjectProduct;
+use App\Models\ProjectResourceLiquidate;
 use App\Models\Resource;
 use App\Models\ProjectResource;
 use App\Models\Purchasing_request;
@@ -95,31 +96,30 @@ class ProjectManagementController extends Controller
 
     public function project_resources($project_id)
     {
-        $project = Project::with(['resources', 'components_or_materials', 'resource_historials.resource'])->find($project_id);
+        $project = Project::with(['project_resources.resource', 'resource_historials.resource'])->find($project_id);
         $resources = Resource::all();
         $resourcesDisponibles = $resources->filter(function ($resource) {
             return $resource->state === 'Disponible';
         });
 
-        $components_or_materials = ComponentOrMaterial::all()->where('state', 'Disponible');
+        $liquidations = ProjectResourceLiquidate::with('project_resource.project','project_resource.resource')
+            ->whereHas('project_resource.project',function($query) use ($project_id) {
+                $query->where('id', $project_id);
+            })
+            ->get();
 
         return Inertia::render('ProjectArea/ProjectManagement/ResourcesAssignment', [
             'project' => $project,
             'resources' => $resourcesDisponibles,
-            'components_or_materials' => $components_or_materials,
+            'liquidations' => $liquidations,
         ]);
     }
 
     public function project_resources_store(Request $request)
     {
-        if ($request->total_price === null) {
+        if ($request->unit_price === null) {
             $price_resource = Resource::find($request->resource_id);
-            $request->merge(['total_price' => $price_resource->unit_price]);
-        }
-
-        $resource = Resource::find($request->resource_id);
-        if ($resource->leftover < $request->quantity) {
-            return response()->json(['error' => 'Cantidad excedida, recarga la página'], 500);
+            $request->merge(['unit_price' => $price_resource->unit_price]);
         }
         $data = $request->all();
         ProjectResource::create($data);
@@ -148,8 +148,7 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
-    public function project_resources_return(Request $request, $id)
-    {
+    public function project_resources_return(Request $request, $id){
         $data = $request->all();
         $data['type'] = 'Devolución';
         $project_resource = ProjectResource::find($id);
@@ -165,6 +164,21 @@ class ProjectManagementController extends Controller
         }
         return redirect()->back();
     }
+
+
+    public function project_resources_liquidate (Request $request){
+        $data = $request->validate([
+            'project_resource_id'=> 'required',
+            'liquidated_quantity'=> 'required',
+            'refund_quantity'=> 'required', 
+            'observations'=> 'nullable|string',
+        ]);
+        ProjectResourceLiquidate::create($data);
+        return redirect()->back(); 
+    }
+
+
+
 
     public function project_componentmaterial_delete($component_or_material_id)
     {
@@ -216,17 +230,13 @@ class ProjectManagementController extends Controller
         }
     }
 
-    public function project_expenses(Project $project_id)
-    {
-
+    public function project_expenses(Project $project_id){
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
             ->with('project')
             ->with('user')
             ->orderByDesc('id')
             ->first();
-
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
-
         $expenses = Purchasing_request::with([
             'purchase_quotes' => function ($query) {
                 $query->whereHas('purchase_order', function ($subQuery) {
@@ -247,11 +257,7 @@ class ProjectManagementController extends Controller
 
         $total_expenses += $project_id->additionalCosts->sum('amount');
         $additionalCosts = $project_id->additionalCosts->sum('amount');
-
-
-
         $remaining_budget = $current_budget - $total_expenses;
-
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'remaining_budget' => $remaining_budget,
@@ -298,9 +304,9 @@ class ProjectManagementController extends Controller
             'project_id' => 'required',
             'product_id' => 'required',
             'quantity' => 'required',
-            'observation' => 'required',
+            'observation' => 'nullable|string',
         ]);
-        $data['total_price'] = $request->total_price;
+        $data['unit_price'] = $request->total_price;
         ProjectProduct::create($data);
         return redirect()->back();
     }

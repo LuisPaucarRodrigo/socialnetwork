@@ -151,7 +151,7 @@ class ManagementEmployees extends Controller
                 'employee_id' => $employeeId,
             ]);
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return $e->getMessage();
         }

@@ -8,21 +8,36 @@ use Illuminate\Database\Eloquent\Model;
 class Preproject extends Model
 {
     use HasFactory;
-    
     protected $fillable = [
-        'name',
+        'customer',
+        'code',
+        'phone',
         'description',
-        'unit_type',
-        'cost',
-        'customervisit_id',
+        'address',
+        'date',
+        'observation',
+        'facade',
+    ];
+    protected $appends = [
+        'has_photo_report'
     ];
 
-    public function customervisit()
-    {
-        return $this->belongsTo(Employee::class, 'customervisit_id');
+
+    public function project() {
+        return $this->HasOne(Project::class);
     }
 
-    public function preproject() {
-        return $this->HasOne(Project::class);
+    public function imagepreproject() {
+        return $this->HasMany(Imagespreproject::class);
+    }
+
+
+    public function getHasPhotoReportAttribute() {
+        return true;
+    }
+
+
+    public function quote() {
+        return $this->hasOne(PreProjectQuote::class,'preproject_id');
     }
 }
