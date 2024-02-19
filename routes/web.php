@@ -26,6 +26,7 @@ use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
 use App\Http\Controllers\Inventory\WarehousesController;
 use App\Http\Controllers\Inventory\ProductController;
+use App\Http\Controllers\ProjectArea\CustomerVisitController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -247,6 +248,13 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
     Route::get('/cicsaDoTask2', [CicsaSectionController::class, 'doTask2'])->name('sections.cicsaTask2');
 
+    Route::get('/customervisitmanagement', [CustomerVisitController::class, 'index'])->name('customervisitmanagement.index');
+    Route::get('/customervisitmanagement/create', [CustomerVisitController::class, 'create'])->name('customervisitmanagement.create');
+    Route::post('/customervisitmanagement/store', [CustomerVisitController::class, 'store'])->name('customervisitmanagement.store');
+    Route::get('/customervisitmanagement/{id}/details', [CustomerVisitController::class, 'details'])->name('customervisitmanagement.details');
+    Route::get('/customervisitmanagement/{id}/edit', [CustomerVisitController::class, 'edit'])->name('customervisitmanagement.edit');
+    Route::put('/customervisitmanagement/{id}/update', [CustomerVisitController::class, 'update'])->name('customervisitmanagement.update');
+    Route::delete('/customervisitmanagement/{id}/delete', [CustomerVisitController::class, 'delete'])->name('customervisitmanagement.delete');
 
 
 

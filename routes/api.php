@@ -17,8 +17,9 @@ use App\Http\Controllers\VacationController;
 
 
 Route::post('/login', [ApiController::class, 'login']);
+Route::get('/preproject', [ApiController::class, 'preproject']);
 Route::middleware('auth:sanctum')->group(function (){
-    Route::post('/fuel', [ApiController::class, 'fuel']);
+    // Route::get('/preproject', [ApiController::class, 'preproject']);
 });
 
 // Route::get('/vacation', [VacationController::class, 'index']);
