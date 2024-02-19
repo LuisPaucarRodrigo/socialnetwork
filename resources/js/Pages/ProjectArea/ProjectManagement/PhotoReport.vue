@@ -101,6 +101,7 @@
       <ConfirmDeleteModal :confirmingDeletion="confirmReportDelete" itemType="informe fotográfico" :deleteFunction="deleteDocument"
         @closeModal="closeModalDoc" />
       <ConfirmCreateModal :confirmingcreation="showModal" itemType="informe fotográfico" />
+      <ConfirmUpdateModal :confirmingcreation="showModalUpdate" itemType="informe fotográfico" />
     </AuthenticatedLayout>
   </template>
     
@@ -108,6 +109,7 @@
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
   import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+  import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import InputError from '@/Components/InputError.vue';
   import InputLabel from '@/Components/InputLabel.vue';
@@ -136,6 +138,7 @@
   
   const create_document = ref(false);
   const showModal = ref(false);
+  const showModalUpdate = ref(false);
   const confirmReportDelete = ref(false);
   
   const documentToShow = ref(null);
@@ -156,9 +159,9 @@
       onSuccess: () => {
         closeModal();
         form.reset();
-        showModal.value = true
+        preproject ? showModalUpdate.value = true : showModal.value = true
         setTimeout(() => {
-          showModal.value = false;
+          preproject ? showModalUpdate.value = false : showModal.value = false
         }, 2000);
       },
       onError: () => {
