@@ -337,7 +337,6 @@ const { preproject } = defineProps({
     preproject: Object
 })
 
-console.log(preproject)
 
 const initialState = {
     name: '',
@@ -355,8 +354,6 @@ const initialState = {
 const form = useForm(
     { ...(preproject.quote ? preproject.quote : initialState) }
 )
-
-console.log(preproject)
 
 const submit = () => {
     let url = route('preprojects.quote.store')
