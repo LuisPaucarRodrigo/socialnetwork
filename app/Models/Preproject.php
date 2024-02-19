@@ -19,12 +19,13 @@ class Preproject extends Model
         'facade',
     ];
     protected $appends = [
-        'has_photo_report'
+        'has_photo_report',
+        'is_appropriate',
     ];
 
 
     public function project() {
-        return $this->HasOne(Project::class);
+        return $this->hasOne(Project::class);
     }
 
 
@@ -35,5 +36,11 @@ class Preproject extends Model
 
     public function quote() {
         return $this->hasOne(PreProjectQuote::class,'preproject_id');
+    }
+
+    public function getIsAppropriateAttribute(){
+        $quote_status =  $this->quote()->first()?->state;
+        $project = $this->project()->first();
+        return $quote_status && ($project === null);
     }
 }

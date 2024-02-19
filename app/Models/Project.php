@@ -26,24 +26,24 @@ class Project extends Model
     }
 
     public function getNameAttribute() {
-        return "nombre";
+        return $this->preproject()->first()?->quote->name;
     }
 
     
     public function getCodeAttribute() {
-        return "codigo";
+        return $this->preproject()->first()?->code;
     }
     
     public function getStartDateAttribute() {
-        return "01/01/2023";
+        $startDate = Carbon::parse($this->preproject()->first()?->quote->date);
+        return $startDate->format('d/m/Y');
     }
     
     public function getEndDateAttribute() {
-        return "01/01/2024";
+        $startDate = Carbon::parse($this->getStartDateAttribute() );
+        $daysFromQuote = optional($this->preproject()->first()->quote)->deliverable_time;
+        return $startDate->addDays($daysFromQuote)->format('d/m/Y');
     }
-
-
-
 
 
     public function employees(){

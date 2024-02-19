@@ -195,6 +195,7 @@ const { preprojects, visits} = defineProps({
     visits: Object,
 })
 
+console.log(preprojects.data)
 
 const initial_state = {
     customer:'',
@@ -231,7 +232,6 @@ const submit = () => {
 };
 
 const submitEdit = () => {
-    console.log(form.data())
     form.post(route('preprojects.update', { preproject: form.id }), {
         preserveScroll: true,
         onSuccess: () => {
