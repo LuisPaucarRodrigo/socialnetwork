@@ -11,10 +11,10 @@ class Imagespreproject extends Model
     protected $fillable=[
         'description',
         'image',
-        'customervisit_id'
+        'preproject_id'
     ];
 
-    public function customervisit() {
-        return $this->belongsTo(Customervisit::class, 'customervisit_id');
+    public function preproject() {
+        return $this->belongsTo(Preproject::class, 'preproject_id');
     }
 }

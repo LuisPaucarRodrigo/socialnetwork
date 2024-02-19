@@ -16,8 +16,7 @@ use Inertia\Inertia;
 
 class TaskManagementController extends Controller
 {
-    public function index(Request $request)
-    {
+    public function index(Request $request){
         $projectId = $request->route('id');
         $tasks = Tasks::where('project_id', $projectId)->paginate(5);
         return Inertia::render('ProjectArea/TasksManagement/index', [
@@ -27,15 +26,16 @@ class TaskManagementController extends Controller
         ]);
     }
 
-    public function new()
-    {
+
+    public function new(){   
         return Inertia::render('ProjectArea/TasksManagement/newTask', [
             'projects' => Project::all(),
+            'tasks' => Tasks::all(),
         ]);
     }
 
-    public function edit($taskId)
-    {
+
+    public function edit($taskId){
         $task = Tasks::find($taskId);
         $employees = Project::with('employees')
             ->find($task->project_id);

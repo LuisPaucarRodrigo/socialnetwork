@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VacationController;
+use App\Http\Controllers\ProjectArea\PreProjectController;
 /*
 |--------------------------------------------------------------------------
 | API Routes

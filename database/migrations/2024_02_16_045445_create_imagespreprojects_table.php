@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('description');
             $table->string('image');
-            $table->foreignId('customervisit_id')->constrained()->onDelete('cascade');
+            $table->foreignId('preproject_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -34,7 +34,23 @@ class Product extends Model
         return $this->belongsToMany(Header::class, 'products_headers', 'product_id', 'header_id')->withTimestamps();
     }
 
-    protected $appends = ['unit_price','total_assigned_to_projects', 'total_available', 'state', 'has_different_price', 'total_sent_quantity_projects', 'total_refund_quantity_projects', 'total_used_quantity_projects'];
+    public function getContentsAttribute(){
+
+        $headers = $this->headers()->get();
+        $headerContents = [];
+
+        foreach ($headers as $header) {
+            $content = $this->productHeaders()->where('header_id', $header->id)->first()->content;
+            $headerContents[] = [
+                'header_id' => $header->id,
+                'content' => $content
+            ];
+    }
+
+    return $headerContents;
+    }
+
+    protected $appends = ['unit_price','total_assigned_to_projects', 'total_available', 'state', 'has_different_price', 'total_sent_quantity_projects', 'total_refund_quantity_projects', 'total_used_quantity_projects', 'contents'];
 
     public function projects(){
         return $this->belongsToMany(Project::class,'project_product');
@@ -62,6 +78,7 @@ class Product extends Model
         return $total;
     }
 
+
     public function getTotalRefundQuantityProjectsAttribute(){
         $total = $this->project_product()->get()->sum(function ($item) {
             return $item->total_refund_quantity ?? 0;
@@ -69,6 +86,7 @@ class Product extends Model
         return $total;
     }
 
+    
     public function getTotalUsedQuantityProjectsAttribute(){
         $total = $this->project_product()->get()->sum(function ($item) {
             return $item->total_used_quantity ?? 0;

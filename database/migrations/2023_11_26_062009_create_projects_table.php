@@ -19,8 +19,8 @@ return new class extends Migration
             $table->date('end_date');
             $table->string('priority');
             $table->text('description');
-            $table->float('initial_budget')->nullable();
-            $table->foreignId('preproject_id')->constrained()->onDelete('cascade');
+            $table->string('status')->nullable();
+            $table->foreignId('preproject_id')->constrained()->nullable()->onDelete('cascade');
             $table->timestamps();
         });
     }

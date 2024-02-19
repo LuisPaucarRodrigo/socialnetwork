@@ -5,6 +5,7 @@
         <template #header>
             Empleados
         </template>
+
         <div class="min-w-full rounded-lg shadow">
             <button @click="add_information" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
@@ -15,8 +16,9 @@
                 class="mx-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 Horario
             </button>
-            <div class="overflow-auto">
-                <table class="w-full whitespace-no-wrap">
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full whitespace-no-wrap">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -102,8 +104,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-
             </div>
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="employees.links" />
@@ -292,7 +292,6 @@ const confirmFired = (firedId) => {
 }
 
 const closeFiredModal = () => {
-    console.log('dfdff');
     showModalFired.value = false
 }
 

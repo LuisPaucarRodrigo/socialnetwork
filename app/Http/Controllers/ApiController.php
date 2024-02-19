@@ -29,7 +29,6 @@ class ApiController extends Controller
         }
     }
     
-
     public function preproject(){
         $data = [
             [
