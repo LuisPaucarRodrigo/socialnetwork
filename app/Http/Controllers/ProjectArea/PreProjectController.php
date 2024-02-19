@@ -345,36 +345,36 @@ class PreProjectController extends Controller
 
      // ------------------------------- PROVIDER QUOTE -------------------------------
 
-     public function preproject_providersquotes_index ($preproject_id) {
-        return Inertia::render('ProjectArea/ProjectManagement/PreprojectProvidersQuotes', [
-            'providersquotes'=> PreprojectProvidersQuote::where('preproject_id', $preproject_id)->paginate(12),
-            'preproject' => Preproject::find( $preproject_id ),
-        ]);
+    public function preproject_providersquotes_index ($preproject_id) {
+    return Inertia::render('ProjectArea/ProjectManagement/PreprojectProvidersQuotes', [
+        'providersquotes'=> PreprojectProvidersQuote::where('preproject_id', $preproject_id)->paginate(12),
+        'preproject' => Preproject::find( $preproject_id ),
+    ]);
+    }
+
+
+    public function preproject_providersquotes_store (Request $request){
+    $data = $request->validate([
+        'provider_quote' => 'required|file|mimes:pdf,jpeg,png,jpg', 
+        'preproject_id'=> 'required',
+    ]);
+    if($request->hasFile('provider_quote')){
+        $filename = $this->file_store($request->file('provider_quote'), 'documents/providers_quote/');
+        $data['provider_quote'] = $filename;
+    }
+    PreprojectProvidersQuote::create($data);
+    return redirect()->back();
      }
 
 
-     public function preproject_providersquotes_store (Request $request){
-        $data = $request->validate([
-            'provider_quote' => 'required|file|mimes:pdf,jpeg,png,jpg', 
-            'preproject_id'=> 'required',
-        ]);
-        if($request->hasFile('provider_quote')){
-            $filename = $this->file_store($request->file('provider_quote'), 'documents/providers_quote/');
-            $data['provider_quote'] = $filename;
-        }
-        PreprojectProvidersQuote::create($data);
-        return redirect()->back();
-     }
-
-
-     public function preproject_providersquotes_delete (PreprojectProvidersQuote $providerquote_id) {
+    public function preproject_providersquotes_delete (PreprojectProvidersQuote $providerquote_id) {
         $this->file_delete($providerquote_id->provider_quote, 'documents/providers_quote/');
         $providerquote_id->delete();
         return redirect()->back();
-     }
+    }
 
 
-     public function preproject_providersquotes_show (PreprojectProvidersQuote $providerquote_id){
+    public function preproject_providersquotes_show (PreprojectProvidersQuote $providerquote_id){
         $name = $providerquote_id->provider_quote;
         $path = 'documents/providers_quote/' . $name;
         $path = public_path($path);
@@ -382,7 +382,7 @@ class PreProjectController extends Controller
             return response()->file($path);
         }
         abort(404, 'Documento no encontrado');
-     }
+    }
 
 
      public function preproject_providersquotes_download(PreprojectProvidersQuote $providerquote_id){
