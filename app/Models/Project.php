@@ -40,7 +40,7 @@ class Project extends Model
     }
     
     public function getEndDateAttribute() {
-        $startDate = Carbon::parse($this->getStartDateAttribute() );
+        $startDate = Carbon::parse($this->preproject()->first()?->quote->date);
         $daysFromQuote = optional($this->preproject()->first()->quote)->deliverable_time;
         return $startDate->addDays($daysFromQuote)->format('d/m/Y');
     }
@@ -196,9 +196,7 @@ class Project extends Model
 
 
     public function getTotalEmployeeCostsAttribute(){   
-        $startDate = Carbon::parse($this->start_date);
-        $endDate = Carbon::parse($this->end_date);
-        $days = $startDate->diffInDays($endDate);
+        $days = optional($this->preproject()->first()->quote)->deliverable_time;
         return $this->employees()->get()->sum(function($item) use ($days){
             return $item->getSalaryPerDayAttribute() * $days;
         });
