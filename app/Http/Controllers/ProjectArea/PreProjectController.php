@@ -338,4 +338,16 @@ class PreProjectController extends Controller
         $pdf = PDF::loadView('pdf_export', $data);
         return $pdf->download('archivo-pdf.pdf');
     }
+
+    public function acceptCotization(Request $request, $quote_id)
+    {
+        $data = $request->validate([
+            "state"=>'required',
+        ]);
+
+        $quote = PreProjectQuote::find($quote_id);
+        $quote->update($data);
+        
+        return redirect()->back();
+    }
 }

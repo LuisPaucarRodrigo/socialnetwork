@@ -195,7 +195,6 @@ const { preprojects, visits} = defineProps({
     visits: Object,
 })
 
-console.log(preprojects.data)
 
 const initial_state = {
     customer:'',
