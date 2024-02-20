@@ -405,8 +405,6 @@ const { project, resources, network_equipments, liquidations } = defineProps({
     liquidations: Object
 })
 
-console.log(project)
-
 //Recursos
 const initialState = {
     project_id: project.id,
