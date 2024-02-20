@@ -110,8 +110,9 @@
     </Modal>
 
     <ConfirmDeleteModal :confirmingDeletion="confirmReportDelete" itemType="informe fotográfico"
-      :deleteFunction="deleteDocument" @closeModal="closeModalDoc" />
+      :deleteFunction="() => deleteDocument(photoreport?.id)" @closeModal="closeModalDoc" />
     <ConfirmCreateModal :confirmingcreation="showModal" itemType="informe fotográfico" />
+    <ConfirmUpdateModal :confirmingupdate="showModalUpdate" itemType="informe fotográfico" />
   </AuthenticatedLayout>
 </template>
     
@@ -119,6 +120,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -133,8 +135,6 @@ const { documents, preproject, photoreport } = defineProps({
   preproject: Object
 });
 
-console.log(photoreport)
-
 const initial_state = {
   excel_report: null,
   pdf_report: null,
@@ -147,6 +147,7 @@ const form = useForm({
 
 const create_document = ref(false);
 const showModal = ref(false);
+const showModalUpdate = ref(false);
 const confirmReportDelete = ref(false);
 
 const documentToShow = ref(null);
@@ -167,9 +168,9 @@ const submit = () => {
     onSuccess: () => {
       closeModal();
       form.reset();
-      showModal.value = true
+      preproject ? showModalUpdate.value = true : showModal.value = true
       setTimeout(() => {
-        showModal.value = false;
+        preproject ? showModalUpdate.value = false : showModal.value = false
       }, 2000);
     },
     onError: () => {
@@ -181,18 +182,22 @@ const submit = () => {
   });
 };
 
+
+
+
 const openDeleteModal = () => {
   confirmReportDelete.value = true;
 }
 const closeModalDoc = () => {
   confirmReportDelete.value = false;
 };
-const deleteDocument = () => {
-  router.delete(route('preprojects.photoreport.delete', { photoreport: photoreport.id }), {
+const deleteDocument = (id) => {
+  router.delete(route('preprojects.photoreport.delete', { photoreport: id }), {
     onSuccess: () => closeModalDoc()
   });
 
 };
+
 
 
 

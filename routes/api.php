@@ -4,7 +4,6 @@ use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VacationController;
-use App\Http\Controllers\ProjectArea\PreProjectController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,6 +18,8 @@ use App\Http\Controllers\ProjectArea\PreProjectController;
 
 Route::post('/login', [ApiController::class, 'login']);
 Route::get('/preproject', [ApiController::class, 'preproject']);
+Route::get('/preprojectespecific/{id}', [ApiController::class, 'preprojectespecific']);
+Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
 Route::middleware('auth:sanctum')->group(function (){
     // Route::get('/preproject', [ApiController::class, 'preproject']);
 });

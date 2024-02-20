@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginMobileRequest;
+use App\Models\Imagespreproject;
+use App\Models\Preproject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,7 +12,8 @@ use function Pest\Laravel\json;
 
 class ApiController extends Controller
 {
-    public function login(LoginMobileRequest $request) {
+    public function login(LoginMobileRequest $request)
+    {
         if (Auth::attempt($request->all())) {
             $user = Auth::user(); // Obtener el usuario autenticado
             // Generar un token con sanctum (sanctum ya viene preinstalado en Laravel)
@@ -28,30 +31,39 @@ class ApiController extends Controller
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
     }
-    
-    public function preproject(){
-        $data = [
-            [
-                'customer' => 'Cliente 1',
-                'phone' => '123456789',
-                'address' => 'Calle 1, Ciudad',
-                'datevisit' => '123'
-            ],
-            [
-                'customer' => 'Cliente 2',
-                'phone' => '987654321',
-                'address' => 'Calle 2, Ciudad',
-                'datevisit' => '456'
-            ],
-            [
-                'customer' => 'Cliente 3',
-                'phone' => '456123789',
-                'address' => 'Calle 3, Ciudad',
-                'datevisit' => '789'
-            ]
-        ];
-        
-    
+
+    public function preproject()
+    {
+        $data = Preproject::all();
+
+        return response()->json($data);
+    }
+
+    public function preprojectespecific($id)
+    {
+        $data = Preproject::find($id);
+        $data->facade = url('image/facades/' . $data->facade);
+
+        return response()->json($data);
+    }
+
+    public function preprojectimage(Request $request)
+    {
+        $image = str_replace('data:image/png;base64,', '', $request->photo);
+        $image = str_replace(' ', '+', $image);
+        $imageContent = base64_decode($image);
+        $imagename = time() . '.png';
+        file_put_contents(public_path('image/imagereportpreproject/') . $imagename, $imageContent);
+
+        Imagespreproject::create([
+            'description' => $request->description,
+            'image' => $imagename,
+            'preproject_id' => $request->id,
+        ]);
+
+        $data = Preproject::find("1");
+        $data->facade = url('image/facades/' . $data->facade);
+
         return response()->json($data);
     }
 }
