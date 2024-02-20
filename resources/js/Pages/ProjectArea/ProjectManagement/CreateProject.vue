@@ -178,11 +178,17 @@
             </Modal>
         </div>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType=" proyecto" />
+
+        <SuccessOperationModal :confirming="showPersonalAddModal" :title="`Personal creado.`"
+            :message="`El personal fue añadido.`" />
+        <SuccessOperationModal :confirming="showPersonalRemoveModal" :title="`Personal removido.`"
+            :message="`El personal fue removido.`"/>
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
@@ -247,6 +253,9 @@ const showModalMember = ref(false);
 const empInitState = { employee: '', charge: '' }
 const employeeToAdd = ref(JSON.parse(JSON.stringify(empInitState)))
 
+const showPersonalAddModal = ref(false);
+const showPersonalRemoveModal = ref(false);
+
 const showToAddEmployee = () => {
     showModalMember.value = true;
 }
@@ -261,7 +270,10 @@ const add_employee = () => {
                     alert('SERVER ERROR')
                 },
                 onSuccess: () => {
-                    alert('Personal Agregado')
+                    showPersonalAddModal.value = true
+                    setTimeout(() => {
+                        showPersonalAddModal.value = false;
+                    }, 1500);
                     form.employees.push(JSON.parse(JSON.stringify({
                         name: employeeToAdd.value.employee.name,
                         lastname: employeeToAdd.value.employee.lastname,
@@ -285,7 +297,10 @@ const delete_already_employee = (pivot_id, index) => {
             alert('SERVER ERROR')
         },
         onSuccess: () => {
-            alert('Personal Removido')
+            showPersonalRemoveModal.value = true
+            setTimeout(() => {
+                showPersonalRemoveModal.value = false;
+            }, 1500);
             form.employees.splice(index, 1);
         }
     })
