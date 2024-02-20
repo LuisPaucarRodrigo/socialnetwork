@@ -179,7 +179,6 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::get('/selectProject', [BudgetUpdateController::class, 'selectProject'])->name('selectproject.index');
     Route::get('/budgetUpdates/{project}/{budgetupdate}', [BudgetUpdateController::class, 'show'])->name('budgetupdates.show');
     Route::get('/initialBudget/{project}', [BudgetUpdateController::class, 'initial'])->name('initialbudget.index');
-    Route::put('/initialBudget/{project}/defineInitialBudget', [BudgetUpdateController::class, 'defineInitialBudget'])->name('initialbudget.update');
     Route::post('/initialBudget/{project}/createUpdate', [BudgetUpdateController::class, 'create'])->name('budgetupdates.create');
 });
 Route::middleware('auth', 'permission:InventoryManager')->group(function () {
@@ -253,10 +252,6 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
 
     //PreProjects
-    Route::get('/visits', [PreProjectController::class, 'showVisits'])->name('preprojects.visits');
-    Route::post('/visits/store', [PreProjectController::class, 'storeVisits'])->name('preprojects.storeVisit');
-    Route::delete('/visits/{customer_visit}/destroy', [PreProjectController::class, 'destroyVisit'])->name('preprojects.destroyVisit');
-    Route::get('/visits/{customer_visit}', [PreProjectController::class, 'showVisitFacade'])->name('preprojects.previewVisit');
     Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
     Route::post('/preprojects/create', [PreProjectController::class, 'store'])->name('preprojects.store');
     Route::post('/preprojects/{preproject}/update', [PreProjectController::class, 'update'])->name('preprojects.update');
