@@ -235,7 +235,6 @@
   };
   
   const submit = () => {
-    console.log(form);
     form.post(route('preprojects.storeVisit'), {
       onSuccess: () => {
         closeModal();

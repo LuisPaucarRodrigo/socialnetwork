@@ -20,6 +20,7 @@ use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
 use App\Models\ResourceHistorial;
 use App\Models\Warehouse;
+use App\Models\Preproject;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -36,11 +37,16 @@ class ProjectManagementController extends Controller
 
     public function project_create(Request $request, $project_id = null)
     {
+        $preprojects = Preproject::all()->filter(function ($item) {
+            return $item->is_appropriate === true;
+        });
+
         if ($project_id) {
             $project = Project::with('employees')->find($project_id);
             return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
                 'employees' => Employee::select('id', 'name', 'lastname')->get(),
                 'project' => $project,
+                'preprojects'=> $preprojects,
             ]);
         }
         if ($request->query('start_date')) {
@@ -53,13 +59,13 @@ class ProjectManagementController extends Controller
         }
         return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
             'employees' => Employee::select('id', 'name', 'lastname')->get(),
+            'preprojects'=> $preprojects,
         ]);
     }
 
     public function project_store(CreateProjectRequest $request)
     {
         $data = $request->validated();
-
         if ($request->id) {
             $project = Project::find($request->id);
             $project->update($data);
