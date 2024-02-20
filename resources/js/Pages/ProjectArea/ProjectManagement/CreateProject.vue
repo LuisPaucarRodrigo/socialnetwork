@@ -226,7 +226,6 @@ const { employees, start_date, numberOfProjects, project, preprojects } = define
     preprojects: Object
 })
 
-console.log(preprojects)
 
 const initialState = {
     preproject_id: '',
