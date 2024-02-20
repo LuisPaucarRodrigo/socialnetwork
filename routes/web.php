@@ -259,9 +259,9 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
     Route::get('/cotizationPDF/{preproject}', [PreProjectController::class, 'getPDF'])->name('preprojects.pdf');
 
-
     Route::get('/preprojects/{preproject_id}/quote', [PreProjectController::class, 'quote'])->name('preprojects.quote');
     Route::post('/preprojects/quote_store/{quote_id?}', [PreProjectController::class, 'quote_store'])->name('preprojects.quote.store');
+    Route::post('/preprojects/quote/{quote_id}', [PreProjectController::class, 'acceptCotization'])->name('preprojects.accept');
     Route::delete('/preprojects/quote_delete/{quote_item_id}', [PreProjectController::class, 'quote_item_delete'])->name('preprojects.quote.item.delete');
     Route::post('/preprojects/quote_item_store', [PreProjectController::class, 'quote_item_store'])->name('preprojects.quote.item.store');
     
