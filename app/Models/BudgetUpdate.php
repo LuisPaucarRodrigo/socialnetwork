@@ -11,6 +11,7 @@ class BudgetUpdate extends Model
     protected $table = 'budget_updates';
     protected $fillable = [
         'new_budget',
+        'difference',
         'project_id',
         'reason',
         'update_date',        
