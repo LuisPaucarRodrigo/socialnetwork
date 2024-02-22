@@ -170,8 +170,6 @@
             </div>
         </Modal>
 
-
-
         <ConfirmDeleteModal :confirmingDeletion="confirmingProjectDeletion" itemType="Anteproyecto"
             :deleteFunction="delete_project" @closeModal="closeModal" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
