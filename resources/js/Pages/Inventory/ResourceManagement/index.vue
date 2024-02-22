@@ -5,14 +5,14 @@
             Activos
         </template>
 
-        <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+        <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
                 <button @click="add_resource" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
             </div>
-            <div class="talwing mt-4">
+            <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
@@ -89,9 +89,9 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-            <pagination :links="resources.links" />
+            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <pagination :links="resources.links" />
+            </div>
         </div>
         <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="activo" :deleteFunction="delete_resource"
             @closeModal="closeModal" />

@@ -395,8 +395,6 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 const showModal = ref(false);
 const input_rent = ref(false);
-// const showModal2 = ref(false);
-// const showModal3 = ref(false);
 
 const { project, resources, network_equipments, liquidations } = defineProps({
     project: Object,
@@ -404,8 +402,6 @@ const { project, resources, network_equipments, liquidations } = defineProps({
     network_equipments: Object,
     liquidations: Object
 })
-
-console.log(project)
 
 //Recursos
 const initialState = {
