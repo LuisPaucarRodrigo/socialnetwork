@@ -1,6 +1,6 @@
 <template>
     <Head title="Detalles de Rol" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'rols.index'">
         <template #header>
             Rol
         </template>
@@ -25,12 +25,6 @@
                     </div>
                 </div>
             </dl>
-        </div>
-        <div class="mt-6 flex items-center justify-between">
-            <a :href="route('rols.index')"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Atras
-            </a>
         </div>
     </AuthenticatedLayout>
 </template>
