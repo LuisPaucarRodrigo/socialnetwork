@@ -58,7 +58,6 @@ class ManagementEmployees extends Controller
         try {
             $imageUrl = null;
             $documentName = null;
-            // Procesar y almacenar el curriculum vitae
             if ($request->hasFile('curriculum_vitae')) {
                 $document = $request->file('curriculum_vitae');
                 $documentName = time() . '._' . $document->getClientOriginalName();
