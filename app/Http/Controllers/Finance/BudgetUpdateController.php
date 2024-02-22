@@ -13,17 +13,6 @@ use Illuminate\Support\Facades\Auth;
 class BudgetUpdateController extends Controller
 {
 
-    public function index(Project $project)
-    {
-        $budget_updates = BudgetUpdate::where('project_id', $project->id)
-            ->with('project')
-            ->with('user')
-            ->paginate();
-        return Inertia::render('Finance/Budget/BudgetUpdates', [
-            'budgetUpdates' => $budget_updates,
-        ]);
-    }
-
     public function create(Request $request, Project $project)
     {
         $user_id = Auth::id();
@@ -32,10 +21,13 @@ class BudgetUpdateController extends Controller
             'project_id' => 'required',
             'reason' => 'required',
             'update_date' => 'required',
+            'difference' => 'required',
             'approved_update_date' => 'required',
         ]);
+
         BudgetUpdate::create([
             'new_budget' => $request->new_budget,
+            'difference' => $request->difference,
             'project_id' => $request->project_id,
             'reason' => $request->reason,
             'update_date' => $request->update_date,
@@ -63,23 +55,16 @@ class BudgetUpdateController extends Controller
             ->orderByDesc('id') // Ordenar por ID en orden descendente
             ->first();
 
+        $budget_updates = BudgetUpdate::where('project_id', $project->id)
+            ->with('project')
+            ->with('user')
+            ->paginate(5);
+
         return Inertia::render('Finance/Budget/InitialBudget', [
             'project' => $project,
             'budgetUpdate' => $budget_update,
+            'budgetUpdates' => $budget_updates
         ]);
-    }
-
-    public function defineInitialBudget(Project $project, Request $request)
-    {
-        $request->validate([
-            'initial_budget' => 'required',
-        ]);
-
-        $project->update([
-            'initial_budget' => $request->initial_budget,
-        ]);
-
-        return to_route('initialbudget.index', ['project' => $project->id]);
     }
 
     public function selectProject()

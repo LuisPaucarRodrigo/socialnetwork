@@ -17,9 +17,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PreProjectController extends Controller
 {
-
-    public function index()
-    {
+    public function index(){
         return Inertia::render('ProjectArea/ProjectManagement/PreProjects', [
             'preprojects' => Preproject::with('project')->paginate(10),
         ]);
@@ -407,5 +405,17 @@ class PreProjectController extends Controller
             return response()->file($path);
         }
         abort(404, 'Imagen no encontrada');
+    }
+    
+    public function acceptCotization(Request $request, $quote_id)
+    {
+        $data = $request->validate([
+            "state"=>'required',
+        ]);
+
+        $quote = PreProjectQuote::find($quote_id);
+        $quote->update($data);
+        
+        return redirect()->back();
     }
 }

@@ -22,7 +22,17 @@ class Project extends Model
 
 
     public function getInitialBudgetAttribute(){
-        return 0;
+        $preproject = $this->preproject()->first();
+        $quoteItems = $preproject ? $preproject->quote->items : [];
+        
+        $initialBudget = 0;
+        foreach ($quoteItems as $item) {
+            $initialBudget += $item->unit_price * $item->quantity;
+        }
+
+        $totalInitialBudget = $initialBudget + ($initialBudget * 18/100);
+        
+        return $totalInitialBudget;
     }
 
     public function getNameAttribute() {
@@ -196,6 +206,7 @@ class Project extends Model
 
 
     public function getTotalEmployeeCostsAttribute(){   
+
         $days = optional($this->preproject()->first()->quote)->deliverable_time;
         return $this->employees()->get()->sum(function($item) use ($days){
             return $item->getSalaryPerDayAttribute() * $days;
