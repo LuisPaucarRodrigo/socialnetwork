@@ -1,6 +1,6 @@
 <template>
   <Head title="Gestion de Miembro" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="'sections.subSections'">
     <template #header>
       Detalles del Miembro
     </template>

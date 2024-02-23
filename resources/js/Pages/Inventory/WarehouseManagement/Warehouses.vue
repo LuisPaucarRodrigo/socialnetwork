@@ -1,6 +1,6 @@
 <template>
   <Head title="Gestion de Almacenes" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
     <template #header>
       Gestión de almacenes
     </template>

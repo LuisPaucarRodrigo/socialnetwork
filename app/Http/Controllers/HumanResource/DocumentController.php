@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-
-    //Sections
-
+    
     public function showSections()
     {
         $sections = DocumentSection::all();
@@ -131,7 +129,7 @@ class DocumentController extends Controller
         $filePath = "documents/documents/$fileName";
         $path = public_path($filePath);
         if (file_exists($path)) {
-            return response()->download($filePath, $fileName);
+            return response()->download($path, $fileName);
         }
         abort(404, 'Documento no encontrado');
     }
