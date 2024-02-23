@@ -4,8 +4,8 @@
         <template #header>
             Orden de Gasto
         </template>
-        <div class="mt-6 border-t border-gray-100 flex flex-col md:flex-row">
-            <dl class="divide-y divide-gray-100 md:w-1/2 md:mr-4">
+        <div class="mt-6 border-t border-gray-100">
+            <dl class="divide-y divide-gray-100">
                 <div v-if="details.purchasing_requests.project" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Proyecto</dt>
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
@@ -36,7 +36,7 @@
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Limite</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.quote_deadline }}</dd>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(details.quote_deadline) }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Archivo Adjunto</dt>
@@ -77,6 +77,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     details: Object

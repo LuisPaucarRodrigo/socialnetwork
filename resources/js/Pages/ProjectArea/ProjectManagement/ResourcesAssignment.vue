@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirect-route="'projectmanagement.index'">
         <template #header>
             Asignación de Activos
         </template>
@@ -154,7 +154,7 @@
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">{{
-                                                formatFecha(item.created_at) }}</p>
+                                                formattedDate(item.created_at) }}</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -210,7 +210,7 @@
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">{{
-                                                formatFecha(resource_historial.created_at) }}</p>
+                                                formattedDate(resource_historial.created_at) }}</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -390,13 +390,12 @@ import { PlusCircleIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import { formattedDate } from '@/utils/utils';
 
 
 
 const showModal = ref(false);
 const input_rent = ref(false);
-// const showModal2 = ref(false);
-// const showModal3 = ref(false);
 
 const { project, resources, network_equipments, liquidations } = defineProps({
     project: Object,
@@ -467,10 +466,6 @@ const returned_submit = () => {
     })
 }
 
-function formatFecha(fecha) {
-    const options = { day: '2-digit', month: 'numeric', year: 'numeric' };
-    return new Date(fecha).toLocaleDateString(undefined, options);
-}
 
 const conditional_rent = (event) => {
     resources.find(item => item.id == event.target.value).conditional_rent == true ? input_rent.value = true : input_rent.value = false;

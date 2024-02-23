@@ -1,6 +1,6 @@
 <template>
     <Head title="Vacaciones y Permisos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.vacation'">
         <template #header>
             Vacaciones y Permisos
         </template>
@@ -20,11 +20,11 @@
                 <div v-if="type == 'Vacaciones'" class="sm:w-1/2 sm:pl-4">
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Inicio</dt>
-                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.start_date }}</dd>
+                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(details.start_date) }}</dd>
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Culminacion</dt>
-                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.end_date }}
+                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(details.end_date) }}
                         </dd>
                     </div>
                 </div>
@@ -79,12 +79,12 @@
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Inicial Modificada</dt>
                         <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                            details.start_date_accepted }}
+                            formattedDate(details.start_date_accepted) }}
                         </dd>
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Final Modificada</dt>
-                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.end_date_accepted
+                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(details.end_date_accepted)
                         }}
                         </dd>
                     </div>
@@ -146,12 +146,6 @@
                 </div>
             </div>
         </teleport>
-        <div class="mt-6 flex items-center justify-between gap-x-6">
-            <a :href="route('management.vacation')"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Atras
-            </a>
-        </div>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -161,6 +155,7 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     details: Object,

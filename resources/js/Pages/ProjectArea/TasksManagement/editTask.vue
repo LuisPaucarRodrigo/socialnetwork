@@ -1,6 +1,6 @@
 <template>
     <Head title="Tarea" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirect-route="'tasks.index'">
         <template #header>
             {{ tasks.task }}
         </template>
@@ -34,13 +34,13 @@
             <!-- Columna 1 - Fecha de Inicio -->
             <div>
                 <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
-                <p id="startDate" class="text-sm text-gray-500">{{ tasks.start_date }}</p>
+                <p id="startDate" class="text-sm text-gray-500">{{ formattedDate(tasks.start_date) }}</p>
             </div>
 
             <!-- Columna 2 - Fecha de Fin -->
             <div>
                 <label for="endDate" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
-                <p id="endDate" class="text-sm text-gray-500">{{ tasks.end_date }}</p>
+                <p id="endDate" class="text-sm text-gray-500">{{ formattedDate(tasks.end_date) }}</p>
             </div>
         </div>
         <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
@@ -156,6 +156,7 @@ import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import {formattedDate} from '@/utils/utils'
 
 const props = defineProps({
     projects: Object,
