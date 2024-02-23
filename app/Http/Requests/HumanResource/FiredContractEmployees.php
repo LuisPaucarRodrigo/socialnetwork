@@ -23,7 +23,7 @@ class FiredContractEmployees extends FormRequest
     {
         return [
             'fired_date' => 'required|date',
-            'days_taken' => 'nullable|numeric',
+            'days_taken' => 'required|numeric',
             'state' => 'required|string'
         ];
     }

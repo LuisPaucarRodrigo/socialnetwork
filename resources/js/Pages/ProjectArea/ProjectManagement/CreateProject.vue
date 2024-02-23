@@ -14,53 +14,69 @@
                     </div>
 
                     <div class="border-b border-gray-900 pb-12">
-                        <h2 v-if="project" class="text-base font-semibold leading-7 text-gray-900">{{ project.name }}-{{
+                        <h2 v-if="project" class="text-base font-semibold leading-7 text-gray-900">{{ project.name }} | {{
                             project.code }}</h2>
                         <h2 v-else class="text-base font-semibold leading-7 text-gray-900">Registrar nuevo proyecto</h2>
                         <br>
+                        <div v-if="!project" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mb-4">
+                            <div class="sm:col-span-3">
+                                <InputLabel for="preproject_id" class="font-medium leading-6 text-gray-900">Anteproyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select required id="preproject_id" v-model="form.preproject_id"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">Seleccione uno</option>
+
+                                        <option v-for="(item, i) in preprojects" :key="i" :value="item.id">{{ item.code }}</option>
+
+                                    </select>
+                                    <InputError :message="form.errors.preproject_id" />
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="project" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mb-4">
+                            <div class="sm:col-span-3">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Nombre Proyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    {{ project?.name }}
+                                </InputLabel>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Código
+                                </InputLabel>
+                                <div class="mt-2">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    {{ project?.code }}
+                                </InputLabel>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Fecha de incio
+                                </InputLabel>
+                                <div class="mt-2">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    {{ project?.start_date }}
+                                </InputLabel>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Fecha de fin
+                                </InputLabel>
+                                <div class="mt-2">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    {{ project?.end_date }}
+                                </InputLabel>
+                                </div>
+                            </div>
+                        </div>
                         <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-                            <div class="sm:col-span-3">
-                                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900">Fecha de Inicio
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <TextInput type="Date" v-model="form.start_date" id="start_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.start_date" />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel for="end_date" class="font-medium leading-6 text-gray-900">Fecha de fin
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <TextInput type="Date" v-model="form.end_date" id="end_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.end_date" />
-                                </div>
-                            </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre del proyecto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <TextInput required type="text" v-model="form.name" id="name"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.name" />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel class="font-medium leading-6 text-gray-900">Código del proyecto (Siglas):
-                                </InputLabel>
-                                <div class="mt-2 flex justify-center items-center gap-2">
-                                    <InputLabel class="font-medium leading-6 text-indigo-900">
-                                        {{ formatearFecha(form.start_date) }}
-                                    </InputLabel>
-                                    <TextInput required type="text" v-model="form.code" id="name"
-                                        placeholder="Ejemplos: MPr, ITD, etc."
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                </div>
-                                <InputError :message="form.errors.code" />
-                            </div>
                             <div class="sm:col-span-3">
                                 <InputLabel for="priority" class="font-medium leading-6 text-gray-900">Prioridad
                                 </InputLabel>
@@ -178,11 +194,19 @@
             </Modal>
         </div>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType=" proyecto" />
+        <ConfirmUpdateModal :confirmingupdate="showUpdateModal" itemType=" proyecto" />
+
+        <SuccessOperationModal :confirming="showPersonalAddModal" :title="`Personal creado.`"
+            :message="`El personal fue añadido.`" />
+        <SuccessOperationModal :confirming="showPersonalRemoveModal" :title="`Personal removido.`"
+            :message="`El personal fue removido.`"/>
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
@@ -194,17 +218,16 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModal = ref(false)
+const showUpdateModal = ref(false)
 
-const { employees, start_date, numberOfProjects, project } = defineProps({
+const { employees, start_date, numberOfProjects, project, preprojects } = defineProps({
     employees: Object,
-    project: Object
+    project: Object,
+    preprojects: Object
 })
 
 const initialState = {
-    name: '',
-    code: '',
-    start_date: '',
-    end_date: '',
+    preproject_id: '',
     priority: '',
     description: '',
     employees: []
@@ -212,19 +235,18 @@ const initialState = {
 
 const form = useForm(
     project ?
-        { ...project, code: project.code.substring(7) }
+        { ...project }
         :
         { ...initialState }
 )
 
 const submit = () => {
-    form.code = formatearFecha(form.start_date) + '-' + form.code
     form.post(route('projectmanagement.store'), {
         onSuccess: () => {
             closeModal();
-            showModal.value = true
+            project ? showUpdateModal.value = true : showModal.value = true
             setTimeout(() => {
-                showModal.value = false;
+                project ? showUpdateModal.value = false : showModal.value = false
                 router.visit(route('projectmanagement.index'))
             }, 2000);
         },
@@ -234,18 +256,12 @@ const submit = () => {
     })
 }
 
-function formatearFecha(fecha) {
-    if (fecha) {
-        const partesFecha = fecha.split('-');
-        const year = partesFecha[0];
-        const month = partesFecha[1];
-        return `${year}${month}`;
-    }
-}
-
 const showModalMember = ref(false);
 const empInitState = { employee: '', charge: '' }
 const employeeToAdd = ref(JSON.parse(JSON.stringify(empInitState)))
+
+const showPersonalAddModal = ref(false);
+const showPersonalRemoveModal = ref(false);
 
 const showToAddEmployee = () => {
     showModalMember.value = true;
@@ -261,7 +277,10 @@ const add_employee = () => {
                     alert('SERVER ERROR')
                 },
                 onSuccess: () => {
-                    alert('Personal Agregado')
+                    showPersonalAddModal.value = true
+                    setTimeout(() => {
+                        showPersonalAddModal.value = false;
+                    }, 1500);
                     form.employees.push(JSON.parse(JSON.stringify({
                         name: employeeToAdd.value.employee.name,
                         lastname: employeeToAdd.value.employee.lastname,
@@ -285,7 +304,10 @@ const delete_already_employee = (pivot_id, index) => {
             alert('SERVER ERROR')
         },
         onSuccess: () => {
-            alert('Personal Removido')
+            showPersonalRemoveModal.value = true
+            setTimeout(() => {
+                showPersonalRemoveModal.value = false;
+            }, 1500);
             form.employees.splice(index, 1);
         }
     })

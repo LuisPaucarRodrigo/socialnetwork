@@ -2,85 +2,79 @@
 <template>
     <Head title="Programas de Formación" />
 
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
         <template #header>
             Programas de Formación
         </template>
-        <div class="inline-block min-w-full">
+        <div class="min-w-full">
             <div class="flex items-center">
                 <button @click="add_information" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     Agregar Informacion
                 </button>
             </div>
-            <br>
-            <table class="w-full whitespace-no-wrap  overflow-hidden rounded-lg shadow">
-                <thead>
-                    <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            N°
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Nombre
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Descripción
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Tipo de programa
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(formationProgram, i) in formationPrograms.data" :key="formationProgram.id"
-                        class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.name }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.description }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.type }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <div class="flex space-x-3 justify-center">
-                                <Link
-                                    :href="route('management.employees.formation_development.view', { id: formationProgram.id })">
-                                <EyeIcon class="h-6 w-6 text-teal-500" />
-                                </Link>
-                                <!-- <Link>
-                                <PencilSquareIcon class="h-6 w-6 text-blue-500" />
-                                </Link> -->
-                                <button @click="openModalDelete(formationProgram)">
-                                    <TrashIcon class="h-6 w-6 text-red-500" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full whitespace-no-wrap rounded-lg shadow">
+                    <thead>
+                        <tr
+                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                N°
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Nombre
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Descripción
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Tipo de programa
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(formationProgram, i) in formationPrograms.data" :key="formationProgram.id"
+                            class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.name }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.description }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.type }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex space-x-3 justify-center">
+                                    <Link
+                                        :href="route('management.employees.formation_development.view', { id: formationProgram.id })">
+                                    <EyeIcon class="h-6 w-6 text-teal-500" />
+                                    </Link>
+                                    <button @click="openModalDelete(formationProgram)">
+                                        <TrashIcon class="h-6 w-6 text-red-500" />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="formationPrograms.links" />
             </div>
-        </div>
-        <div class="mt-6 flex items-center justify-between gap-x-6">
-            <a :href="route('management.employees.formation_development')"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Atras
-            </a>
         </div>
         <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="programa de formacion" :nameText="name"
             :deleteFunction="delete_program" @closeModal="closeModal" />
