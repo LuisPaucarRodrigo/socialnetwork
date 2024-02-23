@@ -35,7 +35,7 @@
             <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Fecha de Nacimiento</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.birthdate }}</dd>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(details.birthdate) }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Email</dt>
@@ -60,6 +60,8 @@
   
 <script>
 
+import {formattedDate} from '@/utils/utils.js';
+
 export default {
     props: {
         details: {
@@ -70,6 +72,9 @@ export default {
     methods: {
         image_url(croppedImage) {
             return `/image/profile/${croppedImage}`;
+        },
+        formattedDate(fecha) {
+            return formattedDate(fecha);
         }
     }
 }

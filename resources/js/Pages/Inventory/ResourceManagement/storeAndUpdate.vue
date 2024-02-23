@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'resources.index'">
         <template #header>
             {{ title }}
         </template>
@@ -102,13 +102,8 @@
                 <InputError :message="newResource.errors.observations" />
             </div>
         </div>
-
         <!-- Botón de enviar -->
-        <div class="mt-6 flex items-center justify-between gap-x-6">
-            <button @click="cancel()"
-                class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300">
-                Atras
-            </button>
+        <div class="mt-6 flex items-center justify-end gap-x-6">
             <button @click="add_resource()"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 {{ resource ? "Guardar" : "Crear" }}

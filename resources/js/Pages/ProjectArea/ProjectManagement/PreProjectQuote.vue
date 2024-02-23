@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirect-route="'preprojects.index'">
         <template v-if="preproject.quote" #header>
             Editando la cotización
         </template>
@@ -226,22 +226,24 @@
 
 
                 <div class="mt-3 flex items-center justify-end gap-x-6">
-                    <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
-                        target="_blank" rel="noopener noreferrer"
-                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Exportar a PDF
-                    </a>
-
                     <a :href="route('preprojects.index')"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         Atras
                     </a>
-                    <button type="submit" :class="{ 'opacity-25': form.processing }"
+                        <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
+                            target="_blank" rel="noopener noreferrer"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            Exportar a PDF
+                        </a>
+                    
+                        <PrimaryButton v-if="preproject.quote && !preproject.quote.state" type="button" @click="acceptCotization" :class="{ 'opacity-25': form.processing }"
+                        class="rounded-md bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:green-indigo-600">Aceptar Cotización</PrimaryButton>
+                    
+                        <button v-if="!preproject.quote?.state" type="submit" :class="{ 'opacity-25': form.processing }"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                 </div>
-                <div id="pdf-container"></div>
-            </form>
 
+            </form>
 
             <Modal :show="showModalMember">
                 <form class="p-6" @submit.prevent="addItem">
@@ -315,11 +317,18 @@
         <SuccessOperationModal :confirming="showItemRemoveModal" :title="`Item de valorización removido.`"
             :message="`El item de valorización fue removido.`" />
 
+        <AcceptModal :acceptFunction="approve" :confirmingAccept="showConfirmAccept" @closeModal="closeConfirmAccept" :itemType="`Cotización`"
+             />
+        <ConfirmAcceptModal :confirmingaccept="showFinishAccept" :itemType="`Cotización`"
+             />
+
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import ConfirmAcceptModal from '@/Components/ConfirmAcceptModal.vue';
+import AcceptModal from '@/Components/AcceptModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
@@ -378,7 +387,8 @@ const submit = () => {
 
 
 const showModalMember = ref(false);
-
+const showConfirmAccept = ref(false);
+const showFinishAccept = ref(false);
 const itemInitialState = {
     description: '',
     unit: '',
@@ -392,6 +402,14 @@ const itemToAdd = ref(JSON.parse(JSON.stringify(itemInitialState)))
 const showItemAddModal = ref(false);
 const showItemRemoveModal = ref(false);
 
+
+const acceptCotization = () => {
+    showConfirmAccept.value = true;
+}
+
+const closeConfirmAccept = () => {
+    showConfirmAccept.value = false;
+}
 
 const showToAddItem = () => {
     showModalMember.value = true;
@@ -439,6 +457,26 @@ const deleteAlreadyItem = (id, index) => {
                 showItemRemoveModal.value = false;
             }, 1500);
             form.employees.splice(index, 1);
+        }
+    })
+}
+
+const approve = () => {
+    let url = route('preprojects.accept', { quote_id: preproject.quote.id });
+    
+    router.post(url, {
+        state: '1'
+    }, {
+        onSuccess: () => {
+            closeConfirmAccept();
+            showFinishAccept.value = true
+            setTimeout(() => {
+                showFinishAccept.value = false;
+                router.visit(route('preprojects.index'))
+            }, 2000);
+        },
+        onError: () => {
+            close();
         }
     })
 }

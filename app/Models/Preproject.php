@@ -21,11 +21,16 @@ class Preproject extends Model
     protected $appends = [
         'has_photo_report',
         'is_appropriate',
+        'has_quote'
     ];
 
 
     public function project() {
         return $this->hasOne(Project::class);
+    }
+
+    public function imagepreproject() {
+        return $this->HasMany(Imagespreproject::class);
     }
 
 
@@ -37,10 +42,15 @@ class Preproject extends Model
     public function quote() {
         return $this->hasOne(PreProjectQuote::class,'preproject_id');
     }
+    
 
     public function getIsAppropriateAttribute(){
         $quote_status =  $this->quote()->first()?->state;
         $project = $this->project()->first();
         return $quote_status && ($project === null);
+    }
+
+    public function getHasQuoteAttribute() {
+        return $this->quote()->first() ? true: false;
     }
 }

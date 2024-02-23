@@ -6,7 +6,6 @@
             Empleados
         </template>
 
-
         <div class="min-w-full rounded-lg shadow">
             <button @click="add_information" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
@@ -21,7 +20,8 @@
             <div class="overflow-x-auto">
                 <table class="min-w-full whitespace-no-wrap">
                     <thead>
-                        <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                        <tr
+                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
@@ -67,8 +67,8 @@
                                 <div class="flex space-x-3 justify-center">
                                     <Link class="text-blue-900 whitespace-no-wrap"
                                         :href="route('management.employees.information.details', { id: employee.id })">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                        stroke="currentColor" class="w-6 h-6 text-teal-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -77,8 +77,8 @@
                                     </Link>
                                     <Link class="text-blue-900 whitespace-no-wrap"
                                         :href="route('management.employees.edit', { id: employee.id })">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                        stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
@@ -105,7 +105,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="employees.links" />
             </div>
@@ -138,7 +137,8 @@
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeFiredModal"> Cancel </SecondaryButton>
                             <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
                             </button>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
 
         <Modal :show="showModalSchedule">
             <div class="p-8">
-                <h2 class="text-lg font-medium leading-7 text-gray-900"> 
+                <h2 class="text-lg font-medium leading-7 text-gray-900">
                     {{ props.fileExists ? 'Actualizar Horario' : 'Agregar Horario' }}
                 </h2>
                 <form @submit.prevent="submitSchedule">
@@ -163,7 +163,7 @@
                             </div>
                         </div>
                         <div v-else>
-                            
+
                             <div>
                                 <div class="mt-4">
                                     <InputFile type="file" v-model="formSchedule.document" id="documentFile" accept=".xlsx"
@@ -175,7 +175,9 @@
                         <div class="mt-8 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeScheduleModal"> Cancel </SecondaryButton>
                             <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -204,7 +206,6 @@ import Modal from '@/Components/Modal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import InputError from '@/Components/InputError.vue';
-import * as XLSX from 'xlsx';
 
 
 const confirmingUserDeletion = ref(false);
@@ -233,7 +234,7 @@ const formSchedule = useForm({
 })
 
 const submit = () => {
-    router.put(route('management.employees.fired',employeeToFired.value), form,{
+    router.put(route('management.employees.fired', employeeToFired.value), form, {
         onSuccess: () => {
             closeFiredModal();
             router.visit(route('management.employees'));
@@ -244,44 +245,44 @@ const submit = () => {
 
 const submitSchedule = () => {
 
-    if(props.fileExists){
+    if (props.fileExists) {
         formSchedule.post(route('management.employees.updateSchedule'), {
-        onSuccess: () => {
-            closeScheduleModal();
-            formSchedule.reset();
-            updateSchedule.value = true
-            setTimeout(() => {
-            updateSchedule.value = false;
-            router.visit(route('management.employees'))
-            }, 2000);
-        },
-        onError: () => {
-            formSchedule.reset();
-        },
-        onFinish: () => {
-            formSchedule.reset();
-        }
+            onSuccess: () => {
+                closeScheduleModal();
+                formSchedule.reset();
+                updateSchedule.value = true
+                setTimeout(() => {
+                    updateSchedule.value = false;
+                    router.visit(route('management.employees'))
+                }, 2000);
+            },
+            onError: () => {
+                formSchedule.reset();
+            },
+            onFinish: () => {
+                formSchedule.reset();
+            }
         });
-    }else{
+    } else {
         formSchedule.post(route('management.employees.addSchedule'), {
-        onSuccess: () => {
-            closeScheduleModal();
-            formSchedule.reset();
-            createSchedule.value = true
-            setTimeout(() => {
-            createSchedule.value = false;
-            router.visit(route('management.employees'))
-            }, 2000);
-        },
-        onError: () => {
-            formSchedule.reset();
-        },
-        onFinish: () => {
-            formSchedule.reset();
-        }
+            onSuccess: () => {
+                closeScheduleModal();
+                formSchedule.reset();
+                createSchedule.value = true
+                setTimeout(() => {
+                    createSchedule.value = false;
+                    router.visit(route('management.employees'))
+                }, 2000);
+            },
+            onError: () => {
+                formSchedule.reset();
+            },
+            onFinish: () => {
+                formSchedule.reset();
+            }
         });
     }
-  };
+};
 
 const confirmUserDeletion = (employeeId) => {
     employeeToDelete.value = employeeId;
@@ -316,10 +317,10 @@ const add_information = () => {
 
 const openScheduleModal = () => {
     showModalSchedule.value = true;
-  };
+};
 
-  const closeScheduleModal = () => {
+const closeScheduleModal = () => {
     showModalSchedule.value = false;
-  };
+};
 
 </script>

@@ -1,6 +1,6 @@
 <template>
   <Head title="Gestion de Documentos" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="'documents.index'">
     <template #header>
       Documentos
     </template>
@@ -16,19 +16,21 @@
         </button>
         <div class="flex items-center ml-auto">
           <label for="selectElement" class="mr-2 text-sm text-indigo-600">Seleccione una sección:</label>
-          <select v-model="selectedSection" id="selectElement" class="rounded-md py-2 text-sm text-black border-indigo-600">
+          <select v-model="selectedSection" id="selectElement"
+            class="rounded-md py-2 text-sm text-black border-indigo-600">
             <option value="">Todos</option>
             <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.name }}</option>
           </select>
 
           <!-- Nuevo filtro para subdivisiones -->
           <label for="selectSubdivision" class="mr-2 text-sm text-indigo-600 ml-3">Seleccione una subdivisión:</label>
-          <select v-model="selectedSubdivision" id="selectSubdivision" class="rounded-md py-2 text-sm text-black border-indigo-600">
+          <select v-model="selectedSubdivision" id="selectSubdivision"
+            class="rounded-md py-2 text-sm text-black border-indigo-600">
             <option value="">Todas</option>
-            <option v-for="subdivision in subdivisionsForSelectedSection" :key="subdivision.id" :value="subdivision.id">{{ subdivision.name }}</option>
+            <option v-for="subdivision in subdivisionsForSelectedSection" :key="subdivision.id" :value="subdivision.id">{{
+              subdivision.name }}</option>
           </select>
         </div>
-        
       </div>
     </div>
 
@@ -53,7 +55,7 @@
       <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
         <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
         <div class="flex items-center justify-center h-full w-3/4">
-          <div class="bg-white p-5 rounded-md relative w-full h-3/5" >
+          <div class="bg-white p-5 rounded-md relative w-full h-3/5">
             <button @click="closePreviewDocumentModal"
               class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
             <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
@@ -90,9 +92,11 @@
                 <InputLabel for="documentSubdivision" class="text-gray-700">Subdivisión:</InputLabel>
 
                 <template v-if="filteredSubdivisions.length > 0">
-                  <select v-model="form.subdivision_id" id="documentSubdivision" class="border rounded-md px-3 py-2 mb-3 w-full">
+                  <select v-model="form.subdivision_id" id="documentSubdivision"
+                    class="border rounded-md px-3 py-2 mb-3 w-full">
                     <option value="">Seleccionar Subdivisión</option>
-                    <option v-for="subdivision in filteredSubdivisions" :key="subdivision.id" :value="subdivision.id">{{ subdivision.name }}</option>
+                    <option v-for="subdivision in filteredSubdivisions" :key="subdivision.id" :value="subdivision.id">{{
+                      subdivision.name }}</option>
                   </select>
                   <InputError :message="form.errors.subdivision_id" />
                 </template>
@@ -226,7 +230,7 @@ function getDocumentUrl(documentId) {
 const getDocumentName = (documentTitle) => {
   const parts = documentTitle.split('_');
   return parts.length > 1 ? parts.slice(1).join('_') : documentTitle;
-}; 
+};
 
 const selectedSubdivision = ref('');
 

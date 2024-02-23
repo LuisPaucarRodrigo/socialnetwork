@@ -1,6 +1,6 @@
 <template>
   <Head title="Gestion de Miembro" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="'sections.subSections'">
     <template #header>
       Detalles del Miembro
     </template>
@@ -18,11 +18,11 @@
           </div>
           <div class="flex gap-2 items-center">
             <div class="text-lg font-semibold">Fecha de Inicio:</div>
-            <div class="text-lg text-gray-500">{{ props.subSection.start_date }}</div>
+            <div class="text-lg text-gray-500">{{ formattedDate(props.subSection.start_date) }}</div>
           </div>
           <div class="flex gap-2 items-center">
             <div class="text-lg font-semibold">Fecha de Fin:</div>
-            <div class="text-lg text-gray-500">{{ props.subSection.end_date }}</div>
+            <div class="text-lg text-gray-500">{{ formattedDate(props.subSection.end_date)}}</div>
           </div>
           <div class="flex gap-2 items-center">
             <div class="text-lg font-semibold">Requerimientos:</div>
@@ -46,7 +46,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-
+import {formattedDate} from '@/utils/utils'
 const props = defineProps({
   subSection: Object,
 });
