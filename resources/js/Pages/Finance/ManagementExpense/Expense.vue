@@ -61,7 +61,7 @@
                                     <p class="text-gray-900 whitespace-no-wrap">{{ expense.amount }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ expense.quote_deadline }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(expense.quote_deadline) }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div class="flex space-x-3 justify-center">
@@ -92,6 +92,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     expenses: Object
