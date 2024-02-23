@@ -1,7 +1,6 @@
 <template>
     <Head title="Nomina" />
-
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'spreadsheets.index'"> 
         <template #header>
             Nomina
         </template>
@@ -12,7 +11,7 @@
             </button>
 
             <a :href="route('spreadsheets.payroll.export')"
-                class="rounded-md bg-red-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">
                 Exportar
             </a>
         </div>

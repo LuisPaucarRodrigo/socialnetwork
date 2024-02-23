@@ -1,6 +1,6 @@
 <template>
   <Head title="Gestion de Documentos" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="'documents.index'">
     <template #header>
       Documentos
     </template>
