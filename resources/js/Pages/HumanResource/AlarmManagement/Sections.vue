@@ -1,8 +1,7 @@
 <template>
   <div>
-
     <Head title="Gestion de Apartados" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'sections.subSections'">
       <template #header>
         Gestión de Apartados
       </template>
@@ -73,12 +72,6 @@
       <ConfirmCreateModal :confirmingcreation="showModal" itemType="seccion de documentos" />
       <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="seccion" :deleteFunction="deleteSection"
         @closeModal="closeModalSection" />
-      <div class="mt-6 flex items-center justify-between gap-x-6">
-        <a :href="route('sections.subSections')"
-          class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          Atras
-        </a>
-      </div>
     </AuthenticatedLayout>
   </div>
 </template>

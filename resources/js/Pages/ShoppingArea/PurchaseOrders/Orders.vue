@@ -1,6 +1,6 @@
 <template>
     <Head title="Ordenes de Compra" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'purchaseorders.index'">
         <template #header>
             Ordenes
         </template>

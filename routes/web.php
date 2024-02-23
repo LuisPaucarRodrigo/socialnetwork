@@ -90,7 +90,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::post('/management_employees/information_additional/create', [ManagementEmployees::class, 'create'])->name('management.employees.information.create');
     Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.information.details');
     Route::get('/management_employees/edit/{id}', [ManagementEmployees::class, 'edit'])->name('management.employees.edit');
-    Route::put('/management_employees/update/{id}', [ManagementEmployees::class, 'update'])->name('management.employees.update');
+    Route::post('/management_employees/update/{id}', [ManagementEmployees::class, 'update'])->name('management.employees.update');
     Route::delete('/management_employees/destroy/{id}', [ManagementEmployees::class, 'destroy'])->name('management.employees.destroy');
     Route::put('/management_employees/fired/{id}', [ManagementEmployees::class, 'fired'])->name('management.employees.fired');
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
@@ -227,14 +227,10 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
 
-
-
     Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
     Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
     Route::post('/projectmanagement/resources/return/{id}', [ProjectManagementController::class, 'project_resources_return'])->name('projectmanagement.resources.return');
     Route::post('/projectmanagement/resources/liquidate', [ProjectManagementController::class,'project_resources_liquidate'])->name('projectmanagement.resourcesLiquidate');
-
-
 
     Route::post('/projectmanagement/componentormaterials', [ProjectManagementController::class, 'project_componentmaterial_store'])->name('projectmanagement.componentormaterials.store');
     Route::delete('/projectmanagement/componentormaterials/delete/{component_or_material_id}', [ProjectManagementController::class, 'project_componentmaterial_delete'])->name('projectmanagement.componentormaterials.delete');

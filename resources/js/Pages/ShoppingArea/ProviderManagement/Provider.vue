@@ -1,6 +1,6 @@
 <template>
     <Head title="Proveedores" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'providersmanagement.index'">
         <template #header>
             Proveedores
         </template>

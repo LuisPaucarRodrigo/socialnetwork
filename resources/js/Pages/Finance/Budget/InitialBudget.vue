@@ -1,6 +1,5 @@
 <template>
     <Head title="Información del Proyecto" />
-
     <AuthenticatedLayout>
         <template #header>
             <div class="mt-3 ml-4">Información del Proyecto</div>
