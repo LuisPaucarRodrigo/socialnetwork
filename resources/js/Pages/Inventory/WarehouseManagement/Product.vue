@@ -1,6 +1,6 @@
 <template>
     <Head title="Gestion de Almacenes" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
             Gestión de Productos del Almacén
         </template>
@@ -114,12 +114,6 @@
         </div>
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Producto" :deleteFunction="deleteProduct"
             @closeModal="closeModalDoc" />
-        <div class="mt-6 flex items-center justify-between gap-x-6">
-            <a :href="route('warehouses.warehouses')"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Atras
-            </a>
-        </div>
     </AuthenticatedLayout>
 </template>
     

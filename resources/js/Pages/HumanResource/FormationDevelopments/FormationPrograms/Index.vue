@@ -2,7 +2,7 @@
 <template>
     <Head title="Programas de Formación" />
 
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
         <template #header>
             Programas de Formación
         </template>
@@ -75,12 +75,6 @@
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="formationPrograms.links" />
             </div>
-        </div>
-        <div class="mt-6 flex items-center justify-between gap-x-6">
-            <a :href="route('management.employees.formation_development')"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Atras
-            </a>
         </div>
         <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="programa de formacion" :nameText="name"
             :deleteFunction="delete_program" @closeModal="closeModal" />

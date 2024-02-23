@@ -1,6 +1,6 @@
 <template>
     <Head title="Asignación de programas" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
         <template #back>
             <a :href="route('management.employees.formation_development')"
                 class="ml-4 text-gray-500 focus:outline-none">
