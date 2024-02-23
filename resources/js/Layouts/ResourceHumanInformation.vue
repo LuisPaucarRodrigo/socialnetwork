@@ -15,7 +15,7 @@
         </div>
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium leading-6 text-gray-900">Fecha de Contratacion</dt>
-          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.contract.hire_date }}</dd>
+          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(details.contract.hire_date) }}</dd>
         </div>
       </div>
 
@@ -87,6 +87,7 @@
 
 <script>
 import { Link } from '@inertiajs/vue3';
+import { formattedDate } from '@/utils/utils.js';
 export default {
   props: {
     details: {
@@ -108,6 +109,9 @@ export default {
     downloadDocument(documentId) {
       const backendDocumentUrl = route('management.employees.information.details.download', { id: documentId });
       window.open(backendDocumentUrl, '_blank');
+    },
+    formattedDate(fecha) {
+      return formattedDate(fecha);
     }
   },
 }

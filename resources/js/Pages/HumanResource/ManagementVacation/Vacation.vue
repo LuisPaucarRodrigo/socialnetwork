@@ -26,11 +26,11 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha o horas de Inicio
+                                Fecha u horas de Inicio
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha o horas de culminación
+                                Fecha u horas de culminación
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -52,12 +52,12 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.type }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.start_date ? item.start_date :
-                                    item.start_permissions }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(item.start_date ? item.start_date :
+                                    item.start_permissions) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.end_date ? item.end_date :
-                                    item.end_permissions }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(item.end_date ? item.end_date :
+                                    item.end_permissions) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.status }}</p>
@@ -135,6 +135,7 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     vacations: Object

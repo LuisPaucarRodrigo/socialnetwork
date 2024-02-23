@@ -72,7 +72,7 @@
                                 <div v-for="productHeader in productHeaders" :key="productHeader.id">
                                     <h3 v-if="productHeader.header_id === 7 && productHeader.product_id === item.id"
                                         class="text-sm font-semibold text-gray-700 line-clamp-1">
-                                        {{ productHeader.content }}
+                                        {{ formattedDate(productHeader.content) }}
                                     </h3>
                                 </div>
                             </td>
@@ -130,6 +130,7 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref, computed } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     products: Object,

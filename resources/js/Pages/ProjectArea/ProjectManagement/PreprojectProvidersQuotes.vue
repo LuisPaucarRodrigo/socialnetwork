@@ -1,12 +1,12 @@
 <template>
     <Head title="Gestion de Documentos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirect-route="'preprojects.index'">
       <template #header>
         Cotizaciones de artículos de proveedores
       </template>
       <div class="inline-block min-w-full border-b-2 border-gray-200">
         <div class="flex gap-4 mb-2">
-          <button @click="openCreateDocumentModal" type="button"
+          <button v-if="!preproject.has_quote" @click="openCreateDocumentModal" type="button"
             class="rounded-md bg-indigo-500 px-4 py-2 text-center text-sm text-white hover:bg-indigo-300">
              + Agregar
           </button>
@@ -17,7 +17,7 @@
           </svg>
           <span class="sr-only">Info</span>
           <div>
-            <span class="font-small">Solo se puede hacer cambios cuando no exista una cotización para el proyecto</span> 
+            <span class="font-small">Solo se puede hacer cambios cuando NO exista una cotización para el proyecto</span> 
           </div>
         </div>
       </div>
