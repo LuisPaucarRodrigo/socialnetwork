@@ -58,18 +58,6 @@
                 Rechazar
             </button>
         </div>
-        <teleport to="body">
-            <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-                <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
-                <div class="flex items-center justify-center h-full w-3/4">
-                    <div class="bg-white p-5 rounded-md relative w-full h-3/5">
-                        <button @click="closePreviewDocumentModal"
-                            class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-                        <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
-                    </div>
-                </div>
-            </div>
-        </teleport>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -97,19 +85,12 @@ const sendReply = (state) => {
 
 };
 
-function getDocumentUrl(documentId) {
-    return route('purchasesrequest.show', { id: documentId });
-}
-
 const documentToShow = ref(null);
-const isPreviewDocumentModalOpen = ref(false);
-
-const closePreviewDocumentModal = () => {
-    isPreviewDocumentModalOpen.value = false;
-};
 
 function openPreviewDocumentModal(documentId) {
     documentToShow.value = documentId;
-    isPreviewDocumentModalOpen.value = true;
+    const url = route('purchasesrequest.show', { id: documentId });
+    // Abrir la URL en una nueva pestaña
+    window.open(url, '_blank');
 }
 </script>
