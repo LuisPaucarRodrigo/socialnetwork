@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->integer('quantity');
-            $table->text('observation');
+            $table->text('observation')->nullable();
             $table->foreignId('project_id')
                 ->nullable()
                 ->constrained('projects')

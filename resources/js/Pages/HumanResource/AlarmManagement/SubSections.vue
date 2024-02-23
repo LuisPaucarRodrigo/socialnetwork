@@ -1,6 +1,6 @@
 <template>
   <Head title="Gestion de Miembros" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="'sections.subSections'">
     <template #header>
       Miembros de los apartados
     </template>
@@ -25,9 +25,6 @@
       </div>
     </div>
 
-    <!-- ... (código existente) ... -->
-
-    <!-- Tabla para mostrar las subsecciones -->
     <div class="mt-5">
       <div class="overflow-x-auto mt-3">
         <table class="w-full whitespace-no-wrap">

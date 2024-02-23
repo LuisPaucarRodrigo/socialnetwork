@@ -1,6 +1,6 @@
 <template>
     <Head title="Cotizaciones" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'purchasesrequest.index'">
         <template #header>
             Cotizaciones
         </template>
@@ -185,7 +185,6 @@ const reject_quote = (id) => {
         },
         onError: (errors) => {
             alert('Algo salió mal')
-            console.log(errors)
         }
     })
 }

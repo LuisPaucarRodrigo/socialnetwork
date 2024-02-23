@@ -1,6 +1,6 @@
 <template>
   <Head title="Gestion de Miembros" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="'sections.cicsaSubSections'">
     <template #header>
       Miembros de los apartados Cicsa
     </template>

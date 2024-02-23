@@ -22,29 +22,45 @@ class Resource extends Model
         'current_location',
         'unique_identification',
     ];
-    public function projects()
-    {
+    public function projects(){
         return $this->belongsToMany(Project::class)
             ->withPivot('id','quantity', 'observation');
     }
-    protected $appends = ['state', 'leftover'];
+    
+    protected $appends = ['state', 'leftover', 'total_product_resources'];
     protected $hidden = ['projects'];
 
     public function resource_historials(){
         return $this->hasMany(ResourceHistorial::class, 'resource_id');
     }
 
-    public function getStateAttribute()
-    {
-        $totalQuantityInProjects = $this->projects->sum('pivot.quantity');
-        return $this->quantity > $totalQuantityInProjects ? 'Disponible' : 'No Disponible';
+    public function project_resource(){
+        return $this->hasMany(ProjectResource::class,'resource_id');
     }
 
-    public function getLeftoverAttribute()
-    {
-        $totalQuantityInProjects = $this->projects->sum('pivot.quantity');
-        return $this->quantity - $totalQuantityInProjects;
+    public function getTotalProductResourcesAttribute(){
+        return $this->project_resource()->get()->sum(function($item){
+            return $item->quantity;
+        });
     }
+
+    public function getTotalRefundResourceAttribute(){
+        return $this->project_resource()->get()->sum(function($item){
+            return $item->project_resource_liquidate ? 
+                    $item->project_resource_liquidate->refund_quantity: 0;
+        });
+    }
+
+
+    public function getStateAttribute(){
+        return $this->getLeftoverAttribute() > 0 ? 'Disponible' : 'No Disponible';
+    }
+
+    public function getLeftoverAttribute(){
+        return $this->quantity - $this->getTotalProductResourcesAttribute() + $this->getTotalRefundResourceAttribute();
+    }
+
+
     public static function rules()
     {
         return [

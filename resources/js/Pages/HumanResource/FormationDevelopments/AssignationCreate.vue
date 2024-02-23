@@ -1,6 +1,15 @@
 <template>
     <Head title="Asignación de programas" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
+        <template #back>
+            <a :href="route('management.employees.formation_development')"
+                class="ml-4 text-gray-500 focus:outline-none">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </a>
+        </template>
         <template #header>
             Asignación de Capacitaciones
         </template>
@@ -50,10 +59,6 @@
                 </div>
             </div>
             <div class="mt-6 flex items-center justify-between gap-x-6">
-                <a :href="route('management.employees.formation_development')"
-                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                    Atras
-                </a>
                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
