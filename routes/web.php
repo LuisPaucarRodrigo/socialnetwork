@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Finance\ExpenseManagementController;
+use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
@@ -288,6 +289,11 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
     //ejemplo export pdf    
     Route::get('/generar-pdf', [PreProjectController::class, 'generarPDF'])->name('generar.pdf');
+
+
+
+    //test api
+    Route::get('/sunat_ruc', [HttpController::class,'sunat_ruc'])->name('sunat');
 
 
 
