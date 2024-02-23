@@ -1,7 +1,7 @@
 <template>
     <div>
       <Head title="Detalles del Almacén" />
-      <AuthenticatedLayout>
+      <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
           Contenido de las cabeceras
         </template>
@@ -25,7 +25,7 @@
                   <InputLabel for="header" class="font-medium leading-6 text-gray-900 mt-2">{{ header.header.name }}</InputLabel>
                   <div class="mt-2">
                     <div class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2">
-                      {{ header.content }}
+                      {{ header?.header_id === 7 ? formattedDate(header.content) : header.content }}
                     </div>
                   </div>
                 </div>
@@ -41,7 +41,9 @@
     import { Head } from '@inertiajs/vue3';
     import InputLabel from '@/Components/InputLabel.vue';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import { formattedDate } from '@/utils/utils';
   
+    console.log(props.headers)
     const props = defineProps(['product', 'headers']);
   </script>
   

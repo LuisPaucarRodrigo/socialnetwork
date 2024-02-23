@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirect-route="'projectmanagement.index'">
         <template v-if="project" #header>
             Edición de proyecto
         </template>

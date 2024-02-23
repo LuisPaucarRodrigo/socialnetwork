@@ -46,7 +46,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ purchase.title }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ purchase.due_date }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(purchase.due_date) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ purchase.state }}</p>
@@ -152,6 +152,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { formattedDate } from '@/utils/utils';
 
 const confirmingPurchasesDeletion = ref(false);
 const purchaseToDelete = ref(null);

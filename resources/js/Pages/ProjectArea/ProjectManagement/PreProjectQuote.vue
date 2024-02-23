@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirect-route="'preprojects.index'">
         <template v-if="preproject.quote" #header>
             Editando la cotización
         </template>
