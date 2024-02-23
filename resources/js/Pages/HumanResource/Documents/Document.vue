@@ -51,19 +51,6 @@
       </div>
     </div>
 
-    <teleport to="body">
-      <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-        <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
-        <div class="flex items-center justify-center h-full w-3/4">
-          <div class="bg-white p-5 rounded-md relative w-full h-3/5">
-            <button @click="closePreviewDocumentModal"
-              class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-            <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
-          </div>
-        </div>
-      </div>
-    </teleport>
-
     <Modal :show="create_document">
       <div class="p-6">
         <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -214,17 +201,12 @@ function downloadDocument(documentId) {
   window.open(backendDocumentUrl, '_blank');
 };
 
-const closePreviewDocumentModal = () => {
-  isPreviewDocumentModalOpen.value = false;
-};
-
 function openPreviewDocumentModal(documentId) {
   documentToShow.value = documentId;
-  isPreviewDocumentModalOpen.value = true;
-}
+  const url = route('documents.show', { document: documentId });
 
-function getDocumentUrl(documentId) {
-  return route('documents.show', { document: documentId });
+  // Abrir la URL en una nueva pestaña
+  window.open(url, '_blank');
 }
 
 const getDocumentName = (documentTitle) => {

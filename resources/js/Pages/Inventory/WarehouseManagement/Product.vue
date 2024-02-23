@@ -23,8 +23,9 @@
                 </div>
             </div>
             <br>
-            <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-                <table class="w-full whitespace-no-wrap overflow-auto">
+
+            <div class="min-w-full overflow-x-auto rounded-lg shadow">
+                <table class="w-full table-auto">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -48,9 +49,9 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
-                            <th v-if="expanded" v-for="item in filteredHeaders" :key="item.id"
+                            <th v-if="Object.values(productStates).some(value => value)" v-for="item in warehouseHeadersFiltered" :key="item.id"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                {{ item.header.name }}
+                                {{ item }}
                             </th>
                         </tr>
                     </thead>
@@ -85,11 +86,13 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="inline-flex justify-end gap-x-0">
-                                    <button v-if="!expanded" @click="expand(item.id)" class="text-indigo-600 hover:underline">
-                                        <EyeIcon class="h-4 w-4" />
-                                    </button>
-                                    <button v-else @click="hide()" class="text-indigo-600 hover:underline">
-                                        <EyeSlashIcon class="h-4 w-4" />
+                                    <button @click="toggleProductState(item.id)" class="text-indigo-600 hover:underline">
+                                        <template v-if="!getProductState(item.id)">
+                                            <EyeIcon class="h-4 w-4" />
+                                        </template>
+                                        <template v-else>
+                                            <EyeSlashIcon class="h-4 w-4" />
+                                        </template>
                                     </button>
                                     <Link
                                         :href="route('warehouses.showProduct', { warehouse: props.warehouse.id, product: item.id })"
@@ -101,9 +104,12 @@
                                     </button>
                                 </div>
                             </td>
-                            <td v-if="expanded && item.id === selectedProductId" v-for="item in filteredHeaders" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <h3 class="text-sm font-semibold text-gray-700 max-w-xl">{{ item.content }}</h3>
-                            </td>
+                            <template v-if="productStates[item.id]">
+                                <!-- Recorremos los encabezados filtrados específicos del producto -->
+                                <td v-for="header in item.product_headers.filter(item => !excludedHeaderIds.includes(item.header_id))" :key="header.id" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <h3 class="text-sm font-semibold text-gray-700 max-w-xl">{{ header.content }}</h3>
+                                </td>
+                            </template>
                         </tr>
                     </tbody>
                 </table>
@@ -130,9 +136,24 @@ const props = defineProps({
     warehouse: Object
 });
 
+const productStates = ref({}); 
+
+const getProductState = (productId) => {
+    return productStates.value[productId] ?? false; // Si no existe, devolvemos false
+};
+
+// Método para alternar el estado de expansión de un producto específico
+const toggleProductState = (productId) => {
+    const currentState = getProductState(productId);
+    productStates.value = {
+        ...productStates.value,
+        [productId]: !currentState // Cambiamos el estado actual
+    };
+    console.log(warehouseHeadersFiltered);
+};
+
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
-const selectedProductId = ref(null);
 
 const confirmDeleteProduct = (productId) => {
     docToDelete.value = productId;
@@ -141,14 +162,33 @@ const confirmDeleteProduct = (productId) => {
 
 const excludedHeaderIds = ref([5, 7, 12]); // IDs de headers que deseas excluir
 
+const warehouseHeadersFiltered = computed(() => {
+    if (!props.warehouse || !props.warehouse.headers) {
+        return [];
+    }
+
+    const headers = props.warehouse.headers;
+    const filteredHeaders = [];
+
+    for (const key in headers) {
+        if (headers.hasOwnProperty(key)) {
+            const header = headers[key];
+            if (!excludedHeaderIds.value.includes(header.id)) {
+                filteredHeaders.push(header.name);
+            }
+        }
+    }
+
+    return filteredHeaders;
+});
+
+
 const productHeaders = computed(() => props.products.data.flatMap(product => product.product_headers));
 
 const filteredHeaders = computed(() => {
-    return expanded.value
-        ? productHeaders.value.filter(item => {
-            return !excludedHeaderIds.value.includes(item.header_id) && item.product_id === selectedProductId.value;
-        })
-        : [];
+    return productHeaders.value.filter(item => {
+        return !excludedHeaderIds.value.includes(item.header_id) && productStates.value[item.product_id];
+    });
 });
 
 const searchTerm = ref('');
@@ -167,15 +207,6 @@ const updateFilteredProducts = (event) => {
 
 
 const expanded = ref(false);
-
-const expand = (productId) => {
-    expanded.value = true;
-    selectedProductId.value = productId;
-};
-
-const hide = () => {
-    expanded.value = false;
-};
 
 const closeModalDoc = () => {
     confirmingDocDeletion.value = false;
