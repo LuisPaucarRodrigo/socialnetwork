@@ -1,6 +1,6 @@
 <template>
     <Head title="Solicitudes del proyecto" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirect-route="'projectmanagement.index'">
         <template #header>
             Lista de solicitudes
         </template>
@@ -53,7 +53,7 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ purchase.product_description }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ purchase.due_date }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(purchase.due_date) }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p
@@ -139,6 +139,7 @@ import Pagination from '@/Components/Pagination.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { formattedDate } from '@/utils/utils';
 
 const confirmingPurchasesDeletion = ref(false);
 const showError = ref(false)

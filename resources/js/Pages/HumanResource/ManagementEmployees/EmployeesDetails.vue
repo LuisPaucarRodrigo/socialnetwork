@@ -1,6 +1,6 @@
 <template>
     <Head title="Informacion Personal" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.employees'">
       <div>
         <div class="flex flex-1 items-center justify-center sm:items-stretch ">
           <div class="sm:ml-6 sm:block mb-6">

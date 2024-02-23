@@ -107,6 +107,11 @@ class DatabaseSeeder extends Seeder
                 'values' => 0,
                 'values_seg' => 0.0184,
             ],
+            [
+                'type' => 'ONP',
+                'values' => 0.13,
+                'values_seg' => 0.0,
+            ],
         ];
         Pension::insert($data);
         // Employee::factory()->count(1000)->create();

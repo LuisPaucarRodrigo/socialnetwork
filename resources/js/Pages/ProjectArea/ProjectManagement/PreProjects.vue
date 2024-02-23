@@ -33,6 +33,10 @@
                     </h3>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
                         <div>
+                            <Link :href="route('preprojects.imagereport.index', {preproject_id:item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Descargar imagenes
+                            </Link>
+                        </div>
+                        <div>
                             <Link :href="route('preprojects.photoreport.index', {preproject_id:item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Informe fotográfico
                             </Link>
                         </div>
@@ -166,8 +170,6 @@
             </div>
         </Modal>
 
-
-
         <ConfirmDeleteModal :confirmingDeletion="confirmingProjectDeletion" itemType="Anteproyecto"
             :deleteFunction="delete_project" @closeModal="closeModal" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
@@ -194,7 +196,6 @@ const { preprojects, visits} = defineProps({
     preprojects: Object,
     visits: Object,
 })
-
 
 const initial_state = {
     customer:'',

@@ -1,6 +1,6 @@
 <template>
     <Head title="Cotizaciones" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'purchasesrequest.index'">
         <template #header>
             Cotizaciones
         </template>

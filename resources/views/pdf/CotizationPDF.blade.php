@@ -26,7 +26,7 @@
         <p class="mt-4" style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif" >Propuesta Económica:</p>
         <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Propuesta</p>
         <p style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Proyecto:</p>
-        <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{ $preproject->description }}</p>
+        <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{ $preproject->quote->name }}</p>
         <p style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Asesor Comercial:</p>
         <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Gustavo Flores Llerrena</p>
         <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; color: blue; text-decoration: underline;">gflores@ccip.com.pe</p>
@@ -46,8 +46,8 @@
         <tbody>
               <tr>
                 <td class="td-custom" colspan="1" style="height: 70px"><img src="image/projectimage/logo_ccip.jpeg" width="80px" alt=""></td>
-                <td class="td-custom" colspan="3" style="text-align: center">{{ $preproject->description }}</td>
-                <td class="td-custom" colspan="2" style="text-align: center">C.T - {{ $preproject->quote->date }}</td>
+                <td class="td-custom" colspan="3" style="text-align: center">{{ $preproject->quote->name }}</td>
+                <td class="td-custom" colspan="2" style="text-align: center">C.T - {{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $preproject->quote->date)->format('d/m/Y') }}</td>
               </tr>
           <tr>
             <td class="td-custom" style="width: 82.5px">Cliente</td>
@@ -63,7 +63,7 @@
             <td class="td-custom" style="width: 60px">Jefe</td>
             <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold;">{{ $preproject->quote->boss }}</td>
             <td class="td-custom" style="width: 82.5px">Fecha</td>
-            <td class="td-custom" style="width: 150px" style="text-align: right">{{ $preproject->quote->date }}</td>
+            <td class="td-custom" style="width: 150px" style="text-align: right">{{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $preproject->quote->date)->format('d/m/Y') }}</td>
           </tr>
         </tbody>
       </table>
