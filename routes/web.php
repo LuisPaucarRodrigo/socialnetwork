@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Finance\DepositController;
 use App\Http\Controllers\Finance\ExpenseManagementController;
 use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProfileController;
@@ -184,6 +185,18 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::get('/budgetUpdates/{project}/{budgetupdate}', [BudgetUpdateController::class, 'show'])->name('budgetupdates.show');
     Route::get('/initialBudget/{project}', [BudgetUpdateController::class, 'initial'])->name('initialbudget.index');
     Route::post('/initialBudget/{project}/createUpdate', [BudgetUpdateController::class, 'create'])->name('budgetupdates.create');
+
+
+
+
+
+    Route::get('/finance/desposits', [DepositController::class,'deposits_index'])->name('deposits.index');
+    Route::post('/finance/desposits/{deposit_id?}', [DepositController::class,'deposits_store'])->name('deposits.store');
+
+
+
+
+
 });
 Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     //Resources
