@@ -28,19 +28,6 @@
             </div>
         </div>
 
-        <teleport to="body">
-            <div v-if="isPreviewImageModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-                <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewImageModal"></div>
-                <div class="flex items-center justify-center h-full w-3/4">
-                    <div class="bg-white p-5 rounded-md relative w-full h-3/5">
-                        <button @click="closePreviewImageModal"
-                            class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-                        <iframe :src="getImageUrl(imageToShow)" class="w-full h-full"></iframe>
-                    </div>
-                </div>
-            </div>
-        </teleport>
-
         <ConfirmDeleteModal :confirmingDeletion="confirmingImageDeletion" itemType="imagen"
             :deleteFunction="deleteImage" @closeModal="closeModalImage" />
     </AuthenticatedLayout>
@@ -61,7 +48,6 @@ const confirmingImageDeletion = ref(false);
 const imageToDelete = ref(null);
 
 const imageToShow = ref(null);
-const isPreviewImageModalOpen = ref(false);
 
 const confirmDeleteImagen = (imagenId) => {
     imageToDelete.value = imagenId;
@@ -86,17 +72,12 @@ function downloadImagen(imageId) {
     window.open(backendImageUrl, '_blank');
 };
 
-const closePreviewImageModal = () => {
-    isPreviewImageModalOpen.value = false;
-};
-
 function openPreviewImagenModal(imageId) {
     imageToShow.value = imageId;
-    isPreviewImageModalOpen.value = true;
-}
+    const url = route('preprojects.imagereport.show', { image: imageId });
 
-function getImageUrl(imageId) {
-    return route('preprojects.imagereport.show', { image: imageId });
+    // Abrir la URL en una nueva pestaña
+    window.open(url, '_blank');
 }
 
 const getImageName = (documentTitle) => {
