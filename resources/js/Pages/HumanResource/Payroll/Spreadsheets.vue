@@ -129,7 +129,7 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.pension_reg }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.hire_date }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(spreadsheet.contract.hire_date) }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.basic_salary }}</p>
@@ -196,6 +196,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     spreadsheets: Object,
