@@ -1,5 +1,5 @@
 <template>
-    <Head title="Gestion de Gastos" />
+    <Head title="Gestion de Gastos Cuadrilla" />
     <AuthenticatedLayout>
         <template #header>
             Gastos
