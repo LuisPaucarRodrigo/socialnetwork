@@ -15,11 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->unsignedBigInteger('formation_program_id')->nullable();
-            $table->foreign('formation_program_id')
-                ->references('id')
-                ->on('formation_programs')
-                ->onDelete('set null');
             $table->timestamps();
         });
     }

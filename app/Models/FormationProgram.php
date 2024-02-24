@@ -13,18 +13,13 @@ class FormationProgram extends Model
         'name',
         'description',
         'type',
-        'month_year'
     ];
 
     public function trainings() 
     {
-        return $this->belongsTo(Training::class);
+        return $this->belongsToMany(Training::class,'formation_program_training' );
     }
 
-    public function trainings_list() 
-    {
-        return $this->hasMany(Training::class);
-    }
 
     public function employees() 
     {

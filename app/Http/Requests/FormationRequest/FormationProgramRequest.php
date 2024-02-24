@@ -23,7 +23,6 @@ class FormationProgramRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'month_year' => 'required|date',
             'type' => 'required|string|in:taller,curso,seminario,otros',
             'description' => 'required|string',
         ];

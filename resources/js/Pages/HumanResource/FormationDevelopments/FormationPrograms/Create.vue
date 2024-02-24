@@ -48,7 +48,7 @@
                                 <InputError :message="form.errors.description" />
                             </div>
                         </div>
-                        <div class="sm:col-span-3">
+                        <!-- <div class="sm:col-span-3">
                             <InputLabel for="month_year" class="font-medium leading-6 text-gray-900">Fecha
                             </InputLabel>
                             <div class="mt-2">
@@ -56,7 +56,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.month_year" />
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="sm:col-span-3">
                             <InputLabel for="trainings" class="font-medium leading-6 text-gray-900">Capacitaciones
@@ -108,7 +108,6 @@ const initialState = {
     name: '',
     type: '',
     description: '',
-    month_year: '',
     trainings: []
 }
 
@@ -117,7 +116,6 @@ const form = useForm({ ...initialState });
 const submit = () => {
     form.post(route('management.employees.formation_development.formation_programs.store'), {
         onSuccess: () => {
-            form.data = { ...initialState }
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
