@@ -144,7 +144,6 @@ const docToDelete = ref(null);
 
 const documentToShow = ref(null);
 const selectedSection = ref('');
-const isPreviewDocumentModalOpen = ref(false);
 
 const management_section = () => {
   router.get(route('documents.sections'));
