@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('employee_formation_program', function (Blueprint $table) {
             $table->id();
+            $table->date('start_date');
+            $table->date('end_date');
             $table->unsignedBigInteger('formation_program_id')->nullable();
             $table->foreign('formation_program_id')
                 ->references('id')
