@@ -116,13 +116,13 @@
                 <p class="text-gray-900 whitespace-no-wrap">{{ update.reason }}</p>
               </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                <p class="text-gray-900 whitespace-no-wrap">{{ update.update_date }}</p>
+                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(update.update_date) }}</p>
               </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <p class="text-gray-900 whitespace-no-wrap">{{ update.user.name }}</p>
               </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                <p class="text-gray-900 whitespace-no-wrap">{{ update.approved_update_date }}</p>
+                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(update.approved_update_date) }}</p>
               </td>
             </tr>
           </tbody>
@@ -143,6 +143,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     project: Object,

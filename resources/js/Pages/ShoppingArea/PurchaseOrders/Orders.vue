@@ -38,7 +38,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ order.purchase_quote.response }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ order.date_issue }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(order.date_issue) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <select id="selectState" @change="updateState(order.id, $event.target.value)"
@@ -83,6 +83,7 @@ import Pagination from '@/Components/Pagination.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
+import { formattedDate } from '@/utils/utils';
 
 const showModal = ref(false);
 const id = ref(null);

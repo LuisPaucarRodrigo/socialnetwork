@@ -1,7 +1,7 @@
 <template>
     <Head title="Ver Programa de Formación" />
 
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.employees.formation_development.formation_programs'">
         <template #header>
             Ver Programa de Formación
         </template>
@@ -23,16 +23,16 @@
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formation_program.description
                     }}</dd>
                 </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Fecha</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formation_program.month_year
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formatMonthYear(formation_program.month_year)
                     }}</dd>
-                </div>
+                </div> -->
                 <div class="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
                     <!-- Capacitaciones -->
                     <div>
                         <div class="text-sm font-medium leading-6 text-gray-900">Capacitaciones</div>
-                        <div v-for="training in formation_program.trainings_list" :key="training.id" class="mb-5">
+                        <div v-for="training in formation_program.trainings" :key="training.id" class="mb-5">
                             <p class="mt-1 text-sm leading-6 text-gray-700">{{ training.name }}</p>
                         </div>
                     </div>

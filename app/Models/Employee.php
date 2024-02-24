@@ -70,10 +70,15 @@ class Employee extends Model
     {
         return $this->hasMany(Vacation::class);
     }
-    public function formation_programs()
-    {
+    public function formation_programs() {
         return $this->belongsToMany(FormationProgram::class, 'employee_formation_program', 'employee_id', 'formation_program_id');
     }
+
+    public function assignated_programs () {
+        return $this->hasMany(EmployeeFormationProgram::class, 'employee_id');
+    }
+
+
     public function projects()
     {
         return $this->belongsToMany(Project::class, 'project_employee')->withPivot('charge');
