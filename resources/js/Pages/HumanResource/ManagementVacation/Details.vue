@@ -43,9 +43,9 @@
                 </div>
             </div>
             <div class="sm:flex lg:justify-between lg:gap-8">
-                <div v-if="type == 'Permisos'" class="sm:w-1/2 lg:pr-4 sm:mb-0">
+                <div v-if="type == 'Permisos' && details.doc_permission " class="sm:w-1/2 lg:pr-4 sm:mb-0">
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt class="text-sm font-medium leading-6 text-gray-900">Hora Final</dt>
+                        <dt class="text-sm font-medium leading-6 text-gray-900">Documentacion</dt>
                         <button @click="openPreviewDocumentModal(details.id)"
                             class="flex items-center text-green-600 hover:underline">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

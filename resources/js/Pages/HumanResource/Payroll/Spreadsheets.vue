@@ -117,7 +117,7 @@
                 <tbody>
                     <tr v-for="spreadsheet in spreadsheets" :key="spreadsheet.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.contract.state }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.state }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.dni }}</p>
@@ -126,13 +126,13 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.name }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.contract.pension.type }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.pension_reg }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.contract.hire_date }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.hire_date }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.contract.basic_salary }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.basic_salary }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.truncated_vacations }}</p>
@@ -200,8 +200,6 @@ import { Head, router } from '@inertiajs/vue3';
 const props = defineProps({
     spreadsheets: Object,
 })
-
-console.log(props.spreadsheets)
 
 const management_pension = () => {
     router.get(route('pension_system.edit'));
