@@ -45,7 +45,7 @@
                     <tbody>
                         <tr v-for="item in resources.data" :key="item.id" :class="[
                             'text-gray-700',
-                            { 'border-l-4': true, 'border-green-500': item.state === 'Disponible', 'border-red-500': item.state !== 'Disponible' }
+                            { 'border-l-8': true, 'border-green-500': item.state === 'Disponible', 'border-red-500': item.state !== 'Disponible' }
                         ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>

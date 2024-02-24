@@ -23,7 +23,7 @@ class ProductController extends Controller
                        ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Product', [
             'products' => $products,
-            'warehouse' => $warehouse
+            'warehouse' => $warehouse->load('headers')
         ]);
     }
 
