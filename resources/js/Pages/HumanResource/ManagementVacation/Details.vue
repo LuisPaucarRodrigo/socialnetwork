@@ -129,23 +129,11 @@
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         Aceptar</button>
                     <button @click="decline" type="button" :class="{ 'opacity-25': form.processing }"
-                        class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         Rechazar</button>
                 </div>
             </form>
         </div>
-        <teleport to="body">
-            <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-                <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
-                <div class="flex items-center justify-center h-full w-3/4">
-                    <div class="bg-white p-5 rounded-md relative w-full h-3/5">
-                        <button @click="closePreviewDocumentModal"
-                            class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-                        <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
-                    </div>
-                </div>
-            </div>
-        </teleport>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -166,7 +154,6 @@ const props = defineProps({
 });
 
 const type = props.details ? props.details.type : props.vacation.type;
-const isPreviewDocumentModalOpen = ref(false);
 const documentToShow = ref(null);
 
 const form = useForm({
@@ -186,16 +173,11 @@ const decline = () => {
     }
 };
 
-function getDocumentUrl(documentId) {
-    return route('management.vacation.information.documents.show', { id: documentId });
-}
-
 function openPreviewDocumentModal(documentId) {
     documentToShow.value = documentId;
-    isPreviewDocumentModalOpen.value = true;
+    const url = route('management.vacation.information.documents.show', { id: documentId });
+    // Abrir la URL en una nueva pestaña
+    window.open(url, '_blank');
 }
 
-const closePreviewDocumentModal = () => {
-    isPreviewDocumentModalOpen.value = false;
-};
 </script>
