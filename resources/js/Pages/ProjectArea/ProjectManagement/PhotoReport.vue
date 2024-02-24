@@ -1,11 +1,11 @@
 <template>
   <Head title="Gestion de Documentos" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="'preprojects.index'">
     <template #header>
       Informe Fotográfico
     </template>
     <div class="inline-block min-w-full border-b-2 border-gray-200">
-      <div class="flex gap-4 mb-2">
+      <div v-if="!preproject.has_quote" class="flex gap-4 mb-2">
         <button @click="openCreateDocumentModal" type="button"
           class="rounded-md bg-indigo-500 px-4 py-2 text-center text-sm text-white hover:bg-indigo-300">
           {{ photoreport ? 'Editar' : '+ Agregar' }}
@@ -25,7 +25,7 @@
         </svg>
         <span class="sr-only">Info</span>
         <div>
-          <span class="font-small">Solo se puede hacer cambios cuando NO exista una cotización para el cliente</span>
+          <span class="font-small">Solo se puede hacer cambios cuando NO exista una cotización para el proyecto</span>
         </div>
       </div>
     </div>
@@ -56,19 +56,6 @@
         </div>
       </div>
     </div>
-
-    <teleport to="body">
-      <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-        <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
-        <div class="flex items-center justify-center h-full w-3/4">
-          <div class="bg-white p-5 rounded-md relative w-full h-3/5">
-            <button @click="closePreviewDocumentModal"
-              class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-            <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
-          </div>
-        </div>
-      </div>
-    </teleport>
 
     <Modal :show="create_document">
       <div class="p-6">
@@ -135,6 +122,8 @@ const { documents, preproject, photoreport } = defineProps({
   preproject: Object
 });
 
+console.log(preproject)
+
 const initial_state = {
   excel_report: null,
   pdf_report: null,
@@ -151,8 +140,6 @@ const showModalUpdate = ref(false);
 const confirmReportDelete = ref(false);
 
 const documentToShow = ref(null);
-const isPreviewDocumentModalOpen = ref(false);
-
 
 const openCreateDocumentModal = () => {
   create_document.value = true;
@@ -198,26 +185,17 @@ const deleteDocument = (id) => {
 
 };
 
-
-
-
-
-const closePreviewDocumentModal = () => {
-  isPreviewDocumentModalOpen.value = false;
-};
 function openPreviewDocumentModal(name) {
   documentToShow.value = name;
-  isPreviewDocumentModalOpen.value = true;
+  const url = route('preprojects.photoreport.show', { report_name: name });
+  // Abrir la URL en una nueva pestaña
+  window.open(url, '_blank');
 }
-function getDocumentUrl(name) {
-  return route('preprojects.photoreport.show', { report_name: name });
-}
+
 const getDocumentName = (documentTitle) => {
   const parts = documentTitle.split('_');
   return parts.length > 1 ? parts.slice(1).join('_') : documentTitle;
 };
-
-
 
 </script>
   

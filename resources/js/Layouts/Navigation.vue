@@ -88,10 +88,16 @@
                     <span class="mx-3">Finanzas</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingFinance">
+                    <Link class="w-full" :href="route('gangexpense.index')">Gastos</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('selectproject.index')">Presupuestos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('managementexpense.index')">Gestion de Gastos</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingFinance">
+                    <Link class="w-full" :href="route('deposits.index')">Depósitos</Link>
                 </MyTransition>
             </template>
 

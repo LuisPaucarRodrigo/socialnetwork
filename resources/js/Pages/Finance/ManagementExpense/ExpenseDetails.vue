@@ -36,7 +36,7 @@
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Limite</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.quote_deadline }}</dd>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(details.quote_deadline) }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Archivo Adjunto</dt>
@@ -58,18 +58,6 @@
                 Rechazar
             </button>
         </div>
-        <teleport to="body">
-            <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-                <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
-                <div class="flex items-center justify-center h-full w-3/4">
-                    <div class="bg-white p-5 rounded-md relative w-full h-3/5">
-                        <button @click="closePreviewDocumentModal"
-                            class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-                        <iframe :src="getDocumentUrl(documentToShow)" class="w-full h-full"></iframe>
-                    </div>
-                </div>
-            </div>
-        </teleport>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -77,6 +65,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     details: Object
@@ -97,19 +86,12 @@ const sendReply = (state) => {
 
 };
 
-function getDocumentUrl(documentId) {
-    return route('purchasesrequest.show', { id: documentId });
-}
-
 const documentToShow = ref(null);
-const isPreviewDocumentModalOpen = ref(false);
-
-const closePreviewDocumentModal = () => {
-    isPreviewDocumentModalOpen.value = false;
-};
 
 function openPreviewDocumentModal(documentId) {
     documentToShow.value = documentId;
-    isPreviewDocumentModalOpen.value = true;
+    const url = route('purchasesrequest.show', { id: documentId });
+    // Abrir la URL en una nueva pestaña
+    window.open(url, '_blank');
 }
 </script>

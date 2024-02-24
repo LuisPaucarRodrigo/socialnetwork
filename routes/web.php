@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Finance\DepositController;
 use App\Http\Controllers\Finance\ExpenseManagementController;
+use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
@@ -8,6 +10,7 @@ use App\Http\Controllers\HumanResource\ManagementEmployees;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\ProjectArea\CalendarController;
 use App\Http\Controllers\Finance\BudgetUpdateController;
+use App\Http\Controllers\Finance\GangExpenseController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\ProjectScheduleController;
@@ -85,7 +88,7 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
 });
 
 Route::middleware('auth', 'permission:HumanResourceManager')->group(function () {
-    Route::get('/management_employees', [ManagementEmployees::class, 'index'])->name('management.employees');
+    Route::get('/management_employees/index/{reentry?}', [ManagementEmployees::class, 'index'])->name('management.employees');
     Route::get('/management_employees/information_additional', [ManagementEmployees::class, 'index_info_additional'])->name('management.employees.information');
     Route::post('/management_employees/information_additional/create', [ManagementEmployees::class, 'create'])->name('management.employees.information.create');
     Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.information.details');
@@ -94,6 +97,8 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::delete('/management_employees/destroy/{id}', [ManagementEmployees::class, 'destroy'])->name('management.employees.destroy');
     Route::put('/management_employees/fired/{id}', [ManagementEmployees::class, 'fired'])->name('management.employees.fired');
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
+    Route::put('/management_employees/{id}/reentry', [ManagementEmployees::class, 'reentry'])->name('management.employees.reentry');
+
     
     //Schedule
     Route::post('/management_employees/addSchedule', [ManagementEmployees::class, 'uploadSchedule'])->name('management.employees.addSchedule');
@@ -173,6 +178,15 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
 });
 
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
+
+    //Expense
+    Route::get('/finance/expensegang', [GangExpenseController::class, 'index'])->name('gangexpense.index');
+    Route::get('/finance/expensegang/create', [GangExpenseController::class, 'create'])->name('gangexpense.create');
+    Route::post('/finance/expensegang/store', [GangExpenseController::class, 'store'])->name('gangexpense.store');
+    Route::get('/finance/expensegang/{id}/edit', [GangExpenseController::class, 'edit'])->name('gangexpense.edit');
+    Route::put('/finance/expensegang/{id}/update', [GangExpenseController::class, 'update'])->name('gangexpense.update');
+    Route::post('/finance/expensegang/search', [GangExpenseController::class, 'search'])->name('gangexpense.search');
+
     Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
     Route::get('/finance/expencemanagement/details/{id}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
     Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');
@@ -183,8 +197,20 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::get('/budgetUpdates/{project}/{budgetupdate}', [BudgetUpdateController::class, 'show'])->name('budgetupdates.show');
     Route::get('/initialBudget/{project}', [BudgetUpdateController::class, 'initial'])->name('initialbudget.index');
     Route::post('/initialBudget/{project}/createUpdate', [BudgetUpdateController::class, 'create'])->name('budgetupdates.create');
+
+
+
+
+
+    Route::get('/finance/desposits', [DepositController::class,'deposits_index'])->name('deposits.index');
+    Route::post('/finance/desposits/{deposit_id?}', [DepositController::class,'deposits_store'])->name('deposits.store');
+    //
+    Route::post('/finance/desposits/generateSummary/post', [DepositController::class,'generateSummary'])->name('deposits.generateSummary');
+
 });
+
 Route::middleware('auth', 'permission:InventoryManager')->group(function () {
+    
     //Resources
     Route::get('/resources', [ResourceManagementController::class, 'index'])->name('resources.index');
     Route::get('/resources/new', [ResourceManagementController::class, 'new'])->name('resources.new');
@@ -289,6 +315,13 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
     //ejemplo export pdf    
     Route::get('/generar-pdf', [PreProjectController::class, 'generarPDF'])->name('generar.pdf');
+
+
+
+    //test api
+    Route::get('/sunat_ruc', [HttpController::class,'sunat_ruc'])->name('sunat');
+
+
 
     Route::get('/preprojects/{preproject_id}/report/image', [PreProjectController::class, 'index_image'])->name('preprojects.imagereport.index');
     Route::get('/preprojects/{preproject_id}/report/download_image', [PreProjectController::class, 'download_image'])->name('preprojects.imagereport.download');

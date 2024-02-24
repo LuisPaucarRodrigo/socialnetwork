@@ -66,7 +66,8 @@
                 </div>
             </Modal>
         </div>
-        <table class="w-full whitespace-no-wrap mt-5">
+        <div class="min-w-full overflow-x-auto rounded-lg shadow">
+          <table class="w-full table-auto mt-5">
           <thead>
             <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
               <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -98,7 +99,7 @@
             <tr v-for="update in budgetUpdates.data" :key="update.id" class="text-gray-700" :class="[
                         'text-gray-700',
                         {
-                            'border-l-4': true,
+                            'border-l-8': true,
                             'border-green-500': update.difference >= 0,
                             'border-red-500': update.difference < 0,
                         }
@@ -116,17 +117,18 @@
                 <p class="text-gray-900 whitespace-no-wrap">{{ update.reason }}</p>
               </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                <p class="text-gray-900 whitespace-no-wrap">{{ update.update_date }}</p>
+                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(update.update_date) }}</p>
               </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <p class="text-gray-900 whitespace-no-wrap">{{ update.user.name }}</p>
               </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                <p class="text-gray-900 whitespace-no-wrap">{{ update.approved_update_date }}</p>
+                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(update.approved_update_date) }}</p>
               </td>
             </tr>
           </tbody>
         </table>
+        </div>
   
         <!-- Paginación -->
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
@@ -143,6 +145,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     project: Object,
