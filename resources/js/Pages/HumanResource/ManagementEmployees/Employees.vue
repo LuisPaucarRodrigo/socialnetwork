@@ -1,22 +1,28 @@
 <template>
     <Head title="Gestion de Empleados" />
-
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.employees'">
         <template #header>
             Empleados
         </template>
 
         <div class="min-w-full rounded-lg shadow">
-            <button @click="add_information" type="button"
-                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                + Agregar
-            </button>
+            <div class="mt-6 flex items-center justify-between gap-x-6">
+                <div>
+                    <button @click="add_information" type="button"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        + Agregar
+                    </button>
 
-            <button @click="openScheduleModal" type="button"
-                class="mx-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                Horario
-            </button>
-
+                    <button @click="openScheduleModal" type="button"
+                        class="mx-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        Horario
+                    </button>
+                </div>
+                <Link :href="route('management.employees', { reentry: 'reentry' })"
+                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                Reingresar Empleado
+                </Link>
+            </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full whitespace-no-wrap">
                     <thead>
@@ -43,6 +49,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Ingreso
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -64,7 +74,10 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ employee.phone1 }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex space-x-3 justify-center">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.contract.hire_date }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
                                     <Link class="text-blue-900 whitespace-no-wrap"
                                         :href="route('management.employees.information.details', { id: employee.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -100,6 +113,14 @@
                                         </svg>
                                     </button>
                                 </div>
+                                <button v-if="employee.contract.fired_date" type="button"
+                                    @click="employee_fired_date(employee.id)" class="text-blue-900 whitespace-no-wrap">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                                    </svg>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -109,6 +130,36 @@
                 <pagination :links="employees.links" />
             </div>
         </div>
+
+        <Modal :show="showModalReentry">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Reingreso del Empleado
+                </h2>
+                <form @submit.prevent="submit">
+                    <div class="border-b border-gray-900/10 pb-12">
+                        <div class="mt-2">
+                            <InputLabel for="reentry_date" class="font-medium leading-6 text-gray-900">Fecha de Reingreso o
+                                Recontratacion:
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="date" id="reentry_date" v-model="form1.reentry_date" required
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.reentry_date" />
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeReentryModal"> Cancel </SecondaryButton>
+                            <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <Modal :show="showModalFired">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -204,7 +255,7 @@ import InputFile from '@/Components/InputFile.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
 
 
@@ -212,10 +263,12 @@ const confirmingUserDeletion = ref(false);
 const deleteButtonText = 'Eliminar';
 const employeeToDelete = ref(null);
 const employeeToFired = ref(null);
+const employeeReentry = ref(null);
 const showModalFired = ref(false);
 const createSchedule = ref(false);
 const updateSchedule = ref(false);
 const showModalSchedule = ref(false);
+const showModalReentry = ref(false);
 
 const props = defineProps({
     employees: Object,
@@ -229,22 +282,35 @@ const form = useForm({
     state: 'Inactive'
 })
 
+const form1 = useForm({
+    reentry_date: '',
+})
+
 const formSchedule = useForm({
     document: null
 })
 
 const submit = () => {
-    router.put(route('management.employees.fired', employeeToFired.value), form, {
-        onSuccess: () => {
-            closeFiredModal();
-            router.visit(route('management.employees'));
-        }
+    if (employeeReentry.value != null) {
+        router.put(route('management.employees.reentry', {id:employeeReentry.value}), form1, {
+            onSuccess: () => {
+                closeReentryModal();
+                router.visit(route('management.employees'));
+            }
 
-    })
+        })
+    } else {
+        router.put(route('management.employees.fired', employeeToFired.value), form, {
+            onSuccess: () => {
+                closeFiredModal();
+                router.visit(route('management.employees'));
+            }
+
+        })
+    }
 }
 
 const submitSchedule = () => {
-
     if (props.fileExists) {
         formSchedule.post(route('management.employees.updateSchedule'), {
             onSuccess: () => {
@@ -321,6 +387,15 @@ const openScheduleModal = () => {
 
 const closeScheduleModal = () => {
     showModalSchedule.value = false;
+};
+
+const employee_fired_date = ($id) => {
+    employeeReentry.value = $id
+    showModalReentry.value = true
+};
+
+const closeReentryModal = () => {
+    showModalReentry.value = false;
 };
 
 </script>
