@@ -12,28 +12,27 @@ use Inertia\Inertia;
 
 class FormationDevelopment extends Controller
 {
-    public function index()
-    {
+    public function index() {
         return Inertia::render('HumanResource/FormationDevelopments/Formation_Development');
     }
 
-    public function formation_programs_index()
-    {
+    public function formation_programs_index()  {
         return Inertia::render('HumanResource/FormationDevelopments/FormationPrograms/Index', [
             'formationPrograms' => FormationProgram::with(['trainings', 'employees'])->paginate(),
+            'employees'=> Employee::with('assignated_programs.formation_program')->get()
         ]);
     }
 
     public function formation_programs_create()
     {
         return Inertia::render('HumanResource/FormationDevelopments/FormationPrograms/Create', [
-            'trainings' => Training::whereNull('formation_program_id')->get(),
+            'trainings' => Training::all(),
         ]);
     }
     public function formation_programs_view($id)
     {
         return Inertia::render('HumanResource/FormationDevelopments/FormationPrograms/View', [
-            'formation_program' => FormationProgram::with(['employees', 'trainings_list'])->find($id),
+            'formation_program' => FormationProgram::with(['employees', 'trainings'])->find($id),
         ]);
     }
 
@@ -41,8 +40,7 @@ class FormationDevelopment extends Controller
     {
         $data = $request->validated();
         $formationProgram = FormationProgram::create($data);
-        Training::whereIn('id', $request['trainings'])
-            ->update(['formation_program_id' => $formationProgram->id]);
+        $formationProgram->trainings()->sync($request->trainings);
         return redirect()->route('management.employees.formation_development.formation_programs');
     }
 
@@ -108,12 +106,21 @@ class FormationDevelopment extends Controller
     }
 
     public function assignate_employee_fprogram(Request $request)
-    {
-        $employees = $request->input('employees');
-        $formationPrograms = $request->input('formation_programs');
+    {   
+        $data= $request->validate([
+            'employees'=>  'required|array',
+            'formation_programs'=>  'required|array',
+            'start_date'=> 'required',
+            'end_date'=> 'required'
+        ]);
+        $employees = $data['employees'];
+        $formationPrograms = $data['formation_programs'];
         foreach ($employees as $emp) {
             $employee = Employee::find($emp);
-            $employee->formation_programs()->attach($formationPrograms);
+            $employee->formation_programs()->sync($formationPrograms, [
+                'start_date'=>$data['start_date'],
+                'end_date'=>$data['end_date']
+            ]);
         }
         return redirect()->back();
     }
@@ -128,20 +135,22 @@ class FormationDevelopment extends Controller
 
     public function assignate_store(Request $request)
     {
-        $request->validate([
-            'employees' => 'required|array',
-            'formation_programs' => 'required|array',
+        $data= $request->validate([
+            'employees'=>  'required|array',
+            'formation_programs'=>  'required|array',
+            'start_date'=> 'required',
+            'end_date'=> 'required'
         ]);
 
-        $employeeIds = $request->input('employees');
-        $formationProgramIds = $request->input('formation_programs');
-
-        foreach ($employeeIds as $employeeId) {
-            $employee = Employee::find($employeeId);
-
-            if ($employee) {
-                $employee->formation_programs()->sync($formationProgramIds);
-            }
+        $employees = $data['employees'];
+        $formationPrograms = $data['formation_programs'];
+        foreach ($employees as $emp) {
+            $employee = Employee::find($emp);
+            $employee->formation_programs()->attach($formationPrograms, [
+                'start_date'=>$data['start_date'],
+                'end_date'=>$data['end_date']
+            ]);
         }
+        return redirect()->back();
     }
 }

@@ -90,8 +90,11 @@ import { ref, defineProps } from 'vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 
 const props = defineProps({
-    formationPrograms: Object
+    formationPrograms: Object,
+    employees: Object
 })
+
+console.log(props.employees)
 
 const add_information = () => {
     router.get(route('management.employees.formation_development.formation_programs.create'));
