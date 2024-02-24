@@ -54,8 +54,8 @@
             <tr v-for="subSection in filteredSubSections" :key="subSection.id" class="text-gray-700">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.description }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.start_date }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.end_date }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.start_date) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.end_date) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.section.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
@@ -243,6 +243,7 @@ import Modal from '@/Components/Modal.vue';
 import { ref, computed, watch } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import {formattedDate} from '@/utils/utils'
 
 const props = defineProps({
   sections: Object,

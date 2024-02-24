@@ -1,6 +1,6 @@
 <template>
     <Head title="Imagenes para Reporte" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
             Imagenes para Reporte
         </template>
