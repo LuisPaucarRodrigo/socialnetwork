@@ -44,6 +44,7 @@
                                 {{ provider.phone2 }}
                             </option>
                         </select>
+                        <InputError :message="form.errors.provider" />
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">Fecha Limite de

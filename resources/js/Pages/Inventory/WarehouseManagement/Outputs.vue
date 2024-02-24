@@ -46,7 +46,7 @@
                         <tr v-for="item in project_products.data" :key="item.id" :class="[
                             'text-gray-700',
                             {
-                                'border-l-4': true,
+                                'border-l-8': true,
                                 'border-green-500': item.state === 'Completo',
                                 'border-red-500': item.state === 'Incompleto'
                             }

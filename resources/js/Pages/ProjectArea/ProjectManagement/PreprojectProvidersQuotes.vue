@@ -1,12 +1,12 @@
 <template>
     <Head title="Gestion de Documentos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirect-route="'preprojects.index'">
       <template #header>
         Cotizaciones de artículos de proveedores
       </template>
       <div class="inline-block min-w-full border-b-2 border-gray-200">
         <div class="flex gap-4 mb-2">
-          <button @click="openCreateDocumentModal" type="button"
+          <button v-if="!preproject.has_quote" @click="openCreateDocumentModal" type="button"
             class="rounded-md bg-indigo-500 px-4 py-2 text-center text-sm text-white hover:bg-indigo-300">
              + Agregar
           </button>
@@ -17,7 +17,7 @@
           </svg>
           <span class="sr-only">Info</span>
           <div>
-            <span class="font-small">Solo se puede hacer cambios cuando no exista una cotización para el proyecto</span> 
+            <span class="font-small">Solo se puede hacer cambios cuando NO exista una cotización para el proyecto</span> 
           </div>
         </div>
       </div>
@@ -39,19 +39,6 @@
             </div>
         </div>
       </div>
-  
-      <teleport to="body">
-        <div v-if="isPreviewDocumentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-          <div class="absolute inset-0 bg-gray-800 opacity-75" @click="closePreviewDocumentModal"></div>
-          <div class="flex items-center justify-center h-full w-3/4">
-            <div class="bg-white p-5 rounded-md relative w-full h-3/5" >
-              <button @click="closePreviewDocumentModal"
-                class="close-button absolute top-0 right-0 mt-2 mr-2">&#10006;</button>
-              <iframe :src="getDocumentUrl(itemToShow)" class="w-full h-full"></iframe>
-            </div>
-          </div>
-        </div>
-      </teleport>
   
       <Modal :show="create_document">
         <div class="p-6">
@@ -117,9 +104,7 @@
   const confirmReportDelete = ref(false);
   
   const itemToShow = ref(null);
-  const isPreviewDocumentModalOpen = ref(false);
   
-
   const openCreateDocumentModal = () => {
     create_document.value = true;
   };
@@ -163,25 +148,19 @@
     });
   };
   
-
-
-
-  const closePreviewDocumentModal = () => {
-    isPreviewDocumentModalOpen.value = false;
-  };
   function openPreviewDocumentModal(id) {
     itemToShow.value = id;
-    isPreviewDocumentModalOpen.value = true;
+    const url = route('preprojects.providersquotes.show', { providerquote_id: id });
+
+    // Abrir la URL en una nueva pestaña
+    window.open(url, '_blank');
   }
-  function getDocumentUrl(id) {
-    return route('preprojects.providersquotes.show', { providerquote_id: id });
-  }
+
   const getDocumentName = (documentTitle) => {
     const parts = documentTitle.split('_');
     return parts.length > 1 ? parts.slice(1).join('_') : documentTitle;
   }; 
   
-
   
   </script>
   
