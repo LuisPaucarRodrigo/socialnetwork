@@ -31,6 +31,8 @@ class CreateProviderRequest extends FormRequest
             'email' => 'required|email|max:255|unique:'.Provider::class,
             'category' => 'required|string|max:255',
             'segment' => 'required|string|max:255',
+            'zone' => 'required|string',
+            'ruc' => 'required|string|size:11',
         ];
     }
 }

@@ -17,5 +17,7 @@ class Provider extends Model
         'email',
         'category',
         'segment',
+        'zone',
+        'ruc',
     ];
 }
