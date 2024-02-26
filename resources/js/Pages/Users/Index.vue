@@ -1,9 +1,9 @@
 <template>
-    <Head title="Users" />
+    <Head title="Usuarios" />
 
     <AuthenticatedLayout :redirectRoute="'users.index'">
         <template #header>
-            Users
+            Usuarios
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <button @click="add_users" type="button"

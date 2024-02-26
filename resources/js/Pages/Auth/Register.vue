@@ -1,5 +1,5 @@
 <template>
-    <Head title="Register" />
+    <Head title="Registro" />
 
     <AuthenticatedLayout :redirectRoute="'users.index'">
         <template #header>
@@ -95,7 +95,7 @@
                 <button
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Register
+                    Registrar
                 </button>
             </div>
         </form>
