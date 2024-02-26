@@ -87,16 +87,15 @@ const initialState = {
 const form = useForm({ ...initialState });
 
 const submit = () => {
-    console.log(form.data())
-    // form.post(route('management.employees.formation_development.formation_programs.store'), {
-    //     onSuccess: () => {
-    //         showModal.value = true
-    //         setTimeout(() => {
-    //             showModal.value = false;
-    //             router.visit(route('management.employees.formation_development.formation_programs'))
-    //         }, 2000);
-    //     },
-    // })
+    form.post(route('management.employees.formation_development.formation_programs.store'), {
+        onSuccess: () => {
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('management.employees.formation_development.formation_programs'))
+            }, 2000);
+        },
+    })
 }
 
 </script>

@@ -44,6 +44,16 @@
                     </div>
                 </button>
                 </Link>
+                <Link :href="route('management.employees.formation_development.employees_in_programs')">
+                <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
+                    <div>
+                        <h3 class="text-lg font-semibold">Personal asignado</h3>
+                        <div class="mb-2">
+                            <ClipboardDocumentCheckIcon class="h-6 w-6 text-blue-500" />
+                        </div>
+                    </div>
+                </button>
+                </Link>
             </div>
         </div>
     </AuthenticatedLayout>
@@ -52,6 +62,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { BookmarkSquareIcon, ClipboardDocumentIcon, PaperAirplaneIcon } from '@heroicons/vue/24/solid'
+import { BookmarkSquareIcon, ClipboardDocumentIcon, PaperAirplaneIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/solid'
 
 </script>
