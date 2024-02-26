@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->decimal('basic_salary', 10, 2);
+            $table->integer('basic_salary');
             $table->string('state')->default('Active');
             $table->integer('days_taken')->default(0);
             $table->date('hire_date');

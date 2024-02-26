@@ -10,6 +10,10 @@
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 mb-3">
                 + Agregar
             </button>
+            <button @click="openGenerateSummary" type="button"
+                class="ml-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 mb-3">
+                Generar Resumen
+            </button>
             <br>
             <div class="inline-flex items-center p-1 text-sm text-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300"
                 role="alert">
@@ -131,6 +135,66 @@
                 </table>
             </div>
         </div>
+
+        <Modal :show="generateSummary">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                Generar Resumen
+                </h2>
+                <form @submit.prevent="submitSummary">
+                <div class="space-y-12">
+                    <div class="border-b border-gray-900/10 pb-12">
+
+                        <div>
+                            <InputLabel for="codes" class="text-gray-700">Seleccionar Código:</InputLabel>
+                            <select v-model="summaryForm.code" id="codes" class="border rounded-md px-3 py-2 mb-3 w-full">
+                                <option value="">Todos</option>
+                                <option v-for="code in accounts" :key="code.id" :value="code.id">{{ code.code }}</option>
+                            </select>
+                            <InputError :message="summaryForm.errors.section_id" />
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 sm:gap-x-6">
+                            <div>
+                                <InputLabel for="startDate" class="text-gray-700">Fecha de inicio:</InputLabel>
+                                <input type="date" v-model="summaryForm.start_date" id="startDate"
+                                    class="border rounded-md px-3 py-2 mt-1 w-full">
+                                <InputError :message="summaryForm.errors.start_date" />
+                            </div>
+                            <div>
+                                <InputLabel for="endDate" class="text-gray-700">Fecha de fin:</InputLabel>
+                                <input type="date" v-model="summaryForm.end_date" id="endDate"
+                                    class="border rounded-md px-3 py-2 mt-1 w-full">
+                                <InputError :message="summaryForm.errors.end_date" />
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <InputLabel for="headers" class="font-medium leading-6 text-gray-900">Columnas a mostrar:
+                            </InputLabel>
+                            <select multiple v-model="summaryForm.columns" id="headers" size="8"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 mt-3">
+                            <option disabled>
+                                Selecciona una o varias
+                            </option>
+                            <option v-for="(column, index) in columns" :key="index" :value="column">
+                                {{ column }}
+                            </option>
+                            </select>
+                            <InputError :message="summaryForm.errors.columns" />
+                        </div>
+
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeGenerateSummary"> Cancel </SecondaryButton>
+                            <button type="submit" :class="{ 'opacity-25': form.processing }"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </Modal>
+
         <Modal :show="showAddModal">
             <form @submit.prevent="submitDeposit" class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 mb-5">
@@ -248,6 +312,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -273,10 +338,25 @@ const initialState = {
 }
 const form = useForm({ ...initialState })
 
+const columns = {
+    1: 'Fecha de Operación',
+    2: 'Cod. Operación',
+    3: 'Descripción de la operación',
+    4: 'Código',
+    5: 'Denominación',
+    6: 'Observación',
+    7: 'Comisión',
+}
 
-//Agregate Modal
+const summaryForm = useForm({
+    code: '',
+    start_date: '',
+    end_date: '',
+    columns: []
+});
 
 const showAddModal = ref(false)
+const generateSummary = ref(false)
 const isOprationSuccess = ref(false)
 const itemToModify = ref(null)
 
@@ -296,6 +376,30 @@ const closeAddModal = () => {
     showAddModal.value = false 
 }
 
+const openGenerateSummary = () => {
+    generateSummary.value = true;
+};
+
+const closeGenerateSummary = () => {
+    generateSummary.value = false;
+};
+
+const submitSummary = () => {
+    summaryForm.post(route('deposits.generateSummary'), {
+        onSuccess: (response) => {
+            // Manejar la respuesta exitosa
+        },
+        onError: (error) => {
+            // Manejar errores
+            console.error('Ha ocurrido un error:', error);
+        },
+        onFinish: () => {
+            // Restablecer el formulario
+            summaryForm.reset();
+        }
+    });
+}
+
 function submitDeposit() {
     form.post(route('deposits.store', {deposit_id: itemToModify?.id}), {
         onSuccess: () => {
@@ -306,7 +410,6 @@ function submitDeposit() {
             showAddModal.value = false
         }
     })
-
 }
 
 //Update Modal

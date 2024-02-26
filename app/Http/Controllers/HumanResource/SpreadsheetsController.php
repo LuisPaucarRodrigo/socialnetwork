@@ -13,10 +13,68 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SpreadsheetsController extends Controller
 {
-    public function index()
+    public function index($reentry = false)
     {
-        $spreadsheet = Employee::with('contract', 'contract.pension')->get();
-        return Inertia::render('HumanResource/Payroll/Spreadsheets', ['spreadsheets' => $spreadsheet]);
+        if ($reentry == false) {
+            $employees   = Employee::with('contract', 'contract.pension')->whereHas('contract', function ($query) {
+                $query->where('state', 'Active');
+            })->paginate();
+        } else {
+            $employees   = Employee::with('contract', 'contract.pension')->whereHas('contract', function ($query) {
+                $query->where('state', 'Inactive');
+            })->paginate();
+        }
+
+        $spreadsheet = [];
+        foreach ($employees as $employee) {
+            // dd(floor(Carbon::parse($employee->contract->fired_date)->diffInYears(Carbon::parse($employee->contract->hire_date))));
+            $state = $employee->contract->state;
+            $truncated_vacations = floor($employee->contract->fired_date !== null && $employee->contract->state === 'Inactive'
+                ? (Carbon::parse($employee->contract->fired_date)->floatDiffInYears(Carbon::parse($employee->contract->hire_date)) * 15) * ($employee->contract->basic_salary / 30)
+                : 0);
+            $total_income = $employee->contract->basic_salary + $truncated_vacations;
+            $snp = ($employee->contract->pension->type == 'ONP') ? 100 * ($employee->contract->pension->values) : 0;
+            $snp_onp = ($employee->contract->pension->type == 'ONP') ? $total_income * $employee->contract->pension->values : 0;
+            $commission = ($employee->contract->pension->type == 'ONP') ? 0 : 100 * ($employee->contract->pension->values);
+            $commission_on_ra = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * $employee->contract->pension->values;
+            $seg = ($employee->contract->pension->type == 'ONP') ? 0 : number_format(100 * $employee->contract->pension->values_seg, 2);
+            $insurance_premium = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * $employee->contract->pension->values_seg;
+            $mandatory_contribution = ($employee->contract->pension->type == 'ONP') ? 0 : 100 * 0.1;
+            $mandatory_contribution_amount = ($employee->contract->pension->type == 'ONP') ? 0 : $total_income * 0.1;
+            $total_discount = $snp_onp + $commission_on_ra + $insurance_premium + $mandatory_contribution_amount;
+            $net_pay = $total_income - $total_discount;
+            $health = $total_income * 0.09;
+            $life_ley = 0;
+            $total_contribution = $health + $life_ley;
+
+            $spreadsheet[] = [
+                'state' => $state,
+                'dni' => $employee->dni,
+                'name' => $employee->name,
+                'pension_reg' => $employee->contract->pension->type,
+                'salary' => $employee->contract->basic_salary,
+                'hire_date' => $employee->contract->hire_date ? Carbon::parse($employee->contract->hire_date)->format('d/m/Y') : null,
+                'truncated_vacations' => number_format($truncated_vacations, 2),
+                'total_income' => number_format($total_income, 2),
+                'total_pension_base' => number_format($total_income, 2),
+                'snp' => number_format($snp, 2),
+                'snp_onp' => number_format($snp_onp, 2),
+                'commission' => number_format($commission, 2),
+                'commission_on_ra' => number_format($commission_on_ra, 2),
+                'seg' => number_format($seg, 2),
+                'insurance_premium' => number_format($insurance_premium, 2),
+                'mandatory_contribution' => $mandatory_contribution,
+                'mandatory_contribution_amount' => number_format($mandatory_contribution_amount, 2),
+                'total_discount' => number_format($total_discount, 2),
+                'net_pay' => number_format($net_pay, 2),
+                'health' => number_format($health, 2),
+                'life_ley' => number_format($life_ley, 2),
+                'total_contribution' => number_format($total_contribution, 2)
+            ];
+        }
+        return Inertia::render('HumanResource/Payroll/Spreadsheets', ['spreadsheets' => $spreadsheet, 'boolean' => boolval($reentry)]);
+        // $spreadsheet = Employee::with('contract', 'contract.pension')->get();
+        // return Inertia::render('HumanResource/Payroll/Spreadsheets', ['spreadsheets' => $spreadsheet]);
     }
 
     public function edit()
@@ -49,8 +107,8 @@ class SpreadsheetsController extends Controller
         return to_route('pension_system.edit');
     }
 
-    public function export()
+    public function export($name)
     {
-        return Excel::download(new PayrollExport, 'Payroll.xlsx');
+        return Excel::download(new PayrollExport, $name . '.xlsx');
     }
 }
