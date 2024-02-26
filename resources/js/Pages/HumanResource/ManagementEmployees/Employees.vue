@@ -18,10 +18,10 @@
                         Horario
                     </button>
                 </div>
-                <Link :href="route('management.employees', { reentry: 'reentry' })"
+                <button @click="reentry" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                Reingresar Empleado
-                </Link>
+                    {{ reentrystate == false ? "Inactivos" : "Activos" }}
+                </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full whitespace-no-wrap">
@@ -273,8 +273,21 @@ const showModalReentry = ref(false);
 const props = defineProps({
     employees: Object,
     fileExists: Boolean,
-    filePath: String
+    filePath: String,
+    boolean: Boolean
 })
+
+const reentrystate = ref(props.boolean);
+
+const reentry = () => {
+    if (props.boolean == true) {
+        reentrystate.value = false
+        router.get(route('management.employees'))
+    } else {
+        reentrystate.value = true
+        router.get(route('management.employees', { reentry: reentrystate.value }))
+    }
+}
 
 const form = useForm({
     fired_date: '',

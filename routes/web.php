@@ -104,12 +104,12 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::post('/management_employees/addSchedule', [ManagementEmployees::class, 'uploadSchedule'])->name('management.employees.addSchedule');
     Route::post('/management_employees/updateSchedule', [ManagementEmployees::class, 'updateSchedule'])->name('management.employees.updateSchedule');
     //Nomina
-    Route::get('/management_employees/spreadsheets', [SpreadsheetsController::class, 'index'])->name('spreadsheets.index');
+    Route::get('/management_employees/spreadsheets/{reentry?}', [SpreadsheetsController::class, 'index'])->name('spreadsheets.index');
     Route::get('/management_employees/pension_system/edit', [SpreadsheetsController::class, 'edit'])->name('pension_system.edit');
     Route::put('/management_employees/pension_system/update/{id}', [SpreadsheetsController::class, 'update'])->name('pension_system.update');
     Route::put('/management_employees/pension_system/update_seg/{id}', [SpreadsheetsController::class, 'update_seg'])->name('pension_system_seg.update');
 
-    Route::get('/management_employees/spreadsheets/payroll/export', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
+    Route::get('/management_employees/spreadsheets/{name}/payroll/export', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
 
 
     //Formation Development program
@@ -139,7 +139,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit'])->name('management.vacation.information.edit');
     Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
     Route::get('/management_vacation/information_additional/{vacation}/review', [VacationController::class, 'review'])->name('management.vacation.information.review');
-    Route::put('/management_vacation/information_additional/{vacation}/reviewed', [VacationController::class, 'reviewed'])->name('management.vacation.information.reviewed');
+    Route::get('/management_vacation/information_additional/{vacation}/reviewed', [VacationController::class, 'reviewed'])->name('management.vacation.information.reviewed');
     Route::get('/management_vacation/information_additional/{vacation}/details', [VacationController::class, 'details'])->name('management.vacation.information.details');
     Route::get('/management_vacation/information_additional/{id}/showDocument', [VacationController::class, 'showDocument'])->name('management.vacation.information.documents.show');
     Route::get('/management_vacation/information_additional/{id}/decline', [VacationController::class, 'decline'])->name('management.vacation.information.decline');

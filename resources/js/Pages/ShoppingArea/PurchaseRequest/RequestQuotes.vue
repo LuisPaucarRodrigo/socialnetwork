@@ -20,7 +20,7 @@
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.title }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Fecha limite</dt>
+                    <dt class="text-sm font-medium leading-6 text-gray-900">Fecha limite de Compra</dt>
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.due_date }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -47,8 +47,8 @@
                         <InputError :message="form.errors.provider" />
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">Fecha Limite de
-                            Aprobacion
+                        <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">
+                            Fecha limite de Aprobacion
                         </InputLabel>
                         <TextInput type="date" v-model="form.quote_deadline" id="quote_deadline"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
