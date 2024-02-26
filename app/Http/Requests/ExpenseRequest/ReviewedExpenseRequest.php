@@ -23,7 +23,6 @@ class ReviewedExpenseRequest extends FormRequest
     {
         return [
             'state' => 'required|string|in:Aceptado,Rechazado',
-            'response' => 'sometimes|nullable'
         ];
     }
 }
