@@ -134,6 +134,11 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::post('/management_employees/formation_development/trainings/store/{id?}', [FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
     Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
 
+    
+    //Employees in programs
+    Route::get('/management_employees/formation_development/employees_in_programs', [FormationDevelopment::class,'employees_in_programs'])->name('management.employees.formation_development.employees_in_programs');
+
+
     //Vacation
     Route::get('/management_vacation', [VacationController::class, 'index'])->name('management.vacation');
     Route::get('/management_vacation/information_additional', [VacationController::class, 'create'])->name('management.vacation.information.create');
