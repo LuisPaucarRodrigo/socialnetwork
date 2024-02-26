@@ -292,7 +292,7 @@ const formSchedule = useForm({
 
 const submit = () => {
     if (employeeReentry.value != null) {
-        router.put(route('management.employees.reentry', {id:employeeReentry.value}), form1, {
+        router.put(route('management.employees.reentry', { id: employeeReentry.value }), form1, {
             onSuccess: () => {
                 closeReentryModal();
                 router.visit(route('management.employees'));
