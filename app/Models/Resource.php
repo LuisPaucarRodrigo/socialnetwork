@@ -9,7 +9,7 @@ class Resource extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'description',
+        'resource_description_id',
         'type',
         'serial_number',
         'quantity',
@@ -22,12 +22,20 @@ class Resource extends Model
         'current_location',
         'unique_identification',
     ];
+    public function resource_description() {
+        return $this->belongsTo(ResourceDescription::class, 'resource_description_id');
+    }
+
+    public function getDescriptionAttribute() {
+        return $this->resource_description()->first()->name;
+    }
+
     public function projects(){
         return $this->belongsToMany(Project::class)
             ->withPivot('id','quantity', 'observation');
     }
     
-    protected $appends = ['state', 'leftover', 'total_product_resources'];
+    protected $appends = ['state', 'leftover', 'total_product_resources', 'description'];
     protected $hidden = ['projects'];
 
     public function resource_historials(){
@@ -64,7 +72,7 @@ class Resource extends Model
     public static function rules()
     {
         return [
-            'description' => 'required|string|max:255',
+            'resource_description_id' => 'required',
             'type' => 'required|string|max:255',
             'serial_number' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
@@ -79,7 +87,7 @@ class Resource extends Model
     public static function updateRules()
     {
         return [
-            'description' => ['required','string','max:255'],
+            'resource_description_id' => ['required'],
             'type' => ['sometimes','string','max:255'],
             'serial_number' => ['required','string','max:255'],
             'quantity' => ['sometimes','integer', 'min:1'],

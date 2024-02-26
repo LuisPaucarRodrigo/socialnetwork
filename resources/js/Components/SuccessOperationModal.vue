@@ -8,10 +8,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
                 </div>
-                <h2 class="pt-5 text-lg font-medium text-gray-900">
+                <h2 v-if="title !== ''" class="pt-5 text-lg font-medium text-gray-900">
                     {{ title }}
                 </h2>
-                <p class="mt-1 text-sm text-gray-600">
+                <p v-if="message !== ''" class="mt-1 text-sm text-gray-600">
                     {{ message }}
                 </p>
             </div>
