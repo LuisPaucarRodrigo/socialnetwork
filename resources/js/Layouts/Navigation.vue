@@ -155,13 +155,13 @@
                     <span class="mx-3">Area de Compras</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
+                    <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingShoppingArea">
                     <Link class="w-full" :href="route('purchasesrequest.index')">Solicitud de Cotizaciones</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <Link class="w-full" :href="route('purchaseorders.index')">Ordenes de compra</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingShoppingArea">
-                    <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
                 </MyTransition>
             </template>
 

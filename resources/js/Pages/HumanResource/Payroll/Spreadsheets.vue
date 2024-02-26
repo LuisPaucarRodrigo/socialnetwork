@@ -1,6 +1,6 @@
 <template>
     <Head title="Nomina" />
-    <AuthenticatedLayout :redirectRoute="'spreadsheets.index'"> 
+    <AuthenticatedLayout :redirectRoute="'spreadsheets.index'">
         <template #header>
             Nomina
         </template>
@@ -9,11 +9,17 @@
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 Gestion de Sistema de Pension
             </button>
+            <div class="flex space-x-3">
+                <button @click="reentry" type="button"
+                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    {{ reentrystate == false ? "Inactivos" : "Activos" }}
+                </button>
+                <button @click="modal_export"
+                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">
+                    Exportar
+                </button>
+            </div>
 
-            <a :href="route('spreadsheets.payroll.export')"
-                class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">
-                Exportar
-            </a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full whitespace-no-wrap">
@@ -129,10 +135,10 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.pension_reg }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(spreadsheet.contract.hire_date) }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.hire_date }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.basic_salary }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.salary }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.truncated_vacations }}</p>
@@ -190,19 +196,74 @@
                 </tbody>
             </table>
         </div>
+        <Modal :show="showModalExport">
+            <div class="p-8">
+                <div class="space-y-8">
+                    <div>
+                        <div>
+                            <div class="mt-4">
+                                <InputLabel for="name_export" class="font-medium leading-6 text-md text-gray-900">Nombre de
+                                    Excel
+                                </InputLabel>
+                                <TextInput type="text" v-model="name_export" id="name_export" required
+                                    class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex items-center justify-end gap-x-6">
+                        <SecondaryButton @click="close_name_export"> Cancel </SecondaryButton>
+                        <button type="button" @click="export_payroll"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 
 <script setup>
+import InputLabel from '@/Components/InputLabel.vue';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { formattedDate } from '@/utils/utils';
+import { ref } from 'vue';
 
 const props = defineProps({
     spreadsheets: Object,
+    boolean: Boolean
 })
+
+const reentrystate = ref(props.boolean);
+const showModalExport = ref(false);
+const name_export = ref('');
 
 const management_pension = () => {
     router.get(route('pension_system.edit'));
 };
-</script>
+
+const reentry = () => {
+    if (props.boolean == true) {
+        reentrystate.value = false
+        router.get(route('spreadsheets.index'))
+    } else {
+        reentrystate.value = true
+        router.get(route('spreadsheets.index', { reentry: reentrystate.value }))
+    }
+};
+
+const modal_export = () => {
+    showModalExport.value = true
+}
+
+const close_name_export = () => {
+    showModalExport.value = false
+}
+
+const export_payroll = () => {
+    router.get(route('spreadsheets.payroll.export', { name: name_export.value }));
+}
+</script>'name': name

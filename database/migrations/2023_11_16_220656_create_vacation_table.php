@@ -19,8 +19,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->datetime('start_permissions')->nullable();
             $table->datetime('end_permissions')->nullable();
-            $table->date('start_date_accepted')->nullable();
-            $table->date('end_date_accepted')->nullable();
+            $table->date('review_date')->nullable();
             $table->string('doc_permission')->nullable();
             $table->text('reason');
             $table->string('status')->default('Pendiente');

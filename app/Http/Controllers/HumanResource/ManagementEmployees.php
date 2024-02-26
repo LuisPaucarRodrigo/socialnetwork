@@ -27,9 +27,9 @@ use Svg\Tag\Rect;
 
 class ManagementEmployees extends Controller
 {
-    public function index($reentry = null)
+    public function index($reentry = false)
     {
-        if ($reentry == null) {
+        if ($reentry == false) {
             $employees = Employee::with('contract')->whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
             })->paginate();
@@ -48,7 +48,8 @@ class ManagementEmployees extends Controller
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
             'employees' => $employees,
             'fileExists' => $fileExists,
-            'filePath' => $filePath
+            'filePath' => $filePath,
+            'boolean' => boolval($reentry)
         ]);
     }
 
