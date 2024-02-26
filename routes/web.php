@@ -188,7 +188,6 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::post('/finance/expensegang/search', [GangExpenseController::class, 'search'])->name('gangexpense.search');
 
     Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
-    Route::get('/finance/expencemanagement/details/{id}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
     Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');
 
     //Budget
