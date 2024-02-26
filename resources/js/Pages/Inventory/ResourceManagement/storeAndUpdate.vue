@@ -6,10 +6,24 @@
         </template>
         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div class="sm:col-span-3">
-                <label for="description" class="block text-sm font-medium text-gray-700">Descripcion</label>
-                <input type="text" id="description" v-model="newResource.description"
+                <div class="flex items-center gap-2">
+                    <label for="resource_description_id" class="block text-sm font-medium text-gray-700">Descripcion</label>
+                    <button v-if="auth.user.role_id === 1"  @click="openDescriptionModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+
+                    </button>
+                </div>
+
+                <select v-model="newResource.resource_description_id" id="type"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                <InputError :message="newResource.errors.description" />
+                    <option disabled value="">Seleccione</option>
+                    <option v-for="item in descriptions" :key="item.id" :value="item.id">{{ item.name }}</option>
+                </select>
+                <InputError :message="newResource.errors.resource_description_id" />
             </div>
 
             <div class="sm:col-span-3">
@@ -110,24 +124,61 @@
             </button>
         </div>
         <ConfirmCreateModal :confirmingcreation="showmodal" itemType="activo" />
+
+        <!-- ADD DESCRIPTION -->
+        <Modal :show="showDescriptionModal">
+            <form class="p-6" @submit.prevent="submit">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Agregando una nueva descripción
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+
+                    <div class="sm:col-span-6">
+                        <InputLabel for="name" class="font-medium leading-6 text-gray-900">Descripción</InputLabel>
+                        <div class="mt-2">
+                            <TextInput id="name" :to-uppercase="true"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                v-model="form.name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="closeDescriptionModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
+                </div>
+            </form>
+        </Modal>
+        <SuccessOperationModal :confirming="addDescriptionSuccess" title="" message=""/>
+
+
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputError from '@/Components/InputError.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, defineProps } from 'vue';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 const showmodal = ref(false);
 
 const props = defineProps({
     title: String,
-    resource: Object
+    resource: Object,
+    descriptions: Object,
+    auth:Object
 })
 
+console.log(props)
+
 const newResource = useForm({
-    description: '',
+    resource_description_id: '',
     type: '',
     serial_number: '',
     quantity: '',
@@ -189,5 +240,36 @@ const cancel = () => {
 const closeModal = () => {
     showmodal.value = false;
 }
+
+
+
+//Resource description modal
+
+const showDescriptionModal = ref(false)
+const addDescriptionSuccess = ref(false)
+const openDescriptionModal = () => {
+    showDescriptionModal.value = true
+}
+const closeDescriptionModal = () => {
+    showDescriptionModal.value = false
+}
+
+const form = useForm({
+    name:''
+})
+
+const submit = () => {
+    form.post(route('resource_description.store'),{
+        onSuccess:() => {
+            closeDescriptionModal()
+            addDescriptionSuccess.value = true
+            setTimeout(()=>{
+                addDescriptionSuccess.value = false
+            }, 600)
+            form.reset()
+        }
+    })
+}
+
 
 </script>
