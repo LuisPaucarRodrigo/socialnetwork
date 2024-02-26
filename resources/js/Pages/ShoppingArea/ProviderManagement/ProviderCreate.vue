@@ -10,28 +10,49 @@
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion</h2>
 
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div class="sm:col-span-3">
+                        <div class="sm:col-span-2">
+                            <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.ruc" id="ruc" pattern="\d*"
+                                    autocomplete="given-name"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.ruc" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
                             <InputLabel for="company_name" class="font-medium leading-6 text-gray-900">Compañia</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.company_name" id="company_name"
+                                <TextInput type="text" v-model="form.company_name" id="company_name" :to-uppercase="true"
                                     autocomplete="given-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.company_name" />
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3">
+                        
+                        <div class="sm:col-span-2">
                             <InputLabel for="contact_name" class="font-medium leading-6 text-gray-900">Nombre de Contacto
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.contact_name" id="contact_name"
+                                <TextInput type="text" v-model="form.contact_name" id="contact_name" :to-uppercase="true"
                                     autocomplete="family-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.contact_name" />
                             </div>
                         </div>
 
-                        <div class="sm:col-span-4">
+                        <div class="sm:col-span-2">
+                            <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.zone" id="zone" :to-uppercase="true"
+                                    autocomplete="family-name"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.zone" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
                             <InputLabel for="address" class="font-medium leading-6 text-gray-900">Direccion</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.address" id="address" autocomplete="address-level1"
@@ -68,8 +89,9 @@
                                 <InputError :message="form.errors.phone2" />
                             </div>
                         </div>
+                        <br>
 
-                        <div class="sm:col-span-3">
+                        <div class="sm:col-span-2">
                             <InputLabel for="category" class="font-medium leading-6 text-gray-900">Categoria</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" id="category" v-model="form.category" autocomplete="category"
@@ -115,6 +137,8 @@ const form = useForm({
     email: '',
     category: '',
     segment: '',
+    zone:'',
+    ruc:'',
 })
 
 const showModal = ref(false);
@@ -128,9 +152,6 @@ const submit = () => {
                 router.visit(route('providersmanagement.index'))
             }, 2000);
         },
-        onError: () => {
-            alert('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
-        }
     })
 };
 
