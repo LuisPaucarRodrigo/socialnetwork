@@ -13,6 +13,8 @@ use App\Models\AccountingAccount;
 
 class DepositController extends Controller
 {
+    
+
     public function deposits_index(){
         return Inertia::render("Finance/Deposits/Deposits", [
             "deposits" => Deposit::with('accounting_account')
@@ -42,4 +44,56 @@ class DepositController extends Controller
                     : Deposit::create($data);
         return redirect()->back();
     }
+    
+    public function generateSummary(Request $request)
+    {
+        $summary_data = $request->validate([
+            'code' => 'nullable',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'columns' => 'required|array',
+        ]);
+
+        $startDate = $summary_data['start_date'];
+        $endDate = $summary_data['end_date'];
+
+        $query = Deposit::whereBetween('operation_date', [$startDate, $endDate]);
+
+        if ($summary_data['code'] !== "") {
+            $query->where('accounting_account_id', $summary_data['code']);
+        }
+
+        $selectedColumns = collect($summary_data['columns'])->map(function ($columnName) {
+            switch ($columnName) {
+                case 'Fecha de Operación':
+                    return 'operation_date';
+                case 'Cod. Operación':
+                    return 'operation_code';
+                case 'Descripción de la operación':
+                    return 'operation_description';
+                case 'Código':
+                    return 'accounting_account_id';
+                case 'Denominación':
+                    return 'denomination';
+                case 'Observación':
+                    return 'observation';
+                case 'Comisión':
+                    return 'comission';
+                default:
+                    return null;
+            }
+        })->filter()->toArray();
+    
+        // Seleccionar solo las columnas mapeadas
+        $query->select($selectedColumns);
+
+        $deposits = $query->get();
+
+        return Inertia::render('Finance/Deposits/Summary', [
+            'deposits' => $deposits->load('accounting_account'),
+            'columns' => $summary_data['columns']
+        ]);
+    }
+
+
 }

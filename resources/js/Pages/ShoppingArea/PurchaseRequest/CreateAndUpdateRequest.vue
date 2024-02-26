@@ -21,7 +21,7 @@
                         </div>
 
                         <div class="sm:col-span-2">
-                            <InputLabel for="due_date" class="font-medium leading-6 text-gray-900">Fecha Limite</InputLabel>
+                            <InputLabel for="due_date" class="font-medium leading-6 text-gray-900">Fecha Limite de Compra</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.due_date" id="due_date" maxlength="9"
                                     autocomplete="product_description-level1"
