@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('description');
+            $table->foreignId('resource_description_id')->nullable()->constrained('resource_descriptions')->onDelete('set null');
             $table->string('type');
             $table->string('serial_number');
             $table->integer('quantity');

@@ -208,6 +208,11 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::put('/resources/edit/{resourceId}', [ResourceManagementController::class, 'update'])->name('resource.update');
     Route::delete('/resources/delete/{resourceId}', [ResourceManagementController::class, 'destroy'])->name('resource.delete');
 
+    Route::post('resource_description/store', [ResourceManagementController::class,'resource_description_store'])->name('resource_description.store');
+
+
+
+
     //warehouses
     Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');
     Route::get('/inventory/warehouses/{warehouse}', [WarehousesController::class, 'showWarehouse'])->name('warehouses.warehouse');
