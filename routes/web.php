@@ -84,6 +84,11 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     Route::post('rols/store', [ManagementRolsController::class, 'store'])->name('rols.store');
     Route::delete('rols/delete/{id}', [ManagementRolsController::class, 'delete'])->name('rols.delete');
     Route::get('rols/details/{id}', [ManagementRolsController::class, 'details'])->name('rols.details');
+
+
+
+    Route::post('resource_description/store', [ResourceManagementController::class,'resource_description_store'])->name('resource_description.store');
+    Route::post('resource_category/store', [ResourceManagementController::class,'resource_category_store'])->name('resource_category.store');
 });
 
 Route::middleware('auth', 'permission:HumanResourceManager')->group(function () {

@@ -8,7 +8,10 @@
             <div class="sm:col-span-3">
                 <div class="flex items-center gap-2">
                     <label for="resource_description_id" class="block text-sm font-medium text-gray-700">Descripcion</label>
-                    <button v-if="auth.user.role_id === 1"  @click="openDescriptionModal">
+                    <button v-if="auth.user.role_id === 1"  @click="()=>{
+                        showModal = true
+                        section = 1
+                    }">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6 text-indigo-500">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -27,20 +30,28 @@
             </div>
 
             <div class="sm:col-span-3">
-                <label for="type" class="block text-sm font-medium text-gray-700">Categoria</label>
+                <div class="flex items-center gap-2">
+                    <label for="resource_category_id" class="block text-sm font-medium text-gray-700">Categoria</label>
+                    <button v-if="auth.user.role_id === 1"  @click="()=>{
+                        showModal = true
+                        section = 2
+                    }">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+
+                    </button>
+                </div>
                 <div class="flex">
-                    <select v-model="newResource.type" id="type"
+                    <select v-model="newResource.resource_category_id" id="resource_category_id"
                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                        <option disabled value="">Seleccione una categoria</option>
-                        <option value="Hardware">Hardware</option>
-                        <option value="Software">Software</option>
-                        <option value="Vehiculo">Vehiculo</option>
-                        <option value="Equipo de Oficina">Equipo de Oficina</option>
-                        <option value="Equipo de Campo">Equipo de Campo</option>
-                        <option value="Otros">Otros</option>
+                        <option disabled value="">Seleccione</option>
+                        <option v-for="item in types" :key="item.id" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
-                <InputError :message="newResource.errors.type" />
+                <InputError :message="newResource.errors.resource_category_id" />
             </div>
             <div class="sm:col-span-2">
                 <label for="unique_identification" class="block text-sm font-medium text-gray-700">Codigo</label>
@@ -126,10 +137,10 @@
         <ConfirmCreateModal :confirmingcreation="showmodal" itemType="activo" />
 
         <!-- ADD DESCRIPTION -->
-        <Modal :show="showDescriptionModal">
+        <Modal :show="showModal">
             <form class="p-6" @submit.prevent="submit">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Agregando una nueva descripción
+                    Nueva {{ section === 1 ? 'descripción' : section===2&&'categoría' }}
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
 
@@ -143,7 +154,7 @@
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <SecondaryButton type="button" @click="closeDescriptionModal"> Cerrar </SecondaryButton>
+                    <SecondaryButton type="button" @click="closeAddModal"> Cerrar </SecondaryButton>
                     <PrimaryButton type="submit"> Agregar </PrimaryButton>
                 </div>
             </form>
@@ -172,6 +183,7 @@ const props = defineProps({
     title: String,
     resource: Object,
     descriptions: Object,
+    types: Object,
     auth:Object
 })
 
@@ -179,7 +191,7 @@ console.log(props)
 
 const newResource = useForm({
     resource_description_id: '',
-    type: '',
+    resource_category_id: '',
     serial_number: '',
     quantity: '',
     unit_price: '',
@@ -193,8 +205,8 @@ const newResource = useForm({
 });
 
 if (props.resource) {
-    newResource.description = props.resource.description;
-    newResource.type = props.resource.type;
+    newResource.resource_description_id = props.resource.resource_description_id;
+    newResource.resource_category_id = props.resource.resource_category_id;
     newResource.serial_number = props.resource.serial_number;
     newResource.unique_identification = props.resource.unique_identification;
     newResource.quantity = props.resource.quantity;
@@ -243,15 +255,13 @@ const closeModal = () => {
 
 
 
-//Resource description modal
-
-const showDescriptionModal = ref(false)
+//Resource  modals
+const section = ref(null)
+const showModal = ref(false)
 const addDescriptionSuccess = ref(false)
-const openDescriptionModal = () => {
-    showDescriptionModal.value = true
-}
-const closeDescriptionModal = () => {
-    showDescriptionModal.value = false
+
+const closeAddModal = () => {
+    showModal.value = false
 }
 
 const form = useForm({
@@ -259,9 +269,12 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.post(route('resource_description.store'),{
+    let url
+    if (section.value === 1) url = route('resource_description.store')
+    if (section.value === 2) url = route('resource_category.store')
+    form.post(url,{
         onSuccess:() => {
-            closeDescriptionModal()
+            closeAddModal()
             addDescriptionSuccess.value = true
             setTimeout(()=>{
                 addDescriptionSuccess.value = false

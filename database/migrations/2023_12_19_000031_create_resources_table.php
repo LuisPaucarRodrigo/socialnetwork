@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('resource_description_id')->nullable()->constrained('resource_descriptions')->onDelete('set null');
-            $table->string('type');
+            $table->foreignId('resource_category_id')->nullable()->constrained('resource_category')->onDelete('set null');
             $table->string('serial_number');
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2);
@@ -26,7 +26,6 @@ return new class extends Migration
             $table->date('adquisition_date');
             $table->string('current_location');
             $table->string('unique_identification')->unique();
-
         });
     }
 
