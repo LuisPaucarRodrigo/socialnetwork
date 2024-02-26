@@ -18,11 +18,6 @@ class ExpenseManagementController extends Controller
         return Inertia::render('Finance/ManagementExpense/Expense', ['expenses' => Purchase_quote::with('purchasing_requests.project')->paginate()]);
     }
 
-    public function details($id)
-    {
-        return Inertia::render('Finance/ManagementExpense/ExpenseDetails', ['details' => Purchase_quote::with('purchasing_requests.project')->find($id)]);
-    }
-
     public function reviewed(ReviewedExpenseRequest $request, $id)
     {
         $purchaseQuote = Purchase_quote::with('purchasing_requests')->find($id);

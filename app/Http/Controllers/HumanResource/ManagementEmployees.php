@@ -23,15 +23,21 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Svg\Tag\Rect;
 
 class ManagementEmployees extends Controller
 {
-    public function index()
+    public function index($reentry = false)
     {
-        $employees = Employee::whereHas('contract', function ($query) {
-            $query->where('state', 'Active');
-        })->paginate();
-
+        if ($reentry == false) {
+            $employees = Employee::with('contract')->whereHas('contract', function ($query) {
+                $query->where('state', 'Active');
+            })->paginate();
+        } else {
+            $employees = Employee::with('contract')->whereHas('contract', function ($query) {
+                $query->where('state', 'Inactive');
+            })->paginate();
+        }
         $employees->each(function ($employee) {
             $employee->cropped_image = url('/image/profile/' . $employee->cropped_image);
         });
@@ -42,7 +48,8 @@ class ManagementEmployees extends Controller
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
             'employees' => $employees,
             'fileExists' => $fileExists,
-            'filePath' => $filePath
+            'filePath' => $filePath,
+            'boolean' => boolval($reentry)
         ]);
     }
 
@@ -357,5 +364,16 @@ class ManagementEmployees extends Controller
             $documentName = 'EmployeesSchedule.xlsx';
             $document->move(public_path('documents/schedule/'), $documentName);
         }
+    }
+
+    public function reentry(Request $request, $id)
+    {
+        $reentry = Contract::find($id);
+        $reentry->update([
+            'hire_date' => $request->reentry_date,
+            'fired_date' => null,
+            'days_taken' => 0,
+            'state' => 'Active'
+        ]);
     }
 }
