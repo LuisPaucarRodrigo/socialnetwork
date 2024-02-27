@@ -85,6 +85,11 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     Route::post('rols/store', [ManagementRolsController::class, 'store'])->name('rols.store');
     Route::delete('rols/delete/{id}', [ManagementRolsController::class, 'delete'])->name('rols.delete');
     Route::get('rols/details/{id}', [ManagementRolsController::class, 'details'])->name('rols.details');
+
+
+
+    Route::post('resource_description/store', [ResourceManagementController::class,'resource_description_store'])->name('resource_description.store');
+    Route::post('resource_category/store', [ResourceManagementController::class,'resource_category_store'])->name('resource_category.store');
 });
 
 Route::middleware('auth', 'permission:HumanResourceManager')->group(function () {
@@ -131,6 +136,11 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/management_employees/formation_development/trainings/create/{id?}', [FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
     Route::post('/management_employees/formation_development/trainings/store/{id?}', [FormationDevelopment::class, 'trainings_store'])->name('management.employees.formation_development.trainings.store');
     Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
+
+    
+    //Employees in programs
+    Route::get('/management_employees/formation_development/employees_in_programs', [FormationDevelopment::class,'employees_in_programs'])->name('management.employees.formation_development.employees_in_programs');
+
 
     //Vacation
     Route::get('/management_vacation', [VacationController::class, 'index'])->name('management.vacation');
@@ -218,6 +228,11 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/resources/edit/{resourceId}', [ResourceManagementController::class, 'edit'])->name('resources.edit');
     Route::put('/resources/edit/{resourceId}', [ResourceManagementController::class, 'update'])->name('resource.update');
     Route::delete('/resources/delete/{resourceId}', [ResourceManagementController::class, 'destroy'])->name('resource.delete');
+
+    Route::post('resource_description/store', [ResourceManagementController::class,'resource_description_store'])->name('resource_description.store');
+
+
+
 
     //warehouses
     Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');

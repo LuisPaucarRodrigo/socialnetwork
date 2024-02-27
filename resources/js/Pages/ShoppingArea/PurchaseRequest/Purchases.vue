@@ -59,7 +59,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <Link v-if="purchase.state == 'pendiente' || purchase.state == 'En Progreso'"
+                                    <Link v-if="purchase.state == 'Pendiente' || purchase.state == 'En progreso'"
                                         class="text-blue-900 whitespace-no-wrap"
                                         :href="route('purchasesrequest.quotes', { id: purchase.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -165,6 +165,8 @@ const purchaseToDelete = ref(null);
 const props = defineProps({
     purchases: Object
 });
+
+console.log(props.purchases)
 
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;
