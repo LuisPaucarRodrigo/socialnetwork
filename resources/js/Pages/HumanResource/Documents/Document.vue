@@ -38,12 +38,15 @@
       <div v-for="document in filteredDocuments" :key="document.id" class="bg-white p-4 rounded-md shadow md:col-span-2">
         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ getDocumentName(document.title) }}</h2>
         <div class="flex space-x-3 item-center">
-          <button @click="openPreviewDocumentModal(document.id)" class="flex items-center text-green-600 hover:underline">
+          <button v-if="document.title && /\.pdf$/.test(document.title)" @click="openPreviewDocumentModal(document.id)" class="flex items-center text-green-600 hover:underline">
             <EyeIcon class="h-4 w-4 ml-1" />
           </button>
           <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
+          <button @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
+                    <PencilIcon class="h-4 w-4 ml-1" />
+                  </button>
           <button @click="confirmDeleteDocument(document.id)" class="flex items-center text-red-600 hover:underline">
             <TrashIcon class="h-4 w-4" />
           </button>
@@ -64,12 +67,12 @@
       </div>
     </teleport>
 
-    <Modal :show="create_document">
+    <Modal :show="create_document || update_document">
       <div class="p-6">
         <h2 class="text-base font-medium leading-7 text-gray-900">
-          Subir Documento
+          {{ create_document ? 'Subir Documento' : 'Actualizar Documento' }}
         </h2>
-        <form @submit.prevent="submit">
+        <form @submit.prevent="create_document ? submit() : submitEdit()">
           <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
               <div>
@@ -108,7 +111,7 @@
 
 
               <div class="mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                <SecondaryButton @click="create_document ? closeModal() : closeEditModal()"> Cancelar </SecondaryButton>
                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                   class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
               </div>
@@ -121,12 +124,15 @@
     <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="documento" :deleteFunction="deleteDocument"
       @closeModal="closeModalDoc" />
     <ConfirmCreateModal :confirmingcreation="showModal" itemType="documento" />
+    <ConfirmUpdateModal :confirmingupdate="showEditModal" itemType="documento" />
+
   </AuthenticatedLayout>
 </template>
   
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
@@ -135,7 +141,7 @@ import InputFile from '@/Components/InputFile.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, computed, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { TrashIcon, ArrowDownIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, ArrowDownIcon, EyeIcon, PencilIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   sections: Object,
@@ -144,6 +150,7 @@ const props = defineProps({
 });
 
 const form = useForm({
+  id: '',
   document: null,
   section_id: '',
   subdivision_id: '',
@@ -151,10 +158,12 @@ const form = useForm({
 
 const filteredSubdivisions = ref([]);
 const create_document = ref(false);
+const update_document = ref(false);
 const showModal = ref(false);
+const showEditModal = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
-
+const editingDocument = ref(null);
 const documentToShow = ref(null);
 const selectedSection = ref('');
 const isPreviewDocumentModalOpen = ref(false);
@@ -171,6 +180,20 @@ const closeModal = () => {
   create_document.value = false;
 };
 
+const openEditDocumentModal = (document) => {
+  // Copia de los datos de la subsección existente al formulario
+  editingDocument.value = JSON.parse(JSON.stringify(document));
+  form.id = editingDocument.value.id;
+  form.document = editingDocument.value.name;
+  form.section_id = editingDocument.value.section_id;
+  form.subdivision_id = editingDocument.value.subdivision_id;
+  update_document.value = true;
+};
+
+const closeEditModal = () => {
+  update_document.value = false;
+};
+
 const submit = () => {
   form.post(route('documents.create'), {
     onSuccess: () => {
@@ -179,6 +202,26 @@ const submit = () => {
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
+        router.visit(route('documents.index'))
+      }, 2000);
+    },
+    onError: () => {
+      form.reset();
+    },
+    onFinish: () => {
+      form.reset();
+    }
+  });
+};
+
+const submitEdit = () => {
+  form.post(route('documents.update', {id: form.id}), {
+    onSuccess: () => {
+      closeModal();
+      form.reset();
+      showEditModal.value = true
+      setTimeout(() => {
+        showEditModal.value = false;
         router.visit(route('documents.index'))
       }, 2000);
     },
