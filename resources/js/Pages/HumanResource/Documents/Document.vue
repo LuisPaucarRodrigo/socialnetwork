@@ -164,7 +164,6 @@ const showEditModal = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const editingDocument = ref(null);
-const documentToShow = ref(null);
 const selectedSection = ref('');
 const isPreviewDocumentModalOpen = ref(false);
 
@@ -262,8 +261,8 @@ const closePreviewDocumentModal = () => {
 };
 
 function openPreviewDocumentModal(documentId) {
-  documentToShow.value = documentId;
-  isPreviewDocumentModalOpen.value = true;
+  const routeToShow = route('documents.show', { document: documentId });
+  window.open(routeToShow, '_blank');
 }
 
 function getDocumentUrl(documentId) {

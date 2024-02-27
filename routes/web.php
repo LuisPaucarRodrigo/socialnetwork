@@ -184,13 +184,14 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
     Route::get('/finance/expencemanagement/details/{id}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
     Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');
-
+    Route::get('/finance/purchase_quotes/doTask', [ExpenseManagementController::class, 'doTask'])->name('finance.task');
     //Budget
     Route::get('/budgetUpdates/{project}', [BudgetUpdateController::class, 'index'])->name('budgetupdates.index');
     Route::get('/selectProject', [BudgetUpdateController::class, 'selectProject'])->name('selectproject.index');
     Route::get('/budgetUpdates/{project}/{budgetupdate}', [BudgetUpdateController::class, 'show'])->name('budgetupdates.show');
     Route::get('/initialBudget/{project}', [BudgetUpdateController::class, 'initial'])->name('initialbudget.index');
     Route::post('/initialBudget/{project}/createUpdate', [BudgetUpdateController::class, 'create'])->name('budgetupdates.create');
+    
 
 
 
@@ -379,6 +380,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::post('/shopping_area/purchasesrequest/reject/{id}', [PurchaseRequestController::class, 'reject_request'])->name('purchasesrequest.reject_request');
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
+    Route::get('/shopping_area/purchaseorders/history', [PurchaseOrdersController::class, 'history'])->name('purchaseorders.history');
     Route::put('/shopping_area/purchaseorders/state/{id}', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
 
     Route::get('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');
