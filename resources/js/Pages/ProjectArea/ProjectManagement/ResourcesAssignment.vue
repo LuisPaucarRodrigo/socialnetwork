@@ -228,8 +228,12 @@
                     </h2>
                     <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                         <div class="sm:col-span-3">
-                            <InputLabel for="resource_id" class="font-medium leading-6 text-gray-900">Activos
-                            </InputLabel>
+                            <div class="flex justify-start items-center">
+                                <InputLabel for="resource_id" class="font-medium leading-6 text-gray-900">Activos
+                                </InputLabel>
+                                <InputLabel v-if="form.resource_id !== ''" class="font-medium leading-6 text-slate-500  ml-auto">Disponible: {{ maxQuantityVal }}
+                                </InputLabel>
+                            </div>
                             <div class="mt-2">
                                 <select required id="resource_id" v-model="form.resource_id"
                                     @change="conditional_rent($event)"
@@ -245,7 +249,7 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                             <div class="mt-2">
-                                <TextInput id="quantity" type="number" min="1"
+                                <TextInput id="quantity" type="number" min="1" :max="maxQuantityVal"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     v-model="form.quantity" />
                             </div>
@@ -432,6 +436,7 @@ const showToAddEmployee = () => {
 }
 const closeModal = () => {
     showModal.value = false;
+    form.reset()
 };
 
 
@@ -466,9 +471,11 @@ const returned_submit = () => {
     })
 }
 
-
+const maxQuantityVal = ref(0)
 const conditional_rent = (event) => {
-    resources.find(item => item.id == event.target.value).conditional_rent == true ? input_rent.value = true : input_rent.value = false;
+    let resFounded =  resources.find(item => item.id == event.target.value)
+    if(resFounded) maxQuantityVal.value = resFounded.leftover
+    resFounded.conditional_rent == true ? input_rent.value = true : input_rent.value = false;
 }
 
 

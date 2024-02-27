@@ -24,14 +24,11 @@ class Project extends Model
     public function getInitialBudgetAttribute(){
         $preproject = $this->preproject()->first();
         $quoteItems = $preproject ? $preproject->quote->items : [];
-        
         $initialBudget = 0;
         foreach ($quoteItems as $item) {
             $initialBudget += $item->unit_price * $item->quantity;
         }
-
         $totalInitialBudget = $initialBudget + ($initialBudget * 18/100);
-        
         return $totalInitialBudget;
     }
 
@@ -103,30 +100,14 @@ class Project extends Model
     }
 
     public function getRemainingBudgetAttribute() {
-        $lastUpdate = $this->budget_updates()->latest()->first(); // Obtén la última actualización del presupuesto
-
+        $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
-
-        $totalExpenses = $this->purchasing_request()
-            ->with([
-                'purchase_quotes' => function ($query) {
-                    $query->whereHas('purchase_order', function ($subQuery) {
-                        $subQuery->where('state', 'Completada');
-                    })->with('purchase_order');
-                }
-            ])
-            ->where([
-                ['state', 'Aceptado'],
-            ])
-            ->whereHas('purchase_quotes.purchase_order', function ($query) {
-                $query->where('state', 'Completada');
-            })
-            ->get()
-            ->sum(function ($expense) {
-                return $expense->purchase_quotes[0]['amount'] ?? 0;
-            });
-
-        return $currentBudget - $totalExpenses - $this->materials_costs;
+        $additionalCosts = $this->additionalCosts->sum('amount');
+        return $currentBudget 
+            - $this->getTotalResourcesCostsWithLiquidationAttribute()
+            - $this->getTotalProductCostsWithLiquidationAttribute()
+            - $this->getTotalEmployeeCostsAttribute()
+            - $additionalCosts ;
     }
 
     // --------------------------------  Resources Costs ---------------------------------//
