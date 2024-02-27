@@ -47,4 +47,24 @@ class ExpenseManagementController extends Controller
         }
         return redirect()->route('managementexpense.index');
     }
+
+    public function doTask()
+    {
+        // Obtener la fecha actual ajustada por el desfase
+        $currentDate = Carbon::now();
+        $currentDateUpdate = $currentDate->subHours(5);
+
+        // Obtener todos los SubSection que están a punto de vencerse en los próximos 3 días y los que ya vencieron
+        $purchases = Purchase_quote::where('quote_deadline', '<=', $currentDateUpdate->copy()->addDays(7)) // Ajustado para considerar los próximos 3 días y fechas pasadas
+            ->whereHas('purchasing_requests', function($query) {
+                $query->where('state', '!=', 'Aceptado');
+            })    
+            ->get(); // Obtener una colección de resultados
+
+        $totalPurchases = $purchases->count();
+
+        return response()->json([
+            'totalPurchases' => $totalPurchases,
+        ]);
+    }
 }
