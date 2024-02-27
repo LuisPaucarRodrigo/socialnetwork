@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\DocumentSection;
 use App\Models\Subdivision;
-use App\Models\Vacation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -85,7 +84,7 @@ class DocumentController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'document' => 'required|mimes:pdf|max:2048',
+            'document' => 'required|mimes:pdf,doc,docx,ppt,pptx,xlsx|max:2048',
             'section_id' => 'required|numeric',
             'subdivision_id' => 'required|numeric',
         ]);
@@ -103,9 +102,34 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function show(Vacation $vacation)
+    public function update(Request $request, Document $id)
     {
-        return response()->json($vacation->load('employee'));
+        $request->validate([
+            'document' => 'required|mimes:pdf,doc,docx,ppt,pptx,xlsx|max:2048',
+            'section_id' => 'required|numeric',
+            'subdivision_id' => 'required|numeric',
+        ]);
+
+        $fileName = $id->title;
+        $filePath = "documents/documents/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            unlink($path);
+            $documentName = null;
+            if ($request->hasFile('document')) {
+                $document = $request->file('document');
+                $documentName = time() . '_' . $document->getClientOriginalName();
+                $document->move(public_path('documents/documents/'), $documentName);
+            }
+
+            $id->update([
+                'section_id' => $request->section_id,
+                'title' => $documentName,
+                'subdivision_id' => $request->subdivision_id,
+            ]);
+        } else {
+            dd("El archivo no existe en la ruta: $filePath");
+        }
     }
 
     public function destroy(Document $id)
