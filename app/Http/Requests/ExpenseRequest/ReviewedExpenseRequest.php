@@ -22,7 +22,7 @@ class ReviewedExpenseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'state' => 'required|string|in:Aceptado,Rechazado',
+            'state' => 'required|boolean',
         ];
     }
 }

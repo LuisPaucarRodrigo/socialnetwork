@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->date('quote_deadline');
             $table->string('purchase_doc');
+            $table->boolean('state')->nullable()->default(null);
             $table->string('response');
             $table->foreignId('purchasing_request_id')->constrained()->onDelete('cascade');
             $table->timestamps();
