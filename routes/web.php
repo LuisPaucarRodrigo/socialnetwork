@@ -109,7 +109,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::put('/management_employees/pension_system/update/{id}', [SpreadsheetsController::class, 'update'])->name('pension_system.update');
     Route::put('/management_employees/pension_system/update_seg/{id}', [SpreadsheetsController::class, 'update_seg'])->name('pension_system_seg.update');
 
-    Route::get('/management_employees/spreadsheets/{name}/payroll/export', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
+    Route::get('/management_employees/spreadsheets/payroll/export', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
 
 
     //Formation Development program

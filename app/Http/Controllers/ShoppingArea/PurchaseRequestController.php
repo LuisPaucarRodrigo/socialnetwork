@@ -17,7 +17,7 @@ class PurchaseRequestController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', ['purchases' => Purchasing_request::with('project')->paginate()]);
+        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', ['purchases' => Purchasing_request::with('project')->withCount('purchase_quotes')->paginate()]);
     }
 
     public function create()
