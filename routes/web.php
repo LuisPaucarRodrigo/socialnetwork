@@ -395,6 +395,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
     Route::put('/shopping_area/purchaseorders/state/{id}', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
+    Route::get('/shopping_area/alarms', [PurchaseOrdersController::class, 'purchase_orders_alarms'])->name('purchaseorders.alarms');
 
     Route::get('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');
