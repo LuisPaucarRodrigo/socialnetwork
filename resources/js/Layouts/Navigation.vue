@@ -79,11 +79,16 @@
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingFinance = !showingFinance">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
+                    <svg v-if="financePurchases>0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="red" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                     </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>    
 
                     <span class="mx-3">Finanzas</span>
                 </a>
@@ -94,8 +99,12 @@
                     <Link class="w-full" :href="route('selectproject.index')">Presupuestos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
-                    <Link class="w-full" :href="route('managementexpense.index')">Gestion de Gastos</Link>
+                    <div class="relative">
+                        <span v-if="financePurchases>0" class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{ financePurchases }}</span>
+                        <Link class="w-full" :href="route('managementexpense.index')">Gestion de Gastos</Link>
+                    </div>
                 </MyTransition>
+
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('deposits.index')">Depósitos</Link>
                 </MyTransition>
@@ -217,6 +226,12 @@
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <Link class="w-full" :href="route('purchaseorders.index')">Ordenes de compra</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingShoppingArea">
+                    <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingShoppingArea">
+                    <Link class="w-full" :href="route('purchaseorders.history')">Registro de Compras</Link>
                 </MyTransition>
             </template>
 
@@ -359,9 +374,10 @@ export default {
             cicsasubSectionsPorVencer7: [],
 
             totalFinanceAlarms: 0,
-            financeAlarms: []
+            financeAlarms: [],
             
 
+            financePurchases: 0,
         };
     },
 
@@ -452,6 +468,14 @@ export default {
                 console.error('Error al obtener alarmas de finanzas:', error);
             }
         },
+        async fetchFinancePurchases() {
+            try {
+                const response = await axios.get('/finance/purchase_quotes/doTask');
+                this.financePurchases = response.data.totalPurchases;
+            } catch (error) {
+                console.error('Error al obtener el contador de subsecciones:', error);
+            }
+        },
 
         toggleMembers() {
             this.showingMembers7 = !this.showingMembers7;
@@ -471,12 +495,14 @@ export default {
         this.fetchCicsaSubSectionsCount();
         this.fetchCicsaSubSectionsCount7();
         this.fetchFinanceAlarms();
+        this.fetchFinancePurchases();
         setInterval(() => {
             this.fetchSubSectionsCount();
             this.fetchSubSectionsCount7();
             this.fetchCicsaSubSectionsCount();
             this.fetchCicsaSubSectionsCount7();
             this.fetchFinanceAlarms();
+            this.fetchFinancePurchases();
         }, 60000);
     },
 

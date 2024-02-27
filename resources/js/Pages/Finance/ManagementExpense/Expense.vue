@@ -49,7 +49,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700">
+                        <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700" 
+                        :class="[
+                            'text-gray-700',
+                            {
+                                'border-l-8': true,
+                                'border-green-500': expense.purchasing_requests.state != 'En Progreso' && expense.purchasing_requests.state != 'pendiente',
+                                'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) > 3 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.purchasing_requests.state != 'Aceptado',
+                                'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.purchasing_requests.state != 'Aceptado',
+                            }
+                        ]">
+
                             <template v-if="expense.purchasing_request_id != null">
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests.project?.name }}</p>
@@ -129,7 +139,6 @@ import { ref } from 'vue';
 const props = defineProps({
     expenses: Object
 })
-console.log(props.expenses.data)
 
 const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), {state}, {
