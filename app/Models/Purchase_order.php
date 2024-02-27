@@ -12,6 +12,6 @@ class Purchase_order extends Model
 
     public function purchase_quote()
     {
-        return $this->belongsTo(Purchase_quote::class , 'purchase_quote_id');
+        return $this->belongsTo(Purchase_quote::class, 'purchase_quote_id');
     }
 }

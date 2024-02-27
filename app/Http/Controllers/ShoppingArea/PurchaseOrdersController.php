@@ -14,6 +14,14 @@ class PurchaseOrdersController extends Controller
         return Inertia::render('ShoppingArea/PurchaseOrders/Orders', ['orders' => Purchase_order::with('purchase_quote.purchasing_requests.project')->paginate()]);
     }
 
+    public function history() {
+        $completedOrders = Purchase_order::with('purchase_quote.purchasing_requests.project')
+                                         ->where('state', 'Completada')
+                                         ->paginate();
+    
+        return Inertia::render('ShoppingArea/PurchaseOrders/HistoryOrders', ['orders' => $completedOrders]);
+    }
+    
 
     public function state(Request $request, $id){
         $request->validate([
