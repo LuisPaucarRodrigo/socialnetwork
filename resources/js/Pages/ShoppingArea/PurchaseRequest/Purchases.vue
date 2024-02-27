@@ -37,7 +37,6 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-
                             </th>
                         </tr>
                     </thead>
@@ -125,7 +124,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="purchases.links" />
             </div>
@@ -188,5 +186,6 @@ const closeModal = () => {
 
 const add_request = () => {
     router.get(route('purchasesrequest.create'))
-}
+};
+
 </script>
