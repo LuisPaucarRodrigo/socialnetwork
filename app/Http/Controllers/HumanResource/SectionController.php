@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Models\Section;
 use App\Models\SubSection;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class SectionController extends Controller
 {
@@ -105,7 +106,7 @@ class SectionController extends Controller
     {
         // Obtener la fecha actual ajustada por el desfase
         $currentDate = Carbon::now();
-        $currentDateUpdate = $currentDate->subHours(5);
+        $currentDateUpdate = $currentDate;
 
         // Obtener todos los SubSection que están a punto de vencerse en los próximos 3 días y los que ya vencieron
         $subSections = SubSection::where('end_date', '<=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 3 días y fechas pasadas
@@ -124,9 +125,11 @@ class SectionController extends Controller
     {
         // Obtener la fecha actual ajustada por el desfase
         $currentDate = Carbon::now();
-        $currentDateUpdate = $currentDate->subHours(5);
+        $currentDateUpdate = $currentDate;
 
         // Obtener todos los SubSection que están a punto de vencerse entre los próximos 4 y 7 días
+        Log::info($currentDateUpdate->copy()->addDays(3));
+        Log::info($currentDateUpdate->copy()->addDays(7));
         $subSections = SubSection::where('end_date', '>=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 4 días
             ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(7)) // Ajustado para considerar los próximos 7 días
             ->get(); // Obtener una colección de resultados

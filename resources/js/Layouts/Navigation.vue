@@ -100,7 +100,6 @@
                     <Link class="w-full" :href="route('deposits.index')">Depósitos</Link>
                 </MyTransition>
             </template>
-
             <template
                 v-if="hasPermission('InventoryManager') || hasPermission('Inventory') || hasPermission('Administration')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
@@ -154,6 +153,62 @@
                     </svg>
                     <span class="mx-3">Area de Compras</span>
                 </a>
+
+
+
+
+
+
+
+
+
+
+
+                <template v-if="hasPermission('UserManager') && totalFinanceAlarms !== 0">
+                    <a class="flex items-center ml-2 mt-4 py-2 px-6 text-gray-100" href="#" @click="showFinanceAlarms = !showFinanceAlarms">
+                        <div v-if="subSectionsCount >= 1">
+                            <svg class="w-6 h-6 text-red-600 dark:text-red" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                            </svg>
+                        </div>
+                        <div v-else>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 21">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z" />
+                            </svg>
+                        </div>
+                        <span class=" ml-2.5">Por vencer: {{ totalFinanceAlarms }}</span>
+                    </a>
+                    <div class="mb-4">
+                        <MyTransition v-for="item in financeAlarms" :key="item.id" class="ml-3" :transitiondemonstration="showFinanceAlarms">
+                            <Link class="w-full flex items-center" :href="'#'"
+                                >
+                            <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                            </svg>
+                            <span>{{ item.purchase_quote.purchasing_requests.title }}</span>
+                            </Link>
+                        </MyTransition>
+                    </div>
+                </template>
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
                 </MyTransition>
@@ -302,6 +357,11 @@ export default {
             cicsasubSectionsCount7: 0,
             cicsasubSectionsPorVencer: [],
             cicsasubSectionsPorVencer7: [],
+
+            totalFinanceAlarms: 0,
+            financeAlarms: []
+            
+
         };
     },
 
@@ -316,6 +376,9 @@ export default {
         let showingMembers7 = ref(false)
         let cicsashowingMembers = ref(false)
         let cicsashowingMembers7 = ref(false)
+
+        let showFinanceAlarms = ref(false)
+        let isCriticalFinanceAlarms = ref(false)
         return {
             showingUsersAndRols,
             showingHumanResource,
@@ -326,7 +389,10 @@ export default {
             showingMembers,
             showingMembers7,
             cicsashowingMembers,
-            cicsashowingMembers7
+            cicsashowingMembers7,
+
+            isCriticalFinanceAlarms,
+            showFinanceAlarms
         }
     },
 
@@ -370,10 +436,23 @@ export default {
                 const response = await axios.get('/cicsaDoTask2');
                 this.cicsasubSectionsCount7 = response.data.totalSubSections;
                 this.cicsasubSectionsPorVencer7 = response.data.subSections;
+
             } catch (error) {
                 console.error('Error al obtener el contador de subsecciones:', error);
             }
         },
+
+        async fetchFinanceAlarms () {
+            try{
+                const response = await axios.get(route('purchaseorders.alarms'));
+                this.isCriticalFinanceAlarms = response.data.purchaseOrders7d.length !== 0 ? true : false
+                this.financeAlarms = response.data.purchaseOrders7d.concat(response.data.purchaseOrders3d)
+                this.totalFinanceAlarms = this.financeAlarms.length
+            } catch (error) {
+                console.error('Error al obtener alarmas de finanzas:', error);
+            }
+        },
+
         toggleMembers() {
             this.showingMembers7 = !this.showingMembers7;
             this.showingMembers = !this.showingMembers;
@@ -381,7 +460,8 @@ export default {
         toggleMembersCicsa() {
             this.cicsashowingMembers7 = !this.cicsashowingMembers7;
             this.cicsashowingMembers = !this.cicsashowingMembers;
-        }
+        },
+        
 
     },
 
@@ -390,11 +470,13 @@ export default {
         this.fetchSubSectionsCount7();
         this.fetchCicsaSubSectionsCount();
         this.fetchCicsaSubSectionsCount7();
+        this.fetchFinanceAlarms();
         setInterval(() => {
             this.fetchSubSectionsCount();
             this.fetchSubSectionsCount7();
             this.fetchCicsaSubSectionsCount();
             this.fetchCicsaSubSectionsCount7();
+            this.fetchFinanceAlarms();
         }, 60000);
     },
 
