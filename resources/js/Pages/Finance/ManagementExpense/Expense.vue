@@ -54,9 +54,9 @@
                             'text-gray-700',
                             {
                                 'border-l-8': true,
-                                'border-green-500': expense.purchasing_requests.state != 'En Progreso' && expense.purchasing_requests.state != 'pendiente',
-                                'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) > 3 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.purchasing_requests.state != 'Aceptado',
-                                'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.purchasing_requests.state != 'Aceptado',
+                                'border-green-500': expense.state != 0 && expense.state  != null,
+                                'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) >= 4 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.state != 1,
+                                'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.state != 1,
                             }
                         ]">
 
@@ -134,11 +134,11 @@ import Pagination from '@/Components/Pagination.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Head, router } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
-import { ref } from 'vue';
 
 const props = defineProps({
     expenses: Object
 })
+
 
 const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), {state}, {
