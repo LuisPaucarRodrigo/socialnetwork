@@ -243,30 +243,9 @@ class ProjectManagementController extends Controller
             ->orderByDesc('id')
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
-        $expenses = Purchasing_request::with([
-            'purchase_quotes' => function ($query) {
-                $query->whereHas('purchase_order', function ($subQuery) {
-                    $subQuery->where('state', 'Completada');
-                })->with('purchase_order');
-            }
-        ])
-            ->where([
-                ['project_id', $project_id->id],
-                ['state', 'Aceptado'],
-            ])
-            ->whereHas('purchase_quotes.purchase_order', function ($query) {
-                $query->where('state', 'Completada');
-            });
-        $total_expenses = $expenses->get()->sum(function ($expense) {
-            return $expense->purchase_quotes[0]['amount'];
-        });
-
-        $total_expenses += $project_id->additionalCosts->sum('amount');
         $additionalCosts = $project_id->additionalCosts->sum('amount');
-        $remaining_budget = $current_budget - $total_expenses;
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
-            'remaining_budget' => $remaining_budget,
             'project' => $project_id,
             'additionalCosts' => $additionalCosts,
         ]);

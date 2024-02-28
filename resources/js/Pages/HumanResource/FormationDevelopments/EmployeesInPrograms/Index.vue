@@ -91,7 +91,6 @@ const {employees} = defineProps({
     employees: Object
 })
 
-console.log(employees.data)
 
 
 </script>

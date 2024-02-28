@@ -33,7 +33,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="order in orders.data" :key="order.id" class="text-gray-700">
+                        <tr v-for="order in orders.data" :key="order.id" :class="[
+                            'text-gray-700',{ 
+                                'border-l-8': true, 
+                                'border-green-500': order.state === 'Completada', 
+                                'border-red-500': setBorderColor(order.date_issue) && order.state !== 'Completada' === 'red' ,
+                                'border-yellow-500': setBorderColor(order.date_issue) === 'yellow' ,
+                            }
+                        ]">
+
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{
                                     order.purchase_quote.purchasing_requests.project?.name }}</p>
@@ -93,14 +101,18 @@
                 </h2>
                 <div class="mt-4">
                     <p class="text-sm text-gray-600"><span class="font-medium">Monto:</span> {{ cotization.amount }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Fecha de caducidad de la cotización:</span> {{ cotization.quote_deadline }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Respuesta:</span> {{ cotization.response }}</p>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider }}
+                    </p>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Fecha de caducidad de la cotización:</span>
+                        {{ cotization.quote_deadline }}</p>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Respuesta:</span> {{ cotization.response }}
+                    </p>
                     <div class="flex items-center">
                         <p class="text-sm text-gray-600">
                             <span class="font-medium">Ver Documento de Cotización:</span>
                         </p>
-                        <button @click="openPreviewDocumentQuote(cotization.purchase_quote_id)" class="text-green-600 hover:underline ml-2">
+                        <button @click="openPreviewDocumentQuote(cotization.purchase_quote_id)"
+                            class="text-green-600 hover:underline ml-2">
                             <EyeIcon class="h-4 w-4" />
                         </button>
                     </div>
@@ -145,22 +157,22 @@ const cotization = {
 };
 
 const openCotization = (order) => {
-  // Copia de los datos de la subsección existente al formulario
-  quoteToOpen.value = JSON.parse(JSON.stringify(order.purchase_quote));
-  cotization.amount = quoteToOpen.value.amount;
-  cotization.provider = quoteToOpen.value.provider;
-  cotization.quote_deadline = quoteToOpen.value.quote_deadline;
-  cotization.response = quoteToOpen.value.response;
-  cotization.purchase_quote_id = quoteToOpen.value.id;
-  showCotization.value = true;
+    // Copia de los datos de la subsección existente al formulario
+    quoteToOpen.value = JSON.parse(JSON.stringify(order.purchase_quote));
+    cotization.amount = quoteToOpen.value.amount;
+    cotization.provider = quoteToOpen.value.provider;
+    cotization.quote_deadline = quoteToOpen.value.quote_deadline;
+    cotization.response = quoteToOpen.value.response;
+    cotization.purchase_quote_id = quoteToOpen.value.id;
+    showCotization.value = true;
 };
 
 function openPreviewDocumentQuote(documentId) {
-  const routeToShow = route('purchasesrequest.show', { id: documentId });
-  window.open(routeToShow, '_blank');
+    const routeToShow = route('purchasesrequest.show', { id: documentId });
+    window.open(routeToShow, '_blank');
 }
 
-const closeCotizationModal = () =>{
+const closeCotizationModal = () => {
     showCotization.value = false;
 }
 
@@ -195,4 +207,24 @@ const confirmUpdate = async () => {
     await sendStateUpdate({ state: "Completada" });
     showModal.value = false;
 }
+
+const borderColor = ref('')
+function setBorderColor (date) {
+    const fechaString = date;
+    const [year, month, day] = fechaString.split('-');
+    const fecha = new Date(year, month - 1, day);
+    const hoy = new Date()
+    hoy.setUTCHours(hoy.getUTCHours() - 5)
+    hoy.setHours(0, 0, 0, 0);
+    const diferenciaEnMilisegundos = fecha - hoy ;
+    const diferenciaEnDias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
+    if(diferenciaEnDias<=3){
+        return 'red'
+    } else if (4<=diferenciaEnDias<=7){
+        return 'yellow'
+    } else{
+        return ''
+    }
+  }
+
 </script>

@@ -122,8 +122,6 @@ const { documents, preproject, photoreport } = defineProps({
   preproject: Object
 });
 
-console.log(preproject)
-
 const initial_state = {
   excel_report: null,
   pdf_report: null,
