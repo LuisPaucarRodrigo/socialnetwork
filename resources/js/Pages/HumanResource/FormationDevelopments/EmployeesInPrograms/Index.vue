@@ -8,7 +8,7 @@
         </template>
         <div class="min-w-full">
             <div class="overflow-x-auto">
-                <table class="w-full whitespace-no-wrap rounded-lg shadow">
+                <table class="w-full rounded-lg shadow">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -17,7 +17,7 @@
                                 N°
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="sticky left-0 z-10 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre y apellidos
                             </th>
                             <th
@@ -34,7 +34,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="grid grid-cols-2 gap-3">
+                                <div class="lg:w-full w-96 grid grid-cols-2 gap-3">
                                     <p class="text-left">Programa</p>
                                     <p class="text-center">Inicio-Fin</p>
                                 </div>
@@ -47,7 +47,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="sticky left-0 z-10 border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.name }} {{ item.lastname }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -61,7 +61,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 
-                                <div v-for="ap in item.assignated_programs" class="grid grid-cols-2 gap-3 mt-2">
+                                <div v-for="ap in item.assignated_programs" class="lg:w-full w-96 grid grid-cols-2 gap-3 mt-2">
                                     <p class="text-left">{{ ap.formation_program.name }}</p>
                                     <p class="text-center">{{ formattedDate(ap.start_date)}} - {{formattedDate(ap.end_date)}}</p>
                                 </div>
