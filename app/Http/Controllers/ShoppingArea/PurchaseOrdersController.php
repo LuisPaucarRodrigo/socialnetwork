@@ -7,6 +7,7 @@ use App\Models\Purchase_order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PurchaseOrdersController extends Controller
 {
@@ -39,6 +40,8 @@ class PurchaseOrdersController extends Controller
             ->where('state','!=', 'Completada')
             ->where('date_issue', '<=', $today->copy()->addDays(3))
             ->get();
+        Log::info($today->copy()->addDays(3));
+        Log::info($today->copy()->addDays(3));
         $purchaseOrders7d = Purchase_order::with('purchase_quote.purchasing_requests')
             ->where('state','!=', 'Completada')
             ->where('date_issue', '>=', $today->copy()->addDays(3)) 
@@ -47,6 +50,12 @@ class PurchaseOrdersController extends Controller
         return response()->json([
             'purchaseOrders3d' => $purchaseOrders3d,
             'purchaseOrders7d' => $purchaseOrders7d,
+        ]);
+    }
+
+    public function purchase_order_view ($purchase_order_id){
+        return Inertia::render('ShoppingArea/PurchaseOrders/OrderDetails',[
+            'purchase_order' => Purchase_order::with('purchase_quote.purchasing_requests.project.preproject')->find($purchase_order_id)
         ]);
     }
 }
