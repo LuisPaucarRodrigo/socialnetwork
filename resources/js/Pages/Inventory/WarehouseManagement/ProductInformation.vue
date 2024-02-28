@@ -43,7 +43,6 @@
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { formattedDate } from '@/utils/utils';
   
-    console.log(props.headers)
     const props = defineProps(['product', 'headers']);
   </script>
   
