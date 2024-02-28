@@ -44,6 +44,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Detalles
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
 
                             </th>
                         </tr>
@@ -92,6 +96,16 @@
                                     </button>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+    <Link :href="route('managementexpense.details', {purchase_quote: expense.id})" class="flex items-center text-blue-500 hover:underline">
+        <EyeIcon class="h-4 w-4 ml-1" />
+    </Link>
+</td>
+
+
+
+
+
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div v-if="expense.purchasing_requests.state == 'En progreso' && expense.state == null " class="flex space-x-3 justify-center">
                                         <button @click="sendReply(true, expense.id)" type="button"
                                             class="rounded-xl whitespace-no-wrap text-center text-sm text-green-900 hover:bg-green-200">
@@ -132,7 +146,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, Link } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
