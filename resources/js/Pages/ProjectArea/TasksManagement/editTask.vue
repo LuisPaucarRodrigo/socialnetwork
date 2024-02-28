@@ -56,7 +56,7 @@
                     <div v-for="item in added_employees.project_employee" class="grid grid-cols-8 items-center my-2">
                         <p class=" text-sm col-span-7 line-clamp-2">{{ item.employee_information.name }} : {{ item.charge }}
                         </p>
-                        <button type="button" :value="item.pivot.project_employee_id"
+                        <button v-if="auth.user.role_id === 1" type="button" :value="item.pivot.project_employee_id"
                             @click="delete_already_employee(item.pivot.project_employee_id)"
                             class="col-span-1 flex justify-end">
                             <TrashIcon class=" text-red-500 h-4 w-4 " />
@@ -72,7 +72,7 @@
                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Atras
             </a>
-            <button type="submit" v-if="tasks.status === 'pendiente'" @click="openModalDelete()"
+            <button type="submit" v-if="auth.user.role_id === 1 && tasks.status === 'pendiente'" @click="openModalDelete()"
                 class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Eliminar</button>
         </div>
         <Modal :show="showModal" :maxWidth="'md'">
@@ -88,8 +88,8 @@
                             <select required id="type" v-model="form.project_employee_id"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option selected disabled value="">Seleccione uno</option>
-                                <option v-for="item in employees.employees" :key="item.id" :value="item.id"> {{
-                                    item.name }}
+                                <option v-for="item in employeesToAssign" :key="item.id" :value="item.id"> {{
+                                    item.employee_information.name }}
                                 </option>
                             </select>
                         </div>
@@ -162,8 +162,9 @@ const props = defineProps({
     projects: Object,
     tasks: Object,
     comments: Object,
-    employees: Object,
+    employeesToAssign: Object,
     added_employees: Object,
+    auth: Object
 })
 
 const { tasks } = props;
@@ -171,6 +172,7 @@ const newcomment = useForm({
     task_id: tasks.id,
     comment: '',
 });
+console.log('hola', props.employeesToAssign)
 
 const addComment = () => {
     newcomment.post(route('tasks.edit.comment'), {
@@ -184,10 +186,10 @@ const addComment = () => {
 }
 const showModal = ref(false);
 const showModalNoEmployees = ref(false);
-const { employees } = props;
+
 
 const showToAddEmployee = () => {
-    if (employees.employees.length > 0) {
+    if (props.employeesToAssign.length > 0) {
         showModal.value = true;
     } else {
         showModalNoEmployees.value = true;
@@ -198,7 +200,6 @@ const closeModal = () => {
     showModalNoEmployees.value = false;
 };
 
-const project_employee_id = ref(null);
 
 const form = useForm({
     task_id: tasks.id,

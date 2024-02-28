@@ -87,7 +87,38 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     Route::get('rols/details/{id}', [ManagementRolsController::class, 'details'])->name('rols.details');
 
 
+    //FINANZAS
+    Route::put('/finance/expensegang/{id}/update', [GangExpenseController::class, 'update'])->name('gangexpense.update');
 
+
+
+    //PROYECTOS
+    //preprojects
+    Route::post('/preprojects/{preproject}/update', [PreProjectController::class, 'update'])->name('preprojects.update');
+    Route::delete('/preprojects/{preproject}/destroy', [PreProjectController::class, 'destroy'])->name('preprojects.destroy');
+    Route::post('/preprojects/photoreport_update/{photoreport}', [PreProjectController::class, 'photoreport_update'])->name('preprojects.photoreport.update');
+    Route::delete('/preprojects/photoreport_delete/{photoreport}', [PreProjectController::class, 'photoreport_delete'])->name('preprojects.photoreport.delete');
+    Route::delete('/preprojects/providers_quotes/delete/{providerquote_id}', [PreProjectController::class, 'preproject_providersquotes_delete'])->name('preprojects.providersquotes.delete');
+    Route::delete('/preprojects/quote_delete/{quote_item_id}', [PreProjectController::class, 'quote_item_delete'])->name('preprojects.quote.item.delete');
+    Route::post('/preprojects/quote_item_store', [PreProjectController::class, 'quote_item_store'])->name('preprojects.quote.item.store');
+    //projects
+    Route::get('/projectmanagement/update/{project_id}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
+    Route::delete('/projectmanagement/delete/{project_id}', [ProjectManagementController::class, 'project_destroy'])->name('projectmanagement.delete');
+    Route::post('/projectmanagement/resources/return/{id}', [ProjectManagementController::class, 'project_resources_return'])->name('projectmanagement.resources.return');
+    Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
+    Route::put('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/update', [AdditionalCostsController::class, 'update'])->name('projectmanagement.updateAdditionalCost');
+    Route::delete('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/destroy', [AdditionalCostsController::class, 'destroy'])->name('projectmanagement.deleteAdditionalCost');
+    //Tareas
+    Route::post('/edittask/delete', [TaskManagementController::class, 'delete_employee'])->name('tasks.delete.employee');
+    Route::delete('/deletetask/{taskId}/', [TaskManagementController::class, 'delete_task'])->name('tasks.delete');
+    //Cicsa subsection
+    Route::put('/cicsaSubSections/{subSection}/update', [CicsaSectionController::class, 'updateSubSection'])->name('sections.cicsaUpdateSubSection');
+    Route::delete('/cicsaSubSections/{subSection}/delete', [CicsaSectionController::class, 'destroySubSection'])->name('sections.cicsaDestroySubSection');
+    Route::delete('/cicsaSections/{section}', [CicsaSectionController::class, 'destroySection'])->name('sections.cicsaDestroySection');
+
+
+    //INVENTARIO
+    //activos
     Route::post('resource_description/store', [ResourceManagementController::class,'resource_description_store'])->name('resource_description.store');
     Route::post('resource_category/store', [ResourceManagementController::class,'resource_category_store'])->name('resource_category.store');
 });
@@ -195,7 +226,6 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::get('/finance/expensegang/create', [GangExpenseController::class, 'create'])->name('gangexpense.create');
     Route::post('/finance/expensegang/store', [GangExpenseController::class, 'store'])->name('gangexpense.store');
     Route::get('/finance/expensegang/{id}/edit', [GangExpenseController::class, 'edit'])->name('gangexpense.edit');
-    Route::put('/finance/expensegang/{id}/update', [GangExpenseController::class, 'update'])->name('gangexpense.update');
     Route::post('/finance/expensegang/search', [GangExpenseController::class, 'search'])->name('gangexpense.search');
 
     Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
@@ -264,14 +294,11 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
     Route::get('/projectmanagement/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
     Route::post('/projectmanagement/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
-    Route::get('/projectmanagement/update/{project_id}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
-    Route::delete('/projectmanagement/delete/{project_id}', [ProjectManagementController::class, 'project_destroy'])->name('projectmanagement.delete');
     Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
 
     Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
     Route::post('/projectmanagement/resources', [ProjectManagementController::class, 'project_resources_store'])->name('projectmanagement.resources.store');
-    Route::post('/projectmanagement/resources/return/{id}', [ProjectManagementController::class, 'project_resources_return'])->name('projectmanagement.resources.return');
     Route::post('/projectmanagement/resources/liquidate', [ProjectManagementController::class,'project_resources_liquidate'])->name('projectmanagement.resourcesLiquidate');
 
     Route::post('/projectmanagement/componentormaterials', [ProjectManagementController::class, 'project_componentmaterial_store'])->name('projectmanagement.componentormaterials.store');
@@ -280,14 +307,12 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     //CicsaSections
     Route::get('/cicsaSections', [CicsaSectionController::class, 'showSections'])->name('sections.cicsaSections');
     Route::post('/cicsaSections', [CicsaSectionController::class, 'storeSection'])->name('sections.cicsaStoreSection');
-    Route::delete('/cicsaSections/{section}', [CicsaSectionController::class, 'destroySection'])->name('sections.cicsaDestroySection');
+
 
     //CicsaSubSections
     Route::get('/cicsaSubSections', [CicsaSectionController::class, 'showSubSections'])->name('sections.cicsaSubSections');
     Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'showSubSection'])->name('sections.cicsaSubSection');
     Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
-    Route::put('/cicsaSubSections/{subSection}/update', [CicsaSectionController::class, 'updateSubSection'])->name('sections.cicsaUpdateSubSection');
-    Route::delete('/cicsaSubSections/{subSection}/delete', [CicsaSectionController::class, 'destroySubSection'])->name('sections.cicsaDestroySubSection');
     Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
     Route::get('/cicsaDoTask2', [CicsaSectionController::class, 'doTask2'])->name('sections.cicsaTask2');
 
@@ -302,36 +327,26 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     //PreProjects
     Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
     Route::post('/preprojects/create', [PreProjectController::class, 'store'])->name('preprojects.store');
-    Route::post('/preprojects/{preproject}/update', [PreProjectController::class, 'update'])->name('preprojects.update');
-    Route::delete('/preprojects/{preproject}/destroy', [PreProjectController::class, 'destroy'])->name('preprojects.destroy');
     Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
     Route::get('/cotizationPDF/{preproject}', [PreProjectController::class, 'getPDF'])->name('preprojects.pdf');
 
     Route::get('/preprojects/{preproject_id}/quote', [PreProjectController::class, 'quote'])->name('preprojects.quote');
     Route::post('/preprojects/quote_store/{quote_id?}', [PreProjectController::class, 'quote_store'])->name('preprojects.quote.store');
     Route::post('/preprojects/quote/{quote_id}', [PreProjectController::class, 'acceptCotization'])->name('preprojects.accept');
-    Route::delete('/preprojects/quote_delete/{quote_item_id}', [PreProjectController::class, 'quote_item_delete'])->name('preprojects.quote.item.delete');
-    Route::post('/preprojects/quote_item_store', [PreProjectController::class, 'quote_item_store'])->name('preprojects.quote.item.store');
+    
     
 
     Route::get('/preprojects/{preproject_id}/photoreport', [PreProjectController::class, 'photoreport_index'])->name('preprojects.photoreport.index');
     Route::post('/preprojects/photoreport_store', [PreProjectController::class, 'photoreport_store'])->name('preprojects.photoreport.store');
     Route::get('/preprojects/photoreport_download/{report_name}', [PreProjectController::class, 'downloadPR'])->name('preprojects.photoreport.download');
     Route::get('/preprojects/photoreport_show/{report_name}', [PreProjectController::class, 'showPR'])->name('preprojects.photoreport.show');
-    Route::post('/preprojects/photoreport_update/{photoreport}', [PreProjectController::class, 'photoreport_update'])->name('preprojects.photoreport.update');
-    Route::delete('/preprojects/photoreport_delete/{photoreport}', [PreProjectController::class, 'photoreport_delete'])->name('preprojects.photoreport.delete');
     Route::get('/preprojects/quote_pdf/{quote_id}', [PreProjectController::class, 'quote_pdf'])->name('preprojects.quote.pdf');
 
 
     Route::get('/preprojects/{preproject_id}/providers_quotes', [PreProjectController::class, 'preproject_providersquotes_index'])->name('preprojects.providersquotes.index');
     Route::post('/preprojects/providers_quotes/store', [PreProjectController::class, 'preproject_providersquotes_store'])->name('preprojects.providersquotes.store');
-    Route::delete('/preprojects/providers_quotes/delete/{providerquote_id}', [PreProjectController::class, 'preproject_providersquotes_delete'])->name('preprojects.providersquotes.delete');
     Route::get('/preprojects/providers_quotes/show/{providerquote_id}', [PreProjectController::class, 'preproject_providersquotes_show'])->name('preprojects.providersquotes.show');
     Route::get('/preprojects/providers_quotes/download/{providerquote_id}', [PreProjectController::class, 'preproject_providersquotes_download'])->name('preprojects.providersquotes.download');
-
-    //ejemplo export pdf    
-    Route::get('/generar-pdf', [PreProjectController::class, 'generarPDF'])->name('generar.pdf');
-
 
 
     //test api
@@ -353,8 +368,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     //additional_cost
     Route::get('/projectmanagement/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'index'])->name('projectmanagement.additionalCosts');
     Route::post('/projectmanagement/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'store'])->name('projectmanagement.storeAdditionalCost');
-    Route::put('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/update', [AdditionalCostsController::class, 'update'])->name('projectmanagement.updateAdditionalCost');
-    Route::delete('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/destroy', [AdditionalCostsController::class, 'destroy'])->name('projectmanagement.deleteAdditionalCost');
+    
 
     Route::get('/projectmanagement/products/{project_id}', [ProjectManagementController::class, 'project_product_index'])->name('projectmanagement.products');
     Route::post('/projectmanagement/products/{project_id}/liquidate', [LiquidationController::class, 'store'])->name('projectmanagement.productsLiquidate');
@@ -374,9 +388,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/edittask/{taskId}', [TaskManagementController::class, 'edit'])->name('tasks.edit');
     Route::post('/edittask/comment', [TaskManagementController::class, 'comment'])->name('tasks.edit.comment');
     Route::post('/edittask/add', [TaskManagementController::class, 'add_employee'])->name('tasks.add.employee');
-    Route::post('/edittask/delete', [TaskManagementController::class, 'delete_employee'])->name('tasks.delete.employee');
     Route::get('/statustask/{taskId}/{status}', [TaskManagementController::class, 'status_task'])->name('tasks.edit.status');
-    Route::delete('/deletetask/{taskId}/', [TaskManagementController::class, 'delete_task'])->name('tasks.delete');
     //Calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');
     Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');
@@ -390,7 +402,6 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::put('/shopping_area/purchasesrequest/update/{id}', [PurchaseRequestController::class, 'update'])->name('purchasesrequest.update');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}', [PurchaseRequestController::class, 'index_quotes'])->name('purchasesrequest.quotes');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}/preview', [PurchaseRequestController::class, 'showDocument'])->name('purchasesrequest.show');
-    Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
     Route::get('/shopping_area/purchasesrequest/details/{id}', [PurchaseRequestController::class, 'details'])->name('purchasingrequest.details');
     Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'quote'])->name('purchasesrequest.storequotes');
     Route::post('/shopping_area/purchasesrequest/reject/{id}', [PurchaseRequestController::class, 'reject_request'])->name('purchasesrequest.reject_request');

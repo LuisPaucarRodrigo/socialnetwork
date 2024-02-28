@@ -40,8 +40,6 @@ class PurchaseOrdersController extends Controller
             ->where('state','!=', 'Completada')
             ->where('date_issue', '<=', $today->copy()->addDays(3))
             ->get();
-        Log::info($today->copy()->addDays(3));
-        Log::info($today->copy()->addDays(3));
         $purchaseOrders7d = Purchase_order::with('purchase_quote.purchasing_requests')
             ->where('state','!=', 'Completada')
             ->where('date_issue', '>=', $today->copy()->addDays(3)) 
