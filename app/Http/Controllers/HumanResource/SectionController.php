@@ -128,8 +128,6 @@ class SectionController extends Controller
         $currentDateUpdate = $currentDate;
 
         // Obtener todos los SubSection que están a punto de vencerse entre los próximos 4 y 7 días
-        Log::info($currentDateUpdate->copy()->addDays(3));
-        Log::info($currentDateUpdate->copy()->addDays(7));
         $subSections = SubSection::where('end_date', '>=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 4 días
             ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(7)) // Ajustado para considerar los próximos 7 días
             ->get(); // Obtener una colección de resultados

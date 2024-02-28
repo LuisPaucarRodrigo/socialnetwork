@@ -8,14 +8,14 @@
       <div v-if="!preproject.has_quote" class="flex gap-4 mb-2">
         <button @click="openCreateDocumentModal" type="button"
           class="rounded-md bg-indigo-500 px-4 py-2 text-center text-sm text-white hover:bg-indigo-300">
-          {{ photoreport ? 'Editar' : '+ Agregar' }}
+          {{ photoreport && auth.user.role_id === 1 ? 'Editar' : '+ Agregar' }}
         </button>
-        <button v-if="photoreport" @click="openDeleteModal" type="button"
+        <button v-if="photoreport && auth.user.role_id === 1" @click="openDeleteModal" type="button"
           class="rounded-md bg-red-500 px-4 py-2 text-center text-sm text-white hover:bg-red-300">
           Eliminar
         </button>
       </div>
-      <div
+      <div v-if="auth.user.role_id === 1 && preproject.has_quote" 
         class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
         role="alert">
         <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@
         </svg>
         <span class="sr-only">Info</span>
         <div>
-          <span class="font-small">Solo se puede hacer cambios cuando NO exista una cotización para el proyecto</span>
+          <span class="font-small">Ya se hizo una cotización del proyecto en base a este informe fotográfico</span>
         </div>
       </div>
     </div>
@@ -117,9 +117,10 @@ import { ref, computed, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
-const { documents, preproject, photoreport } = defineProps({
+const { documents, preproject, photoreport, auth } = defineProps({
   photoreport: Object,
-  preproject: Object
+  preproject: Object,
+  auth: Object
 });
 
 const initial_state = {

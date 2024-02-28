@@ -65,7 +65,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Porcentaje
                         </th>
-                        <th
+                        <th v-if="auth.user.role_id === 1"
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
 
                         </th>
@@ -109,7 +109,7 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">% {{ expense.percentaje }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td  v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <Link class="text-blue-900 whitespace-no-wrap"
                                 :href="route('gangexpense.edit', { id: expense.id })">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -134,6 +134,7 @@ import { ref } from 'vue';
 
 const props = defineProps({
     expenses: Object,
+    auth: Object
 })
 
 const expenses = ref(props.expenses);

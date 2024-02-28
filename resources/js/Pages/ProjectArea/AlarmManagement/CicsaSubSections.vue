@@ -74,10 +74,10 @@
                     class="text-green-600 hover:underline mr-2">
                   <EyeIcon class="h-4 w-4 ml-1" />
                   </Link>
-                  <button @click="openEditSubSectionModal(subSection)" class="text-orange-200 hover:underline mr-2">
+                  <button v-if="auth.user.role_id === 1" @click="openEditSubSectionModal(subSection)" class="text-orange-200 hover:underline mr-2">
                     <PencilIcon class="h-4 w-4 ml-1" />
                   </button>
-                  <button @click="confirmDeleteSubSection(subSection.id)" class="text-red-600 hover:underline">
+                  <button v-if="auth.user.role_id === 1" @click="confirmDeleteSubSection(subSection.id)" class="text-red-600 hover:underline">
                     <TrashIcon class="h-4 w-4" />
                   </button>
                 </div>
@@ -259,6 +259,7 @@ import {formattedDate} from '@/utils/utils'
 const props = defineProps({
   sections: Object,
   subSections: Object,
+  auth: Object
 });
 
 const form = useForm({
