@@ -7,6 +7,15 @@
         <template v-else #header>
             Creación de cotización
         </template>
+        <div v-if="auth.user.role_id === 1 && preproject.quote?.state" class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+          <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+          </svg>
+          <span class="sr-only">Info</span>
+          <div>
+            <span class="font-small">Esta cotización ya fue aceptada, cuidado al modificarla</span> 
+          </div>
+        </div>
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
                 <div class="pt-1">
@@ -105,7 +114,7 @@
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Valorización
                                     </h2>
-                                    <button @click="showToAddItem" type="button">
+                                    <button v-if="auth.user.role_id === 1 || preproject.quote === null" @click="showToAddItem" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
                                             class="text-blue-500 hover:text-purple-500 w-7 h-7">
@@ -162,7 +171,7 @@
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Valor total
                                                     </th>
-                                                    <th
+                                                    <th v-if="auth.user.role_id === 1 || preproject.quote === null"
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Acciones
                                                     </th>
@@ -201,12 +210,14 @@
                                                             (item.unit_price * item.quantity).toFixed(2) }}</p>
                                                     </td>
                                                     <td
-                                                        class="border-b border-gray-200 bg-white px-5 py-5 text-sm flex justify-end">
-                                                        <button type="button"
-                                                            @click=" preproject.quote ? deleteAlreadyItem(item.id, index) : deleteItem(index)"
-                                                            class="col-span-1 flex justify-end">
-                                                            <TrashIcon class=" text-red-500 h-4 w-4 " />
-                                                        </button>
+                                                        class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <div v-if="auth.user.role_id === 1 || preproject.quote === null" class="flex justify-end">
+                                                            <button  type="button"
+                                                                @click=" preproject.quote ? deleteAlreadyItem(item.id, index) : deleteItem(index)"
+                                                                class="col-span-1 flex justify-end">
+                                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -226,10 +237,6 @@
 
 
                 <div class="mt-3 flex items-center justify-end gap-x-6">
-                    <a :href="route('preprojects.index')"
-                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Atras
-                    </a>
                         <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
                             target="_blank" rel="noopener noreferrer"
                             class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -238,9 +245,14 @@
                     
                         <PrimaryButton v-if="preproject.quote && !preproject.quote.state" type="button" @click="acceptCotization" :class="{ 'opacity-25': form.processing }"
                         class="rounded-md bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:green-indigo-600">Aceptar Cotización</PrimaryButton>
-                    
-                        <button v-if="!preproject.quote?.state" type="submit" :class="{ 'opacity-25': form.processing }"
-                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+
+                        <div v-if="auth.user.role_id === 1 || preproject.quote === null ">
+                            <button  type="submit" :class="{ 'opacity-25': form.processing }"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                        </div>
+<!--                     
+                        <button v-if=" !preproject.quote?.state" type="submit" :class="{ 'opacity-25': form.processing }"
+                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button> -->
                 </div>
 
             </form>
@@ -309,8 +321,8 @@
                 </form>
             </Modal>
         </div>
-        <SuccessOperationModal :confirming="showModal" :title="`Cotización ${preproject.quote ? 'actuallizada' : 'creada'}`"
-            :message="`La cotización para cliente fue ${preproject.quote ? 'actuallizada' : 'creada'}`" />
+        <SuccessOperationModal :confirming="showModal" :title="modalVariables.title"
+            :message="modalVariables.message" />
 
         <SuccessOperationModal :confirming="showItemAddModal" :title="`Item de valorización añadido.`"
             :message="`El item de valorización fue añadido.`" />
@@ -326,7 +338,6 @@
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmAcceptModal from '@/Components/ConfirmAcceptModal.vue';
 import AcceptModal from '@/Components/AcceptModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -336,14 +347,21 @@ import Modal from '@/Components/Modal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
+
 const showModal = ref(false)
 
-const { preproject } = defineProps({
-    preproject: Object
+const { preproject, auth } = defineProps({
+    preproject: Object,
+    auth: Object
+})
+
+const modalVariables = ref({
+    title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
+    message: `La cotización para proyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
 })
 
 

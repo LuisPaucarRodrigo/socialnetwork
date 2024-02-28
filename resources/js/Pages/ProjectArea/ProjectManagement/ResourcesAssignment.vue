@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirect-route="'projectmanagement.index'">
+    <AuthenticatedLayout redirectRoute="projectmanagement.index">
         <template #header>
             Asignación de Activos
         </template>
@@ -69,7 +69,7 @@
                                                 Liquidado
                                             </p>
                                             <div v-if="!resource.has_liquidation" class="flex gap-2">
-                                                <button  type="button"
+                                                <button v-if="auth.user.role_id === 1" type="button"
                                                     @click="delete_resource(resource.resource.id, resource.id)"
                                                     class="flex justify-center ">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -401,11 +401,12 @@ import { formattedDate } from '@/utils/utils';
 const showModal = ref(false);
 const input_rent = ref(false);
 
-const { project, resources, network_equipments, liquidations } = defineProps({
+const { project, resources, network_equipments, liquidations, auth } = defineProps({
     project: Object,
     resources: Object,
     network_equipments: Object,
-    liquidations: Object
+    liquidations: Object,
+    auth: Object
 })
 
 //Recursos
