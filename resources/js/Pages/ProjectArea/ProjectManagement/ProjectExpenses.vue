@@ -10,6 +10,7 @@
     <br>
     Total gastos en activos: S/. {{ project.total_assigned_resources_costs.toFixed(2) }}<br>
     Total gastos en productos: S/. {{ project.total_product_costs_with_liquidation.toFixed(2) }}<br>
+    Total gastos en empleados: S/. {{ project.total_employee_costs.toFixed(2) }}<br>
     Gastos adicionales: S/. {{ additionalCosts }}
     <br>
     <br>
@@ -79,10 +80,9 @@ import { ref, onMounted } from 'vue';
 import { Chart, registerables } from 'chart.js/auto';
 import { Head } from '@inertiajs/vue3';
 
-const { project, current_budget, remaining_budget, additionalCosts } = defineProps({
+const { project, current_budget, additionalCosts } = defineProps({
   project: Object,
   current_budget: Number,
-  remaining_budget: Number,
   additionalCosts: Number
 })
 

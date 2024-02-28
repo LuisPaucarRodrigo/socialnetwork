@@ -150,7 +150,6 @@ const toggleProductState = (productId) => {
         ...productStates.value,
         [productId]: !currentState // Cambiamos el estado actual
     };
-    console.log(warehouseHeadersFiltered);
 };
 
 const confirmingDocDeletion = ref(false);

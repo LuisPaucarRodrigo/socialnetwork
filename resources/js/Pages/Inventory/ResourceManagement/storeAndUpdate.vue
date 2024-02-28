@@ -187,8 +187,6 @@ const props = defineProps({
     auth:Object
 })
 
-console.log(props)
-
 const newResource = useForm({
     resource_description_id: '',
     resource_category_id: '',

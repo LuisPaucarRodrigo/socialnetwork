@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-14">
+        <div v-if="purchase_order.purchase_quote.purchasing_requests.project" class="mb-14">
             <p class="text-lg font-bold pb-1 border-b-2 border-gray-200 mb-6 text-blue-900">Proyecto</p>
             <div class="grid sm:grid-cols-3 gap-4">
                 <div class="grid grid-cols-2 gap-2">
@@ -107,10 +107,11 @@
   const bgBadget = ref (setBadgeColor(purchase_order.date_issue))
 
   function setBadgeColor (date) {
-    const fecha = new Date(date);
+    const fechaString = date;
+    const [year, month, day] = fechaString.split('-');
+    const fecha = new Date(year, month - 1, day);
     const hoy = new Date()
     hoy.setUTCHours(hoy.getUTCHours() - 5)
-    fecha.setHours(0, 0, 0, 0);
     hoy.setHours(0, 0, 0, 0);
     const diferenciaEnMilisegundos = fecha - hoy ;
     const diferenciaEnDias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
