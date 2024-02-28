@@ -146,7 +146,7 @@
                 <template v-if="hasPermission('UserManager') && showFinancePurchaseQuoteAlarms">
                             <div class="mb-4">
                                 <MyTransition v-for="item in financePurchases" :key="item.id" class="ml-4" :transitiondemonstration="showFinancePurchaseQuoteAlarms">
-                                    <Link class="w-full flex items-center" :href="'#'"
+                                    <Link class="w-full flex items-center" :href="route('managementexpense.details', {purchase_quote: item.id})"
                                         >
                                     <svg class="w-3 h-3 mr-2 text-red-600 dark:text-red" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -157,7 +157,7 @@
                                     </Link>
                                 </MyTransition>
                                 <MyTransition v-for="item in financePurchases7" :key="item.id" class="ml-4" :transitiondemonstration="showFinancePurchaseQuoteAlarms">
-                                    <Link class="w-full flex items-center" :href="'#'"
+                                    <Link class="w-full flex items-center" :href="route('managementexpense.details', {purchase_quote: item.id})"
                                         >
                                     <svg class="w-3 h-3 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

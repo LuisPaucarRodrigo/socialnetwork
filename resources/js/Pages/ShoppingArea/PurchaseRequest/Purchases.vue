@@ -38,7 +38,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="purchase in purchases.data" :key="purchase.id" class="text-gray-700">
+                        <tr v-for="purchase in purchases.data" :key="purchase.id" class="text-gray-700" :class="[
+                            'text-gray-700',
+                            {
+                                'border-l-8': true,
+                                'border-green-500': !['Rechazada', 'Pendiente', 'En progreso'].includes(purchase.state), // Si la fecha de finalización es 'Disponible', pinta el borde de verde
+                                'border-red-500': Date.parse(purchase.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000) && purchase.state != 'Completada', // Si la fecha vence en 3 días o menos, pinta el borde de rojo
+                                'border-yellow-500': Date.parse(purchase.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(purchase.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) && purchase.state != 'Completada' // Si la fecha está entre 3 y 7 días desde hoy, pinta el borde de amarillo
+                            }
+                        ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ purchase.project?.name }}</p>
                             </td>
