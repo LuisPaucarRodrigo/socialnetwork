@@ -111,4 +111,39 @@ class PurchaseRequestController extends Controller
     {
         $id->update(['is_accepted' => false]);
     }
+
+    public function doTask()
+    {
+        // Obtener la fecha actual ajustada por el desfase
+        $currentDate = now();
+
+        // Obtener todos los Purchasing_request dentro del rango de 0 a 3 días
+        $purchasesLessThanThreeDays = Purchasing_request::where('due_date', '<=', $currentDate->copy()->addDays(3))
+            ->get();
+
+        $filteredPurchasesLessThanThreeDays = $purchasesLessThanThreeDays->filter(function ($purchase) {
+            return $purchase->state !== 'Completada';
+        });
+
+        $totalPurchasesLessThanThreeDays = $filteredPurchasesLessThanThreeDays->count();
+
+        // Obtener todos los Purchasing_request dentro del rango de 4 a 7 días
+        $purchasesBetweenFourAndSevenDays = Purchasing_request::where('due_date', '>=', $currentDate->copy()->addDays(4))
+            ->where('due_date', '<=', $currentDate->copy()->addDays(7))
+            ->get();
+
+        $filteredPurchasesBetweenFourAndSevenDays = $purchasesBetweenFourAndSevenDays->filter(function ($purchase) {
+            return $purchase->state !== 'Completada';
+        });
+
+        $totalPurchasesBetweenFourAndSevenDays = $filteredPurchasesBetweenFourAndSevenDays->count();
+
+        return response()->json([
+            'purchasesLessThanThreeDays' => $filteredPurchasesLessThanThreeDays,
+            'totalPurchasesLessThanThreeDays' => $totalPurchasesLessThanThreeDays,
+            'purchasesBetweenFourAndSevenDays' => $filteredPurchasesBetweenFourAndSevenDays,
+            'totalPurchasesBetweenFourAndSevenDays' => $totalPurchasesBetweenFourAndSevenDays,
+        ]);
+    }
+
 }
