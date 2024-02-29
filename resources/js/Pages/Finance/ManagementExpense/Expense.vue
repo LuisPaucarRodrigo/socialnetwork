@@ -44,6 +44,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Detalles
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
 
                             </th>
                         </tr>
@@ -54,9 +58,9 @@
                             'text-gray-700',
                             {
                                 'border-l-8': true,
-                                'border-green-500': expense.purchasing_requests.state != 'En Progreso' && expense.purchasing_requests.state != 'pendiente',
-                                'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) > 3 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.purchasing_requests.state != 'Aceptado',
-                                'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.purchasing_requests.state != 'Aceptado',
+                                'border-green-500': expense.state != 0 && expense.state  != null,
+                                'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) >= 4 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.state != 1,
+                                'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.state != 1,
                             }
                         ]">
 
@@ -91,6 +95,16 @@
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+    <Link :href="route('managementexpense.details', {purchase_quote: expense.id})" class="flex items-center text-blue-500 hover:underline">
+        <EyeIcon class="h-4 w-4 ml-1" />
+    </Link>
+</td>
+
+
+
+
+
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div v-if="expense.purchasing_requests.state == 'En progreso' && expense.state == null " class="flex space-x-3 justify-center">
                                         <button @click="sendReply(true, expense.id)" type="button"
@@ -132,13 +146,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, Link } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
-import { ref } from 'vue';
 
 const props = defineProps({
     expenses: Object
 })
+
 
 const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), {state}, {
