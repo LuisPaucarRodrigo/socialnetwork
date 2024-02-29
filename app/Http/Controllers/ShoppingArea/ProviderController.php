@@ -9,12 +9,18 @@ use App\Models\Provider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use App\Providers\GlobalFunctionsServiceProvider;
 
 class ProviderController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/ProviderManagement/Provider', ['providers' => Provider::paginate()]);
+        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
+        return Inertia::render('ShoppingArea/ProviderManagement/Provider',
+            ['providers' => Provider::paginate(),
+             'admin' => $hasAllPermissions
+            ]
+        );
     }
 
     public function create()

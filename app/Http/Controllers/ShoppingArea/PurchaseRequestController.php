@@ -12,12 +12,17 @@ use App\Models\Purchase_order;
 use App\Models\Purchase_quote;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Providers\GlobalFunctionsServiceProvider;
 
 class PurchaseRequestController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', ['purchases' => Purchasing_request::with('project')->paginate()]);
+        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
+        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
+            'purchases' => Purchasing_request::with('project')->paginate(),
+            'admin' => $hasAllPermissions
+        ]);
     }
 
     public function create()
