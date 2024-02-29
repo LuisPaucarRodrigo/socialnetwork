@@ -74,11 +74,11 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <button type="button" @click="editResource(item.id)"
+                                    <button v-if="admin" type="button" @click="editResource(item.id)"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <PencilIcon class="text-yellow-500 h-4 w-4"></PencilIcon>
                                     </button>
-                                    <button type="button" @click="openModalDelete(item.id)"
+                                    <button v-if="admin" type="button" @click="openModalDelete(item.id)"
                                         class="text-red-900 whitespace-no-wrap">
                                         <TrashIcon class="text-red-500 h-4 w-4" />
                                     </button>
@@ -109,7 +109,8 @@ const showModalDelete = ref(false);
 const selectedResource = ref(null);
 
 const props = defineProps({
-    resources: Object
+    resources: Object,
+    admin: Boolean
 })
 
 const add_resource = () => {
