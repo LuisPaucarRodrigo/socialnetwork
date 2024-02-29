@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.outputs', params: { warehouse: warehouse } }">
         <template #header>
             Historial
         </template>
@@ -75,12 +75,6 @@
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="output_products.links" />
         </div>
-        <div>
-            <Link :href="route('warehouses.outputs', { warehouse: warehouse })"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Atras
-            </Link>
-        </div>
         <ConfirmDeleteModal :confirmingDeletion="confirmingDeletion" itemType="Salida de almacen"
             :deleteFunction="deleteOutput" @closeModal="closeModalDoc" />
         <SuccessOperationModal :confirming="successAsignation" title="Salida Eliminada"
@@ -103,8 +97,6 @@ const { output_products, warehouse } = defineProps({
     output_products: Object,
     warehouse: String
 })
-
-
 
 //Modal functions
 const confirmingDeletion = ref(false);

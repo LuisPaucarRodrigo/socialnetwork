@@ -160,8 +160,6 @@
             </form>
         </Modal>
         <SuccessOperationModal :confirming="addDescriptionSuccess" title="" message=""/>
-
-
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -186,8 +184,6 @@ const props = defineProps({
     types: Object,
     auth:Object
 })
-
-console.log(props)
 
 const newResource = useForm({
     resource_description_id: '',

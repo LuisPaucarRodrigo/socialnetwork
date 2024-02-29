@@ -1,6 +1,6 @@
 <template>
   <Head title="Detalles del Almacén" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.products', params: { warehouse: 1 } }">
     <template #header>
       Contenido de las cabeceras
     </template>

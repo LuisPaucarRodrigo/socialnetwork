@@ -49,7 +49,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ training.description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
-                                <div class="flex space-x-3 justify-center">
+                                <div v-if="hasPermission('UserManager')" class="flex space-x-3 justify-center">
                                     <Link
                                         :href="route('management.employees.formation_development.trainings.create', { id: training.id })">
                                     <PencilSquareIcon class="h-6 w-6 text-blue-500" />
@@ -82,8 +82,13 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref, defineProps } from 'vue';
 
 const props = defineProps({
-    trainings: Object
+    trainings: Object,
+    userPermissions:Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const add_information = () => {
     router.get(route('management.employees.formation_development.trainings.create'));

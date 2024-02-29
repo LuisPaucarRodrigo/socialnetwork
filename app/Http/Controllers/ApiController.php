@@ -66,4 +66,14 @@ class ApiController extends Controller
 
         return response()->json($data);
     }
+
+    public function logout(Request $request)
+    {
+        $user = Auth::user();
+        $user->tokens()->delete(); // Elimina todos los tokens del usuario
+        // O si deseas revocar solo el token actual:
+        // $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Sesión cerrada exitosamente']);
+    }
 }

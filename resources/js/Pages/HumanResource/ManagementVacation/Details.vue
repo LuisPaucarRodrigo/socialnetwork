@@ -75,8 +75,8 @@
                 </div>
             </div>
         </div>
-        <div class="mt-6 flex items-center justify-end gap-x-6">
-            <a :href="route('management.vacation.information.reviewed', props.vacation.id)"
+        <div v-if="vacation" class="mt-6 flex items-center justify-end gap-x-6">
+            <a :href="route('management.vacation.information.reviewed', { id: props.vacation.id })"
                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Aceptar</a>
             <a :href="route('management.vacation.information.decline', { id: props.vacation.id })"
@@ -87,7 +87,7 @@
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
 

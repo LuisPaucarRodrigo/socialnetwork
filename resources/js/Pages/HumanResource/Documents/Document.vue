@@ -44,7 +44,7 @@
           <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
-          <button @click="confirmDeleteDocument(document.id)" class="flex items-center text-red-600 hover:underline">
+          <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(document.id)" class="flex items-center text-red-600 hover:underline">
             <TrashIcon class="h-4 w-4" />
           </button>
         </div>
@@ -128,7 +128,12 @@ const props = defineProps({
   sections: Object,
   documents: Object,
   subdivisions: Object,
+  userPermissions:Array
 });
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const form = useForm({
   document: null,
