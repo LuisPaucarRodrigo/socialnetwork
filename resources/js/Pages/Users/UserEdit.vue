@@ -61,7 +61,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
-import { defineProps } from 'vue';
 
 const props = defineProps({
     users: {

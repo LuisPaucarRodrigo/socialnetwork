@@ -369,13 +369,14 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/ProjectManagement/ImageReport/index', ['images' => $images]);
     }
 
-    public function download_image(Imagespreproject $id)
+    public function download_image($id)
     {
-        $fileName = $id->image;
-        $filePath = "/image/imagereportpreproject/1708397485.png";
+        $image = Imagespreproject::find($id);
+        $fileName = $image->image;
+        $filePath = "image/imagereportpreproject/{$fileName}";
         $path = public_path($filePath);
         if (file_exists($path)) {
-            return response()->download($filePath, $fileName);
+            return response()->download($path, $fileName);
         }
         abort(404, 'Imagen no encontrado');
     }

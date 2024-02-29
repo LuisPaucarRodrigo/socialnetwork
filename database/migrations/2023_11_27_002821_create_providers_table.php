@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('phone2')->unique()->nullable();
             $table->string('email')->unique();
             $table->string('category');
+            $table->string('zone');
+            $table->string('ruc');
             $table->string('segment');
             $table->timestamps();
         });

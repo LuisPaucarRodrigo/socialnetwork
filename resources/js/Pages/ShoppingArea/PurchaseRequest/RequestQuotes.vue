@@ -20,8 +20,8 @@
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.title }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Fecha limite</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.due_date }}</dd>
+                    <dt class="text-sm font-medium leading-6 text-gray-900">Fecha limite de Compra</dt>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(purchases.due_date) }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Descripcion</dt>
@@ -47,8 +47,8 @@
                         <InputError :message="form.errors.provider" />
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">Fecha Limite de
-                            Aprobacion
+                        <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">
+                            Fecha limite de Aprobacion
                         </InputLabel>
                         <TextInput type="date" v-model="form.quote_deadline" id="quote_deadline"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
@@ -57,7 +57,7 @@
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <InputLabel for="total_mount" class="text-sm font-medium leading-6 text-gray-900">Monto Total
                         </InputLabel>
-                        <TextInput type="text" v-model="form.amount" id="total_mount"
+                        <TextInput v-model="form.amount" id="total_mount" type="number" step="0.01"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
                         <InputError :message="form.errors.amount" />
                     </div>
@@ -65,7 +65,7 @@
                         <InputLabel for="response" class="text-sm font-medium leading-6 text-gray-900">Respuestas
                         </InputLabel>
                         <textarea v-model="form.response" id="response"
-                            class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
+                            class="mt-1 text-sm leading-6 bg-white rounded-md text-gray-700 sm:col-span-2 sm:mt-0" />
                         <InputError :message="form.errors.response" />
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -75,9 +75,9 @@
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0" />
                         <InputError :message="form.errors.purchase_doc" />
                     </div>
-                    <div v-if="purchases.state == 'pendiente' || purchases.state == 'En Progreso'"
+                    <div v-if="purchases.state == 'Pendiente' || purchases.state == 'En progreso'"
                         class="mt-6 flex items-center justify-end gap-x-6">
-                        <button v-if="purchases.state == 'pendiente'" @click.prevent="purchaseRequestReject()"
+                        <button v-if="purchases.state == 'Pendiente'" @click.prevent="purchaseRequestReject()"
                             class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                             :disabled="process">Rechazar</button>
                         <button type="submit" :class="{ 'opacity-25': form.processing }"
@@ -130,6 +130,7 @@ import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import {formattedDate} from '@/utils/utils';
 
 const props = defineProps({
     purchases: Object,
@@ -189,6 +190,5 @@ const reject_quote = (id) => {
         }
     })
 }
-
 
 </script>

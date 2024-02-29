@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectManagementController extends Controller
 {
@@ -46,7 +47,7 @@ class ProjectManagementController extends Controller
             return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
                 'employees' => Employee::select('id', 'name', 'lastname')->get(),
                 'project' => $project,
-                'preprojects'=> $preprojects,
+                'preprojects' => $preprojects,
             ]);
         }
         if ($request->query('start_date')) {
@@ -59,7 +60,7 @@ class ProjectManagementController extends Controller
         }
         return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
             'employees' => Employee::select('id', 'name', 'lastname')->get(),
-            'preprojects'=> $preprojects,
+            'preprojects' => $preprojects,
         ]);
     }
 
@@ -108,8 +109,8 @@ class ProjectManagementController extends Controller
             return $resource->state === 'Disponible';
         });
 
-        $liquidations = ProjectResourceLiquidate::with('project_resource.project','project_resource.resource')
-            ->whereHas('project_resource.project',function($query) use ($project_id) {
+        $liquidations = ProjectResourceLiquidate::with('project_resource.project', 'project_resource.resource')
+            ->whereHas('project_resource.project', function ($query) use ($project_id) {
                 $query->where('id', $project_id);
             })
             ->get();
@@ -154,7 +155,8 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
-    public function project_resources_return(Request $request, $id){
+    public function project_resources_return(Request $request, $id)
+    {
         $data = $request->all();
         $data['type'] = 'Devolución';
         $project_resource = ProjectResource::find($id);
@@ -172,15 +174,16 @@ class ProjectManagementController extends Controller
     }
 
 
-    public function project_resources_liquidate (Request $request){
+    public function project_resources_liquidate(Request $request)
+    {
         $data = $request->validate([
-            'project_resource_id'=> 'required',
-            'liquidated_quantity'=> 'required',
-            'refund_quantity'=> 'required', 
-            'observations'=> 'nullable|string',
+            'project_resource_id' => 'required',
+            'liquidated_quantity' => 'required',
+            'refund_quantity' => 'required',
+            'observations' => 'nullable|string',
         ]);
         ProjectResourceLiquidate::create($data);
-        return redirect()->back(); 
+        return redirect()->back();
     }
 
 
@@ -220,8 +223,8 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_store(Request $request)
-    {
+
+    public function project_purchases_request_store(Request $request){
         $data = $request->validate([
             'title' => 'required',
             'product_description' => 'required',
@@ -229,6 +232,7 @@ class ProjectManagementController extends Controller
             'project_id' => 'required',
         ]);
         if ($request->id) {
+            if( Auth::user()->role_id !== 1) return response()->json(['error' => 'No tiene permisos'], 500);
             $purchase_request = Purchasing_request::find($request->id);
             $purchase_request->update($data);
         } else {
@@ -236,6 +240,8 @@ class ProjectManagementController extends Controller
         }
     }
 
+
+    
     public function project_expenses(Project $project_id){
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
             ->with('project')
@@ -243,34 +249,15 @@ class ProjectManagementController extends Controller
             ->orderByDesc('id')
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
-        $expenses = Purchasing_request::with([
-            'purchase_quotes' => function ($query) {
-                $query->whereHas('purchase_order', function ($subQuery) {
-                    $subQuery->where('state', 'Completada');
-                })->with('purchase_order');
-            }
-        ])
-            ->where([
-                ['project_id', $project_id->id],
-                ['state', 'Aceptado'],
-            ])
-            ->whereHas('purchase_quotes.purchase_order', function ($query) {
-                $query->where('state', 'Completada');
-            });
-        $total_expenses = $expenses->get()->sum(function ($expense) {
-            return $expense->purchase_quotes[0]['amount'];
-        });
 
-        $total_expenses += $project_id->additionalCosts->sum('amount');
         $additionalCosts = $project_id->additionalCosts->sum('amount');
-        $remaining_budget = $current_budget - $total_expenses;
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
-            'remaining_budget' => $remaining_budget,
             'project' => $project_id,
             'additionalCosts' => $additionalCosts,
         ]);
     }
+
 
     public function project_product_index($project_id)
     {
@@ -281,7 +268,6 @@ class ProjectManagementController extends Controller
                     $query->whereDoesntHave('liquidation');
                 },
             ])
-
             ->paginate(10);
 
         $warehouses = Warehouse::all();

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Employee;
 use BaconQrCode\Renderer\Path\Move;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
@@ -88,17 +89,12 @@ class VacationController extends Controller
         ]);
     }
 
-    public function reviewed(Request $request, $vacation)
+    public function reviewed($id)
     {
-        $request->validate([
-            'start_date_accepted' => 'nullable|date',
-            'end_date_accepted' => 'nullable|date|after:start_date_accepted'
-        ]);
 
-        $reviewed = Vacation::find($vacation);
+        $reviewed = Vacation::find($id);
         $reviewed->update([
-            'start_date_accepted' => $request->start_date_accepted,
-            'end_date_accepted' => $request->end_date_accepted,
+            'review_date' => Carbon::now(),
             'status' => 'Aceptado'
         ]);
         return to_route('management.vacation');
@@ -108,6 +104,7 @@ class VacationController extends Controller
     {
         $vacation = Vacation::find($id);
         $vacation->update([
+            'review_date' => Carbon::now(),
             'status' => 'Rechazado'
         ]);
         return to_route('management.vacation');

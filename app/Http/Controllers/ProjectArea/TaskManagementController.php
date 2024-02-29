@@ -14,6 +14,7 @@ use App\Models\Employee;
 use App\Models\ProjectEmployee;
 use Inertia\Inertia;
 
+
 class TaskManagementController extends Controller
 {
     public function index(Request $request){
@@ -37,15 +38,14 @@ class TaskManagementController extends Controller
 
     public function edit($taskId){
         $task = Tasks::find($taskId);
-        $employees = Project::with('employees')
-            ->find($task->project_id);
+        $employeesToAssign = ProjectEmployee::with('employee_information')
+            ->where('project_id',$task->project_id)->get();
         $comment = TaskComments::where('task_id', $taskId)->get();
         $added_employees = Tasks::with('project_employee', 'project_employee.employee_information' . '')->where('id', $taskId)->first();
         return Inertia::render('ProjectArea/TasksManagement/editTask', [
             'tasks' => $task,
-            'projectEmployee' => $employees,
             'comments' => $comment,
-            'employees' => $employees,
+            'employeesToAssign' => $employeesToAssign,
             'added_employees' => $added_employees,
         ]);
     }
@@ -66,8 +66,7 @@ class TaskManagementController extends Controller
     public function add_employee(Request $request)
     {
         $projectEmployee = ProjectEmployee::find($request->project_employee_id);
-        $task = Tasks::find($request->task_id);
-        $projectEmployee->tasks()->attach($task);
+        $projectEmployee->tasks()->attach($request->task_id);
         return back();
     }
 
