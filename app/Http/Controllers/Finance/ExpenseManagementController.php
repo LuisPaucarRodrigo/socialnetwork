@@ -17,6 +17,11 @@ class ExpenseManagementController extends Controller
         return Inertia::render('Finance/ManagementExpense/Expense', ['expenses' => Purchase_quote::with('purchasing_requests.project')->paginate()]);
     }
 
+    public function details(Purchase_quote $purchase_quote){
+        $expense = $purchase_quote->load('purchasing_requests.project', 'purchase_order');
+        return Inertia::render('Finance/ManagementExpense/Details', ['expense' => $expense]);
+    }
+    
 
     public function reviewed(ReviewedExpenseRequest $request, $id) {
         $data = $request->validated();
@@ -57,19 +62,36 @@ class ExpenseManagementController extends Controller
     {
         // Obtener la fecha actual ajustada por el desfase
         $currentDate = Carbon::now();
-        $currentDateUpdate = $currentDate->subHours(5);
 
-        // Obtener todos los SubSection que están a punto de vencerse en los próximos 3 días y los que ya vencieron
-        $purchases = Purchase_quote::where('quote_deadline', '<=', $currentDateUpdate->copy()->addDays(7)) // Ajustado para considerar los próximos 3 días y fechas pasadas
-            ->whereHas('purchasing_requests', function($query) {
-                $query->where('state', '!=', 'Aceptado');
-            })    
-            ->get(); // Obtener una colección de resultados
+        // Obtener todos los Purchase_quote dentro del rango de 0 a 3 días y cuyo estado sea 0 o nulo
+        $purchasesLessThanThreeDays = Purchase_quote::where('quote_deadline', '<=', $currentDate->copy()->addDays(3))
+            ->where(function($query) {
+                $query->where('state', '=', 0)
+                    ->orWhereNull('state');
+            })
+            ->with('purchasing_requests')
+            ->get();
 
-        $totalPurchases = $purchases->count();
+        $totalPurchasesLessThanThreeDays = $purchasesLessThanThreeDays->count();
+
+        // Obtener todos los Purchase_quote dentro del rango de 4 a 7 días y cuyo estado sea 0 o nulo
+        $purchasesBetweenFourAndSevenDays = Purchase_quote::where('quote_deadline', '>=', $currentDate->copy()->addDays(3))
+            ->where('quote_deadline', '<=', $currentDate->copy()->addDays(7))
+            ->where(function($query) {
+                $query->where('state', '=', 0)
+                    ->orWhereNull('state');
+            })
+            ->with('purchasing_requests')
+            ->get();
+
+        $totalPurchasesBetweenFourAndSevenDays = $purchasesBetweenFourAndSevenDays->count();
 
         return response()->json([
-            'totalPurchases' => $totalPurchases,
+            'purchasesLessThanThreeDays' => $purchasesLessThanThreeDays,
+            'totalPurchasesLessThanThreeDays' => $totalPurchasesLessThanThreeDays,
+            'purchasesBetweenFourAndSevenDays' => $purchasesBetweenFourAndSevenDays,
+            'totalPurchasesBetweenFourAndSevenDays' => $totalPurchasesBetweenFourAndSevenDays,
         ]);
     }
+
 }
