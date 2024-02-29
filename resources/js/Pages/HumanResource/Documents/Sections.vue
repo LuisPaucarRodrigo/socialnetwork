@@ -49,7 +49,7 @@
       <Modal :show="isCreateSectionModalOpen">
         <div class="p-6">
           <h2 class="text-base font-medium leading-7 text-gray-900">
-            Agregar Seccion
+            Agregar Sección
           </h2>
           <form @submit.prevent="submit">
             <div class="space-y-12">
@@ -73,8 +73,8 @@
           </form>
         </div>
       </Modal>
-      <ConfirmCreateModal :confirmingcreation="showModal" itemType="seccion de documentos" />
-      <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="seccion" :deleteFunction="deleteSection"
+      <ConfirmCreateModal :confirmingcreation="showModal" itemType="sección de documentos" />
+      <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="sección" :deleteFunction="deleteSection"
         @closeModal="closeModalSection" />
     </AuthenticatedLayout>
   </div>
