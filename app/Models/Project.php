@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
-class Project extends Model
+class  Project extends Model
 {
     use HasFactory;
     protected $table = 'projects';

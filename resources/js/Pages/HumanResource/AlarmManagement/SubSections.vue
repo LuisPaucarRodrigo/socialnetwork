@@ -68,14 +68,14 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.section.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
-                  <Link :href="route('sections.subSection', { subSection: subSection.id })"
+                  <Link  :href="route('sections.subSection', { subSection: subSection.id })"
                     class="text-green-600 hover:underline mr-2">
                   <EyeIcon class="h-4 w-4 ml-1" />
                   </Link>
-                  <button @click="openEditSubSectionModal(subSection)" class="text-orange-200 hover:underline mr-2">
+                  <button v-if="hasPermission('UserManager')" @click="openEditSubSectionModal(subSection)" class="text-orange-200 hover:underline mr-2">
                     <PencilIcon class="h-4 w-4 ml-1" />
                   </button>
-                  <button @click="confirmDeleteSubSection(subSection.id)" class="text-red-600 hover:underline">
+                  <button v-if="hasPermission('UserManager')" @click="confirmDeleteSubSection(subSection.id)" class="text-red-600 hover:underline">
                     <TrashIcon class="h-4 w-4" />
                   </button>
                 </div>
@@ -257,7 +257,13 @@ import {formattedDate} from '@/utils/utils'
 const props = defineProps({
   sections: Object,
   subSections: Object,
+  userPermissions:Array
+
 });
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const form = useForm({
   id: '',
@@ -287,7 +293,6 @@ const openCreateSubSectionModal = () => {
 };
 
 const openEditSubSectionModal = (subSection) => {
-  // Copia de los datos de la subsección existente al formulario
   editingSubSection.value = JSON.parse(JSON.stringify(subSection));
   form.id = editingSubSection.value.id;
   form.name = editingSubSection.value.name;
@@ -305,10 +310,7 @@ const closeModal = () => {
 };
 
 const closeEditModal = () => {
-  // Restablecer los valores del formulario
   form.reset();
-
-  // Cerrar el modal de edición
   editSubSectionModal.value = false;
 };
 
