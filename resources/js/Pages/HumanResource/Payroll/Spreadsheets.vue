@@ -1,6 +1,6 @@
 <template>
     <Head title="Nomina" />
-    <AuthenticatedLayout :redirectRoute="'spreadsheets.index'"> 
+    <AuthenticatedLayout :redirectRoute="'spreadsheets.index'">
         <template #header>
             Nomina
         </template>
@@ -9,11 +9,17 @@
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 Gestion de Sistema de Pension
             </button>
+            <div class="flex space-x-3">
+                <button @click="reentry" type="button"
+                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    {{ reentrystate == false ? "Inactivos" : "Activos" }}
+                </button>
+                <a :href="route('spreadsheets.payroll.export')"
+                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">
+                    Exportar
+                </a>
+            </div>
 
-            <a :href="route('spreadsheets.payroll.export')"
-                class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">
-                Exportar
-            </a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full whitespace-no-wrap">
@@ -129,16 +135,16 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.pension_reg }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(spreadsheet.contract.hire_date) }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.hire_date }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.basic_salary }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.salary }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.truncated_vacations }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.total_income }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ formatNumber(spreadsheet.total_income) }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.total_pension_base }}</p>
@@ -172,13 +178,13 @@
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.total_discount }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-green-200 px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.net_pay }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ formatNumber(spreadsheet.net_pay) }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.total_pension_base }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.healths }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.health }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.life_ley }}</p>
@@ -186,6 +192,27 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.total_contribution }}</p>
                         </td>
+                    </tr>
+                    <tr>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="5">Totales:</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_salary }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_truncated_vacations }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ formatNumber(total.sum_total_income) }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ formatNumber(total.sum_total_income) }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" ></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_snp_onp }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" ></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_commission_on_ra }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" ></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_insurance_premium }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" ></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_mandatory_contribution_amount }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_total_discount }}</td>
+                        <td class="border-b border-gray-200 bg-green-200 px-5 py-5 text-sm" >S/ {{ formatNumber(total.sum_net_pay) }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ formatNumber(total.sum_total_income) }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_health }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_life_ley }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" >S/ {{ total.sum_total_contribution }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -196,13 +223,32 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { formattedDate } from '@/utils/utils';
+import { ref } from 'vue';
 
 const props = defineProps({
     spreadsheets: Object,
+    boolean: Boolean,
+    total: Object
 })
+
+const reentrystate = ref(props.boolean);
+
 
 const management_pension = () => {
     router.get(route('pension_system.edit'));
 };
+
+const reentry = () => {
+    if (props.boolean == true) {
+        reentrystate.value = false
+        router.get(route('spreadsheets.index'))
+    } else {
+        reentrystate.value = true
+        router.get(route('spreadsheets.index', { reentry: reentrystate.value }))
+    }
+};
+
+const formatNumber = (value) => {
+    return parseFloat(value).toFixed(2);
+}
 </script>

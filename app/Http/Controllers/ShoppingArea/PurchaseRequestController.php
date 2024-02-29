@@ -17,7 +17,10 @@ class PurchaseRequestController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', ['purchases' => Purchasing_request::with('project')->paginate()]);
+        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
+            'purchases' => Purchasing_request::with('project')
+            ->withCount('purchase_quotes')
+            ->paginate()]);
     }
 
     public function create()
@@ -94,11 +97,6 @@ class PurchaseRequestController extends Controller
             'purchasing_request_id' => $request->purchasing_request_id,
         ]);
 
-        $purchasingRequest = Purchasing_request::find($request->purchasing_request_id);
-        $purchasingRequest->update([
-            'state' => 'En Progreso'
-        ]);
-
         return to_route('purchasesrequest.index');
     }
 
@@ -114,6 +112,6 @@ class PurchaseRequestController extends Controller
 
     public function reject_request(Purchasing_request $id)
     {
-        $id->update(['state' => 'Rechazado']);
+        $id->update(['is_accepted' => false]);
     }
 }

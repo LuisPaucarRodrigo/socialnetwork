@@ -1,7 +1,7 @@
 <template>
     <div>
       <Head title="Detalles del Almacén" />
-      <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
+      <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.products', params: { warehouse: props.product.id } }">
         <template #header>
           Contenido de las cabeceras
         </template>
@@ -42,8 +42,6 @@
     import InputLabel from '@/Components/InputLabel.vue';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { formattedDate } from '@/utils/utils';
-  
-    console.log(props.headers)
     const props = defineProps(['product', 'headers']);
   </script>
   
