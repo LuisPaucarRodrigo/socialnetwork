@@ -73,7 +73,7 @@
                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 </Link>
-                                <button class="whitespace-no-wrap" :disabled="purchase.state == 'Pendiente' ? false : true"
+                                <button v-if="auth.user.role_id === 1" class="whitespace-no-wrap" :disabled="purchase.state == 'Pendiente' ? false : true"
                                     @click="edit_purchase_request(purchase.id)">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor"
@@ -82,7 +82,7 @@
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
                                 </button>
-                                <button type="button" @click="confirmPurchasesDeletion(purchase.id)"
+                                <button v-if="auth.user.role_id === 1" type="button" @click="confirmPurchasesDeletion(purchase.id)"
                                     :disabled="purchase.state == 'Pendiente' ? false : true" class="whitespace-no-wrap">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor"
@@ -141,7 +141,8 @@ const purchaseToDelete = ref(null);
 
 const props = defineProps({
     purchases: Object,
-    project: Object
+    project: Object,
+    auth: Object,
 });
 
 
@@ -164,14 +165,6 @@ const closeModal = () => {
 };
 
 const add_purchase_request = () => {
-    // if (props.project.initial_budget == null) {
-    //     showError.value = true
-    //     setTimeout(() => {
-    //         showError.value = false;
-    //     }, 2500);
-    // } else {
-
-    // }
     router.get(route('projectmanagement.purchases_request.create', {
         project_id: props.project.id
     }));

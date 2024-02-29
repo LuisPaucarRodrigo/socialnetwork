@@ -1,7 +1,7 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
-        <template #header>
+    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+        <template #header >
             Gestión de Proyectos
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
@@ -23,7 +23,7 @@
                         <h2 class="text-sm font-semibold mb-3">
                             N° {{ item.code }}
                         </h2>
-                        <div class="inline-flex justify-end gap-x-2">
+                        <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2">
                             <Link :href="route('projectmanagement.update', { project_id: item.id })"
                                 class="flex items-start">
                             <PencilIcon class="h-4 w-4 text-teal-600" />
@@ -86,8 +86,9 @@ import { Head, router, Link } from '@inertiajs/vue3';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 
-const { projects } = defineProps({
+const { projects, auth } = defineProps({
     projects: Object,
+    auth: Object
 })
 
 

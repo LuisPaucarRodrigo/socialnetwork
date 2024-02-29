@@ -17,12 +17,15 @@ use App\Http\Controllers\VacationController;
 
 
 Route::post('/login', [ApiController::class, 'login']);
-
+Route::get('/preproject', [ApiController::class, 'preproject']);
+Route::get('/preprojectespecific/{id}', [ApiController::class, 'preprojectespecific']);
+Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
+Route::post('/logout', [ApiController::class, 'logout']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/preproject', [ApiController::class, 'preproject']);
-    Route::get('/preprojectespecific/{id}', [ApiController::class, 'preprojectespecific']);
-    Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
-    Route::post('/logout', [ApiController::class, 'logout']);
+    // Route::get('/preproject', [ApiController::class, 'preproject']);
+    // Route::get('/preprojectespecific/{id}', [ApiController::class, 'preprojectespecific']);
+    // Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
+    // Route::post('/logout', [ApiController::class, 'logout']);
 });
 
 // Route::get('/vacation', [VacationController::class, 'index']);

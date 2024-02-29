@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectManagementController extends Controller
 {
@@ -222,8 +223,8 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_store(Request $request)
-    {
+
+    public function project_purchases_request_store(Request $request){
         $data = $request->validate([
             'title' => 'required',
             'product_description' => 'required',
@@ -231,6 +232,7 @@ class ProjectManagementController extends Controller
             'project_id' => 'required',
         ]);
         if ($request->id) {
+            if( Auth::user()->role_id !== 1) return response()->json(['error' => 'No tiene permisos'], 500);
             $purchase_request = Purchasing_request::find($request->id);
             $purchase_request->update($data);
         } else {
@@ -302,10 +304,8 @@ class ProjectManagementController extends Controller
 
         $total_expenses += $project_id->additionalCosts->sum('amount');
         $additionalCosts = $project_id->additionalCosts->sum('amount');
-        $remaining_budget = $current_budget - $total_expenses;
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
-            'remaining_budget' => $remaining_budget,
             'project' => $project_id,
             'additionalCosts' => $additionalCosts,
         ]);
@@ -321,7 +321,6 @@ class ProjectManagementController extends Controller
                     $query->whereDoesntHave('liquidation');
                 },
             ])
-
             ->paginate(10);
 
         $warehouses = Warehouse::all();

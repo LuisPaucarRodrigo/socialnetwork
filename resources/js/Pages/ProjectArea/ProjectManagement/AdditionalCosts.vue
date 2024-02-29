@@ -23,7 +23,7 @@
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Monto</th>
-              <th
+              <th v-if="auth.user.role_id === 1"
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Acciones</th>
             </tr>
@@ -31,10 +31,10 @@
           <tbody>
             <tr v-for="item in additional_costs" :key="item.id" class="text-gray-700">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.amount }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">S/. {{ (item.amount).toFixed(2) }}</td>
+              <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
-                  <button @click="openEditAdditionalModal(item)" class="text-orange-200 hover:underline mr-2">
+                  <button  @click="openEditAdditionalModal(item)" class="text-orange-200 hover:underline mr-2">
                     <PencilIcon class="h-4 w-4 ml-1" />
                   </button>
                   <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
@@ -147,6 +147,7 @@ import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
 const props = defineProps({
   additional_costs: Object,
   project_id: Object,
+  auth: Object
 });
 
 const form = useForm({
