@@ -263,6 +263,8 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::post('/finance/expensegang/search', [GangExpenseController::class, 'search'])->name('gangexpense.search');
 
     Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
+    Route::get('/finance/expencemanagement/details/{purchase_quote}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
+
     Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');
     Route::get('/finance/purchase_quotes/doTask', [ExpenseManagementController::class, 'doTask'])->name('finance.task');
     //Budget
@@ -435,6 +437,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest/details/{id}', [PurchaseRequestController::class, 'details'])->name('purchasingrequest.details');
     Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'quote'])->name('purchasesrequest.storequotes');
     Route::post('/shopping_area/purchasesrequest/reject/{id}', [PurchaseRequestController::class, 'reject_request'])->name('purchasesrequest.reject_request');
+    Route::get('/shopping_area/purchasesrequest/doTask', [PurchaseRequestController::class, 'doTask'])->name('purchasesrequest.task');
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
     Route::get('/shopping_area/purchaseorders_details/{purchase_order_id}', [PurchaseOrdersController::class, 'purchase_order_view'])->name('purchaseorders.details');
