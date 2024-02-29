@@ -45,7 +45,16 @@
 
             <template
                 v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource') || hasPermission('Administration')">
-                <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
+                <a v-if="subSectionsCount + subSectionsCount7 > 0" class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
+                    @click="showingHumanResource = !showingHumanResource">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="red" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                    </svg>
+                    <span class="mx-3">Recursos Humanos</span>
+                </a>
+                <a v-else class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingHumanResource = !showingHumanResource">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
@@ -69,17 +78,46 @@
                     <Link class="w-full" :href="route('management.vacation')">Gestión de Vacaciones y Permisos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('documents.index')">Gestion de Documentos</Link>
+                        <Link class="w-full" :href="route('documents.index')">Gestion de Documentos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('sections.subSections')">Gestión de Alarmas RRHH</Link>
+                    <div class="relative">
+                        <button @click="toggleMembers"><span v-if="subSectionsCount + subSectionsCount7 > 0" class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{ subSectionsCount + subSectionsCount7 }}</span></button>
+                    <Link class="w-full" :href="route('sections.subSections')">Alarmas RRHH</Link>
+                    </div>
                 </MyTransition>
+                <template v-if="hasPermission('UserManager') && showingMembers && showingMembers7">
+                            <div class="mb-4">
+                                <MyTransition v-for="item in subSectionsPorVencer" :key="item.id" class="ml-4" :transitiondemonstration="showingMembers">
+                                    <Link class="w-full flex items-center" :href="route('sections.subSection', { subSection: item.id })"
+                                        >
+                                    <svg class="w-3 h-3 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                    </svg>
+                                    <span>{{ item.name }}</span>
+                                    </Link>
+                                </MyTransition>
+                                <MyTransition v-for="item in subSectionsPorVencer7" :key="item.id" class="ml-4" :transitiondemonstration="showingMembers7">
+                                    <Link class="w-full flex items-center" :href="route('sections.subSection', { subSection: item.id })"
+                                        >
+                                    <svg class="w-3 h-3 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                    </svg>
+                                    <span>{{ item.name }}</span>
+                                    </Link>
+                                </MyTransition>
+                            </div>
+                        </template>
             </template>
 
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingFinance = !showingFinance">
-                    <svg v-if="financePurchases>0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    <svg v-if="financePurchasesTotal + financePurchasesTotal7 > 0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="red" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -100,11 +138,37 @@
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <div class="relative">
-                        <span v-if="financePurchases>0" class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{ financePurchases }}</span>
+                        <button @click="tooglePurchaseQuote"><span v-if="financePurchasesTotal + financePurchasesTotal7 > 0" class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{ financePurchasesTotal + financePurchasesTotal7 }}</span></button>
                         <Link class="w-full" :href="route('managementexpense.index')">Gestion de Gastos</Link>
+                        
                     </div>
                 </MyTransition>
-
+                <template v-if="hasPermission('UserManager') && showFinancePurchaseQuoteAlarms">
+                            <div class="mb-4">
+                                <MyTransition v-for="item in financePurchases" :key="item.id" class="ml-4" :transitiondemonstration="showFinancePurchaseQuoteAlarms">
+                                    <Link class="w-full flex items-center" :href="route('managementexpense.details', {purchase_quote: item.id})"
+                                        >
+                                    <svg class="w-3 h-3 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                    </svg>
+                                    <span>{{ item.purchasing_requests.title }}</span>
+                                    </Link>
+                                </MyTransition>
+                                <MyTransition v-for="item in financePurchases7" :key="item.id" class="ml-4" :transitiondemonstration="showFinancePurchaseQuoteAlarms">
+                                    <Link class="w-full flex items-center" :href="route('managementexpense.details', {purchase_quote: item.id})"
+                                        >
+                                    <svg class="w-3 h-3 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                    </svg>
+                                    <span>{{ item.purchasing_requests.title }}</span>
+                                    </Link>
+                                </MyTransition>
+                            </div>
+                        </template>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('deposits.index')">Depósitos</Link>
                 </MyTransition>
@@ -153,7 +217,16 @@
             </template>
 
             <template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
-                <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
+                <a v-if="shoppingPurchasesTotal + shoppingPurchasesTotal7 > 0" class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
+                    @click="showingShoppingArea = !showingShoppingArea">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="red" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                    <span class="mx-3">Area de Compras</span>
+                </a>
+                <a v-else class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingShoppingArea = !showingShoppingArea">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         :stroke="purchaseOrdersAlarms.length > 0 ? 'red' : 'currentColor'" class="w-6 h-6">
@@ -166,8 +239,37 @@
                     <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
-                    <Link class="w-full" :href="route('purchasesrequest.index')">Solicitud de Cotizaciones</Link>
+                    <div class="relative">
+                        <button @click="tooglePurchaseRequest"><span v-if="shoppingPurchasesTotal + shoppingPurchasesTotal7 > 0" class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{ shoppingPurchasesTotal + shoppingPurchasesTotal7 }}</span></button>
+                        <Link class="w-full" :href="route('purchasesrequest.index')">Cotizaciones</Link>
+                    </div>
                 </MyTransition>
+                <template v-if="hasPermission('UserManager') && showShoppingPurchaseRequestAlarms">
+                            <div class="mb-4">
+                                <MyTransition v-for="item in shoppingPurchases" :key="item.id" class="ml-4" :transitiondemonstration="showShoppingPurchaseRequestAlarms">
+                                    <Link class="w-full flex items-center" :href="route('purchasingrequest.details', {id: item.id})"
+                                        >
+                                    <svg class="w-3 h-3 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                    </svg>
+                                    <span>{{ item.title }}</span>
+                                    </Link>
+                                </MyTransition>
+                                <MyTransition v-for="item in shoppingPurchases7" :key="item.id" class="ml-4" :transitiondemonstration="showShoppingPurchaseRequestAlarms">
+                                    <Link class="w-full flex items-center" :href="route('purchasingrequest.details', {id: item.id})"
+                                        >
+                                    <svg class="w-3 h-3 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                    </svg>
+                                    <span>{{ item.title }}</span>
+                                    </Link>
+                                </MyTransition>
+                            </div>
+                        </template>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <div class="relative">
                         <button @click="showPurchaseOrdersAlarms = !showPurchaseOrdersAlarms">
@@ -332,7 +434,17 @@ export default {
             cicsasubSectionsPorVencer: [],
             cicsasubSectionsPorVencer7: [],
             purchaseOrdersAlarms: [],
-            financePurchases: 0,
+            
+
+            financePurchasesTotal: 0,
+            financePurchasesTotal7: 0,
+            financePurchases: [],
+            financePurchases7: [],
+
+            shoppingPurchasesTotal: 0,
+            shoppingPurchasesTotal7: 0,
+            shoppingPurchases: [],
+            shoppingPurchases7: [],
         };
     },
 
@@ -349,7 +461,9 @@ export default {
         let cicsashowingMembers7 = ref(false)
 
         let showPurchaseOrdersAlarms = ref(false)
-
+        let isCriticalPurchaseOrdersAlarms = ref(false)
+        let showFinancePurchaseQuoteAlarms = ref(false)
+        let showShoppingPurchaseRequestAlarms = ref(false)
         return {
             showingUsersAndRols,
             showingHumanResource,
@@ -362,6 +476,8 @@ export default {
             cicsashowingMembers,
             cicsashowingMembers7,
             showPurchaseOrdersAlarms,
+            showFinancePurchaseQuoteAlarms,
+            showShoppingPurchaseRequestAlarms,
         }
     },
 
@@ -423,8 +539,23 @@ export default {
         },
         async fetchFinancePurchases() {
             try {
-                const response = await axios.get('/finance/purchase_quotes/doTask');
-                this.financePurchases = response.data.totalPurchases;
+                const response = await axios.get(route('finance.task'));
+                this.financePurchases = response.data.purchasesLessThanThreeDays;
+                this.financePurchasesTotal = response.data.totalPurchasesLessThanThreeDays;
+                this.financePurchases7 = response.data.purchasesBetweenFourAndSevenDays;
+                this.financePurchasesTotal7 = response.data.totalPurchasesBetweenFourAndSevenDays;
+            } catch (error) {
+                console.error('Error al obtener el contador de subsecciones:', error);
+            }
+        },
+
+        async fetchPurchasesRequest() {
+            try {
+                const response = await axios.get(route('purchasesrequest.task'));
+                this.shoppingPurchases = response.data.purchasesLessThanThreeDays;
+                this.shoppingPurchasesTotal = response.data.totalPurchasesLessThanThreeDays;
+                this.shoppingPurchases7 = response.data.purchasesBetweenFourAndSevenDays;
+                this.shoppingPurchasesTotal7 = response.data.totalPurchasesBetweenFourAndSevenDays;
             } catch (error) {
                 console.error('Error al obtener el contador de subsecciones:', error);
             }
@@ -438,8 +569,14 @@ export default {
             this.cicsashowingMembers7 = !this.cicsashowingMembers7;
             this.cicsashowingMembers = !this.cicsashowingMembers;
         },
+        tooglePurchaseQuote() {
+            this.showFinancePurchaseQuoteAlarms = !this.showFinancePurchaseQuoteAlarms;
+        },
+        tooglePurchaseRequest() {
+            console.log(this.shoppingPurchases);
+            this.showShoppingPurchaseRequestAlarms = !this.showShoppingPurchaseRequestAlarms;
+        }
         
-
     },
 
     mounted() {
@@ -449,6 +586,7 @@ export default {
         this.fetchCicsaSubSectionsCount7();
         this.fetchFinanceAlarms();
         this.fetchFinancePurchases();
+        this.fetchPurchasesRequest();
         setInterval(() => {
             this.fetchSubSectionsCount();
             this.fetchSubSectionsCount7();
@@ -456,6 +594,7 @@ export default {
             this.fetchCicsaSubSectionsCount7();
             this.fetchFinanceAlarms();
             this.fetchFinancePurchases();
+            this.fetchPurchasesRequest();
         }, 60000);
     },
 
