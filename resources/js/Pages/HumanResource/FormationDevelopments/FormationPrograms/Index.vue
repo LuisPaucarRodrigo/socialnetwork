@@ -50,7 +50,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex space-x-3 justify-center">
+                                <div v-if="hasPermission('UserManager')" class="flex space-x-3 justify-center">
                                     <Link
                                         :href="route('management.employees.formation_development.view', { id: formationProgram.id })">
                                     <EyeIcon class="h-6 w-6 text-teal-500" />
@@ -79,14 +79,18 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 
 const props = defineProps({
     formationPrograms: Object,
-    employees: Object
+    employees: Object,
+    userPermissions:Array
 })
 
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const add_information = () => {
     router.get(route('management.employees.formation_development.formation_programs.create'));

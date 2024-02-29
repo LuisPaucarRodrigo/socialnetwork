@@ -102,7 +102,7 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue'
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const showModalDelete = ref(false);
