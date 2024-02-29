@@ -8,14 +8,18 @@ use App\Models\ResourceDescription;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Resource;
+use App\Providers\GlobalFunctionsServiceProvider;
 
 class ResourceManagementController extends Controller
 {
     public function index()
     {
+        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
+
         $resources = Resource::paginate();
         return Inertia::render('Inventory/ResourceManagement/index', [
             'resources' => $resources,
+            'admin' => $hasAllPermissions
         ]);
     }
 

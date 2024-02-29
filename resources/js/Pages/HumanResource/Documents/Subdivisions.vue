@@ -68,8 +68,8 @@
           </form>
         </div>
       </Modal>
-      <ConfirmCreateModal :confirmingcreation="showModal" itemType="seccion de documentos" />
-      <ConfirmDeleteModal :confirmingDeletion="create_subdivision" itemType="subdivision"
+      <ConfirmCreateModal :confirmingcreation="showModal" itemType="subdivisión de documentos" />
+      <ConfirmDeleteModal :confirmingDeletion="create_subdivision" itemType="subdivisión"
         :deleteFunction="deleteSubdivision" @closeModal="closeModalSubdivision" />
     </AuthenticatedLayout>
   </div>

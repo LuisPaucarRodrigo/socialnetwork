@@ -99,7 +99,7 @@
                                         class="text-green-400 hover:underline mx-3">
                                     <EyeIcon class="h-4 w-4" />
                                     </Link>
-                                    <button @click="confirmDeleteProduct(item.id)" class="text-red-600 hover:underline">
+                                    <button v-if="admin" @click="confirmDeleteProduct(item.id)" class="text-red-600 hover:underline">
                                         <TrashIcon class="h-4 w-4" />
                                     </button>
                                 </div>
@@ -134,7 +134,8 @@ import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     products: Object,
-    warehouse: Object
+    warehouse: Object,
+    admin: Boolean
 });
 
 const productStates = ref({}); 
@@ -150,7 +151,6 @@ const toggleProductState = (productId) => {
         ...productStates.value,
         [productId]: !currentState // Cambiamos el estado actual
     };
-    console.log(warehouseHeadersFiltered);
 };
 
 const confirmingDocDeletion = ref(false);
