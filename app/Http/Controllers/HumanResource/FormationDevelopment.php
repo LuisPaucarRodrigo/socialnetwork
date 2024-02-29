@@ -133,15 +133,13 @@ class FormationDevelopment extends Controller
         ]);
     }
 
-    public function assignate_store(Request $request)
-    {
+    public function assignate_store(Request $request){
         $data= $request->validate([
             'employees'=>  'required|array',
             'formation_programs'=>  'required|array',
             'start_date'=> 'required',
             'end_date'=> 'required'
         ]);
-
         $employees = $data['employees'];
         $formationPrograms = $data['formation_programs'];
         foreach ($employees as $emp) {
@@ -153,4 +151,17 @@ class FormationDevelopment extends Controller
         }
         return redirect()->back();
     }
+
+
+
+    public function employees_in_programs () {
+        return Inertia::render('HumanResource/FormationDevelopments/EmployeesInPrograms/Index',[
+            'employees' => Employee::has('assignated_programs')
+                ->with('assignated_programs.formation_program')
+                ->orderBy('created_at','desc')
+                ->paginate(),
+            ]
+        );
+    }
+
 }

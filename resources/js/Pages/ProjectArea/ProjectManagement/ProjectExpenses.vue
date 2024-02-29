@@ -1,6 +1,6 @@
 <template>
   <Head title="Gestion de Gastos" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="{ route: 'projectmanagement.purchases_request.index', params: { id: project.id  } }">
     <template #header>
       Gastos
     </template>
@@ -10,6 +10,7 @@
     <br>
     Total gastos en activos: S/. {{ project.total_assigned_resources_costs.toFixed(2) }}<br>
     Total gastos en productos: S/. {{ project.total_product_costs_with_liquidation.toFixed(2) }}<br>
+    Total gastos en empleados: S/. {{ project.total_employee_costs.toFixed(2) }}<br>
     Gastos adicionales: S/. {{ additionalCosts }}
     <br>
     <br>
@@ -64,12 +65,6 @@
         <pagination :links="expenses.links" />
       </div>
     </div>
-    <div class="mt-6 flex items-center justify-between gap-x-6">
-      <a :href="route('projectmanagement.purchases_request.index', { id: project.id })"
-        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-        Atras
-      </a>
-    </div>
   </AuthenticatedLayout>
 </template>
 <script setup>
@@ -79,17 +74,16 @@ import { ref, onMounted } from 'vue';
 import { Chart, registerables } from 'chart.js/auto';
 import { Head } from '@inertiajs/vue3';
 
-const { project, current_budget, remaining_budget, additionalCosts } = defineProps({
+const { project, current_budget, additionalCosts } = defineProps({
   project: Object,
   current_budget: Number,
-  remaining_budget: Number,
   additionalCosts: Number
 })
 
 
 const expenses = { data: [], links: [] }
 
-const remainingBudget = current_budget - project.total_assigned_resources_costs - project.total_product_costs_with_liquidation - additionalCosts;
+const remainingBudget = current_budget - project.total_resources_costs_with_liquidation - project.total_product_costs_with_liquidation - project.total_employee_costs - additionalCosts;
 
 
 const updateChart = () => {

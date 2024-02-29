@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
             Gestión de Anteproyectos
         </template>
@@ -19,7 +19,7 @@
                         <h2 class="text-sm font-semibold mb-3">
                             N° {{ item.code }}
                         </h2>
-                        <div class="inline-flex justify-end gap-x-2">
+                        <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2">
                             <button @click="openEditPreprojectModal(item)" class="text-green-600 hover:underline mb-4 flex items-start">
                                 <PencilIcon class="h-4 w-4" />
                             </button>
@@ -192,9 +192,10 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 
 
-const { preprojects, visits} = defineProps({
+const { preprojects, visits, auth} = defineProps({
     preprojects: Object,
     visits: Object,
+    auth:Object
 })
 
 const initial_state = {

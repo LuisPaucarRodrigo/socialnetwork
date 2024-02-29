@@ -15,10 +15,6 @@
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formation_program.name }}</dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Tipo</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formation_program.type }}</dd>
-                </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Descripcion</dt>
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formation_program.description
                     }}</dd>
@@ -31,20 +27,20 @@
                 <div class="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
                     <!-- Capacitaciones -->
                     <div>
-                        <div class="text-sm font-medium leading-6 text-gray-900">Capacitaciones</div>
-                        <div v-for="training in formation_program.trainings" :key="training.id" class="mb-5">
-                            <p class="mt-1 text-sm leading-6 text-gray-700">{{ training.name }}</p>
+                        <div class="text-sm font-medium leading-6 text-gray-900 mb-3">Capacitaciones</div>
+                        <div v-for="training in formation_program.trainings" :key="training.id" class="mb-1">
+                            <p class="mt-1 text-sm leading-6 text-gray-700">- {{ training.name }}</p>
                         </div>
                     </div>
 
                     <!-- Empleados -->
                     <div>
-                        <div class="text-sm font-medium leading-6 text-gray-900">Empleados</div>
+                        <div class="text-sm font-medium leading-6 text-gray-900 mb-3">Empleados</div>
                         <div v-for="employee in formation_program.employees" :key="employee.id"
                             class="flex items-center justify-between mt-1 text-sm leading-6 text-gray-700 sm:mt-0">
                             <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
                             <button @click="openModalDelete(employee)" class="ml-2 flex-shrink-0">
-                                <TrashIcon class="h-6 w-6 text-red-500" />
+                                <TrashIcon class="h-5 w-5 text-red-500" />
                             </button>
                         </div>
                     </div>
@@ -86,16 +82,8 @@ import { Head, router } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import Swal from 'sweetalert2';
 import Modal from '@/Components/Modal.vue';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 
-const formatMonthYear = (fullDate) => {
-    const date = new Date(fullDate);
-    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-    const month = monthNames[date.getMonth()];
-
-    const year = date.getFullYear();
-    return `${month} ${year}`;
-};
 const { formation_program } = defineProps(['formation_program']);
 
 const delete_employee = (id) => {

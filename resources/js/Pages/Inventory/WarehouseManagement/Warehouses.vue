@@ -114,13 +114,12 @@
         </form>
       </div>
     </Modal>
-   
+
     <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Almacén" :deleteFunction="deleteWarehouse"
       @closeModal="closeModalDoc" />
     <ConfirmCreateModal :confirmingcreation="showModal" itemType="Almacén" />
 
   </AuthenticatedLayout>
-  
 </template>
   
 <script setup>
@@ -166,7 +165,6 @@ const headerArray = [
 let filteredHeaders = [];
 
 onMounted(() => {
-  // Filtra los headers y elimina los que tienen id en headerArray
   filteredHeaders = props.headers.filter(header => !headerArray.includes(header.id));
 });
 

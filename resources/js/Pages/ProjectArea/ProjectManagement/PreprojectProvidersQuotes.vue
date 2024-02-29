@@ -6,18 +6,18 @@
       </template>
       <div class="inline-block min-w-full border-b-2 border-gray-200">
         <div class="flex gap-4 mb-2">
-          <button v-if="!preproject.has_quote" @click="openCreateDocumentModal" type="button"
+          <button v-if="auth.user.role_id === 1 || !preproject.has_quote" @click="openCreateDocumentModal" type="button"
             class="rounded-md bg-indigo-500 px-4 py-2 text-center text-sm text-white hover:bg-indigo-300">
              + Agregar
           </button>
         </div>
-        <div class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+        <div v-if="auth.user.role_id === 1 && preproject.has_quote" class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
           <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
           </svg>
           <span class="sr-only">Info</span>
           <div>
-            <span class="font-small">Solo se puede hacer cambios cuando NO exista una cotización para el proyecto</span> 
+            <span class="font-small">Ya se hizo una cotización del proyecto en base a estas cotizaciones de proveedores</span> 
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@
                  class="flex items-center text-blue-600 hover:underline">
                 <ArrowDownIcon class="h-4 w-4 ml-1" />
             </a>
-            <button @click="openDeleteModal(item.id)" class="flex items-center text-red-600 hover:underline">
+            <button v-if="auth.user.role_id === 1"  @click="openDeleteModal(item.id)" class="flex items-center text-red-600 hover:underline">
                 <TrashIcon class="h-4 w-4" />
             </button>
             </div>
@@ -87,7 +87,8 @@
   
   const { preproject, providersquotes} = defineProps({
     providersquotes: Object,
-    preproject: Object
+    preproject: Object,
+    auth: Object
   });
 
   const initial_state = {
