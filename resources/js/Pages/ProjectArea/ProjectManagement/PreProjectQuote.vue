@@ -223,18 +223,11 @@
                                             </tbody>
                                         </table>
                                     </div>
-
-
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
-
 
                 <div class="mt-3 flex items-center justify-end gap-x-6">
                         <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
@@ -329,10 +322,9 @@
         <SuccessOperationModal :confirming="showItemRemoveModal" :title="`Item de valorización removido.`"
             :message="`El item de valorización fue removido.`" />
 
-        <AcceptModal :acceptFunction="approve" :confirmingAccept="showConfirmAccept" @closeModal="closeConfirmAccept" :itemType="`Cotización`"
-             />
-        <ConfirmAcceptModal :confirmingaccept="showFinishAccept" :itemType="`Cotización`"
-             />
+        <AcceptModal :acceptFunction="approve" :confirmingAccept="showConfirmAccept" @closeModal="closeConfirmAccept"
+            :itemType="`Cotización`" />
+        <ConfirmAcceptModal :confirmingaccept="showFinishAccept" :itemType="`Cotización`" />
 
     </AuthenticatedLayout>
 </template>
@@ -481,7 +473,7 @@ const deleteAlreadyItem = (id, index) => {
 
 const approve = () => {
     let url = route('preprojects.accept', { quote_id: preproject.quote.id });
-    
+
     router.post(url, {
         state: '1'
     }, {

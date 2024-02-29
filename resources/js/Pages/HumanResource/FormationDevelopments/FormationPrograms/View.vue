@@ -82,7 +82,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import Swal from 'sweetalert2';
 import Modal from '@/Components/Modal.vue';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 
 const { formation_program } = defineProps(['formation_program']);
 

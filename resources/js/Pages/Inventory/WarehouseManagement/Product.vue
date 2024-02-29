@@ -12,14 +12,13 @@
                 </button>
                 <div class="flex items-center">
                     <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                            d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <input
-                        type="text"
-                        placeholder="Buscar por nombre..."
+                    <input type="text" placeholder="Buscar por nombre..."
                         class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        @input="updateFilteredProducts"
-                    />
+                        @input="updateFilteredProducts" />
                 </div>
             </div>
             <br>
@@ -49,7 +48,8 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
-                            <th v-if="Object.values(productStates).some(value => value)" v-for="item in warehouseHeadersFiltered" :key="item.id"
+                            <th v-if="Object.values(productStates).some(value => value)"
+                                v-for="item in warehouseHeadersFiltered" :key="item.id"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 {{ item }}
                             </th>
@@ -105,8 +105,8 @@
                                 </div>
                             </td>
                             <template v-if="productStates[item.id]">
-                                <!-- Recorremos los encabezados filtrados específicos del producto -->
-                                <td v-for="header in item.product_headers.filter(item => !excludedHeaderIds.includes(item.header_id))" :key="header.id" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <td v-for="header in item.product_headers.filter(item => !excludedHeaderIds.includes(item.header_id))"
+                                    :key="header.id" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <h3 class="text-sm font-semibold text-gray-700 max-w-xl">{{ header.content }}</h3>
                                 </td>
                             </template>
@@ -137,7 +137,7 @@ const props = defineProps({
     warehouse: Object
 });
 
-const productStates = ref({}); 
+const productStates = ref({});
 
 const getProductState = (productId) => {
     return productStates.value[productId] ?? false; // Si no existe, devolvemos false

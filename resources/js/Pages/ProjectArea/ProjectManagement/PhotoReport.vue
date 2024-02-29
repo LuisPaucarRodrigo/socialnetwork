@@ -168,9 +168,6 @@ const submit = () => {
   });
 };
 
-
-
-
 const openDeleteModal = () => {
   confirmReportDelete.value = true;
 }
@@ -187,7 +184,6 @@ const deleteDocument = (id) => {
 function openPreviewDocumentModal(name) {
   documentToShow.value = name;
   const url = route('preprojects.photoreport.show', { report_name: name });
-  // Abrir la URL en una nueva pestaña
   window.open(url, '_blank');
 }
 

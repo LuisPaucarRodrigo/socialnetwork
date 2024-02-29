@@ -8,14 +8,13 @@
             stroke-linejoin="round" />
         </svg>
       </button>
-      <a :href="route(redirectRoute ? redirectRoute:'management.employees.formation_development')" class="ml-4 text-gray-500 focus:outline-none">
+      <a :href="redirectRoute ? getRoute() : 'management.employees.formation_development'"
+        class="ml-4 text-gray-500 focus:outline-none">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
       </a>
-
     </div>
-
     <div class="flex items-center">
       <dropdown>
         <template #trigger>
@@ -93,8 +92,16 @@ import Modal from '@/Components/Modal.vue';
 import * as XLSX from 'xlsx';
 
 const props = defineProps({
-  redirectRoute: String
+  redirectRoute: [String, Object]
 })
+
+const getRoute = () => {
+  if (typeof props.redirectRoute === 'string') {
+    return route(props.redirectRoute);
+  } else {
+    return route(props.redirectRoute.route, props.redirectRoute.params);
+  }
+};
 
 const showModalSchedule = ref(false);
 const excelData = ref(null);
