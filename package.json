@@ -33,7 +33,6 @@
         "pdfvuer": "^2.0.1",
         "sweetalert2": "^11.10.1",
         "vue-chartjs": "^5.3.0",
-        "vuetify": "^3.5.6",
         "xlsx": "^0.18.5"
     }
 }
