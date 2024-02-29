@@ -14,12 +14,9 @@
                             <PlusCircleIcon class="text-lg text-indigo-800 h-7 w-7 hover:text-purple-400" />
                         </button>
                     </div>
-
                     <div class="mt-7">
-
-
                         <div class="overflow-x-auto ">
-                            <table  class="w-full whitespace-no-wrap">
+                            <table class="w-full whitespace-no-wrap">
                                 <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -55,25 +52,27 @@
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">
-                                                {{ resource.quantity  }}
+                                                {{ resource.quantity }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.resource.unit_price }}</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.resource.unit_price
+                                            }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.unit_price }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p v-if="resource.has_liquidation" class="col-span-2 text-indigo-500 flex justify-end">
+                                            <p v-if="resource.has_liquidation"
+                                                class="col-span-2 text-indigo-500 flex justify-end">
                                                 Liquidado
                                             </p>
                                             <div v-if="!resource.has_liquidation" class="flex gap-2">
-                                                <button  type="button"
+                                                <button type="button"
                                                     @click="delete_resource(resource.resource.id, resource.id)"
                                                     class="flex justify-center ">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                        stroke="#3540A7" class="w-6 h-6">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                        stroke-width="1.5" stroke="#3540A7" class="w-6 h-6">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                                     </svg>
@@ -107,7 +106,7 @@
                     <div class="mt-7">
                         <div v-if="historialSelect === 'Liquidación'" class="overflow-x-auto ">
 
-                            <table  class="w-full whitespace-no-wrap">
+                            <table class="w-full whitespace-no-wrap">
                                 <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -134,8 +133,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in liquidations" :key="item.id"
-                                        class="text-gray-700">
+                                    <tr v-for="item in liquidations" :key="item.id" class="text-gray-700">
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p>
                                                 {{ item.project_resource.resource.description }}
@@ -188,8 +186,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="resource_historial in project.resource_historials" :key="resource_historial.id"
-                                        class="text-gray-700">
+                                    <tr v-for="resource_historial in project.resource_historials"
+                                        :key="resource_historial.id" class="text-gray-700">
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p
                                                 :class="{ 'text-green-600': resource_historial.type === 'Asignamiento', 'text-red-600': resource_historial.type === 'Devolución' }">
@@ -199,14 +197,16 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">{{
                                                 resource_historial.resource.unique_identification }} - {{
-            resource_historial.resource.description }}
+        resource_historial.resource.description }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource_historial.quantity }}</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource_historial.quantity }}
+                                            </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource_historial.observation }}</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource_historial.observation }}
+                                            </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">{{
@@ -231,7 +231,8 @@
                             <div class="flex justify-start items-center">
                                 <InputLabel for="resource_id" class="font-medium leading-6 text-gray-900">Activos
                                 </InputLabel>
-                                <InputLabel v-if="form.resource_id !== ''" class="font-medium leading-6 text-slate-500  ml-auto">Disponible: {{ maxQuantityVal }}
+                                <InputLabel v-if="form.resource_id !== ''"
+                                    class="font-medium leading-6 text-slate-500  ml-auto">Disponible: {{ maxQuantityVal }}
                                 </InputLabel>
                             </div>
                             <div class="mt-2">
@@ -245,7 +246,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="sm:col-span-3">
                             <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                             <div class="mt-2">
@@ -254,7 +254,6 @@
                                     v-model="form.quantity" />
                             </div>
                         </div>
-
                         <div v-if="input_rent" class="sm:col-span-3">
                             <InputLabel for="input_rent" class="font-medium leading-6 text-gray-900">Precio unitario de
                                 Alquiler
@@ -265,7 +264,6 @@
                                     v-model="form.unit_price" />
                             </div>
                         </div>
-
                         <div class="sm:col-span-3">
                             <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
                             </InputLabel>
@@ -283,7 +281,6 @@
                     </div>
                 </form>
             </Modal>
-
             <SuccessOperationModal :confirming="successAsignation" title="Recurso asignado"
                 message="La asignación fue exitosa" />
 
@@ -302,7 +299,6 @@
                                     v-model="form_to_returned.quantity" />
                             </div>
                         </div>
-
                         <div class="sm:col-span-3">
                             <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
                             </InputLabel>
@@ -312,7 +308,6 @@
                                     v-model="form_to_returned.observation" />
                             </div>
                         </div>
-
                     </div>
                     <div class="mt-6 flex gap-3 justify-end">
                         <SecondaryButton type="button" @click="returned_closeModal"> Cerrar </SecondaryButton>
@@ -320,10 +315,7 @@
                     </div>
                 </form>
             </Modal>
-
             <SuccessOperationModal :confirming="successReturn" title="Recurso devuelto" message="La devolución exitosa" />
-
-
             <Modal :show="showModalLiquidate">
                 <form class="p-6" @submit.prevent="submitLiquidate">
                     <h2 class="text-lg font-medium text-gray-900">
@@ -373,12 +365,6 @@
             </Modal>
             <SuccessOperationModal :confirming="successAsignationLiquidate" title="Recurso liquidado"
                 message="La liquidación fue exitosa" />
-        </div>
-        <div class="mt-6 flex items-center justify-between gap-x-6">
-            <a :href="route('projectmanagement.index')"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Atras
-            </a>
         </div>
     </AuthenticatedLayout>
 </template>
@@ -473,8 +459,8 @@ const returned_submit = () => {
 
 const maxQuantityVal = ref(0)
 const conditional_rent = (event) => {
-    let resFounded =  resources.find(item => item.id == event.target.value)
-    if(resFounded) maxQuantityVal.value = resFounded.leftover
+    let resFounded = resources.find(item => item.id == event.target.value)
+    if (resFounded) maxQuantityVal.value = resFounded.leftover
     resFounded.conditional_rent == true ? input_rent.value = true : input_rent.value = false;
 }
 

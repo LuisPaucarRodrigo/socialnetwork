@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
             Gestión de Anteproyectos
         </template>

@@ -191,5 +191,4 @@ const reject_quote = (id) => {
     })
 }
 
-
 </script>

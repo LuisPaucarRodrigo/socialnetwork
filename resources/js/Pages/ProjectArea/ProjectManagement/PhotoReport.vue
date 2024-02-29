@@ -122,8 +122,6 @@ const { documents, preproject, photoreport } = defineProps({
   preproject: Object
 });
 
-console.log(preproject)
-
 const initial_state = {
   excel_report: null,
   pdf_report: null,
@@ -169,9 +167,6 @@ const submit = () => {
   });
 };
 
-
-
-
 const openDeleteModal = () => {
   confirmReportDelete.value = true;
 }
@@ -188,7 +183,6 @@ const deleteDocument = (id) => {
 function openPreviewDocumentModal(name) {
   documentToShow.value = name;
   const url = route('preprojects.photoreport.show', { report_name: name });
-  // Abrir la URL en una nueva pestaña
   window.open(url, '_blank');
 }
 

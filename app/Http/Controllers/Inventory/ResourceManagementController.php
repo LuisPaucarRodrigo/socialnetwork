@@ -70,8 +70,6 @@ class ResourceManagementController extends Controller
         return back();
     }
 
-
-
     public function resource_description_store (Request $request){
         $data = $request->validate([
             'name'=>'required'
@@ -79,6 +77,7 @@ class ResourceManagementController extends Controller
         ResourceDescription::create($data);
         return redirect()->back();
     }
+
     public function resource_category_store (Request $request){
         $data = $request->validate([
             'name'=>'required'

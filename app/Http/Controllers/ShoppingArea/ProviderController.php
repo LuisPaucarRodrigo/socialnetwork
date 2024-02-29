@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProviderRequest\UpdateProviderRequest;
 use App\Http\Requests\ProviderRequest\CreateProviderRequest;
 use App\Models\Provider;
+use App\Models\ProviderCategory;
+use App\Models\ProviderSegment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -19,7 +21,13 @@ class ProviderController extends Controller
 
     public function create()
     {
-        return Inertia::render('ShoppingArea/ProviderManagement/ProviderCreate');
+        return Inertia::render(
+            'ShoppingArea/ProviderManagement/ProviderCreateAndUpdate',
+            [
+                'category' => ProviderCategory::all(),
+                'segment' => ProviderSegment::all(),
+            ]
+        );
     }
 
     public function store(CreateProviderRequest $request)
@@ -30,7 +38,11 @@ class ProviderController extends Controller
 
     public function edit($id)
     {
-        return Inertia::render('ShoppingArea/ProviderManagement/ProviderEdit', ['providers' => Provider::find($id)]);
+        return Inertia::render('ShoppingArea/ProviderManagement/ProviderCreateAndUpdate', [
+            'providers' => Provider::find($id),
+            'category' => ProviderCategory::all(),
+            'segment' => ProviderSegment::all()
+        ]);
     }
 
     public function update(UpdateProviderRequest $request, $id)
@@ -45,5 +57,21 @@ class ProviderController extends Controller
     public function destroy($id)
     {
         Provider::destroy($id);
+    }
+
+    public function category_provider(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required'
+        ]);
+        ProviderCategory::create($data);
+    }
+
+    public function segment_provider(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required'
+        ]);
+        ProviderSegment::create($data);
     }
 }
