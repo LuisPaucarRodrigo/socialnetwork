@@ -24,7 +24,7 @@
                 <Link :href="route('warehouses.warehouse', { warehouse: item })" class="text-green-600 hover:underline">
                 <EyeIcon class="h-4 w-4 ml-1" />
                 </Link>
-                <button @click="confirmDeleteWarehouse(item.id)" class="text-red-600 hover:underline">
+                <button v-if="admin" @click="confirmDeleteWarehouse(item.id)" class="text-red-600 hover:underline">
                   <TrashIcon class="h-4 w-4" />
                 </button>
               </div>
@@ -138,7 +138,8 @@ import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 const props = defineProps({
   warehouses: Object,
   headers: Object,
-  warehouse_headers: Object
+  warehouse_headers: Object,
+  admin : Boolean
 });
 
 const form = useForm({
