@@ -38,7 +38,7 @@ class PermissionMiddleware
         if ($user->hasPermission('UserManager')) {
             return redirect ('/users');
         } elseif ($user->hasPermission('HumanResourceManager')) {
-            return redirect ('/management_employees');
+            return redirect ('/management_employees/index');
         } elseif ($user->hasPermission('FinanceManager')) {
             return redirect ('/finance/expencemanagement');
         } elseif ($user->hasPermission('InventoryManager')) {

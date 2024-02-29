@@ -70,7 +70,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3'
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 
 const showModal = ref(false);
 

@@ -1,8 +1,8 @@
 <template>
   <Head title="Detalles del Almacén" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.products', params: { warehouse: props.warehouse.id } }">
     <template #header>
-      Contenido de las cabeceras
+      Contenido de las cabecerass
     </template>
     <div class="">
       <form @submit.prevent="submit">
