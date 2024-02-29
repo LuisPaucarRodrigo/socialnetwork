@@ -42,7 +42,6 @@
     import InputLabel from '@/Components/InputLabel.vue';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { formattedDate } from '@/utils/utils';
-
     const props = defineProps(['product', 'headers']);
   </script>
   

@@ -24,7 +24,7 @@
                 </svg>
                 <span class="sr-only">Info</span>
                 <div>
-                    <span class="font-medium">Importante:</span> Los registros son del mes actual
+                    <span class="font-medium">Importante:</span> Los registros son del MES ACTUAL
                 </div>
             </div>
 
@@ -74,7 +74,7 @@
                                 class="w-5 border-2 border-gray-200 bg-gray-100 px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Haber
                             </th>
-                            <th
+                            <th v-if="auth.user.role_id === 1"
                                 class="w-4 border-2 border-gray-200 bg-gray-100 px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -112,7 +112,7 @@
                                 <p class="text-gray-900">{{ item.total_type == 'Haber' ? (item.total).toFixed(2) : '' }}</p>
                             </td>
 
-                            <td class="border border-gray-200 bg-white px-3 py-2 text-sm">
+                            <td v-if="auth.user.role_id === 1" class="border border-gray-200 bg-white px-3 py-2 text-sm">
                                 <div class="flex space-x-3 justify-center">
                                     <button type="button" @click="openAddEditModal(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -322,7 +322,8 @@ import { formattedDate } from '@/utils/utils'
 
 const { deposits, accounts } = defineProps({
     deposits: Object,
-    accounts: Object
+    accounts: Object,
+    auth: Object
 })
 
 const initialState = {
