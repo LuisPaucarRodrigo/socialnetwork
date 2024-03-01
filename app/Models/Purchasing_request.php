@@ -12,10 +12,10 @@ class Purchasing_request extends Model
     use HasFactory;
     protected $fillable = [
         'title', 
-        'product_description', 
         'due_date', 
         'project_id',
         'is_accepted',
+        'code',
     ];
 
     protected $appends = ['state'];
@@ -41,7 +41,15 @@ class Purchasing_request extends Model
         return 'Completada';
     }
 
+    public function purchasing_request_product()
+    {
+        return $this->hasMany(Purchasing_requests_product::class);
+    }
 
+    public function products()
+    {
+        return $this->belongsToMany(Purchase_product::class, 'purchasing_requests_products', 'purchasing_request_id', 'purchase_product_id')->withTimestamps();
+    }
 
 }
 

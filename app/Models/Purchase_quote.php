@@ -9,13 +9,17 @@ class Purchase_quote extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'provider',
-        'amount', 
         'quote_deadline', 
         'purchase_doc', 
         'response', 
         'state',
-        'purchasing_request_id'
+        'igv',
+        'deliverable_time',
+        'payment_type',
+        'account_number',
+        'code',
+        'purchasing_request_id',
+        'provider_id',
     ];
 
     public function provider()
