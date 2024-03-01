@@ -4,24 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
-class Purchase_order extends Model
+
+class Payment extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'amount', 
+        'description', 
         'state',
-        'purchase_quote_id', 
-        'code',
-        'facture_doc',
-        'facture_date',
-        'facture_number',
-        'remission_guide_doc',
-        'remission_guide_date',
-        'remission_guide_number',
+        'operation_number',
+        'date',
+        'payment_doc',
+        'purchase_quote_id'
     ];
 
     public function purchase_quote()
     {
         return $this->belongsTo(Purchase_quote::class, 'purchase_quote_id');
     }
+
 }
+
