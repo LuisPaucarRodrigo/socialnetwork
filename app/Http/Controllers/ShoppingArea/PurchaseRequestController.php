@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseQuoteRequest\CreatePurchaseQuoteRequest;
 use App\Http\Requests\PurchaseRequest\CreatePurchaseRequest;
 use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
+use App\Models\Project;
+use App\Models\Purchase_product;
+use App\Models\Purchasing_requests_product;
 use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Purchase_order;
@@ -20,36 +23,49 @@ class PurchaseRequestController extends Controller
     {
         $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
-            'purchases' => Purchasing_request::with('project')->paginate(),
+            'purchases' => Purchasing_request::with('project')->orderBy('created_at', 'desc')->paginate(),
             'admin' => $hasAllPermissions
         ]);
     }
 
-    public function create()
+    public function create($project_id= null)
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest');
+        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+            'allProducts'=>Purchase_product::all(),
+            'project' => Project::find($project_id),
+        ]);
     }
 
     public function store(CreatePurchaseRequest $request)
     {
         $validateData = $request->validated();
-        Purchasing_request::create($validateData);
+        $prToCreate = Purchasing_request::create($validateData);
+        $pr_products = $request->products;
+        foreach($pr_products as $item) {
+            Purchasing_requests_product::create([
+                'purchase_product_id'=> $item['id'],
+                'purchasing_request_id'=> $prToCreate->id,
+                'quantity' => $item['quantity'],
+            ]);
+        }
     }
 
-    public function edit($id)
+    public function edit($id, $project_id=null)
     {
-        $purchases = Purchasing_request::find($id);
+        $purchase = Purchasing_request::with('products')->find($id);
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
-            'purchases' => $purchases,
+            'purchase' => $purchase,
+            'allProducts'=>Purchase_product::all(),
+            'project' => Project::find($project_id),
         ]);
     }
     public function update(UpdatePurchaseRequest $request, $id)
     {   
         $validateData = $request->validated();
-        $purchases = Purchasing_request::findOrFail($id);
+        $purchases = Purchasing_request::with('project')->findOrFail($id);
         $purchases->update($validateData);
 
-        return to_route('purchasesrequest.index');
+        return redirect()->back();
     }
 
     public function index_quotes(Purchasing_request $id)
@@ -72,13 +88,9 @@ class PurchaseRequestController extends Controller
         return redirect()->back();
     }
 
-    public function details(Purchasing_request $id)
+    public function details($id)
     {
-        if ($id->project_id) {
-            return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project')->find($id->id)]);
-        } else {
-            return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::find($id->id)]);
-        }
+        return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project','products')->find($id)]);
     }
 
     public function quote(CreatePurchaseQuoteRequest $request)
@@ -149,6 +161,25 @@ class PurchaseRequestController extends Controller
             'purchasesBetweenFourAndSevenDays' => $filteredPurchasesBetweenFourAndSevenDays,
             'totalPurchasesBetweenFourAndSevenDays' => $totalPurchasesBetweenFourAndSevenDays,
         ]);
+    }
+
+
+    //purchase request product
+    public function purchasing_request_product_store (Request $request) {
+        $data = $request->validate([
+            'purchase_product_id'=> 'required',
+            'purchasing_request_id'=> 'required',
+            'quantity'=> 'required',
+        ]);
+        $newProduct = Purchasing_requests_product::create($data);
+        return response()->json([
+            'newProductId' => $newProduct->id,
+        ], 200);
+    }
+
+    public function purchasing_request_product_delete ($purchasing_request_product_id) {
+        Purchasing_requests_product::find($purchasing_request_product_id)->delete();
+        return redirect()->back();
     }
 
 }

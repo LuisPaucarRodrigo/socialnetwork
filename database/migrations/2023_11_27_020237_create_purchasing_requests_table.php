@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('title');
             $table->date('due_date');
             $table->boolean('is_accepted')->default(true);
-            $table->string('code');
             $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->timestamps();
         });

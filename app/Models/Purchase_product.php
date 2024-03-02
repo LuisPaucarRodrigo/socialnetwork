@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 class Purchase_product extends Model
 {
     use HasFactory;
+    protected $table = "purchase_products";
     protected $fillable = [
         'name', 
         'code', 

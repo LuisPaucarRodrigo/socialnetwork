@@ -15,10 +15,9 @@ class Purchasing_request extends Model
         'due_date', 
         'project_id',
         'is_accepted',
-        'code',
     ];
 
-    protected $appends = ['state'];
+    protected $appends = ['state', 'code'];
 
     public function project()
     {
@@ -48,7 +47,11 @@ class Purchasing_request extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Purchase_product::class, 'purchasing_requests_products', 'purchasing_request_id', 'purchase_product_id')->withTimestamps();
+        return $this->belongsToMany(Purchase_product::class, 'purchasing_requests_products', 'purchasing_request_id', 'purchase_product_id')->withPivot('id','quantity');
+    }
+
+    public function getCodeAttribute() {
+        return 'SC' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
 
 }
