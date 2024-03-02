@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\PurchaseRequest;
 
+use App\Models\Purchasing_request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreatePurchaseRequest extends FormRequest
@@ -21,10 +22,14 @@ class CreatePurchaseRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => 'required|string',
-            'product_description' => 'required|string',
             'due_date' => 'required|date',
+            'products' => 'required|array',
         ];
+        if (!is_null($this->input('project_id'))) {
+            $rules['project_id'] = 'required';
+        }
+        return $rules;
     }
 }

@@ -200,7 +200,7 @@ class ProjectManagementController extends Controller
 
     public function project_purchases_request_index($project_id)
     {
-        $purchases = Purchasing_request::where('project_id', $project_id)->paginate();
+        $purchases = Purchasing_request::with('project')->where('project_id', $project_id)->paginate();
         return Inertia::render('ProjectArea/ProjectManagement/PurchaseRequest', [
             'purchases' => $purchases,
             'project_id' => $project_id,

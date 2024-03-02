@@ -241,7 +241,7 @@
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <div class="relative">
                         <button @click="tooglePurchaseRequest"><span v-if="shoppingPurchasesTotal + shoppingPurchasesTotal7 > 0" class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{ shoppingPurchasesTotal + shoppingPurchasesTotal7 }}</span></button>
-                        <Link class="w-full" :href="route('purchasesrequest.index')">Cotizaciones</Link>
+                        <Link class="w-full" :href="route('purchasesrequest.index')">Solicitudes</Link>
                     </div>
                 </MyTransition>
                 <template v-if="hasPermission('UserManager') && showShoppingPurchaseRequestAlarms">
@@ -520,7 +520,6 @@ export default {
             this.showFinancePurchaseQuoteAlarms = !this.showFinancePurchaseQuoteAlarms;
         },
         tooglePurchaseRequest() {
-            console.log(this.shoppingPurchases);
             this.showShoppingPurchaseRequestAlarms = !this.showShoppingPurchaseRequestAlarms;
         }
         

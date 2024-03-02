@@ -208,7 +208,6 @@ const confirmUpdate = async () => {
     showModal.value = false;
 }
 
-const borderColor = ref('')
 function setBorderColor (date) {
     const fechaString = date;
     const [year, month, day] = fechaString.split('-');

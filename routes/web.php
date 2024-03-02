@@ -154,6 +154,13 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
 
 
+
+
+
+    Route::post('/purchasing_request_product_store', [PurchaseRequestController::class,'purchasing_request_product_store'])->name('purchasing_request_product.store');
+    Route::delete('/purchasing_request_product_delete/{purchasing_request_product_id}', [PurchaseRequestController::class,'purchasing_request_product_delete'])->name('purchasing_request_product.delete');
+
+
 });
 
 Route::middleware('auth', 'permission:HumanResourceManager')->group(function () {
@@ -428,9 +435,9 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
 Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest', [PurchaseRequestController::class, 'index'])->name('purchasesrequest.index');
-    Route::get('/shopping_area/purchasesrequest/create_request', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
+    Route::get('/shopping_area/purchasesrequest/create_request/{project_id?}', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
     Route::post('/shopping_area/purchasesrequest/store_request', [PurchaseRequestController::class, 'store'])->name('purchasesrequest.store');
-    Route::get('/shopping_area/purchasesrequest/edit/{id}', [PurchaseRequestController::class, 'edit'])->name('purchasesrequest.edit');
+    Route::get('/shopping_area/purchasesrequest/edit/{id}/{project_id?}', [PurchaseRequestController::class, 'edit'])->name('purchasesrequest.edit');
     Route::put('/shopping_area/purchasesrequest/update/{id}', [PurchaseRequestController::class, 'update'])->name('purchasesrequest.update');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}', [PurchaseRequestController::class, 'index_quotes'])->name('purchasesrequest.quotes');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}/preview', [PurchaseRequestController::class, 'showDocument'])->name('purchasesrequest.show');
