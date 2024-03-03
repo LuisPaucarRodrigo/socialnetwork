@@ -133,7 +133,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, onMounted } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   warehouses: Object,
@@ -150,14 +150,7 @@ const form = useForm({
   header_ids: [],
 });
 
-const formEdit = useForm({
-  id: '',
-  name: '',
-  location: '',
-  manager: '',
-  header_ids: [],
-  headers: null
-});
+
 
 const headerArray = [
   1, 5, 7, 8, 10, 12, 15, 29, 32
@@ -171,7 +164,6 @@ onMounted(() => {
 
 const create_warehouse = ref(false);
 const showModal = ref(false);
-const showModalEdit = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 
-class Purchase_product extends Model
+class Purchase_quotes_product extends Model
 {
     use HasFactory;
     protected $fillable = [

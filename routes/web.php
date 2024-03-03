@@ -30,6 +30,7 @@ use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
 use App\Http\Controllers\Inventory\WarehousesController;
 use App\Http\Controllers\Inventory\ProductController;
+use App\Http\Controllers\Inventory\PurchaseProductsController;
 use App\Http\Controllers\ProjectArea\CustomerVisitController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -318,7 +319,11 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/warehouses/{warehouse}/outputs_history', [ProductController::class, 'outputs_history_index'])->name('warehouses.outputs_history');
     Route::delete('/inventory/warehouses/output_delete/{output}', [ProductController::class, 'output_delete'])->name('warehouses.output_delete');
     
-
+    //purchase_products
+    Route::get('/inventory/purchase_products/products', [PurchaseProductsController::class, 'index'])->name('inventory.purchaseproducts');
+    Route::post('/inventory/purchase_products/products/post', [PurchaseProductsController::class, 'store'])->name('inventory.purchaseproducts.store');
+    Route::put('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
+    Route::delete('/inventory/purchase_products/products/{purchase_product}/destroy', [PurchaseProductsController::class, 'destroy'])->name('inventory.purchaseproducts.destroy');
 
 });
 
