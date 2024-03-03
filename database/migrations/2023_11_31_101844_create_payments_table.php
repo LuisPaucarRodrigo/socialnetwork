@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('operation_number')->nullable();
             $table->date('date')->nullable();
             $table->string('payment_doc')->nullable();
-            $table->foreignId('purchase_quote_id')->constrained(' purchase_quotes')->onDelete('cascade');
+            $table->foreignId('purchase_quote_id')->constrained('purchase_quotes')->onDelete('cascade');
             $table->timestamps();
         });
     }

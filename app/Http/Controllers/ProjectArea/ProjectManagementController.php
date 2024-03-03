@@ -231,6 +231,10 @@ class ProjectManagementController extends Controller
             'due_date' => 'required',
             'project_id' => 'required',
         ]);
+
+        $lastRequestId = Purchasing_request::latest()->first()->id ?? 0;
+        $data['code'] = 'SC' . str_pad($lastRequestId + 1, 5, '0', STR_PAD_LEFT);
+    
         if ($request->id) {
             if( Auth::user()->role_id !== 1) return response()->json(['error' => 'No tiene permisos'], 500);
             $purchase_request = Purchasing_request::find($request->id);

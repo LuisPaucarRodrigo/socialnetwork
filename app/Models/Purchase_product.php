@@ -24,7 +24,7 @@ class Purchase_product extends Model
 
     public function purchase_quote_product() 
     {
-        return $this->hasMany(Purchase_quote_product::class);
+        return $this->hasMany(Purchase_quotes_product::class);
     }
 
     public function purchasing_requests()
