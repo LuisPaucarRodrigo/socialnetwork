@@ -190,6 +190,9 @@
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('warehouses.warehouses')">Gestión de Almacenes</Link>
                 </MyTransition>
+                <MyTransition :transitiondemonstration="showingInventory">
+                    <Link class="w-full" :href="route('inventory.purchaseproducts')">Registro de Productos</Link>
+                </MyTransition>
             </template>
 
             <template v-if="hasPermission('ProjectManager') || hasPermission('Project')">
