@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ExpenseRequest\ReviewedExpenseRequest;
 use App\Models\Purchase_order;
 use App\Models\Purchase_quote;
+use App\Models\Payment;
 use App\Models\Purchasing_request;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ class ExpenseManagementController extends Controller
 
     public function reviewed(ReviewedExpenseRequest $request, $id) {
         $data = $request->validated();
+        dd($data);
         Purchase_quote::find($id)->update($data);
         $date_issue = Carbon::today();
         if($data['state']){
