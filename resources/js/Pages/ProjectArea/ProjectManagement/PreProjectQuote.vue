@@ -178,7 +178,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v v-for="(item, index) in (form.items)" :key="index"
+                                                <tr v-for="(item, index) in (form.items)" :key="index"
                                                     class="text-gray-700">
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p>

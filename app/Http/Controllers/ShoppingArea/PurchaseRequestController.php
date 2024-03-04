@@ -70,12 +70,7 @@ class PurchaseRequestController extends Controller
 
     public function index_quotes(Purchasing_request $id)
     {
-        $purchases = null;
-        if ($id->project_id) {
-            $purchases = Purchasing_request::with('project')->find($id->id);
-        } else {
-            $purchases = Purchasing_request::find($id->id);
-        }
+        $purchases = Purchasing_request::with('project', 'products')->find($id->id);
         return Inertia::render('ShoppingArea/PurchaseRequest/RequestQuotes', [
             'providers' => Provider::all(),
             'purchases' => $purchases
@@ -95,23 +90,19 @@ class PurchaseRequestController extends Controller
 
     public function quote(CreatePurchaseQuoteRequest $request)
     {
-        $imageName =  null;
+        $data = $request->validated();
         if ($request->hasFile('purchase_doc')) {
             $croppedImage = $request->file('purchase_doc');
             $imageName = 'purchase_doc' . time() . '.' . $croppedImage->getClientOriginalExtension();
             $croppedImage->move(public_path('documents/quote/'), $imageName);
+            $data['purchase_doc'] = $imageName;
         }
-
-        Purchase_quote::create([
-            'provider' => $request->provider,
-            'amount' => $request->amount,
-            'quote_deadline' => $request->quote_deadline,
-            'response' => $request->response,
-            'purchase_doc' => $imageName,
-            'purchasing_request_id' => $request->purchasing_request_id,
-        ]);
-
-        return to_route('purchasesrequest.index');
+        $purchaseQuote = Purchase_quote::create($data);
+        $cleanedProducts = array_map(function ($product) {
+            return array_intersect_key($product, array_flip(['quantity', 'unitary_amount']));
+        }, $data['products']);
+        $purchaseQuote->products()->sync($cleanedProducts);
+        return redirect()->back();
     }
 
     public function showDocument(Purchase_quote $id)

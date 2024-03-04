@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('purchase_quotes_products', function (Blueprint $table) {
             $table->id();
             $table->integer('quantity');
-            $table->double('amount', 10, 2);
+            $table->double('unitary_amount');
             $table->foreignId('purchase_quote_id')->constrained('purchase_quotes')->onDelete('cascade');
             $table->foreignId('purchase_product_id')->constrained('purchase_products')->onDelete('cascade');
             $table->timestamps();
