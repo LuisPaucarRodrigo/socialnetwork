@@ -417,7 +417,7 @@ const submit = () => {
                 successRegistration.value = true
                 setTimeout(()=> {
                     successRegistration.value = false
-                    router.visit('purchasesrequest.index')
+                    router.visit(route('purchasesrequest.index'))
                 },1500)
             }
         })
