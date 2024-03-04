@@ -26,7 +26,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/vue3';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 
 const { project } = defineProps(['project']);

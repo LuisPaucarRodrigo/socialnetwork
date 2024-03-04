@@ -83,7 +83,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import {formattedDate} from '@/utils/utils.js';
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ExpenseRequest\ReviewedExpenseRequest;
+use App\Models\Payment;
 use App\Models\Purchase_order;
 use App\Models\Purchase_quote;
 use App\Models\Purchasing_request;
@@ -24,38 +25,21 @@ class ExpenseManagementController extends Controller
     
 
     public function reviewed(ReviewedExpenseRequest $request, $id) {
+        dd($request->all());
         $data = $request->validated();
         Purchase_quote::find($id)->update($data);
         $date_issue = Carbon::today();
         if($data['state']){
+            Payment::create([
+                'amount' => $data['amount'],
+                'description' => $data['description']
+            ]);
             Purchase_order::create([
                 'date_issue' => $date_issue,
                 'purchase_quote_id' => $id
             ]);
         }
         return redirect()->back();
-
-        // $purchaseQuote = Purchase_quote::with('purchasing_requests')->find($id);
-        // if ($request->state == "Aceptado") {
-        //     $date_issue = Carbon::today();
-        //     Purchase_order::create([
-        //         'date_issue' => $date_issue,
-        //         'purchase_quote_id' => $id
-        //     ]);
-        //     $otherQuotes = Purchase_quote::where('id', '!=', $id)
-        //         ->whereHas('purchasing_requests', function ($query) use ($purchaseQuote) {
-        //             $query->where('purchasing_request_id', $purchaseQuote->purchasing_request_id);
-        //         })
-        //         ->get();
-        //     foreach ($otherQuotes as $otherQuote) {
-        //         $otherQuote->delete();
-        //     }
-
-        //     $purchaseQuote->purchasing_requests->update(['state' => 'Aceptado']);
-        // } else {
-        //     $purchaseQuote->delete();
-        // }
-        // return redirect()->route('managementexpense.index');
     }
 
     public function doTask()
@@ -91,6 +75,13 @@ class ExpenseManagementController extends Controller
             'totalPurchasesLessThanThreeDays' => $totalPurchasesLessThanThreeDays,
             'purchasesBetweenFourAndSevenDays' => $purchasesBetweenFourAndSevenDays,
             'totalPurchasesBetweenFourAndSevenDays' => $totalPurchasesBetweenFourAndSevenDays,
+        ]);
+    }
+
+    public function generate_payment($id)
+    {
+        return Inertia::render('Finance/ManagementExpense/GeneratePayments',[
+            'quote_id'=>$id
         ]);
     }
 

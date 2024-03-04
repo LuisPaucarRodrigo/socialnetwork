@@ -16,11 +16,15 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Descripcion
+                                Fecha de solicitud de compra
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de aprobacion de finanza
+                                Fecha de llegada de la compra
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Exportar Orden de Compra
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -34,11 +38,11 @@
                     </thead>
                     <tbody>
                         <tr v-for="order in orders.data" :key="order.id" :class="[
-                            'text-gray-700',{ 
-                                'border-l-8': true, 
-                                'border-green-500': order.state === 'Completada', 
-                                'border-red-500': setBorderColor(order.date_issue) && order.state !== 'Completada' === 'red' ,
-                                'border-yellow-500': setBorderColor(order.date_issue) === 'yellow' ,
+                            'text-gray-700', {
+                                'border-l-8': true,
+                                'border-green-500': order.state === 'Completada',
+                                'border-red-500': setBorderColor(order.date_issue) && order.state !== 'Completada' === 'red',
+                                'border-yellow-500': setBorderColor(order.date_issue) === 'yellow',
                             }
                         ]">
 
@@ -47,10 +51,24 @@
                                     order.purchase_quote.purchasing_requests.project?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ order.purchase_quote.response }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{
+                                    formattedDate(order.purchase_quote.purchasing_requests.due_date) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(order.date_issue) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(order.purchase_arrival_date) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex items-center">
+                                    <a :href="route('purchaseorders.export.order', { id: order.id })"
+                                        class="text-green-600 hover:underline">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                        </svg>
+                                    </a>
+                                </div>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                 <div class="flex items-center">
@@ -80,17 +98,91 @@
         </div>
         <Modal :show="showModal">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    ¿Estás seguro de completar la orden de compra?
-                </h2>
-                <p class="mt-1 text-sm text-gray-600">
-                    La orden de compra sera completada. Esta accion
-                    se podra revertir mas adelante.
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-                    <DangerButton class="ml-3" @click="confirmUpdate">Confirmar</DangerButton>
-                </div>
+                <form @submit.prevent="submit()">
+                    <div class="space-y-12">
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-base font-medium leading-7 text-gray-900">
+                                Factura
+                            </h2>
+                            <div>
+                                <InputLabel for="facture_number" class="mt-2 font-medium leading-6 text-gray-900">Numero de
+                                    Factura
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.facture_number" id="facture_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.facture_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="facture_date" class="mt-4 font-medium leading-6 text-gray-900">Fecha de Factura
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="form.facture_date" id="facture_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.facture_date" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="facture_doc" class="mt-4 font-medium leading-6 text-gray-900">Documento de
+                                    Factura
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <InputFile type="file" v-model="form.facture_doc" id="facture_doc"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.facture_doc" />
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-base font-medium leading-7 text-gray-900">
+                                Guia de Remision
+                            </h2>
+                            <div>
+                                <InputLabel for="remission_guide_doc" class="mt-2 font-medium leading-6 text-gray-900">Numero de Guia de Remision
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.remission_guide_doc" id="remission_guide_doc"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.remission_guide_doc" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="remission_guide_date" class="mt-4 font-medium leading-6 text-gray-900">Fecha de Factura
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="form.remission_guide_date" id="remission_guide_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.remission_guide_date" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="remission_guide_number" class="mt-4 font-medium leading-6 text-gray-900">Documento de
+                                    Factura
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <InputFile type="file" v-model="form.remission_guide_number" id="remission_guide_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.remission_guide_number" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton
+                                @click="closeModal()">
+                                Cancelar </SecondaryButton>
+                            <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </Modal>
 
@@ -134,9 +226,12 @@ import DangerButton from '@/Components/DangerButton.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import InputFile from '@/Components/InputFile.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
 
 const showModal = ref(false);
 const showCotization = ref(false);
@@ -148,6 +243,15 @@ const props = defineProps({
     orders: Object
 })
 
+const form = useForm({
+    facture_number: '',
+    facture_date: '',
+    facture_doc: null,
+    remission_guide_number: '',
+    remission_guide_date: '',
+    remission_guide_doc: null,
+})
+
 const cotization = {
     amount: null,
     provider: '',
@@ -157,7 +261,6 @@ const cotization = {
 };
 
 const openCotization = (order) => {
-    // Copia de los datos de la subsección existente al formulario
     quoteToOpen.value = JSON.parse(JSON.stringify(order.purchase_quote));
     cotization.amount = quoteToOpen.value.amount;
     cotization.provider = quoteToOpen.value.provider;
@@ -184,12 +287,13 @@ const updateState = async (stateid, newState) => {
     if (state.value === "Completada") {
         showModal.value = true;
     } else {
-        await sendStateUpdate(data);
+        await submit(data);
     }
 }
 
-const sendStateUpdate = async (data) => {
-    router.put(route('purchaseorders.state', { id: id.value }), data, {
+const submit = async (data = null) => {
+    const formdata = data ? data : form
+    router.put(route('purchaseorders.state', { id: id.value }), formdata, {
         onSuccess: () => {
             setTimeout(() => {
                 showModal.value = false;
@@ -203,28 +307,22 @@ const closeModal = () => {
     showModal.value = false
 }
 
-const confirmUpdate = async () => {
-    await sendStateUpdate({ state: "Completada" });
-    showModal.value = false;
-}
-
-const borderColor = ref('')
-function setBorderColor (date) {
+function setBorderColor(date) {
     const fechaString = date;
     const [year, month, day] = fechaString.split('-');
     const fecha = new Date(year, month - 1, day);
     const hoy = new Date()
     hoy.setUTCHours(hoy.getUTCHours() - 5)
     hoy.setHours(0, 0, 0, 0);
-    const diferenciaEnMilisegundos = fecha - hoy ;
+    const diferenciaEnMilisegundos = fecha - hoy;
     const diferenciaEnDias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
-    if(diferenciaEnDias<=3){
+    if (diferenciaEnDias <= 3) {
         return 'red'
-    } else if (4<=diferenciaEnDias<=7){
+    } else if (4 <= diferenciaEnDias <= 7) {
         return 'yellow'
-    } else{
+    } else {
         return ''
     }
-  }
+}
 
 </script>

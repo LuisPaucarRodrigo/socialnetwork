@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\ExpenseRequest;
+namespace App\Http\Requests\PaymentRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReviewedExpenseRequest extends FormRequest
+class CreatePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,9 @@ class ReviewedExpenseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'state' => 'required|boolean',
-            'payments' => 'sometimes|required|array',
+            'operation_number' => 'required|numeric',
+            'date' => 'requerid|date',
+            'payment_doc' => 'nullable|mimes:jpg,jpeg,pdf|max:2048',
         ];
     }
 }

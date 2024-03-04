@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
-            $table->date('date_issue');
             $table->string('state')->default('Pendiente');
             $table->foreignId('purchase_quote_id')->constrained()->onDelete('cascade');
+            $table->string('code');
+            $table->string('facture_doc')->nullable();
+            $table->date('facture_date')->nullable();
+            $table->string('facture_number')->nullable();
+            $table->string('remission_guide_doc')->nullable();
+            $table->date('remission_guide_date')->nullable();
+            $table->string('remission_guide_number')->nullable();
             $table->timestamps();
         });
     }
