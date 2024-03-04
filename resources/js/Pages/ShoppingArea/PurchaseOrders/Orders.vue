@@ -307,7 +307,7 @@ const closeModal = () => {
     showModal.value = false
 }
 
-function setBorderColor(date) {
+function setBorderColor (date) {
     const fechaString = date;
     const [year, month, day] = fechaString.split('-');
     const fecha = new Date(year, month - 1, day);

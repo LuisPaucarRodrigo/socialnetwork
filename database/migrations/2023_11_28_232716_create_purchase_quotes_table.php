@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('deliverable_time');
             $table->text('payment_type');
             $table->string('account_number'); 
-            $table->string('code');
+            $table->string('currency');
+            $table->double('change_value', 10,3)->nullable()->default(null);
             $table->foreignId('purchasing_request_id')->constrained()->onDelete('cascade');
             $table->foreignId('provider_id')->constrained('providers')->onDelete('cascade');
             $table->timestamps();
