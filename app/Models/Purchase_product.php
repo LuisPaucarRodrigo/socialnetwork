@@ -25,12 +25,16 @@ class Purchase_product extends Model
 
     public function purchase_quote_product() 
     {
-        return $this->hasMany(Purchase_quote_product::class);
+        return $this->hasMany(Purchase_quotes_product::class);
     }
 
-    public function purchasing_requests()
+    public function purchasing_request()
     {
         return $this->belongsToMany(Purchasing_request::class, 'purchasing_requests_products', 'purchase_product_id', 'purchasing_request_id')->withTimestamps();
+    }
+    public function purchase_quotes()
+    {
+        return $this->belongsToMany(Purchase_quote::class, 'purchase_quotes_products', 'purchase_product_id', 'purchase_quote_id')->withPivot('id','quantity','unitary_amount');
     }
 
 }

@@ -22,12 +22,16 @@ class CreatePurchaseQuoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'provider' => 'required|string',
-            'purchasing_request_id' => 'required|numeric',
-            'amount' => 'required|string|numeric',
             'quote_deadline' => 'required|date',
-            'response' => 'required|string',
-            'purchase_doc' => 'required|mimes:pdf|max:2048'
+            'purchase_doc' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
+            'igv' => 'required',
+            'deliverable_time' => 'required',
+            'payment_type' => 'required',
+            'account_number' => 'required',
+            'provider_id' => 'required',
+            'currency' => 'required',
+            'purchasing_request_id' => 'required|numeric',
+            'products'=> 'required|array',
         ];
     }
 }
