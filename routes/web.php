@@ -30,6 +30,7 @@ use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\InventoryControlController;
 use App\Http\Controllers\Inventory\WarehousesController;
 use App\Http\Controllers\Inventory\ProductController;
+use App\Http\Controllers\Inventory\PurchaseProductsController;
 use App\Http\Controllers\ProjectArea\CustomerVisitController;
 use App\Http\Controllers\ShoppingArea\PaymentController;
 use Illuminate\Foundation\Application;
@@ -153,6 +154,13 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     //SubSectionAlarmRRHH
     Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
     Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
+
+
+
+
+
+    Route::post('/purchasing_request_product_store', [PurchaseRequestController::class,'purchasing_request_product_store'])->name('purchasing_request_product.store');
+    Route::delete('/purchasing_request_product_delete/{purchasing_request_product_id}', [PurchaseRequestController::class,'purchasing_request_product_delete'])->name('purchasing_request_product.delete');
 
 
 });
@@ -320,7 +328,11 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/warehouses/{warehouse}/outputs_history', [ProductController::class, 'outputs_history_index'])->name('warehouses.outputs_history');
     Route::delete('/inventory/warehouses/output_delete/{output}', [ProductController::class, 'output_delete'])->name('warehouses.output_delete');
     
-
+    //purchase_products
+    Route::get('/inventory/purchase_products/products', [PurchaseProductsController::class, 'index'])->name('inventory.purchaseproducts');
+    Route::post('/inventory/purchase_products/products/post', [PurchaseProductsController::class, 'store'])->name('inventory.purchaseproducts.store');
+    Route::put('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
+    Route::delete('/inventory/purchase_products/products/{purchase_product}/destroy', [PurchaseProductsController::class, 'destroy'])->name('inventory.purchaseproducts.destroy');
 
 });
 
@@ -430,9 +442,9 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
 Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest', [PurchaseRequestController::class, 'index'])->name('purchasesrequest.index');
-    Route::get('/shopping_area/purchasesrequest/create_request', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
+    Route::get('/shopping_area/purchasesrequest/create_request/{project_id?}', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
     Route::post('/shopping_area/purchasesrequest/store_request', [PurchaseRequestController::class, 'store'])->name('purchasesrequest.store');
-    Route::get('/shopping_area/purchasesrequest/edit/{id}', [PurchaseRequestController::class, 'edit'])->name('purchasesrequest.edit');
+    Route::get('/shopping_area/purchasesrequest/edit/{id}/{project_id?}', [PurchaseRequestController::class, 'edit'])->name('purchasesrequest.edit');
     Route::put('/shopping_area/purchasesrequest/update/{id}', [PurchaseRequestController::class, 'update'])->name('purchasesrequest.update');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}', [PurchaseRequestController::class, 'index_quotes'])->name('purchasesrequest.quotes');
     Route::get('/shopping_area/purchasesrequest/quotes/{id}/preview', [PurchaseRequestController::class, 'showDocument'])->name('purchasesrequest.show');

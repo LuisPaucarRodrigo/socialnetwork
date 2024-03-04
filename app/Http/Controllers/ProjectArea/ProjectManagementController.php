@@ -200,7 +200,7 @@ class ProjectManagementController extends Controller
 
     public function project_purchases_request_index($project_id)
     {
-        $purchases = Purchasing_request::where('project_id', $project_id)->paginate();
+        $purchases = Purchasing_request::with('project')->where('project_id', $project_id)->paginate();
         return Inertia::render('ProjectArea/ProjectManagement/PurchaseRequest', [
             'purchases' => $purchases,
             'project_id' => $project_id,
@@ -231,6 +231,10 @@ class ProjectManagementController extends Controller
             'due_date' => 'required',
             'project_id' => 'required',
         ]);
+
+        $lastRequestId = Purchasing_request::latest()->first()->id ?? 0;
+        $data['code'] = 'SC' . str_pad($lastRequestId + 1, 5, '0', STR_PAD_LEFT);
+    
         if ($request->id) {
             if( Auth::user()->role_id !== 1) return response()->json(['error' => 'No tiene permisos'], 500);
             $purchase_request = Purchasing_request::find($request->id);

@@ -54,17 +54,32 @@ class PurchaseOrdersController extends Controller
         ]);
     }
 
-    public function purchase_orders_alarms()
-    {
+    // public function purchase_orders_alarms()
+    // {
+    //     $today = Carbon::now();
+    //     $purchaseOrders3d = Purchase_order::with('purchase_quote.purchasing_requests')
+    //         ->where('state', '!=', 'Completada')
+    //         ->where('date_issue', '<=', $today->copy()->addDays(3))
+    //         ->get();
+    //     $purchaseOrders7d = Purchase_order::with('purchase_quote.purchasing_requests')
+    //         ->where('state', '!=', 'Completada')
+    //         ->where('date_issue', '>=', $today->copy()->addDays(3))
+    //         ->where('date_issue', '<=', $today->copy()->addDays(7))
+    // }
+    public function purchase_orders_alarms(){
         $today = Carbon::now();
         $purchaseOrders3d = Purchase_order::with('purchase_quote.purchasing_requests')
             ->where('state', '!=', 'Completada')
-            ->where('date_issue', '<=', $today->copy()->addDays(3))
+            ->whereHas('purchase_quote.purchasing_requests', function ($query) use ($today) {
+                $query->where('due_date', '<=', $today->copy()->addDays(3));
+            })
             ->get();
         $purchaseOrders7d = Purchase_order::with('purchase_quote.purchasing_requests')
             ->where('state', '!=', 'Completada')
-            ->where('date_issue', '>=', $today->copy()->addDays(3))
-            ->where('date_issue', '<=', $today->copy()->addDays(7))
+            ->whereHas('purchase_quote.purchasing_requests', function ($query) use ($today) {
+                $query->where('due_date', '>=', $today->copy()->addDays(3))
+                    ->where('due_date', '<=', $today->copy()->addDays(7));
+            })
             ->get();
         return response()->json([
             'purchaseOrders3d' => $purchaseOrders3d,
