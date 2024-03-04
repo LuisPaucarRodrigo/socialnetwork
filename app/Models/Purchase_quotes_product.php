@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 
-class Purchase_product extends Model
+class Purchase_quotes_product extends Model
 {
     use HasFactory;
+    protected $table = 'purchase_quotes_products';
     protected $fillable = [
         'quantity', 
-        'amount', 
+        'unitary_amount', 
         'purchase_quote_id',
         'purchase_product_id', 
     ];

@@ -15,11 +15,11 @@ use Inertia\Inertia;
 class ExpenseManagementController extends Controller
 {
     public function index(){
-        return Inertia::render('Finance/ManagementExpense/Expense', ['expenses' => Purchase_quote::with('purchasing_requests.project')->paginate()]);
+        return Inertia::render('Finance/ManagementExpense/Expense', ['expenses' => Purchase_quote::with('provider','purchasing_requests.project')->paginate()]);
     }
 
     public function details(Purchase_quote $purchase_quote){
-        $expense = $purchase_quote->load('purchasing_requests.project', 'purchase_order');
+        $expense = $purchase_quote->load('purchasing_requests.project', 'purchase_order', 'provider', 'products');
         return Inertia::render('Finance/ManagementExpense/Details', ['expense' => $expense]);
     }
     

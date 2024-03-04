@@ -114,7 +114,7 @@
 
 
 
-                            <div class="md:col-span-6 lg:col-span-4 mt-4">
+                            <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-4">
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Valorización
                                     </h2>
@@ -144,7 +144,7 @@
                                 </div> -->
                                 <div class="mt-2">
                                     <div class="overflow-x-auto mt-8">
-                                        <table class="w-full whitespace-no-wrap">
+                                        <table class="w-full">
                                             <thead>
                                                 <tr
                                                     class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -183,7 +183,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v v-for="(item, index) in (form.items)" :key="index"
+                                                <tr v-for="(item, index) in (form.items)" :key="index"
                                                     class="text-gray-700">
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p>
@@ -196,22 +196,22 @@
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">
+                                                        <p class="text-gray-900">
                                                             {{ item.unit }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">{{ item.days }}</p>
+                                                        <p class="text-gray-900">{{ item.days }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
+                                                        <p class="text-gray-900">{{ item.quantity }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">S/.{{ item.unit_price }}
+                                                        <p class="text-gray-900">S/.{{ item.unit_price }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">S/.{{
+                                                        <p class="text-gray-900">S/.{{
                                                             (item.unit_price * item.quantity).toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">

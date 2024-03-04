@@ -117,7 +117,7 @@
     const diferenciaEnDias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
     if(diferenciaEnDias<=3){
         return 'bg-red-600'
-    } else if (4<=diferenciaEnDias<=7){
+    } else if (4<=diferenciaEnDias && diferenciaEnDias <=7){
         return 'bg-yellow-500'
     } else{
         return ''
