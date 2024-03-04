@@ -22,8 +22,13 @@ class PurchaseRequestController extends Controller
     public function index()
     {
         $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
+        $expenses = Purchase_quote::with('provider', 'purchasing_requests') 
+            ->select('purchasing_request_id', 'quote_deadline', 'purchase_doc', 'state', 'igv')
+            ->groupBy('purchasing_request_id')
+            ->paginate();
+
         return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
-            'purchases' => Purchasing_request::with('project')->orderBy('created_at', 'desc')->paginate(),
+            'purchases' => $expenses,
             'admin' => $hasAllPermissions
         ]);
     }
