@@ -111,7 +111,7 @@
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import { PlayIcon, PauseIcon, PlayPauseIcon, CheckIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/Components/Modal.vue';

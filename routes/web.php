@@ -31,6 +31,7 @@ use App\Http\Controllers\Inventory\InventoryControlController;
 use App\Http\Controllers\Inventory\WarehousesController;
 use App\Http\Controllers\Inventory\ProductController;
 use App\Http\Controllers\ProjectArea\CustomerVisitController;
+use App\Http\Controllers\ShoppingArea\PaymentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -266,6 +267,7 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::get('/finance/expencemanagement/details/{purchase_quote}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
 
     Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');
+    Route::get('/finance/expencemanagement/generate_payment/{id}', [ExpenseManagementController::class, 'generate_payment'])->name('managementexpense.payment');
     Route::get('/finance/purchase_quotes/doTask', [ExpenseManagementController::class, 'doTask'])->name('finance.task');
     //Budget
     Route::get('/budgetUpdates/{project}', [BudgetUpdateController::class, 'index'])->name('budgetupdates.index');
@@ -444,6 +446,8 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchaseorders/history', [PurchaseOrdersController::class, 'history'])->name('purchaseorders.history');
     Route::put('/shopping_area/purchaseorders/state/{id}', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
     Route::get('/shopping_area/alarms', [PurchaseOrdersController::class, 'purchase_orders_alarms'])->name('purchaseorders.alarms');
+    Route::get('/shopping_area/purchaseorders/{id}/export', [PurchaseOrdersController::class, 'purchase_orders_export'])->name('purchaseorders.export.order');
+
 
     Route::get('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');
@@ -454,6 +458,10 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 
     Route::post('/shopping_area/providers/category', [ProviderController::class, 'category_provider'])->name('provider.category');
     Route::post('/shopping_area/providers/segment', [ProviderController::class, 'segment_provider'])->name('provider.segment');
+
+    Route::get('/shopping_area/payment', [PaymentController::class, 'index'])->name('payment.index');
+    Route::put('/shopping_area/payment/$id/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
+
 
 });
 

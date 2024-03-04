@@ -20,7 +20,17 @@ class PurchaseRequestController extends Controller
     {
         $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
-            'purchases' => Purchasing_request::with('project')->withCount('purchase_quotes')->paginate(),
+            'purchases' => $purchases = Purchasing_request::with('project')
+                ->withCount([
+                    'purchase_quotes',
+                    'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
+                        $query->whereNotNull('state');
+                    },
+                    'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
+                        $query->whereNull('state');
+                    }
+                ])
+                ->paginate(),
             'admin' => $hasAllPermissions
         ]);
     }
@@ -44,7 +54,7 @@ class PurchaseRequestController extends Controller
         ]);
     }
     public function update(UpdatePurchaseRequest $request, $id)
-    {   
+    {
         $validateData = $request->validated();
         $purchases = Purchasing_request::findOrFail($id);
         $purchases->update($validateData);
@@ -119,30 +129,20 @@ class PurchaseRequestController extends Controller
 
     public function doTask()
     {
-        // Obtener la fecha actual ajustada por el desfase
         $currentDate = now();
-
-        // Obtener todos los Purchasing_request dentro del rango de 0 a 3 días
         $purchasesLessThanThreeDays = Purchasing_request::where('due_date', '<=', $currentDate->copy()->addDays(3))
             ->get();
-
         $filteredPurchasesLessThanThreeDays = $purchasesLessThanThreeDays->filter(function ($purchase) {
             return $purchase->state !== 'Completada';
         });
-
         $totalPurchasesLessThanThreeDays = $filteredPurchasesLessThanThreeDays->count();
-
-        // Obtener todos los Purchasing_request dentro del rango de 4 a 7 días
         $purchasesBetweenFourAndSevenDays = Purchasing_request::where('due_date', '>=', $currentDate->copy()->addDays(4))
             ->where('due_date', '<=', $currentDate->copy()->addDays(7))
             ->get();
-
         $filteredPurchasesBetweenFourAndSevenDays = $purchasesBetweenFourAndSevenDays->filter(function ($purchase) {
             return $purchase->state !== 'Completada';
         });
-
         $totalPurchasesBetweenFourAndSevenDays = $filteredPurchasesBetweenFourAndSevenDays->count();
-
         return response()->json([
             'purchasesLessThanThreeDays' => $filteredPurchasesLessThanThreeDays,
             'totalPurchasesLessThanThreeDays' => $totalPurchasesLessThanThreeDays,
@@ -150,5 +150,4 @@ class PurchaseRequestController extends Controller
             'totalPurchasesBetweenFourAndSevenDays' => $totalPurchasesBetweenFourAndSevenDays,
         ]);
     }
-
 }

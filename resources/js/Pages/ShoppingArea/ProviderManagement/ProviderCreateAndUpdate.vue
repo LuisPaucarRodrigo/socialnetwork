@@ -171,7 +171,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { defineProps, ref } from 'vue';
+import {  ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 

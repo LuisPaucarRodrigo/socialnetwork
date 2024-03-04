@@ -251,6 +251,20 @@
                             class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                     </div>
                     <!--                     
+                        <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
+                            target="_blank" rel="noopener noreferrer"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            Exportar a PDF
+                        </a>
+                    
+                        <PrimaryButton v-if="preproject.quote && !preproject.quote.state" type="button" @click="acceptCotization" :class="{ 'opacity-25': form.processing }"
+                        class="rounded-md bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:green-indigo-600">Aceptar Cotización</PrimaryButton>
+
+                        <div v-if="auth.user.role_id === 1 || preproject.quote === null ">
+                            <button  type="submit" :class="{ 'opacity-25': form.processing }"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                        </div>
+              
                         <button v-if=" !preproject.quote?.state" type="submit" :class="{ 'opacity-25': form.processing }"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button> -->
                 </div>

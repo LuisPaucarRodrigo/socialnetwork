@@ -79,7 +79,7 @@ import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     trainings: Object,

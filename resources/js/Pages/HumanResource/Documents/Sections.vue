@@ -90,7 +90,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 
 const showModal = ref(false);
