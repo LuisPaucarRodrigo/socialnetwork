@@ -63,7 +63,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ purchase.state }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ purchase.purchase_quotes_count }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ purchase.purchase_quotes_with_state_count }} {{ purchase.purchase_quotes_without_state_count }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">

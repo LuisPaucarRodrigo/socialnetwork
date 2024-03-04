@@ -96,25 +96,19 @@
                                     </button>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-    <Link :href="route('managementexpense.details', {purchase_quote: expense.id})" class="flex items-center text-blue-500 hover:underline">
-        <EyeIcon class="h-4 w-4 ml-1" />
-    </Link>
-</td>
-
-
-
-
-
+                                    <Link :href="route('managementexpense.details', {purchase_quote: expense.id})" class="flex items-center text-blue-500 hover:underline">
+                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                    </Link>
+                                </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div v-if="expense.purchasing_requests.state == 'En progreso' && expense.state == null " class="flex space-x-3 justify-center">
-                                        <button @click="sendReply(true, expense.id)" type="button"
-                                            class="rounded-xl whitespace-no-wrap text-center text-sm text-green-900 hover:bg-green-200">
+                                        <Link :href="route('managementexpense.payment', {id: expense.id})" class="flex items-center text-blue-500 hover:underline">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
-                                        </button>
+                                    </Link>
                                         <button @click="sendReply(false, expense.id)" type="button"
                                             class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -133,12 +127,9 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="expenses.links" />
             </div>
-
-            
         </div>
     </AuthenticatedLayout>
 </template>
@@ -158,7 +149,6 @@ const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), {state}, {
         preserveScroll: true,
     });
-
 };
 
 function openPreviewDocumentModal(documentId) {

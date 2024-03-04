@@ -10,14 +10,13 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {       
-        Schema::create('purchasing_requests', function (Blueprint $table) {
-            $table->id();   
-            $table->string('title');
-            $table->date('due_date');
-            $table->boolean('is_accepted')->default(true);
+    {
+        Schema::create('purchase_products', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
             $table->string('code');
-            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
+            $table->string('unit');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchasing_requests');
+        Schema::dropIfExists('purchase_products');
     }
 };

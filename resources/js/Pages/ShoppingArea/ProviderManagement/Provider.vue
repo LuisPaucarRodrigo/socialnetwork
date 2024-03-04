@@ -124,7 +124,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     providers: Object,
