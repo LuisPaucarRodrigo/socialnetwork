@@ -163,13 +163,10 @@ const props = defineProps({
     expenses: Object
 })
 
-console.log(props.expenses.data)
-
 const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), { state }, {
         preserveScroll: true,
-    });
-
+    });  
 };
 
 function openPreviewDocumentModal(documentId) {
