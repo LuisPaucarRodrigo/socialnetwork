@@ -13,9 +13,12 @@ class Purchase_product extends Model
     protected $table = "purchase_products";
     protected $fillable = [
         'name', 
-        'code', 
         'unit',
         'description',
+    ];
+
+    public $appends = [
+        'code'
     ];
 
     public function purchasing_request_product()
@@ -35,6 +38,15 @@ class Purchase_product extends Model
     public function purchase_quotes()
     {
         return $this->belongsToMany(Purchase_quote::class, 'purchase_quotes_products', 'purchase_product_id', 'purchase_quote_id')->withPivot('id','quantity','unitary_amount');
+    }
+
+    public function getCodeAttribute()
+    {
+        if ($this->exists) {
+            return 'PR' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        } else {
+            return 'TMP' . now()->format('ymdHis');
+        }
     }
 
 }
