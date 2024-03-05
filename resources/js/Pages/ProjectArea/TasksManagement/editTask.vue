@@ -172,7 +172,6 @@ const newcomment = useForm({
     task_id: tasks.id,
     comment: '',
 });
-console.log('hola', props.employeesToAssign)
 
 const addComment = () => {
     newcomment.post(route('tasks.edit.comment'), {

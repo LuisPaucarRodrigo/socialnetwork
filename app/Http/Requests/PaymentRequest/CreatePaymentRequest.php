@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PurchaseRequest;
+namespace App\Http\Requests\PaymentRequest;
 
-use App\Models\Purchasing_request;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreatePurchaseRequest extends FormRequest
+class CreatePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,14 +21,10 @@ class CreatePurchaseRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
-            'title' => 'required|string',
-            'due_date' => 'required|date',
-            'products' => 'required|array',
+        return [
+            'operation_number' => 'required|numeric',
+            'date' => 'requerid|date',
+            'payment_doc' => 'nullable|mimes:jpg,jpeg,pdf|max:2048',
         ];
-        if (!is_null($this->input('project_id'))) {
-            $rules['project_id'] = 'required';
-        }
-        return $rules;
     }
 }

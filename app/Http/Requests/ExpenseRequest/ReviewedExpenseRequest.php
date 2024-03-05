@@ -23,6 +23,7 @@ class ReviewedExpenseRequest extends FormRequest
     {
         return [
             'state' => 'required|boolean',
+            'payments' => 'sometimes|required|array',
         ];
     }
 }

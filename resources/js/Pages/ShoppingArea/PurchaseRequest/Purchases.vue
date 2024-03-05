@@ -2,7 +2,7 @@
     <Head title="Solicitudes" />
     <AuthenticatedLayout :redirectRoute="'purchasesrequest.index'">
         <template #header>
-            Solicitudes
+            Solicitudes de compra
         </template>
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
@@ -11,10 +11,14 @@
                 + Agregar
             </button>
             <div class="overflow-x-auto">
-                <table class="w-full whitespace-no-wrap">
+                <table class="w-full ">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Código
+                            </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Proyecto
@@ -51,24 +55,27 @@
                             }
                         ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ purchase.project?.name }}</p>
+                                <p class="text-gray-900 ">{{ purchase.code }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ purchase.title }}</p>
+                                <p class="text-gray-900 ">{{ purchase.project?.code }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(purchase.due_date) }}</p>
+                                <p class="text-gray-900 ">{{ purchase.title }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ purchase.state }}</p>
+                                <p class="text-gray-900 ">{{ formattedDate(purchase.due_date) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ purchase.purchase_quotes_count }}</p>
+                                <p class="text-gray-900 ">{{ purchase.state }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">Acep({{ purchase.purchase_quotes_with_state_count }}) Recha({{ purchase.purchase_quotes_without_state_count }})</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
                                     <Link v-if="purchase.state == 'Pendiente' || purchase.state == 'En progreso'"
-                                        class="text-blue-900 whitespace-no-wrap"
+                                        class="text-blue-900 "
                                         :href="route('purchasesrequest.quotes', { id: purchase.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -84,7 +91,7 @@
                                         </svg>
                                     </span>
 
-                                    <Link class="text-blue-900 whitespace-no-wrap"
+                                    <Link class="text-blue-900 "
                                         :href="route('purchasingrequest.details', { id: purchase.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
@@ -96,7 +103,7 @@
                                     </Link>
                                     <div v-if="admin">
                                         <Link v-if="purchase.project == null && purchase.state != 'Aceptado'"
-                                            class="text-blue-900 whitespace-no-wrap"
+                                            class="text-blue-900 "
                                             :href="route('purchasesrequest.edit', { id: purchase.id })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -115,7 +122,7 @@
                                     <div v-if="admin">
                                         <button v-if="purchase.state != 'Aceptado'" type="button"
                                             @click="confirmPurchasesDeletion(purchase.id)"
-                                            class="text-blue-900 whitespace-no-wrap">
+                                            class="text-blue-900 ">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"

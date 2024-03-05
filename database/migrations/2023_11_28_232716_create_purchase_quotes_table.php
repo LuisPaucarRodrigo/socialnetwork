@@ -13,13 +13,17 @@ return new class extends Migration
     {
         Schema::create('purchase_quotes', function (Blueprint $table) {
             $table->id();
-            $table->string('provider');
-            $table->decimal('amount', 10, 2);
             $table->date('quote_deadline');
             $table->string('purchase_doc');
             $table->boolean('state')->nullable()->default(null);
-            $table->string('response');
+            $table->boolean('igv')->nullable()->default(false);
+            $table->integer('deliverable_time');
+            $table->text('payment_type');
+            $table->string('account_number'); 
+            $table->string('currency');
+            $table->double('change_value', 10,3)->nullable()->default(null);
             $table->foreignId('purchasing_request_id')->constrained()->onDelete('cascade');
+            $table->foreignId('provider_id')->constrained('providers')->onDelete('cascade');
             $table->timestamps();
         });
     }
