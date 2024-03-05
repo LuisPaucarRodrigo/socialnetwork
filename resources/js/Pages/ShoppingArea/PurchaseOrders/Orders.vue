@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Ordenes de Compra" />
     <AuthenticatedLayout :redirectRoute="'purchaseorders.index'">
         <template #header>
@@ -37,25 +38,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="order in orders.data" :key="order.id" :class="[
-                            'text-gray-700', {
-                                'border-l-8': true,
-                                'border-green-500': order.state === 'Completada',
-                                'border-red-500': setBorderColor(order.date_issue) && order.state !== 'Completada' === 'red',
-                                'border-yellow-500': setBorderColor(order.date_issue) === 'yellow',
-                            }
-                        ]">
+                        <tr v-for="order in orders.data" :key="order.id">
 
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{
-                                    order.purchase_quote.purchasing_requests.project?.name }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ order.purchase_quote.purchasing_requests.project?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{
-                                    formattedDate(order.purchase_quote.purchasing_requests.due_date) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ formattedDate(order.purchase_quote.purchasing_requests.due_date) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(order.purchase_arrival_date) }}
+                                <p class="text-gray-900 whitespace-no-wrap">{{ order.purchase_arrival_date }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -98,14 +92,15 @@
         </div>
         <Modal :show="showModal">
             <div class="p-6">
-                <form @submit.prevent="submit()">
+                <form @submit.prevent="submit">
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
                             <h2 class="text-base font-medium leading-7 text-gray-900">
                                 Factura
                             </h2>
                             <div>
-                                <InputLabel for="facture_number" class="mt-2 font-medium leading-6 text-gray-900">Numero de
+                                <InputLabel for="facture_number" class="mt-2 font-medium leading-6 text-gray-900">Numero
+                                    de
                                     Factura
                                 </InputLabel>
                                 <div class="mt-2">
@@ -116,7 +111,8 @@
                             </div>
 
                             <div>
-                                <InputLabel for="facture_date" class="mt-4 font-medium leading-6 text-gray-900">Fecha de Factura
+                                <InputLabel for="facture_date" class="mt-4 font-medium leading-6 text-gray-900">Fecha de
+                                    Factura
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="date" v-model="form.facture_date" id="facture_date"
@@ -126,7 +122,8 @@
                             </div>
 
                             <div>
-                                <InputLabel for="facture_doc" class="mt-4 font-medium leading-6 text-gray-900">Documento de
+                                <InputLabel for="facture_doc" class="mt-4 font-medium leading-6 text-gray-900">Documento
+                                    de
                                     Factura
                                 </InputLabel>
                                 <div class="mt-2">
@@ -136,23 +133,27 @@
                                 </div>
                             </div>
                         </div>
-                        <hr/>
+
                         <div class="border-b border-gray-900/10 pb-12">
                             <h2 class="text-base font-medium leading-7 text-gray-900">
                                 Guia de Remision
                             </h2>
                             <div>
-                                <InputLabel for="remission_guide_doc" class="mt-2 font-medium leading-6 text-gray-900">Numero de Guia de Remision
+                                <InputLabel for="remission_guide_number"
+                                    class="mt-2 font-medium leading-6 text-gray-900">Numero
+                                    de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.remission_guide_doc" id="remission_guide_doc"
+                                    <input type="text" v-model="form.remission_guide_number" id="remission_guide_number"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.remission_guide_doc" />
+                                    <InputError :message="form.errors.remission_guide_number" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="remission_guide_date" class="mt-4 font-medium leading-6 text-gray-900">Fecha de Factura
+                                <InputLabel for="remission_guide_date" class="mt-4 font-medium leading-6 text-gray-900">
+                                    Fecha de
+                                    Guia de Remission
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="date" v-model="form.remission_guide_date" id="remission_guide_date"
@@ -162,20 +163,20 @@
                             </div>
 
                             <div>
-                                <InputLabel for="remission_guide_number" class="mt-4 font-medium leading-6 text-gray-900">Documento de
-                                    Factura
+                                <InputLabel for="remission_guide_doc" class="mt-4 font-medium leading-6 text-gray-900">
+                                    Documento
+                                    de
+                                    Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile type="file" v-model="form.remission_guide_number" id="remission_guide_number"
+                                    <InputFile type="file" v-model="form.remission_guide_doc" id="remission_guide_doc"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.remission_guide_number" />
+                                    <InputError :message="form.errors.remission_guide_doc" />
                                 </div>
                             </div>
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton
-                                @click="closeModal()">
-                                Cancelar </SecondaryButton>
+                            <SecondaryButton @click="closeModal()"> Cancelar </SecondaryButton>
                             <button type="submit" :class="{ 'opacity-25': form.processing }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 Guardar
@@ -193,11 +194,14 @@
                 </h2>
                 <div class="mt-4">
                     <p class="text-sm text-gray-600"><span class="font-medium">Monto:</span> {{ cotization.amount }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider }}
+                    <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider
+                        }}
                     </p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Fecha de caducidad de la cotización:</span>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Fecha de caducidad de la
+                            cotización:</span>
                         {{ cotization.quote_deadline }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Respuesta:</span> {{ cotization.response }}
+                    <p class="text-sm text-gray-600"><span class="font-medium">Respuesta:</span> {{ cotization.response
+                        }}
                     </p>
                     <div class="flex items-center">
                         <p class="text-sm text-gray-600">
@@ -218,11 +222,11 @@
 
     </AuthenticatedLayout>
 </template>
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
@@ -244,6 +248,8 @@ const props = defineProps({
 })
 
 const form = useForm({
+    id: '',
+    state: '',
     facture_number: '',
     facture_date: '',
     facture_doc: null,
@@ -282,23 +288,26 @@ const closeCotizationModal = () => {
 const updateState = async (stateid, newState) => {
     id.value = stateid;
     state.value = newState;
-    const data = { state: state.value };
+    const data = { state: state.value, id: id.value };
 
     if (state.value === "Completada") {
         showModal.value = true;
     } else {
-        await submit(data);
+        router.post(route('purchaseorders.state'), data, {
+            onSuccess: () => {
+                router.visit(route('purchaseorders.index'))
+            }
+        })
     }
 }
 
-const submit = async (data = null) => {
-    const formdata = data ? data : form
-    router.put(route('purchaseorders.state', { id: id.value }), formdata, {
+const submit = () => {
+    form.id = id
+    form.state = state
+    form.post(route('purchaseorders.state'), {
         onSuccess: () => {
-            setTimeout(() => {
-                showModal.value = false;
-                router.visit(route('purchaseorders.index'))
-            }, 2000);
+            showCotization.value = false;
+            router.visit(route('purchaseorders.index'))
         }
     })
 }
@@ -307,7 +316,7 @@ const closeModal = () => {
     showModal.value = false
 }
 
-function setBorderColor (date) {
+function setBorderColor(date) {
     const fechaString = date;
     const [year, month, day] = fechaString.split('-');
     const fecha = new Date(year, month - 1, day);

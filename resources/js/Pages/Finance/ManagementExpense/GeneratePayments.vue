@@ -1,5 +1,6 @@
 <template>
-    <Head title="Gestion de Empleados" />
+
+    <Head title="Registro de Pagos" />
     <AuthenticatedLayout :redirectRoute="'managementexpense.index'">
         <template #header>
             Registro de Pagos
@@ -45,63 +46,59 @@
                 </table>
             </div>
         </div>
-        <button @click="submit()" type="button"
-                                            class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-Guardar
-                                        </button>
+        <div class="mt-6 flex items-center justify-end gap-x-6">
+            <button @click="submit()" type="button"
+                class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">
+                Guardar
+            </button>
+        </div>
         <Modal :show="showModalPayment">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
-                        Agregar un Registro de Pago
-                    </h2>
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                        <div class="sm:col-span-3">
-                            <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto
-                            </InputLabel>
-                            <div class="mt-2">
-                                <input required type="text" v-model="amount" id="amount"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            </div>
-                        </div>
-                        <div class="sm:col-span-3 sm:col-start-1">
-                            <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripcion
-                            </InputLabel>
-                            <div class="mt-2">
-                                <textarea v-model="description" id="description"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            </div>
+                    Agregar un Registro de Pago
+                </h2>
+                <div class="border-b border-gray-900/10 pb-12">
+                    <div>
+                        <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto
+                        </InputLabel>
+                        <div class="mt-2">
+                            <input required type="number" v-model="amount" id="amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
-                    <div class="mt-6 flex gap-3 justify-end">
-                        <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
-                        <PrimaryButton type="button" @click="addItem" > Agregar </PrimaryButton>
+                    <div>
+                        <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripcion
+                        </InputLabel>
+                        <div class="mt-2">
+                            <textarea v-model="description" id="description"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                        </div>
                     </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="button" @click="addItem"> Agregar </PrimaryButton>
+                </div>
             </div>
 
-            
-            </Modal>
-            <!-- <SuccessOperationModal :confirming="showModal" :title="modalVariables.title" :message="modalVariables.message" /> -->
+
+        </Modal>
+        <ErrorOperationModal :showError="errorAmount" title="Monto Excedido" message="No es una cantidad válida" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import Pagination from '@/Components/Pagination.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import InputFile from '@/Components/InputFile.vue';
-import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const props = defineProps({
-    quote_id:String
+    quote: Object
 })
 
 const showModalPayment = ref(false);
@@ -112,40 +109,48 @@ const form = useForm({
     state: true,
     payments: '',
 })
+const total_amount = ref(0);
+const errorAmount = ref(false);
 
-function add_payment(){
+function add_payment() {
     showModalPayment.value = true
 }
 
-function submit(){
+function submit() {
     form.payments = paymentsArray.value.map(payment => ({
-            amount: payment.amount,
-            description: payment.description
-        }))
-    form.put(route('managementexpense.reviewed',{id:props.quote_id}),form,{
-        onSuccess: () => {
-                showModal.value = true
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(route('managementexpense.index'))
-                }, 2000);
-        },
-    })
+        amount: payment.amount,
+        description: payment.description
+    }))
+    form.put(route('managementexpense.reviewed', { id: props.quote.id }), form)
 }
 
 function addItem() {
-    if(amount.value != '' && description.value != ''){
-        paymentsArray.value.push({
-    amount: amount.value,
-    description: description.value
-  });
-  amount.value = '',
-  description.value = ''
-}
+    if (amount.value !== '' && description.value !== '') {
+        const newAmount = parseFloat(amount.value);
+        const currentTotal = total_amount.value + newAmount;
+        const quoteTotal = parseFloat(props.quote.total_amount);
+
+        if (currentTotal <= quoteTotal) {
+            total_amount.value += newAmount;
+
+            paymentsArray.value.push({
+                amount: newAmount,
+                description: description.value
+            });
+
+            amount.value = '';
+            description.value = '';
+        } else {
+            errorAmount.value = true
+            setTimeout(() => {
+                errorAmount.value = false
+            }, 1500)
+        }
     }
+}
 
 
-function closeModal(){
+function closeModal() {
     showModalPayment.value = false
 }
 </script>
