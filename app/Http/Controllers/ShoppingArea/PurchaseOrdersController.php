@@ -15,7 +15,9 @@ class PurchaseOrdersController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseOrders/Orders', ['orders' => Purchase_order::with('purchase_quote.purchasing_requests.project')->paginate()]);
+        return Inertia::render('ShoppingArea/PurchaseOrders/Orders', ['orders' => Purchase_order::with('purchase_quote.purchasing_requests.project')
+            ->where('state','!=','Completada')
+            ->paginate()]);
     }
 
     public function history()
@@ -28,8 +30,8 @@ class PurchaseOrdersController extends Controller
     }
 
 
-    public function state(CreatePurchaseOrderRequest $request, $id)
-    {   
+    public function state(CreatePurchaseOrderRequest $request)
+    {
         $documentNameFacture = null;
         $documentNameRemission = null;
         if ($request->hasFile('facture_doc')) {
@@ -42,13 +44,13 @@ class PurchaseOrdersController extends Controller
             $documentNameRemission = time() . '._' . $document->getClientOriginalName();
             $document->move(public_path('documents/purchaseorder/remission/'), $documentNameRemission);
         }
-        $purchase_order = Purchase_order::find($id);
-        $purchase_order -> update([
+        $purchase_order = Purchase_order::find($request->id);
+        $purchase_order->update([
             'state' => $request->state,
             'facture_doc' => $documentNameFacture,
             'facture_date' => $request->facture_date,
             'facture_number' => $request->facture_number,
-            'remission_guide_doc'=> $documentNameRemission,
+            'remission_guide_doc' => $documentNameRemission,
             'remission_guide_date' => $request->remission_guide_date,
             'remission_guide_number' => $request->remission_guide_number,
         ]);
@@ -66,7 +68,8 @@ class PurchaseOrdersController extends Controller
     //         ->where('date_issue', '>=', $today->copy()->addDays(3))
     //         ->where('date_issue', '<=', $today->copy()->addDays(7))
     // }
-    public function purchase_orders_alarms(){
+    public function purchase_orders_alarms()
+    {
         $today = Carbon::now();
         $purchaseOrders3d = Purchase_order::with('purchase_quote.purchasing_requests')
             ->where('state', '!=', 'Completada')

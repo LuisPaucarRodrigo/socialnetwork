@@ -22,13 +22,14 @@ class CreatePurchaseOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => 'required|numeric',
             'state' => 'required|string',
-            'facture_doc' => 'required|mimes:pdf|max:2048',
-            'facture_date' => 'required|date',
-            'facture_number' => 'required|numeric',
-            'remission_guide_doc'=> 'required|mimes:pdf|max:2048',
-            'remission_guide_date' => 'required|date',
-            'remission_guide_number' => 'required|numeric',
+            'facture_doc' => 'sometimes|required|mimes:pdf|max:2048',
+            'facture_date' => 'sometimes|required|date',
+            'facture_number' => 'sometimes|required|numeric',
+            'remission_guide_doc'=> 'sometimes|required|mimes:pdf|max:2048',
+            'remission_guide_date' => 'sometimes|required|date',
+            'remission_guide_number' => 'sometimes|required|numeric',
         ];
     }
 }
