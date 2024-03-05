@@ -29,14 +29,11 @@ class PurchaseProductsController extends Controller
             'unit' => 'required',
             'description' => 'required',
         ]);
-        $lastProductId = Purchase_product::latest()->first()->id;
-        $productCode = 'PR' . str_pad($lastProductId + 1, 4, '0', STR_PAD_LEFT);
-
+        
         $product = Purchase_product::create([
             'name' => $request->name,
             'unit' => $request->unit,
             'description' => $request->description,
-            'code' => $productCode
         ]);
 
     }

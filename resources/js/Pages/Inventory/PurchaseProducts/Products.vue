@@ -278,5 +278,6 @@ const deleteProduct = () => {
     }
 };
 
+console.log(props.products);
 
 </script>
