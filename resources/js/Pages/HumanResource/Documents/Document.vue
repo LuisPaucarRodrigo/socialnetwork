@@ -38,7 +38,8 @@
       <div v-for="document in filteredDocuments" :key="document.id" class="bg-white p-4 rounded-md shadow md:col-span-2">
         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ getDocumentName(document.title) }}</h2>
         <div class="flex space-x-3 item-center">
-          <button v-if="document.title && /\.pdf$/.test(document.title)" @click="openPreviewDocumentModal(document.id)" class="flex items-center text-green-600 hover:underline">
+          <button v-if="document.title && /\.pdf$/.test(document.title)" @click="openPreviewDocumentModal(document.id)"
+            class="flex items-center text-green-600 hover:underline">
             <EyeIcon class="h-4 w-4 ml-1" />
           </button>
           <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
@@ -47,7 +48,8 @@
           <button @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
             <PencilIcon class="h-4 w-4 ml-1" />
           </button>
-          <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(document.id)" class="flex items-center text-red-600 hover:underline">
+          <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(document.id)"
+            class="flex items-center text-red-600 hover:underline">
             <TrashIcon class="h-4 w-4" />
           </button>
         </div>
@@ -133,11 +135,11 @@ const props = defineProps({
   sections: Object,
   documents: Object,
   subdivisions: Object,
-  userPermissions:Array
+  userPermissions: Array
 });
 
 const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
+  return props.userPermissions.includes(permission);
 }
 
 const form = useForm({
@@ -204,7 +206,7 @@ const submit = () => {
 };
 
 const submitEdit = () => {
-  form.post(route('documents.update', {id: form.id}), {
+  form.post(route('documents.update', { id: form.id }), {
     onSuccess: () => {
       closeModal();
       form.reset();

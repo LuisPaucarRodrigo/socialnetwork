@@ -200,7 +200,7 @@ class ProjectManagementController extends Controller
 
     public function project_purchases_request_index($project_id)
     {
-        $purchases = Purchasing_request::where('project_id', $project_id)->paginate();
+        $purchases = Purchasing_request::with('project')->where('project_id', $project_id)->paginate();
         return Inertia::render('ProjectArea/ProjectManagement/PurchaseRequest', [
             'purchases' => $purchases,
             'project_id' => $project_id,
@@ -231,6 +231,10 @@ class ProjectManagementController extends Controller
             'due_date' => 'required',
             'project_id' => 'required',
         ]);
+
+        $lastRequestId = Purchasing_request::latest()->first()->id ?? 0;
+        $data['code'] = 'SC' . str_pad($lastRequestId + 1, 5, '0', STR_PAD_LEFT);
+    
         if ($request->id) {
             if( Auth::user()->role_id !== 1) return response()->json(['error' => 'No tiene permisos'], 500);
             $purchase_request = Purchasing_request::find($request->id);
@@ -240,16 +244,69 @@ class ProjectManagementController extends Controller
         }
     }
 
+    // public function project_expenses(Project $project_id){
+    //     $last_update = BudgetUpdate::where('project_id', $project_id->id)
+    //         ->with('project')
+    //         ->with('user')
+    //         ->orderByDesc('id')
+    //         ->first();
+    //     $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
+    //     $expenses = Purchasing_request::with([
+    //         'purchase_quotes' => function ($query) {
+    //             $query->whereHas('purchase_order', function ($subQuery) {
+    //                 $subQuery->where('state', 'Completada');
+    //             })->with('purchase_order');
+    //         }
+    //     ])
+    //         ->where([
+    //             ['project_id', $project_id->id],
+    //             ['state', 'Aceptado'],
+    //         ])
+    //         ->whereHas('purchase_quotes.purchase_order', function ($query) {
+    //             $query->where('state', 'Completada');
+    //         });
+    //     $total_expenses = $expenses->get()->sum(function ($expense) {
+    //         return $expense->purchase_quotes[0]['amount'];
+    //     });
 
-    
-    public function project_expenses(Project $project_id){
+    //     $total_expenses += $project_id->additionalCosts->sum('amount');
+    //     $additionalCosts = $project_id->additionalCosts->sum('amount');
+    //     $remaining_budget = $current_budget - $total_expenses;
+    //     return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
+    //         'current_budget' => $current_budget,
+    //         'remaining_budget' => $remaining_budget,
+    //         'project' => $project_id,
+    //         'additionalCosts' => $additionalCosts,
+    //     ]);
+    // }
+
+    public function project_expenses(Project $project_id)
+    {
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
             ->with('project')
             ->with('user')
             ->orderByDesc('id')
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
+        $expenses = Purchasing_request::with([
+            'purchase_quotes' => function ($query) {
+                $query->whereHas('purchase_order', function ($subQuery) {
+                    $subQuery->where('state', 'Completada');
+                })->with('purchase_order');
+            }
+        ])
+            ->where([
+                ['project_id', $project_id->id],
+                ['is_accepted', 1],
+            ])
+            ->whereHas('purchase_quotes.purchase_order', function ($query) {
+                $query->where('state', 'Completada');
+            });
+        $total_expenses = $expenses->get()->sum(function ($expense) {
+            return $expense->purchase_quotes[0]['amount'];
+        });
 
+        $total_expenses += $project_id->additionalCosts->sum('amount');
         $additionalCosts = $project_id->additionalCosts->sum('amount');
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,

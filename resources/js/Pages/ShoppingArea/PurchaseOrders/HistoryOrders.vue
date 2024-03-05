@@ -38,7 +38,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ order.purchase_quote.response }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(order.date_issue) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(order.purchase_arrival_date) }}</p>
                             </td>
 
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
