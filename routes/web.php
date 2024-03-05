@@ -288,7 +288,6 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
 
 
 
-
     Route::get('/finance/desposits', [DepositController::class,'deposits_index'])->name('deposits.index');
     Route::post('/finance/desposits/{deposit_id?}', [DepositController::class,'deposits_store'])->name('deposits.store');
     //

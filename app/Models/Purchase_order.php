@@ -20,7 +20,8 @@ class Purchase_order extends Model
     ];
 
     protected $appends = [
-        'purchase_arrival_date'
+        'purchase_arrival_date',
+        'code'
     ];
 
     public function getPurchaseArrivalDateAttribute(){
@@ -30,5 +31,14 @@ class Purchase_order extends Model
     public function purchase_quote()
     {
         return $this->belongsTo(Purchase_quote::class, 'purchase_quote_id');
+    }
+
+    public function getCodeAttribute()
+    {
+        if ($this->exists) {
+            return 'PR' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        } else {
+            return 'TMP' . now()->format('ymdHis');
+        }
     }
 }

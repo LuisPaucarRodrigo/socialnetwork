@@ -27,10 +27,10 @@ class PurchaseRequestController extends Controller
                 ->withCount([
                     'purchase_quotes',
                     'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
-                        $query->whereNotNull('state');
+                        $query->where('state',true);
                     },
                     'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
-                        $query->whereNull('state');
+                        $query->where('state',false);
                     }
                 ])
                 ->orderBy('created_at', 'desc')->paginate(),
