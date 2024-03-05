@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Gestion de Productos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
@@ -46,7 +47,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                
+
                             </th>
                         </tr>
                     </thead>
@@ -66,10 +67,12 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="inline-flex justify-end gap-x-0">
-                                    <button v-if="admin" @click="openEditProductModal(item)" class="text-yellow-600 hover:underline mr-3">
+                                    <button v-if="admin" @click="openEditProductModal(item)"
+                                        class="text-yellow-600 hover:underline mr-3">
                                         <PencilIcon class="h-4 w-4" />
                                     </button>
-                                    <button v-if="admin" @click="confirmDeleteProduct(item.id)" class="text-red-600 hover:underline">
+                                    <button v-if="admin" @click="confirmDeleteProduct(item.id)"
+                                        class="text-red-600 hover:underline">
                                         <TrashIcon class="h-4 w-4" />
                                     </button>
                                 </div>
@@ -86,62 +89,67 @@
         <Modal :show="create_product || showModalEdit">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                {{ create_product ? 'Agregar Producto' : 'Actualizar Producto' }}
+                    {{ create_product ? 'Agregar Producto' : 'Actualizar Producto' }}
                 </h2>
                 <form @submit.prevent="create_product ? submit() : submitEdit()">
-                <div class="space-y-12">
-                    <div class="border-b border-gray-900/10 pb-12">
+                    <div class="space-y-12">
+                        <div class="border-b border-gray-900/10 pb-12">
 
-                    <div>
-                        <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
-                        <div class="mt-2">
-                        <input type="text" v-model="form.name" id="name"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        <InputError :message="form.errors.name" />
+                            <div>
+                                <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.name" id="name"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.name" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="unit" class="font-medium leading-6 text-gray-900 mt-3">Unidad
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.unit" id="unit"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled>Seleccione una opción</option>
+                                        <option value="Unidad">Unidad</option>
+                                        <option value="Metros">Metros</option>
+                                        <option value="Kilos">Kilos</option>
+                                        <option value="GLB">GLB</option>
+                                    </select>
+                                    <InputError :message="form.errors.unit" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="description" class="font-medium leading-6 text-gray-900 mt-3">
+                                    Descripción
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.description" id="description"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.description" />
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex items-center justify-end gap-x-6">
+                                <SecondaryButton @click="create_product ? closeModal() : closeEditModal()"> Cancelar
+                                </SecondaryButton>
+                                <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    {{ create_product ? 'Guardar' : 'Actualizar' }}</button>
+                            </div>
                         </div>
                     </div>
-
-                    <div>
-                        <InputLabel for="unit" class="font-medium leading-6 text-gray-900 mt-3">Unidad</InputLabel>
-                        <div class="mt-2">
-                            <select v-model="form.unit" id="unit"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled>Seleccione una opción</option>
-                                <option value="Unidad">Unidad</option>
-                                <option value="Metros">Metros</option>
-                                <option value="Kilos">Kilos</option>
-                                <option value="GLB">GLB</option>
-                            </select>
-                            <InputError :message="form.errors.unit" />
-                        </div>
-                    </div>
-                    <div>
-                        <InputLabel for="description" class="font-medium leading-6 text-gray-900 mt-3">Descripción</InputLabel>
-                        <div class="mt-2">
-                        <input type="text" v-model="form.description" id="description"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        <InputError :message="form.errors.description" />
-                        </div>
-                    </div>
-
-                    <div class="mt-6 flex items-center justify-end gap-x-6">
-                        <SecondaryButton @click="create_product ? closeModal() : closeEditModal()"> Cancelar</SecondaryButton>
-                        <button type="submit" :class="{ 'opacity-25': form.processing }"
-                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">{{create_product ? 'Guardar' : 'Actualizar'}}</button>
-                    </div>
-                    </div>
-                </div>
                 </form>
             </div>
-            </Modal>
-        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Producto" :deleteFunction="deleteProduct"
-            @closeModal="closeModalDoc" />
+        </Modal>
+        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Producto"
+            :deleteFunction="deleteProduct" @closeModal="closeModalDoc" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Producto" />
         <ConfirmUpdateModal :confirmingupdate="showConfirmEdit" itemType="Producto" />
 
     </AuthenticatedLayout>
 </template>
-    
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
@@ -152,7 +160,7 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import { Head, router, Link, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/Components/Modal.vue';
 
@@ -162,10 +170,10 @@ const props = defineProps({
 });
 
 const form = useForm({
-  id: '',
-  name: '',
-  unit: '',
-  description: ''
+    id: '',
+    name: '',
+    unit: '',
+    description: ''
 });
 
 const searchTerm = ref('');
@@ -198,12 +206,12 @@ const closeModal = () => {
 }
 
 const openEditProductModal = (product) => {
-  editingProduct.value = JSON.parse(JSON.stringify(product));
-  form.id = editingProduct.value.id;
-  form.name = editingProduct.value.name;
-  form.description = editingProduct.value.description;
-  form.unit = editingProduct.value.unit;
-  showModalEdit.value = true;
+    editingProduct.value = JSON.parse(JSON.stringify(product));
+    form.id = editingProduct.value.id;
+    form.name = editingProduct.value.name;
+    form.description = editingProduct.value.description;
+    form.unit = editingProduct.value.unit;
+    showModalEdit.value = true;
 };
 
 const closeEditModal = () => {
@@ -214,63 +222,61 @@ const closeEditModal = () => {
 const submit = () => {
     form.post(route('inventory.purchaseproducts.store'), {
         onSuccess: () => {
-        closeModal();
-        form.reset();
-        showModal.value = true
-        setTimeout(() => {
-            showModal.value = false;
-            router.visit(route('inventory.purchaseproducts'))
-        }, 2000);
+            closeModal();
+            form.reset();
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('inventory.purchaseproducts'))
+            }, 2000);
         },
         onError: () => {
-        form.reset();
+            form.reset();
         },
         onFinish: () => {
-        form.reset();
+            form.reset();
         }
     });
 }
 
 const submitEdit = () => {
-    form.put(route('inventory.purchaseproducts.update', {purchase_product: form.id}), {
+    form.put(route('inventory.purchaseproducts.update', { purchase_product: form.id }), {
         onSuccess: () => {
-        closeEditModal();
-        form.reset();
-        showConfirmEdit.value = true
-        setTimeout(() => {
-            showConfirmEdit.value = false;
-            router.visit(route('inventory.purchaseproducts'))
-        }, 2000);
+            closeEditModal();
+            form.reset();
+            showConfirmEdit.value = true
+            setTimeout(() => {
+                showConfirmEdit.value = false;
+                router.visit(route('inventory.purchaseproducts'))
+            }, 2000);
         },
         onError: () => {
-        form.reset();
+            form.reset();
         },
         onFinish: () => {
-        form.reset();
+            form.reset();
         }
     });
 }
 
 
 const confirmDeleteProduct = (productId) => {
-  docToDelete.value = productId;
-  confirmingDocDeletion.value = true;
+    docToDelete.value = productId;
+    confirmingDocDeletion.value = true;
 };
 
 const closeModalDoc = () => {
-  confirmingDocDeletion.value = false;
+    confirmingDocDeletion.value = false;
 };
 
 const deleteProduct = () => {
-  const docId = docToDelete.value;
-  if (docId) {
-    router.delete(route('inventory.purchaseproducts.destroy', { purchase_product: docId }), {
-      onSuccess: () => closeModalDoc()
-    });
-  }
+    const docId = docToDelete.value;
+    if (docId) {
+        router.delete(route('inventory.purchaseproducts.destroy', { purchase_product: docId }), {
+            onSuccess: () => closeModalDoc()
+        });
+    }
 };
 
 
 </script>
-  
-    

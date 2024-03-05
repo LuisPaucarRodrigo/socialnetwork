@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('state')->default('Pendiente');
             $table->foreignId('purchase_quote_id')->constrained()->onDelete('cascade');
-            $table->string('code');
             $table->string('facture_doc')->nullable();
             $table->date('facture_date')->nullable();
             $table->string('facture_number')->nullable();

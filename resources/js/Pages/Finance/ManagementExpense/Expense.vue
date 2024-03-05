@@ -78,8 +78,8 @@
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{
-        expense.purchasing_requests?.title }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ expense.purchasing_requests?.title }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ expense.provider.company_name }}</p>
@@ -141,11 +141,6 @@
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="expenses.links" />
             </div>
-<<<<<<< HEAD
-=======
-
-
->>>>>>> origin/depositos
         </div>
     </AuthenticatedLayout>
 </template>
@@ -160,8 +155,6 @@ import { formattedDate } from '@/utils/utils';
 const props = defineProps({
     expenses: Object
 })
-
-console.log(props.expenses.data)
 
 const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), { state }, {

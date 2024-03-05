@@ -11,7 +11,6 @@ class Purchase_order extends Model
     protected $fillable = [
         'state',
         'purchase_quote_id', 
-        'code',
         'facture_doc',
         'facture_date',
         'facture_number',
@@ -20,13 +19,13 @@ class Purchase_order extends Model
         'remission_guide_number',
     ];
 
-    protected $append = [
+    protected $appends = [
         'purchase_arrival_date'
     ];
 
     public function getPurchaseArrivalDateAttribute(){
-        return $this->created_at->addDays(7);
-    }
+        return $this->created_at->addDays($this->purchase_quote->deliverable_time)->format('d/m/Y');
+    }    
 
     public function purchase_quote()
     {

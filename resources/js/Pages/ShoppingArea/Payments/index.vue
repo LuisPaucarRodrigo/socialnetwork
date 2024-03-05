@@ -1,9 +1,9 @@
 <template>
 
-    <Head title="Gestion de Empleados" />
+    <Head title="Pagos" />
     <AuthenticatedLayout :redirectRoute="'management.employees'">
         <template #header>
-            Empleados
+            Pagos
         </template>
 
         <div class="min-w-full rounded-lg shadow">
@@ -126,16 +126,15 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Pagination from '@/Components/Pagination.vue';
-import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
+import InputFile from '@/Components/InputFile.vue';
 
 const showModal = ref(false);
 const showModalPay = ref(false);
