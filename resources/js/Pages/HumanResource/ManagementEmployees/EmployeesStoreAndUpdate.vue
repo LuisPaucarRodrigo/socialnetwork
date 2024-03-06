@@ -356,6 +356,9 @@
                                         <option disabled value="">Seleccionar Nivel Educativo</option>
                                         <option>Universidad</option>
                                         <option>Instituto</option>
+                                        <option>Secundaria</option>
+                                        <option>Primaria</option>
+                                        <option>Inicial</option>
                                         <option>Otros</option>
                                     </select>
                                     <InputError :message="form.errors['familyDependents.' + index + '.family_education']" />
