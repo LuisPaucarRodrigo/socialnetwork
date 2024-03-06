@@ -152,7 +152,7 @@ const form = useForm({
 })
 
 const pay_payment = (payment) => {
-    payment_obj = payment
+    payment_obj.value = payment
     purchase_quote_id.value = payment.id
     showModalPay.value = true
 }

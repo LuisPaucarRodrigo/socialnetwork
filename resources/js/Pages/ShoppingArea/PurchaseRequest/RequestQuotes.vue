@@ -82,7 +82,7 @@
 
                         <div class="sm:col-span-3">
                             <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">
-                                Fecha limite de Aprobacion
+                                Fecha limite de Aprobacion de Finanzas
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.quote_deadline" id="quote_deadline"
