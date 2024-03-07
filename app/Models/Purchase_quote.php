@@ -55,7 +55,7 @@ class Purchase_quote extends Model
     public function getTotalAmountAttribute() {
         return $this->purchase_quote_products()->get()->sum(function($item){
             return $item->quantity * $item->unitary_amount;
-        })*($this->igv? 1/0.82 : 1.18);
+        });
     }
 
     public function getCodeAttribute() {
