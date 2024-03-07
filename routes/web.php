@@ -331,7 +331,7 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     Route::get('/inventory/purchase_products/products', [PurchaseProductsController::class, 'index'])->name('inventory.purchaseproducts');
     Route::post('/inventory/purchase_products/products/post', [PurchaseProductsController::class, 'store'])->name('inventory.purchaseproducts.store');
     Route::put('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
-    Route::delete('/inventory/purchase_products/products/{purchase_product}/destroy', [PurchaseProductsController::class, 'destroy'])->name('inventory.purchaseproducts.destroy');
+    Route::put('/inventory/purchase_products/products/{purchase_product}/disable', [PurchaseProductsController::class, 'disable'])->name('inventory.purchaseproducts.disable');
 
 });
 

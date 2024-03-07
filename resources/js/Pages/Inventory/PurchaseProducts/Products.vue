@@ -17,7 +17,7 @@
                             d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
                             stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <input type="text" placeholder="Buscar por nombre..."
+                    <input type="text" placeholder="Buscar..."
                         class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         @input="updateFilteredProducts" />
                 </div>
@@ -73,7 +73,10 @@
                                     </button>
                                     <button v-if="admin" @click="confirmDeleteProduct(item.id)"
                                         class="text-red-600 hover:underline">
-                                        <TrashIcon class="h-4 w-4" />
+                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="12" cy="12" r="9" stroke="red" stroke-width="2"/>
+                                            <path d="M18 18L6 6" stroke="red" stroke-width="2"/>
+                                        </svg>
                                     </button>
                                 </div>
                             </td>
@@ -98,7 +101,7 @@
                             <div>
                                 <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.name" id="name"
+                                    <TextInput :to-uppercase="true" type="text" v-model="form.name" id="name"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.name" />
                                 </div>
@@ -108,7 +111,7 @@
                                 <InputLabel for="unit" class="font-medium leading-6 text-gray-900 mt-3">Unidad
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select v-model="form.unit" id="unit"
+                                    <select :to-uppercase="true" v-model="form.unit" id="unit"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled>Seleccione una opción</option>
                                         <option value="Unidad">Unidad</option>
@@ -124,7 +127,7 @@
                                     Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.description" id="description"
+                                    <TextInput :to-uppercase="true" type="text" v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.description" />
                                 </div>
@@ -142,7 +145,7 @@
                 </form>
             </div>
         </Modal>
-        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Producto"
+        <ConfirmDisableModal :confirmingDeletion="confirmingDocDeletion" itemType="Producto"
             :deleteFunction="deleteProduct" @closeModal="closeModalDoc" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Producto" />
         <ConfirmUpdateModal :confirmingupdate="showConfirmEdit" itemType="Producto" />
@@ -153,20 +156,21 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { ref, computed } from 'vue';
+import ConfirmDisableModal from '@/Components/ConfirmDisableModal.vue';
+import { ref, computed, watch } from 'vue';
+import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
+import { PencilIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     products: Object,
-    admin: Boolean
+    admin: Boolean,
 });
 
 const form = useForm({
@@ -179,22 +183,23 @@ const form = useForm({
 const searchTerm = ref('');
 const create_product = ref(false);
 const showModal = ref(false);
-let filteredProducts = props.products.data;
 const docToDelete = ref(null);
 const confirmingDocDeletion = ref(false);
 const showModalEdit = ref(false);
 const editingProduct = ref(null);
 const showConfirmEdit = ref(false);
 
-filteredProducts = computed(() => {
-    const term = searchTerm.value.trim().toLowerCase();
-    return props.products.data.filter(product => product.name.toLowerCase().includes(term));
+const filteredProducts = computed(() => {
+    return props.products.data.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.value) ||
+        product.code.toLowerCase().includes(searchTerm.value)
+    );
 });
 
 const updateFilteredProducts = (event) => {
-    const term = event.target.value.trim().toLowerCase();
-    searchTerm.value = term;
+    searchTerm.value = event.target.value.trim().toLowerCase();
 };
+
 
 const openCreateProduct = () => {
     create_product.value = true;
@@ -272,12 +277,13 @@ const closeModalDoc = () => {
 const deleteProduct = () => {
     const docId = docToDelete.value;
     if (docId) {
-        router.delete(route('inventory.purchaseproducts.destroy', { purchase_product: docId }), {
-            onSuccess: () => closeModalDoc()
+        router.put(route('inventory.purchaseproducts.disable', { purchase_product: docId }), {
+            onSuccess: () => {
+                closeModalDoc();
+                confirmingDocDeletion.value = false;
+            }
         });
     }
 };
-
-console.log(props.products);
 
 </script>
