@@ -15,7 +15,8 @@ class PurchaseProductsController extends Controller
     {
         $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         $products = Purchase_product::with('purchasing_request_product', 'purchase_quote_product')
-                       ->paginate(10);
+                       ->where('state', true)
+                       ->paginate(10);            
         return Inertia::render('Inventory/PurchaseProducts/Products', [
             'products' => $products,
             'admin' => $hasAllPermissions
@@ -53,9 +54,11 @@ class PurchaseProductsController extends Controller
         ]);
     }
 
-    public function destroy(Purchase_product $purchase_product)
+    public function disable(Purchase_product $purchase_product)
     {
-        $purchase_product->delete();
+        $purchase_product->update([
+            'state' => false
+        ]);
         return to_route('inventory.purchaseproducts');
     }
 }
