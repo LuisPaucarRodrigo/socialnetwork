@@ -12,14 +12,15 @@
                     + Agregar
                 </button>
                 <div class="flex items-center">
-                    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <input type="text" placeholder="Buscar..."
-                        class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        @input="updateFilteredProducts" />
+                    <form @submit.prevent="search" class="flex items-center">
+
+                        <input type="text" placeholder="Buscar..."
+                            class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            v-model="searchForm.searchTerm" />
+                            <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                    class="ml-3 rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    Buscar</button>
+                    </form>
                 </div>
             </div>
             <br>
@@ -52,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in filteredProducts" :key="item.id" class="text-gray-700 border-b">
+                        <tr v-for="item in props.products.data" :key="item.id" class="text-gray-700 border-b">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <h2 class="text-sm font-semibold">{{ item.name }}</h2>
                             </td>
@@ -180,7 +181,6 @@ const form = useForm({
     description: ''
 });
 
-const searchTerm = ref('');
 const create_product = ref(false);
 const showModal = ref(false);
 const docToDelete = ref(null);
@@ -188,18 +188,6 @@ const confirmingDocDeletion = ref(false);
 const showModalEdit = ref(false);
 const editingProduct = ref(null);
 const showConfirmEdit = ref(false);
-
-const filteredProducts = computed(() => {
-    return props.products.data.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.value) ||
-        product.code.toLowerCase().includes(searchTerm.value)
-    );
-});
-
-const updateFilteredProducts = (event) => {
-    searchTerm.value = event.target.value.trim().toLowerCase();
-};
-
 
 const openCreateProduct = () => {
     create_product.value = true;
@@ -218,6 +206,10 @@ const openEditProductModal = (product) => {
     form.unit = editingProduct.value.unit;
     showModalEdit.value = true;
 };
+
+const searchForm = useForm({
+    searchTerm: '',
+})
 
 const closeEditModal = () => {
     showModalEdit.value = false;
@@ -264,6 +256,15 @@ const submitEdit = () => {
     });
 }
 
+const search = () => {
+    if(searchForm.searchTerm == ''){
+        router.visit(route('inventory.purchaseproducts'));
+    }else{
+        router.visit(route('inventory.purchaseproducts.search', {request: searchForm.searchTerm}));
+    }
+    
+}
+
 
 const confirmDeleteProduct = (productId) => {
     docToDelete.value = productId;
@@ -278,10 +279,7 @@ const deleteProduct = () => {
     const docId = docToDelete.value;
     if (docId) {
         router.put(route('inventory.purchaseproducts.disable', { purchase_product: docId }), {
-            onSuccess: () => {
-                closeModalDoc();
-                confirmingDocDeletion.value = false;
-            }
+            onSuccess: () => closeModalDoc()
         });
     }
 };
