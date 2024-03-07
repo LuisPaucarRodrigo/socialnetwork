@@ -15,6 +15,7 @@ class Purchase_product extends Model
         'name', 
         'unit',
         'description',
+        'state'
     ];
 
     public $appends = [
