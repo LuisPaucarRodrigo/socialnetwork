@@ -471,7 +471,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::post('/shopping_area/providers/segment', [ProviderController::class, 'segment_provider'])->name('provider.segment');
 
     Route::get('/shopping_area/payment', [PaymentController::class, 'index'])->name('payment.index');
-    Route::put('/shopping_area/payment/$id/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
+    Route::post('/shopping_area/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
 
 
 });
