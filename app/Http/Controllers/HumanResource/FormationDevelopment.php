@@ -128,7 +128,9 @@ class FormationDevelopment extends Controller
     public function assignate_create()
     {
         return Inertia::render('HumanResource/FormationDevelopments/AssignationCreate', [
-            'employees' => Employee::all(),
+            'employees' => Employee::with('contract')->whereHas('contract', function ($query) {
+                $query->where('state', 'Active');
+            }),
             'formation_programs' => FormationProgram::all(),
         ]);
     }
