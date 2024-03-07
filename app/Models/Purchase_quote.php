@@ -40,6 +40,9 @@ class Purchase_quote extends Model
         return $this->hasOne(Purchase_order::class);
     }
 
+    public function payment() {
+        return $this->hasMany(Payment::class);
+    }
 
     public function products () {
         return $this->belongsToMany(Purchase_product::class,'purchase_quotes_products')->withPivot('id','quantity','unitary_amount')->withTimestamps();

@@ -4,7 +4,7 @@ namespace App\Http\Requests\PaymentRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreatePaymentRequest extends FormRequest
+class UpdatePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,9 @@ class CreatePaymentRequest extends FormRequest
     {
         return [
             'operation_number' => 'required|numeric',
-            'date' => 'requerid|date',
-            'payment_doc' => 'nullable|mimes:jpg,jpeg,pdf|max:2048',
+            'date' => 'required|date',
+            'payment_doc' => 'nullable|mimes:png,jpg,jpeg,pdf|max:2048',
+            'payment_id' => 'required|numeric',
         ];
     }
 }
