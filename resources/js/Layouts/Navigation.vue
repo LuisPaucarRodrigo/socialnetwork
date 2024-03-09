@@ -44,7 +44,7 @@
             </template>
 
             <template
-                v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource') || hasPermission('Administration')">
+                v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
                 <a v-if="subSectionsCount + subSectionsCount7 > 0" 
                     class="flex items-center mt-4 py-2 px-6 text-gray-100"
                     href="#" 
@@ -89,7 +89,7 @@
                         <Link class="w-full" :href="route('sections.subSections')">Alarmas RRHH</Link>
                     </div>
                 </MyTransition>
-                <template v-if="hasPermission('UserManager') && showingMembers && showingMembers7">
+                <template v-if="showingMembers && showingMembers7">
                     <div class="mb-4">
                         <MyTransition v-for="item in subSectionsPorVencer" :key="item.id" class="ml-4"
                             :transitiondemonstration="showingMembers">
@@ -120,7 +120,7 @@
             </template>
 
             <template
-                v-if="hasPermission('InventoryManager') || hasPermission('Inventory') || hasPermission('Administration')">
+                v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingInventory = !showingInventory">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -173,7 +173,7 @@
                         <Link class="w-full" :href="route('purchasesrequest.index')">Solicitudes de Compras</Link>
                     </div>
                 </MyTransition>
-                <template v-if="hasPermission('UserManager') && showShoppingPurchaseRequestAlarms">
+                <template v-if="showShoppingPurchaseRequestAlarms">
                     <div class="mb-4">
                         <MyTransition v-for="item in shoppingPurchases" :key="item.id" class="ml-4"
                             :transitiondemonstration="showShoppingPurchaseRequestAlarms">
@@ -227,10 +227,10 @@
                     </MyTransition>
                 </template>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
-                    <Link class="w-full" :href="route('purchaseorders.history')">Registro de Compras</Link>
+                    <Link class="w-full" :href="route('payment.index')">Registro de Pagos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
-                    <Link class="w-full" :href="route('payment.index')">Registro de Pagos</Link>
+                    <Link class="w-full" :href="route('purchaseorders.history')">Registro de Compras</Link>
                 </MyTransition>
             </template>
 
@@ -274,7 +274,7 @@
                     </div>
                 </MyTransition>
 
-                <template v-if="hasPermission('UserManager') && cicsashowingMembers && cicsashowingMembers7">
+                <template v-if="cicsashowingMembers && cicsashowingMembers7">
                     <div class="mb-4">
                         <MyTransition v-for="item in cicsasubSectionsPorVencer" :key="item.id" class="ml-4"
                             :transitiondemonstration="cicsashowingMembers">
@@ -332,10 +332,9 @@
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
                                     financePurchasesTotal + financePurchasesTotal7 }}</span></button>
                         <Link class="w-full" :href="route('managementexpense.index')">Aprobacion de Compras</Link>
-
                     </div>
                 </MyTransition>
-                <template v-if="hasPermission('UserManager') && showFinancePurchaseQuoteAlarms">
+                <template v-if="showFinancePurchaseQuoteAlarms">
                     <div class="mb-4">
                         <MyTransition v-for="item in financePurchases" :key="item.id" class="ml-4"
                             :transitiondemonstration="showFinancePurchaseQuoteAlarms">
