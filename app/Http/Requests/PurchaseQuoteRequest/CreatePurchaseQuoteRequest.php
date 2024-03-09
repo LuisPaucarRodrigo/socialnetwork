@@ -22,7 +22,8 @@ class CreatePurchaseQuoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quote_deadline' => 'required|date',
+            'quote_deadline' => 'required|date|before_or_equal:due_date',
+            'due_date' => 'required|date',
             'purchase_doc' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
             'igv' => 'required',
             'deliverable_time' => 'required',

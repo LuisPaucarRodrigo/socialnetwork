@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Pagos" />
-    <AuthenticatedLayout :redirectRoute="'management.employees'">
+    <AuthenticatedLayout :redirectRoute="'payment.index'">
         <template #header>
             Pagos
         </template>
@@ -13,6 +13,10 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Codigo de Pago
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Codigo de Solicitud
                             </th>
                             <th
@@ -20,11 +24,7 @@
                                 Titulo de Solicitud
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Pago
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Monto
                             </th>
                             <th
@@ -40,16 +40,16 @@
                     <tbody>
                         <tr v-for="payment in payments.data" :key="payment.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ payment.cod_payment }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ payment.purchase_quote.purchasing_requests.code}}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ payment.purchase_quote.purchasing_requests.title }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ payment.cod_payment }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ payment.amount }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ payment.amount.toFixed(2) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ payment.description }}</p>
@@ -91,7 +91,7 @@
                             <p class="text-lg text-gray-900">{{ payment_obj.amount }}</p>
                         </div>
                         <div class="mb-4">
-                            <p class="text-sm text-gray-700 font-medium">Descripcion:</p>
+                            <p class="text-sm text-gray-700 font-medium">Tipo de Pago:</p>
                             <p class="text-lg text-gray-900">{{ payment_obj.description }}</p>
                         </div>
                         <div class="mt-2">
@@ -159,8 +159,6 @@ const payment_obj = ref('');
 const props = defineProps({
     payments: Object
 })
-
-console.log(props.payments);
 
 const form = useForm({
     operation_number: '',
