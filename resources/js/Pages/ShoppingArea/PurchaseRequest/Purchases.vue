@@ -11,13 +11,13 @@
                 + Agregar
             </button>
             <div class="overflow-x-auto">
-                <table class="w-full ">
+                <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Código
+                                Código de Solicitud
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -36,11 +36,12 @@
                                 Estado
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nr. Cotizaciones
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Acciones
                             </th>
                         </tr>
                     </thead>
@@ -69,11 +70,15 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 ">{{ purchase.state }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">Acep({{ purchase.purchase_quotes_with_state_count }}) Recha({{ purchase.purchase_quotes_without_state_count }})</p>
+                            <td class="border-b border-gray-200 bg-white px-2 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    Acep({{ purchase.purchase_quotes_with_state_count }}) 
+                                    Recha({{ purchase.purchase_quotes_without_state_count }}) 
+                                    Cotizaciones({{ purchase.purchase_quotes_count }})
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex space-x-3 justify-center">
+                                <div class="flex space-x-3 justify-left">
                                     <Link v-if="purchase.state == 'Pendiente' || purchase.state == 'En progreso'"
                                         class="text-blue-900 "
                                         :href="route('purchasesrequest.quotes', { id: purchase.id })">
