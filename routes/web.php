@@ -17,6 +17,7 @@ use App\Http\Controllers\ProjectArea\ProjectScheduleController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
 use App\Http\Controllers\ProjectArea\ProjectReportsController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
+use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ShoppingArea\PurchaseRequestController;
 use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
@@ -438,6 +439,21 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     //Calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');
     Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');
+
+    //customers
+    Route::get('/customers', [CustomersController::class, 'index'])->name('customers.index');
+    Route::post('/customers/post', [CustomersController::class, 'store'])->name('customers.store');
+    Route::put('/customers/{customer}/update', [CustomersController::class, 'update'])->name('customers.update');
+    Route::delete('/customers/{customer}/destroy', [CustomersController::class, 'destroy'])->name('customers.destroy');
+
+
+    //customer_contacts
+    Route::get('/customers/{customer}/contacts', [CustomersController::class, 'show_contacts'])->name('customers.contacts.index');
+    Route::post('/customers/{customer}/contacts/post', [CustomersController::class, 'store_contact'])->name('customers.contacts.store');
+    Route::put('/customers/{customer}/contacts/{customer_contact}/update', [CustomersController::class, 'update_contact'])->name('customers.contacts.update');
+    Route::delete('/customers/{customer}/contacts/{customer_contact}/destroy', [CustomersController::class, 'destroy_contact'])->name('customers.contacts.destroy');
+
+
 });
 
 Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
