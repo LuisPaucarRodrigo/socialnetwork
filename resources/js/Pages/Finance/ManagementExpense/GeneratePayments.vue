@@ -62,13 +62,13 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ payment.description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ (payment.amount).toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }} {{ (payment.amount).toFixed(2) }}</p>
                             </td>
                         </tr>
                         <tr class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-lg" colspan="1">Totales:</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ (currentTotal).toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }} {{ (currentTotal).toFixed(2) }}</p>
                             </td>
                         </tr>
                     </tbody>
@@ -92,8 +92,10 @@
                         <div class="mt-2">
                             <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto Total
                             </InputLabel>
-                            <p class="text-lg text-gray-900">{{ quote.currency == 'sol' ? "S/" : "$" }} {{
-        (quote.total_amount).toFixed(2) }}</p>
+                            <p class="text-lg text-gray-900">
+                                {{ quote.currency == 'sol' ? "S/" : "$" }}
+                                {{ (quote.total_amount).toFixed(2) }}
+                            </p>
                         </div>
                     </div>
                     <div>

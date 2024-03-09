@@ -26,6 +26,7 @@ class UpdatePaymentRequest extends FormRequest
             'date' => 'required|date',
             'payment_doc' => 'nullable|mimes:png,jpg,jpeg,pdf|max:2048',
             'payment_id' => 'required|numeric',
+            'price_dolar' => 'nullable|numeric',
         ];
     }
 }
