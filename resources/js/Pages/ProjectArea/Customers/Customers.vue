@@ -131,8 +131,6 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import DangerButton from '@/Components/DangerButton.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { TrashIcon, PencilIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
@@ -172,11 +170,6 @@ const form = useForm({
     business_name: '',
     address: ''
 });
-
-const closeModal = () => {
-    confirmingUserDeletion.value = false;
-    form.reset();
-};
 
 const submit = () => {
   form.post(route('customers.store'), {
