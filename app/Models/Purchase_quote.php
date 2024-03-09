@@ -24,7 +24,7 @@ class Purchase_quote extends Model
     ];
 
     public $appends = [
-        'total_amount', 'code'
+        'total_amount', 'code','payments_completed'
     ];
 
     public function provider()    {
@@ -60,5 +60,21 @@ class Purchase_quote extends Model
 
     public function getCodeAttribute() {
         return 'CO' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function getPaymentsCompletedAttribute()
+    {
+        $quotePayments = $this->payment; // Obtenemos todos los pagos relacionados con la cotización
+        $allCompleted = true; // Suponemos que todos los pagos están completados
+
+        foreach ($quotePayments as $payment) {
+            if ($payment->state) {
+                // Si al menos uno de los pagos no está completado, marcamos la bandera como falsa
+                $allCompleted = false;
+                break; // No es necesario seguir iterando
+            }
+        }
+
+        return $allCompleted;
     }
 }

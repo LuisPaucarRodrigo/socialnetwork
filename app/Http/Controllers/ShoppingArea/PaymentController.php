@@ -13,12 +13,12 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        // return Inertia::render('ShoppingArea/Payments/index',[
-        //     'payments' => Purchase_quote::with('purchase_order')->paginate()
-        // ]);
-        return Inertia::render('ShoppingArea/Payments/index',[
-            'payments' => Payment::with('purchase_quote.purchasing_requests')->paginate()
+        return Inertia::render('ShoppingArea/Payments/index', [
+            'payments' => Purchase_quote::with('purchasing_requests', 'purchase_order', 'payment')
+                ->has('payment')
+                ->paginate()
         ]);
+
     }
 
     public function payment_pay(UpdatePaymentRequest $request)
@@ -26,6 +26,9 @@ class PaymentController extends Controller
         $validatedata = $request->validated();
         $payment = Payment::find($validatedata['payment_id']);
         $payment->update($validatedata);
+        $purchase_quote = Purchase_quote::find($payment->purchase_quote_id);
+        $purchase_quote->update([
+            'change_value' => $validatedata['price_dolar']
+        ]) ;
     }
-    
 }
