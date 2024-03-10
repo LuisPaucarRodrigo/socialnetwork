@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
+use App\Models\Customer;
 use App\Models\PhotoReport;
 use App\Models\Preproject;
 use App\Models\Customervisit;
@@ -21,6 +22,13 @@ class PreProjectController extends Controller
     public function index(){
         return Inertia::render('ProjectArea/ProjectManagement/PreProjects', [
             'preprojects' => Preproject::with('project')->paginate(10),
+        ]);
+    }
+
+    public function create($preproject_id= null){
+        return Inertia::render('ProjectArea/ProjectManagement/CreatePreProject', [
+            'preproject' => Preproject::with('project')->find($preproject_id),
+            'customers' => Customer::with('customer_contacts')->get(),
         ]);
     }
 
@@ -73,22 +81,6 @@ class PreProjectController extends Controller
             $data['code'] = substr($preproject->code, 0, 9) . strtoupper($data['code']);
         } else {
             $data['code'] = $this->getCode($data['date'], $data['code']);
-        }
-        if ($request->hasFile('facade')) {
-            $facadeName = $preproject->facade;
-            $facadePath = "image/facades/$facadeName";
-            $path = public_path($facadePath);
-            if (file_exists($path)) {
-                unlink($path);
-            } else {
-                dd("El archivo no existe en la ruta: $facadePath");
-            }
-            $facade = $request->file('facade');
-            $facadeName = time() . '_' . $facade->getClientOriginalName();
-            $facade->move(public_path('image/facades/'), $facadeName);
-            $data['facade'] = $facadeName;
-        } else {
-            unset($data['facade']);
         }
         $preproject->update($data);
         return redirect()->back();

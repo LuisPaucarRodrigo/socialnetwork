@@ -1,6 +1,7 @@
 <template>
+
     <Head title="Anteproyectos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template v-if="preproject" #header>
             Edición de Anteproyecto
         </template>
@@ -14,109 +15,204 @@
                     </div>
 
                     <div class="border-b border-gray-900 pb-12">
-                        <h2 v-if="preproject" class="text-base font-semibold leading-7 text-gray-900">{{ preproject.name }}-{{
-                            preproject.code }}</h2>
-                        <h2 v-else class="text-base font-semibold leading-7 text-gray-900">Registrar nuevo Anteproyecto</h2>
+                        <h2 v-if="preproject" class="text-base font-semibold leading-7 text-gray-900">{{ preproject.name
+                            }}-{{
+        preproject.code }}</h2>
+                        <h2 v-else class="text-base font-semibold leading-7 text-gray-900">Registrar nuevo Anteproyecto
+                        </h2>
                         <br>
-                        <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-                            <div class="sm:col-span-3">
-                                <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre del proyecto
+                        <div
+                            class="border-b grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4  border-gray-900/10 pb-12">
+
+                            <div>
+                                <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
+                                    Cliente
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput required type="text" v-model="form.name" id="name"
+                                    <input id="unit" list="options" @input="(e)=>handleAutocomplete(e, 'customer_id')" autocomplete="off"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.name" />
+
+                                    <datalist id="options">
+                                        <option v-for="item in customers" :value="item.ruc" :data-value="item">
+                                            {{ item.business_name }}
+                                        </option>
+                                    </datalist>
+                                    <InputError :message="form.errors.customer_id" />
                                 </div>
                             </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel class="font-medium leading-6 text-gray-900">Código del proyecto (Siglas):
-                                </InputLabel>
-                                <div class="mt-2 flex justify-center items-center gap-2">
-                                    <InputLabel class="font-medium leading-6 text-indigo-900">
-                                        {{ formatearFecha(current_date) }}
+                            <div>
+                                <div class="flex gap-3 items-center">
+                                    <InputLabel for="customer" class="font-medium leading-6 text-gray-900">¿Cliente
+                                        final?
                                     </InputLabel>
-                                    <TextInput required type="text" v-model="form.code" id="name"
-                                        placeholder="Ejemplos: MPr, ITD, etc."
+
+                                    <div class="flex gap-4 text-sm">
+                                        <label class="flex gap-2 items-center">
+                                            Sí
+                                            <input type="radio" v-model="hasSubcustomer"
+                                                @input="handleSubClient" :value="true"
+                                                class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                        </label>
+                                        <label class="flex gap-2 items-center">
+                                            No
+                                            <input type="radio" v-model="hasSubcustomer" 
+                                                @input="handleSubClient" :value="false"
+                                                class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                        </label>
+                                    </div>
+
+                                </div>
+                                <div v-if="hasSubcustomer" class="mt-2">
+                                    <input id="unit" list="options" @input="(e)=>handleAutocomplete(e, 'subcustomer_id')" autocomplete="off"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+
+                                    <datalist id="options">
+                                        <option v-for="item in customers" :value="item.ruc" :data-value="item">
+                                            {{ item.business_name }}
+                                        </option>
+                                    </datalist>
+                                    <InputError :message="form.errors.customer_id" />
                                 </div>
-                                <InputError :message="form.errors.code" />
                             </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel for="priority" class="font-medium leading-6 text-gray-900">Prioridad
+
+                            <div class="col-span-1 sm:col-span-2">
+                                <p class="border-b-2 border-gray-300 text-sm text-indigo-600">
+                                    Datos del <b> cliente {{ hasSubcustomer ? 'final' : '' }}</b>
+                                </p>
+                            </div>
+
+                            <div>
+                                <InputLabel class="font-medium leading-6 text-gray-900">Nombre:
                                 </InputLabel>
-                                <div class="mt-2">
-                                    <select required id="priority" v-model="form.priority"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option disabled value="">Seleccione uno</option>
-                                        <option value="Alta">Alta</option>
-                                        <option value="Media">Media</option>
-                                        <option value="Baja">Baja</option>
-                                        <option value="otros">otros</option>
-                                    </select>
-                                    <InputError :message="form.errors.priority" />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
+                                <InputLabel class="leading-6 text-gray-900">Nombre
                                 </InputLabel>
-                                <div class="mt-2">
-                                    <textarea required v-model="form.description" id="description"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
-                                    <InputError :message="form.errors.description" />
-                                </div>
+                                <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
+                                </InputLabel>
+                                <InputLabel class="leading-6 text-gray-900">Dirección
+                                </InputLabel>
+
                             </div>
 
 
-                            <div class="sm:col-span-3">
-                                <div class="flex gap-2">
-                                    <InputLabel for="trainings" class="font-medium leading-6 text-gray-900">Miembros del
-                                        equipo al proyecto
+
+
+                            <div>
+                                <div class="flex gap-2 items-end">
+                                    <InputLabel for="description" class="font-medium leading-6 text-gray-900">Contactos
                                     </InputLabel>
-                                    <button @click="showToAddEmployee" type="button">
-                                        <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
+                                    <button @click="openContactModal" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
                                     </button>
                                 </div>
 
-                                <div class="mt-2" v-if="preproject">
-                                    <div v-for="(member, index) in form.employees" :key="index"
-                                        class="grid grid-cols-8 items-center my-2">
-                                        <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
-                                            member.lastname }}: {{ member.pivot.charge }} </p>
-                                        <button type="button" @click="delete_already_employee(member.pivot.id, index)"
-                                            class="col-span-1 flex justify-end">
-                                            <TrashIcon class=" text-red-500 h-4 w-4 " />
+
+                                <div v-for="(item, i) in contactsList" :key="i" class="">
+                                    <div v-if="form.contacts.includes(item.id)"
+                                        class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
+                                        <p class=" text-sm col-span-7 line-clamp-2">
+                                            {{ item.name }}: {{ item.phone }} </p>
+                                        <!-- @click="delete_already_employee(member.pivot.id, index)" -->
+                                        <button type="button" class="col-span-1 flex justify-end" @click="deleteContactItem(item.id)">
+                                            <TrashIcon class=" text-red-500 h-4 w-4"/>
                                         </button>
-                                        <div class="border-b col-span-8 border-gray-900/10">
-                                        </div>
                                     </div>
                                 </div>
-                                <div class="mt-2" v-else>
-                                    <div v-for="(member, index) in form.employees" :key="index"
-                                        class="grid grid-cols-8 items-center my-2">
-                                        <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
-                                            member.employee.lastname }}: {{ member.charge }} </p>
-                                        <button type="button" @click="delete_employee(index)"
-                                            class="col-span-1 flex justify-end">
-                                            <TrashIcon class=" text-red-500 h-4 w-4 " />
-                                        </button>
-                                        <div class="border-b col-span-8 border-gray-900/10">
-                                        </div>
-                                    </div>
+                                <InputError :message="form.errors.contacts" />
+                            </div>
+
+                            <div class="col-span-1 border-t-2 border-gray-300 sm:col-span-2">
+                            </div>
+
+                            <div>
+                                <InputLabel for="address" class="font-medium leading-6 text-gray-900">Dirección
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.address" id="address"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.address" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="date" class="font-medium leading-6 text-gray-900">Fecha de Visita
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="form.date" id="date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.date" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="date" class="font-medium leading-6 text-gray-900">Código de proyecto
+                                </InputLabel>
+                                <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
+                                <p class="text-gray-400">CCCCC -> 5 iniciales cliente | PPPPP -> 5 iniciales proyecto
+                                </p>
+                                <div class="mt-2 flex justify-center items-center gap-2">
+                                    <input type="text" v-model="form.code" id="name" pattern="[a-zA-Z]{5}-[a-zA-Z]{5}"
+                                        maxlength="11"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 uppercase" />
+                                </div>
+                                <InputError :message="form.errors.code" />
+                            </div>
+
+                            <div>
+                                <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <textarea type="text" v-model="form.observation" id="observation"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.observation" />
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <div class="mt-3 flex items-center justify-between gap-x-6">
-                    <a :href="route('preproject.index')"
-                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Atras
-                    </a>
                     <button type="submit" :class="{ 'opacity-25': form.processing }"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                 </div>
             </form>
+            <Modal :show="showContactModal">
+                <div class="p-6">
+                    <h2 class="text-base font-medium leading-7 text-gray-900">
+                        Contactos del cliente {{ form.subcustomer_id && 'final' }}
+                    </h2>
+                    <p class="text-sm text-indigo-500">Primero seleccinar un cliente o cliente final</p>
+                    <form @submit.prevent="submitContact">
+                        <div class="mt-2">
+                            <select v-model="contactItem" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+
+                                <option disabled value="">Seleccione</option>
+                                <option v-for="item in contactsList" :value="item.id">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeContactModal">
+                                Cerrar </SecondaryButton>
+                            <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Agregar</button>
+
+                        </div>
+
+                    </form>
+
+
+                </div>
+            </Modal>
+            <ErrorOperationModal :showError="showErrorContact" title="Error"
+                message="El contacto ya fue añadido o es inválido" />
+
+
         </div>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
     </AuthenticatedLayout>
@@ -133,45 +229,109 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const showModal = ref(false)
+const showErrorContact = ref(false)
 
-const { preproject } = defineProps({
-    preproject: Object
+const { preproject, customers } = defineProps({
+    preproject: Object,
+    customers: Object
 })
 
-const initialState = {
-    name: '',
+const initial_state = {
+    customer_id: '',
+    subcustomer_id: '',
     code: '',
-    start_date: '',
-    end_date: '',
-    priority: '',
     description: '',
-    employees: []
+    date: '',
+    observation: '',
+    contacts: []
 }
 
-const form = useForm(
-    preproject ?
-        { ...preproject, code: preproject.code.substring(7) }
-        :
-        { ...initialState }
-)
+const form = useForm({
+    ...initial_state
+});
+
 
 const submit = () => {
-    form.code = formatearFecha(form.start_date) + '-' + form.code
-    form.post(route('preproject.store'), {
-        onSuccess: () => {
-            closeModal();
-            showModal.value = true
-            setTimeout(() => {
-                showModal.value = false;
-                router.visit(route('preproject.index'))
-            }, 2000);
-        },
-        onError: () => {
-            close();
-        }
-    })
+    console.log(form.data())
+    // form.code = formatearFecha(form.start_date) + '-' + form.code
+    // form.post(route('preproject.store'), {
+    //     onSuccess: () => {
+    //         closeModal();
+    //         showModal.value = true
+    //         setTimeout(() => {
+    //             showModal.value = false;
+    //             router.visit(route('preproject.index'))
+    //         }, 2000);
+    //     },
+    //     onError: () => {
+    //         close();
+    //     }
+    // })
+}
+
+
+const handleAutocomplete = (e, model) => {
+    const ruc = e.target.value;
+    form.contacts = []
+    let matchedClient = customers.find(item => item.ruc == ruc)
+    if (matchedClient) {
+        form[model] = matchedClient.id
+    } else {
+        form[model] = ''
+    }
+    helperContactList(form.customer_id, form.subcustomer_id, hasSubcustomer.value)
+}
+
+const helperContactList = (customer_id, subcustomer_id, hasSC) => {
+    const matchCustomer = customers.find(item => item.id == customer_id)
+    const matchSubCustomer = customers.find(item => item.id == subcustomer_id)
+    console.log(hasSubcustomer.value)
+    if(matchSubCustomer){
+        contactsList.value = matchSubCustomer.customer_contacts
+    } else if (matchCustomer && !hasSC) {
+        contactsList.value = matchCustomer.customer_contacts
+    } else  {
+        contactsList.value = []
+    }
+}
+
+
+const contactsList = ref([])
+const contactItem = ref("")
+const showContactModal = ref(false)
+function openContactModal() {
+    showContactModal.value = true
+}
+function closeContactModal() {
+    showContactModal.value = false
+}
+
+
+function submitContact() {
+    if (form.contacts.includes(contactItem.value)) {
+        showErrorContact.value = true
+        setTimeout(() => {
+            showErrorContact.value = false
+        }, 1500)
+    } else {
+        form.contacts.push(contactItem.value)
+    }
+    contactItem.value = ''
+}
+
+function deleteContactItem (id) {
+    const index = form.contacts.indexOf(id);
+    form.contacts.splice(index,1)
+}
+
+const hasSubcustomer = ref(false)
+const handleSubClient = (e) => {
+    form.subcustomer_id = ''
+    contactItem.value = ''
+    helperContactList(form.customer_id, form.subcustomer_id, JSON.parse(e.target.value))
 }
 
 </script>
