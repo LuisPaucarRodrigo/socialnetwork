@@ -36,10 +36,10 @@
                     <span class="mx-3">Usuarios y Roles</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingUsersAndRols">
-                    <Link class="w-full" :href="route('users.index')">Gestion de Usuarios</Link>
+                    <Link class="w-full" :href="route('users.index')">Usuarios</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingUsersAndRols">
-                    <Link class="w-full" :href="route('rols.index')">Gestion de Roles</Link>
+                    <Link class="w-full" :href="route('rols.index')">Roles</Link>
                 </MyTransition>
             </template>
 
@@ -65,7 +65,7 @@
                     <span class="mx-3">Recursos Humanos</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('management.employees')">Gestion de Empleados</Link>
+                    <Link class="w-full" :href="route('management.employees')">Empleados</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
@@ -76,10 +76,10 @@
                     </Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('management.vacation')">Gestión de Vacaciones y Permisos</Link>
+                    <Link class="w-full" :href="route('management.vacation')">Vacaciones y Permisos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('documents.index')">Gestion de Documentos</Link>
+                    <Link class="w-full" :href="route('documents.index')">Documentos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
@@ -131,13 +131,10 @@
                     <span class="mx-3">Inventario</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('inventory.purchaseproducts')">Registro de Productos</Link>
+                    <Link class="w-full" :href="route('inventory.purchaseproducts')">Productos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('resources.index')">Activos de la Empresa</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('warehouses.warehouses')">Gestión de Almacenes</Link>
+                    <Link class="w-full" :href="route('warehouses.warehouses')">Almacenes</Link>
                 </MyTransition>
             </template>
 
@@ -162,7 +159,7 @@
                     <span class="mx-3">Area de Compras</span>
                 </a>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
-                    <Link class="w-full" :href="route('providersmanagement.index')">Gestion de Proveedores</Link>
+                    <Link class="w-full" :href="route('providersmanagement.index')">Proveedores</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <div class="relative">
@@ -170,7 +167,7 @@
                                 v-if="shoppingPurchasesTotal + shoppingPurchasesTotal7 > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
                                     shoppingPurchasesTotal + shoppingPurchasesTotal7 }}</span></button>
-                        <Link class="w-full" :href="route('purchasesrequest.index')">Solicitudes de Compras</Link>
+                        <Link class="w-full" :href="route('purchasesrequest.index')">Solicitudes</Link>
                     </div>
                 </MyTransition>
                 <template v-if="showShoppingPurchaseRequestAlarms">
@@ -208,7 +205,7 @@
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
                                     purchaseOrdersAlarms.length }}</span>
                         </button>
-                        <Link class="w-full" :href="route('purchaseorders.index')">Ordenes de compra</Link>
+                        <Link class="w-full" :href="route('purchaseorders.index')">Ordenes</Link>
                     </div>
                 </MyTransition>
                 <!-- purchase order alarms -->
@@ -227,10 +224,10 @@
                     </MyTransition>
                 </template>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
-                    <Link class="w-full" :href="route('payment.index')">Registro de Pagos</Link>
+                    <Link class="w-full" :href="route('payment.index')">Pagos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingShoppingArea">
-                    <Link class="w-full" :href="route('purchaseorders.history')">Registro de Compras</Link>
+                    <Link class="w-full" :href="route('purchaseorders.history')">Compras Completadas</Link>
                 </MyTransition>
             </template>
 
@@ -260,10 +257,10 @@
                     <Link class="w-full" :href="route('preprojects.index')">Anteproyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('projectmanagement.index')">Gestion de Proyectos</Link>
+                    <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('tasks.index')">Seguimiento de Tareas</Link>
+                    <Link class="w-full" :href="route('tasks.index')">Tareas</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">

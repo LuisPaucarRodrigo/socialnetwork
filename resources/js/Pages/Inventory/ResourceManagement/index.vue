@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'resources.index'">
+    <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
             Activos
         </template>

@@ -9,15 +9,14 @@ class Preproject extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'customer',
+        'customer_id',
+        'subcustomer_id',
         'code',
-        'phone',
         'description',
-        'address',
         'date',
         'observation',
-        'facade',
     ];
+
     protected $appends = [
         'has_photo_report',
         'is_appropriate',
@@ -53,4 +52,8 @@ class Preproject extends Model
     public function getHasQuoteAttribute() {
         return $this->quote()->first() ? true: false;
     }
+
+     public function contacts() {
+        return $this->belongsToMany(Customers_contact::class,'preprojects_contacts');
+     }
 }
