@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Productos" />
-    <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
+    <AuthenticatedLayout :redirectRoute="'inventory.purchaseproducts'">
         <template #header>
             Gestión de Productos
         </template>

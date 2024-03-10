@@ -26,7 +26,7 @@ class ExpenseManagementController extends Controller
     }
 
     public function reviewed(ReviewedExpenseRequest $request, $id)
-    {   
+    {
         $data = $request->validated();
         Purchase_quote::find($id)->update($data);
         $date_issue = Carbon::today();
@@ -54,11 +54,12 @@ class ExpenseManagementController extends Controller
         // Obtener todos los Purchase_quote dentro del rango de 0 a 3 días y cuyo estado sea 0 o nulo
         $purchasesLessThanThreeDays = Purchase_quote::where('quote_deadline', '<=', $currentDate->copy()->addDays(3))
             ->where(function ($query) {
-                $query->where('state', '=', 0)
+                $query->where('state', 2)
                     ->orWhereNull('state');
             })
             ->with('purchasing_requests')
             ->get();
+
 
         $totalPurchasesLessThanThreeDays = $purchasesLessThanThreeDays->count();
 
@@ -66,7 +67,7 @@ class ExpenseManagementController extends Controller
         $purchasesBetweenFourAndSevenDays = Purchase_quote::where('quote_deadline', '>=', $currentDate->copy()->addDays(3))
             ->where('quote_deadline', '<=', $currentDate->copy()->addDays(7))
             ->where(function ($query) {
-                $query->where('state', '=', 0)
+                $query->where('state', 2)
                     ->orWhereNull('state');
             })
             ->with('purchasing_requests')

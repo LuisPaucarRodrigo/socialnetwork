@@ -3,7 +3,7 @@
     <Head title="Gestion de Gastos Cuadrilla" />
     <AuthenticatedLayout :redirectRoute="'managementexpense.index'">
         <template #header>
-            Gastos
+            Aprobacion de Compras
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="overflow-x-auto">
@@ -70,8 +70,9 @@
 
                             <template v-if="expense.purchasing_request_id != null">
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-nowrap">{{
-        expense.purchasing_requests.project?.code }}</p>
+                                    <p class="text-gray-900 whitespace-nowrap">
+                                        {{ expense.purchasing_requests.project?.code }}
+                                    </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ expense.purchasing_requests.code }}
@@ -91,7 +92,8 @@
                                     <p class="text-gray-900 whitespace-no-wrap">{{ expense.payment_type }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{ (expense.total_amount).toFixed(2) }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">{{ expense.currency === 'dolar' ? '$' :
+        'S/.' }} {{ (expense.total_amount).toFixed(2) }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(expense.quote_deadline)
@@ -106,19 +108,22 @@
                                     </button>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <Link :href="route('managementexpense.details', {purchase_quote: expense.id})" class="flex items-center text-blue-500 hover:underline">
-                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                    <Link :href="route('managementexpense.details', { purchase_quote: expense.id })"
+                                        class="flex items-center text-blue-500 hover:underline">
+                                    <EyeIcon class="h-4 w-4 ml-1" />
                                     </Link>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <div v-if="expense.purchasing_requests.state == 'En progreso' && expense.state == null " class="flex space-x-3 justify-center">
-                                        <Link :href="route('managementexpense.payment', {id: expense.id})" class="flex items-center text-blue-500 hover:underline">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
-                                    </Link>
+                                    <div v-if="expense.purchasing_requests.state == 'En progreso' && expense.state == null"
+                                        class="flex space-x-3 justify-center">
+                                        <Link :href="route('managementexpense.payment', { id: expense.id })"
+                                            class="flex items-center text-blue-500 hover:underline">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                        </Link>
                                         <button @click="sendReply(false, expense.id)" type="button"
                                             class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -129,8 +134,9 @@
                                         </button>
                                     </div>
                                     <div v-else>
-                                        <p :class="`${expense.state ? 'text-green-500' : 'text-red-500'}`">{{
-                                            expense.state ? 'Aceptado' : 'Rechazado' }}</p>
+                                        <p :class="`${expense.state ? 'text-green-500' : 'text-red-500'}`">
+                                            {{ expense.state ? 'Aceptado' : 'Rechazado' }}
+                                        </p>
                                     </div>
                                 </td>
                             </template>

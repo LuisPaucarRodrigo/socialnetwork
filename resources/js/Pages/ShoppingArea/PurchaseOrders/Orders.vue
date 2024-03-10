@@ -21,6 +21,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Titulo de Solicitud
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de solicitud de compra
                             </th>
                             <th
@@ -51,6 +55,10 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ order.code }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ order.purchase_quote.purchasing_requests.title }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
@@ -107,9 +115,8 @@
                                 Factura
                             </h2>
                             <div>
-                                <InputLabel for="facture_number" class="mt-2 font-medium leading-6 text-gray-900">Numero
-                                    de
-                                    Factura
+                                <InputLabel for="facture_number" class="mt-2 font-medium leading-6 text-gray-900">
+                                    Numero de Factura
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="text" v-model="form.facture_number" id="facture_number"
@@ -119,8 +126,8 @@
                             </div>
 
                             <div>
-                                <InputLabel for="facture_date" class="mt-4 font-medium leading-6 text-gray-900">Fecha de
-                                    Factura
+                                <InputLabel for="facture_date" class="mt-4 font-medium leading-6 text-gray-900">
+                                    Fecha de Factura
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="date" v-model="form.facture_date" id="facture_date"
@@ -130,9 +137,8 @@
                             </div>
 
                             <div>
-                                <InputLabel for="facture_doc" class="mt-4 font-medium leading-6 text-gray-900">Documento
-                                    de
-                                    Factura
+                                <InputLabel for="facture_doc" class="mt-4 font-medium leading-6 text-gray-900">
+                                    Documento de Factura
                                 </InputLabel>
                                 <div class="mt-2">
                                     <InputFile type="file" v-model="form.facture_doc" id="facture_doc"
@@ -148,8 +154,8 @@
                             </h2>
                             <div>
                                 <InputLabel for="remission_guide_number"
-                                    class="mt-2 font-medium leading-6 text-gray-900">Numero
-                                    de Guia de Remision
+                                    class="mt-2 font-medium leading-6 text-gray-900">
+                                    Numero de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="text" v-model="form.remission_guide_number" id="remission_guide_number"
@@ -160,8 +166,7 @@
 
                             <div>
                                 <InputLabel for="remission_guide_date" class="mt-4 font-medium leading-6 text-gray-900">
-                                    Fecha de
-                                    Guia de Remission
+                                    Fecha de Guia de Remission
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="date" v-model="form.remission_guide_date" id="remission_guide_date"
@@ -201,15 +206,20 @@
                     Información de la Cotización
                 </h2>
                 <div class="mt-4">
-                    <p class="text-sm text-gray-600"><span class="font-medium">Monto:</span> {{ cotization.amount }}</p>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Codigo de Cotizacion:</span> {{
+        cotization.code
+    }}</p>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Monto:</span> S/ {{
+            cotization.amount.toFixed(2)
+        }}</p>
                     <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider
                         }}
                     </p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Fecha de caducidad de la
-                            cotización:</span>
-                        {{ cotization.quote_deadline }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Respuesta:</span> {{ cotization.response
-                        }}
+                    <p class="text-sm text-gray-600"><span class="font-medium">Fecha de solicitud de compra:</span>
+                        {{ formattedDate(cotization.quote_deadline) }}</p>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Estado de Cotizacion:</span> {{
+        cotization.response
+    }}
                     </p>
                     <div class="flex items-center">
                         <p class="text-sm text-gray-600">
@@ -227,11 +237,13 @@
                 </div>
             </div>
         </Modal>
-
+        <SuccessOperationModal :confirming="showModalSuccess" title="Orden Completada"
+            message="Orden completada correctamente" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -250,6 +262,7 @@ const showCotization = ref(false);
 const id = ref(null);
 const state = ref(null);
 const quoteToOpen = ref(null);
+const showModalSuccess = ref(false);
 
 const props = defineProps({
     orders: Object
@@ -267,6 +280,7 @@ const form = useForm({
 })
 
 const cotization = {
+    code: '',
     amount: null,
     provider: '',
     quote_deadline: '',
@@ -276,10 +290,11 @@ const cotization = {
 
 const openCotization = (order) => {
     quoteToOpen.value = JSON.parse(JSON.stringify(order.purchase_quote));
-    cotization.amount = quoteToOpen.value.amount;
-    cotization.provider = quoteToOpen.value.provider;
+    cotization.code = quoteToOpen.value.code;
+    cotization.amount = quoteToOpen.value.total_amount;
+    cotization.provider = quoteToOpen.value.provider.contact_name;
     cotization.quote_deadline = quoteToOpen.value.quote_deadline;
-    cotization.response = quoteToOpen.value.response;
+    cotization.response = quoteToOpen.value.state ? "Aceptado" : "Rechazado";
     cotization.purchase_quote_id = quoteToOpen.value.id;
     showCotization.value = true;
 };
@@ -314,32 +329,19 @@ const submit = () => {
     form.state = state
     form.post(route('purchaseorders.state'), {
         onSuccess: () => {
-            showCotization.value = false;
-            router.visit(route('purchaseorders.index'))
+            showCotization.value = false
+            showModalSuccess.value = true
+            setTimeout(() => {
+                showModalSuccess.value = false
+                router.visit(route('purchaseorders.index'))
+            }, 2000);
+
         }
     })
 }
 
 const closeModal = () => {
     showModal.value = false
-}
-
-function setBorderColor(date) {
-    const fechaString = date;
-    const [year, month, day] = fechaString.split('-');
-    const fecha = new Date(year, month - 1, day);
-    const hoy = new Date()
-    hoy.setUTCHours(hoy.getUTCHours() - 5)
-    hoy.setHours(0, 0, 0, 0);
-    const diferenciaEnMilisegundos = fecha - hoy;
-    const diferenciaEnDias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
-    if (diferenciaEnDias <= 3) {
-        return 'red'
-    } else if (4 <= diferenciaEnDias <= 7) {
-        return 'yellow'
-    } else {
-        return ''
-    }
 }
 
 </script>

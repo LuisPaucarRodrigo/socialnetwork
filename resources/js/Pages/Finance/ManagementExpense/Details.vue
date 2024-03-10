@@ -7,7 +7,6 @@
         </template>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
-
             <div class="col-span-1 min-w-full rounded-lg shadow bg-white p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div v-if="expense.purchasing_requests.project" class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Proyecto:</p>
