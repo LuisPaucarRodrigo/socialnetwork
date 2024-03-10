@@ -373,7 +373,8 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
     //PreProjects
     Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
-    Route::post('/preprojects/create', [PreProjectController::class, 'store'])->name('preprojects.store');
+    Route::get('/preprojects/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
+    Route::post('/preprojects/store', [PreProjectController::class, 'store'])->name('preprojects.store');
     Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
     Route::get('/cotizationPDF/{preproject}', [PreProjectController::class, 'getPDF'])->name('preprojects.pdf');
 
