@@ -128,11 +128,11 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.liquidated_quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.liquidated_quantity -
-                                    item.refund_quantity }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.refund_quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.refund_quantity }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.liquidated_quantity -
+                                    item.refund_quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.observations }}</p>
