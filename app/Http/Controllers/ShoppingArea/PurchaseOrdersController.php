@@ -15,14 +15,14 @@ class PurchaseOrdersController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseOrders/Orders', ['orders' => Purchase_order::with('purchase_quote.purchasing_requests.project')
+        return Inertia::render('ShoppingArea/PurchaseOrders/Orders', ['orders' => Purchase_order::with('purchase_quote.purchasing_requests','purchase_quote.provider')
             ->where('state','!=','Completada')
             ->paginate()]);
     }
 
     public function history()
     {
-        $completedOrders = Purchase_order::with('purchase_quote.purchasing_requests.project')
+        $completedOrders = Purchase_order::with('purchase_quote.purchasing_requests','purchase_quote.payment')
             ->where('state', 'Completada')
             ->paginate();
 
@@ -56,18 +56,6 @@ class PurchaseOrdersController extends Controller
         ]);
     }
 
-    // public function purchase_orders_alarms()
-    // {
-    //     $today = Carbon::now();
-    //     $purchaseOrders3d = Purchase_order::with('purchase_quote.purchasing_requests')
-    //         ->where('state', '!=', 'Completada')
-    //         ->where('date_issue', '<=', $today->copy()->addDays(3))
-    //         ->get();
-    //     $purchaseOrders7d = Purchase_order::with('purchase_quote.purchasing_requests')
-    //         ->where('state', '!=', 'Completada')
-    //         ->where('date_issue', '>=', $today->copy()->addDays(3))
-    //         ->where('date_issue', '<=', $today->copy()->addDays(7))
-    // }
     public function purchase_orders_alarms()
     {
         $today = Carbon::now();
@@ -104,5 +92,15 @@ class PurchaseOrdersController extends Controller
         $dompdf->loadHtml($html);
         $dompdf->render();
         $pdfContent = $dompdf->output();
+    }
+
+    public function showFacture(Purchase_order $id)
+    {
+        $fileName = $id->facture_doc;
+        $filePath = public_path("documents/purchaseorder/facture/$fileName");
+        if (file_exists($filePath)) {
+            return response()->file($filePath);
+        }
+        abort(404, 'Documento no encontrado');
     }
 }

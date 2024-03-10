@@ -1,6 +1,7 @@
 <template>
+
     <Head title="Tareas" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'tasks.index'">
         <template #header>
             Seguimiento de Tareas
         </template>
@@ -33,12 +34,10 @@
                     </template>
                     <template v-else>
                         <div v-for="task in tasks.data" :key="task.id" class="flex justify-between gap-x-6 py-5">
-                            <a @click="edittask(task.id)" class="flex items-center gap-x-4 min-w-0">
-                                <div class="min-w-0 flex-auto">
-                                    <p class="text-sm font-semibold leading-6 text-gray-900">{{ task.task }}</p>
-                                    <p class="mt-1 text-xs leading-5 text-gray-500">Estado: {{ task.status }}</p>
-                                </div>
-                            </a>
+                            <div class="min-w-0 flex-auto">
+                                <p class="text-sm font-semibold leading-6 text-gray-900">{{ task.task }}</p>
+                                <p class="mt-1 text-xs leading-5 text-gray-500">Estado: {{ task.status }}</p>
+                            </div>
                             <div class="flex items-center gap-x-2">
                                 <!-- Botones -->
                                 <button @click="openModalStart(task)" v-if="task.status === 'pendiente'"
@@ -64,12 +63,14 @@
                                     Completado
                                 </p>
                                 <button @click="edittask(task.id)"
-                                    class="bg-white-300 hover:bg-white-400 text-blue-500 font-bold py-2 px-4 rounded">
-                                    <EyeIcon class="text-white-900 h-4 w-4" style="stroke-width:3;" />
+                                    class="bg-white-300 hover:bg-white-400 text-green-500 py-2 px-4 rounded">
+                                    Ver Detalles
+                                    <!-- <EyeIcon class="text-green-500 h-4 w-4" style="stroke-width:3;" /> -->
                                 </button>
                             </div>
                         </div>
-                        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                        <div
+                            class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                             <pagination :links="tasks.links" />
                         </div>
 

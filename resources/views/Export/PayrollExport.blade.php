@@ -29,29 +29,29 @@
     <tbody>
         @foreach($spreadsheets as $spreadsheet)
         <tr>
-            <td> {{ $spreadsheet->contract->state }} </td>
-            <td> {{ $spreadsheet->dni }} </td>
-            <td> {{ $spreadsheet->name }} </td>
-            <td> {{ $spreadsheet->contract->pension->type }} </td>
-            <td> {{ $spreadsheet->contract->hire_date }} </td>
-            <td> S/ {{ $spreadsheet->contract->basic_salary }} </td>
-            <td> S/ {{ $spreadsheet->truncated_vacations }} </td>
-            <td> S/ {{ $spreadsheet->total_income }} </td>
-            <td> S/ {{ $spreadsheet->total_pension_base }} </td>
-            <td> % {{ $spreadsheet->snp }} </td>
-            <td> S/ {{ $spreadsheet->snp_onp }} </td>
-            <td> % {{ $spreadsheet->commission }} </td>
-            <td> S/ {{ $spreadsheet->commission_on_ra }} </td>
-            <td> % {{ $spreadsheet->seg }} </td>
-            <td> S/ {{ $spreadsheet->insurance_premium }} </td>
-            <td> % {{ $spreadsheet->mandatory_contribution }} </td>
-            <td> S/ {{ $spreadsheet->mandatory_contribution_amount }} </td>
-            <td> S/ {{ $spreadsheet->total_discount }} </td>
-            <td> S/ {{ $spreadsheet->net_pay }} </td>
-            <td> S/ {{ $spreadsheet->total_pension_base }} </td>
-            <td> S/ {{ $spreadsheet->healths }} </td>
-            <td> S/ {{ $spreadsheet->life_ley }} </td>
-            <td> S/ {{ $spreadsheet->total_contribution }} </td>
+            <td> {{ $spreadsheet->state }} </td>
+            <td> {{ $spreadsheet->employee->dni }} </td>
+            <td> {{ $spreadsheet->employee->name }} </td>
+            <td> {{ $spreadsheet->pension->type }} </td>
+            <td> {{ $spreadsheet->hire_date }} </td>
+            <td> S/ {{ number_format($spreadsheet->basic_salary,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->truncated_vacations,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->total_income,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->total_pension_base,2) }} </td>
+            <td> % {{ number_format($spreadsheet->snp,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->snp_onp,2) }} </td>
+            <td> % {{ number_format($spreadsheet->commission,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->commission_on_ra,2) }} </td>
+            <td> % {{number_format($spreadsheet->seg,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->insurance_premium,2) }} </td>
+            <td> % {{ number_format($spreadsheet->mandatory_contribution,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->mandatory_contribution_amount,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->total_discount,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->net_pay,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->total_pension_base,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->healths,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->life_ley,2) }} </td>
+            <td> S/ {{ number_format($spreadsheet->total_contribution,2) }} </td>
         </tr>
         @endforeach
     </tbody>

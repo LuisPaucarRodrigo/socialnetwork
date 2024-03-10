@@ -26,10 +26,10 @@ class CreatePurchaseOrderRequest extends FormRequest
             'state' => 'required|string',
             'facture_doc' => 'sometimes|required|mimes:pdf|max:2048',
             'facture_date' => 'sometimes|required|date',
-            'facture_number' => 'sometimes|required|numeric',
+            'facture_number' => 'sometimes|required|string',
             'remission_guide_doc'=> 'sometimes|required|mimes:pdf|max:2048',
             'remission_guide_date' => 'sometimes|required|date',
-            'remission_guide_number' => 'sometimes|required|numeric',
+            'remission_guide_number' => 'sometimes|required|string',
         ];
     }
 }
