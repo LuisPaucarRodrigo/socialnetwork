@@ -49,20 +49,20 @@
                                     <div class="flex gap-4 text-sm">
                                         <label class="flex gap-2 items-center">
                                             Sí
-                                            <input type="radio" v-model="hasSubcustomer"
+                                            <input type="radio" v-model="form.hasSubcustomer"
                                                 @input="handleSubClient" :value="true"
                                                 class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                         </label>
                                         <label class="flex gap-2 items-center">
                                             No
-                                            <input type="radio" v-model="hasSubcustomer" 
+                                            <input type="radio" v-model="form.hasSubcustomer" 
                                                 @input="handleSubClient" :value="false"
                                                 class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                         </label>
                                     </div>
 
                                 </div>
-                                <div v-if="hasSubcustomer" class="mt-2">
+                                <div v-if="form.hasSubcustomer" class="mt-2">
                                     <input id="unit" list="options" @input="(e)=>handleAutocomplete(e, 'subcustomer_id')" autocomplete="off"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
@@ -71,31 +71,35 @@
                                             {{ item.business_name }}
                                         </option>
                                     </datalist>
-                                    <InputError :message="form.errors.customer_id" />
+                                    <InputError :message="form.errors.subcustomer_id" />
                                 </div>
                             </div>
 
                             <div class="col-span-1 sm:col-span-2">
                                 <p class="border-b-2 border-gray-300 text-sm text-indigo-600">
-                                    Datos del <b> cliente {{ hasSubcustomer ? 'final' : '' }}</b>
+                                    Datos del <b> cliente {{ form.hasSubcustomer ? 'final' : '' }}</b>
                                 </p>
                             </div>
-
                             <div>
                                 <InputLabel class="font-medium leading-6 text-gray-900">Nombre:
                                 </InputLabel>
-                                <InputLabel class="leading-6 text-gray-900">Nombre
+                                <InputLabel class="leading-6 text-gray-900">
+                                    {{ customers.find(item=> 
+                                        item.id == (form.hasSubcustomer 
+                                            ? form.subcustomer_id 
+                                            : form.customer_id)
+                                        )?.business_name }}
                                 </InputLabel>
                                 <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
                                 </InputLabel>
-                                <InputLabel class="leading-6 text-gray-900">Dirección
+                                <InputLabel class="leading-6 text-gray-900">{{ customers.find(item=> 
+                                        item.id == (form.hasSubcustomer 
+                                            ? form.subcustomer_id 
+                                            : form.customer_id)
+                                        )?.address }}
                                 </InputLabel>
 
                             </div>
-
-
-
-
                             <div>
                                 <div class="flex gap-2 items-end">
                                     <InputLabel for="description" class="font-medium leading-6 text-gray-900">Contactos
@@ -128,12 +132,12 @@
                             </div>
 
                             <div>
-                                <InputLabel for="address" class="font-medium leading-6 text-gray-900">Dirección
+                                <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.address" id="address"
+                                    <input type="text" v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.address" />
+                                    <InputError :message="form.errors.description" />
                                 </div>
                             </div>
 
@@ -149,14 +153,15 @@
                             <div>
                                 <InputLabel for="date" class="font-medium leading-6 text-gray-900">Código de proyecto
                                 </InputLabel>
-                                <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
-                                <p class="text-gray-400">CCCCC -> 5 iniciales cliente | PPPPP -> 5 iniciales proyecto
-                                </p>
+                                
                                 <div class="mt-2 flex justify-center items-center gap-2">
                                     <input type="text" v-model="form.code" id="name" pattern="[a-zA-Z]{5}-[a-zA-Z]{5}"
                                         maxlength="11"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 uppercase" />
                                 </div>
+                                <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
+                                <p class="text-gray-400">CCCCC -> 5 iniciales cliente | PPPPP -> 5 iniciales proyecto
+                                </p>
                                 <InputError :message="form.errors.code" />
                             </div>
 
@@ -246,7 +251,8 @@ const initial_state = {
     description: '',
     date: '',
     observation: '',
-    contacts: []
+    contacts: [],
+    hasSubcustomer: false
 }
 
 const form = useForm({
@@ -255,21 +261,18 @@ const form = useForm({
 
 
 const submit = () => {
-    console.log(form.data())
-    // form.code = formatearFecha(form.start_date) + '-' + form.code
-    // form.post(route('preproject.store'), {
-    //     onSuccess: () => {
-    //         closeModal();
-    //         showModal.value = true
-    //         setTimeout(() => {
-    //             showModal.value = false;
-    //             router.visit(route('preproject.index'))
-    //         }, 2000);
-    //     },
-    //     onError: () => {
-    //         close();
-    //     }
-    // })
+    form.post(route('preprojects.store'), {
+        onSuccess: () => {
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('preprojects.index'))
+            }, 2000);
+        },
+        onError: (e) => {
+            console.log(e);
+        }
+    })
 }
 
 
@@ -282,13 +285,12 @@ const handleAutocomplete = (e, model) => {
     } else {
         form[model] = ''
     }
-    helperContactList(form.customer_id, form.subcustomer_id, hasSubcustomer.value)
+    helperContactList(form.customer_id, form.subcustomer_id, form.hasSubcustomer)
 }
 
 const helperContactList = (customer_id, subcustomer_id, hasSC) => {
     const matchCustomer = customers.find(item => item.id == customer_id)
     const matchSubCustomer = customers.find(item => item.id == subcustomer_id)
-    console.log(hasSubcustomer.value)
     if(matchSubCustomer){
         contactsList.value = matchSubCustomer.customer_contacts
     } else if (matchCustomer && !hasSC) {
@@ -327,7 +329,7 @@ function deleteContactItem (id) {
     form.contacts.splice(index,1)
 }
 
-const hasSubcustomer = ref(false)
+
 const handleSubClient = (e) => {
     form.subcustomer_id = ''
     contactItem.value = ''

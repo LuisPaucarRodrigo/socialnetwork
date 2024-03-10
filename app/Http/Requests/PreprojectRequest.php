@@ -21,14 +21,19 @@ class PreprojectRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'customer_id' => 'required',
-            'subcustomer_id' => 'required',
             'code' => 'required',
             'description' => 'required',
             'date' => 'required',
             'observation' => 'nullable',
             'contacts' => 'required|array',
         ];
+        if ($this->has('hasSubcustomer') && $this->input('hasSubcustomer')) {
+            $rules['subcustomer_id'] = 'required';
+        } else {
+            $rules['subcustomer_id'] = 'nullable';
+        }
+        return $rules;
     }
 }
