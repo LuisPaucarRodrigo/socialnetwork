@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
@@ -6,10 +7,10 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex gap-4">
-                <button @click="openCreatePreprojectModal" type="button"
+                <Link :href="route('preprojects.create')"
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     + Agregar
-                </button>
+                </Link>
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -20,7 +21,8 @@
                             N° {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2">
-                            <button @click="openEditPreprojectModal(item)" class="text-green-600 hover:underline mb-4 flex items-start">
+                            <button @click="openEditPreprojectModal(item)"
+                                class="text-green-600 hover:underline mb-4 flex items-start">
                                 <PencilIcon class="h-4 w-4" />
                             </button>
                             <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
@@ -33,21 +35,28 @@
                     </h3>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
                         <div>
-                            <Link :href="route('preprojects.imagereport.index', {preproject_id:item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Descargar imagenes
+                            <Link :href="route('preprojects.imagereport.index', { preproject_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Descargar
+                            imagenes
                             </Link>
                         </div>
                         <div>
-                            <Link :href="route('preprojects.photoreport.index', {preproject_id:item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Informe fotográfico
+                            <Link :href="route('preprojects.photoreport.index', { preproject_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Informe
+                            fotográfico
                             </Link>
                         </div>
                         <div>
-                            <Link :href="route('preprojects.providersquotes.index',{
-                                preproject_id: item.id
-                            })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización de proveedores
+                            <Link :href="route('preprojects.providersquotes.index', {
+        preproject_id: item.id
+    })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización de
+                            proveedores
                             </Link>
                         </div>
                         <div v-if="item.has_photo_report">
-                            <Link :href="route('preprojects.quote', {preproject_id: item.id})" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización para proyecto
+                            <Link :href="route('preprojects.quote', { preproject_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización para
+                            proyecto
                             </Link>
                         </div>
                     </div>
@@ -64,22 +73,43 @@
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     {{ edit_preproject ? 'Actualizar AnteProyecto' : 'Crear Anteproyecto' }}
                 </h2>
+                <br>
                 <form @submit.prevent="edit_preproject ? submitEdit() : submit()">
-                    <div class="space-y-12">
-                        <div class="border-b border-gray-900/10 pb-12">
+                    <div class="">
+                        <div
+                            class="border-b grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4  border-gray-900/10 pb-12">
 
                             <div>
-                                <InputLabel for="customer" class="mt-2 font-medium leading-6 text-gray-900">Cliente
+                                <InputLabel for="customer" class="font-medium leading-6 text-gray-900">Cliente (ruc)
                                 </InputLabel>
                                 <div class="mt-2">
+                                    <input required id="unit" list="options" @input="handleAutocomplete"
+                                        autocomplete="off"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+
+                                    <datalist id="options">
+                                        <option v-for="item in customers" :value="item.ruc" :data-value="item">
+                                            {{item.business_name}}
+                                        </option>
+                                    </datalist>
+
+                                    
+
+                                </div>
+                                
+
+
+
+
+
+                                <!-- <div class="mt-2">
                                     <input type="text" v-model="form.customer" id="customer"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.customer" />
-                                </div>
+                                </div> -->
                             </div>
-
                             <div>
-                                <InputLabel for="phone" class="mt-4 font-medium leading-6 text-gray-900">Teléfono
+                                <InputLabel for="phone" class="font-medium leading-6 text-gray-900">Teléfono
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="text" v-model="form.phone" id="phone" maxlength="9"
@@ -88,8 +118,29 @@
                                 </div>
                             </div>
 
+                            <div class="col-span-1 sm:col-span-2">
+                                <p class="border-b-2 border-gray-300 text-sm text-indigo-500"> 
+                                    Datos del {{ form.subcustomer_id ? 'subcliente' : 'cliente' }}
+                                </p>
+                            </div>
+
                             <div>
-                                <InputLabel for="description" class="mt-4 font-medium leading-6 text-gray-900">Descripción
+                                <InputLabel class="font-medium leading-6 text-gray-900">Nombre
+                                </InputLabel>
+                                <InputLabel class="leading-6 text-gray-900">Nombre
+                                </InputLabel>
+                                <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección
+                                </InputLabel>
+                                <InputLabel class="leading-6 text-gray-900">Dirección
+                                </InputLabel>
+                                
+                            </div>
+
+
+
+
+                            <div>
+                                <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="text" v-model="form.description" id="description"
@@ -99,7 +150,7 @@
                             </div>
 
                             <div>
-                                <InputLabel for="address" class="mt-4 font-medium leading-6 text-gray-900">Dirección
+                                <InputLabel for="address" class="font-medium leading-6 text-gray-900">Dirección
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="text" v-model="form.address" id="address"
@@ -109,7 +160,7 @@
                             </div>
 
                             <div>
-                                <InputLabel for="date" class="mt-4 font-medium leading-6 text-gray-900">Fecha de Visita
+                                <InputLabel for="date" class="font-medium leading-6 text-gray-900">Fecha de Visita
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="date" v-model="form.date" id="date"
@@ -118,19 +169,21 @@
                                 </div>
                             </div>
                             <div>
-                                <InputLabel for="date" class="mt-4 font-medium leading-6 text-gray-900">Código de proyecto
+                                <InputLabel for="date" class="font-medium leading-6 text-gray-900">Código de proyecto
                                 </InputLabel>
                                 <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
-                                <p class="text-gray-400">CCCCC -> 5 iniciales cliente | PPPPP -> 5 iniciales proyecto</p>
+                                <p class="text-gray-400">CCCCC -> 5 iniciales cliente | PPPPP -> 5 iniciales proyecto
+                                </p>
                                 <div class="mt-2 flex justify-center items-center gap-2">
-                                    <input required type="text" v-model="form.code" id="name"  pattern="[a-zA-Z]{5}-[a-zA-Z]{5}" maxlength="11"
+                                    <input required type="text" v-model="form.code" id="name"
+                                        pattern="[a-zA-Z]{5}-[a-zA-Z]{5}" maxlength="11"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 uppercase" />
                                 </div>
                                 <InputError :message="form.errors.code" />
                             </div>
 
                             <div>
-                                <InputLabel for="observation" class="mt-4 font-medium leading-6 text-gray-900">Observaciones
+                                <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
                                 </InputLabel>
                                 <div class="mt-2">
                                     <textarea type="text" v-model="form.observation" id="observation"
@@ -139,18 +192,19 @@
                                 </div>
                             </div>
 
-                            <div v-if="edit_preproject" >
-                                <InputLabel for="observation" class="mt-4 font-medium leading-6 text-green-500">Imagen actual
+                            <div v-if="edit_preproject">
+                                <InputLabel for="observation" class="font-medium leading-6 text-green-500">Imagen actual
                                 </InputLabel>
                                 <img class="ring-1 ring-green-300 " :src="`/image/facades/${previewFacade}`">
                             </div>
 
                             <div>
-                                <InputLabel for="facade" class="mt-4 font-medium leading-6 text-gray-900">Foto de Fachada
+                                <InputLabel for="facade" class="font-medium leading-6 text-gray-900">Foto de Fachada
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="file" @change="handleFacadeChange" id="facade"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" accept="image/*" />
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        accept="image/*" />
                                     <InputError :message="form.errors.facade" />
                                 </div>
                             </div>
@@ -162,8 +216,8 @@
                                     Cancelar </SecondaryButton>
                                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
-                                    
-                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -192,44 +246,45 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 
 
-const { preprojects, visits, auth} = defineProps({
+const { preprojects, visits, customers, auth } = defineProps({
     preprojects: Object,
     visits: Object,
-    auth:Object
+    customers:Object,
+    auth: Object
 })
 
 const initial_state = {
-    customer:'',
-    code:'',
-    phone:'',
-    description:'',
-    address:'',
-    date:'',
-    observation:'',
-    facade:null,
+    customer_id: '',
+    subcustomer_id: '',
+    code: '',
+    description: '',
+    date: '',
+    observation: '',
 }
+
 const form = useForm({
     ...initial_state
 });
 
 const submit = () => {
-    form.post(route('preprojects.store'), {
-        onSuccess: () => {
-            closeCreatePreprojectModal();
-            form.reset();
-            showModal.value = true
-            setTimeout(() => {
-                showModal.value = false;
-                router.visit(route('preprojects.index'))
-            }, 2000);
-        },
-        onError: () => {
-            form.reset();
-        },
-        onFinish: () => {
-            form.reset();
-        }
-    });
+    console.log(form.data())
+    // form.post(route('preprojects.store'), {
+    //     onSuccess: () => {
+    //         closeCreatePreprojectModal();
+    //         form.reset();
+    //         showModal.value = true
+    //         setTimeout(() => {
+    //             showModal.value = false;
+    //             router.visit(route('preprojects.index'))
+    //         }, 2000);
+    //     },
+    //     onError: () => {
+    //         form.reset();
+    //     },
+    //     onFinish: () => {
+    //         form.reset();
+    //     }
+    // });
 };
 
 const submitEdit = () => {
@@ -264,7 +319,7 @@ const closeCreatePreprojectModal = () => {
 
 const openEditPreprojectModal = (preproject) => {
     form.defaults({
-        ...preproject, code: preproject.code.slice(9), facade:null
+        ...preproject, code: preproject.code.slice(9), facade: null
     })
     form.reset()
     previewFacade.value = preproject.facade
@@ -295,10 +350,19 @@ const closeModal = () => {
 
 
 const previewFacade = ref(null)
-function handleFacadeChange (e) {
+function handleFacadeChange(e) {
     form.facade = e.target.files[0]
 }
 
 
+const handleAutocomplete = (e) => {
+    const ruc = e.target.value;
+    let matchedClient = customers.find(item => item.ruc == ruc)
+    if (matchedClient) {
+        form.customer_id = matchedClient.id
+    } else {
+        form.customer_id = ''
+    }
+}
 
 </script>
