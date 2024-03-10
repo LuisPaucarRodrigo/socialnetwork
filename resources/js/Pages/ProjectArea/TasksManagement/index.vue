@@ -3,7 +3,7 @@
     <Head title="Tareas" />
     <AuthenticatedLayout :redirectRoute="'tasks.index'">
         <template #header>
-            Seguimiento de Tareas
+            Tareas
         </template>
         <div class="relative inline-block">
             <!-- Tu código para el select -->

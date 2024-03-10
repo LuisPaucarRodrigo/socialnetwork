@@ -3,7 +3,7 @@
     <Head title="Ordenes de Compra" />
     <AuthenticatedLayout :redirectRoute="'purchaseorders.index'">
         <template #header>
-            Ordenes
+            Compras Completadas
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="overflow-x-auto">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PreprojectRequest;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Models\PhotoReport;
 use App\Models\Preproject;
@@ -33,24 +34,12 @@ class PreProjectController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(PreprojectRequest $request)
     {
-        $data = $request->validate([
-            'customer' => 'required|string',
-            'phone' => 'required',
-            'description' => 'required|string',
-            'address' => 'required|string',
-            'date' => 'required|date',
-            'code' => 'required',
-            'observation' => 'required|string',
-            'facade' => 'required|mimes:pdf,jpeg,png,jpg|max:2048',
-        ]);
-        $facade = $request->file('facade');
-        $facadeName = time() . '_' . $facade->getClientOriginalName();
-        $facade->move(public_path('image/facades/'), $facadeName);
-        $data['facade'] = $facadeName;
+        $data = $request->validated();
         $data['code'] = $this->getCode($data['date'], $data['code']);
-        Preproject::create($data);
+        $preproject = Preproject::create($data);
+        $preproject->contacts()->sync($data['contacts']);
     }
 
 

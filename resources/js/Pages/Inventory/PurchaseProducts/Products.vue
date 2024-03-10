@@ -1,9 +1,9 @@
 <template>
 
-    <Head title="Gestion de Productos" />
+    <Head title="Productos" />
     <AuthenticatedLayout :redirectRoute="'inventory.purchaseproducts'">
         <template #header>
-            Gestión de Productos
+            Productos
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
