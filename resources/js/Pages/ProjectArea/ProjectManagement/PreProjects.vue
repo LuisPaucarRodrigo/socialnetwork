@@ -21,10 +21,10 @@
                             N° {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2">
-                            <button @click="openEditPreprojectModal(item)"
+                            <Link :href="route('preprojects.create', {preproject_id: item.id})"
                                 class="text-green-600 hover:underline mb-4 flex items-start">
                                 <PencilIcon class="h-4 w-4" />
-                            </button>
+                            </Link>
                             <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
                                 <TrashIcon class="h-4 w-4 text-red-500" />
                             </button>
