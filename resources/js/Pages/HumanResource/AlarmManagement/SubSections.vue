@@ -326,12 +326,6 @@ const submit = () => {
         router.visit(route('sections.subSections'))
       }, 2000);
     },
-    onError: () => {
-      form.reset();
-    },
-    onFinish: () => {
-      form.reset();
-    }
   });
 };
 

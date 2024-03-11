@@ -12,25 +12,25 @@
                         <h5 class="font-semibold py-3 mb-2 border-b-2 border-gray-300 col-span-2">Solicitud</h5>
                         <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Código</dt>
-                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-        purchases.code }}
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                {{ purchases.code }}
                             </dd>
                         </div>
                         <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Nombre</dt>
-                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-        purchases.title }}
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                {{ purchases.title }}
                             </dd>
                         </div>
                         <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                            <dt class="text-sm font-medium leading-6 text-gray-900">Fecha limite de Compra</dt>
-                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-        formattedDate(purchases.due_date)
-    }}</dd>
+                            <dt class="text-sm font-medium leading-6 text-gray-900">Fecha límite de Compra</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                {{ formattedDate(purchases.due_date) }}</dd>
                         </div>
                         <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Estado</dt>
-                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ purchases.state }}
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                {{ purchases.state }}
                             </dd>
                         </div>
                     </div>
@@ -39,26 +39,24 @@
                         <h5 class="font-semibold py-3 mb-2 border-b-2 border-gray-300 col-span-2">Proyecto</h5>
                         <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Código</dt>
-                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-        purchases.project.code }}
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                {{ purchases.project.code }}
                             </dd>
                         </div>
                         <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Nombre</dt>
-                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-        purchases.project.name }}
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                {{ purchases.project.name }}
                             </dd>
                         </div>
                         <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Presupuesto restante</dt>
-                            <dd class="mt-1 text-sm leading-6 text-green-700 sm:col-span-2 sm:mt-0">S./ {{
-        (purchases.project.remaining_budget).toFixed(2) }}</dd>
+                            <dd class="mt-1 text-sm leading-6 text-green-700 sm:col-span-2 sm:mt-0">
+                                S./ {{ (purchases.project.remaining_budget).toFixed(2) }}</dd>
                         </div>
                     </div>
-
                 </div>
                 <br>
-
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 sm:grid-cols-6 gap-x-24 gap-y-6">
                         <h5 class="font-semibold py-3 border-b-2 border-gray-300 sm:col-span-6">Registro</h5>
@@ -71,8 +69,8 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Compañia | Contacto | Telefono1 - Telefono2</option>
                                     <option v-for="provider in providers" :key="provider"
-                                        :value="provider.id">{{
-        provider.company_name }} | {{ provider.contact_name }} | {{ provider.phone1 }} -
+                                        :value="provider.id">
+                                        {{ provider.company_name }} | {{ provider.contact_name }} | {{ provider.phone1 }} -
                                         {{ provider.phone2 }}
                                     </option>
                                 </select>
@@ -82,7 +80,7 @@
 
                         <div class="sm:col-span-3">
                             <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">
-                                Fecha limite de Aprobacion
+                                Fecha limite de Aprobacion de Finanzas
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.quote_deadline" id="quote_deadline"
@@ -108,7 +106,7 @@
                                 Número de cuenta
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput v-model="form.account_number" id="account_number" pattern="[0-9]*"
+                                <TextInput v-model="form.account_number" id="account_number" pattern="[0-9]+(-[0-9]+)*"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.account_number" />
                             </div>
@@ -141,9 +139,17 @@
                             <InputLabel class="text-sm font-medium leading-6 text-gray-900">
                                 ¿IGV incluido?
                             </InputLabel>
-                            <div class="mt-2">
-                                <input type="checkbox" min="0" v-model="form.igv" id="igv" @input="handleWithIgv"
-                                    class="block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <div class="mt-2 class flex gap-4">
+                                <label class="flex gap-2 items-center">
+                                    Sí
+                                    <input type="radio" min="0" v-model="form.igv" id="igv" @input="handleWithIgv" :value="true"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center">
+                                    No
+                                    <input type="radio" min="0" v-model="form.igv" id="igv" @input="handleWithIgv" :value="false"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
                                 <InputError :message="form.errors.igv" />
                             </div>
                         </div>
@@ -163,9 +169,9 @@
                                 </div>
                             </InputLabel>
                             <div v-if="currency !== 'S/.'" class="mt-2 flex gap-3 items-center">
-                                <InputLabel class="text-sm font-medium leading-6 text-indigo-900">
+                                <p class="text-sm font-medium leading-6 text-indigo-900">
                                     El valor de tipo de cambio será definido al momento del registro de pago.
-                                </InputLabel>
+                                </p>
                                 <!-- <input v-model="currencyChange" type="number" step="0.001"
                                     @input="handleCurrencyChange" autocomplete="off" placeholder="$ -> S/."
                                     class="tracking-wide block w-32 bg-white rounded-md border-0 py-1 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" /> -->
@@ -249,13 +255,13 @@
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-500 whitespace-nowrap text-center">
                                                     {{ currency }} {{ ((form.products[item.id].unitary_amount ?
-                                                    form.products[item.id].unitary_amount : 0)).toFixed(2) }}
+                                                    form.products[item.id].amount : 0 ) / (form.igv ? 1.18:1) / form.products[item.id].quantity).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <td v-if="form.igv"
                                                 class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                                 <p class="text-gray-500 whitespace-nowrap">
-                                                    {{ currency }} {{ (form.products[item.id].amount * 0.82).toFixed(2) }}
+                                                    {{ currency }} {{ (form.products[item.id].amount * 1/1.18).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <!-- <td v-if="currency !== 'S/.'"
@@ -388,6 +394,7 @@ function arrayToObject(products) {
 }
 
 const form = useForm({
+    due_date: props.purchases.due_date,
     quote_deadline: '',
     purchase_doc: null,
     igv: true,
@@ -405,7 +412,6 @@ const form = useForm({
 const showError = ref(false)
 const successRegistration = ref(false)
 const submit = () => {
-    console.log(form.data())
     if (props.purchases.project && form.amount > props.purchases.project.remaining_budget) {
         showError.value = true
         setTimeout(() => {
@@ -460,7 +466,7 @@ const reject_quote = (id) => {
 const currency = ref('S/.')
 // const currencyChange = ref(1)
 
-const handleWithIgv = (e) => { addItemsNewAmount(e.target.checked) };
+const handleWithIgv = (e) => { (addItemsNewAmount(JSON.parse(e.target.value))) };
 const handleItemIgv = (id) => { getTrueAmount(id, form.igv) }
 
 function getTotals(products, hasIGV) {
@@ -474,8 +480,8 @@ function getTotals(products, hasIGV) {
     }
     if (hasIGV) {
         total = subTotal.toFixed(2)
-        igv = (total * .18).toFixed(2)
-        subTotal = (total - igv).toFixed(2)
+        subTotal = (total/1.18).toFixed(2)
+        igv = (total - subTotal).toFixed(2)
     } else {
         subTotal = subTotal.toFixed(2)
         igv = (subTotal * .18).toFixed(2)
@@ -491,12 +497,7 @@ function handleCurrencyType(e) {
     } else if (e.target.value === '$') {
         form.currency = 'dolar'
     }
-    // addItemsNewAmount(form.igv)
 }
-
-// function handleCurrencyChange() {
-//     addItemsNewAmount(form.igv)
-// }
 
 function addItemsNewAmount(has_igv) {
     Object.keys(form.products).forEach(key => {
@@ -506,7 +507,7 @@ function addItemsNewAmount(has_igv) {
 function getTrueAmount(id, has_igv) {
     let amount = form.products[id].amount
     form.products[id].unitary_amount = +(typeof amount !== 'number' || isNaN(amount) ?
-        (0).toFixed(2) : ((amount * (has_igv ? .82 : 1))/(+form.products[id].quantity)).toFixed(6));
+        (0).toFixed(2) : ((amount * (has_igv ? 1 : 1.18))/(+form.products[id].quantity)).toFixed(6));
 }
 
 </script>

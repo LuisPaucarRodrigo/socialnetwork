@@ -36,7 +36,7 @@ class Purchase_order extends Model
     public function getCodeAttribute()
     {
         if ($this->exists) {
-            return 'PR' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+            return 'OC' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
         } else {
             return 'TMP' . now()->format('ymdHis');
         }

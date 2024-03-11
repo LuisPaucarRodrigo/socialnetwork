@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Crear Proveedor" />
     <AuthenticatedLayout :redirectRoute="'providersmanagement.index'">
         <template #header>
@@ -13,26 +14,29 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.ruc" id="ruc" pattern="\d*" autocomplete="given-name" maxlength="11"
+                                <TextInput type="text" v-model="form.ruc" id="ruc" pattern="\d*"
+                                    autocomplete="given-name" maxlength="11"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.ruc" />
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <InputLabel for="company_name" class="font-medium leading-6 text-gray-900">Compañia</InputLabel>
+                            <InputLabel for="company_name" class="font-medium leading-6 text-gray-900">Compañia
+                            </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.company_name" id="company_name" :to-uppercase="true"
-                                    autocomplete="given-name"
+                                <TextInput type="text" v-model="form.company_name" id="company_name"
+                                    :to-uppercase="true" autocomplete="given-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.company_name" />
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <InputLabel for="contact_name" class="font-medium leading-6 text-gray-900">Nombre de Contacto
+                            <InputLabel for="contact_name" class="font-medium leading-6 text-gray-900">Nombre de
+                                Contacto
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.contact_name" id="contact_name" :to-uppercase="true"
-                                    autocomplete="family-name"
+                                <TextInput type="text" v-model="form.contact_name" id="contact_name"
+                                    :to-uppercase="true" autocomplete="family-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.contact_name" />
                             </div>
@@ -97,7 +101,8 @@
                                 <select v-model="form.category" id="category"
                                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                                     <option disabled value="">Seleccione</option>
-                                    <option v-for="item in props.category" :key="item.id" :value="item.name">{{ item.name }}
+                                    <option v-for="item in props.category" :key="item.id" :value="item.name">{{
+        item.name }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.category" />
@@ -105,7 +110,8 @@
                         </div>
                         <div class="sm:col-span-2">
                             <div class="flex items-center gap-2">
-                                <InputLabel for="segment" class="font-medium leading-6 text-gray-900">Segmento</InputLabel>
+                                <InputLabel for="segment" class="font-medium leading-6 text-gray-900">Segmento
+                                </InputLabel>
                                 <button type="button" @click="segment">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
@@ -119,7 +125,8 @@
                                 <select v-model="form.segment" id="segment"
                                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                                     <option disabled value="">Seleccione</option>
-                                    <option v-for="item in props.segment" :key="item.id" :value="item.name">{{ item.name }}
+                                    <option v-for="item in props.segment" :key="item.id" :value="item.name">{{ item.name
+                                        }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.segment" />
@@ -145,7 +152,7 @@
                     <div class="sm:col-span-6">
                         <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="name" :to-uppercase="true"
+                            <TextInput id="name" :to-uppercase="true" required
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 v-model="formname.name" />
                             <InputError :message="formname.errors.name" />
@@ -162,6 +169,7 @@
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="proveedor" />
     </AuthenticatedLayout>
 </template>
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -171,7 +179,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, router, useForm } from '@inertiajs/vue3';
-import {  ref } from 'vue';
+import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
@@ -180,15 +188,17 @@ const props = defineProps({
         type: Object,
         required: false
     },
-    category:{
+    category: {
         type: Object,
         required: true
     },
-    segment:{
+    segment: {
         type: Object,
         required: true
     }
 });
+
+
 const showModalAdd = ref(false);
 const showModal = ref(false);
 const categoryAndSegment = ref(false);
@@ -242,18 +252,26 @@ const submit = () => {
 
 const submitName = () => {
     const url = categoryAndSegment.value == false ? route('provider.category') : route('provider.segment')
-    const urlredirect = props.providers ? route('providersmanagement.edit') : route('providersmanagement.create')
-    formname.post(url, {
-        onSuccess: () => {
-            closeAddModal()
-            addSuccess.value = true
-            setTimeout(() => {
-                addSuccess.value = false
-                router.visit(urlredirect)
-            }, 600)
-            form.reset()
-        }
-    })
+    axios.post(url, { ...formname.data() })
+        .then(response => {
+            if (response.status === 200) {
+                let newItem = response.data.new
+                categoryAndSegment.value == false
+                    ? props.category.push({ ...newItem })
+                    : props.segment.push({ ...newItem })
+                closeAddModal()
+                addSuccess.value = true
+                setTimeout(() => {
+                    addSuccess.value = false
+                }, 600)
+                formname.reset()
+            } else {
+                throw new Error('Fallo en el servidor con status ' + response.status)
+            }
+        })
+        .catch(error => {
+            console.error(error)
+        })
 };
 
 const category = () => {

@@ -52,7 +52,7 @@ class CreateManagementEmployees extends FormRequest
             'emergencyContacts.*.emergency_phone' => 'required|numeric|digits:9',
 
             'familyDependents.*.family_dni' => 'required|numeric|digits:8',
-            'familyDependents.*.family_education' => 'required|string|in:Universidad,Instituto,Otros',
+            'familyDependents.*.family_education' => 'required|string|in:Universidad,Instituto,Secundaria,Primaria,Inicial,Otros',
             'familyDependents.*.family_relation' => 'required|string|max:255',
             'familyDependents.*.family_name' => 'required|string|max:255',
             'familyDependents.*.family_lastname' => 'required|string|max:255',

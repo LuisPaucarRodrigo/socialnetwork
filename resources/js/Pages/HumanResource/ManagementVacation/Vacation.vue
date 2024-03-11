@@ -1,9 +1,9 @@
 <template>
     <Head title="Gestion de Vacaciones y Permisos" />
 
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'management.vacation'">
         <template #header>
-            Gestión de Vacaciones y Permisos
+            Vacaciones y Permisos
         </template>
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">

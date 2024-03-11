@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PreprojectRequest;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
+use App\Models\Customer;
 use App\Models\PhotoReport;
 use App\Models\Preproject;
 use App\Models\Customervisit;
@@ -23,6 +25,13 @@ class PreProjectController extends Controller
         ]);
     }
 
+    public function create($preproject_id= null){
+        return Inertia::render('ProjectArea/ProjectManagement/CreatePreProject', [
+            'preproject' => Preproject::with('project', 'contacts')->find($preproject_id),
+            'customers' => Customer::with('customer_contacts')->get(),
+        ]);
+    }
+
 
     public function getCode($date, $code)
     {
@@ -33,24 +42,12 @@ class PreProjectController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(PreprojectRequest $request)
     {
-        $data = $request->validate([
-            'customer' => 'required|string',
-            'phone' => 'required',
-            'description' => 'required|string',
-            'address' => 'required|string',
-            'date' => 'required|date',
-            'code' => 'required',
-            'observation' => 'required|string',
-            'facade' => 'required|mimes:pdf,jpeg,png,jpg|max:2048',
-        ]);
-        $facade = $request->file('facade');
-        $facadeName = time() . '_' . $facade->getClientOriginalName();
-        $facade->move(public_path('image/facades/'), $facadeName);
-        $data['facade'] = $facadeName;
+        $data = $request->validated();
         $data['code'] = $this->getCode($data['date'], $data['code']);
-        Preproject::create($data);
+        $preproject = Preproject::create($data);
+        $preproject->contacts()->sync($data['contacts']);
     }
 
 
@@ -66,18 +63,9 @@ class PreProjectController extends Controller
     }
 
 
-    public function update(Request $request, Preproject $preproject)
+    public function update(PreprojectRequest $request, Preproject $preproject)
     {
-        $data = $request->validate([
-            'customer' => 'required',
-            'phone' => 'required',
-            'description' => 'required',
-            'address' => 'required',
-            'date' => 'required',
-            'code' => 'required',
-            'observation' => 'required',
-            'facade' => 'nullable|sometimes|file|mimes:pdf,jpeg,png,jpg',
-        ]);
+        $data = $request->validated();
         $preprojectYear = date('Y', strtotime($preproject->date));
         $requestYear = date('Y', strtotime($request->date));
         if ($preprojectYear == $requestYear) {
@@ -85,40 +73,16 @@ class PreProjectController extends Controller
         } else {
             $data['code'] = $this->getCode($data['date'], $data['code']);
         }
-        if ($request->hasFile('facade')) {
-            $facadeName = $preproject->facade;
-            $facadePath = "image/facades/$facadeName";
-            $path = public_path($facadePath);
-            if (file_exists($path)) {
-                unlink($path);
-            } else {
-                dd("El archivo no existe en la ruta: $facadePath");
-            }
-            $facade = $request->file('facade');
-            $facadeName = time() . '_' . $facade->getClientOriginalName();
-            $facade->move(public_path('image/facades/'), $facadeName);
-            $data['facade'] = $facadeName;
-        } else {
-            unset($data['facade']);
-        }
         $preproject->update($data);
+        $preproject->contacts()->sync($data['contacts']);
         return redirect()->back();
     }
 
 
     public function destroy(Preproject $preproject)
     {
-        $facadeName = $preproject->facade;
         $preproject->delete();
-        $facadePath = "image/facades/$facadeName";
-        $path = public_path($facadePath);
-        if (file_exists($path)) {
-            unlink($path);
-            $preproject->delete();
-        } else {
-            dd("El archivo no existe en la ruta: $facadePath");
-        }
-        return to_route('preprojects.index');
+        return redirect()->back();
     }
 
 

@@ -2,7 +2,7 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template #header >
-            Gestión de Proyectos
+            Proyectos
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex gap-4">

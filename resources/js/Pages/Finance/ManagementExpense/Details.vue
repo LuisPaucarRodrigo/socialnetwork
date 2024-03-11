@@ -7,7 +7,6 @@
         </template>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
-
             <div class="col-span-1 min-w-full rounded-lg shadow bg-white p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div v-if="expense.purchasing_requests.project" class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Proyecto:</p>
@@ -61,7 +60,7 @@
                     <p class="text-lg text-gray-900">{{ expense.purchasing_requests.state }}</p>
                 </div>
                 <div class="mb-4">
-                    <p class="text-sm text-gray-700 font-medium">Fecha límite de vencimiento:</p>
+                    <p class="text-sm text-gray-700 font-medium">Fecha límite de compra:</p>
                     <p class="text-lg text-gray-900">{{ formattedDate(expense.purchasing_requests.due_date) }}</p>
                 </div>
                 <div class="mb-4">
@@ -154,22 +153,22 @@
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-center">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-        (item.pivot?.unitary_amount).toFixed(2) }}
+                                            (item.pivot?.unitary_amount * (1/1.18)).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td v-if="expense.igv"
                                     class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                     <p class="text-gray-900 whitespace-nowrap">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-        (item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) }}
+                                           (item.pivot?.unitary_amount * (expense.igv ? 1/1.18 :1.18) 
+                                           * item.pivot?.quantity).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-right">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-        ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) / (expense.igv ?
-            0.82 :
-            1)).toFixed(2) }}
+                                            ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) / 
+                                            (expense.igv ? 1 :1.18)).toFixed(2) }}
                                     </p>
                                 </td>
                             </tr>
@@ -216,10 +215,14 @@
             <h1 class="text-2xl font-semibold text-gray-700 mt-4 mb-4">Orden de Compra</h1>
 
             <div
-                class="min-w-full overflow-hidden rounded-lg shadow bg-white p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                class="min-w-full overflow-hidden rounded-lg shadow bg-white p-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="mb-4">
-                    <p class="text-sm text-gray-700 font-medium">Fecha límite de compra:</p>
-                    <p class="text-lg text-gray-900">{{ formattedDate(expense.purchase_order.date_issue) }}</p>
+                    <p class="text-sm text-gray-700 font-medium">Codigo de Orden:</p>
+                    <p class="text-lg text-gray-900">{{ expense.purchase_order.code }}</p>
+                </div>
+                <div class="mb-4">
+                    <p class="text-sm text-gray-700 font-medium">Fecha esperada de llegada de la compra:</p>
+                    <p class="text-lg text-gray-900">{{ expense.purchase_order.purchase_arrival_date }}</p>
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Estado de la orden:</p>
@@ -254,12 +257,12 @@ function getTotals(products, hasIGV) {
     let igv = 0;
     let total = 0;
     products.forEach(item => {
-        subTotal += item.pivot.quantity * item.pivot.unitary_amount/(hasIGV?0.82:1) 
+        subTotal += item.pivot.quantity * item.pivot.unitary_amount/(hasIGV?1:1.18) 
     });
     if (hasIGV) {
         total = subTotal.toFixed(2)
-        igv = (total * .18).toFixed(2)
-        subTotal = (total - igv).toFixed(2)
+        subTotal = (total/1.18).toFixed(2)
+        igv = (total - subTotal).toFixed(2)
     } else {
         subTotal = subTotal.toFixed(2)
         igv = (subTotal * .18).toFixed(2)
