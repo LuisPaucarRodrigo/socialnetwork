@@ -24,7 +24,7 @@ class Purchase_quote extends Model
     ];
 
     public $appends = [
-        'total_amount', 'code'
+        'total_amount', 'code','payments_completed'
     ];
 
     public function provider()    {
@@ -40,6 +40,9 @@ class Purchase_quote extends Model
         return $this->hasOne(Purchase_order::class);
     }
 
+    public function payment() {
+        return $this->hasMany(Payment::class);
+    }
 
     public function products () {
         return $this->belongsToMany(Purchase_product::class,'purchase_quotes_products')->withPivot('id','quantity','unitary_amount')->withTimestamps();
@@ -52,10 +55,26 @@ class Purchase_quote extends Model
     public function getTotalAmountAttribute() {
         return $this->purchase_quote_products()->get()->sum(function($item){
             return $item->quantity * $item->unitary_amount;
-        })*($this->igv? 1/0.82 : 1.18);
+        });
     }
 
     public function getCodeAttribute() {
         return 'CO' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function getPaymentsCompletedAttribute()
+    {
+        $quotePayments = $this->payment; // Obtenemos todos los pagos relacionados con la cotización
+        $allCompleted = true; // Suponemos que todos los pagos están completados
+
+        foreach ($quotePayments as $payment) {
+            if ($payment->state) {
+                // Si al menos uno de los pagos no está completado, marcamos la bandera como falsa
+                $allCompleted = false;
+                break; // No es necesario seguir iterando
+            }
+        }
+
+        return $allCompleted;
     }
 }

@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchase_products', function (Blueprint $table) {
+        Schema::create('preprojects_contacts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('unit');
-            $table->boolean('state')->default(true);
-            $table->text('description')->nullable();
+            $table->foreignId('preproject_id')->constrained('preprojects')->onDelete('cascade');
+            $table->foreignId('customer_contact_id')->nullable()->constrained('customers_contacts')->onDelete('set null');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchase_products');
+        Schema::dropIfExists('preprojects_contacts');
     }
 };
