@@ -15,9 +15,9 @@
                     </div>
 
                     <div class="border-b border-gray-900 pb-12">
-                        <h2 v-if="preproject" class="text-base font-semibold leading-7 text-gray-900">{{ preproject.name
-                            }}-{{
-        preproject.code }}</h2>
+                        <h2 v-if="preproject" class="text-base font-semibold leading-7 text-gray-900">
+                            {{ preproject.code }}
+                        </h2>
                         <h2 v-else class="text-base font-semibold leading-7 text-gray-900">Registrar nuevo Anteproyecto
                         </h2>
                         <br>
@@ -29,7 +29,8 @@
                                     Cliente
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input id="unit" list="options" @input="(e)=>handleAutocomplete(e, 'customer_id')" autocomplete="off"
+                                    <input id="unit" list="options" @input="(e) => handleAutocomplete(e, 'customer_id')"
+                                        autocomplete="off" v-model="customerRuc"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                                     <datalist id="options">
@@ -49,21 +50,23 @@
                                     <div class="flex gap-4 text-sm">
                                         <label class="flex gap-2 items-center">
                                             Sí
-                                            <input type="radio" v-model="form.hasSubcustomer"
-                                                @input="handleSubClient" :value="true"
+                                            <input type="radio" v-model="form.hasSubcustomer" @input="handleSubClient"
+                                                :value="true"
                                                 class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                         </label>
                                         <label class="flex gap-2 items-center">
                                             No
-                                            <input type="radio" v-model="form.hasSubcustomer" 
-                                                @input="handleSubClient" :value="false"
+                                            <input type="radio" v-model="form.hasSubcustomer" @input="handleSubClient"
+                                                :value="false"
                                                 class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                         </label>
                                     </div>
 
                                 </div>
                                 <div v-if="form.hasSubcustomer" class="mt-2">
-                                    <input id="unit" list="options" @input="(e)=>handleAutocomplete(e, 'subcustomer_id')" autocomplete="off"
+                                    <input id="unit" list="options"
+                                        @input="(e) => handleAutocomplete(e, 'subcustomer_id')" autocomplete="off"
+                                        v-model="subCustomerRuc"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                                     <datalist id="options">
@@ -84,19 +87,19 @@
                                 <InputLabel class="font-medium leading-6 text-gray-900">Nombre:
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">
-                                    {{ customers.find(item=> 
-                                        item.id == (form.hasSubcustomer 
-                                            ? form.subcustomer_id 
-                                            : form.customer_id)
-                                        )?.business_name }}
+                                    {{ customers.find(item =>
+        item.id == (form.hasSubcustomer
+            ? form.subcustomer_id
+            : form.customer_id)
+    )?.business_name }}
                                 </InputLabel>
                                 <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
                                 </InputLabel>
-                                <InputLabel class="leading-6 text-gray-900">{{ customers.find(item=> 
-                                        item.id == (form.hasSubcustomer 
-                                            ? form.subcustomer_id 
-                                            : form.customer_id)
-                                        )?.address }}
+                                <InputLabel class="leading-6 text-gray-900">{{ customers.find(item =>
+        item.id == (form.hasSubcustomer
+            ? form.subcustomer_id
+            : form.customer_id)
+    )?.address }}
                                 </InputLabel>
 
                             </div>
@@ -120,8 +123,9 @@
                                         <p class=" text-sm col-span-7 line-clamp-2">
                                             {{ item.name }}: {{ item.phone }} </p>
                                         <!-- @click="delete_already_employee(member.pivot.id, index)" -->
-                                        <button type="button" class="col-span-1 flex justify-end" @click="deleteContactItem(item.id)">
-                                            <TrashIcon class=" text-red-500 h-4 w-4"/>
+                                        <button type="button" class="col-span-1 flex justify-end"
+                                            @click="deleteContactItem(item.id)">
+                                            <TrashIcon class=" text-red-500 h-4 w-4" />
                                         </button>
                                     </div>
                                 </div>
@@ -153,7 +157,7 @@
                             <div>
                                 <InputLabel for="date" class="font-medium leading-6 text-gray-900">Código de proyecto
                                 </InputLabel>
-                                
+
                                 <div class="mt-2 flex justify-center items-center gap-2">
                                     <input type="text" v-model="form.code" id="name" pattern="[a-zA-Z]{5}-[a-zA-Z]{5}"
                                         maxlength="11"
@@ -220,11 +224,15 @@
 
         </div>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
+        <ConfirmUpdateModal :confirmingupdate="showModalUpdate" itemType="Anteproyecto" />
+
+
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
@@ -237,6 +245,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const showModal = ref(false)
+const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
 const { preproject, customers } = defineProps({
@@ -255,17 +264,63 @@ const initial_state = {
     hasSubcustomer: false
 }
 
+const update_state = {
+    ...preproject,
+    code: preproject?.code?.substring(9),
+    contacts: preproject?.contacts?.map(item => item.id),
+    hasSubcustomer: preproject?.subcustomer_id ? true : false
+}
+
+
 const form = useForm({
-    ...initial_state
+    ...(preproject ? update_state : initial_state)
 });
 
 
+const contactsList = ref([])
+const contactItem = ref("")
+const helperContactList = (customer_id, subcustomer_id, hasSC) => {
+    const matchCustomer = customers.find(item => item.id == customer_id)
+    const matchSubCustomer = customers.find(item => item.id == subcustomer_id)
+    if (matchSubCustomer) {
+        contactsList.value = matchSubCustomer.customer_contacts
+    } else if (matchCustomer && !hasSC) {
+        contactsList.value = matchCustomer.customer_contacts
+    } else {
+        contactsList.value = []
+    }
+}
+
+const customerRuc = ref('')
+const subCustomerRuc = ref('')
+if (preproject) {
+    helperContactList(form.customer_id, form.subcustomer_id, form.hasSubcustomer)
+    if (form.customer_id) {
+        customerRuc.value = customers?.find(item => item.id == form.customer_id)?.ruc
+    }
+    if (form.subcustomer_id) {
+        subCustomerRuc.value = customers?.find(item => item.id == form.subcustomer_id)?.ruc
+    }
+}
+
+
 const submit = () => {
-    form.post(route('preprojects.store'), {
+    let url = preproject ? route('preprojects.update', { preproject: preproject.id })
+        : route('preprojects.store')
+    form.post(url, {
         onSuccess: () => {
-            showModal.value = true
+            if (preproject) {
+                console.log('entree')
+                showModalUpdate.value = true
+            } else {
+                showModal.value = true
+            }
             setTimeout(() => {
-                showModal.value = false;
+                if (preproject) {
+                    showModalUpdate.value = false
+                } else {
+                    showModal.value = false
+                }
                 router.visit(route('preprojects.index'))
             }, 2000);
         },
@@ -288,21 +343,10 @@ const handleAutocomplete = (e, model) => {
     helperContactList(form.customer_id, form.subcustomer_id, form.hasSubcustomer)
 }
 
-const helperContactList = (customer_id, subcustomer_id, hasSC) => {
-    const matchCustomer = customers.find(item => item.id == customer_id)
-    const matchSubCustomer = customers.find(item => item.id == subcustomer_id)
-    if(matchSubCustomer){
-        contactsList.value = matchSubCustomer.customer_contacts
-    } else if (matchCustomer && !hasSC) {
-        contactsList.value = matchCustomer.customer_contacts
-    } else  {
-        contactsList.value = []
-    }
-}
 
 
-const contactsList = ref([])
-const contactItem = ref("")
+
+
 const showContactModal = ref(false)
 function openContactModal() {
     showContactModal.value = true
@@ -324,15 +368,17 @@ function submitContact() {
     contactItem.value = ''
 }
 
-function deleteContactItem (id) {
+function deleteContactItem(id) {
     const index = form.contacts.indexOf(id);
-    form.contacts.splice(index,1)
+    form.contacts.splice(index, 1)
 }
 
 
 const handleSubClient = (e) => {
     form.subcustomer_id = ''
+    subCustomerRuc.value = ''
     contactItem.value = ''
+    form.contacts = []
     helperContactList(form.customer_id, form.subcustomer_id, JSON.parse(e.target.value))
 }
 

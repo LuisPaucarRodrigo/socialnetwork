@@ -27,7 +27,7 @@ class PreProjectController extends Controller
 
     public function create($preproject_id= null){
         return Inertia::render('ProjectArea/ProjectManagement/CreatePreProject', [
-            'preproject' => Preproject::with('project')->find($preproject_id),
+            'preproject' => Preproject::with('project', 'contacts')->find($preproject_id),
             'customers' => Customer::with('customer_contacts')->get(),
         ]);
     }
@@ -63,18 +63,9 @@ class PreProjectController extends Controller
     }
 
 
-    public function update(Request $request, Preproject $preproject)
+    public function update(PreprojectRequest $request, Preproject $preproject)
     {
-        $data = $request->validate([
-            'customer' => 'required',
-            'phone' => 'required',
-            'description' => 'required',
-            'address' => 'required',
-            'date' => 'required',
-            'code' => 'required',
-            'observation' => 'required',
-            'facade' => 'nullable|sometimes|file|mimes:pdf,jpeg,png,jpg',
-        ]);
+        $data = $request->validated();
         $preprojectYear = date('Y', strtotime($preproject->date));
         $requestYear = date('Y', strtotime($request->date));
         if ($preprojectYear == $requestYear) {
@@ -83,23 +74,15 @@ class PreProjectController extends Controller
             $data['code'] = $this->getCode($data['date'], $data['code']);
         }
         $preproject->update($data);
+        $preproject->contacts()->sync($data['contacts']);
         return redirect()->back();
     }
 
 
     public function destroy(Preproject $preproject)
     {
-        $facadeName = $preproject->facade;
         $preproject->delete();
-        $facadePath = "image/facades/$facadeName";
-        $path = public_path($facadePath);
-        if (file_exists($path)) {
-            unlink($path);
-            $preproject->delete();
-        } else {
-            dd("El archivo no existe en la ruta: $facadePath");
-        }
-        return to_route('preprojects.index');
+        return redirect()->back();
     }
 
 
