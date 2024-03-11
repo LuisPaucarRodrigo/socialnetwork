@@ -81,7 +81,7 @@ class PurchaseOrdersController extends Controller
     public function purchase_order_view($purchase_order_id)
     {
         return Inertia::render('ShoppingArea/PurchaseOrders/OrderDetails', [
-            'purchase_order' => Purchase_order::with('purchase_quote.purchasing_requests.project.preproject')->find($purchase_order_id)
+            'purchase_order' => Purchase_order::with('purchase_quote.provider','purchase_quote.purchasing_requests.project.preproject')->find($purchase_order_id)
         ]);
     }
 
