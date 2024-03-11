@@ -70,7 +70,8 @@ class ProviderController extends Controller
         $data = $request->validate([
             'name' => 'required'
         ]);
-        ProviderCategory::create($data);
+        $new = ProviderCategory::create($data);
+        return response()->json(['new'=> $new],200);
     }
 
     public function segment_provider(Request $request)
@@ -78,6 +79,7 @@ class ProviderController extends Controller
         $data = $request->validate([
             'name' => 'required'
         ]);
-        ProviderSegment::create($data);
+        $new = ProviderSegment::create($data);
+        return response()->json(['new'=> $new],200);
     }
 }

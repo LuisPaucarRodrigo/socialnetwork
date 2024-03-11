@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 
 class Payment extends Model
@@ -13,7 +12,6 @@ class Payment extends Model
     protected $fillable = [
         'amount',
         'description',
-        'state',
         'operation_number',
         'date',
         'payment_doc',
@@ -25,12 +23,22 @@ class Payment extends Model
         return $this->belongsTo(Purchase_quote::class, 'purchase_quote_id');
     }
 
-    protected $append = [
-        'cod_payment'
+    protected $appends = [
+        'cod_payment', 
+        'state'
     ];
 
     public function getCodPaymentAttribute()
     {
         return 'RP' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
+
+    public function getStateAttribute()
+    {
+        if (!is_null($this->operation_number) && !is_null($this->date) && !is_null($this->payment_doc)) {
+            return false;
+        }
+        return true;
+    }
+
 }

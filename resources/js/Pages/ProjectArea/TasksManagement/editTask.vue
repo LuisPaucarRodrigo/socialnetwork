@@ -1,21 +1,22 @@
 <template>
     <Head title="Tarea" />
-    <AuthenticatedLayout :redirect-route="'tasks.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'tasks.index', params: { id: tasks.id } }">
         <template #header>
-            {{ tasks.task }}
+            Tarea: {{ tasks.task }}
         </template>
 
-        <div>
+        <div class="mt-6 mx-3 border-t border-gray-100">
             <div class="max-h-40 overflow-y-auto">
-                <div v-for="(comment, index) in comments.slice().reverse()" :key="comment.id" class="mb-2">
-                    <p class="text-gray-700" :style="{ borderTop: index === 0 ? 'none' : '1px solid #ccc' }">
-                        <b>Comentario:</b> {{ comment.comment }}
-                    </p>
-                </div>
+                <h1>Observaciones</h1>
+                <dd v-for="(comment, index) in comments.slice().reverse()" :key="comment.id"
+                    class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {{ comment.comment }}
+                </dd>
             </div>
             <div class="mb-4 flex flex-col sm:flex-row items-center mt-5">
                 <div class="relative flex-grow flex">
-                    <textarea id="description" rows="2" v-model="newcomment.comment" @keyup.enter="addComment"
+                    <textarea id="description" rows="2" v-model="newcomment.comment" placeholder="Agregar Observaciones"
+                        @keyup.enter="addComment"
                         class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 resize-none"></textarea>
                     <button @click="addComment" type="button"
                         class="ml-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring focus:border-indigo-300">
@@ -27,54 +28,54 @@
                     </button>
                 </div>
             </div>
-
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 m-5 mb-10">
-            <!-- Columna 1 - Fecha de Inicio -->
-            <div>
-                <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
-                <p id="startDate" class="text-sm text-gray-500">{{ formattedDate(tasks.start_date) }}</p>
-            </div>
-
-            <!-- Columna 2 - Fecha de Fin -->
-            <div>
-                <label for="endDate" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
-                <p id="endDate" class="text-sm text-gray-500">{{ formattedDate(tasks.end_date) }}</p>
-            </div>
-        </div>
-        <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-            <div class="sm:col-span-3">
-                <div class="mb-4 flex items-center">
-                    <label for="description" class="block text-sm font-medium text-gray-700 mr-2">Personal Encargado</label>
-                    <button @click="showToAddEmployee" type="button">
-                        <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
-                    </button>
+            <div class="grid grid-cols-2 gap-4 m-5 mb-10">
+                <!-- Columna 1 - Fecha de Inicio -->
+                <div>
+                    <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+                    <p id="startDate" class="text-sm text-gray-500">{{ formattedDate(tasks.start_date) }}</p>
                 </div>
 
-                <div class="mt-2">
-                    <div v-for="item in added_employees.project_employee" class="grid grid-cols-8 items-center my-2">
-                        <p class=" text-sm col-span-7 line-clamp-2">{{ item.employee_information.name }} : {{ item.charge }}
-                        </p>
-                        <button v-if="auth.user.role_id === 1" type="button" :value="item.pivot.project_employee_id"
-                            @click="delete_already_employee(item.pivot.project_employee_id)"
-                            class="col-span-1 flex justify-end">
-                            <TrashIcon class=" text-red-500 h-4 w-4 " />
+                <!-- Columna 2 - Fecha de Fin -->
+                <div>
+                    <label for="endDate" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+                    <p id="endDate" class="text-sm text-gray-500">{{ formattedDate(tasks.end_date) }}</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+                <div class="sm:col-span-3">
+                    <div class="mb-4 flex items-center">
+                        <label for="description" class="block text-sm font-medium text-gray-700 mr-2">Personal
+                            Encargado</label>
+                        <button @click="showToAddEmployee" type="button">
+                            <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
                         </button>
-                        <div class="border-b col-span-8 border-gray-900/10">
+                    </div>
+
+                    <div class="mt-2">
+                        <div v-for="item in added_employees.project_employee"
+                            class="grid grid-cols-8 items-center my-2">
+                            <p class=" text-sm col-span-7 line-clamp-2">{{ item.employee_information.name }} : {{
+        item.charge }}
+                            </p>
+                            <button v-if="auth.user.role_id === 1" type="button" :value="item.pivot.project_employee_id"
+                                @click="delete_already_employee(item.pivot.project_employee_id)"
+                                class="col-span-1 flex justify-end">
+                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                            </button>
+                            <div class="border-b col-span-8 border-gray-900/10">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+                <button type="submit" v-if="auth.user.role_id === 1 && tasks.status === 'pendiente'"
+                    @click="openModalDelete()"
+                    class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Eliminar</button>
+            </div>
         </div>
-        <div class="mt-6 flex items-center justify-between gap-x-6">
-            <a :href="route('tasks.index', { id: tasks.id })"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Atras
-            </a>
-            <button type="submit" v-if="auth.user.role_id === 1 && tasks.status === 'pendiente'" @click="openModalDelete()"
-                class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Eliminar</button>
-        </div>
+
+
         <Modal :show="showModal" :maxWidth="'md'">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
@@ -89,7 +90,7 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option selected disabled value="">Seleccione uno</option>
                                 <option v-for="item in employeesToAssign" :key="item.id" :value="item.id"> {{
-                                    item.employee_information.name }}
+        item.employee_information.name }}
                                 </option>
                             </select>
                         </div>
@@ -148,7 +149,7 @@
         </Modal>
     </AuthenticatedLayout>
 </template>
-  
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
@@ -156,7 +157,7 @@ import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import {formattedDate} from '@/utils/utils'
+import { formattedDate } from '@/utils/utils'
 
 const props = defineProps({
     projects: Object,
@@ -245,4 +246,3 @@ const closeModalDelete = () => {
 }
 
 </script>
-  
