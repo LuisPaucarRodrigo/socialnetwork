@@ -234,14 +234,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const showModal = ref(false)
@@ -310,7 +308,6 @@ const submit = () => {
     form.post(url, {
         onSuccess: () => {
             if (preproject) {
-                console.log('entree')
                 showModalUpdate.value = true
             } else {
                 showModal.value = true
