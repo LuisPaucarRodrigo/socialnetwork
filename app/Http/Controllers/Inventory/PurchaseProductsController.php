@@ -13,19 +13,16 @@ class PurchaseProductsController extends Controller
 {
     public function index()
     {
-        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         $products = Purchase_product::with('purchasing_request_product', 'purchase_quote_product')
                        ->where('state', true)
                        ->paginate(10);            
         return Inertia::render('Inventory/PurchaseProducts/Products', [
             'products' => $products,
-            'admin' => $hasAllPermissions
         ]);
     }
 
     public function search($request)
     {
-        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         $searchTerm = strtolower($request); // Convertir a minúsculas
 
         $queryByName = Purchase_product::with('purchasing_request_product', 'purchase_quote_product')
@@ -58,7 +55,6 @@ class PurchaseProductsController extends Controller
 
         return Inertia::render('Inventory/PurchaseProducts/Products', [
             'products' => $products,
-            'admin' => $hasAllPermissions
         ]);
     }
 
