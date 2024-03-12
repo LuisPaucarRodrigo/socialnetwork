@@ -13,6 +13,8 @@ use App\Models\Imagespreproject;
 use App\Models\PreprojectProvidersQuote;
 use App\Models\PreProjectQuote;
 use App\Models\PreProjectQuoteItem;
+use App\Models\PreprojectQuoteProduct;
+use App\Models\Purchase_product;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -88,8 +90,10 @@ class PreProjectController extends Controller
 
     public function quote($preproject_id)
     {
+
         return Inertia::render('ProjectArea/ProjectManagement/PreProjectQuote', [
-            'preproject' => Preproject::with('quote.items')->find($preproject_id),
+            'preproject' => Preproject::with('quote.items', 'quote.products.purchase_product')->find($preproject_id),
+            'products' => Purchase_product::all(),
         ]);
     }
 
@@ -105,7 +109,9 @@ class PreProjectController extends Controller
             "deliverable_time" => 'required',
             "validity_time" => 'required',
             "observations" => 'required',
-            'preproject_id' => 'required'
+            'preproject_id' => 'required',
+            "items" => 'required|array',
+            "products" => 'required|array'
         ]);
         if ($quote_id) {
             $quote = PreProjectQuote::find($quote_id);
@@ -116,6 +122,12 @@ class PreProjectController extends Controller
                 foreach ($request->get("items") as $item) {
                     $quoteItem = new PreProjectQuoteItem($item);
                     $preproject_quote->items()->save($quoteItem);
+                }
+            }
+            if ($request->has("products")) {
+                foreach ($request->get("products") as $item) {
+                    $quoteProduct = new PreprojectQuoteProduct($item);
+                    $preproject_quote->products()->save($quoteProduct);
                 }
             }
         }
