@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('rev');
             $table->integer('deliverable_time');
             $table->integer('validity_time');
-            $table->text('observations');
+            $table->text('observations')->nullable();
             $table->boolean('state')->default(false);
             $table->foreignId('preproject_id')->constrained('preprojects')->onDelete('cascade');
             $table->timestamps();

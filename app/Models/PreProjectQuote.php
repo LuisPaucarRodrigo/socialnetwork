@@ -29,4 +29,7 @@ class PreProjectQuote extends Model
     public function items() {
         return $this->hasMany(PreProjectQuoteItem::class,"preproject_quote_id");
     }
+    public function products() {
+        return $this->hasMany(PreprojectQuoteProduct::class,"preproject_quote_id");
+    }
 }
