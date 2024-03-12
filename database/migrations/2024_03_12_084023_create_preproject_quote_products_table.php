@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('quantity');
             $table->double('unitary_price');
             $table->double('profit_margin');
-
             $table->timestamps();
         });
     }
