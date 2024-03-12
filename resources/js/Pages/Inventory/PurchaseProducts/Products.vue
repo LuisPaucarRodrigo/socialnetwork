@@ -68,11 +68,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="inline-flex justify-end gap-x-0">
-                                    <button v-if="admin" @click="openEditProductModal(item)"
+                                    <button v-if="auth.user.role_id == 1" @click="openEditProductModal(item)"
                                         class="text-yellow-600 hover:underline mr-3">
                                         <PencilIcon class="h-4 w-4" />
                                     </button>
-                                    <button v-if="admin" @click="confirmDeleteProduct(item.id)"
+                                    <button v-if="auth.user.role_id == 1" @click="confirmDeleteProduct(item.id)"
                                         class="text-red-600 hover:underline">
                                         <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="12" cy="12" r="9" stroke="red" stroke-width="2"/>
@@ -171,7 +171,7 @@ import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     products: Object,
-    admin: Boolean,
+    auth: Object
 });
 
 const form = useForm({

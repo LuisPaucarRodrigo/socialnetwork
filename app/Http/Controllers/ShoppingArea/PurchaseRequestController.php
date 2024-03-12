@@ -21,7 +21,6 @@ class PurchaseRequestController extends Controller
 {
     public function index()
     {
-        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
             'purchases' => $purchases = Purchasing_request::with('project')
                 ->withCount([
@@ -34,7 +33,6 @@ class PurchaseRequestController extends Controller
                     }
                 ])
                 ->orderBy('created_at', 'desc')->paginate(),
-            'admin' => $hasAllPermissions
         ]);
     }
 
