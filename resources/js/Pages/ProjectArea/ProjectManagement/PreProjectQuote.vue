@@ -294,9 +294,9 @@
                                 <select required id="unit" v-model="itemToAdd.unit"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
-                                    <option value="Alta">Unidad</option>
-                                    <option value="Media">Metros</option>
-                                    <option value="Baja">Otro</option>
+                                    <option value="Unidad">Unidad</option>
+                                    <option value="Metros">Metros</option>
+                                    <option value="GLB">GLB</option>
                                 </select>
                             </div>
                         </div>
