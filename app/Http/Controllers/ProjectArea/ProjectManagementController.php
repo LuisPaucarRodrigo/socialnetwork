@@ -407,4 +407,5 @@ class ProjectManagementController extends Controller
         $assigned->delete();
         return redirect()->back();
     }
+
 }
