@@ -63,7 +63,7 @@
                             </span>
                         </div>
                         <div>
-                            <Link :href="route('preprojects.purchase.quote.details', { id: item.id })"
+                            <Link :href="route('preprojects.purchase_quote', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de Compras
                             </Link>
                         </div>
