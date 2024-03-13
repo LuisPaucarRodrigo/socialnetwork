@@ -14,8 +14,9 @@ use App\Models\Imagespreproject;
 use App\Models\PreprojectProvidersQuote;
 use App\Models\PreProjectQuote;
 use App\Models\PreProjectQuoteItem;
-use App\Models\Product;
+use App\Models\PreprojectQuoteProduct;
 use App\Models\Purchase_product;
+use App\Models\Product;
 use App\Models\Purchase_quote;
 use App\Models\Purchasing_request;
 use App\Models\Purchasing_requests_product;
@@ -96,8 +97,11 @@ class PreProjectController extends Controller
 
     public function quote($preproject_id)
     {
+
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
-            'preproject' => Preproject::with('quote.items')->find($preproject_id),
+            'preproject' => Preproject::with('quote.items', 'quote.products.purchase_product')->find($preproject_id),
+            'products' => Purchase_product::all(),
+
         ]);
     }
 
@@ -113,7 +117,9 @@ class PreProjectController extends Controller
             "deliverable_time" => 'required',
             "validity_time" => 'required',
             "observations" => 'required',
-            'preproject_id' => 'required'
+            'preproject_id' => 'required',
+            "items" => 'required|array',
+            "products" => 'required|array'
         ]);
         if ($quote_id) {
             $quote = PreProjectQuote::find($quote_id);
@@ -126,13 +132,18 @@ class PreProjectController extends Controller
                     $preproject_quote->items()->save($quoteItem);
                 }
             }
+            if ($request->has("products")) {
+                foreach ($request->get("products") as $item) {
+                    $quoteProduct = new PreprojectQuoteProduct($item);
+                    $preproject_quote->products()->save($quoteProduct);
+                }
+            }
         }
         return redirect()->back();
     }
 
 
-    public function quote_item_store(Request $request)
-    {
+    public function quote_item_store(Request $request)    {
         $data = $request->validate([
             "description" => 'required',
             "unit" => 'required',
@@ -141,20 +152,39 @@ class PreProjectController extends Controller
             "unit_price" => 'required',
             "preproject_quote_id" => 'required',
         ]);
-        PreProjectQuoteItem::create($data);
-        return redirect()->back();
+        $newItem = PreProjectQuoteItem::create($data);
+        return response()->json(['id'=>$newItem->id]);
     }
 
 
-    public function quote_item_delete(PreProjectQuoteItem $quote_item_id)
-    {
+    public function quote_item_delete(PreProjectQuoteItem $quote_item_id)    {
         $quote_item_id->delete();
         return redirect()->back();
     }
 
+
+    public function quote_product_store(Request $request) {
+        $data = $request->validate([
+            'preproject_quote_id' => 'required',
+            'purchase_product_id' => 'required',
+            'quantity' => 'required',
+            'unitary_price' => 'required',
+            'profit_margin' => 'required',
+        ]);
+        $newProd = PreprojectQuoteProduct::create($data);
+        return response()->json(['id'=>$newProd->id]);
+    }
+
+
+    public function quote_product_delete($quote_product_id)    {
+        PreprojectQuoteProduct::find($quote_product_id)->delete();
+        return redirect()->back();
+    }
+
+
     public function getPDF(Preproject $preproject)
     {
-        $preproject = $preproject->load('quote.items');
+        $preproject = $preproject->load('quote.items', 'quote.products.purchase_product');
         $pdf = Pdf::loadView('pdf.CotizationPDF', compact('preproject'));
         return $pdf->stream();
         //return view('pdf.CotizationPDF', compact('preproject'));
