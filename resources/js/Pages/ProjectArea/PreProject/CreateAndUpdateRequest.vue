@@ -1,10 +1,10 @@
 <template>
     <Head title="Agregar Solicitud" />
-    <AuthenticatedLayout :redirectRoute=" project ? { route: 'projectmanagement.purchases_request.index', params: { id: project.id } } : 'purchasesrequest.index'">
+    <AuthenticatedLayout :redirectRoute=" { route: 'preprojects.request.index', params: { id: purchase ? purchase.preproject.id : preproject.id } }">
         <template #header>
-            {{ purchase ? purchase.code : (project ? 'Nueva solicitud de compra para:':'Nueva solicitud de compra') }}
+            {{ purchase ? purchase.code : (preproject ? 'Nueva solicitud de compra para:':'Nueva solicitud de compra') }}
         </template>
-        <p class="mb-5 text-xl" v-if="project">{{ project.code }}</p>
+        <p class="mb-5 text-xl" v-if="preproject">{{ preproject.code }}</p>
         <form @submit.prevent="submit">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12 shadow-sm p-4 ring-1 ring-gray-200 rounded-lg">
@@ -19,17 +19,6 @@
                                 <TextInput type="text" v-model="form.title" id="title" autocomplete="family-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.title" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel for="due_date" class="font-medium leading-6 text-gray-900">Fecha Limite de Compra
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" v-model="form.due_date" id="due_date" maxlength="9"
-                                    autocomplete="product_description-level1"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.due_date" />
                             </div>
                         </div>
 
@@ -95,7 +84,6 @@
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                     Unidad
                                                 </th>
-                                                <!-- v-if="auth.user.role_id === 1 || preproject.quote === null" -->
                                                 <th v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                     Acciones
@@ -103,7 +91,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- v v-for="(item, index) in (form.items)" :key="index" -->
                                             <tr v-for="(item, index) in (form.products)" :key="index"
                                                 class="text-gray-700 hover:bg-gray-200 bg-white">
                                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
@@ -242,14 +229,14 @@ const showModal2 = ref(false);
 const showModal3 = ref(false);
 const showErroModal = ref(false);
 
-const { purchase, allProducts, project } = defineProps({
+const { purchase, allProducts, preproject } = defineProps({
     purchase: {
         type: Object,
         requerid: false
     },
     allProducts: Object,
     auth: Object,
-    project: Object
+    preproject: Object
 })
 
 const initialState = {
@@ -257,7 +244,7 @@ const initialState = {
     due_date: '',
     code: '',
     products: [],
-    project_id: project?.id
+    preproject_id: preproject?.id
 }
 
 const form = useForm(purchase ? JSON.parse(JSON.stringify(purchase)) : { ...initialState })
@@ -265,20 +252,18 @@ const form = useForm(purchase ? JSON.parse(JSON.stringify(purchase)) : { ...init
 
 const submit = () => {
     if (purchase) {
-        form.put(route('purchasesrequest.update', purchase.id), {
+        form.put(route('preprojects.request.update', purchase.id), {
             onSuccess:()=>{
-                project ? router.visit(route('projectmanagement.purchases_request.index', { project_id: project.id })) :
-                    router.visit(route('purchasesrequest.index'))
+                router.visit(route('preprojects.request.index', { id: purchase.preproject.id })) 
             }
         })
     } else {
-        form.post(route('purchasesrequest.store'), {
+        form.post(route('preprojects.request.store'), {
             onSuccess: () => {
                 showModal.value = true
                 setTimeout(() => {
                     showModal.value = false;
-                    project ? router.visit(route('projectmanagement.purchases_request.index', { project_id: project.id })) :
-                    router.visit(route('purchasesrequest.index'))
+                    router.visit(route('preprojects.request.index', { id: preproject.id }))
                 }, 2000);
             },
             onError: () => {

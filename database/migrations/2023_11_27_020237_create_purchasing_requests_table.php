@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('purchasing_requests', function (Blueprint $table) {
             $table->id();   
             $table->string('title');
-            $table->date('due_date');
+            $table->date('due_date')->nullable();
             $table->boolean('is_accepted')->default(true);
             $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
+            $table->foreignId('preproject_id')->nullable()->constrained('preprojects')->onDelete('cascade');
             $table->timestamps();
         });
     }
