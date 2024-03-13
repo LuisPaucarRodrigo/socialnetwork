@@ -21,17 +21,10 @@ class  Project extends Model
 
     protected $appends = ['total_assigned_resources_costs',  'total_used_resources_costs','remaining_budget', 'total_assigned_product_costs','total_refund_product_costs_no_different_price', 'total_product_costs_with_liquidation','preproject_quote', 'total_resources_costs_with_liquidation', 'total_employee_costs','name','code', 'start_date', 'end_date',];
 
-
     public function getPreprojectQuoteAttribute(){
-        $preproject = $this->preproject()->first();
-        $quoteItems = $preproject ? $preproject->quote->items : [];
-        $initialBudget = 0;
-        foreach ($quoteItems as $item) {
-            $initialBudget += $item->unit_price * $item->quantity;
-        }
-        $totalInitialBudget = $initialBudget + ($initialBudget * 18/100);
-        return $totalInitialBudget;
+        return $this->preproject->quote->total_amount;
     }
+    
 
     public function getNameAttribute() {
         return $this->preproject()->first()?->quote->name;
