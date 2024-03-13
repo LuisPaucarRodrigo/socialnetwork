@@ -36,7 +36,10 @@
                     <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
                         {{ item.name }}
                     </h3>
-                    <div class="text-gray-500 text-sm">
+                    <p v-if="item.remaining_budget === 0" class="text-red-500 text-sm">
+                        No se definió un presupuesto
+                    </p>
+                    <div :class="`text-gray-500 text-sm ${item.remaining_budget === 0 ? 'opacity-50 pointer-events-none': ''}`">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link v-if="item.initial_budget>=0" 
                                 :href="route('projectscalendar.show', { project: item.id })"
@@ -53,6 +56,10 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
+                            <Link v-if="item.initial_budget>=0"
+                                :href="route('projectmanagement.purchases_quote.index', { project_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones</Link>
+                            <span v-else class="text-gray-400">Cotizaciones</span>
                             <Link v-if="item.initial_budget>=0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">

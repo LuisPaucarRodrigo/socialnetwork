@@ -1,5 +1,5 @@
 <template>
-    <Head title="Proyectos" />
+    <Head title="Activos de Proyectos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
             Activos
@@ -74,11 +74,11 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <button v-if="admin" type="button" @click="editResource(item.id)"
+                                    <button v-if="auth.user.role_id == 1" type="button" @click="editResource(item.id)"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <PencilIcon class="text-yellow-500 h-4 w-4"></PencilIcon>
                                     </button>
-                                    <button v-if="admin" type="button" @click="openModalDelete(item.id)"
+                                    <button v-if="auth.user.role_id == 1" type="button" @click="openModalDelete(item.id)"
                                         class="text-red-900 whitespace-no-wrap">
                                         <TrashIcon class="text-red-500 h-4 w-4" />
                                     </button>
@@ -110,7 +110,7 @@ const selectedResource = ref(null);
 
 const props = defineProps({
     resources: Object,
-    admin: Boolean
+    auth: Object
 })
 
 const add_resource = () => {

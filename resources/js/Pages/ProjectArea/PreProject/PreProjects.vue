@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Proyectos" />
+    <Head title="AnteProyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
             Anteproyectos
@@ -9,7 +9,7 @@
             <div class="flex gap-4">
                 <Link :href="route('preprojects.create')"
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
-                    + Agregar
+                + Agregar
                 </Link>
             </div>
             <br>
@@ -21,9 +21,9 @@
                             N° {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2">
-                            <Link :href="route('preprojects.create', {preproject_id: item.id})"
+                            <Link :href="route('preprojects.create', { preproject_id: item.id })"
                                 class="text-green-600 hover:underline mb-4 flex items-start">
-                                <PencilIcon class="h-4 w-4" />
+                            <PencilIcon class="h-4 w-4" />
                             </Link>
                             <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
                                 <TrashIcon class="h-4 w-4 text-red-500" />
@@ -46,13 +46,32 @@
                             fotográfico
                             </Link>
                         </div>
-                        <div>
-                            <Link :href="route('preprojects.providersquotes.index', {
-        preproject_id: item.id
-    })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización de
+                        <!-- <div>
+                            <Link :href="route('preprojects.providersquotes.index', { preproject_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización de
                             proveedores
                             </Link>
+                        </div> -->
+                        <div v-if="item.project == null">
+                            <Link :href="route('preprojects.request.index', { id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de Compras
+                            </Link>
                         </div>
+                        <div v-else>
+                            <span class="text-gray-600">
+                                Solicitud de Compras
+                            </span>
+                        </div>
+                        <div v-if="item.project == null">
+                            <Link :href="route('preprojects.purchase_quote', { id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de Compras
+                            </Link>
+                        </div>
+                        <!-- <div>
+                            <Link :href="route('preprojects.request_quote.index', { id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de Solicitudes
+                            </Link>
+                        </div> -->
                         <div v-if="item.has_photo_report">
                             <Link :href="route('preprojects.quote', { preproject_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización para
@@ -68,7 +87,7 @@
             </div>
         </div>
 
-    
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingProjectDeletion" itemType="Anteproyecto"
             :deleteFunction="delete_project" @closeModal="closeModal" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
@@ -86,9 +105,8 @@ import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 
 
-const { preprojects, visits, auth } = defineProps({
+const { preprojects, auth } = defineProps({
     preprojects: Object,
-    visits: Object,
     auth: Object
 })
 

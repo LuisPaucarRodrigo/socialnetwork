@@ -1,5 +1,5 @@
 <template>
-    <Head title="Proyectos" />
+    <Head title="Proyecto" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template v-if="project" #header>
             Edición de proyecto
@@ -104,7 +104,7 @@
                             </div>
 
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-3" v-if="project && project?.remaining_budget  !== 0 ">
                                 <div class="flex gap-2">
                                     <InputLabel for="trainings" class="font-medium leading-6 text-gray-900">Miembros del
                                         equipo al proyecto
@@ -196,6 +196,8 @@
             :message="`El personal fue añadido.`" />
         <SuccessOperationModal :confirming="showPersonalRemoveModal" :title="`Personal removido.`"
             :message="`El personal fue removido.`"/>
+
+        <ErrorOperationModal :showError="showEmployeeError" title="Presupuesto sobrepasado" message="El presupuesto ha sido sobrepasado" />
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -212,9 +214,11 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const showModal = ref(false)
 const showUpdateModal = ref(false)
+const showEmployeeError = ref(false)
 
 const { employees, start_date, numberOfProjects, project, preprojects } = defineProps({
     employees: Object,
@@ -265,7 +269,15 @@ const showToAddEmployee = () => {
 const closeModal = () => {
     showModalMember.value = false;
 };
+
 const add_employee = () => {
+    if (project.preproject.quote.deliverable_time * employeeToAdd.value.employee.salary_per_day > project.remaining_budget ) {
+        showEmployeeError.value = true
+        setTimeout(()=>{
+            showEmployeeError.value = false
+        }, 1500)
+        return
+    }
     if (project) {
         router.post(route('projectmanagement.add.employee', { project_id: project.id }), { ...employeeToAdd.value },
             {

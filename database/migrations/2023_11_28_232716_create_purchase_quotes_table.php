@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('purchase_quotes', function (Blueprint $table) {
             $table->id();
-            $table->date('quote_deadline');
+            $table->date('quote_deadline')->nullable();
             $table->string('purchase_doc');
             $table->boolean('state')->nullable()->default(null);
             $table->boolean('igv')->nullable()->default(false);

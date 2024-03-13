@@ -23,7 +23,7 @@ class UpdatePurchaseRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'due_date' => 'required|date',
+            'due_date' => 'nullable|date',
         ];
     }
 }
