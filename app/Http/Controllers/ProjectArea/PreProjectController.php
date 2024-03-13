@@ -135,8 +135,7 @@ class PreProjectController extends Controller
     }
 
 
-    public function quote_item_store(Request $request)
-    {
+    public function quote_item_store(Request $request)    {
         $data = $request->validate([
             "description" => 'required',
             "unit" => 'required',
@@ -145,20 +144,39 @@ class PreProjectController extends Controller
             "unit_price" => 'required',
             "preproject_quote_id" => 'required',
         ]);
-        PreProjectQuoteItem::create($data);
-        return redirect()->back();
+        $newItem = PreProjectQuoteItem::create($data);
+        return response()->json(['id'=>$newItem->id]);
     }
 
 
-    public function quote_item_delete(PreProjectQuoteItem $quote_item_id)
-    {
+    public function quote_item_delete(PreProjectQuoteItem $quote_item_id)    {
         $quote_item_id->delete();
         return redirect()->back();
     }
 
+
+    public function quote_product_store(Request $request) {
+        $data = $request->validate([
+            'preproject_quote_id' => 'required',
+            'purchase_product_id' => 'required',
+            'quantity' => 'required',
+            'unitary_price' => 'required',
+            'profit_margin' => 'required',
+        ]);
+        $newProd = PreprojectQuoteProduct::create($data);
+        return response()->json(['id'=>$newProd->id]);
+    }
+
+
+    public function quote_product_delete($quote_product_id)    {
+        PreprojectQuoteProduct::find($quote_product_id)->delete();
+        return redirect()->back();
+    }
+
+
     public function getPDF(Preproject $preproject)
     {
-        $preproject = $preproject->load('quote.items');
+        $preproject = $preproject->load('quote.items', 'quote.products.purchase_product');
         $pdf = Pdf::loadView('pdf.CotizationPDF', compact('preproject'));
         return $pdf->stream();
         //return view('pdf.CotizationPDF', compact('preproject'));
