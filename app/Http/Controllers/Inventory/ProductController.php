@@ -12,21 +12,18 @@ use App\Models\ProjectProduct;
 use App\Models\Header;
 use App\Models\Product;
 use App\Models\ProductsHeader;
-use App\Providers\GlobalFunctionsServiceProvider;
 
 class ProductController extends Controller
 {
     //Warehouses
     public function index(Warehouse $warehouse)
     {
-        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         $products = Product::where('warehouse_id', $warehouse->id)
                        ->with('productHeaders', 'productHeaders.header')
                        ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Product', [
             'products' => $products,
             'warehouse' => $warehouse->load('headers'),
-            'admin' => $hasAllPermissions
         ]);
     }
 

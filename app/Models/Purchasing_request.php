@@ -14,6 +14,7 @@ class Purchasing_request extends Model
         'title', 
         'due_date', 
         'project_id',
+        'preproject_id',
         'is_accepted',
     ];
 
@@ -24,6 +25,10 @@ class Purchasing_request extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
+    public function preproject()
+    {
+        return $this->belongsTo(Preproject::class, 'preproject_id');
+    }
 
     public function purchase_quotes()    {
         return $this->hasMany(Purchase_quote::class);

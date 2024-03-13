@@ -46,7 +46,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="order in orders.data" :key="order.id">
+                        <tr v-for="order in orders.data" :key="order.id" :class="[
+                            'text-gray-700',
+                            {
+                                'border-l-8': true,// Si la fecha de finalización es 'Disponible', pinta el borde de verde
+                                'border-red-500': Date.parse(order.purchase_quote.purchasing_requests.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000) ,
+                                'border-yellow-500': Date.parse(order.purchase_quote.purchasing_requests.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(order.purchase_quote.purchasing_requests.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) 
+                            }]">
 
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
