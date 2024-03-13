@@ -504,7 +504,7 @@ Route::middleware('auth', 'permission:FinanceManager')->group(function () {
     Route::get('/budgetUpdates/{project}/{budgetupdate}', [BudgetUpdateController::class, 'show'])->name('budgetupdates.show');
     Route::get('/initialBudget/{project}', [BudgetUpdateController::class, 'initial'])->name('initialbudget.index');
     Route::post('/initialBudget/{project}/createUpdate', [BudgetUpdateController::class, 'create'])->name('budgetupdates.create');
-    
+    Route::put('/initialBudget/{project}/define', [BudgetUpdateController::class, 'define_initial_budget'])->name('initialbudget.define');
 
 
 
