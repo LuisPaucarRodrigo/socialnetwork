@@ -22,7 +22,7 @@
                                 {{ purchases.title }}
                             </dd>
                         </div>
-                        <div class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <div v-if="purchases.due_date" class="py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Fecha límite de Compra</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                                 {{ formattedDate(purchases.due_date) }}</dd>
@@ -78,7 +78,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3">
+                        <div v-if="purchases.due_date" class="sm:col-span-3">
                             <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">
                                 Fecha limite de Aprobacion de Finanzas
                             </InputLabel>
