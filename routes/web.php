@@ -364,7 +364,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::put('/preprojects/request/{id}/edit', [PreProjectController::class, 'request_shopping_update'])->name('preprojects.request.update');
     
     Route::get('/preprojects/purchase_quote/{id}', [PreProjectController::class, 'purchase_quote'])->name('preprojects.purchase_quote');
-    Route::get('/preprojects/purchase_quote/{id}/details', [PreProjectController::class, 'purchase_quote_details'])->name('preprojects.purchase.quote.details');
+    Route::get('/preprojects/purchase_quote/details/{id}', [PreProjectController::class, 'purchase_quote_details'])->name('preprojects.purchase.quote.details');
 
 
     Route::get('/preprojects/{preproject_id}/providers_quotes', [PreProjectController::class, 'preproject_providersquotes_index'])->name('preprojects.providersquotes.index');

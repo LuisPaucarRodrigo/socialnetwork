@@ -198,7 +198,6 @@ const props = defineProps({
     }
 });
 
-
 const showModalAdd = ref(false);
 const showModal = ref(false);
 const categoryAndSegment = ref(false);
@@ -276,6 +275,7 @@ const submitName = () => {
 
 const category = () => {
     showModalAdd.value = true
+    categoryAndSegment.value = false
 }
 
 const segment = () => {
