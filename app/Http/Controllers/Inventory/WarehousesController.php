@@ -17,14 +17,12 @@ class WarehousesController extends Controller
     public function showWarehouses()
     {
         $warehouses = Warehouse::paginate();
-        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         $headers = Header::all();
         $warehouse_headers = WarehousesHeader::with('header')->get();
         return Inertia::render('Inventory/WarehouseManagement/Warehouses', [
             'warehouses' => $warehouses,
             'headers' => $headers,
             'warehouse_headers' => $warehouse_headers,
-            'admin' => $hasAllPermissions
         ]);
     }
 

@@ -110,7 +110,7 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <div v-if="admin">
+                                    <div v-if="auth.user.role_id == 1">
                                         <Link v-if="purchase.project == null && purchase.state != 'Aceptado'"
                                             class="text-blue-900 "
                                             :href="route('purchasesrequest.edit', { id: purchase.id })">
@@ -128,7 +128,7 @@
                                             </svg>
                                         </span>
                                     </div>
-                                    <div v-if="admin">
+                                    <div v-if="auth.user.role_id == 1">
                                         <button v-if="purchase.state != 'Aceptado'" type="button"
                                             @click="confirmPurchasesDeletion(purchase.id)" class="text-blue-900 ">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -191,7 +191,7 @@ const purchaseToDelete = ref(null);
 
 const props = defineProps({
     purchases: Object,
-    admin: Boolean
+    auth: Object
 });
 
 const confirmPurchasesDeletion = (purchaseId) => {

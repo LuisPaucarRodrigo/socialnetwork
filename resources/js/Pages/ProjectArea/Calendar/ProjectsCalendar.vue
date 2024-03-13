@@ -42,6 +42,8 @@ const props = defineProps({
   projects: Object,
 });
 
+console.log(props.projects);
+
 const handleDateClick = (arg) => {
   alert('date click! ' + arg.dateStr);
 };
@@ -73,17 +75,26 @@ const getColorFromSet = () => {
   return color;
 };
 
-const events = ref(props.projects.map((project) => ({
-  title: project.name,
-  start: new Date(project.start_date).toISOString().split('T')[0],
-  end: new Date(new Date(project.end_date).getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0],
-  color: getColorFromSet(),
-  start_date: project.start_date + 'T00:00:01',
-  end_date: project.end_date + 'T00:00:01',
-  description: project.description,
-  project_id: project.id,
-  textColor: 'black',
-})));
+const events = ref(props.projects.map((project) => {
+  // Convertir las fechas al formato correcto (DD/MM/YYYY a YYYY-MM-DD)
+  const startDateParts = project.start_date.split('/');
+  const endDateParts = project.end_date.split('/');
+  const startDateFormatted = `${startDateParts[2]}-${startDateParts[1]}-${startDateParts[0]}`;
+  const endDateFormatted = `${endDateParts[2]}-${endDateParts[1]}-${endDateParts[0]}`;
+
+  return {
+    title: project.name,
+    start: new Date(startDateFormatted).toISOString().split('T')[0],
+    end: new Date(new Date(endDateFormatted).getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0],
+    color: getColorFromSet(),
+    start_date: startDateFormatted + 'T00:00:01',
+    end_date: endDateFormatted + 'T00:00:01',
+    description: project.description,
+    project_id: project.id,
+    textColor: 'black',
+  };
+}));
+
 
 const formatDate = (dateStr) => {
   const date = new Date(dateStr);
