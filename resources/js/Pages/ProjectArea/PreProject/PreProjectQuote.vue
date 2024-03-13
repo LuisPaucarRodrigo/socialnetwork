@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Proyectos" />
+    <Head title="Cotización Anteproyecto" />
     <AuthenticatedLayout :redirect-route="'preprojects.index'">
         <template v-if="preproject.quote" #header>
             Editando la cotización
@@ -583,7 +583,7 @@ console.log(preproject.quote)
 
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
-    message: `La cotización para proyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
+    message: `La cotización para anteproyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
 })
 
 

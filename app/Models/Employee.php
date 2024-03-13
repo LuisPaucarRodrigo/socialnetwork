@@ -23,6 +23,10 @@ class Employee extends Model
         'phone2'
     ];
 
+    protected $appends = [
+        'salary_per_day'
+    ];
+
     public function contract()
     {
         return $this->hasOne(Contract::class);
