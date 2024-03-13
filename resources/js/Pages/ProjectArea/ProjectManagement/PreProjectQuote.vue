@@ -75,8 +75,8 @@
                                     entrega (días)
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="number" v-model="form.deliverable_time"
-                                        id="deliverable_time" min="1"
+                                    <TextInput type="number" v-model="form.deliverable_time" id="deliverable_time"
+                                        min="1"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.deliverable_time" />
                                 </div>
@@ -86,8 +86,7 @@
                                     validez (días)
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="number" v-model="form.validity_time" id="validity_time"
-                                        min="1"
+                                    <TextInput type="number" v-model="form.validity_time" id="validity_time" min="1"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.validity_time" />
                                 </div>
@@ -191,12 +190,12 @@
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p>
-                                                            {{ preproject.quote ? item.purchase_product?.code : item.code }}
+                                                            {{ item.purchase_product?.code }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
-                                                            {{  preproject.quote ? item.purchase_product?.name : item.name }}
+                                                            {{ item.purchase_product?.name }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -211,18 +210,15 @@
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
-                                                            S/.{{ ( item.unitary_price * 
-                                                                    item.quantity * 
-                                                                    (1 + (item.profit_margin)/100))
+                                                            S/.{{ (item.unitary_price *
+                                                                    item.quantity *
+                                                                    (1 + (item.profit_margin) / 100))
                                                                     .toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <div v-if="auth.user.role_id === 1 || preproject.quote === null"
                                                             class="flex justify-end">
-                                                            <button type="button"
-                                                                @click=" preproject.quote 
-                                                                            ? deleteAlreadyItem(item.id, index) 
-                                                                            : deleteProduct(index)"
+                                                            <button type="button" @click="deleteProduct(index, item.id)"
                                                                 class="col-span-1 flex justify-end">
                                                                 <TrashIcon class=" text-red-500 h-4 w-4 " />
                                                             </button>
@@ -244,7 +240,7 @@
 
 
 
-                            
+
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-10">
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Servicios
@@ -415,7 +411,7 @@
                             <InputLabel class="leading-6 text-gray-100">Nombre:
                             </InputLabel>
                             <div class="mt-2">
-                                <InputLabel class="leading-6 text-gray-100">{{ productToAdd.name }}
+                                <InputLabel class="leading-6 text-gray-100">{{ productToAdd.purchase_product.name }}
                                 </InputLabel>
                             </div>
                         </div>
@@ -424,24 +420,29 @@
                             <InputLabel class="leading-6 text-gray-100">Unidad:
                             </InputLabel>
                             <div class="mt-2">
-                                <InputLabel class="leading-6 text-gray-100">{{ productToAdd.unit }}
+                                <InputLabel class="leading-6 text-gray-100">{{ productToAdd.purchase_product.unit }}
                                 </InputLabel>
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio Unitario (sin IGV)
+                            <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio Unitario
+                                (sin
+                                IGV)
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput required type="number" v-model="productToAdd.unitary_price" min="0" step="0.01" id="unitary_price"
+                                <TextInput required type="number" v-model="productToAdd.unitary_price" min="0"
+                                    step="0.01" id="unitary_price"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
                         <div class="sm:col-span-3">
-                            <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen de Ganancia (%)
+                            <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen de
+                                Ganancia (%)
                             </InputLabel>
                             <div class="mt-2 flex gap-3 items-center">
-                                <TextInput required type="number" v-model="productToAdd.profit_margin" min="0" step="0.01"  id="profit_margin"
+                                <TextInput required type="number" v-model="productToAdd.profit_margin" min="0"
+                                    step="0.01" id="profit_margin"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -487,7 +488,6 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option value="Unidad">Unidad</option>
-                                    <option value="Metros">Metros</option>
                                     <option value="GLB">GLB</option>
                                 </select>
                             </div>
@@ -527,15 +527,25 @@
                 </form>
             </Modal>
         </div>
-        <ErrorOperationModal :showError="showErroModal" title="Error" message="El producto ya fue añadido o es inválido" />
+        <ErrorOperationModal :showError="showErroModal" title="Error"
+            message="El producto ya fue añadido o es inválido" />
 
         <SuccessOperationModal :confirming="showModal" :title="modalVariables.title"
             :message="modalVariables.message" />
 
-        <SuccessOperationModal :confirming="showItemAddModal" :title="`Item de valorización añadido.`"
-            :message="`El item de valorización fue añadido.`" />
-        <SuccessOperationModal :confirming="showItemRemoveModal" :title="`Item de valorización removido.`"
-            :message="`El item de valorización fue removido.`" />
+        <!-- services's modal -->
+        <SuccessOperationModal :confirming="showItemAddModal" :title="`Servicio añadido.`"
+            :message="`El servicio fue añadido.`" />
+        <SuccessOperationModal :confirming="showItemRemoveModal" :title="`Servicio removido.`"
+            :message="`El servicio fue removido.`" />
+        <!-- products's modal -->
+        <SuccessOperationModal :confirming="showProductAddModal" :title="`Producto añadido.`"
+            :message="`El producto fue añadido.`" />
+        <SuccessOperationModal :confirming="showProductRemoveModal" :title="`Producto removido.`"
+            :message="`El producto fue removido.`" />
+
+
+
 
         <AcceptModal :acceptFunction="approve" :confirmingAccept="showConfirmAccept" @closeModal="closeConfirmAccept"
             :itemType="`Cotización`" />
@@ -568,6 +578,8 @@ const { preproject, auth, products } = defineProps({
     preproject: Object,
     auth: Object
 })
+
+console.log(preproject.quote)
 
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
@@ -648,12 +660,10 @@ const closeModal = () => {
 };
 const addItem = () => {
     if (preproject.quote) {
-        router.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id },
-            {
-                onError: () => {
-                    alert('SERVER ERROR')
-                },
-                onSuccess: () => {
+        axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
+            .then(response=>{
+                if (response.status = 200){
+                    itemToAdd.value.id = response.data.id
                     showItemAddModal.value = true
                     setTimeout(() => {
                         showItemAddModal.value = false;
@@ -662,8 +672,8 @@ const addItem = () => {
                         ...itemToAdd.value
                     });
                 }
-            }
-        )
+            })
+            .catch(e=>console.log(e))        
     } else {
         form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
         itemToAdd.value = JSON.parse(JSON.stringify(itemInitialState))
@@ -685,7 +695,7 @@ const deleteAlreadyItem = (id, index) => {
             setTimeout(() => {
                 showItemRemoveModal.value = false;
             }, 1500);
-            form.employees.splice(index, 1);
+            form.items.splice(index, 1);
         }
     })
 }
@@ -712,50 +722,72 @@ const approve = () => {
 
 
 //products valorization
+const showProductAddModal = ref(false);
+const showProductRemoveModal = ref(false);
+
 const showProductModal = ref(false)
 const initalProductState = {
     purchase_product_id: '',
-    code: '',
-    name:'',
-    unit:'',
+    purchase_product: {
+        code: '',
+        name: '',
+        unit: '',
+    },
     quantity: '',
     unitary_price: '',
     profit_margin: '',
 }
 
-const productToAdd = ref({...initalProductState})
+const productToAdd = ref(JSON.parse(JSON.stringify(initalProductState)))
 
 const handleAutocomplete = (e) => {
     const code = e.target.value;
     let findedProduct = products.find(item => item.code === code)
     if (findedProduct) {
         productToAdd.value.purchase_product_id = findedProduct.id
-        productToAdd.value.name = findedProduct.name
-        productToAdd.value.code = findedProduct.code
-        productToAdd.value.unit = findedProduct.unit
+        productToAdd.value.purchase_product.name = findedProduct.name
+        productToAdd.value.purchase_product.code = findedProduct.code
+        productToAdd.value.purchase_product.unit = findedProduct.unit
     } else {
         productToAdd.value.purchase_product_id = ''
-        productToAdd.value.name = ''
-        productToAdd.value.unit = ''
-        productToAdd.value.code = ''
+        productToAdd.value.purchase_product.name = ''
+        productToAdd.value.purchase_product.unit = ''
+        productToAdd.value.purchase_product.code = ''
     }
 }
 
-function openProductModal () {
+function openProductModal() {
     showProductModal.value = true
 }
 
-function closeProductModal () {
+function closeProductModal() {
     showProductModal.value = false
-    productToAdd.value = {...initalProductState}
+    productToAdd.value = { ...initalProductState }
 }
 
 
 function addProduct() {
     if (productToAdd.value.purchase_product_id && form.products.find(item => item.purchase_product_id == productToAdd.value.purchase_product_id) == undefined) {
-        form.products.push({...productToAdd.value})
-        closeProductModal()
-        productToAdd.value = {...initalProductState}
+        if (preproject.quote) {
+            axios.post(route('preprojects.quote.product.store'), { ...productToAdd.value, preproject_quote_id: preproject.quote.id })
+                .then(response => {
+                    if (response.status === 200) {
+                        showProductAddModal.value = true
+                        productToAdd.value.id = response.data.id
+                        form.products.push(JSON.parse(JSON.stringify(productToAdd.value)))
+                        setTimeout(() => {
+                            showProductAddModal.value = false;
+                        }, 1500);
+                        productToAdd.value = JSON.parse(JSON.stringify(initalProductState))
+                        closeProductModal()
+                    }
+                })
+                .catch(e => console.log(e))
+        } else {
+            form.products.push(JSON.parse(JSON.stringify(productToAdd.value)))
+            closeProductModal()
+            productToAdd.value = JSON.parse(JSON.stringify(initalProductState))
+        }
     } else {
         showErroModal.value = true
         setTimeout(() => {
@@ -765,8 +797,20 @@ function addProduct() {
 }
 
 
-function deleteProduct (index) {
-    form.products.splice(index, 1)
+function deleteProduct(index, id) {
+    if (id) {
+        router.delete(route('preprojects.quote.product.delete', { quote_product_id: id }), {
+            onSuccess: () => {
+                showProductRemoveModal.value = true
+                setTimeout(() => {
+                    showProductRemoveModal.value = false
+                }, 1000)
+                form.products.splice(index, 1)
+            }
+        })
+    } else {
+        form.products.splice(index, 1)
+    }
 }
 
 
