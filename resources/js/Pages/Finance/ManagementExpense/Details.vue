@@ -61,7 +61,7 @@
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha límite de compra:</p>
-                    <p class="text-lg text-gray-900">{{ formattedDate(expense.purchasing_requests.due_date) }}</p>
+                    <p class="text-lg text-gray-900">{{ expense.purchasing_requests.due_date ? formattedDate(expense.purchasing_requests.due_date) : 'No hay fecha definida' }}</p>
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">IGV:</p>

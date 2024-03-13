@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Proyectos" />
+    <Head title="AnteProyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
             Anteproyectos
