@@ -1,17 +1,12 @@
 <template>
-
     <Head title="Gestion de Gastos Cuadrilla" />
-    <AuthenticatedLayout :redirectRoute="expense.quote_deadline ? 'managementexpense.index' : { route:'projectmanagement.purchases_quote.index', params: { project_id: expense.id }}">
+    <AuthenticatedLayout :redirectRoute="{ route:'preprojects.purchase_quote', params: { id: expense.id }}">
         <template #header>
             {{ expense.code }}
         </template>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
             <div class="col-span-1 min-w-full rounded-lg shadow bg-white p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div v-if="expense.purchasing_requests.project" class="mb-4">
-                    <p class="text-sm text-gray-700 font-medium">Proyecto:</p>
-                    <p class="text-lg text-gray-900">{{ expense.purchasing_requests.project?.code }}</p>
-                </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Proveedor:</p>
                     <p class="text-lg text-gray-900">{{ expense.provider.company_name }}</p>
@@ -25,10 +20,10 @@
                     <p class="text-lg text-gray-900">{{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
         (expense.total_amount).toFixed(2) }}</p>
                 </div>
-                <div v-if="expense.quote_deadline" class="mb-4">
+                <!-- <div v-if="expense.quote_deadline" class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha Límite de Aprobación:</p>
                     <p class="text-lg text-gray-900">{{ formattedDate(expense.quote_deadline) }}</p>
-                </div>
+                </div> -->
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Cotización/PDF:</p>
                     <button @click="openPreviewDocumentModal(expense.id)"
@@ -61,7 +56,7 @@
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha límite de compra:</p>
-                    <p class="text-lg text-gray-900">{{ expense.purchasing_requests.due_date ? formattedDate(expense.purchasing_requests.due_date) : 'No hay fecha definida' }}</p>
+                    <p class="text-lg text-gray-900">{{ formattedDate(expense.purchasing_requests.due_date) }}</p>
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">IGV:</p>

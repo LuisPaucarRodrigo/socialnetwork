@@ -17,10 +17,8 @@ class ProviderController extends Controller
 {
     public function index()
     {
-        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
         return Inertia::render('ShoppingArea/ProviderManagement/Provider',
             ['providers' => Provider::paginate(),
-             'admin' => $hasAllPermissions
             ]
         );
     }

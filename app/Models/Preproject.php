@@ -20,7 +20,8 @@ class Preproject extends Model
     protected $appends = [
         'has_photo_report',
         'is_appropriate',
-        'has_quote'
+        'has_quote',
+        'state'
     ];
 
 
@@ -32,6 +33,14 @@ class Preproject extends Model
         return $this->HasMany(Imagespreproject::class);
     }
 
+    public function getStateAttribute() {
+        foreach ($this->purchasing_request as $purchasingRequest) {
+            if (is_null($purchasingRequest->project_id)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public function getHasPhotoReportAttribute() {
         return true;
@@ -55,5 +64,10 @@ class Preproject extends Model
 
      public function contacts() {
         return $this->belongsToMany(Customers_contact::class,'preprojects_contacts','preproject_id', 'customer_contact_id');
+     }
+
+     public function purchasing_request()
+     {
+         return $this->hasMany(Purchasing_request::class);
      }
 }

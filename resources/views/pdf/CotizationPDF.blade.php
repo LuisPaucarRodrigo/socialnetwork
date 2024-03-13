@@ -71,7 +71,44 @@
     <table class="table mt-3">
         <thead>
           <tr>
-            <th class="td-custom"  scope="col" colspan="7" style="text-align: center; background: #2e75b5; font-weight: normal;">Valorización</th>
+            <th class="td-custom"  scope="col" colspan="6" style="text-align: center; background: #2e75b5; font-weight: normal;">Productos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-custom" style="width: 60px; text-align: center; background: #2e75b5; font-weight: normal;">Partida</td>
+            <td class="td-custom" style="width: 341px; text-align: center; background: #2e75b5; font-weight: normal;">Descripción</td>
+            <td class="td-custom" style="width: 55px; text-align: center; background: #2e75b5; font-weight: normal;">Unidad</td>
+            <td class="td-custom" style="width: 67px; text-align: center; background: #2e75b5; font-weight: normal;">Cantidad</td>
+            <td class="td-custom" style="width: 73px; text-align: center; background: #2e75b5; font-weight: normal;">Valor Unitario</td>
+            <td class="td-custom" style="width: 80px; text-align: center; background: #2e75b5; font-weight: normal;">Valor total</td>
+          </tr>
+          @php
+            $subtotalProd = 0; // Inicializa una variable para almacenar la suma
+            @endphp 
+          @foreach ($preproject->quote->products as $index => $item)
+          <tr>
+
+            <td class="td-custom" style="text-align: right">1.0{{ $index+1 }}</td>
+            <td class="td-custom" >{{ $item->purchase_product->name }}</td>
+            <td class="td-custom" style="text-align: center">{{ $item->purchase_product->unit }}</td>
+            <td class="td-custom" style="text-align: center">{{ $item->quantity }}</td>
+            <td class="td-custom" style="text-align: right">S/. {{ number_format($item->unitary_price*(1+ $item->profit_margin/100), 2) }}</td>
+            <td class="td-custom" style="text-align: right">S/. {{ number_format($item->quantity * $item->unitary_price*(1+ $item->profit_margin/100), 2) }}</td>
+          </tr>
+          @php
+            $subtotalProd += $item->quantity * $item->unitary_price*(1+ $item->profit_margin/100); 
+          @endphp
+          @endforeach
+          @php
+          @endphp
+        </tbody>
+      </table>
+
+    <table class="table mt-3">
+        <thead>
+          <tr>
+            <th class="td-custom"  scope="col" colspan="7" style="text-align: center; background: #2e75b5; font-weight: normal;">Servicios</th>
           </tr>
         </thead>
         <tbody>
@@ -103,8 +140,6 @@
           @endphp
           @endforeach
           @php
-            $igv = $subtotal * 18/100;
-            $total = $subtotal + $igv;
           @endphp
         </tbody>
       </table>
@@ -120,15 +155,19 @@
                     <tbody>
                         <tr>
                             <td class="td-custom"  style="width: 146px; font-size: 10.5px; text-align: right; background: #bcd6ed">SUB TOTAL ACUMULADO</td>
-                            <td class="td-custom" style="width: 83px; font-size: 10.5px; text-align: right">S/. {{ number_format($subtotal, 2) }}</td>
+                            <td class="td-custom" style="width: 83px; font-size: 10.5px; text-align: right">
+                              S/. {{ number_format($subtotal + $subtotalProd, 2) }}
+                            </td>
                         </tr>
                         <tr>
                             <td class="td-custom" style="font-size: 10.5px; text-align: right; background: #bcd6ed">IGV 18%</td>
-                            <td class="td-custom" style="font-size: 10.5px; text-align: right">S/. {{ number_format($igv, 2) }}</td>
+                            <td class="td-custom" style="font-size: 10.5px; text-align: right">
+                              S/. {{ number_format(($subtotal + $subtotalProd) * .18, 2) }}
+                            </td>
                         </tr>
                         <tr>
                             <td class="td-custom" style="font-size: 10.5px; text-align: right; background: #bcd6ed">TOTAL</td>
-                            <td class="td-custom" style="font-size: 10.5px; text-align: right">S/. {{ number_format($total, 2) }}</td>
+                            <td class="td-custom" style="font-size: 10.5px; text-align: right">S/. {{ number_format(($subtotal + $subtotalProd) * 1.18, 2) }}</td>
                         </tr>
                     </tbody>
                 </table>

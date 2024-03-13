@@ -14,12 +14,9 @@ class ResourceManagementController extends Controller
 {
     public function index()
     {
-        $hasAllPermissions = GlobalFunctionsServiceProvider::hasAllPermissions();
-
         $resources = Resource::paginate();
         return Inertia::render('Inventory/ResourceManagement/index', [
             'resources' => $resources,
-            'admin' => $hasAllPermissions
         ]);
     }
 
