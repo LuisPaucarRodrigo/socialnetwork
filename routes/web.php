@@ -84,7 +84,6 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     Route::delete('users/delete/{id}', [UserController::class, 'delete'])->name('users.destroy');
 
     Route::get('rols', [ManagementRolsController::class, 'rols_index'])->name('rols.index');
-    Route::get('rols/create', [ManagementRolsController::class, 'create'])->name('rols.create');
     Route::post('rols/store', [ManagementRolsController::class, 'store'])->name('rols.store');
     Route::delete('rols/delete/{id}', [ManagementRolsController::class, 'delete'])->name('rols.delete');
     Route::get('rols/details/{id}', [ManagementRolsController::class, 'details'])->name('rols.details');
@@ -263,39 +262,6 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/doTask2', [SectionController::class, 'doTask2'])->name('sections.task2');
 });
 
-Route::middleware('auth', 'permission:FinanceManager')->group(function () {
-
-    //Expense
-    Route::get('/finance/expensegang', [GangExpenseController::class, 'index'])->name('gangexpense.index');
-    Route::get('/finance/expensegang/create', [GangExpenseController::class, 'create'])->name('gangexpense.create');
-    Route::post('/finance/expensegang/store', [GangExpenseController::class, 'store'])->name('gangexpense.store');
-    Route::get('/finance/expensegang/{id}/edit', [GangExpenseController::class, 'edit'])->name('gangexpense.edit');
-    Route::post('/finance/expensegang/search', [GangExpenseController::class, 'search'])->name('gangexpense.search');
-
-    Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
-    Route::get('/finance/expencemanagement/details/{purchase_quote}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
-
-    Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');
-    Route::get('/finance/expencemanagement/generate_payment/{id}', [ExpenseManagementController::class, 'generate_payment'])->name('managementexpense.payment');
-    Route::get('/finance/purchase_quotes/doTask', [ExpenseManagementController::class, 'doTask'])->name('finance.task');
-    //Budget
-    Route::get('/budgetUpdates/{project}', [BudgetUpdateController::class, 'index'])->name('budgetupdates.index');
-    Route::get('/selectProject', [BudgetUpdateController::class, 'selectProject'])->name('selectproject.index');
-    Route::get('/budgetUpdates/{project}/{budgetupdate}', [BudgetUpdateController::class, 'show'])->name('budgetupdates.show');
-    Route::get('/initialBudget/{project}', [BudgetUpdateController::class, 'initial'])->name('initialbudget.index');
-    Route::post('/initialBudget/{project}/createUpdate', [BudgetUpdateController::class, 'create'])->name('budgetupdates.create');
-    
-
-
-
-
-    Route::get('/finance/desposits', [DepositController::class,'deposits_index'])->name('deposits.index');
-    Route::post('/finance/desposits/{deposit_id?}', [DepositController::class,'deposits_store'])->name('deposits.store');
-    //
-    Route::post('/finance/desposits/generateSummary/post', [DepositController::class,'generateSummary'])->name('deposits.generateSummary');
-
-});
-
 Route::middleware('auth', 'permission:InventoryManager')->group(function () {
     
     //Resources
@@ -390,6 +356,16 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/preprojects/photoreport_show/{report_name}', [PreProjectController::class, 'showPR'])->name('preprojects.photoreport.show');
     Route::get('/preprojects/quote_pdf/{quote_id}', [PreProjectController::class, 'quote_pdf'])->name('preprojects.quote.pdf');
 
+    Route::get('/preprojects/request/{id}', [PreProjectController::class, 'request'])->name('preprojects.request.index');
+    Route::get('/preprojects/request/{id}/shopping', [PreProjectController::class, 'request_shopping_create'])->name('preprojects.request.create');
+    Route::post('/preprojects/request/store/shopping', [PreProjectController::class, 'request_shopping_store'])->name('preprojects.request.store');
+    Route::get('/preprojects/request/{id}/details', [PreProjectController::class, 'request_shopping_details'])->name('preprojects.request.details');
+    Route::get('/preprojects/request/{id}/edit', [PreProjectController::class, 'request_shopping_edit'])->name('preprojects.request.edit');
+    Route::put('/preprojects/request/{id}/edit', [PreProjectController::class, 'request_shopping_update'])->name('preprojects.request.update');
+    
+    Route::get('/preprojects/purchase_quote/{id}', [PreProjectController::class, 'purchase_quote'])->name('preprojects.purchase_quote');
+    Route::get('/preprojects/purchase_quote/{id}/details', [PreProjectController::class, 'purchase_quote_details'])->name('preprojects.purchase.quote.details');
+
 
     Route::get('/preprojects/{preproject_id}/providers_quotes', [PreProjectController::class, 'preproject_providersquotes_index'])->name('preprojects.providersquotes.index');
     Route::post('/preprojects/providers_quotes/store', [PreProjectController::class, 'preproject_providersquotes_store'])->name('preprojects.providersquotes.store');
@@ -412,6 +388,12 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
     Route::post('/projectmanagement/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
     Route::get('/projectmanagement/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
+
+    Route::post('/projectmanagement/purchases_request/update/due_date', [ProjectManagementController::class, 'project_purchases_request_update_due_date'])->name('projectmanagement.update_due_date');
+    Route::get('/projectmanagement/purchases_quote/{project_id}', [ProjectManagementController::class, 'project_purchases_quote_index'])->name('projectmanagement.purchases_quote.index');
+    Route::get('/projectmanagement/purchases_quote/details/{purchase_quote}', [ProjectManagementController::class, 'details'])->name('projectmanagement.purchases_quote.details');
+
+
 
     //additional_cost
     Route::get('/projectmanagement/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'index'])->name('projectmanagement.additionalCosts');
@@ -493,6 +475,39 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/payment', [PaymentController::class, 'index'])->name('payment.index');
     Route::post('/shopping_area/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
 
+
+});
+
+Route::middleware('auth', 'permission:FinanceManager')->group(function () {
+
+    //Expense
+    Route::get('/finance/expensegang', [GangExpenseController::class, 'index'])->name('gangexpense.index');
+    Route::get('/finance/expensegang/create', [GangExpenseController::class, 'create'])->name('gangexpense.create');
+    Route::post('/finance/expensegang/store', [GangExpenseController::class, 'store'])->name('gangexpense.store');
+    Route::get('/finance/expensegang/{id}/edit', [GangExpenseController::class, 'edit'])->name('gangexpense.edit');
+    Route::post('/finance/expensegang/search', [GangExpenseController::class, 'search'])->name('gangexpense.search');
+
+    Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
+    Route::get('/finance/expencemanagement/details/{purchase_quote}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
+
+    Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');
+    Route::get('/finance/expencemanagement/generate_payment/{id}', [ExpenseManagementController::class, 'generate_payment'])->name('managementexpense.payment');
+    Route::get('/finance/purchase_quotes/doTask', [ExpenseManagementController::class, 'doTask'])->name('finance.task');
+    //Budget
+    Route::get('/budgetUpdates/{project}', [BudgetUpdateController::class, 'index'])->name('budgetupdates.index');
+    Route::get('/selectProject', [BudgetUpdateController::class, 'selectProject'])->name('selectproject.index');
+    Route::get('/budgetUpdates/{project}/{budgetupdate}', [BudgetUpdateController::class, 'show'])->name('budgetupdates.show');
+    Route::get('/initialBudget/{project}', [BudgetUpdateController::class, 'initial'])->name('initialbudget.index');
+    Route::post('/initialBudget/{project}/createUpdate', [BudgetUpdateController::class, 'create'])->name('budgetupdates.create');
+    
+
+
+
+
+    Route::get('/finance/desposits', [DepositController::class,'deposits_index'])->name('deposits.index');
+    Route::post('/finance/desposits/{deposit_id?}', [DepositController::class,'deposits_store'])->name('deposits.store');
+    //
+    Route::post('/finance/desposits/generateSummary/post', [DepositController::class,'generateSummary'])->name('deposits.generateSummary');
 
 });
 

@@ -1,6 +1,6 @@
     <template>
     <Head title="Solicitudes" />
-    <AuthenticatedLayout :redirectRoute=" details.project ? { route: 'projectmanagement.purchases_request.index', params: { id: details.project.id } }:'purchasesrequest.index'">
+    <AuthenticatedLayout :redirectRoute=" { route: 'preprojects.request.index', params: { id: details.preproject.id } } ">
         <template #header>
             {{ details.code }}
         </template>
@@ -109,6 +109,8 @@ import { Head } from '@inertiajs/vue3';
 const props = defineProps({
     details: Object
 });
+
+console.log(props.details);
 
 function setBadgeColor(date, state) {
     const fechaString = date;
