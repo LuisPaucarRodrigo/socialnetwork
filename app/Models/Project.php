@@ -21,6 +21,10 @@ class  Project extends Model
 
     protected $appends = ['total_assigned_resources_costs',  'total_used_resources_costs','remaining_budget', 'total_assigned_product_costs','total_refund_product_costs_no_different_price', 'total_product_costs_with_liquidation','preproject_quote', 'total_resources_costs_with_liquidation', 'total_employee_costs','name','code', 'start_date', 'end_date',];
 
+    
+    public function preproject() {
+        return $this->belongsTo(Preproject::class, 'preproject_id');
+    }
     public function getPreprojectQuoteAttribute(){
         return $this->preproject->quote->total_amount;
     }
@@ -147,9 +151,7 @@ class  Project extends Model
     }
 
 
-    public function preproject() {
-        return $this->belongsTo(Preproject::class, 'preproject_id');
-    }
+    
     
 
     public function getTotalRefundProductCostsNoDifferentPriceAttribute(){

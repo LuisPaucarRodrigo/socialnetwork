@@ -43,20 +43,12 @@ class ProjectManagementController extends Controller
         });
 
         if ($project_id) {
-            $project = Project::with('employees')->find($project_id);
+            $project = Project::with('employees', 'preproject.quote')->find($project_id);
             return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
                 'employees' => Employee::select('id', 'name', 'lastname')->get(),
                 'project' => $project,
                 'preprojects' => $preprojects,
             ]);
-        }
-        if ($request->query('start_date')) {
-            $sd = $request->query('start_date');
-            $mes = date('m', strtotime($sd));
-            $anio = date('Y', strtotime($sd));
-            Project::whereMonth('start_date', $mes)
-                ->whereYear('start_date', $anio)
-                ->count();
         }
         return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
             'employees' => Employee::select('id', 'name', 'lastname')->get(),
