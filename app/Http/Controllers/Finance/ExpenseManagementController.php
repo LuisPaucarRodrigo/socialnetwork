@@ -16,7 +16,14 @@ class ExpenseManagementController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Finance/ManagementExpense/Expense', ['expenses' => Purchase_quote::with('provider', 'purchasing_requests.project')->paginate()]);
+        return Inertia::render('Finance/ManagementExpense/Expense', [
+            'expenses' => Purchase_quote::with('provider', 'purchasing_requests.project')
+                ->whereHas('purchasing_requests', function ($query) {
+                    $query->whereNotNull('due_date');
+                })
+                ->whereNotNull('quote_deadline')
+                ->paginate()
+        ]);
     }
 
     public function details(Purchase_quote $purchase_quote)

@@ -66,12 +66,15 @@ class ProjectManagementController extends Controller
 
     public function project_store(CreateProjectRequest $request)
     {
+
         $data = $request->validated();
         if ($request->id) {
             $project = Project::find($request->id);
             $project->update($data);
         } else {
             $project = Project::create($data);
+            Purchasing_request::where('preproject_id', $request->preproject_id)
+                ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
             foreach ($employees as $employee) {
                 $empId = $employee['employee'];
@@ -217,14 +220,14 @@ class ProjectManagementController extends Controller
                 'purchase_request' => $purchase_request
             ]);
         }
-
         return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest', [
             'project_id' => $project_id,
         ]);
     }
 
 
-    public function project_purchases_request_store(Request $request){
+    public function project_purchases_request_store(Request $request)
+    {
         $data = $request->validate([
             'title' => 'required',
             'product_description' => 'required',
@@ -234,9 +237,9 @@ class ProjectManagementController extends Controller
 
         $lastRequestId = Purchasing_request::latest()->first()->id ?? 0;
         $data['code'] = 'SC' . str_pad($lastRequestId + 1, 5, '0', STR_PAD_LEFT);
-    
+
         if ($request->id) {
-            if( Auth::user()->role_id !== 1) return response()->json(['error' => 'No tiene permisos'], 500);
+            if (Auth::user()->role_id !== 1) return response()->json(['error' => 'No tiene permisos'], 500);
             $purchase_request = Purchasing_request::find($request->id);
             $purchase_request->update($data);
         } else {
@@ -244,6 +247,24 @@ class ProjectManagementController extends Controller
         }
     }
 
+    public function project_purchases_quote_index($project_id)
+    {
+        return Inertia::render('ProjectArea/ProjectManagement/Expense', [
+            'expenses' => Purchase_quote::with('provider', 'purchasing_requests')
+                ->whereHas('purchasing_requests', function ($query) use ($project_id) {
+                    $query->whereNotNull('due_date')
+                        ->where('project_id', $project_id);
+                })
+                ->paginate()
+        ]);
+    }
+
+    public function details(Purchase_quote $purchase_quote)
+    {
+        $expense = $purchase_quote->load('purchasing_requests.project', 'purchase_order', 'provider', 'products');
+        return Inertia::render('Finance/ManagementExpense/Details', ['expense' => $expense]);
+    }
+    
     // public function project_expenses(Project $project_id){
     //     $last_update = BudgetUpdate::where('project_id', $project_id->id)
     //         ->with('project')
@@ -336,6 +357,17 @@ class ProjectManagementController extends Controller
         ]);
     }
 
+    public function project_purchases_request_update_due_date(Request $request)
+    {
+        $request->validate([
+            'due_date' => 'required|date',
+            'purchase_id' => 'required|numeric'
+        ]);
+        $update_due_date = Purchasing_request::find($request->purchase_id);
+        $update_due_date->update([
+            'due_date' => $request->due_date
+        ]);
+    }
 
     public function warehouse_products($warehouse_id)
     {

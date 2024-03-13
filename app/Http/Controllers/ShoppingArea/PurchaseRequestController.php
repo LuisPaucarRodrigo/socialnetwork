@@ -22,7 +22,7 @@ class PurchaseRequestController extends Controller
     public function index()
     {
         return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
-            'purchases' => $purchases = Purchasing_request::with('project')
+            'purchases' => Purchasing_request::with('project','preproject','purchase_quotes')
                 ->withCount([
                     'purchase_quotes',
                     'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
@@ -67,6 +67,7 @@ class PurchaseRequestController extends Controller
             'project' => Project::find($project_id),
         ]);
     }
+    
     public function update(UpdatePurchaseRequest $request, $id)
     {
         $validateData = $request->validated();
