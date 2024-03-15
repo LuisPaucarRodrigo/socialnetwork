@@ -207,7 +207,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
 
     //Formation Programas
     Route::get('/management_employees/formation_development/formation_programs', [FormationDevelopment::class, 'formation_programs_index'])->name('management.employees.formation_development.formation_programs');
-    Route::get('/management_employees/formation_development/formation_programs/create', [FormationDevelopment::class, 'formation_programs_create'])->name('management.employees.formation_development.formation_programs.create');
+    Route::get('/formation_development/formation_programs/create', [FormationDevelopment::class, 'formation_programs_create'])->name('management.employees.formation_development.formation_programs.create');
     Route::post('/management_employees/formation_development/formation_programs/store', [FormationDevelopment::class, 'formation_programs_store'])->name('management.employees.formation_development.formation_programs.store');
 
     //Trainings
@@ -265,6 +265,9 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     // Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
     Route::get('/doTask2', [SectionController::class, 'doTask2'])->name('sections.task2');
+
+    Route::get('/calendar_alarm', [SectionController::class, 'calendarAlarm'])->name('sections.calendar');
+
 });
 
 Route::middleware('auth', 'permission:InventoryManager')->group(function () {
