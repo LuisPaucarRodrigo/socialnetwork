@@ -1,6 +1,7 @@
 <template>
+
     <Head title="Information Additional" />
-    <AuthenticatedLayout :redirectRoute="'management.employees'"> 
+    <AuthenticatedLayout :redirectRoute="'management.employees'">
         <template #header>
             Perfil
         </template>
@@ -23,7 +24,8 @@
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="last_name" class="font-medium leading-6 text-gray-900">Apellido</InputLabel>
+                            <InputLabel for="last_name" class="font-medium leading-6 text-gray-900">Apellido
+                            </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.lastname" id="last_name" autocomplete="family-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -92,7 +94,8 @@
                         </div>
 
                         <div class="sm:col-span-4">
-                            <InputLabel for="email_company" class="font-medium leading-6 text-gray-900">Correo Electronico
+                            <InputLabel for="email_company" class="font-medium leading-6 text-gray-900">Correo
+                                Electronico
                                 de Empresa
                             </InputLabel>
                             <div class="mt-2">
@@ -116,7 +119,8 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone2" class="font-medium leading-6 text-gray-900">Telefono 2</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="phone2" maxlength="9"
+                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="phone2"
+                                    maxlength="9"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.phone2" />
                             </div>
@@ -125,17 +129,38 @@
                 </div>
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion de Contrato</h2>
-
-                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div class="mt-3 sm:col-span-3">
+                        <InputLabel for="discount_remuneration" class="sm:text-sm font-medium leading-6 text-gray-900">
+                            ¿Tiene Descuento sobre remuneración?
+                        </InputLabel>
+                        <div class="mt-2 class flex gap-4">
+                            <label class="flex gap-2 items-center">
+                                Sí
+                                <input type="radio" v-model="form.discount_remuneration" id="discount_remuneration"
+                                    :value="true"
+                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                            </label>
+                            <label class="flex gap-2 items-center">
+                                No
+                                <input type="radio" v-model="form.discount_remuneration" id="discount_remuneration"
+                                    :value="false"
+                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                            </label>
+                            <InputError :message="form.errors.discount_remuneration" />
+                        </div>
+                    </div>
+                    <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-2 sm:col-start-1">
-                            <InputLabel for="pension_system" class="font-medium leading-6 text-gray-900">Regimen Pensionario
+                            <InputLabel for="pension_system" class="font-medium leading-6 text-gray-900">Regimen
+                                Pensionario
                             </InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.pension_system" id="pension_system" autocomplete="pension-regime"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Sistema de Pension</option>
-                                    <option v-for="pension in pensions" :key="pension" :value="pension.id">{{ pension.type
-                                    }}</option>
+                                    <option v-for="pension in pensions" :key="pension" :value="pension.id">
+                                        {{ pension.type }}
+                                    </option>
                                 </select>
                                 <InputError :message="form.errors.pension_system" />
                             </div>
@@ -168,17 +193,19 @@
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Educacion</h2>
                     <div>
                         <InputLabel for="curriculum_vitae" class="font-medium leading-6 text-gray-900">Curriculum Vitae
-                            </InputLabel>
+                        </InputLabel>
                         <InputFile type="file" v-model="form.curriculum_vitae" id="curriculum_vitae"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         <InputError :message="form.errors.curriculum_vitae" />
                     </div>
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-3">
-                            <InputLabel for="education_level" class="font-medium leading-6 text-gray-900">Nivel Educativo
+                            <InputLabel for="education_level" class="font-medium leading-6 text-gray-900">Nivel
+                                Educativo
                             </InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.education_level" id="education_level" autocomplete="education-level"
+                                <select v-model="form.education_level" id="education_level"
+                                    autocomplete="education-level"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Nivel Educativo</option>
                                     <option>Universidad</option>
@@ -193,7 +220,8 @@
                             <InputLabel for="education_status" class="font-medium leading-6 text-gray-900">Estato de
                                 Educacion</InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.education_status" id="education_status" autocomplete="education-level"
+                                <select v-model="form.education_status" id="education_status"
+                                    autocomplete="education-level"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado Educativo</option>
                                     <option>Culminado</option>
@@ -222,7 +250,8 @@
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-3">
-                            <InputLabel for="street_address" class="font-medium leading-6 text-gray-900">Direccion Actual
+                            <InputLabel for="street_address" class="font-medium leading-6 text-gray-900">Direccion
+                                Actual
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.street_address" id="street_address"
@@ -241,9 +270,11 @@
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <InputLabel for="province" class="font-medium leading-6 text-gray-900">Provincia</InputLabel>
+                            <InputLabel for="province" class="font-medium leading-6 text-gray-900">Provincia
+                            </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.province" id="province" autocomplete="address-level1"
+                                <TextInput type="text" v-model="form.province" id="province"
+                                    autocomplete="address-level1"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.province" />
                             </div>
@@ -263,8 +294,9 @@
 
                 <div class="border-b border-gray-900/10 pb-12">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
-                        <h2 class="text-base font-semibold leading-7 text-gray-900">En caso de emergencia, autorizar a la
-                            organización a comunicarse</h2>
+                        <h2 class="text-base font-semibold leading-7 text-gray-900">
+                            En caso de emergencia, autorizar a la organización a comunicarse
+                        </h2>
                         <button type="button" @click="addEmergency"
                             class="font-medium text-indigo-600 hover:text-indigo-500 self-start sm:self-end">Agregar
                             contactos</button>
@@ -282,15 +314,18 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="emergency.emergency_name" id="emergency_name"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors['emergencyContacts.' + index + '.emergency_name']" />
+                                    <InputError
+                                        :message="form.errors['emergencyContacts.' + index + '.emergency_name']" />
                                 </div>
                             </div>
 
                             <div class="sm:col-span-2">
-                                <InputLabel for="emergency_lastname" class="font-medium leading-6 text-gray-900">Apellido
+                                <InputLabel for="emergency_lastname" class="font-medium leading-6 text-gray-900">
+                                    Apellido
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="emergency.emergency_lastname" id="emergency_lastname"
+                                    <TextInput type="text" v-model="emergency.emergency_lastname"
+                                        id="emergency_lastname"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError
                                         :message="form.errors['emergencyContacts.' + index + '.emergency_lastname']" />
@@ -298,7 +333,8 @@
                             </div>
 
                             <div class="sm:col-span-2">
-                                <InputLabel for="emergency_relations" class="font-medium leading-6 text-gray-900">Relacion:
+                                <InputLabel for="emergency_relations" class="font-medium leading-6 text-gray-900">
+                                    Relacion:
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input type="text" v-model="emergency.emergency_relations" id="emergency_relations"
@@ -315,7 +351,8 @@
                                     <TextInput type="text" v-model="emergency.emergency_phone" id="emergency_phone"
                                         maxlength="9"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors['emergencyContacts.' + index + '.emergency_phone']" />
+                                    <InputError
+                                        :message="form.errors['emergencyContacts.' + index + '.emergency_phone']" />
                                 </div>
                             </div>
                         </div>
@@ -324,7 +361,8 @@
 
                 <div class="border-b border-gray-900/10 pb-12">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
-                        <h2 class="text-base font-semibold leading-7 text-gray-900 mb-4 sm:mb-0">Información de familiares
+                        <h2 class="text-base font-semibold leading-7 text-gray-900 mb-4 sm:mb-0">Información de
+                            familiares
                             dependientes (hijos y/o padres)</h2>
                         <button type="button" @click="addDependent"
                             class="font-medium text-indigo-600 hover:text-indigo-500 self-start sm:self-end">Agregar
@@ -337,7 +375,8 @@
                         </div>
                         <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div class="sm:col-span-3">
-                                <InputLabel for="family_dni" class="font-medium leading-6 text-gray-900">Documento Nacional
+                                <InputLabel for="family_dni" class="font-medium leading-6 text-gray-900">Documento
+                                    Nacional
                                     de Identidad</InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="dependent.family_dni" id="family_dni" maxlength="8"
@@ -361,7 +400,8 @@
                                         <option>Inicial</option>
                                         <option>Otros</option>
                                     </select>
-                                    <InputError :message="form.errors['familyDependents.' + index + '.family_education']" />
+                                    <InputError
+                                        :message="form.errors['familyDependents.' + index + '.family_education']" />
                                 </div>
                             </div>
 
@@ -371,7 +411,8 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="dependent.family_relation" id="family_relation"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors['familyDependents.' + index + '.family_relation']" />
+                                    <InputError
+                                        :message="form.errors['familyDependents.' + index + '.family_relation']" />
                                 </div>
                             </div>
 
@@ -391,7 +432,8 @@
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="dependent.family_lastname" id="family_lastname"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors['familyDependents.' + index + '.family_lastname']" />
+                                    <InputError
+                                        :message="form.errors['familyDependents.' + index + '.family_lastname']" />
                                 </div>
                             </div>
                         </div>
@@ -432,7 +474,8 @@
                         </div>
 
                         <div class="sm:col-span-2 sm:col-start-1">
-                            <InputLabel for="height" class="font-medium leading-6 text-gray-900">Altura (cm)</InputLabel>
+                            <InputLabel for="height" class="font-medium leading-6 text-gray-900">Altura (cm)
+                            </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.height" id="height" autocomplete="height"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -454,7 +497,8 @@
                             <InputLabel for="shirt_size" class="font-medium leading-6 text-gray-900">Talla de Polo
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.shirt_size" id="shirt_size" autocomplete="shirt-size"
+                                <TextInput type="text" v-model="form.shirt_size" id="shirt_size"
+                                    autocomplete="shirt-size"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.shirt_size" />
                             </div>
@@ -464,14 +508,16 @@
                             <InputLabel for="pants_size" class="font-medium leading-6 text-gray-900">Talla de Pantalones
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.pants_size" id="pants_size" autocomplete="pants-size"
+                                <TextInput type="text" v-model="form.pants_size" id="pants_size"
+                                    autocomplete="pants-size"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.pants_size" />
                             </div>
                         </div>
 
                         <div class="col-span-full">
-                            <InputLabel for="medical_condition" class="font-medium leading-6 text-gray-900">¿Tiene alguna
+                            <InputLabel for="medical_condition" class="font-medium leading-6 text-gray-900">¿Tiene
+                                alguna
                                 condición médica? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.medical_condition" id="medical_condition"
@@ -481,7 +527,8 @@
                         </div>
 
                         <div class="col-span-full">
-                            <InputLabel for="allergies" class="font-medium leading-6 text-gray-900">¿Eres alérgico a algún
+                            <InputLabel for="allergies" class="font-medium leading-6 text-gray-900">¿Eres alérgico a
+                                algún
                                 medicamento? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.allergies" id="allergies"
@@ -511,7 +558,8 @@
                         </div>
 
                         <div class="col-span-full">
-                            <InputLabel for="vaccinations" class="font-medium leading-6 text-gray-900">¿Has recibido alguna
+                            <InputLabel for="vaccinations" class="font-medium leading-6 text-gray-900">¿Has recibido
+                                alguna
                                 vacuna? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.vaccinations" id="vaccinations"
@@ -527,7 +575,7 @@
             <div class="mt-6 flex items-center justify-end gap-x-6">
                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                    {{employees ? "Actualizar":"Crear"}}
+                    {{ employees ? "Actualizar" : "Crear" }}
                 </button>
             </div>
         </form>
@@ -569,6 +617,7 @@ const form = useForm({
     email_company: '',
     phone1: '',
     phone2: '',
+    discount_remuneration: '',
     pension_system: '',
     basic_salary: '',
     hire_date: '',
@@ -607,6 +656,7 @@ if (props.employees) {
     form.email_company = props.employees.email_company;
     form.phone1 = props.employees.phone1;
     form.phone2 = props.employees.phone2;
+    form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false ;
     form.pension_system = props.employees.contract.pension.id;
     form.basic_salary = props.employees.contract.basic_salary;
     form.hire_date = props.employees.contract.hire_date;

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Contract extends Model
 {
     use HasFactory;
-    protected $fillable=['basic_salary','state','days_taken','hire_date','fired_date','employee_id','pension_id'];
+    protected $fillable=['basic_salary','discount_remuneration','state','days_taken','hire_date','fired_date','employee_id','pension_id'];
 
     protected $appends = [
         'total_income',
@@ -97,12 +97,12 @@ class Contract extends Model
 
     public function getCommissionAttribute()
     {
-        return $this->pension->type == 'ONP' ? 0 : 100 * $this->pension->values;
+        return $this->pension->type == 'ONP' ? 0 : ($this->discount_remuneration == 1 ? 100 * $this->pension->values : 0);
     }
 
     public function getCommissionOnRaAttribute()
     {
-        return $this->pension->type == 'ONP' ? 0 : $this->total_income * $this->pension->values;
+        return $this->pension->type == 'ONP' ? 0 : ($this->discount_remuneration == 1 ? $this->total_income * $this->pension->values : 0);
     }
 
     public function getSegAttribute()
