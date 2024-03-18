@@ -9,21 +9,29 @@
       <!-- Primera columna -->
       <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-          <dt class="text-sm font-medium leading-6 text-gray-900">Sstema Pensionario</dt>
+          <dt class="text-sm font-medium leading-6 text-gray-900">Sistema Pensionario</dt>
           <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.contract.pension.type }}
           </dd>
         </div>
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-          <dt class="text-sm font-medium leading-6 text-gray-900">Fecha de Contratacion</dt>
-          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formattedDate(details.contract.hire_date) }}</dd>
+          <dt class="text-sm font-medium leading-6 text-gray-900">Salario</dt>
+          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">S/ {{
+            details.contract.basic_salary.toFixed(2) }}
+          </dd>
         </div>
       </div>
 
       <!-- Segunda columna -->
       <div class="sm:w-1/2 sm:pl-4">
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-          <dt class="text-sm font-medium leading-6 text-gray-900">Salario</dt>
-          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.contract.basic_salary }}</dd>
+          <dt class="text-sm font-medium leading-6 text-gray-900">Fecha de Contratacion</dt>
+          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+            formattedDate(details.contract.hire_date) }}</dd>
+        </div>
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium leading-6 text-gray-900">Descuento a Remuneracion</dt>
+          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+            {{ details.contract.discount_remuneration == 1 ? "Con Descuento" : "Sin Descuento" }}</dd>
         </div>
       </div>
     </div>
@@ -44,7 +52,8 @@
       <div class="sm:w-1/2 sm:pl-4">
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium leading-6 text-gray-900">Estado Educativo</dt>
-          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.education.education_status }}
+          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.education.education_status
+            }}
           </dd>
         </div>
       </div>
@@ -116,4 +125,3 @@ export default {
   },
 }
 </script>
-  
