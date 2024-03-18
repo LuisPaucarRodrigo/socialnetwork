@@ -73,4 +73,17 @@ class BudgetUpdateController extends Controller
             'projects' => Project::all()
         ]);
     }
+
+    public function define_initial_budget(Request $request, Project $project)
+    {
+        $request->validate([
+            'initial_budget' => 'required'
+        ]);
+
+        $project->update([
+            'initial_budget' => $request->initial_budget // Corregido el nombre del campo
+        ]);
+        return to_route('initialbudget.index', ['project' => $project->id]);
+    }
+
 }

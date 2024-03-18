@@ -5,11 +5,18 @@
             <div class="mt-3 ml-4">Información del Proyecto</div>
         </template>
         <div class="mt-4 ml-4">
-            <p v-if="props.project.initial_budget == null" class="text-xl font-semibold text-gray-700">No hay presupuesto
-                definido</p>
-            <p v-else class="text-xl font-semibold text-gray-700">
-                Presupuesto Inicial: S/. {{ props.project.initial_budget.toFixed(2) }}
-            </p>
+            <div v-if="props.project.initial_budget == null">
+              <p  class="text-xl font-semibold text-gray-700">No hay presupuesto
+                  definido</p>
+            </div>
+            <div v-else>
+              <p  class="text-xl font-semibold text-gray-700">
+                  Cotización de Anteproyecto: S/. {{ props.project.preproject_quote.toFixed(2) }}
+              </p>
+              <p  class="text-xl font-semibold text-gray-700">
+                  Presupuesto Inicial: S/. {{ props.project.initial_budget.toFixed(2) }}
+              </p>
+            </div>
             <br>
             <p v-if="props.budgetUpdate" class="text-xl font-semibold text-gray-700">Presupuesto Actual: S/. {{
                 props.budgetUpdate.new_budget.toFixed(2) }}</p>
@@ -17,9 +24,13 @@
         </div>
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-             <div class="flex justify-end px-5 py-3">
+             <div v-if="props.project.initial_budget > 0" class="flex justify-end px-5 py-3">
                 <button @click="openModal2" class="text-blue-600 hover:underline mr-4">Actualizar Presupuesto</button>
-            </div>
+             </div>
+
+             <div v-else class="flex justify-end px-5 py-3">
+                <button @click="defineInitialBudget" class="text-blue-600 hover:underline mr-4">Definir Presupuesto</button>
+             </div>
 
             <Modal :show="isModalOpen2">
                 <div class="p-6">
@@ -65,6 +76,24 @@
                     </form>
                 </div>
             </Modal>
+
+            <Modal :show="defineModal">
+                <div class="p-6">
+                    <h2 class="text-2xl font-semibold mb-4">Definir Presupuesto</h2>
+                    <!-- Formulario para definir el presupuesto -->
+                    <form @submit.prevent="submit3">
+                        <div class="mb-4">
+                            <label for="initial_budget" class="block text-sm font-medium text-gray-700">Presupuesto Inicial</label>
+                            <input type="number" step="0.01" id="initial_budget" name="initial_budget" v-model="form3.initial_budget" required class="mt-1 p-2 border rounded-md w-full">
+                        </div>
+                        <div class="flex justify-end">
+                            <SecondaryButton type="button" @click="closeDefine" class="text-gray-500 mr-2">Cancelar</SecondaryButton>
+                            <PrimaryButton type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Guardar</PrimaryButton>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
+
         </div>
         <div class="min-w-full overflow-x-auto rounded-lg shadow">
           <table class="w-full table-auto mt-5">
@@ -165,10 +194,23 @@ const form2 = useForm({
     approved_update_date: '',
 });
 
+const form3 = useForm({
+  initial_budget: 0,
+});
 
+const defineModal = ref(false);
 
 const openModal2 = () => {
     isModalOpen2.value = true;
+};
+
+const defineInitialBudget = () => {
+  defineModal.value = true;
+};
+
+const closeDefine = () => {
+  form3.reset();
+  defineModal.value = false;
 };
 
 const closeModal2 = () => {
@@ -186,6 +228,11 @@ const submit2 = () => {
     form2.user_id = 1;
     form2.post(route('budgetupdates.create', { project: props.project.id }, form2));
     closeModal2();
+};
+
+const submit3 = () => {
+    form3.put(route('initialbudget.define', { project: props.project.id }));
+    closeDefine();
 };
 
 watch(() => form2.difference, (newVal, oldVal) => {
