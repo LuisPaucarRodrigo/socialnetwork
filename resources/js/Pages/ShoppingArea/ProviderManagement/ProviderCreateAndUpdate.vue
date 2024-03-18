@@ -3,7 +3,7 @@
     <Head title="Crear Proveedor" />
     <AuthenticatedLayout :redirectRoute="'providersmanagement.index'">
         <template #header>
-            Proveedor
+            {{ providers ? 'Editar Proveedor' : 'Crear Proveedor'}}
         </template>
         <form @submit.prevent="submit">
             <div class="space-y-12">
@@ -145,7 +145,7 @@
         <Modal :show="showModalAdd">
             <form class="p-6" @submit.prevent="submitName">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Nueva {{ categoryAndSegment == false ? 'categoria' : 'segmento' }}
+                    Nuevo(a) {{ categoryAndSegment == false ? 'categoria' : 'segmento' }}
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
 
