@@ -14,7 +14,9 @@ use App\Models\Emergency;
 use App\Models\Employee;
 use App\Models\Family;
 use App\Models\Health;
+use App\Models\Schedule;
 use App\Models\Pension;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -42,13 +44,22 @@ class ManagementEmployees extends Controller
             $employee->cropped_image = url('/image/profile/' . $employee->cropped_image);
         });
 
-        $filePath = public_path('documents/schedule/EmployeesSchedule.xlsx');
-        $fileExists = File::exists($filePath);
+        $currentDate = Carbon::now();
+        $lastSchedule = Schedule::latest()->first();
+        $file = null;
+
+        if ($lastSchedule) {
+            $lastScheduleDate = Carbon::createFromFormat('Y-m-d', $lastSchedule->date);
+            if ($lastScheduleDate->month === $currentDate->month && $lastScheduleDate->year === $currentDate->year) {
+                $file = $lastSchedule;
+            }else{
+
+            }
+        }
 
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
             'employees' => $employees,
-            'fileExists' => $fileExists,
-            'filePath' => $filePath,
+            'file' => $file,
             'boolean' => boolval($reentry)
         ]);
     }

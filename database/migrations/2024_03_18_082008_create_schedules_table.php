@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->string('priority');
-            $table->text('description');
-            $table->string('status')->nullable();
-            $table->double('initial_budget', 8, 2)->default(0);
-            $table->foreignId('preproject_id')->constrained()->nullable()->onDelete('cascade');
+            $table->string('schedule_title');
+            $table->date('date');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('schedules');
     }
 };
