@@ -35,6 +35,7 @@ class CreateManagementEmployees extends FormRequest
             'email_company' => 'nullable|email|max:255|unique:' . Employee::class,
             'phone1' => 'required|numeric|digits:9|unique:' . Employee::class,
             'phone2' => 'nullable|numeric|digits:9|unique:' . Employee::class,
+            'discount_remuneration' => 'required|boolean',
             'pension_system' => 'required|numeric',
             'basic_salary' => 'required|numeric',
             'hire_date' => 'required|date',

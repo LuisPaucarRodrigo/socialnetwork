@@ -48,29 +48,11 @@
         </h2>
         <div class="space-y-8">
           <div v-if="fileExists">
-            <a href="http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx"
-              class="rounded-md bg-gray-200 px-6 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
+            <button @click="download" class="rounded-md bg-gray-200 px-6 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
               Descargar Archivo
-            </a>
+            </button>
             <div class="mt-4" style="max-height: 600px; overflow-y: auto;">
-              <table v-if="excelData" class="w-full whitespace-no-wrap overflow-auto border border-gray-200">
-                <thead>
-                  <tr class="border-b bg-gray-50 text-left text-sm font-semibold uppercase tracking-wide text-gray-500">
-                    <th v-for="header in excelData[0]" :key="header"
-                      class="border-b-2 border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider text-gray-600">
-                      {{ header }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(row, index) in excelData" :key="index" class="text-gray-700">
-                    <td v-for="cell in row" :key="cell" class="border-b border-gray-200 bg-white px-6 py-4 text-sm">
-                      {{ cell }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <p v-else class="mt-2">Cargando archivo...</p>
+              <iframe :src="documentUrl" width="100%" height="100%"></iframe>
             </div>
           </div>
           <div v-else>
@@ -90,6 +72,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import { ref } from 'vue'
 import Modal from '@/Components/Modal.vue';
 import * as XLSX from 'xlsx';
+import axios from 'axios';
 
 const props = defineProps({
   redirectRoute: [String, Object]
@@ -106,6 +89,8 @@ const getRoute = () => {
 const showModalSchedule = ref(false);
 const excelData = ref(null);
 const fileExists = ref(null);
+const documentUrl = ref(null);
+const documentId = ref(null);
 
 const closeScheduleModal = () => {
   showModalSchedule.value = false;
@@ -113,27 +98,26 @@ const closeScheduleModal = () => {
 
 const openScheduleModal = async () => {
   showModalSchedule.value = true;
+  const routeToShow = route('management.employees.schedule.latest');
   try {
-    // Realiza la solicitud solo cuando se abre el modal
-    const response = await axios.get('http://localhost:8000/documents/schedule/EmployeesSchedule.xlsx', {
-      responseType: 'blob'
-    });
-
-    const arrayBuffer = await response.data.arrayBuffer();
-
-    const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
-
-    const sheetName = workbook.SheetNames[0];
-
-    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
-
-    excelData.value = sheetData;
-    fileExists.value = true;
+    const response = await axios.get(routeToShow);
+    if (response.data.hasSchedule) {
+      fileExists.value = true;
+      documentUrl.value = route('management.employees.schedule.preview', { schedule: response.data.schedule.id });
+      documentId.value = response.data.schedule.id;
+    } else {
+      fileExists.value = false;
+      documentUrl.value = '';
+    }
   } catch (error) {
-    excelData.value = null;
+    console.error('Error al obtener el último horario:', error);
   }
 };
 
+function download() {
+  const backendDocumentUrl = route('management.employees.schedule.download', { schedule: documentId.value });
+  window.open(backendDocumentUrl, '_blank');
+};
 
 </script>
   
