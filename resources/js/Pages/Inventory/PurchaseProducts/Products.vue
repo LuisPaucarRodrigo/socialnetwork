@@ -53,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in props.products.data" :key="item.id" class="text-gray-700 border-b">
+                        <tr v-for="item in (props.search ? props.products : props.products.data)" :key="item.id" class="text-gray-700 border-b">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <h2 class="text-sm font-semibold">{{ item.name }}</h2>
                             </td>
@@ -85,7 +85,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="props.search === undefined" class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="products.links" />
             </div>
         </div>
@@ -158,7 +158,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import ConfirmDisableModal from '@/Components/ConfirmDisableModal.vue';
-import { ref, computed, watch } from 'vue';
+import { ref } from 'vue';
 import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -171,7 +171,8 @@ import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     products: Object,
-    auth: Object
+    auth: Object,
+    search: String
 });
 
 const form = useForm({
@@ -208,7 +209,7 @@ const openEditProductModal = (product) => {
 };
 
 const searchForm = useForm({
-    searchTerm: '',
+    searchTerm: props.search ?  props.search : '',
 })
 
 const closeEditModal = () => {
