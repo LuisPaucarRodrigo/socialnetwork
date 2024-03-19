@@ -1,4 +1,5 @@
 <template>
+
   <Head title="Gestion de Miembros" />
   <AuthenticatedLayout :redirectRoute="'sections.subSections'">
     <template #header>
@@ -14,6 +15,14 @@
           class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
           Gestionar Apartados
         </button>
+        <Link :href="route('sections.calendar')"
+          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+        </svg>
+        </Link>
         <div class="flex items-center ml-auto">
           <label for="selectElement" class="mr-2 text-sm text-indigo-600">Seleccione un apartado:</label>
           <select v-model="selectedSection" id="selectElement"
@@ -52,30 +61,33 @@
           </thead>
           <tbody>
             <tr v-for="subSection in filteredSubSections" :key="subSection.id" class="text-gray-700" :class="[
-                'text-gray-700',
-                {
-                    'border-l-8': true,
-                    'border-green-500': Date.parse(subSection.end_date) > Date.now() + (7 * 24 * 60 * 60 * 1000), // Si la fecha de finalización es 'Disponible', pinta el borde de verde
-                    'border-red-500': Date.parse(subSection.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000), // Si la fecha vence en 3 días o menos, pinta el borde de rojo
-                    'border-yellow-500': Date.parse(subSection.end_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(subSection.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) // Si la fecha está entre 3 y 7 días desde hoy, pinta el borde de amarillo
-                }
-            ]"
-            >
+    'text-gray-700',
+    {
+      'border-l-8': true,
+      'border-green-500': Date.parse(subSection.end_date) > Date.now() + (7 * 24 * 60 * 60 * 1000), // Si la fecha de finalización es 'Disponible', pinta el borde de verde
+      'border-red-500': Date.parse(subSection.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000), // Si la fecha vence en 3 días o menos, pinta el borde de rojo
+      'border-yellow-500': Date.parse(subSection.end_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(subSection.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) // Si la fecha está entre 3 y 7 días desde hoy, pinta el borde de amarillo
+    }
+  ]">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.description }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.start_date) }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.end_date) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.start_date) }}
+              </td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.end_date) }}
+              </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.section.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
-                  <Link  :href="route('sections.subSection', { subSection: subSection.id })"
+                  <Link :href="route('sections.subSection', { subSection: subSection.id })"
                     class="text-green-600 hover:underline mr-2">
                   <EyeIcon class="h-4 w-4 ml-1" />
                   </Link>
-                  <button v-if="hasPermission('UserManager')" @click="openEditSubSectionModal(subSection)" class="text-orange-200 hover:underline mr-2">
+                  <button v-if="hasPermission('UserManager')" @click="openEditSubSectionModal(subSection)"
+                    class="text-orange-200 hover:underline mr-2">
                     <PencilIcon class="h-4 w-4 ml-1" />
                   </button>
-                  <button v-if="hasPermission('UserManager')" @click="confirmDeleteSubSection(subSection.id)" class="text-red-600 hover:underline">
+                  <button v-if="hasPermission('UserManager')" @click="confirmDeleteSubSection(subSection.id)"
+                    class="text-red-600 hover:underline">
                     <TrashIcon class="h-4 w-4" />
                   </button>
                 </div>
@@ -114,7 +126,8 @@
               </div>
 
               <div>
-                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio</InputLabel>
+                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio
+                </InputLabel>
                 <div class="mt-2">
                   <input type="date" v-model="form.start_date" id="start_date"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -187,7 +200,8 @@
               </div>
 
               <div>
-                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio</InputLabel>
+                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio
+                </InputLabel>
                 <div class="mt-2">
                   <input type="date" v-model="form.start_date" id="start_date"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -233,13 +247,13 @@
       </div>
     </Modal>
 
-    <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Apartado" :deleteFunction="deleteSubSection"
-      @closeModal="closeModalDoc" />
+    <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Apartado"
+      :deleteFunction="deleteSubSection" @closeModal="closeModalDoc" />
     <ConfirmCreateModal :confirmingcreation="showModal" itemType="Apartado" />
     <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Apartado" />
   </AuthenticatedLayout>
 </template>
-    
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -252,17 +266,17 @@ import Modal from '@/Components/Modal.vue';
 import { ref, computed, watch } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
-import {formattedDate} from '@/utils/utils'
+import { formattedDate } from '@/utils/utils'
 
 const props = defineProps({
   sections: Object,
   subSections: Object,
-  userPermissions:Array
+  userPermissions: Array
 
 });
 
 const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
+  return props.userPermissions.includes(permission);
 }
 
 const form = useForm({
@@ -378,5 +392,3 @@ const filteredSubSections = computed(() => {
 });
 
 </script>
-  
-    
