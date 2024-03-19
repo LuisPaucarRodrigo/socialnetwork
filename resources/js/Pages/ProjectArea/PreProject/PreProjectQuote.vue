@@ -579,8 +579,6 @@ const { preproject, auth, products } = defineProps({
     auth: Object
 })
 
-console.log(preproject.quote)
-
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
     message: `La cotización para anteproyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
