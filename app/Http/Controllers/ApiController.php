@@ -14,11 +14,9 @@ class ApiController extends Controller
 {
     public function login(LoginMobileRequest $request)
     {
-        if (Auth::attempt($request->all())) {
-            $user = Auth::user(); // Obtener el usuario autenticado
-            // Generar un token con sanctum (sanctum ya viene preinstalado en Laravel)
-            $token = $user->createToken('Token Name')->plainTextToken;
-            // Devolver una respuesta con el token y datos del usuario
+        if (Auth::attempt($request->validated())) {
+            $user = Auth::user();
+            $token = $user->createToken('MobileAppToken')->plainTextToken;
             return response()->json([
                 'id' => $user->id,
                 'name' => $user->name,
@@ -27,8 +25,7 @@ class ApiController extends Controller
                 'token' => $token,
             ]);
         } else {
-            // Autenticación fallida
-            return response()->json(['message' => 'Credenciales incorrectas'], 401);
+            return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
     }
 
@@ -42,8 +39,6 @@ class ApiController extends Controller
     public function preprojectespecific($id)
     {
         $data = Preproject::find($id);
-        $data->facade = url('image/facades/' . $data->facade);
-
         return response()->json($data);
     }
 
@@ -69,10 +64,7 @@ class ApiController extends Controller
 
     public function logout(Request $request)
     {
-        $user = Auth::user();
-        $user->tokens()->delete(); // Elimina todos los tokens del usuario
-        // O si deseas revocar solo el token actual:
-        // $request->user()->currentAccessToken()->delete();
+        $request->user()->tokens()->delete();
 
         return response()->json(['message' => 'Sesión cerrada exitosamente']);
     }
