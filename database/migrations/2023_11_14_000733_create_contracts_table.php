@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('basic_salary');
             $table->string('state')->default('Active');
-            $table->integer('days_taken')->default(0);
+            $table->boolean('discount_remuneration')->default(true);
+            $table->integer('days_taken')->default(0);  
             $table->date('hire_date');
             $table->date('fired_date')->nullable();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
