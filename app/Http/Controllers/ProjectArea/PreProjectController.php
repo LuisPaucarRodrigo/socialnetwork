@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest;
+use App\Http\Requests\PreprojectRequest\PreprojectQuoteRequest;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
 use App\Models\Customer;
@@ -95,9 +96,7 @@ class PreProjectController extends Controller
     }
 
 
-    public function quote($preproject_id)
-    {
-
+    public function quote($preproject_id) {
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
             'preproject' => Preproject::with('quote.items', 'quote.products.purchase_product')->find($preproject_id),
             'products' => Purchase_product::all(),
@@ -106,21 +105,8 @@ class PreProjectController extends Controller
     }
 
 
-    public function quote_store(Request $request, $quote_id = null)
-    {
-        $data = $request->validate([
-            "name" => 'required',
-            "date" => 'required',
-            "supervisor" => 'required',
-            "boss" => 'required',
-            "rev" => 'required',
-            "deliverable_time" => 'required',
-            "validity_time" => 'required',
-            "observations" => 'required',
-            'preproject_id' => 'required',
-            "items" => 'required|array',
-            "products" => 'required|array'
-        ]);
+    public function quote_store(PreprojectQuoteRequest $request, $quote_id = null) {
+        $data = $request->validated();
         if ($quote_id) {
             $quote = PreProjectQuote::find($quote_id);
             $quote->update($data);
