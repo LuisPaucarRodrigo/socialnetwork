@@ -9,24 +9,28 @@
             <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Departamento</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.department }}
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.department
+                        }}
                     </dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Provincial</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.province }}
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.province
+                        }}
                     </dd>
                 </div>
             </div>
             <div class="sm:w-1/2 sm:pl-4">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Distrito</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.district }}
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.district
+                        }}
                     </dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Direccion</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.address.street_address
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+                        details.address.street_address
                     }}</dd>
                 </div>
             </div>
@@ -39,14 +43,14 @@
                         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Nombre Completo</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                                familyMember.family_name }}
+                        familyMember.family_name }}
                                 {{ familyMember.family_lastname }}</dd>
                         </div>
                         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Relacion</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                                familyMember.family_relation
-                            }}</dd>
+                        familyMember.family_relation
+                    }}</dd>
                         </div>
                     </div>
 
@@ -54,13 +58,13 @@
                         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Nivel Educativo</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                                familyMember.family_education
-                            }}</dd>
+                            familyMember.family_education
+                        }}</dd>
                         </div>
                         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">DNI</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                                familyMember.family_dni }}
+                            familyMember.family_dni }}
                             </dd>
                         </div>
                     </div>
@@ -75,13 +79,13 @@
                         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Nombre Completo</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                                contacts.emergency_name }} {{ contacts.emergency_lastname }}
+                        contacts.emergency_name }} {{ contacts.emergency_lastname }}
                             </dd>
                         </div>
                         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Relacion</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-                                contacts.emergency_relations }}
+                        contacts.emergency_relations }}
                             </dd>
                         </div>
                     </div>
@@ -98,7 +102,7 @@
         </div>
     </div>
 </template>
-  
+
 <script>
 
 export default {
@@ -111,4 +115,3 @@ export default {
 }
 
 </script>
-  

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
+use App\Http\Controllers\HumanResource\ScheduleController;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\ProjectArea\CalendarController;
 use App\Http\Controllers\Finance\BudgetUpdateController;
@@ -185,6 +186,13 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
 
     
     //Schedule
+    Route::get('/management_employees/schedule/index', [ScheduleController::class, 'index'])->name('management.employees.schedule.index');
+    Route::post('/management_employees/schedule/post', [ScheduleController::class, 'upload'])->name('management.employees.schedule.post');
+    Route::get('/management_employees/schedule/preview/{schedule}', [ScheduleController::class, 'preview'])->name('management.employees.schedule.preview');
+    Route::get('/management_employees/schedule/latest', [ScheduleController::class, 'latest'])->name('management.employees.schedule.latest');
+    Route::get('/management_employees/schedule/download/{schedule}', [ScheduleController::class, 'download'])->name('management.employees.schedule.download');
+
+
     Route::post('/management_employees/addSchedule', [ManagementEmployees::class, 'uploadSchedule'])->name('management.employees.addSchedule');
     Route::post('/management_employees/updateSchedule', [ManagementEmployees::class, 'updateSchedule'])->name('management.employees.updateSchedule');
     //Nomina
@@ -207,7 +215,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
 
     //Formation Programas
     Route::get('/management_employees/formation_development/formation_programs', [FormationDevelopment::class, 'formation_programs_index'])->name('management.employees.formation_development.formation_programs');
-    Route::get('/management_employees/formation_development/formation_programs/create', [FormationDevelopment::class, 'formation_programs_create'])->name('management.employees.formation_development.formation_programs.create');
+    Route::get('/formation_development/formation_programs/create', [FormationDevelopment::class, 'formation_programs_create'])->name('management.employees.formation_development.formation_programs.create');
     Route::post('/management_employees/formation_development/formation_programs/store', [FormationDevelopment::class, 'formation_programs_store'])->name('management.employees.formation_development.formation_programs.store');
 
     //Trainings
@@ -265,6 +273,9 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     // Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
     Route::get('/doTask2', [SectionController::class, 'doTask2'])->name('sections.task2');
+
+    Route::get('/calendar_alarm', [SectionController::class, 'calendarAlarm'])->name('sections.calendar');
+
 });
 
 Route::middleware('auth', 'permission:InventoryManager')->group(function () {
