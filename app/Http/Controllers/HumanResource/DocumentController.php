@@ -69,15 +69,26 @@ class DocumentController extends Controller
 
     //Documents 
 
-    public function index() {
-        
-        $documents = Document::with('section')->paginate();
+    public function index(Request $request) {
+
+        $documents = Document::with('section');
+        $searchTerm = strtolower($request->query('searchTerm'));
+        if ($searchTerm !== '') {
+            $documents = $documents->where(function ($query) use ($searchTerm) {
+                $query->where('title', 'like', '%' . $searchTerm . '%')->get();
+            });
+        }else {
+            $documents = $documents->get();
+        }
+
+
         $sections = DocumentSection::all();
         $subdivisions = Subdivision::all();
         return Inertia::render('HumanResource/Documents/Document', [
             'documents' => $documents,
             'sections' => $sections,
             'subdivisions' => $subdivisions,
+            'search' => $searchTerm,
         ]);
     }
 
