@@ -14,14 +14,30 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SpreadsheetsController extends Controller
 {
-    public function index($reentry = false)
+    public function index(Request $request, $reentry = false)
     {
         if ($reentry == false) {
-            $spreadsheet = Contract::with('pension','employee')->where('state', 'Active')->paginate();
+            $spreadsheet = Contract::with('pension', 'employee')->where('state', 'Active');
         } else {
-            $spreadsheet = Contract::with('pension','employee')->where('state', 'Inactive')->paginate();
-
+            $spreadsheet = Contract::with('pension', 'employee')->where('state', 'Inactive');
         }
+        $searchTerm = strtolower($request->query('searchTerm'));
+        if ($searchTerm !== '') {
+            $spreadsheet = $spreadsheet->where(function ($query) use ($searchTerm) {
+                $query->whereHas('pension', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('type', 'like', '%' . $searchTerm . '%');
+                })
+                    ->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
+                        $subQuery->where('name', 'like', '%' . $searchTerm . '%')
+                            ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
+                    });
+            })->get();
+        } else {
+            $spreadsheet = $spreadsheet->paginate();
+        }
+
+
+
         // $spreadsheet = [];
         // foreach ($spreadsheet as $employee) {
         //     $state = $employee->contract->state;
@@ -47,7 +63,7 @@ class SpreadsheetsController extends Controller
         //     $health = $total_income * 0.09;
         //     $life_ley = 0;
         //     $total_contribution = $health + $life_ley;
-                
+
         //     $spreadsheet[] = [
         //         'state' => $state,
         //         'dni' => $employee->dni,
@@ -110,7 +126,12 @@ class SpreadsheetsController extends Controller
 
         // return Inertia::render('HumanResource/Payroll/Spreadsheets', ['spreadsheets' => $spreadsheet, 'boolean' => boolval($reentry), 'total' => $total,]);
         // $spreadsheet = Employee::with('contract', 'pension')->get();
-        return Inertia::render('HumanResource/Payroll/Spreadsheets', ['spreadsheets' => $spreadsheet,'boolean' => boolval($reentry), 'total' => $total ]);
+        return Inertia::render('HumanResource/Payroll/Spreadsheets', [
+            'spreadsheets' => $spreadsheet,
+            'search' => $searchTerm,
+            'boolean' => boolval($reentry),
+            'total' => $total
+        ]);
     }
 
     public function edit()

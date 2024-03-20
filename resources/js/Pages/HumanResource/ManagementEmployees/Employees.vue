@@ -7,68 +7,73 @@
         </template>
 
         <div class="min-w-full rounded-lg shadow">
-            <div class="mt-6 flex items-center justify-between gap-x-6">
-                <div class="hidden sm:flex sm:items-center sm:space-x-4">
-                    <button @click="add_information" type="button"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                        + Agregar
-                    </button>
+            <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
+                <div class="flex items-center justify-between gap-x-6 w-full">
+                    <div class="hidden sm:flex sm:items-center sm:space-x-4">
+                        <button @click="add_information" type="button"
+                            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                            + Agregar
+                        </button>
 
-                    <button @click="openScheduleModal" type="button"
-                        class="mx-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                        Horario
-                    </button>
+                        <Link :href="route('management.employees.schedule.index')"
+                            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        Horarios
+                        </Link>
+                    </div>
 
-                    <Link :href="route('management.employees.schedule.index')"
+                    <!-- Dropdown para pantallas pequeñas -->
+                    <div class="sm:hidden">
+                        <dropdown align='left'>
+                            <template #trigger>
+                                <button @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div> <!-- Alineación a la derecha -->
+                                    <div class="dropdown">
+                                        <div class="dropdown-menu">
+                                            <button @click="add_information"
+                                                class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                                Agregar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <dropdown-link :href="route('management.employees.schedule.index')">
+                                        Horarios
+                                    </dropdown-link>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
+                    <button @click="reentry" type="button"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                    Historial de Horarios
-                    </Link>
+                        {{ reentrystate == false ? "Inactivos" : "Activos" }}
+                    </button>
+                </div>
+                <div class="flex items-center mt-4 sm:mt-0">
+                    <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
+                        <input type="text" placeholder="Buscar..."
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            v-model="searchForm.searchTerm" />
+                        <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
+                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </form>
                 </div>
 
-                <!-- Dropdown para pantallas pequeñas -->
-                <div class="sm:hidden">
-                    <dropdown align='left'>
-                        <template #trigger>
-                            <button @click="dropdownOpen = !dropdownOpen"
-                                class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </button>
-                        </template>
-
-                        <template #content class="origin-left">
-                            <div> <!-- Alineación a la derecha -->
-                                <div class="dropdown">
-                                    <div class="dropdown-menu">
-                                        <button @click="add_information"
-                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Agregar
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="dropdown">
-                                    <div class="dropdown-menu">
-                                        <button @click="openScheduleModal"
-                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Horario
-                                        </button>
-                                    </div>
-                                </div>
-                                <dropdown-link :href="route('management.employees.schedule.index')">
-                                    Historial de Horarios
-                                </dropdown-link>
-                            </div>
-                        </template>
-                    </dropdown>
-                </div>
-
-                <button @click="reentry" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                    {{ reentrystate == false ? "Inactivos" : "Activos" }}
-                </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full whitespace-no-wrap">
@@ -104,7 +109,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="employee in employees.data" :key="employee.id" class="text-gray-700">
+                        <tr v-for="employee in (props.search === undefined ? employees.data : employees)"
+                            :key="employee.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                             </td>
@@ -121,7 +127,9 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ employee.phone1 }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.contract.hire_date }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ formattedDate(employee.contract.hire_date) }}
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
@@ -174,7 +182,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="props.search === undefined"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="employees.links" />
             </div>
         </div>
@@ -245,57 +254,6 @@
                 </form>
             </div>
         </Modal>
-
-        <Modal :show="showModalSchedule">
-            <div class="p-4 sm:p-8 md:p-12 lg:p-16">
-                <h2 class="text-lg md:text-xl lg:text-2xl font-medium leading-7 text-gray-900 mb-4">
-                    {{ props.file ? 'Actualizar Horario' : 'Agregar Horario' }}
-                </h2>
-                <div v-if="props.file" class="mb-4 sm:mb-8">
-                    <div class="flex items-center p-2 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
-                        role="alert">
-                        <svg class="flex-shrink-0 w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                        </svg>
-                        <span class="sr-only">Info</span>
-                        <div>
-                            <span class="font-small">Al actualizar el horario, cambiará el que está en curso.</span>
-                        </div>
-                    </div>
-                </div>
-                <form @submit.prevent="submitSchedule">
-                    <div class="space-y-4 sm:space-y-6 lg:space-y-8">
-                        <div class="border-b border-gray-900/10 pb-4 sm:pb-6 lg:pb-8">
-                            <div>
-                                <div class="mb-2">
-                                    <InputFile type="file" v-model="formSchedule.document" id="documentFile"
-                                        accept=".pdf"
-                                        class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.document" />
-                                </div>
-                            </div>
-                        </div>
-                        <div v-if="props.file" class="mb-4 sm:mb-8">
-                            <div class="aspect-w-16 aspect-h-9">
-                                <iframe :src="getDocumentUrl()" width="100%" height="100%"></iframe>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-end gap-x-4 sm:gap-x-6 lg:gap-x-8">
-                            <SecondaryButton @click="closeScheduleModal">Cancelar</SecondaryButton>
-                            <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-
-
-
         <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado"
             :deleteText="deleteButtonText" :deleteFunction="deleteEmployee" @closeModal="closeModal" />
         <ConfirmCreateModal :confirmingcreation="createSchedule" itemType="Horario" />
@@ -311,7 +269,6 @@ import Pagination from '@/Components/Pagination.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import InputFile from '@/Components/InputFile.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
@@ -319,6 +276,7 @@ import { ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import { formattedDate } from '@/utils/utils';
 
 const confirmingUserDeletion = ref(false);
 const deleteButtonText = 'Eliminar';
@@ -333,9 +291,9 @@ const showModalReentry = ref(false);
 
 const props = defineProps({
     employees: Object,
-    file: Object,
     boolean: Boolean,
-    userPermissions: Array
+    userPermissions: Array,
+    search: String
 })
 
 const hasPermission = (permission) => {
@@ -364,9 +322,6 @@ const form1 = useForm({
     reentry_date: '',
 })
 
-const formSchedule = useForm({
-    document: null
-})
 
 const submit = () => {
     if (employeeReentry.value != null) {
@@ -388,29 +343,8 @@ const submit = () => {
     }
 }
 
-const submitSchedule = () => {
-    formSchedule.post(route('management.employees.schedule.post'), {
-        onSuccess: () => {
-            closeScheduleModal();
-            formSchedule.reset();
-            props.file ? updateSchedule.value = true : createSchedule.value = true
-            setTimeout(() => {
-                props.file ? updateSchedule.value = false : createSchedule.value = false
-                router.visit(route('management.employees'))
-            }, 2000);
-        },
-        onError: () => {
-            formSchedule.reset();
-        },
-        onFinish: () => {
-            formSchedule.reset();
-        }
-    });
-};
 
-function getDocumentUrl() {
-    return route('management.employees.schedule.preview', { schedule: props.file.id });
-}
+
 
 const confirmUserDeletion = (employeeId) => {
     employeeToDelete.value = employeeId;
@@ -443,13 +377,6 @@ const add_information = () => {
     router.get(route('management.employees.information'));
 };
 
-const openScheduleModal = () => {
-    showModalSchedule.value = true;
-};
-
-const closeScheduleModal = () => {
-    showModalSchedule.value = false;
-};
 
 const employee_fired_date = ($id) => {
     employeeReentry.value = $id
@@ -459,5 +386,29 @@ const employee_fired_date = ($id) => {
 const closeReentryModal = () => {
     showModalReentry.value = false;
 };
+
+
+const searchForm = useForm({
+    searchTerm: props.search ? props.search : '',
+})
+
+const search = () => {
+    if (searchForm.searchTerm == '') {
+        if (!props.boolean == true) {
+            reentrystate.value = false
+            router.get(route('management.employees'))
+        } else {
+            reentrystate.value = true
+            router.get(route('management.employees', {
+                reentry: reentrystate.value
+            }))
+        }
+    } else {
+        router.get(route('management.employees.search'), {
+            searchTerm: searchForm.searchTerm,
+            isActive: !props.boolean
+        });
+    }
+}
 
 </script>
