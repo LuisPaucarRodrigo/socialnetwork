@@ -5,10 +5,9 @@
         <template #header>
             Proyectos
         </template>
-        <div class="min-w-full p-3 rounded-lg shadow">
-
+        <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
-                <div class="flex gap-4">
+                <div class="hidden sm:flex sm:items-center sm:space-x-4">
                     <button @click="add_project" type="button"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                         + Agregar
@@ -18,6 +17,38 @@
                     Calendario
                     </Link>
                 </div>
+
+                <div class="sm:hidden">
+                    <dropdown align='left'>
+                        <template #trigger>
+                            <button @click="dropdownOpen = !dropdownOpen"
+                                class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </template>
+
+                        <template #content class="origin-left">
+                            <div> <!-- Alineación a la derecha -->
+                                <div class="dropdown">
+                                    <div class="dropdown-menu">
+                                        <button @click="add_project"
+                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                                <dropdown-link :href="route('projectscalendar.index')">
+                                    Calendario
+                                </dropdown-link>
+                            </div>
+                        </template>
+                    </dropdown>
+                </div>
+
                 <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
             </div>
             <br>
@@ -95,11 +126,13 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
 import Pagination from '@/Components/Pagination.vue'
+import Dropdown from '@/Components/Dropdown.vue';
+import axios from 'axios';
+import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import { ref } from 'vue';
-import axios from 'axios';
 
 const props = defineProps({
     projects: Object,
