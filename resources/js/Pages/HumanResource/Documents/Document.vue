@@ -15,7 +15,7 @@
           Gestionar Secciones
         </button>
         <div class="flex items-center ml-auto">
-          <label for="selectElement" class="mr-2 text-sm text-indigo-600">Seleccione una sección:</label>
+          <label for="selectElement" class="mr-2 text-sm text-indigo-600">Sección:</label>
           <select v-model="selectedSection" id="selectElement"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
             <option value="">Todos</option>
@@ -23,7 +23,7 @@
           </select>
 
           <!-- Nuevo filtro para subdivisiones -->
-          <label for="selectSubdivision" class="mr-2 text-sm text-indigo-600 ml-3">Seleccione una subdivisión:</label>
+          <label for="selectSubdivision" class="mr-2 text-sm text-indigo-600 ml-3">Subdivisión:</label>
           <select v-model="selectedSubdivision" id="selectSubdivision"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
             <option value="">Todas</option>

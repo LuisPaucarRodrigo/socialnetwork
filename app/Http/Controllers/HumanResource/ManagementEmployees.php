@@ -44,25 +44,47 @@ class ManagementEmployees extends Controller
             $employee->cropped_image = url('/image/profile/' . $employee->cropped_image);
         });
 
-        $currentDate = Carbon::now();
-        $lastSchedule = Schedule::latest()->first();
-        $file = null;
-
-        if ($lastSchedule) {
-            $lastScheduleDate = Carbon::createFromFormat('Y-m-d', $lastSchedule->date);
-            if ($lastScheduleDate->month === $currentDate->month && $lastScheduleDate->year === $currentDate->year) {
-                $file = $lastSchedule;
-            }else{
-
-            }
-        }
-
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
             'employees' => $employees,
-            'file' => $file,
             'boolean' => boolval($reentry)
         ]);
     }
+
+
+    public function search(Request $request) {
+        $searchTerm = strtolower($request->query('searchTerm'));
+        $isActive = $request->query('isActive');
+
+        if ($isActive) {
+            $employees = Employee::with('contract')
+                ->whereHas('contract', function ($query) {
+                    $query->where('state', 'Active');
+                });
+        } else {
+            $employees = Employee::with('contract')
+                ->whereHas('contract', function ($query) {
+                    $query->where('state', 'Inactive');
+                });        
+        }
+        $employees = $employees->where(function ($query) use ($searchTerm) {
+            $query->where('name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('phone1', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('dni', 'like', '%' . $searchTerm . '%');
+        })
+        ->get();
+        $employees->each(function ($employee) {
+            $employee->cropped_image = url('/image/profile/' . $employee->cropped_image);
+        });
+
+        return Inertia::render('HumanResource/ManagementEmployees/Employees', [
+            'employees' => $employees,
+            'search' => $searchTerm,
+            'boolean' => !boolval($isActive)
+        ]);
+    }
+
+
 
     public function index_info_additional()
     {

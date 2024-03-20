@@ -69,8 +69,8 @@ class DocumentController extends Controller
 
     //Documents 
 
-    public function index()
-    {
+    public function index() {
+        
         $documents = Document::with('section')->paginate();
         $sections = DocumentSection::all();
         $subdivisions = Subdivision::all();
