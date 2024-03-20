@@ -31,4 +31,38 @@ class PaymentController extends Controller
             'change_value' => $validatedata['price_dolar']
         ]) ;
     }
+
+    public function search($request)
+    {
+        $searchTerm = strtolower($request); // Convertir a minúsculas
+
+        $query = Purchase_quote::with('purchasing_requests', 'purchase_order', 'payment')
+                 ->has('payment');
+
+        $payment_by_request_code = $query->get()->filter(function ($purchase_quote) use ($searchTerm) {
+            return str_contains(strtolower($purchase_quote->purchasing_requests->code), $searchTerm);
+        });
+
+        $payment_by_code = $query->get()->filter(function ($purchase_quote) use ($searchTerm) {
+            // Verificar si algún pago tiene el código buscado
+            foreach ($purchase_quote->payment as $payment) {
+                if (str_contains(strtolower($payment->cod_payment), $searchTerm)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    
+
+        $payment_by_request_title = $query->get()->filter(function ($purchase_quote) use ($searchTerm) {
+            return str_contains(strtolower($purchase_quote->purchasing_requests->title), $searchTerm);
+        });
+
+        $combined_purchase_quotes = $payment_by_request_code->merge($payment_by_code)->merge($payment_by_request_title)->unique();
+
+        return Inertia::render('ShoppingArea/Payments/index', [
+            'payments' => $combined_purchase_quotes,
+            'search' => $request
+        ]);
+    }
 }

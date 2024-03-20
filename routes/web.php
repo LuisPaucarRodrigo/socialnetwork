@@ -457,6 +457,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
 Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest', [PurchaseRequestController::class, 'index'])->name('purchasesrequest.index');
+    Route::get('/shopping_area/purchasesrequest/search/{request}', [PurchaseRequestController::class, 'search'])->name('purchasesrequest.search');
     Route::get('/shopping_area/purchasesrequest/create_request/{project_id?}', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
     Route::post('/shopping_area/purchasesrequest/store_request', [PurchaseRequestController::class, 'store'])->name('purchasesrequest.store');
     Route::get('/shopping_area/purchasesrequest/edit/{id}/{project_id?}', [PurchaseRequestController::class, 'edit'])->name('purchasesrequest.edit');
@@ -469,6 +470,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest/doTask', [PurchaseRequestController::class, 'doTask'])->name('purchasesrequest.task');
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
+    Route::get('/shopping_area/purchaseorders/search/{request}/{history}', [PurchaseOrdersController::class, 'search'])->name('purchaseorders.search');
     Route::get('/shopping_area/purchaseorders_details/{purchase_order_id}', [PurchaseOrdersController::class, 'purchase_order_view'])->name('purchaseorders.details');
     Route::get('/shopping_area/purchaseorders/history', [PurchaseOrdersController::class, 'history'])->name('purchaseorders.history');
     Route::post('/shopping_area/purchaseorders/state', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
@@ -479,6 +481,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 
 
     Route::get('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');
+    Route::get('/shopping_area/providers/search/{request}', [ProviderController::class, 'search'])->name('providersmanagement.search');
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');
     Route::post('/shopping_area/providers/store', [ProviderController::class, 'store'])->name('providersmanagement.store');
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
@@ -489,6 +492,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::post('/shopping_area/providers/segment', [ProviderController::class, 'segment_provider'])->name('provider.segment');
 
     Route::get('/shopping_area/payment', [PaymentController::class, 'index'])->name('payment.index');
+    Route::get('/shopping_area/payment/search/{request}', [PaymentController::class, 'search'])->name('payment.search');
     Route::post('/shopping_area/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
 
 
