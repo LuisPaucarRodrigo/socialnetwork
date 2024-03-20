@@ -6,11 +6,12 @@
             Anteproyectos
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
-            <div class="flex gap-4">
+            <div class="mt-6 flex items-center justify-between gap-x-6">
                 <Link :href="route('preprojects.create')"
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 + Agregar
                 </Link>
+                <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -54,7 +55,8 @@
                         </div> -->
                         <div v-if="item.project == null">
                             <Link :href="route('preprojects.request.index', { id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de Compras
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de
+                            Compras
                             </Link>
                         </div>
                         <div v-else>
@@ -64,7 +66,8 @@
                         </div>
                         <div v-if="item.project == null">
                             <Link :href="route('preprojects.purchase_quote', { id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de Compras
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de
+                            Compras
                             </Link>
                         </div>
                         <!-- <div>
@@ -105,17 +108,16 @@ import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 
 
-const { preprojects, auth } = defineProps({
+const props = defineProps({
     preprojects: Object,
     auth: Object
 })
-
 
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
 const showModal = ref(false);
 const showModalEdit = ref(false);
-
+const preprojects = ref(props.preprojects)
 
 const delete_project = () => {
     const projectId = projectToDelete.value;
@@ -133,6 +135,13 @@ const closeModal = () => {
     confirmingProjectDeletion.value = false;
 };
 
-
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('preprojects.index'), { searchQuery: $search });
+        preprojects.value = response.data.preprojects;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 
 </script>
