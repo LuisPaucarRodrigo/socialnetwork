@@ -1,19 +1,24 @@
 <template>
+
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
-        <template #header >
+        <template #header>
             Proyectos
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
-            <div class="flex gap-4">
-                <button @click="add_project" type="button"
-                    class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
-                    + Agregar
-                </button>
-                <Link :href="route('projectscalendar.index')"
-                    class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
-                Calendario
-                </Link>
+
+            <div class="mt-6 flex items-center justify-between gap-x-6">
+                <div class="flex gap-4">
+                    <button @click="add_project" type="button"
+                        class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                        + Agregar
+                    </button>
+                    <Link :href="route('projectscalendar.index')"
+                        class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                    Calendario
+                    </Link>
+                </div>
+                <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -39,34 +44,36 @@
                     <p v-if="item.remaining_budget === 0" class="text-red-500 text-sm">
                         No se definió un presupuesto
                     </p>
-                    <div :class="`text-gray-500 text-sm ${item.remaining_budget === 0 ? 'opacity-50 pointer-events-none': ''}`">
+                    <div
+                        :class="`text-gray-500 text-sm ${item.remaining_budget === 0 ? 'opacity-50 pointer-events-none' : ''}`">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link v-if="item.initial_budget>=0" 
+                            <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectscalendar.show', { project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
                             </Link>
                             <span v-else class="text-gray-400">Calendario</span>
-                            <Link v-if="item.initial_budget>=0"
+                            <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.resources', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Activos
                             </Link>
                             <span v-else class="text-gray-400">Asignar Activos</span>
-                            <Link v-if="item.initial_budget>=0"
+                            <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
-                            <Link v-if="item.initial_budget>=0"
+                            <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.purchases_quote.index', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones</Link>
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones
+                            </Link>
                             <span v-else class="text-gray-400">Cotizaciones</span>
-                            <Link v-if="item.initial_budget>=0"
+                            <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Asignar Productos
                             </Link>
                             <span v-else class="text-gray-400">Asignar Productos</span>
-                            <Link v-if="item.initial_budget>=0"
+                            <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.liquidate', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Liquidaciones
@@ -92,13 +99,14 @@ import Pagination from '@/Components/Pagination.vue'
 import { Head, router, Link } from '@inertiajs/vue3';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
+import axios from 'axios';
 
-const { projects, auth } = defineProps({
+const props = defineProps({
     projects: Object,
     auth: Object
 })
 
-
+const projects = ref(props.projects);
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
 
@@ -122,5 +130,13 @@ const closeModal = () => {
     confirmingProjectDeletion.value = false;
 };
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('projectmanagement.index'), { searchQuery: $search });
+        projects.value = response.data.projects;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 
 </script>

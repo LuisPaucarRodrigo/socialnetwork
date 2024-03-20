@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'management.employees'">
         <template #header>
@@ -7,65 +8,63 @@
 
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
-            <div>
-            <div class="hidden sm:flex sm:items-center sm:space-x-4">
-                <button @click="add_information" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                    + Agregar
-                </button>
+                <div class="hidden sm:flex sm:items-center sm:space-x-4">
+                    <button @click="add_information" type="button"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        + Agregar
+                    </button>
 
-                <button @click="openScheduleModal" type="button"
-                    class="mx-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                    Horario
-                </button>
+                    <button @click="openScheduleModal" type="button"
+                        class="mx-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        Horario
+                    </button>
 
-                <Link :href="route('management.employees.schedule.index')"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    <Link :href="route('management.employees.schedule.index')"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     Historial de Horarios
-                </Link>
-            </div>
+                    </Link>
+                </div>
 
-            <!-- Dropdown para pantallas pequeñas -->
-            <div class="sm:hidden" >
-                <dropdown align='left'>
-                    <template #trigger>
-                        <button @click="dropdownOpen = !dropdownOpen"
-                            class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                            <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    </template>
+                <!-- Dropdown para pantallas pequeñas -->
+                <div class="sm:hidden">
+                    <dropdown align='left'>
+                        <template #trigger>
+                            <button @click="dropdownOpen = !dropdownOpen"
+                                class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </template>
 
-                    <template #content class="origin-left">
-                        <div> <!-- Alineación a la derecha -->
-                            <div class="dropdown">
-                                <div class="dropdown-menu">
-                                <button @click="add_information"
-                                    class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                    Agregar
-                                </button>
+                        <template #content class="origin-left">
+                            <div> <!-- Alineación a la derecha -->
+                                <div class="dropdown">
+                                    <div class="dropdown-menu">
+                                        <button @click="add_information"
+                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Agregar
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="dropdown">
-                                <div class="dropdown-menu">
-                                <button @click="openScheduleModal"
-                                    class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                    Horario
-                                </button>
+                                <div class="dropdown">
+                                    <div class="dropdown-menu">
+                                        <button @click="openScheduleModal"
+                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Horario
+                                        </button>
+                                    </div>
                                 </div>
+                                <dropdown-link :href="route('management.employees.schedule.index')">
+                                    Historial de Horarios
+                                </dropdown-link>
                             </div>
-                            <dropdown-link :href="route('management.employees.schedule.index')">
-                                Historial de Horarios
-                            </dropdown-link>
-                        </div>
-                    </template>
-                </dropdown>
-            </div>
-        </div>
+                        </template>
+                    </dropdown>
+                </div>
 
-
-                
                 <button @click="reentry" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     {{ reentrystate == false ? "Inactivos" : "Activos" }}
@@ -144,7 +143,8 @@
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
                                     </Link>
-                                    <button v-if="hasPermission('UserManager')" type="button" @click="confirmUserDeletion(employee.id)"
+                                    <button v-if="hasPermission('UserManager')" type="button"
+                                        @click="confirmUserDeletion(employee.id)"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -152,8 +152,8 @@
                                                 d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                         </svg>
                                     </button>
-                                    <button v-if="hasPermission('UserManager')" type="button" @click="confirmFired(employee.id)"
-                                        class="text-blue-900 whitespace-no-wrap">
+                                    <button v-if="hasPermission('UserManager')" type="button"
+                                        @click="confirmFired(employee.id)" class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -187,7 +187,8 @@
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
-                            <InputLabel for="reentry_date" class="font-medium leading-6 text-gray-900">Fecha de Reingreso o
+                            <InputLabel for="reentry_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                Reingreso o
                                 Recontratacion:
                             </InputLabel>
                             <div class="mt-2">
@@ -251,13 +252,16 @@
                     {{ props.file ? 'Actualizar Horario' : 'Agregar Horario' }}
                 </h2>
                 <div v-if="props.file" class="mb-4 sm:mb-8">
-                    <div class="flex items-center p-2 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
-                        <svg class="flex-shrink-0 w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    <div class="flex items-center p-2 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+                        role="alert">
+                        <svg class="flex-shrink-0 w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                         </svg>
                         <span class="sr-only">Info</span>
                         <div>
-                            <span class="font-small">Al actualizar el horario, cambiará el que está en curso.</span> 
+                            <span class="font-small">Al actualizar el horario, cambiará el que está en curso.</span>
                         </div>
                     </div>
                 </div>
@@ -266,7 +270,8 @@
                         <div class="border-b border-gray-900/10 pb-4 sm:pb-6 lg:pb-8">
                             <div>
                                 <div class="mb-2">
-                                    <InputFile type="file" v-model="formSchedule.document" id="documentFile" accept=".pdf"
+                                    <InputFile type="file" v-model="formSchedule.document" id="documentFile"
+                                        accept=".pdf"
                                         class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.document" />
                                 </div>
@@ -291,8 +296,8 @@
 
 
 
-        <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado" :deleteText="deleteButtonText"
-            :deleteFunction="deleteEmployee" @closeModal="closeModal" />
+        <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado"
+            :deleteText="deleteButtonText" :deleteFunction="deleteEmployee" @closeModal="closeModal" />
         <ConfirmCreateModal :confirmingcreation="createSchedule" itemType="Horario" />
         <ConfirmUpdateModal :confirmingupdate="updateSchedule" itemType="Horario" />
     </AuthenticatedLayout>
@@ -330,7 +335,7 @@ const props = defineProps({
     employees: Object,
     file: Object,
     boolean: Boolean,
-    userPermissions:Array
+    userPermissions: Array
 })
 
 const hasPermission = (permission) => {
@@ -388,9 +393,9 @@ const submitSchedule = () => {
         onSuccess: () => {
             closeScheduleModal();
             formSchedule.reset();
-            props.file ? updateSchedule.value = true : createSchedule.value = true         
+            props.file ? updateSchedule.value = true : createSchedule.value = true
             setTimeout(() => {
-                props.file ? updateSchedule.value = false : createSchedule.value = false 
+                props.file ? updateSchedule.value = false : createSchedule.value = false
                 router.visit(route('management.employees'))
             }, 2000);
         },
@@ -404,7 +409,7 @@ const submitSchedule = () => {
 };
 
 function getDocumentUrl() {
-  return route('management.employees.schedule.preview', { schedule: props.file.id });
+    return route('management.employees.schedule.preview', { schedule: props.file.id });
 }
 
 const confirmUserDeletion = (employeeId) => {
