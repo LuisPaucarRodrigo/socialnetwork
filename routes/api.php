@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/login', [ApiController::class, 'login']);
+
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/users', [ApiController::class, 'users']);
     Route::get('/preproject', [ApiController::class, 'preproject']);
     Route::get('/preprojectespecific/{id}', [ApiController::class, 'preprojectespecific']);
     Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
