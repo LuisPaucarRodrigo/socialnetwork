@@ -75,8 +75,8 @@ class DocumentController extends Controller
         $searchTerm = strtolower($request->query('searchTerm'));
         if ($searchTerm !== '') {
             $documents = $documents->where(function ($query) use ($searchTerm) {
-                $query->where('title', 'like', '%' . $searchTerm . '%')->get();
-            });
+                $query->where('title', 'like', '%' . $searchTerm . '%');
+            })->get();
         }else {
             $documents = $documents->get();
         }
