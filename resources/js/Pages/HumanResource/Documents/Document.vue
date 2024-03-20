@@ -5,17 +5,74 @@
     <template #header>
       Documentos
     </template>
-    <div class="min-w-full overflow-hidden rounded-lg shadow">
-      <div class="flex gap-4">
-        <button @click="openCreateDocumentModal" type="button"
-          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-          + Agregar Documento
-        </button>
-        <button @click="management_section" type="button"
-          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-          Gestionar Secciones
-        </button>
-        <div class="flex items-center ml-auto">
+    <div class="flex gap-4 justify-between rounded-lg shadow">
+      <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
+        <div class="flex gap-4 items-center">
+          <button @click="openCreateDocumentModal" type="button"
+            class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+            + Agregar Documento
+          </button>
+          <button @click="management_section" type="button"
+            class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+            Gestionar Secciones
+          </button>
+
+          <div class="sm:hidden">
+            <dropdown align='left'>
+              <template #trigger>
+                <button @click="dropdownOpen = !dropdownOpen"
+                  class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                  <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </button>
+              </template>
+
+              <template #content class="origin-left">
+                <div> <!-- Alineación a la derecha -->
+                  <div class="dropdown">
+                    <div class="dropdown-menu">
+                      <button  @click="openCreateDocumentModal" type="button"
+                        class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        + Agregar Documento
+                      </button>
+                    </div>
+                  </div>
+                  <div class="dropdown">
+                    <div class="dropdown-menu">
+                      <button @click="management_section" type="button"
+                        class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        Gestionar Secciones
+                    </button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </dropdown>
+          </div>
+
+
+
+
+
+          <div class="flex sm:hidden items-center ml-auto sm:ml-0">
+            <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
+              <input type="text" placeholder="Buscar..."
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                v-model="searchForm.searchTerm" />
+              <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
+                class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="flex sm:flex-row flex-col sm:items-center">
           <label for="selectElement" class="mr-2 text-sm text-indigo-600">Sección:</label>
           <select v-model="selectedSection" id="selectElement"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
@@ -26,7 +83,7 @@
           </select>
 
           <!-- Nuevo filtro para subdivisiones -->
-          <label for="selectSubdivision" class="mr-2 text-sm text-indigo-600 ml-3">Subdivisión:</label>
+          <label for="selectSubdivision" class="mr-2 text-sm text-indigo-600 sm:ml-3">Subdivisión:</label>
           <select v-model="selectedSubdivision" id="selectSubdivision"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
             <option value="">Todas</option>
@@ -36,25 +93,26 @@
           </select>
         </div>
 
-        <div class="flex items-center">
-                    <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                        <input type="text" placeholder="Buscar..."
-                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            v-model="searchForm.searchTerm" />
-                        <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
-                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-        
 
 
+
+
+      </div>
+
+      <div class="hidden sm:flex sm:items-center">
+        <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
+          <input type="text" placeholder="Buscar..."
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            v-model="searchForm.searchTerm" />
+          <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
+            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </form>
       </div>
 
 
@@ -334,11 +392,11 @@ watch(() => form.section_id, (newSectionId, oldSectionId) => {
 
 
 const searchForm = useForm({
-    searchTerm: props.search,
+  searchTerm: props.search,
 })
 
 const search = () => {
-    let data = {searchTerm: searchForm.searchTerm}
-    router.get(route('documents.index'), data)
+  let data = { searchTerm: searchForm.searchTerm }
+  router.get(route('documents.index'), data)
 }
 </script>
