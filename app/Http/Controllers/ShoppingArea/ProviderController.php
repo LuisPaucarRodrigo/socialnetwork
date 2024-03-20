@@ -80,4 +80,20 @@ class ProviderController extends Controller
         $new = ProviderSegment::create($data);
         return response()->json(['new'=> $new],200);
     }
+
+    public function search($request)
+    {
+        $searchTerm = strtolower($request); // Convertir a minúsculas
+
+        $providers = Provider::where(function($query) use ($searchTerm) {
+            $query->whereRaw('LOWER(ruc) like ?', ['%'.$searchTerm.'%'])
+                  ->orWhereRaw('LOWER(company_name) like ?', ['%'.$searchTerm.'%'])
+                  ->orWhereRaw('LOWER(contact_name) like ?', ['%'.$searchTerm.'%']);
+        })->get();
+
+        return Inertia::render('ShoppingArea/ProviderManagement/Provider', [
+            'providers' => $providers,
+            'search' => $request
+        ]);
+    }
 }

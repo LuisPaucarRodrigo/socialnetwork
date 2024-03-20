@@ -103,4 +103,48 @@ class PurchaseOrdersController extends Controller
         }
         abort(404, 'Documento no encontrado');
     }
+
+    public function search($request, $history)
+    {
+        $searchTerm = strtolower($request); // Convertir a minúsculas
+        $query;
+
+        if ($history == 'history') {
+            $query = Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.payment')
+                ->where('state', 'Completada');
+        } else {
+            $query = Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.provider')
+                ->where('state', '!=', 'Completada');
+        }
+    
+
+        $purchase_orders_by_code = $query->get()->filter(function ($purchase_order) use ($searchTerm) {
+            return str_contains(strtolower($purchase_order->code), $searchTerm);
+        });
+
+        $purchase_orders_request_title = $query->get()->filter(function ($purchase_order) use ($searchTerm) {
+            return str_contains(strtolower($purchase_order->purchase_quote->purchasing_requests->title), $searchTerm);
+        });
+
+        $purchase_orders_request_code = $query->get()->filter(function ($purchase_order) use ($searchTerm) {
+            return str_contains(strtolower($purchase_order->purchase_quote->purchasing_requests->code), $searchTerm);
+        });
+
+        $combined_purchase_orders = $purchase_orders_by_code->merge($purchase_orders_request_title)->merge($purchase_orders_request_code)->unique();
+
+        if($history == 'history'){
+            return Inertia::render('ShoppingArea/PurchaseOrders/HistoryOrders', [
+                'orders' => $combined_purchase_orders,
+                'search' => $request
+            ]);
+        }else{
+            return Inertia::render('ShoppingArea/PurchaseOrders/Orders', [
+                'orders' => $combined_purchase_orders,
+                'search' => $request
+            ]);
+        }
+
+        
+    }
+
 }

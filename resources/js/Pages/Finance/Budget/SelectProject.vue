@@ -5,7 +5,7 @@
             Selección del Proyecto
         </template>
         <div class="grid sm:grid-cols-5">
-            <div class="col-span-2 flex flex-col space-y-5">
+            <div class="col-span-full flex flex-col space-y-5">
                 <select v-model="selectedProjectId"
                     class="block w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring focus:border-blue-300">
                     <option value="" selected disabled>Seleccione un proyecto</option>
