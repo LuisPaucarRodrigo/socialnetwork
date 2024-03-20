@@ -157,6 +157,8 @@ import Modal from '@/Components/Modal.vue';
 import { ref, computed, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon, PencilIcon } from '@heroicons/vue/24/outline';
+import Dropdown from '@/Components/Dropdown.vue';
+
 
 const props = defineProps({
   sections: Object,
