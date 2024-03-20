@@ -29,6 +29,16 @@ class ApiController extends Controller
         }
     }
 
+    public function users(Request $request)
+    {
+        $user = $request->user();
+        if ($user) {
+            return response()->json($user);
+        } else {
+            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        }
+    }
+
     public function preproject()
     {
         $data = Preproject::all();

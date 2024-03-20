@@ -11,15 +11,27 @@ use App\Models\Customers_contact;
 class CustomersController extends Controller
 {
     //customers
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::paginate(10);
-        return Inertia::render('ProjectArea/Customers/Customers', [
-            'customers' => $customers,
-        ]);
+        if ($request->isMethod('get')) {
+            $customers = Customer::paginate();
+            return Inertia::render('ProjectArea/Customers/Customers', [
+                'customers' => $customers,
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->input('searchQuery');
+            $customers = Customer::where('ruc', 'like', "%$searchQuery%")
+                ->orWhere('business_name', 'like', "%$searchQuery%")
+                ->paginate();
+
+            return response()->json([
+                'customers' => $customers
+            ]);
+        }
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
             'ruc' => 'required',
             'business_name' => 'required',
@@ -64,7 +76,8 @@ class CustomersController extends Controller
         ]);
     }
 
-    public function store_contact(Request $request, Customer $customer){
+    public function store_contact(Request $request, Customer $customer)
+    {
         $request->validate([
             'name' => 'required',
             'phone' => 'required',
@@ -97,7 +110,6 @@ class CustomersController extends Controller
     public function destroy_contact(Customer $customer, Customers_contact $customer_contact)
     {
         $customer_contact->delete();
-        return to_route('customers.contacts.index', ['customer' => $customer->id]); 
+        return to_route('customers.contacts.index', ['customer' => $customer->id]);
     }
-        
 }

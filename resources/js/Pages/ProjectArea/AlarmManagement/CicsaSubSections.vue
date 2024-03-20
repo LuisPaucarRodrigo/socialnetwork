@@ -1,19 +1,57 @@
 <template>
+
   <Head title="Gestion de Miembros" />
   <AuthenticatedLayout :redirectRoute="'sections.cicsaSubSections'">
     <template #header>
       Miembros de los apartados Cicsa
     </template>
-    <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-      <div class="flex gap-4">
-        <button @click="openCreateSubSectionModal" type="button"
-          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-          + Agregar miembro
-        </button>
-        <button @click="management_section" type="button"
-          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-          Gestionar Apartados
-        </button>
+    <div class="min-w-full rounded-lg shadow">
+      <div class="mt-6 flex items-center justify-between gap-x-6">
+        <div class="hidden sm:flex sm:items-center sm:space-x-4">
+          <button @click="openCreateSubSectionModal" type="button"
+            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+            + Agregar miembro
+          </button>
+          <button @click="management_section" type="button"
+            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+            Gestionar Apartados
+          </button>
+        </div>
+        <div class="sm:hidden">
+          <dropdown align='left'>
+            <template #trigger>
+              <button @click="dropdownOpen = !dropdownOpen"
+                class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </button>
+            </template>
+
+            <template #content class="origin-left">
+              <div> <!-- Alineación a la derecha -->
+                <div class="dropdown">
+                  <div class="dropdown-menu">
+                    <button @click="openCreateSubSectionModal" type="button"
+                      class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                      + Agregar miembro
+                    </button>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <div class="dropdown-menu">
+                    <button @click="management_section" type="button"
+                      class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                      Gestionar Apartados
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </dropdown>
+        </div>
+
         <div class="flex items-center ml-auto">
           <label for="selectElement" class="mr-2 text-sm text-indigo-600">Seleccione un apartado:</label>
           <select v-model="selectedSection" id="selectElement"
@@ -23,12 +61,7 @@
           </select>
         </div>
       </div>
-    </div>
 
-    <!-- ... (código existente) ... -->
-
-    <!-- Tabla para mostrar las subsecciones -->
-    <div class="mt-5">
       <div class="overflow-x-auto mt-3">
         <table class="w-full whitespace-no-wrap">
           <thead>
@@ -55,18 +88,20 @@
           </thead>
           <tbody>
             <tr v-for="subSection in filteredSubSections" :key="subSection.id" class="text-gray-700" :class="[
-                'text-gray-700',
-                {
-                    'border-l-8': true,
-                    'border-green-500': Date.parse(subSection.end_date) > Date.now() + (7 * 24 * 60 * 60 * 1000), // Si la fecha de finalización es 'Disponible', pinta el borde de verde
-                    'border-red-500': Date.parse(subSection.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000), // Si la fecha vence en 3 días o menos, pinta el borde de rojo
-                    'border-yellow-500': Date.parse(subSection.end_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(subSection.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) // Si la fecha está entre 3 y 7 días desde hoy, pinta el borde de amarillo
-                }
-            ]">
+    'text-gray-700',
+    {
+      'border-l-8': true,
+      'border-green-500': Date.parse(subSection.end_date) > Date.now() + (7 * 24 * 60 * 60 * 1000), // Si la fecha de finalización es 'Disponible', pinta el borde de verde
+      'border-red-500': Date.parse(subSection.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000), // Si la fecha vence en 3 días o menos, pinta el borde de rojo
+      'border-yellow-500': Date.parse(subSection.end_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(subSection.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) // Si la fecha está entre 3 y 7 días desde hoy, pinta el borde de amarillo
+    }
+  ]">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.description }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.start_date) }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.end_date) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.start_date) }}
+              </td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.end_date) }}
+              </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.cicsa_section.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
@@ -74,10 +109,12 @@
                     class="text-green-600 hover:underline mr-2">
                   <EyeIcon class="h-4 w-4 ml-1" />
                   </Link>
-                  <button v-if="auth.user.role_id === 1" @click="openEditSubSectionModal(subSection)" class="text-orange-200 hover:underline mr-2">
+                  <button v-if="auth.user.role_id === 1" @click="openEditSubSectionModal(subSection)"
+                    class="text-orange-200 hover:underline mr-2">
                     <PencilIcon class="h-4 w-4 ml-1" />
                   </button>
-                  <button v-if="auth.user.role_id === 1" @click="confirmDeleteSubSection(subSection.id)" class="text-red-600 hover:underline">
+                  <button v-if="auth.user.role_id === 1" @click="confirmDeleteSubSection(subSection.id)"
+                    class="text-red-600 hover:underline">
                     <TrashIcon class="h-4 w-4" />
                   </button>
                 </div>
@@ -116,7 +153,8 @@
               </div>
 
               <div>
-                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio</InputLabel>
+                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio
+                </InputLabel>
                 <div class="mt-2">
                   <input type="date" v-model="form.start_date" id="start_date"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -189,7 +227,8 @@
               </div>
 
               <div>
-                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio</InputLabel>
+                <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">Fecha de inicio
+                </InputLabel>
                 <div class="mt-2">
                   <input type="date" v-model="form.start_date" id="start_date"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -241,7 +280,7 @@
     <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Apartado Cicsa" />
   </AuthenticatedLayout>
 </template>
-      
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -250,11 +289,12 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import Dropdown from '@/Components/Dropdown.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
+import { formattedDate } from '@/utils/utils';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
-import {formattedDate} from '@/utils/utils'
 
 const props = defineProps({
   sections: Object,
@@ -385,5 +425,3 @@ const filteredSubSections = computed(() => {
 });
 
 </script>
-    
-      

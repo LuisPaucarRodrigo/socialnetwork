@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Gastos Cuadrilla" />
     <AuthenticatedLayout :redirectRoute="'gangexpense.index'">
         <template #header>
@@ -9,14 +10,13 @@
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 Agregar
             </button>
-            <input type="text" @change="searchExpenses($event.target.value)" placeholder="Buscar...">
+            <input type="text" @input="searchExpenses($event.target.value)" placeholder="Buscar...">
         </div>
-
-
         <div class="overflow-x-auto">
-            <table class="w-full whitespace-no-wrap">
+            <table class="min-w-full whitespace-no-wrap">
                 <thead>
-                    <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <tr
+                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
                             class="sticky left-0 z-10 bg-amber-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Cuadrilla
@@ -109,7 +109,7 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">% {{ expense.percentaje }}</p>
                         </td>
-                        <td  v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <Link class="text-blue-900 whitespace-no-wrap"
                                 :href="route('gangexpense.edit', { id: expense.id })">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -123,10 +123,14 @@
                 </tbody>
             </table>
         </div>
+        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <pagination :links="expenses.links" />
+        </div>
     </AuthenticatedLayout>
 </template>
 
 <script setup>
+import Pagination from '@/Components/Pagination.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
@@ -139,17 +143,13 @@ const props = defineProps({
 
 const expenses = ref(props.expenses);
 
-const form = useForm({
-    searchQuery : ''
-})
 const add_gang_expense = () => {
     router.get(route('gangexpense.create'));
 };
 
 const searchExpenses = async ($search) => {
-    form.searchQuery = $search;
     try {
-        const response = await axios.post(route('gangexpense.search'), form);
+        const response = await axios.post(route('gangexpense.index'), { searchQuery: $search });
         expenses.value = response.data.expenses;
     } catch (error) {
         console.error('Error searching expenses:', error);

@@ -5,12 +5,12 @@
         <template #header>
             Clientes
         </template>
-        <div class="min-w-full overflow-hidden">
+        <div class="mt-6 flex items-center justify-between gap-x-6">
             <button @click="add_customer" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
-            
+            <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
         </div>
 
         <div class="overflow-x-auto rounded-lg shadow mt-2">
@@ -36,7 +36,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="customer in props.customers.data" :key="customer.id" class="text-gray-700">
+                        <tr v-for="customer in customers.data" :key="customer.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ customer.ruc }}</p>
                             </td>
@@ -137,6 +137,7 @@ import { TrashIcon, PencilIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/ou
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import axios from 'axios';
 
 const create_customer = ref(false);
 const showModal = ref(false);
@@ -149,6 +150,8 @@ const docToDelete = ref(null);
 const props = defineProps({
     customers: Object
 })
+
+const customers = ref(props.customers);
 
 const add_customer = () => {
     create_customer.value = true;
@@ -237,4 +240,12 @@ const add_contact = (id) => {
     router.visit(route('customers.contacts.index', {customer: id} ));
 }
 
+const search = async ($search) => { 
+    try {
+        const response = await axios.post(route('customers.index'), { searchQuery: $search });
+        customers.value = response.data.customers;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

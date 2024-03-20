@@ -29,11 +29,22 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectManagementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('ProjectArea/ProjectManagement/Project', [
-            'projects' => Project::with('resources')->paginate(),
-        ]);
+        if ($request->isMethod('get')) {
+            return Inertia::render('ProjectArea/ProjectManagement/Project', [
+                'projects' => Project::with('resources')->paginate(),
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->input('searchQuery');
+            $projects = Project::whereHas('preproject', function ($query) use ($searchQuery) {
+                $query->where('code', 'like', "%$searchQuery%");
+            })->paginate();
+
+            return response()->json([
+                'projects' => $projects
+            ]);
+        }
     }
 
     public function project_create(Request $request, $project_id = null)
@@ -256,7 +267,7 @@ class ProjectManagementController extends Controller
         $expense = $purchase_quote->load('purchasing_requests.project', 'purchase_order', 'provider', 'products');
         return Inertia::render('Finance/ManagementExpense/Details', ['expense' => $expense]);
     }
-    
+
     // public function project_expenses(Project $project_id){
     //     $last_update = BudgetUpdate::where('project_id', $project_id->id)
     //         ->with('project')
@@ -399,5 +410,4 @@ class ProjectManagementController extends Controller
         $assigned->delete();
         return redirect()->back();
     }
-
 }
