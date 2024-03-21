@@ -323,6 +323,10 @@
                     </tbody>
                 </table>
             </div>
+            <div
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <Pagination :links="spreadsheets.links" />
+            </div>
         </div>
 
     </AuthenticatedLayout>
@@ -334,6 +338,7 @@ import { formattedDate } from '@/utils/utils';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
     spreadsheets: Object,
