@@ -107,7 +107,7 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ expense.type_expenses }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">% {{ expense.percentaje }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap" v-if="expense.percentaje">% {{ expense.percentaje }}</p>
                         </td>
                         <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <Link class="text-blue-900 whitespace-no-wrap"
