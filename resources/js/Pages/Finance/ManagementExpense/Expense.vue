@@ -4,8 +4,11 @@
         <template #header>
             Aprobacion de Compras
         </template>
-        <div class="min-w-full overflow-hidden rounded-lg shadow">
-            <div class="overflow-x-auto">
+        <div class="min-w-full rounded-lg">
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+            <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
+        </div>
+            <div class="overflow-x-auto shadow">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
@@ -156,10 +159,13 @@ import Pagination from '@/Components/Pagination.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Head, router, Link } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
+import { ref } from 'vue';
 
 const props = defineProps({
     expenses: Object
 })
+
+const expenses = ref(props.expenses);
 
 const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), { state }, {
@@ -172,5 +178,13 @@ function openPreviewDocumentModal(documentId) {
     window.open(url, '_blank');
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('managementexpense.index'), { searchQuery: $search });
+        expenses.value = response.data.expenses;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 
 </script>

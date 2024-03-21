@@ -130,7 +130,7 @@ class FormationDevelopment extends Controller
         return Inertia::render('HumanResource/FormationDevelopments/AssignationCreate', [
             'employees' => Employee::with('contract')->whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
-            }),
+            })->get(),
             'formation_programs' => FormationProgram::all(),
         ]);
     }

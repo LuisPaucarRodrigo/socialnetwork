@@ -178,6 +178,9 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.information.details');
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
 
+    Route::get('/management_employees/index-search', [ManagementEmployees::class, 'search'])->name('management.employees.search');
+
+
     // Route::get('/management_employees/edit/{id}', [ManagementEmployees::class, 'edit'])->name('management.employees.edit');
     // Route::post('/management_employees/update/{id}', [ManagementEmployees::class, 'update'])->name('management.employees.update');
     // Route::delete('/management_employees/destroy/{id}', [ManagementEmployees::class, 'destroy'])->name('management.employees.destroy');
@@ -320,7 +323,7 @@ Route::middleware('auth', 'permission:InventoryManager')->group(function () {
 });
 
 Route::middleware('auth', 'permission:ProjectManager')->group(function () {
-    Route::get('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
+    Route::any('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
     Route::get('/projectmanagement/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
     Route::post('/projectmanagement/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
     Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
@@ -354,7 +357,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     // Route::delete('/customervisitmanagement/{id}/delete', [CustomerVisitController::class, 'delete'])->name('customervisitmanagement.delete');
 
     //PreProjects
-    Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+    Route::any('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
     Route::get('/preprojects/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
     Route::post('/preprojects/store', [PreProjectController::class, 'store'])->name('preprojects.store');
     Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
@@ -440,11 +443,12 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');
 
     //customers
-    Route::get('/customers', [CustomersController::class, 'index'])->name('customers.index');
+    Route::any('/customers', [CustomersController::class, 'index'])->name('customers.index');
     Route::post('/customers/post', [CustomersController::class, 'store'])->name('customers.store');
     Route::put('/customers/{customer}/update', [CustomersController::class, 'update'])->name('customers.update');
     Route::delete('/customers/{customer}/destroy', [CustomersController::class, 'destroy'])->name('customers.destroy');
-
+    Route::get('/customers/search', [CustomersController::class, 'index'])->name('customers.search');
+    Route::post('/customers/search', [CustomersController::class, 'search'])->name('customers.search');
 
     //customer_contacts
     Route::get('/customers/{customer}/contacts', [CustomersController::class, 'show_contacts'])->name('customers.contacts.index');
@@ -457,6 +461,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
 Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest', [PurchaseRequestController::class, 'index'])->name('purchasesrequest.index');
+    Route::get('/shopping_area/purchasesrequest/search/{request}', [PurchaseRequestController::class, 'search'])->name('purchasesrequest.search');
     Route::get('/shopping_area/purchasesrequest/create_request/{project_id?}', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
     Route::post('/shopping_area/purchasesrequest/store_request', [PurchaseRequestController::class, 'store'])->name('purchasesrequest.store');
     Route::get('/shopping_area/purchasesrequest/edit/{id}/{project_id?}', [PurchaseRequestController::class, 'edit'])->name('purchasesrequest.edit');
@@ -469,6 +474,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/purchasesrequest/doTask', [PurchaseRequestController::class, 'doTask'])->name('purchasesrequest.task');
 
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
+    Route::get('/shopping_area/purchaseorders/search/{request}/{history}', [PurchaseOrdersController::class, 'search'])->name('purchaseorders.search');
     Route::get('/shopping_area/purchaseorders_details/{purchase_order_id}', [PurchaseOrdersController::class, 'purchase_order_view'])->name('purchaseorders.details');
     Route::get('/shopping_area/purchaseorders/history', [PurchaseOrdersController::class, 'history'])->name('purchaseorders.history');
     Route::post('/shopping_area/purchaseorders/state', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
@@ -479,6 +485,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 
 
     Route::get('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');
+    Route::get('/shopping_area/providers/search/{request}', [ProviderController::class, 'search'])->name('providersmanagement.search');
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');
     Route::post('/shopping_area/providers/store', [ProviderController::class, 'store'])->name('providersmanagement.store');
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
@@ -489,6 +496,7 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
     Route::post('/shopping_area/providers/segment', [ProviderController::class, 'segment_provider'])->name('provider.segment');
 
     Route::get('/shopping_area/payment', [PaymentController::class, 'index'])->name('payment.index');
+    Route::get('/shopping_area/payment/search/{request}', [PaymentController::class, 'search'])->name('payment.search');
     Route::post('/shopping_area/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
 
 
@@ -497,13 +505,12 @@ Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
 Route::middleware('auth', 'permission:FinanceManager')->group(function () {
 
     //Expense
-    Route::get('/finance/expensegang', [GangExpenseController::class, 'index'])->name('gangexpense.index');
+    Route::any('/finance/expensegang', [GangExpenseController::class, 'index'])->name('gangexpense.index');
     Route::get('/finance/expensegang/create', [GangExpenseController::class, 'create'])->name('gangexpense.create');
     Route::post('/finance/expensegang/store', [GangExpenseController::class, 'store'])->name('gangexpense.store');
     Route::get('/finance/expensegang/{id}/edit', [GangExpenseController::class, 'edit'])->name('gangexpense.edit');
-    Route::post('/finance/expensegang/search', [GangExpenseController::class, 'search'])->name('gangexpense.search');
 
-    Route::get('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
+    Route::any('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
     Route::get('/finance/expencemanagement/details/{purchase_quote}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
 
     Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');

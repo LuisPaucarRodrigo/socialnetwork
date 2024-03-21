@@ -14,16 +14,35 @@ use Inertia\Inertia;
 
 class ExpenseManagementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Finance/ManagementExpense/Expense', [
-            'expenses' => Purchase_quote::with('provider', 'purchasing_requests.project')
-                ->whereHas('purchasing_requests', function ($query) {
-                    $query->whereNotNull('due_date');
-                })
+        if ($request->isMethod('get')) {
+            return Inertia::render('Finance/ManagementExpense/Expense', [
+                'expenses' => Purchase_quote::with('provider', 'purchasing_requests.project')
+                    ->whereHas('purchasing_requests', function ($query) {
+                        $query->whereNotNull('due_date');
+                    })
+                    ->whereNotNull('quote_deadline')
+                    ->paginate()
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->input('searchQuery');
+            $expenses = Purchase_quote::with('provider', 'purchasing_requests.project.preproject')
                 ->whereNotNull('quote_deadline')
-                ->paginate()
-        ]);
+                ->whereHas('purchasing_requests', function ($query) use ($searchQuery) {
+                    $query->whereNotNull('due_date')
+                        ->where(function ($q) use ($searchQuery) {
+                            $q->where('title', 'like', "%$searchQuery%");
+                        })
+                        ->orWhereHas('project.preproject', function ($q) use ($searchQuery) {
+                            $q->where('code', 'like', "%$searchQuery%");
+                        });
+                })
+                ->paginate();
+            return response()->json([
+                'expenses' => $expenses
+            ]);
+        }
     }
 
     public function details(Purchase_quote $purchase_quote)
