@@ -11,9 +11,24 @@ use Inertia\Inertia;
 
 class GangExpenseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Finance/GangExpense/Index', ['expenses' => Expense::paginate()]);
+        if ($request->isMethod('get')) {
+            return Inertia::render('Finance/GangExpense/Index', ['expenses' => Expense::paginate()]);
+        } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->input('searchQuery');
+            $expenses = Expense::where('person', 'like', "%$searchQuery%")
+                ->orWhere('gang', 'like', "%$searchQuery%")
+                ->orWhere('number', 'like', "%$searchQuery%")
+                ->orWhere('series', 'like', "%$searchQuery%")
+                ->orWhere('ruc', 'like', "%$searchQuery%")
+                ->orWhere('type_expenses', 'like', "%$searchQuery%")
+                ->paginate();
+
+            return response()->json([
+                'expenses' => $expenses
+            ]);
+        }
     }
 
     public function create()
@@ -38,21 +53,5 @@ class GangExpenseController extends Controller
         $expense = Expense::findOrFail($id);
         $expense->update($validateData);
         return to_route('gangexpense.index');
-    }
-
-    public function search(Request $request)
-    {
-        $searchQuery = $request->input('searchQuery');
-        $expenses = Expense::where('person', 'like', "%$searchQuery%")
-            ->orWhere('gang', 'like', "%$searchQuery%")
-            ->orWhere('number', 'like', "%$searchQuery%")
-            ->orWhere('series', 'like', "%$searchQuery%")
-            ->orWhere('ruc', 'like', "%$searchQuery%")
-            ->orWhere('type_expenses', 'like', "%$searchQuery%")
-            ->paginate();
-
-        return response()->json([
-            'expenses' => $expenses
-        ]);
     }
 }

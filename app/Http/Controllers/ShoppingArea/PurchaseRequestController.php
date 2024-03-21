@@ -171,5 +171,49 @@ class PurchaseRequestController extends Controller
         Purchasing_requests_product::find($purchasing_request_product_id)->delete();
         return redirect()->back();
     }
+    
+    public function search($request)
+    {
+        $searchTerm = strtolower($request); // Convertir a minúsculas
 
+        $purchasing_requests_by_title = Purchasing_request::where(function($query) use ($searchTerm) {
+            $query->whereRaw('LOWER(title) like ?', ['%'.$searchTerm.'%'])
+                  ->withCount([
+                        'purchase_quotes',
+                        'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
+                            $query->where('state',true);
+                        },
+                        'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
+                            $query->where('state',false);
+                        }
+                    ])
+                   ->with('project','preproject','purchase_quotes')
+                   ->orderBy('created_at', 'desc');
+        })->get();
+
+        $queryByCode = Purchasing_request::where(function($query) use ($searchTerm) {
+            $query->withCount([
+                        'purchase_quotes',
+                        'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
+                            $query->where('state',true);
+                        },
+                        'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
+                            $query->where('state',false);
+                        }
+                    ])
+                   ->with('project','preproject','purchase_quotes')
+                   ->orderBy('created_at', 'desc');
+        });
+
+        $purchasing_requests_by_code = $queryByCode->get()->filter(function ($purchasing_request) use ($searchTerm) {
+            return str_contains(strtolower($purchasing_request->code), $searchTerm);
+        });
+
+        $combined_purchasing_requests = $purchasing_requests_by_title->merge($purchasing_requests_by_code)->unique();
+
+        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
+            'purchases' => $combined_purchasing_requests,
+            'search' => $request
+        ]);
+    }
 }

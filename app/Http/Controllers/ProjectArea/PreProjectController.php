@@ -27,11 +27,22 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PreProjectController extends Controller
 {
-    public function index()
-    {
-        return Inertia::render('ProjectArea/PreProject/PreProjects', [
-            'preprojects' => Preproject::with('project')->paginate(10),
-        ]);
+    public function index(Request $request)
+    {   
+        if($request->isMethod('get')){
+            return Inertia::render('ProjectArea/PreProject/PreProjects', [
+                'preprojects' => Preproject::with('project')->paginate(12),
+            ]);
+        }elseif($request->isMethod('post')){
+            $searchQuery = $request->input('searchQuery');
+            $preprojects = Preproject::where('code', 'like', "%$searchQuery%")
+                ->paginate(12);
+
+            return response()->json([
+                'preprojects' => $preprojects
+            ]);
+        }
+        
     }
 
     public function create($preproject_id = null)
