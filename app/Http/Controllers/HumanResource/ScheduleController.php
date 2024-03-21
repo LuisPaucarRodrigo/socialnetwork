@@ -12,11 +12,23 @@ use Carbon\Carbon;
 class ScheduleController extends Controller
 {
 
-    public function index()
-    {
+    public function index() {
+        $currentDate = Carbon::now();
+        $lastSchedule = Schedule::latest()->first();
+        $file = null;
+
+        if ($lastSchedule) {
+            $lastScheduleDate = Carbon::createFromFormat('Y-m-d', $lastSchedule->date);
+            if ($lastScheduleDate->month === $currentDate->month && $lastScheduleDate->year === $currentDate->year) {
+                $file = $lastSchedule;
+            }else{
+
+            }
+        }
         $schedules = Schedule::paginate(10);
         return Inertia::render('HumanResource/Schedules/Schedules', [
             'schedules' => $schedules,
+            'file' => $file,
         ]);
     }
 

@@ -41,20 +41,20 @@ class PurchaseProductsController extends Controller
         // Combinar los resultados de ambos filtros y crear una instancia de LengthAwarePaginator
         $combinedProducts = $productsByName->merge($productsByCode)->unique();
 
-        $perPage = 10;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentPageProducts = $combinedProducts->slice(($currentPage - 1) * $perPage, $perPage);
-        $products = new LengthAwarePaginator(
-            $currentPageProducts,
-            $combinedProducts->count(),
-            $perPage,
-            $currentPage,
-            ['path' => url()->current(), 'query' => []]
-        );
-
+        // $perPage = 10;
+        // $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        // $currentPageProducts = $combinedProducts->slice(($currentPage - 1) * $perPage, $perPage);
+        // $products = new LengthAwarePaginator(
+        //     $currentPageProducts,
+        //     $combinedProducts->count(),
+        //     $perPage,
+        //     $currentPage,
+        //     ['path' => url()->current(), 'query' => []]
+        // );
 
         return Inertia::render('Inventory/PurchaseProducts/Products', [
-            'products' => $products,
+            'products' => $combinedProducts,
+            'search' => $request
         ]);
     }
 
