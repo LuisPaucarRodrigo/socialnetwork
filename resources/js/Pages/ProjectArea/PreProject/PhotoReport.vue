@@ -187,12 +187,14 @@ const getDocumentName = (documentTitle) => {
 };
 
 function downloadPRPdf(id) {
-  const backendDocumentUrl = route('preprojects.photoreport_pdf.download', { pr_id: id });
+  const uniqueParam = `timestamp=${new Date().getTime()}`;
+  const backendDocumentUrl = route('preprojects.photoreport_pdf.download', { pr_id: id }) + '?' + uniqueParam;
   window.open(backendDocumentUrl, '_blank');
 };
 
 function openPreviewDocumentModal(id) {
-  const url = route('preprojects.photoreport.show', { pr_id: id });
+  const uniqueParam = `timestamp=${new Date().getTime()}`;
+  const url = route('preprojects.photoreport.show', { pr_id: id }) + '?' + uniqueParam;
   window.open(url, '_blank');
 }
 

@@ -292,16 +292,17 @@ class PreProjectController extends Controller
     }
 
 
-    public function showPR(PhotoReport $pr_id)
-    {
+    public function showPR(PhotoReport $pr_id) {
         $fileName = $pr_id->pdf_report;
         $filePath = 'documents/photoreports/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
-            return response()->file($path);
+            return response()->file($path, ['title' => $fileName]);
         }
         abort(404, 'Documento no encontrado');
     }
+
+
 
     // ------------------------------- REQUEST SHOPPING -------------------------------
 
