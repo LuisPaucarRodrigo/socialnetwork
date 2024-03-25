@@ -45,14 +45,14 @@
         <h2 class="text-sm font-semibold text-red-600 line-clamp-1 mb-2">{{ getDocumentName(photoreport?.pdf_report) }}
         </h2>
         <div class="flex space-x-3 item-center">
-          <button @click="openPreviewDocumentModal(photoreport?.pdf_report)"
+          <button @click="openPreviewDocumentModal(photoreport.id)"
             class="flex items-center text-green-600 hover:underline">
             <EyeIcon class="h-4 w-4 ml-1" />
           </button>
-          <a :href="route('preprojects.photoreport.download', { report_name: photoreport.pdf_report })" target="_blank"
+          <button @click="downloadPRPdf(photoreport.id)" target="_blank"
             class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
-          </a>
+        </button>
         </div>
       </div>
     </div>
@@ -138,7 +138,6 @@ const showModal = ref(false);
 const showModalUpdate = ref(false);
 const confirmReportDelete = ref(false);
 
-const documentToShow = ref(null);
 
 const openCreateDocumentModal = () => {
   create_document.value = true;
@@ -149,14 +148,14 @@ const closeModal = () => {
 };
 
 const submit = () => {
-  let url = preproject.photoreport ? route('preprojects.photoreport.update', { photoreport: photoreport.id }) : route('preprojects.photoreport.store')
+  let url = photoreport ? route('preprojects.photoreport.update', { photoreport: photoreport.id }) : route('preprojects.photoreport.store')
   form.post(url, {
     onSuccess: () => {
       closeModal();
       form.reset();
-      preproject ? showModalUpdate.value = true : showModal.value = true
+      photoreport ? showModalUpdate.value = true : showModal.value = true
       setTimeout(() => {
-        preproject ? showModalUpdate.value = false : showModal.value = false
+        photoreport ? showModalUpdate.value = false : showModal.value = false
       }, 2000);
     },
     onError: () => {
@@ -181,16 +180,23 @@ const deleteDocument = (id) => {
 
 };
 
-function openPreviewDocumentModal(name) {
-  documentToShow.value = name;
-  const url = route('preprojects.photoreport.show', { report_name: name });
-  window.open(url, '_blank');
-}
 
 const getDocumentName = (documentTitle) => {
   const parts = documentTitle.split('_');
   return parts.length > 1 ? parts.slice(1).join('_') : documentTitle;
 };
+
+function downloadPRPdf(id) {
+  const backendDocumentUrl = route('preprojects.photoreport_pdf.download', { pr_id: id });
+  window.open(backendDocumentUrl, '_blank');
+};
+
+function openPreviewDocumentModal(id) {
+  const url = route('preprojects.photoreport.show', { pr_id: id });
+  window.open(url, '_blank');
+}
+
+
 
 </script>
   
