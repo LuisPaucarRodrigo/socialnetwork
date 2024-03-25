@@ -372,7 +372,8 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
     Route::get('/preprojects/{preproject_id}/photoreport', [PreProjectController::class, 'photoreport_index'])->name('preprojects.photoreport.index');
     Route::post('/preprojects/photoreport_store', [PreProjectController::class, 'photoreport_store'])->name('preprojects.photoreport.store');
     Route::get('/preprojects/photoreport_download/{report_name}', [PreProjectController::class, 'downloadPR'])->name('preprojects.photoreport.download');
-    Route::get('/preprojects/photoreport_show/{report_name}', [PreProjectController::class, 'showPR'])->name('preprojects.photoreport.show');
+    Route::get('/preprojects/photoreport_download_pdf/{pr_id}', [PreProjectController::class, 'download_pdf_PR'])->name('preprojects.photoreport_pdf.download');
+    Route::get('/preprojects/photoreport_show/{pr_id}', [PreProjectController::class, 'showPR'])->name('preprojects.photoreport.show');
     Route::get('/preprojects/quote_pdf/{quote_id}', [PreProjectController::class, 'quote_pdf'])->name('preprojects.quote.pdf');
 
     Route::get('/preprojects/request/{id}', [PreProjectController::class, 'request'])->name('preprojects.request.index');

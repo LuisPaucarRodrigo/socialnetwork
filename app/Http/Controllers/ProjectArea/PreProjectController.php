@@ -24,6 +24,7 @@ use App\Models\Purchasing_requests_product;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class PreProjectController extends Controller
 {
@@ -241,8 +242,7 @@ class PreProjectController extends Controller
     }
 
 
-    public function photoreport_delete(PhotoReport $photoreport)
-    {
+    public function photoreport_delete(PhotoReport $photoreport){
         $files = [
             $photoreport->excel_report,
             $photoreport->pdf_report
@@ -257,14 +257,12 @@ class PreProjectController extends Controller
     }
 
 
-    public function file_delete($filename, $path)
-    {
+    public function file_delete($filename, $path){
         $file_path = $path . $filename;
         $path = public_path($file_path);
         if (file_exists($path)) unlink($path);
     }
-    public function file_store($file, $path)
-    {
+    public function file_store($file, $path){
         $name = time() . '_' . $file->getClientOriginalName();
         $file->move(public_path($path), $name);
         return $name;
@@ -277,15 +275,26 @@ class PreProjectController extends Controller
         $filePath = "documents/photoreports/$fileName";
         $path = public_path($filePath);
         if (file_exists($path)) {
-            return response()->download($filePath, $fileName);
+            return response()->download($path, $fileName);
         }
         abort(404, 'Documento no encontrado');
     }
 
 
-    public function showPR($report_name)
+    public function download_pdf_PR(PhotoReport $pr_id){
+        $fileName = $pr_id->pdf_report;
+        $filePath = "documents/photoreports/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->download($path, $fileName);
+        }
+        abort(404, 'Documento no encontrado');
+    }
+
+
+    public function showPR(PhotoReport $pr_id)
     {
-        $fileName = $report_name;
+        $fileName = $pr_id->pdf_report;
         $filePath = 'documents/photoreports/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
