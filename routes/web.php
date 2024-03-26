@@ -140,7 +140,7 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     //Formation Development program
     Route::get('/management_employees/formation_development/view/{id}', [FormationDevelopment::class, 'formation_programs_view'])->name('management.employees.formation_development.view');
     Route::delete('/management_employees/formation_development/delete/{id}', [FormationDevelopment::class, 'formation_programs_destroy'])->name('management.employees.formation_development.delete');
-    Route::post('/management_employees/formation_development/delete-employee/', [FormationDevelopment::class, 'formation_programs_destroy_employee'])->name('management.employees.formation_development.employee.delete');
+    Route::delete('/management_employees/formation_development/delete-employee/{efp_id}', [FormationDevelopment::class, 'formation_programs_destroy_employee'])->name('management.employees.formation_development.employee.delete');
 
     //Training
     Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])->name('management.employees.formation_development.trainings.destroy');
@@ -230,6 +230,7 @@ Route::middleware('auth', 'permission:HumanResourceManager')->group(function () 
     
     //Employees in programs
     Route::get('/management_employees/formation_development/employees_in_programs', [FormationDevelopment::class,'employees_in_programs'])->name('management.employees.formation_development.employees_in_programs');
+    Route::post('/management_employees/formation_development/employees_in_programs/{efp_id}', [FormationDevelopment::class,'employees_in_programs_update'])->name('management.employees.formation_development.employees_in_programs.update');
 
 
     //Vacation
