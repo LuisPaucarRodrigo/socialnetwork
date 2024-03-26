@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <title>PDF</title>
+    <title>{{ $preproject->quote->name }}</title>
     <style>
         table {
             border-collapse: collapse;
@@ -23,8 +23,8 @@
 <body>
     <div style="width: 100%; height: 1000px; border: 2px solid #000; margin-top: 0px; text-align: center;">
         <img src="image/projectimage/caratula-ccip.jpg" alt="" style="max-width: 600px; height: auto; margin-top: 75px">
-        <p class="mt-4" style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif" >Propuesta Económica:</p>
-        <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Propuesta</p>
+        <p class="mt-4" style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif" >Propuesta Económica</p>
+        <br>
         <p style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Proyecto:</p>
         <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{ $preproject->quote->name }}</p>
         <p style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Asesor Comercial:</p>
@@ -45,13 +45,13 @@
     <table >
         <tbody>
               <tr>
-                <td class="td-custom" colspan="1" style="height: 70px"><img src="image/projectimage/logo_ccip.jpeg" width="80px" alt=""></td>
-                <td class="td-custom" colspan="3" style="text-align: center">{{ $preproject->quote->name }}</td>
-                <td class="td-custom" colspan="2" style="text-align: center">C.T - {{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $preproject->quote->date)->format('d/m/Y') }}</td>
+                <td class="td-custom" colspan="1" style="height: 70px;"><img src="image/projectimage/logo_ccip.jpeg" width="80px" alt=""></td>
+                <td class="td-custom" colspan="3" style="text-align: center; font-weight: bold; font-size: 18px">{{ $preproject->quote->name }}</td>
+                <td class="td-custom" colspan="2" style="text-align: center">{{ $preproject->quote->code }}</td>
               </tr>
           <tr>
             <td class="td-custom" style="width: 82.5px">Cliente</td>
-            <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold; width: 150px">{{ $preproject->customer }}</td>
+            <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold; width: 150px">{{ $preproject->customer->business_name }}</td>
             <td class="td-custom" style="width: 60px">Supervisor:</td>
             <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold; width: 150px">{{ $preproject->quote->supervisor }}</td>
             <td class="td-custom" style="width: 82.5px">Rev.</td>

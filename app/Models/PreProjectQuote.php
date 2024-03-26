@@ -22,7 +22,7 @@ class PreProjectQuote extends Model
         "state"
     ] ;
 
-    protected $appends = ['total_amount'];
+    protected $appends = ['total_amount', 'total_amount_no_margin'];
 
     public function preproject () {
         return $this->belongsTo(Preproject::class,"preproject_id");
@@ -43,5 +43,25 @@ class PreProjectQuote extends Model
             return $item->quantity * $item->unitary_price * (1+ $item->profit_margin/100);
         });
         return $totalItems + $totalProducts;
+    }
+
+    public function getTotalAmountNoMarginAttribute() {
+        $totalItems = $this->items()->get()->sum(function ($item) {
+            return $item->quantity * $item->unit_price;
+        });
+        $totalProducts = $this->products()->get()->sum(function ($item) {
+            return $item->quantity * $item->unitary_price;
+        });
+        return $totalItems + $totalProducts;
+    }
+
+    public function getCodeAttribute()
+    {
+        if ($this->exists) {
+            $preprojectYear = date('Y', strtotime($this->preproject->date));
+            return 'C.T - ' . $preprojectYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        } else {
+            return 'TMP' . now()->format('ymdHis');
+        }
     }
 }

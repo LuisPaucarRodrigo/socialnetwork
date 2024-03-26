@@ -64,12 +64,13 @@ class PurchaseProductsController extends Controller
         $request->validate([
             'name' => 'required|string',
             'unit' => 'required',
-            'description' => 'required',
+            'type' => 'required'
         ]);
         
         $product = Purchase_product::create([
             'name' => $request->name,
             'unit' => $request->unit,
+            'type' => $request->type,
             'description' => $request->description,
         ]);
 
@@ -80,12 +81,13 @@ class PurchaseProductsController extends Controller
         $request->validate([
             'name' => 'required|string',
             'unit' => 'required',
-            'description' => 'required',
+            'type' => 'required'
         ]);
 
         $purchase_product->update([
             'name' => $request->name,
             'unit' => $request->unit,
+            'type' => $request->type,
             'description' => $request->description
         ]);
     }
