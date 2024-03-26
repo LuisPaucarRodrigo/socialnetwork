@@ -1,34 +1,29 @@
 <template>
     <Head title="Tareas" />
-    <AuthenticatedLayout :redirectRoute="{ route: 'tasks.index', params: { id: project_id } }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'tasks.index', params: { id: project.id } }">
         <template #header>
             Nueva Tarea
         </template>
-        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <!-- <div class="sm:col-span-2">
-                <label for="project" class="block text-sm font-medium text-gray-700">Proyecto</label>
-                <select v-model="form.project_id"
-                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                    <option v-for="project in projects" :key="project.id" :value="project.id">
-                        {{ project.name }}
-                    </option>
-                </select>
-            </div> -->
-
+        <form @submit.prevent="submitForm" >
+            <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div class="sm:col-span-4">
                 <label for="tasks" class="block text-sm font-medium text-gray-700">Tarea</label>
                 <input type="text" id="task" v-model="form.task"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-                    list="tasksList" />
+                    list="tasksList"/>
                 <datalist id="tasksList">
-                    <option v-for="task in tasks" :value="task.task" :key="task.id"></option>
+                    <option 
+                        v-for="task in tasks" 
+                        :value="task.task" 
+                        :key="task.id">
+                    </option>
                 </datalist>
                 <InputError :message="form.errors.task" />
             </div>
             <div class="sm:col-span-2">
                 <label for="task" class="block text-sm font-medium text-gray-700">Porcentaje</label>
                 <div class="flex">
-                    <input type="number" id="percentage" v-model="form.percentage"
+                    <input type="number" id="percentage" v-model="form.percentage" :max="100-project.total_percentage_tasks"
                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                     <span class="ml-2 self-center text-gray-500">%</span>
                 </div>
@@ -62,15 +57,17 @@
                     <option value="completado">Completado</option>
                 </select>
             </div>
-        </div>
-
-        <!-- Botón de enviar -->
-        <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button @click="submitForm"
+            </div>
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+            <button type="submit"
                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                 Enviar
             </button>
         </div>
+        </form>
+
+        <!-- Botón de enviar -->
+        
 
     </AuthenticatedLayout>
 </template>
@@ -81,16 +78,13 @@ import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
 
 
-const { projects, tasks, project_id } = defineProps({
-    projects: Object,
+const { tasks, project } = defineProps({
     tasks: Object,
-    project_id: String,
+    project: Object,
 })
 
-console.log(project_id)
-
 const form = useForm({
-    project_id: project_id,
+    project_id: project.id,
     task: '',
     percentage: '',
     start_date: '',
