@@ -168,8 +168,6 @@ const props = defineProps({
     auth: Object
 })
 
-console.log(props.tasks)
-
 const { tasks } = props;
 const newcomment = useForm({
     task_id: tasks.id,

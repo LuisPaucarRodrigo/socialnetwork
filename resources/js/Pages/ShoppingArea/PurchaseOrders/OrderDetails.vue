@@ -107,8 +107,6 @@ const { purchase_order } = defineProps({
   purchase_order: Object,
 });
 
-console.log(purchase_order)
-
 const bgBadget = ref(setBadgeColor(purchase_order.purchase_quote.purchasing_requests.due_date))
 
 function setBadgeColor(date) {

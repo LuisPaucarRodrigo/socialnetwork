@@ -175,7 +175,6 @@ const { employees } = defineProps({
     employees: Object
 })
 
-console.log(employees.data)
 
 const showNotCompletedModal = ref(false)
 const apNotCompleted = ref(null)
@@ -198,7 +197,6 @@ function updateHelper (form, id) {
         efp_id: id
     }), {
         onSuccess: () => {
-            console.log("victory")
             closeModal()
         }
     })

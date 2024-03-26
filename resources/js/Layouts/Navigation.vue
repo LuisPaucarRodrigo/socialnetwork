@@ -269,9 +269,6 @@
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('tasks.index')">Tareas</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">
                         <button @click="toggleMembersCicsa">
                             <span v-if="cicsasubSectionsCount + cicsasubSectionsCount7 > 0"
