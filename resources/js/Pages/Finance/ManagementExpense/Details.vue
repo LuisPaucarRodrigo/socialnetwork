@@ -44,6 +44,12 @@
                         {{ expense.state === null ? 'Pendiente' : expense.state ? 'Aceptado' : 'Rechazado' }}
                     </p>
                 </div>
+
+                <div class="mb-4">
+                    <p class="text-sm text-gray-700 font-medium">Forma de pago:</p>
+                    <p class="text-lg text-gray-900">{{ expense.payment_type }}</p>
+                </div>
+
             </div>
 
             <div class="col-span-1 min-w-full rounded-lg shadow bg-white p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -244,6 +250,8 @@ import { formattedDate } from '@/utils/utils';
 const props = defineProps({
     expense: Object
 })
+
+console.log(props.expense)
 
 function openPreviewDocumentModal(documentId) {
     const url = route('purchasesrequest.show', { id: documentId });

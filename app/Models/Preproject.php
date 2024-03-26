@@ -66,6 +66,10 @@ class Preproject extends Model
         return $this->belongsToMany(Customers_contact::class,'preprojects_contacts','preproject_id', 'customer_contact_id');
      }
 
+     public function customer() {
+        return $this->belongsTo(Customer::class, 'customer_id');
+     }
+
      public function purchasing_request()
      {
          return $this->hasMany(Purchasing_request::class);

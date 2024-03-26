@@ -234,6 +234,7 @@ const form = useForm({
     operation_number: '',
     date: '',
     payment_doc: null,
+    state: false,
     payment_id: '',
     price_dolar: ''
 })
@@ -246,7 +247,8 @@ const pay_payment = (payment,currency) => {
 }
 
 const submit = () => {
-    form.payment_id = payment_id.value
+    form.payment_id = payment_id.value;
+    form.state = 1;
     form.post(route('payment.pay'), {
         onSuccess: () => {
             showModalSuccess.value = true
@@ -259,6 +261,7 @@ const submit = () => {
 }
 
 const closePayModal = () => {
+    form.reset();
     showModalPay.value = false
 }
 

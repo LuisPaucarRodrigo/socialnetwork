@@ -54,6 +54,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Tipo
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Descripción
                             </th>
                             <th
@@ -73,6 +77,9 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <h2 class="text-sm font-semibold">{{ item.unit }}</h2>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <h2 class="text-sm font-semibold">{{ item.type }}</h2>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <h2 class="text-sm font-semibold">{{ item.description }}</h2>
@@ -136,12 +143,28 @@
                                     <InputError :message="form.errors.unit" />
                                 </div>
                             </div>
+
+                            <div>
+                                <InputLabel for="type" class="font-medium leading-6 text-gray-900 mt-3">Tipo
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select :to-uppercase="true" v-model="form.type" id="type"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled>Seleccione una opción</option>
+                                        <option value="Producto">Producto</option>
+                                        <option value="Servicio">Servicio</option>
+                                        <option value="Activo">Activo</option>
+                                    </select>
+                                    <InputError :message="form.errors.type" />
+                                </div>
+                            </div>
+
                             <div>
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900 mt-3">
                                     Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput :to-uppercase="true" type="text" v-model="form.description"
+                                    <TextInput type="text" v-model="form.description"
                                         id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.description" />
@@ -193,6 +216,7 @@ const form = useForm({
     id: '',
     name: '',
     unit: '',
+    type: '',
     description: ''
 });
 
@@ -219,6 +243,7 @@ const openEditProductModal = (product) => {
     form.name = editingProduct.value.name;
     form.description = editingProduct.value.description;
     form.unit = editingProduct.value.unit;
+    form.type = editingProduct.value.type;
     showModalEdit.value = true;
 };
 
