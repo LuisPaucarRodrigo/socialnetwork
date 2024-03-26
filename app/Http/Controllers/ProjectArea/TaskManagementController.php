@@ -22,15 +22,14 @@ class TaskManagementController extends Controller
         $tasks = Tasks::where('project_id', $projectId)->paginate(10);
         return Inertia::render('ProjectArea/TasksManagement/index', [
             'tasks' => $tasks,
-            'project_id' => $projectId,
+            'project' => Project::find($projectId),
         ]);
     }
 
 
     public function new($project_id){   
         return Inertia::render('ProjectArea/TasksManagement/newTask', [
-            'projects' => Project::all(),
-            'project_id'=> $project_id,
+            'project'=> Project::find($project_id),
             'tasks' => Tasks::all(),
         ]);
     }

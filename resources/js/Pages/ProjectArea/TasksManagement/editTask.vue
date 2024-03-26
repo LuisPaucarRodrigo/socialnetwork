@@ -9,8 +9,8 @@
             <div class="max-h-40 overflow-y-auto">
                 <h1>Observaciones</h1>
                 <dd v-for="(comment, index) in comments.slice().reverse()" :key="comment.id"
-                    class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {{ comment.comment }}
+                    class="mt-1 text-md leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    - {{ comment.comment }}
                 </dd>
             </div>
             <div class="flex flex-col sm:flex-row items-center mt-5">
@@ -71,7 +71,7 @@
             <div class="mt-6 flex items-center justify-end gap-x-6">
                 <button type="submit" v-if="auth.user.role_id === 1 && tasks.status === 'pendiente'"
                     @click="openModalDelete()"
-                    class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Eliminar</button>
+                    class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Eliminar tarea</button>
             </div>
         </div>
 
