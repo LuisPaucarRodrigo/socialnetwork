@@ -14,6 +14,9 @@
                   Cotización de Anteproyecto: S/. {{ props.project.preproject_quote.toFixed(2) }}
               </p>
               <p  class="text-xl font-semibold text-gray-700">
+                  Cotización de Anteproyecto sin Margen: S/. {{ props.project.preproject_quote_no_margin.toFixed(2) }}
+              </p>
+              <p  class="text-xl font-semibold text-gray-700">
                   Presupuesto Inicial: S/. {{ props.project.initial_budget.toFixed(2) }}
               </p>
             </div>
