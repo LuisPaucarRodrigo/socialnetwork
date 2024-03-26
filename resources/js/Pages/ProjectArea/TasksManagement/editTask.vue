@@ -1,11 +1,11 @@
 <template>
     <Head title="Tarea" />
-    <AuthenticatedLayout :redirectRoute="{ route: 'tasks.index', params: { id: tasks.id } }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'tasks.index', params: { id: tasks.project_id } }">
         <template #header>
             Tarea: {{ tasks.task }}
         </template>
 
-        <div class="mt-6 mx-3 border-t border-gray-100">
+        <div class="mt-6  border-t border-gray-100">
             <div class="max-h-40 overflow-y-auto">
                 <h1>Observaciones</h1>
                 <dd v-for="(comment, index) in comments.slice().reverse()" :key="comment.id"
@@ -13,7 +13,7 @@
                     {{ comment.comment }}
                 </dd>
             </div>
-            <div class="mb-4 flex flex-col sm:flex-row items-center mt-5">
+            <div class="flex flex-col sm:flex-row items-center mt-5">
                 <div class="relative flex-grow flex">
                     <textarea id="description" rows="2" v-model="newcomment.comment" placeholder="Agregar Observaciones"
                         @keyup.enter="addComment"
@@ -28,17 +28,17 @@
                     </button>
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-4 m-5 mb-10">
+            <div class="grid grid-cols-2 gap-4 mt-8 mb-10">
                 <!-- Columna 1 - Fecha de Inicio -->
                 <div>
-                    <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
-                    <p id="startDate" class="text-sm text-gray-500">{{ formattedDate(tasks.start_date) }}</p>
+                    <label for="startDate" class="block text-md font-medium text-gray-700">Fecha de Inicio</label>
+                    <p id="startDate" class="text-md text-gray-500">{{ formattedDate(tasks.start_date) }}</p>
                 </div>
 
                 <!-- Columna 2 - Fecha de Fin -->
                 <div>
-                    <label for="endDate" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
-                    <p id="endDate" class="text-sm text-gray-500">{{ formattedDate(tasks.end_date) }}</p>
+                    <label for="endDate" class="block text-md font-medium text-gray-700">Fecha de Fin</label>
+                    <p id="endDate" class="text-md text-gray-500">{{ formattedDate(tasks.end_date) }}</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
@@ -167,6 +167,8 @@ const props = defineProps({
     added_employees: Object,
     auth: Object
 })
+
+console.log(props.tasks)
 
 const { tasks } = props;
 const newcomment = useForm({
