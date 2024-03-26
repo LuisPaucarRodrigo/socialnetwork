@@ -19,9 +19,8 @@ class TaskManagementController extends Controller
 {
     public function index($id = null){
         $projectId = $id;
-        $tasks = Tasks::where('project_id', $projectId)->paginate(5);
+        $tasks = Tasks::where('project_id', $projectId)->paginate(10);
         return Inertia::render('ProjectArea/TasksManagement/index', [
-            'projects' => Project::all(),
             'tasks' => $tasks,
             'project_id' => $projectId,
         ]);

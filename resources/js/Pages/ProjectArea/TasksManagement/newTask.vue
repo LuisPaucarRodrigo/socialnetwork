@@ -1,11 +1,11 @@
 <template>
     <Head title="Tareas" />
-    <AuthenticatedLayout :redirectRoute="'tasks.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'tasks.index', params: { id: project_id } }">
         <template #header>
             Nueva Tarea
         </template>
         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div class="sm:col-span-2">
+            <!-- <div class="sm:col-span-2">
                 <label for="project" class="block text-sm font-medium text-gray-700">Proyecto</label>
                 <select v-model="form.project_id"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
@@ -13,9 +13,9 @@
                         {{ project.name }}
                     </option>
                 </select>
-            </div>
+            </div> -->
 
-            <div class="sm:col-span-3">
+            <div class="sm:col-span-4">
                 <label for="tasks" class="block text-sm font-medium text-gray-700">Tarea</label>
                 <input type="text" id="task" v-model="form.task"
                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
@@ -25,7 +25,7 @@
                 </datalist>
                 <InputError :message="form.errors.task" />
             </div>
-            <div class="sm:col-span-1">
+            <div class="sm:col-span-2">
                 <label for="task" class="block text-sm font-medium text-gray-700">Porcentaje</label>
                 <div class="flex">
                     <input type="number" id="percentage" v-model="form.percentage"
@@ -90,7 +90,7 @@ const { projects, tasks, project_id } = defineProps({
 console.log(project_id)
 
 const form = useForm({
-    project_id: '',
+    project_id: project_id,
     task: '',
     percentage: '',
     start_date: '',
