@@ -198,8 +198,6 @@ function openPreviewDocumentModal(id) {
   window.open(url, '_blank');
 }
 
-
-
 </script>
   
     

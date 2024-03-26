@@ -1,47 +1,67 @@
 <template>
+
     <Head title="Ver Programa de Formación" />
 
     <AuthenticatedLayout :redirectRoute="'management.employees.formation_development.formation_programs'">
         <template #header>
             Ver Programa de Formación
         </template>
-        <div class="px-4 sm:px-0">
+        <div class="sm:px-0">
             <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Informacion del Programa de Formacion</p>
         </div>
-        <div class="mt-6 border-t border-gray-100">
+        <div class="border-t border-gray-100">
             <dl class="divide-y divide-gray-100">
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Nombre del Programa</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formation_program.name }}</dd>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formation_program.name }}
+                    </dd>
                 </div>
-                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div class="py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Descripcion</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formation_program.description
-                    }}</dd>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                        {{ formation_program.description }}
+                    </dd>
                 </div>
+                <div>
+                    <div class="text-sm font-medium leading-6 text-gray-900 mb-3">Capacitaciones</div>
+                    <div v-for="training in formation_program.trainings" :key="training.id" class="mb-1">
+                        <p class="mt-1 text-sm leading-6 text-gray-700">- {{ training.name }}</p>
+                    </div>
+                </div>
+
                 <!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Fecha</dt>
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formatMonthYear(formation_program.month_year)
                     }}</dd>
                 </div> -->
-                <div class="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
+                <br>
+                <p class="font-medium text-sm">Empleados:</p>
+                <div class="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-x-24 sm:gap-y-8 sm:px-0">
                     <!-- Capacitaciones -->
-                    <div>
-                        <div class="text-sm font-medium leading-6 text-gray-900 mb-3">Capacitaciones</div>
-                        <div v-for="training in formation_program.trainings" :key="training.id" class="mb-1">
-                            <p class="mt-1 text-sm leading-6 text-gray-700">- {{ training.name }}</p>
-                        </div>
-                    </div>
 
                     <!-- Empleados -->
                     <div>
-                        <div class="text-sm font-medium leading-6 text-gray-900 mb-3">Empleados</div>
-                        <div v-for="employee in formation_program.employees" :key="employee.id"
-                            class="flex items-center justify-between mt-1 text-sm leading-6 text-gray-700 sm:mt-0">
+                        <div class="text-sm font-normal leading-6 text-gray-900 mb-3">Actualmente en el programa</div>
+                        <div v-for="employee in formation_program.employees.filter(item=>item.pivot.state === null)" :key="employee.id"
+                            class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0 border-b-2 border-gray-200">
                             <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
                             <button @click="openModalDelete(employee)" class="ml-2 flex-shrink-0">
                                 <TrashIcon class="h-5 w-5 text-red-500" />
                             </button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm font-normal leading-6 text-green-600 mb-3">Completaron el programa</div>
+                        <div v-for="employee in formation_program.employees.filter(item=>item.pivot.state == true)" :key="employee.id"
+                            class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0">
+                            <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm font-normal leading-6 text-red-600 mb-3">No completaron el programa</div>
+                        <div v-for="employee in formation_program.employees.filter(item=>item.pivot.state == false)" :key="employee.id"
+                            class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0">
+                            <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
                         </div>
                     </div>
                 </div>
@@ -68,35 +88,31 @@
                     </button>
                     <button
                         class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="button" @click="delete_employee(selectedEmployee.id)"> Eliminar
+                        type="button" @click="delete_employee(selectedEmployee.pivot.id)"> Eliminar
                     </button>
                 </div>
             </div>
         </Modal>
     </AuthenticatedLayout>
 </template>
-  
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
-import Swal from 'sweetalert2';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 
 const { formation_program } = defineProps(['formation_program']);
 
 const delete_employee = (id) => {
-    router.post(`/management_employees/formation_development/delete-employee/`,
-        {
-            formation_program_id: formation_program.id,
-            employee_id: id
-        }
-        , {
-            onSuccess: () => {
-                closeModal()
-            },
-        })
+    console.log(id)
+    router.delete(route('management.employees.formation_development.employee.delete',
+        { efp_id: id }), {
+        onSuccess: () => {
+            closeModal()
+        },
+    })
 }
 
 const showModalDelete = ref(false);
@@ -111,4 +127,3 @@ const closeModal = () => {
 }
 
 </script>
-  
