@@ -81,10 +81,13 @@ import InputError from '@/Components/InputError.vue'
 import { Head, useForm } from '@inertiajs/vue3';
 
 
-const { projects, tasks } = defineProps({
+const { projects, tasks, project_id } = defineProps({
     projects: Object,
-    tasks: Object
+    tasks: Object,
+    project_id: String,
 })
+
+console.log(project_id)
 
 const form = useForm({
     project_id: '',

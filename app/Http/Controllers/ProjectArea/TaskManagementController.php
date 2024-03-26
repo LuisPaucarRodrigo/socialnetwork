@@ -28,9 +28,10 @@ class TaskManagementController extends Controller
     }
 
 
-    public function new(){   
+    public function new($project_id){   
         return Inertia::render('ProjectArea/TasksManagement/newTask', [
             'projects' => Project::all(),
+            'project_id'=> $project_id,
             'tasks' => Tasks::all(),
         ]);
     }
