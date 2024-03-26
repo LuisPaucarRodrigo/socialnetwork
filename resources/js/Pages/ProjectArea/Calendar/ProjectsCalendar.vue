@@ -42,7 +42,6 @@ const props = defineProps({
   projects: Object,
 });
 
-console.log(props.projects);
 
 const handleDateClick = (arg) => {
   alert('date click! ' + arg.dateStr);

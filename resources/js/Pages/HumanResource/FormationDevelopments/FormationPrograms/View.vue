@@ -106,7 +106,6 @@ import { ref } from 'vue';
 const { formation_program } = defineProps(['formation_program']);
 
 const delete_employee = (id) => {
-    console.log(id)
     router.delete(route('management.employees.formation_development.employee.delete',
         { efp_id: id }), {
         onSuccess: () => {

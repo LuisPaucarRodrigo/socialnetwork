@@ -202,7 +202,7 @@
                                                         <p class="text-gray-900">{{ item.quantity }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900"> S/. {{ item.unitary_price }}</p>
+                                                        <p class="text-gray-900"> S/. {{ (item.unitary_price).toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">{{ item.profit_margin }} %
@@ -320,12 +320,12 @@
                                                         <p class="text-gray-900">{{ item.quantity }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">S/.{{ item.unit_price }}
+                                                        <p class="text-gray-900">S/.{{ (item.unit_price).toFixed(2) }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">S/.{{
-        (item.unit_price * item.quantity).toFixed(2) }}</p>
+        (item.unit_price * item.quantity * item.days).toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <div v-if="auth.user.role_id === 1 || preproject.quote === null"
@@ -622,8 +622,6 @@ const submit = () => {
         }
     })
 }
-
-
 
 const showModalMember = ref(false);
 const showConfirmAccept = ref(false);
