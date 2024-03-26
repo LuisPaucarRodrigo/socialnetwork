@@ -135,7 +135,6 @@
             </Modal>
 
             <Modal :show="showReason" :maxWidth="'md'">
-                <!-- Contenido del modal cuando no hay empleados -->
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
                         Razón o Motivo

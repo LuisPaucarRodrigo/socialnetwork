@@ -434,7 +434,7 @@ Route::middleware('auth', 'permission:ProjectManager')->group(function () {
 
     //Tasks Management
     Route::get('/tasks/{id?}', [TaskManagementController::class, 'index'])->name('tasks.index');
-    Route::get('/newtask', [TaskManagementController::class, 'new'])->name('tasks.new');
+    Route::get('/newtask/{project_id?}', [TaskManagementController::class, 'new'])->name('tasks.new');
     Route::post('/createtask', [TaskManagementController::class, 'create'])->name('tasks.create');
     Route::get('/edittask/{taskId}', [TaskManagementController::class, 'edit'])->name('tasks.edit');
     Route::post('/edittask/comment', [TaskManagementController::class, 'comment'])->name('tasks.edit.comment');

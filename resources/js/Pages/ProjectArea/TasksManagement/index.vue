@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Tareas" />
-    <AuthenticatedLayout :redirectRoute="'tasks.index'">
+    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template #header>
             Tareas
         </template>
@@ -126,7 +126,7 @@ const props = defineProps({
 })
 const selectedProjectId = ref(props.project_id);
 const addTask = () => {
-    router.get(route('tasks.new'));
+    router.get(route('tasks.new', { project_id: props.project_id  }));
 };
 const edittask = (taskId) => {
     router.get(route('tasks.edit', { taskId: taskId }));
