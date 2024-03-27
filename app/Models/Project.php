@@ -26,12 +26,12 @@ class  Project extends Model
         return $this->belongsTo(Preproject::class, 'preproject_id');
     }
     public function getPreprojectQuoteAttribute(){
-        return $this->preproject->quote->total_amount;
+        return $this->preproject?->quote?->total_amount;
     }
     
 
     public function getNameAttribute() {
-        return $this->preproject()->first()?->quote->name;
+        return $this->preproject()->first()?->quote?->name;
     }
 
     
