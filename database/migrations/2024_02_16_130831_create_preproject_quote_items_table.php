@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('days');
             $table->integer('quantity');
             $table->double('unit_price');
+            $table->double('profit_margin');
             $table->foreignId('preproject_quote_id')->constrained('preproject_quotes')->onDelete('cascade');
             $table->timestamps();
         });
