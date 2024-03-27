@@ -75,8 +75,7 @@
                                     entrega (días)
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="number" v-model="form.deliverable_time" id="deliverable_time"
-                                        min="1"
+                                    <input type="number" v-model="form.deliverable_time" id="deliverable_time" min="1"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.deliverable_time" />
                                 </div>
@@ -102,7 +101,8 @@
                                 </div>
                             </div>
                             <div class="sm:col-span-3">
-                                <InputLabel for="deliverable_place" class="font-medium leading-6 text-gray-900">Lugar de entrega
+                                <InputLabel for="deliverable_place" class="font-medium leading-6 text-gray-900">Lugar de
+                                    entrega
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput v-model="form.deliverable_place" id="deliverable_place"
@@ -114,7 +114,7 @@
                                 <InputLabel for="payment_type" class="font-medium leading-6 text-gray-900">Tipo de pago
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput v-model="form.payment_type" id="payment_type" 
+                                    <TextInput v-model="form.payment_type" id="payment_type"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.payment_type" />
                                 </div>
@@ -204,21 +204,32 @@
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">{{ item.quantity }}</p>
-                                                    </td>
-                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900"> S/. {{ (item.unitary_price).toFixed(2) }}</p>
-                                                    </td>
-                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">{{ item.profit_margin }} %
+                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                            {{ item.quantity }}
                                                         </p>
+                                                        <TextInput v-else type="text"
+                                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                            S/. {{ (item.unitary_price).toFixed(2) }}
+                                                        </p>
+                                                        <TextInput v-else type="text"
+                                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                            {{ item.profit_margin }} %
+                                                        </p>
+                                                        <TextInput v-else type="text"
+                                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{ (item.unitary_price *
-                                                                    item.quantity *
-                                                                    (1 + (item.profit_margin) / 100))
-                                                                    .toFixed(2) }}</p>
+                                                            item.quantity *
+                                                            (1 + (item.profit_margin) / 100))
+                                                            .toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <div v-if="auth.user.role_id === 1 || preproject.quote === null"
@@ -332,11 +343,11 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{
-                                                                (item.unit_price * 
-                                                                item.quantity * 
-                                                                item.days * 
-                                                                (1+item.profit_margin/100))
-                                                                .toFixed(2) }}
+        (item.unit_price *
+            item.quantity *
+            item.days *
+            (1 + item.profit_margin / 100))
+            .toFixed(2) }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -437,8 +448,8 @@
                                 IGV)
                             </InputLabel>
                             <div class="mt-2">
-                                <input required type="number" v-model="productToAdd.unitary_price" min="0"
-                                    step="0.01" id="unitary_price"
+                                <input required type="number" v-model="productToAdd.unitary_price" min="0" step="0.01"
+                                    id="unitary_price"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -447,8 +458,8 @@
                                 Margen (%)
                             </InputLabel>
                             <div class="mt-2 flex gap-3 items-center">
-                                <input required type="number" v-model="productToAdd.profit_margin" min="0"
-                                    step="0.01" id="profit_margin"
+                                <input required type="number" v-model="productToAdd.profit_margin" min="0" step="0.01"
+                                    id="profit_margin"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -485,6 +496,8 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option value="Unidad">Unidad</option>
+                                    <option value="Unidad">Kilos</option>
+                                    <option value="Unidad">Metros</option>
                                     <option value="GLB">GLB</option>
                                 </select>
                             </div>
@@ -578,16 +591,58 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const showModal = ref(false)
 const showErroModal = ref(false)
 
-const { preproject, auth, products } = defineProps({
+const { preproject, auth, products, purchasing_requests } = defineProps({
     products: Object,
     preproject: Object,
+    purchasing_requests: Object,
     auth: Object
 })
+
 
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
     message: `La cotización para anteproyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
 })
+
+function productListMaker(purReqArray) {
+    let ids = []
+    purReqArray.forEach(item => {
+        item.products.forEach(prod => {
+            if (!ids.includes(prod.id)) {
+                ids.push(prod.id)
+            }
+        })
+    });
+    return ids
+}
+let ids = productListMaker(purchasing_requests)
+
+const initalProductState = {
+    purchase_product_id: '',
+    purchase_product: {
+        code: '',
+        name: '',
+        unit: '',
+    },
+    quantity: '',
+    unitary_price: '',
+    profit_margin: '',
+}
+
+console.log(products.map(item => {
+        if (ids.includes(item.id)) {
+            return { ...initalProductState, 
+                    purchase_product: {
+                        code: item.code, 
+                        name: item.name, 
+                        unit:item.unit
+                    }
+                    };
+        } else {
+            return null;
+        }
+    }).filter(item => item !== null))
+
 
 
 const initialState = {
@@ -602,7 +657,19 @@ const initialState = {
     payment_type: '',
     observations: '',
     items: [],
-    products: [],
+    products: products.map(item => {
+        if (ids.includes(item.id)) {
+            return { ...initalProductState, 
+                    purchase_product: {
+                        code: item.code, 
+                        name: item.name, 
+                        unit:item.unit
+                    }
+                    };
+        } else {
+            return null;
+        }
+    }).filter(item => item !== null),
     preproject_id: preproject.id
 }
 
@@ -665,8 +732,8 @@ const closeModal = () => {
 const addItem = () => {
     if (preproject.quote) {
         axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
-            .then(response=>{
-                if (response.status = 200){
+            .then(response => {
+                if (response.status = 200) {
                     itemToAdd.value.id = response.data.id
                     showItemAddModal.value = true
                     setTimeout(() => {
@@ -677,9 +744,8 @@ const addItem = () => {
                     });
                 }
             })
-            .catch(e=>console.log(e))        
+            .catch(e => console.log(e))
     } else {
-        console.log(itemToAdd.value)
         form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
         itemToAdd.value = JSON.parse(JSON.stringify(itemInitialState))
     }
@@ -731,17 +797,7 @@ const showProductAddModal = ref(false);
 const showProductRemoveModal = ref(false);
 
 const showProductModal = ref(false)
-const initalProductState = {
-    purchase_product_id: '',
-    purchase_product: {
-        code: '',
-        name: '',
-        unit: '',
-    },
-    quantity: '',
-    unitary_price: '',
-    profit_margin: '',
-}
+
 
 const productToAdd = ref(JSON.parse(JSON.stringify(initalProductState)))
 
@@ -817,6 +873,5 @@ function deleteProduct(index, id) {
         form.products.splice(index, 1)
     }
 }
-
 
 </script>
