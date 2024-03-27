@@ -110,9 +110,14 @@ class PreProjectController extends Controller
 
     public function quote($preproject_id) {
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
-            'preproject' => Preproject::with('quote.items', 'quote.products.purchase_product')->find($preproject_id),
+            'preproject' => Preproject::with(
+                'quote.items', 
+                'quote.products.purchase_product'
+                )
+                ->find($preproject_id),
             'products' => Purchase_product::all(),
-
+            'purchasing_requests' => Purchasing_request::with('products')
+                ->where('preproject_id', $preproject_id)->get()
         ]);
     }
 
