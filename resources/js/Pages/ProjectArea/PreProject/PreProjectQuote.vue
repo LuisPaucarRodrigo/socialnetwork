@@ -135,6 +135,7 @@
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Productos
                                     </h2>
+                                    
                                     <button v-if="auth.user.role_id === 1 || preproject.quote === null"
                                         @click="openProductModal" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -145,6 +146,7 @@
                                         </svg>
                                     </button>
                                 </div>
+                                <p class="text-sm my-2">Se muestran productos de las solicitudes de compra</p>
                                 <div class="mt-2">
                                     <div class="overflow-x-auto mt-8">
                                         <table class="w-full">
@@ -207,22 +209,44 @@
                                                         <p v-if="preproject.quote" class="text-gray-900">
                                                             {{ item.quantity }}
                                                         </p>
-                                                        <TextInput v-else type="text"
-                                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        <div v-else class="flex space-x-2 items-center">
+                                                            <input  
+                                                               required
+                                                               type="number" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               v-model="item.quantity"
+                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        </div>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p v-if="preproject.quote" class="text-gray-900">
                                                             S/. {{ (item.unitary_price).toFixed(2) }}
                                                         </p>
-                                                        <TextInput v-else type="text"
-                                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        <div v-else class="flex space-x-2 items-center">
+                                                            <span>S/.</span><input  
+                                                               required
+                                                               type="number" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               v-model="item.unitary_price"
+                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        </div>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p v-if="preproject.quote" class="text-gray-900">
                                                             {{ item.profit_margin }} %
                                                         </p>
-                                                        <TextInput v-else type="text"
-                                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        <div v-else class="flex space-x-2 items-center">
+                                                            <input  
+                                                               required
+                                                               type="number" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               v-model="item.profit_margin"
+                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                               <span>%</span>
+                                                        </div>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
@@ -629,21 +653,6 @@ const initalProductState = {
     profit_margin: '',
 }
 
-console.log(products.map(item => {
-        if (ids.includes(item.id)) {
-            return { ...initalProductState, 
-                    purchase_product: {
-                        code: item.code, 
-                        name: item.name, 
-                        unit:item.unit
-                    }
-                    };
-        } else {
-            return null;
-        }
-    }).filter(item => item !== null))
-
-
 
 const initialState = {
     name: '',
@@ -660,6 +669,7 @@ const initialState = {
     products: products.map(item => {
         if (ids.includes(item.id)) {
             return { ...initalProductState, 
+                    purchase_product_id: item.id,
                     purchase_product: {
                         code: item.code, 
                         name: item.name, 
