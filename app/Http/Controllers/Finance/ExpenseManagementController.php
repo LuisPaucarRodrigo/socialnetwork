@@ -69,7 +69,6 @@ class ExpenseManagementController extends Controller
                 'purchase_quote_id' => $id
             ]);
         }
-        return to_route('managementexpense.index');
     }
 
     public function doTask()

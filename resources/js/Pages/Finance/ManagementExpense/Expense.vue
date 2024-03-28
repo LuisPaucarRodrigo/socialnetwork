@@ -179,6 +179,9 @@ const expenses = ref(props.expenses);
 const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), { state }, {
         preserveScroll: true,
+        onSuccess:() => {
+            router.visit(route('managementexpense.index'))
+        }
     });
 };
 

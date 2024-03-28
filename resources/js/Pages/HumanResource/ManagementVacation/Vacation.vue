@@ -206,13 +206,13 @@
         <Modal :show="showModalAbsent">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Ausente
+                    Incumplimiento
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
                             <div>
-                                <InputLabel for="coment" class="font-medium leading-6 text-gray-900">Comentario
+                                <InputLabel for="coment" class="font-medium leading-6 text-gray-900">Ingrese la razón o motivo por el cual el trabajador no cumplio con lo acordado
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="form.coment" id="coment"
