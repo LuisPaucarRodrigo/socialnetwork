@@ -81,7 +81,6 @@
                                     <EyeIcon class="h-4 w-4 ml-1" />
                                     </Link>
                                 </td>
-
                             </template>
                         </tr>
                     </tbody>

@@ -29,9 +29,11 @@ class PreprojectQuoteRequest extends FormRequest
             "rev" => 'required',
             "deliverable_time" => 'required',
             "validity_time" => 'required',
-            "observations" => 'required',
+            'deliverable_place' => 'required',
+            'payment_type' => 'required',
+            "observations" => 'nullable',
             'preproject_id' => 'required',
-            "items" => ['required_without:products', 'array'], 
+            "items" => ['required_without:products', 'array'],
             "products" => ['required_without:items', 'array'],
         ];
     }

@@ -109,9 +109,14 @@ class PreProjectController extends Controller
 
     public function quote($preproject_id) {
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
-            'preproject' => Preproject::with('quote.items', 'quote.products.purchase_product')->find($preproject_id),
+            'preproject' => Preproject::with(
+                'quote.items', 
+                'quote.products.purchase_product'
+                )
+                ->find($preproject_id),
             'products' => Purchase_product::all(),
-
+            'purchasing_requests' => Purchasing_request::with('products')
+                ->where('preproject_id', $preproject_id)->get()
         ]);
     }
 
@@ -263,6 +268,7 @@ class PreProjectController extends Controller
         $path = public_path($file_path);
         if (file_exists($path)) unlink($path);
     }
+    
     public function file_store($file, $path)
     {
         $name = time() . '_' . $file->getClientOriginalName();
@@ -277,19 +283,29 @@ class PreProjectController extends Controller
         $filePath = "documents/photoreports/$fileName";
         $path = public_path($filePath);
         if (file_exists($path)) {
-            return response()->download($filePath, $fileName);
+            return response()->download($path, $fileName);
         }
         abort(404, 'Documento no encontrado');
     }
 
 
-    public function showPR($report_name)
-    {
-        $fileName = $report_name;
+    public function download_pdf_PR(PhotoReport $pr_id){
+        $fileName = $pr_id->pdf_report;
+        $filePath = "documents/photoreports/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            return response()->download($path, $fileName);
+        }
+        abort(404, 'Documento no encontrado');
+    }
+
+
+    public function showPR(PhotoReport $pr_id) {
+        $fileName = $pr_id->pdf_report;
         $filePath = 'documents/photoreports/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
-            return response()->file($path);
+            return response()->file($path, ['title' => $fileName]);
         }
         abort(404, 'Documento no encontrado');
     }

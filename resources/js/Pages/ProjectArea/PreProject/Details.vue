@@ -252,9 +252,9 @@
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton @click="closeModalQuoteDeadLine"> Cancel </SecondaryButton>
 
-                        <DangerButton type="submit" class="ml-3" :class="{ 'opacity-25': form.processing }">
+                        <PrimaryButton type="submit" class="ml-3" :class="{ 'opacity-25': form.processing }">
                             Guardar
-                        </DangerButton>
+                        </PrimaryButton>
                     </div>
                 </div>
             </form>
@@ -268,11 +268,11 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
-import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     expense: Object,
@@ -284,7 +284,7 @@ const props = defineProps({
 
 const quote_deadline = ref(false)
 const form = useForm({
-    due_date: '',
+    due_date: props.expense.purchasing_requests.due_date,
     quote_deadline: '',
     quote_id: ''
 })
@@ -324,7 +324,6 @@ function closeModalQuoteDeadLine() {
 
 function submit() {
     form.quote_id = props.expense.id
-    form.due_date = props.expense.purchasing_requests.due_date
     form.post(route('projectmanagement.update_quotedeadline'), {
         onSuccess: () => {
             router.get(route('purchasesrequest.quote_deadline.complete', { id: props.expense.purchasing_requests.project_id }))

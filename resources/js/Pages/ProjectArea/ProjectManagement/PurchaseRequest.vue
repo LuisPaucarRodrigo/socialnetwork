@@ -174,9 +174,9 @@
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModalDate"> Cancel </SecondaryButton>
 
-                    <DangerButton class="ml-3" @click="addDueDate()">
+                    <PrimaryButton class="ml-3" @click="addDueDate()">
                         Guardar
-                    </DangerButton>
+                    </PrimaryButton>
                 </div>
             </div>
         </Modal>
@@ -195,6 +195,7 @@ import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const confirmingPurchasesDeletion = ref(false);
 const showError = ref(false)

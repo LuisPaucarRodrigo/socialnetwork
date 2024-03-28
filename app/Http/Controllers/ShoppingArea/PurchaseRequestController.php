@@ -189,7 +189,7 @@ class PurchaseRequestController extends Controller
 
     public function search($request)
     {
-        $searchTerm = strtolower($request); // Convertir a minúsculas
+        $searchTerm = strtolower($request);
 
         $purchasing_requests_by_title = Purchasing_request::where(function ($query) use ($searchTerm) {
             $query->whereRaw('LOWER(title) like ?', ['%' . $searchTerm . '%'])

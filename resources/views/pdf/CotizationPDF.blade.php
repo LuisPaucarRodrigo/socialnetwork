@@ -132,11 +132,13 @@
             <td class="td-custom" style="text-align: center">{{ $item->unit }}</td>
             <td class="td-custom" style="text-align: center">{{ number_format($item->days, 2) }}</td>
             <td class="td-custom" style="text-align: center">{{ number_format($item->quantity, 2) }}</td>
-            <td class="td-custom" style="text-align: right">S/. {{ number_format($item->unit_price, 2) }}</td>
-            <td class="td-custom" style="text-align: right">S/. {{ number_format(($item->quantity * $item->unit_price), 2) }}</td>
+            <td class="td-custom" style="text-align: right">S/. {{ number_format($item->unit_price *(1+ $item->profit_margin/100), 2) }}</td>
+            <td class="td-custom" style="text-align: right">
+              S/. {{ number_format(($item->quantity * $item->unit_price * $item->days *(1+ $item->profit_margin/100)), 2) }}
+            </td>
           </tr>
           @php
-            $subtotal += $item->quantity * $item->unit_price; // Suma al total el producto quantity * unit_price
+            $subtotal += $item->quantity * $item->unit_price  * $item->days *(1+ $item->profit_margin/100); 
           @endphp
           @endforeach
           @php
