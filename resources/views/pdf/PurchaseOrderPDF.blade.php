@@ -40,30 +40,29 @@
     <table style="width: 100%; margin-top: 30px">
         <tr>
             <td style="width: 300px;  padding-right: 50px">
-                <div style="padding-left: 5px;">
+                <div style="padding-left: 5px; line-height: 1;">
                     <p style="font-size: 14px; font-weight: bold; line-height: 0.5;">Facturar a:</p>
                     <p style="font-size: 14px; line-height: 0.5;">CONPROCO S.R.L.</p>
                     <p style="font-size: 14px; line-height: 0.5;">RUC: 20559246272</p>
-                    <p style="font-size: 14px; line-height: 1;">CAL.PERAL NRO. 119 INT. 102 --- (FRENTE CONTRALORIA) AREQUIPA - AREQUIPA - AREQUIPA</p>
-                    <p style="margin-top: 30px; font-size: 14px; font-weight: bold; line-height: 0.5;">Enviar a:</p>
+                    <p style="font-size: 14px;">CAL.PERAL NRO. 119 INT. 102 --- (FRENTE CONTRALORIA) AREQUIPA - AREQUIPA - AREQUIPA</p>
+                    <p style="margin-top: 10px; font-size: 14px; font-weight: bold;">Enviar a:</p>
                     <p style="font-size: 14px; line-height: 0.5;">CONPROCO S.R.L.</p>
-                    <p style="font-size: 14px; line-height: 1;">CAL.PERAL NRO. 119 INT. 102 --- (FRENTE CONTRALORIA) AREQUIPA - AREQUIPA - AREQUIPA</p>
+                    <p style="font-size: 14px;">CAL.PERAL NRO. 119 INT. 102 --- (FRENTE CONTRALORIA) AREQUIPA - AREQUIPA - AREQUIPA</p>
                     <p style="font-size: 14px; line-height: 0.5;">AREQUIPA</p>
                     <p style="font-size: 14px; line-height: 0.5;">Perú</p>
-                    <p style="margin-top: 30px; font-size: 14px; line-height: 0.5; font-weight: bold">Tipo de Pago: </p>
-                    <p style="font-size: 14px; line-height: 0.5;">{{ $purchase_order->purchase_quote->payment_type }}</p> 
-                </div>
-                
+                    <p style="margin-top: 10px; font-size: 14px; font-weight: bold">Tipo de Pago: </p>
+                    <p style="font-size: 14px;">{{ $purchase_order->purchase_quote->payment_type }}</p> 
+                </div> 
             </td>
             <td style="display: flex; justify-content: flex-start; align-content: flex-start; width: 325px; margin-left: 10px">
                 <div style="border: 1px solid #000;">
-                    <p style="padding-top: 15px; margin-right: 60px; padding-left: 5px; line-height: 0.5;">A: </p>
-                    <p style="margin-right: 60px; padding-left: 5px; line-height: 0.5;">{{ $purchase_order->purchase_quote->provider->company_name }}</p>
-                    <p style="margin-right: 60px; padding-left: 5px; line-height: 0.5;">RUC: {{ $purchase_order->purchase_quote->provider->ruc }}</p>
-                    <p style="margin-right: 60px; padding-left: 5px; line-height: 0.5;">Dirección: {{ $purchase_order->purchase_quote->provider->address }}</p>
-                    <p style="margin-right: 60px; padding-left: 5px; line-height: 0.5;">Cel: {{ $purchase_order->purchase_quote->provider->phone1 }}</p>
-                    <p style="margin-right: 60px; padding-left: 5px; line-height: 0.5;">Contacto: {{ $purchase_order->purchase_quote->provider->contact_name }}</p>
-                    <p style="margin-right: 60px; padding-left: 5px; line-height: 0.5;">Email: {{ $purchase_order->purchase_quote->provider->email }}</p>
+                    <p style="padding-top: 15px; font-size: 14px; margin-right: 60px; padding-left: 5px; line-height: 0.5; font-weight: bold;">A: </p>
+                    <p style="margin-right: 60px; font-size: 14px; padding-left: 5px; line-height: 0.5; font-weight: bold;">{{ $purchase_order->purchase_quote->provider->company_name }}</p>
+                    <p style="margin-right: 60px; font-size: 14px; padding-left: 5px; line-height: 0.5;">RUC: <span style="font-weight: bold;">{{ $purchase_order->purchase_quote->provider->ruc }}</span></p>
+                    <p style="margin-right: 60px; font-size: 14px; padding-left: 5px; line-height: 0.5;">Dirección: <span style="font-weight: bold;">{{ $purchase_order->purchase_quote->provider->address }}</span></p>
+                    <p style="margin-right: 60px; font-size: 14px; padding-left: 5px; line-height: 0.5;">Cel: {{ $purchase_order->purchase_quote->provider->phone1 }}</p>
+                    <p style="margin-right: 60px; font-size: 14px; padding-left: 5px; line-height: 0.5;">Contacto: {{ $purchase_order->purchase_quote->provider->contact_name }}</p>
+                    <p style="margin-right: 60px; font-size: 14px; padding-left: 5px; line-height: 0.5;">Email: {{ $purchase_order->purchase_quote->provider->email }}</p>
 
                 </div>
             </td>
