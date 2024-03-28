@@ -62,7 +62,7 @@ class PurchaseProductsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|unique:purchase_products',
             'unit' => 'required',
             'type' => 'required'
         ]);

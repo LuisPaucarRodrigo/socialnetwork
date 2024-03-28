@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 
 class PurchaseOrdersController extends Controller
@@ -85,13 +86,11 @@ class PurchaseOrdersController extends Controller
         ]);
     }
 
-    public function purchase_orders_export($id)
+    public function purchase_orders_export(Purchase_order $id)
     {
-        $dompdf = new Dompdf();
-        $html = file_get_contents('ruta/a/tu/plantilla.html');
-        $dompdf->loadHtml($html);
-        $dompdf->render();
-        $pdfContent = $dompdf->output();
+        $purchase_order = $id->load('purchase_quote.provider','purchase_quote.purchasing_requests', 'purchase_quote.purchase_quote_products.purchase_product');
+        $pdf = Pdf::loadView('pdf.PurchaseOrderPDF', compact('purchase_order'));
+        return $pdf->stream();
     }
 
     public function showFacture(Purchase_order $id)
