@@ -1,9 +1,9 @@
 <template>
 
     <Head title="Gestion de Gastos Cuadrilla" />
-    <AuthenticatedLayout :redirectRoute="expense.quote_deadline ? 'managementexpense.index' : { route:'projectmanagement.purchases_quote.index', params: { project_id: expense.id }}">
+    <AuthenticatedLayout :redirectRoute="'managementexpense.index'">
         <template #header>
-            {{ expense.code }}
+            {{ expense.code }}dff
         </template>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
@@ -25,7 +25,7 @@
                     <p class="text-lg text-gray-900">{{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
         (expense.total_amount).toFixed(2) }}</p>
                 </div>
-                <div v-if="expense.quote_deadline" class="mb-4">
+                <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha Límite de Aprobación:</p>
                     <p class="text-lg text-gray-900">{{ formattedDate(expense.quote_deadline) }}</p>
                 </div>

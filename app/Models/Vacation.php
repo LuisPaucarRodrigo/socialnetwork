@@ -19,7 +19,8 @@ class Vacation extends Model
         'review_date',
         'doc_permission',
         'reason',
-        'status'
+        'status',
+        'coment'
         ];
     public function employee()
     {

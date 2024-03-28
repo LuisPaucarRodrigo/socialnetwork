@@ -11,14 +11,14 @@ class Purchasing_request extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 
-        'due_date', 
+        'title',
+        'due_date',
         'project_id',
         'preproject_id',
         'is_accepted',
     ];
 
-    protected $appends = ['state', 'code'];
+    protected $appends = ['state', 'code', 'state_quote'];
 
     public function project()
     {
@@ -30,17 +30,21 @@ class Purchasing_request extends Model
         return $this->belongsTo(Preproject::class, 'preproject_id');
     }
 
-    public function purchase_quotes()    {
+    public function purchase_quotes()
+    {
         return $this->hasMany(Purchase_quote::class);
     }
 
-    
-    public function getStateAttribute () {
+
+    public function getStateAttribute()
+    {
         if ($this->is_accepted === 0) return 'Rechazada';
         $quotes = $this->purchase_quotes()->get();
         if ($quotes->isEmpty()) return 'Pendiente';
         foreach ($quotes as $item) {
-            if ($item->state === null){ return 'En progreso';}
+            if ($item->state === null) {
+                return 'En progreso';
+            }
         }
         return 'Completada';
     }
@@ -52,12 +56,25 @@ class Purchasing_request extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Purchase_product::class, 'purchasing_requests_products', 'purchasing_request_id', 'purchase_product_id')->withPivot('id','quantity');
+        return $this->belongsToMany(Purchase_product::class, 'purchasing_requests_products', 'purchasing_request_id', 'purchase_product_id')->withPivot('id', 'quantity');
     }
 
-    public function getCodeAttribute() {
+    public function getCodeAttribute()
+    {
         return 'SC' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
 
-}
+    public function getStateQuoteAttribute()
+    {
+        $allComplete = true;
 
+        foreach ($this->purchase_quotes as $quote) {
+            if (empty($quote->quote_deadline)) {
+                $allComplete = false;
+                break;
+            }
+        }
+
+        return $allComplete;
+    }
+}

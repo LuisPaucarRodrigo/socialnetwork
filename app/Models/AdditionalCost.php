@@ -10,6 +10,11 @@ class AdditionalCost extends Model
     use HasFactory;
     protected $table = 'additional_costs';
     protected $fillable = [
+        'expense_type',
+        'ruc',
+        'type_doc',
+        'invoice_number',
+        'invoice_date',
         'description',
         'amount',
         'project_id'

@@ -172,7 +172,7 @@ function submit() {
         errorAmount.value = true
         setTimeout(() => {
             errorAmount.value = false
-        }, 1500)
+        }, 2000)
     }
 
 }
@@ -198,7 +198,7 @@ function addItem() {
             errorAmount.value = true
             setTimeout(() => {
                 errorAmount.value = false
-            }, 1500)
+            }, 2000)
         }
     }
 }

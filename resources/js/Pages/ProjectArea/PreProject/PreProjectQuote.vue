@@ -112,20 +112,7 @@
                                     <InputError :message="form.errors.observations" />
                                 </div>
                             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                            
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-4">
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Productos
@@ -231,16 +218,6 @@
                                 </div>
                                 <InputError :message="form.errors.products" />
                             </div>
-
-
-
-
-
-
-
-
-
-
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-10">
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Servicios
