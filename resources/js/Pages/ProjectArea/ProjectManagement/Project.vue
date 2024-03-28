@@ -79,6 +79,10 @@
                         :class="`text-gray-500 text-sm ${item.remaining_budget === 0 ? 'opacity-50 pointer-events-none' : ''}`">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link v-if="item.initial_budget >= 0"
+                                :href="route('tasks.index', { id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
+                            </Link>
+                            <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectscalendar.show', { project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
                             </Link>
@@ -93,11 +97,6 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
-                            <Link v-if="item.initial_budget >= 0"
-                                :href="route('projectmanagement.purchases_quote.index', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones
-                            </Link>
-                            <span v-else class="text-gray-400">Cotizaciones</span>
                             <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">

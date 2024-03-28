@@ -110,8 +110,6 @@ const props = defineProps({
     details: Object
 });
 
-console.log(props.details);
-
 function setBadgeColor(date, state) {
     const fechaString = date;
     const [year, month, day] = fechaString.split('-');

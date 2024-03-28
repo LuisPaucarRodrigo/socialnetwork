@@ -22,8 +22,8 @@
                         </path>
                     </svg>
                 </template>
-                Usuarios
-            </nav-link> -->
+Usuarios
+</nav-link> -->
             <template v-if="hasPermission('UserManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingUsersAndRols = !showingUsersAndRols">
@@ -43,15 +43,14 @@
                 </MyTransition>
             </template>
 
-            <template
-                v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
-                <a v-if="subSectionsCount + subSectionsCount7 > 0" 
-                    class="flex items-center mt-4 py-2 px-6 text-gray-100"
-                    href="#" 
+            <template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
+                <a v-if="subSectionsCount + subSectionsCount7 > 0 || permisionsCount + vacationCount > 0"
+                    class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingHumanResource = (showingMembers && showingMembers7) ? false : !showingHumanResource; showingMembers = showingMembers7 = false">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="w-6 h-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="red" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                            d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                     </svg>
                     <span class="mx-3">Recursos Humanos</span>
                 </a>
@@ -72,12 +71,53 @@
                 </MyTransition>
 
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('management.employees.formation_development')">Formacion y Desarrollo
+                    <Link class="w-full" :href="route('management.employees.formation_development')">Formacion y
+                    Desarrollo
                     </Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('management.vacation')">Vacaciones y Permisos</Link>
+                    <div class="relative">
+                        <button @click="alarmVacaPermisions">
+                            <span v-if="permisionsCount + vacationCount > 0"
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{ permisionsCount + vacationCount }}</span>
+                        </button>
+                        <Link class="w-full" :href="route('management.vacation')">Vacaciones y Permisos</Link>
+                    </div>
                 </MyTransition>
+                <!-- vacatioon permissions alarms -->
+                <template v-if="showingPermissionsAlarm && showingVacationAlarm">
+                    <div class="mb-4">
+                        <MyTransition v-for="item in permissionsPorVencer" :key="item.id" class="ml-4"
+                            :transitiondemonstration="showingPermissionsAlarm">
+                            <Link class="w-full flex items-center"
+                                :href="route('management.vacation.information.details', { vacation: item.id })">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-red" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                </svg>
+                                <span>{{ item.type }}</span>
+                            </div>
+                            </Link>
+                        </MyTransition>
+                        <MyTransition v-for="item in vacationPorVencer" :key="item.id" class="ml-4"
+                            :transitiondemonstration="showingVacationAlarm">
+                            <Link class="w-full flex items-center"
+                                :href="route('management.vacation.information.details', { vacation: item.id })">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                </svg>
+                                <span>{{ item.type }}</span>
+                            </div>
+                            </Link>
+                        </MyTransition>
+                    </div>
+                </template>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('documents.index')">Documentos</Link>
                 </MyTransition>
@@ -85,7 +125,7 @@
                     <div class="relative">
                         <button @click="toggleMembers"><span v-if="subSectionsCount + subSectionsCount7 > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
-                                    subSectionsCount + subSectionsCount7 }}</span></button>
+        subSectionsCount + subSectionsCount7 }}</span></button>
                         <Link class="w-full" :href="route('sections.subSections')">Alarmas RRHH</Link>
                     </div>
                 </MyTransition>
@@ -111,7 +151,7 @@
                                 :href="route('sections.subSection', { subSection: item.id })">
                             <div class="flex items-center">
                                 <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
                                 </svg>
@@ -123,8 +163,7 @@
                 </template>
             </template>
 
-            <template
-                v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
+            <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingInventory = !showingInventory">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -146,8 +185,8 @@
                 <a v-if="shoppingPurchasesTotal + shoppingPurchasesTotal7 > 0"
                     class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingShoppingArea = !showingShoppingArea">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red"
-                        class="w-6 h-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="red" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
@@ -170,7 +209,7 @@
                         <button @click="tooglePurchaseRequest"><span
                                 v-if="shoppingPurchasesTotal + shoppingPurchasesTotal7 > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
-                                    shoppingPurchasesTotal + shoppingPurchasesTotal7 }}</span></button>
+        shoppingPurchasesTotal + shoppingPurchasesTotal7 }}</span></button>
                         <Link class="w-full" :href="route('purchasesrequest.index')">Solicitudes</Link>
                     </div>
                 </MyTransition>
@@ -180,28 +219,30 @@
                             :transitiondemonstration="showShoppingPurchaseRequestAlarms">
                             <Link class="w-full flex items-center"
                                 :href="route('purchasingrequest.details', { id: item.id })">
-                                <div class="flex items-center"> <!-- Contenedor del ícono y el título -->
-                                    <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                                    </svg>
-                                    <span class="overflow-hidden whitespace-nowrap">{{ item.title }}</span> <!-- Estilo específico para el título -->
-                                </div>
+                            <div class="flex items-center"> <!-- Contenedor del ícono y el título -->
+                                <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                </svg>
+                                <span class="overflow-hidden whitespace-nowrap">{{ item.title }}</span>
+                                <!-- Estilo específico para el título -->
+                            </div>
                             </Link>
                         </MyTransition>
                         <MyTransition v-for="item in shoppingPurchases7" :key="item.id" class="ml-4"
                             :transitiondemonstration="showShoppingPurchaseRequestAlarms">
                             <Link class="w-full flex items-center"
                                 :href="route('purchasingrequest.details', { id: item.id })">
-                                <div class="flex items-center"> <!-- Contenedor del ícono y el título -->
-                                    <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                                    </svg>
-                                    <span class="overflow-hidden whitespace-nowrap">{{ item.title }}</span> <!-- Estilo específico para el título -->
-                                </div>
+                            <div class="flex items-center"> <!-- Contenedor del ícono y el título -->
+                                <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                </svg>
+                                <span class="overflow-hidden whitespace-nowrap">{{ item.title }}</span>
+                                <!-- Estilo específico para el título -->
+                            </div>
                             </Link>
                         </MyTransition>
                     </div>
@@ -212,7 +253,7 @@
                         <button @click="showPurchaseOrdersAlarms = !showPurchaseOrdersAlarms">
                             <span v-if="purchaseOrdersAlarms.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
-                                    purchaseOrdersAlarms.length }}</span>
+        purchaseOrdersAlarms.length }}</span>
                         </button>
                         <Link class="w-full" :href="route('purchaseorders.index')">Ordenes</Link>
                     </div>
@@ -224,7 +265,8 @@
                         <Link class="w-full flex items-center"
                             :href="route('purchaseorders.details', { purchase_order_id: item.id })">
                         <svg :class="`w-4 h-4 mr-2 ${item.critical ? 'text-red-600' : 'text-yellow-400'} dark:text-red`"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                            viewBox="0 0 20 20">
                             <path
                                 d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
                         </svg>
@@ -241,7 +283,8 @@
             </template>
 
             <template v-if="hasPermission('ProjectManager') || hasPermission('Project')">
-                <a v-if="cicsasubSectionsCount + cicsasubSectionsCount7 > 0" class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
+                <a v-if="cicsasubSectionsCount + cicsasubSectionsCount7 > 0"
+                    class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingProyectArea = (cicsashowingMembers && cicsashowingMembers7) ? false : !showingProyectArea; cicsashowingMembers = cicsashowingMembers7 = false">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="red" class="w-6 h-6">
@@ -269,9 +312,6 @@
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('tasks.index')">Tareas</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">
                         <button @click="toggleMembersCicsa">
                             <span v-if="cicsasubSectionsCount + cicsasubSectionsCount7 > 0"
@@ -289,29 +329,29 @@
                             :transitiondemonstration="cicsashowingMembers">
                             <Link class="w-full flex items-center"
                                 :href="route('sections.cicsaSubSection', { subSection: item.id })">
-                                <div class="flex items-center">
-                                    <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                                    </svg>
-                                    <span>{{ item.name }}</span>
-                                </div>
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                </svg>
+                                <span>{{ item.name }}</span>
+                            </div>
                             </Link>
                         </MyTransition>
                         <MyTransition v-for="item in cicsasubSectionsPorVencer7" :key="item.id" class="ml-4"
                             :transitiondemonstration="cicsashowingMembers7">
                             <Link class="w-full flex items-center"
                                 :href="route('sections.cicsaSubSection', { subSection: item.id })">
-                                <div class="flex items-center">
-                                    <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                                    </svg>
-                                    <span>{{ item.name }}</span>
-                                </div>
-                            
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                </svg>
+                                <span>{{ item.name }}</span>
+                            </div>
+
                             </Link>
                         </MyTransition>
                     </div>
@@ -342,9 +382,10 @@
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <div class="relative">
-                        <button @click="tooglePurchaseQuote"><span v-if="financePurchasesTotal + financePurchasesTotal7 > 0"
+                        <button @click="tooglePurchaseQuote"><span
+                                v-if="financePurchasesTotal + financePurchasesTotal7 > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
-                                    financePurchasesTotal + financePurchasesTotal7 }}</span></button>
+        financePurchasesTotal + financePurchasesTotal7 }}</span></button>
                         <Link class="w-full" :href="route('managementexpense.index')">Aprobacion de Compras</Link>
                     </div>
                 </MyTransition>
@@ -384,55 +425,6 @@
                     <Link class="w-full" :href="route('deposits.index')">Depósitos</Link>
                 </MyTransition>
             </template>
-
-            <!-- <template v-if="hasPermission('UserManager')">
-                <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="toggleMembersCicsa">
-                    <div v-if="cicsasubSectionsCount >= 1">
-                        <svg class="w-6 h-6 text-red-600 dark:text-red" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                        </svg>
-                    </div>
-                    <div v-else>
-                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 21">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
-                                d="M8 3.464V1.1m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C15 15.4 15 16 14.462 16H1.538C1 16 1 15.4 1 14.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 8 3.464ZM4.54 16a3.48 3.48 0 0 0 6.92 0H4.54Z" />
-                        </svg>
-                    </div>
-                    <span class=" ml-2.5">Por vencer de Cicsa: {{ cicsasubSectionsCount7 + cicsasubSectionsCount }}</span>
-                </a>
-                <div class="mb-4">
-
-                    <MyTransition v-for="subSection in cicsasubSectionsPorVencer" :key="subSection.id"
-                        :transitiondemonstration="cicsashowingMembers">
-                        <Link class="w-full flex items-center"
-                            :href="route('sections.cicsaSubSection', { subSection: subSection.id })">
-                        <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                        </svg>
-                        <span>{{ subSection.name }}</span>
-
-                        </Link>
-                    </MyTransition>
-
-                    <MyTransition v-for="subSection in cicsasubSectionsPorVencer7" :key="subSection.id"
-                        :transitiondemonstration="cicsashowingMembers7">
-                        <Link class="w-full flex items-center"
-                            :href="route('sections.cicsaSubSection', { subSection: subSection.id })">
-                        <svg class="w-4 h-4 mr-2 text-yellow-400 dark:text-red" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                        </svg>
-                        <span>{{ subSection.name }}</span>
-                        </Link>
-                    </MyTransition>
-                </div>
-            </template> -->
         </nav>
     </div>
 </template>
@@ -458,6 +450,11 @@ export default {
 
     data() {
         return {
+            permisionsCount: 0,
+            vacationCount: 0,
+            permissionsPorVencer: [],
+            vacationPorVencer: [],
+
             subSectionsCount: 0,
             subSectionsCount7: 0,
             subSectionsPorVencer: [],
@@ -466,8 +463,8 @@ export default {
             cicsasubSectionsCount7: 0,
             cicsasubSectionsPorVencer: [],
             cicsasubSectionsPorVencer7: [],
-            purchaseOrdersAlarms: [],
 
+            purchaseOrdersAlarms: [],
 
             financePurchasesTotal: 0,
             financePurchasesTotal7: 0,
@@ -488,6 +485,10 @@ export default {
         let showingInventory = ref(false)
         let showingProyectArea = ref(false)
         let showingShoppingArea = ref(false)
+
+        let showingPermissionsAlarm = ref(false)
+        let showingVacationAlarm = ref(false)
+
         let showingMembers = ref(false)
         let showingMembers7 = ref(false)
         let cicsashowingMembers = ref(false)
@@ -504,6 +505,8 @@ export default {
             showingInventory,
             showingProyectArea,
             showingShoppingArea,
+            showingPermissionsAlarm,
+            showingVacationAlarm,
             showingMembers,
             showingMembers7,
             cicsashowingMembers,
@@ -517,6 +520,26 @@ export default {
     methods: {
         hasPermission(permission) {
             return this.$page.props.userPermissions.includes(permission);
+        },
+
+        async fetchAlarmPermissionsCount() {
+            try {
+                const response = await axios.get('/permissions/alarm');
+                this.permisionsCount = response.data.totalPermissions;
+                this.permissionsPorVencer = response.data.permissions;
+            } catch (error) {
+                console.error('Error al obtener el contador de permissions:', error);
+            }
+        },
+
+        async fetchAlarmVacationCount() {
+            try {
+                const response = await axios.get('/vacation/alarm');
+                this.vacationCount = response.data.totalVacation;
+                this.vacationPorVencer = response.data.vacation;
+            } catch (error) {
+                console.error('Error al obtener el contador de vacation:', error);
+            }
         },
 
         async fetchSubSectionsCount() {
@@ -593,6 +616,10 @@ export default {
                 console.error('Error al obtener el contador de subsecciones:', error);
             }
         },
+        alarmVacaPermisions() {
+            this.showingPermissionsAlarm = !this.showingPermissionsAlarm;
+            this.showingVacationAlarm = !this.showingVacationAlarm;
+        },
 
         toggleMembers() {
             this.showingMembers7 = !this.showingMembers7;
@@ -612,6 +639,8 @@ export default {
     },
 
     mounted() {
+        this.fetchAlarmPermissionsCount();
+        this.fetchAlarmVacationCount();
         this.fetchSubSectionsCount();
         this.fetchSubSectionsCount7();
         this.fetchCicsaSubSectionsCount();
@@ -620,6 +649,8 @@ export default {
         this.fetchFinancePurchases();
         this.fetchPurchasesRequest();
         setInterval(() => {
+            this.fetchAlarmPermissionsCount();
+            this.fetchAlarmVacationCount();
             this.fetchSubSectionsCount();
             this.fetchSubSectionsCount7();
             this.fetchCicsaSubSectionsCount();

@@ -6,16 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Purchase_product;
-use App\Providers\GlobalFunctionsServiceProvider;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\Rule;
 
 class PurchaseProductsController extends Controller
 {
     public function index()
     {
         $products = Purchase_product::with('purchasing_request_product', 'purchase_quote_product')
-                       ->where('state', true)
-                       ->paginate(10);            
+            ->where('state', true)
+            ->paginate(10);
         return Inertia::render('Inventory/PurchaseProducts/Products', [
             'products' => $products,
         ]);
@@ -26,11 +25,11 @@ class PurchaseProductsController extends Controller
         $searchTerm = strtolower($request); // Convertir a minúsculas
 
         $queryByName = Purchase_product::with('purchasing_request_product', 'purchase_quote_product')
-                        ->where('state', true)
-                        ->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%']);
+            ->where('state', true)
+            ->whereRaw('LOWER(name) like ?', ['%' . $searchTerm . '%']);
 
         $queryByCode = Purchase_product::with('purchasing_request_product', 'purchase_quote_product')
-                        ->where('state', true);
+            ->where('state', true);
 
         $productsByName = $queryByName->get();
 
@@ -61,33 +60,26 @@ class PurchaseProductsController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
+        $validateData = $request->validate([
+            'name' => 'required|string|unique:purchase_products',
             'unit' => 'required',
-            'description' => 'required',
-        ]);
-        
-        $product = Purchase_product::create([
-            'name' => $request->name,
-            'unit' => $request->unit,
-            'description' => $request->description,
+            'type' => 'required',
+            'description' => 'nullable|string'
         ]);
 
+        Purchase_product::create($validateData);
     }
 
     public function update(Request $request, Purchase_product $purchase_product)
     {
-        $request->validate([
-            'name' => 'required|string',
+        $validateData =  $request->validate([
+            'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
             'unit' => 'required',
-            'description' => 'required',
+            'type' => 'required',
+            'description' => 'nullable|string'
         ]);
 
-        $purchase_product->update([
-            'name' => $request->name,
-            'unit' => $request->unit,
-            'description' => $request->description
-        ]);
+        $purchase_product->update($validateData);
     }
 
     public function disable(Purchase_product $purchase_product)

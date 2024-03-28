@@ -1,6 +1,6 @@
     <template>
     <Head title="Solicitudes" />
-    <AuthenticatedLayout :redirectRoute=" details.project ? { route: 'projectmanagement.purchases_request.index', params: { id: details.project.id } }:'purchasesrequest.index'">
+    <AuthenticatedLayout :redirectRoute=" boolean ? { route: 'projectmanagement.purchases_request.index', params: { id: details.project.id } }:'purchasesrequest.index'">
         <template #header>
             {{ details.code }}
         </template>
@@ -107,7 +107,11 @@ import { formattedDate } from '@/utils/utils';
 import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
-    details: Object
+    details: Object,
+    boolean:{
+        type:Boolean,
+        required: false
+    }
 });
 
 function setBadgeColor(date, state) {
