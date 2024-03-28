@@ -57,7 +57,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Estado
+                                Estado de Envio
                             </th>
                         </tr>
                     </thead>
@@ -111,11 +111,11 @@
                             </td>
 
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <select id="selectState" @change="updateState(order.id, $event.target.value)"
+                                <select id="selectState" @change="updateState(order.id, $event.target.value, order.is_payments_completed)"
                                     :disabled="order.state == 'Completada'">
                                     <option selected disabled>{{ order.state }}</option>
                                     <option>Pendiente</option>
-                                    <option>En Proceso</option>
+                                    <option>OC Enviada</option>
                                     <option>Completada</option>
                                 </select>
                             </td>
@@ -234,8 +234,7 @@
                     <p class="text-sm text-gray-600"><span class="font-medium">Monto:</span> S/ {{
             cotization.amount.toFixed(2)
         }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider
-                        }}
+                    <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider }}
                     </p>
                     <p class="text-sm text-gray-600"><span class="font-medium">Fecha de solicitud de compra:</span>
                         {{ formattedDate(cotization.quote_deadline) }}</p>
@@ -259,6 +258,7 @@
                 </div>
             </div>
         </Modal>
+        <ErrorOperationModal :showError="errorAmount" :title="title" :message="message" />
         <SuccessOperationModal :confirming="showModalSuccess" title="Orden Completada"
             message="Orden completada correctamente" />
     </AuthenticatedLayout>
@@ -278,6 +278,7 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const showModal = ref(false);
 const showCotization = ref(false);
@@ -285,6 +286,9 @@ const id = ref(null);
 const state = ref(null);
 const quoteToOpen = ref(null);
 const showModalSuccess = ref(false);
+const errorAmount = ref(false);
+const title = ref('');
+const message = ref('');
 
 const props = defineProps({
     orders: Object,
@@ -315,7 +319,7 @@ const openCotization = (order) => {
     quoteToOpen.value = JSON.parse(JSON.stringify(order.purchase_quote));
     cotization.code = quoteToOpen.value.code;
     cotization.amount = quoteToOpen.value.total_amount;
-    cotization.provider = quoteToOpen.value.provider.contact_name;
+    cotization.provider = quoteToOpen.value.provider.company_name;
     cotization.quote_deadline = quoteToOpen.value.quote_deadline;
     cotization.response = quoteToOpen.value.state ? "Aceptado" : "Rechazado";
     cotization.purchase_quote_id = quoteToOpen.value.id;
@@ -331,13 +335,24 @@ const closeCotizationModal = () => {
     showCotization.value = false;
 }
 
-const updateState = async (stateid, newState) => {
+const updateState = async (stateid, newState, is_payments_completed) => {
     id.value = stateid;
     state.value = newState;
     const data = { state: state.value, id: id.value };
 
     if (state.value === "Completada") {
-        showModal.value = true;
+        if (is_payments_completed){
+            showModal.value = true;
+        }else{
+            title.value = "Pagos Incompletos"
+            message.value = "Complete todos los pagos previos a la fecha de llegada de la compra."
+            errorAmount.value = true
+            setTimeout(() => {
+                errorAmount.value = false
+                router.visit(route('purchaseorders.index'));
+            }, 1500);
+        }
+        
     } else {
         router.post(route('purchaseorders.state'), data, {
             onSuccess: () => {

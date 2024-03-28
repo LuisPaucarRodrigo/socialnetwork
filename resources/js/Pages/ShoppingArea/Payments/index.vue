@@ -15,8 +15,11 @@
                             v-model="searchForm.searchTerm" />
                         <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
                     </form>
@@ -50,7 +53,6 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                
                             </th>
                         </tr>
                     </thead>
@@ -69,30 +71,33 @@
                                     <p class="text-gray-900 whitespace-no-wrap">{{ payment.payment_type }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ payment.currency == 'sol' ? "S/" : "$" }} {{ payment.total_amount.toFixed(2) }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">{{ payment.currency == 'sol' ? "S/" :
+        "$" }} {{ payment.total_amount.toFixed(2) }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p :class="`${payment.payments_completed ? 'text-green-500' : 'text-red-500'}`">{{ payment.payments_completed ? "Completo":"Pendientes" }}</p>
+                                    <p :class="`${payment.payments_completed ? 'text-green-500' : 'text-red-500'}`">{{
+        payment.payments_completed ? "Completo" : "Pendientes" }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <button type="button" @click="toggleDetails(payment.payment)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <svg v-if="payment.showDetails" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        <svg v-if="paymentRow !== payment.id" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                             class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                         </svg>
                                         <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                                d="m4.5 15.75 7.5-7.5 7.5 7.5" />
                                         </svg>
                                     </button>
                                 </td>
                             </tr>
                             <template v-if="paymentRow == payment.id">
-                                <tr v-for="paymentDetail in payment.payment" :key="paymentDetail.id" class="bg-gray-100">
+                                <tr v-for="paymentDetail in payment.payment" :key="paymentDetail.id"
+                                    class="bg-gray-100">
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="2">
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -102,7 +107,8 @@
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap">
-                                            {{ payment.currency == 'sol' ? "S/" : "$" }} {{ paymentDetail.amount.toFixed(2) }}
+                                            {{ payment.currency == 'sol' ? "S/" : "$" }} {{
+        paymentDetail.amount.toFixed(2) }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -113,7 +119,8 @@
                                     <td class="border-b border-gray-200 bg-white px-2 py-5 text-sm text-center">
                                         <div>
                                             <button v-if="paymentDetail.state" type="button"
-                                                @click="pay_payment(paymentDetail,payment.currency)" class="text-green-500 whitespace-no-wrap">
+                                                @click="pay_payment(paymentDetail, payment.currency)"
+                                                class="text-green-500 whitespace-no-wrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -129,7 +136,8 @@
                     </tbody>
                 </table>
             </div>
-            <div v-if="props.search === undefined" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="props.search === undefined"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="payments.links" />
             </div>
         </div>
@@ -146,7 +154,8 @@
                         </div>
                         <div class="mb-4">
                             <p class="text-sm text-gray-700 font-medium">Monto:</p>
-                            <p class="text-lg text-gray-900">{{ currency_type == 'sol' ? "S/" : "$" }} {{ payment_obj.amount.toFixed(2) }}</p>
+                            <p class="text-lg text-gray-900">{{ currency_type == 'sol' ? "S/" : "$" }} {{
+        payment_obj.amount.toFixed(2) }}</p>
                         </div>
                         <div class="mb-4">
                             <p class="text-sm text-gray-700 font-medium">Tipo de Pago:</p>
@@ -234,11 +243,12 @@ const form = useForm({
     operation_number: '',
     date: '',
     payment_doc: null,
+    state: false,
     payment_id: '',
     price_dolar: ''
 })
 
-const pay_payment = (payment,currency) => {
+const pay_payment = (payment, currency) => {
     currency_type.value = currency
     payment_obj.value = payment
     payment_id.value = payment.id
@@ -246,7 +256,8 @@ const pay_payment = (payment,currency) => {
 }
 
 const submit = () => {
-    form.payment_id = payment_id.value
+    form.payment_id = payment_id.value;
+    form.state = 1;
     form.post(route('payment.pay'), {
         onSuccess: () => {
             showModalSuccess.value = true
@@ -259,22 +270,27 @@ const submit = () => {
 }
 
 const closePayModal = () => {
+    form.reset();
     showModalPay.value = false
 }
 
 const toggleDetails = (payment) => {
-    paymentRow.value = payment[0].purchase_quote_id
+    if (paymentRow.value === payment[0].purchase_quote_id) {
+        paymentRow.value = 0;
+    } else {
+        paymentRow.value = payment[0].purchase_quote_id;
+    }
 }
 
 const searchForm = useForm({
-    searchTerm: props.search ?  props.search : '',
+    searchTerm: props.search ? props.search : '',
 })
 
 const search = () => {
-    if(searchForm.searchTerm == ''){
+    if (searchForm.searchTerm == '') {
         router.visit(route('payment.index'));
-    }else{
-        router.visit(route('payment.search', {request: searchForm.searchTerm}));
+    } else {
+        router.visit(route('payment.search', { request: searchForm.searchTerm }));
     }
 }
 

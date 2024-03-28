@@ -15,6 +15,7 @@ class PreProjectQuoteItem extends Model
         'days',
         'quantity',
         'unit_price',
+        'profit_margin',
         'preproject_quote_id',
     ];
 

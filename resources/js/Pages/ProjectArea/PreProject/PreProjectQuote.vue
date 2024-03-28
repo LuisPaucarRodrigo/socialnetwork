@@ -75,8 +75,7 @@
                                     entrega (días)
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="number" v-model="form.deliverable_time" id="deliverable_time"
-                                        min="1"
+                                    <input type="number" v-model="form.deliverable_time" id="deliverable_time" min="1"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.deliverable_time" />
                                 </div>
@@ -86,7 +85,7 @@
                                     validez (días)
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="number" v-model="form.validity_time" id="validity_time" min="1"
+                                    <input type="number" v-model="form.validity_time" id="validity_time" min="1"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.validity_time" />
                                 </div>
@@ -96,9 +95,28 @@
                                 <InputLabel for="rev" class="font-medium leading-6 text-gray-900">Rev.
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="number" v-model="form.rev" id="rev" min="1"
+                                    <input type="number" v-model="form.rev" id="rev" min="1"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.rev" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="deliverable_place" class="font-medium leading-6 text-gray-900">Lugar de
+                                    entrega
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput v-model="form.deliverable_place" id="deliverable_place"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.deliverable_place" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="payment_type" class="font-medium leading-6 text-gray-900">Tipo de pago
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput v-model="form.payment_type" id="payment_type"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.payment_type" />
                                 </div>
                             </div>
 
@@ -113,23 +131,11 @@
                                 </div>
                             </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-4">
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Productos
                                     </h2>
+                                    
                                     <button v-if="auth.user.role_id === 1 || preproject.quote === null"
                                         @click="openProductModal" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -140,6 +146,7 @@
                                         </svg>
                                     </button>
                                 </div>
+                                <p class="text-sm my-2">Se muestran productos de las solicitudes de compra</p>
                                 <div class="mt-2">
                                     <div class="overflow-x-auto mt-8">
                                         <table class="w-full">
@@ -199,21 +206,54 @@
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">{{ item.quantity }}</p>
-                                                    </td>
-                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900"> S/. {{ item.unitary_price }}</p>
-                                                    </td>
-                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">{{ item.profit_margin }} %
+                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                            {{ item.quantity }}
                                                         </p>
+                                                        <div v-else class="flex space-x-2 items-center">
+                                                            <input  
+                                                               required
+                                                               type="number" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               v-model="item.quantity"
+                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        </div>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                            S/. {{ (item.unitary_price).toFixed(2) }}
+                                                        </p>
+                                                        <div v-else class="flex space-x-2 items-center">
+                                                            <span>S/.</span><input  
+                                                               required
+                                                               type="number" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               v-model="item.unitary_price"
+                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        </div>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                            {{ item.profit_margin }} %
+                                                        </p>
+                                                        <div v-else class="flex space-x-2 items-center">
+                                                            <input  
+                                                               required
+                                                               type="number" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               v-model="item.profit_margin"
+                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                               <span>%</span>
+                                                        </div>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{ (item.unitary_price *
-                                                                    item.quantity *
-                                                                    (1 + (item.profit_margin) / 100))
-                                                                    .toFixed(2) }}</p>
+                                                            item.quantity *
+                                                            (1 + (item.profit_margin) / 100))
+                                                            .toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <div v-if="auth.user.role_id === 1 || preproject.quote === null"
@@ -231,14 +271,6 @@
                                 </div>
                                 <InputError :message="form.errors.products" />
                             </div>
-
-
-
-
-
-
-
-
 
 
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-10">
@@ -287,6 +319,10 @@
                                                     </th>
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Margen
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Valor total
                                                     </th>
                                                     <th v-if="auth.user.role_id === 1 || preproject.quote === null"
@@ -320,12 +356,23 @@
                                                         <p class="text-gray-900">{{ item.quantity }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">S/.{{ item.unit_price }}
+                                                        <p class="text-gray-900">S/.{{ (item.unit_price).toFixed(2) }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">S/.{{
-        (item.unit_price * item.quantity).toFixed(2) }}</p>
+                                                        <p class="text-gray-900">
+                                                            {{ (item.profit_margin) }}%
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            S/.{{
+        (item.unit_price *
+            item.quantity *
+            item.days *
+            (1 + item.profit_margin / 100))
+            .toFixed(2) }}
+                                                        </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <div v-if="auth.user.role_id === 1 || preproject.quote === null"
@@ -369,12 +416,6 @@
             </form>
 
 
-
-
-
-
-
-
             <Modal :show="showProductModal">
                 <form class="p-6" @submit.prevent="addProduct">
                     <h2 class="text-lg font-medium text-gray-900">
@@ -402,7 +443,7 @@
                             <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput required type="number" v-model="productToAdd.quantity" min="1" id="quantity"
+                                <input required type="number" v-model="productToAdd.quantity" min="1" id="quantity"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -431,18 +472,18 @@
                                 IGV)
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput required type="number" v-model="productToAdd.unitary_price" min="0"
-                                    step="0.01" id="unitary_price"
+                                <input required type="number" v-model="productToAdd.unitary_price" min="0" step="0.01"
+                                    id="unitary_price"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
                         <div class="sm:col-span-3">
                             <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen de
-                                Ganancia (%)
+                                Margen (%)
                             </InputLabel>
                             <div class="mt-2 flex gap-3 items-center">
-                                <TextInput required type="number" v-model="productToAdd.profit_margin" min="0"
-                                    step="0.01" id="profit_margin"
+                                <input required type="number" v-model="productToAdd.profit_margin" min="0" step="0.01"
+                                    id="profit_margin"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -454,15 +495,6 @@
                     </div>
                 </form>
             </Modal>
-
-
-
-
-
-
-
-
-
 
             <Modal :show="showModalMember">
                 <form class="p-6" @submit.prevent="addItem">
@@ -488,6 +520,8 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option value="Unidad">Unidad</option>
+                                    <option value="Unidad">Kilos</option>
+                                    <option value="Unidad">Metros</option>
                                     <option value="GLB">GLB</option>
                                 </select>
                             </div>
@@ -497,7 +531,7 @@
                             <InputLabel for="days" class="font-medium leading-6 text-gray-900">Días
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput required type="number" v-model="itemToAdd.days" min="1"
+                                <input required type="number" v-model="itemToAdd.days" min="1"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -506,7 +540,7 @@
                             <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput required type="number" v-model="itemToAdd.quantity" min="1"
+                                <input required type="number" v-model="itemToAdd.quantity" min="1"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -515,7 +549,15 @@
                             <InputLabel for="unit_price" class="font-medium leading-6 text-gray-900">Precio Unitario
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput required type="number" v-model="itemToAdd.unit_price" min="0" step="0.01"
+                                <input required type="number" v-model="itemToAdd.unit_price" min="0" step="0.01"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen (%)
+                            </InputLabel>
+                            <div class="mt-2">
+                                <input required type="number" v-model="itemToAdd.profit_margin" min="0" step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -573,16 +615,43 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const showModal = ref(false)
 const showErroModal = ref(false)
 
-const { preproject, auth, products } = defineProps({
+const { preproject, auth, products, purchasing_requests } = defineProps({
     products: Object,
     preproject: Object,
+    purchasing_requests: Object,
     auth: Object
 })
+
 
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
     message: `La cotización para anteproyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
 })
+
+function productListMaker(purReqArray) {
+    let ids = []
+    purReqArray.forEach(item => {
+        item.products.forEach(prod => {
+            if (!ids.includes(prod.id)) {
+                ids.push(prod.id)
+            }
+        })
+    });
+    return ids
+}
+let ids = productListMaker(purchasing_requests)
+
+const initalProductState = {
+    purchase_product_id: '',
+    purchase_product: {
+        code: '',
+        name: '',
+        unit: '',
+    },
+    quantity: '',
+    unitary_price: '',
+    profit_margin: '',
+}
 
 
 const initialState = {
@@ -593,9 +662,24 @@ const initialState = {
     rev: '',
     deliverable_time: '',
     validity_time: '',
+    deliverable_place: '',
+    payment_type: '',
     observations: '',
     items: [],
-    products: [],
+    products: products.map(item => {
+        if (ids.includes(item.id)) {
+            return { ...initalProductState, 
+                    purchase_product_id: item.id,
+                    purchase_product: {
+                        code: item.code, 
+                        name: item.name, 
+                        unit:item.unit
+                    }
+                    };
+        } else {
+            return null;
+        }
+    }).filter(item => item !== null),
     preproject_id: preproject.id
 }
 
@@ -623,8 +707,6 @@ const submit = () => {
     })
 }
 
-
-
 const showModalMember = ref(false);
 const showConfirmAccept = ref(false);
 const showFinishAccept = ref(false);
@@ -633,6 +715,7 @@ const itemInitialState = {
     unit: '',
     days: '',
     quantity: '',
+    profit_margin: '',
     unit_price: '',
 }
 const itemToAdd = ref(JSON.parse(JSON.stringify(itemInitialState)))
@@ -659,8 +742,8 @@ const closeModal = () => {
 const addItem = () => {
     if (preproject.quote) {
         axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
-            .then(response=>{
-                if (response.status = 200){
+            .then(response => {
+                if (response.status = 200) {
                     itemToAdd.value.id = response.data.id
                     showItemAddModal.value = true
                     setTimeout(() => {
@@ -671,7 +754,7 @@ const addItem = () => {
                     });
                 }
             })
-            .catch(e=>console.log(e))        
+            .catch(e => console.log(e))
     } else {
         form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
         itemToAdd.value = JSON.parse(JSON.stringify(itemInitialState))
@@ -724,17 +807,7 @@ const showProductAddModal = ref(false);
 const showProductRemoveModal = ref(false);
 
 const showProductModal = ref(false)
-const initalProductState = {
-    purchase_product_id: '',
-    purchase_product: {
-        code: '',
-        name: '',
-        unit: '',
-    },
-    quantity: '',
-    unitary_price: '',
-    profit_margin: '',
-}
+
 
 const productToAdd = ref(JSON.parse(JSON.stringify(initalProductState)))
 
@@ -810,6 +883,5 @@ function deleteProduct(index, id) {
         form.products.splice(index, 1)
     }
 }
-
 
 </script>

@@ -22,11 +22,21 @@ class AdditionalCostsController extends Controller
     public function store(Project $project_id, Request $request)
     {
         $request->validate([
+            'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GEP',
+            'ruc' => 'required|numeric|digits:11',
+            'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
+            'invoice_number' => 'required|string',
+            'invoice_date' => 'required|date',
+            'amount' => 'required|numeric',
             'description' => 'required|string',
-            'amount' => 'required|numeric'
         ]);
 
-        $additional_cost = AdditionalCost::create([
+        AdditionalCost::create([
+            'expense_type' => $request->expense_type,
+            'ruc' => $request->ruc,
+            'type_doc' => $request->type_doc,
+            'invoice_number' => $request->invoice_number,
+            'invoice_date' => $request->invoice_date,
             'description' => $request->description,
             'amount' => $request->amount,
             'project_id' => $project_id->id
@@ -36,11 +46,21 @@ class AdditionalCostsController extends Controller
     public function update(Project $project_id, AdditionalCost $additional_cost, Request $request)
     {
         $request->validate([
+            'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GPE',
+            'ruc' => 'required|numeric|digits:11',
+            'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
+            'invoice_number' => 'required|string',
+            'invoice_date' => 'required|date',
+            'amount' => 'required|numeric',
             'description' => 'required|string',
-            'amount' => 'required|numeric'
         ]);
 
         $additional_cost->update([
+            'expense_type' => $request->expense_type,
+            'ruc' => $request->ruc,
+            'type_doc' => $request->type_doc,
+            'invoice_number' => $request->invoice_number,
+            'invoice_date' => $request->invoice_date,
             'description' => $request->description,
             'amount' => $request->amount,
         ]);     
