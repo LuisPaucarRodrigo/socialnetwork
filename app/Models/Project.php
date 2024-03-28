@@ -26,7 +26,9 @@ class  Project extends Model
         'remaining_budget', 
         'total_assigned_product_costs',
         'total_refund_product_costs_no_different_price', 
-        'total_product_costs_with_liquidation','preproject_quote', 
+        'total_product_costs_with_liquidation',
+        'preproject_quote', 
+        'preproject_quote_no_margin',
         'total_resources_costs_with_liquidation', 
         'total_employee_costs',
         'name',
@@ -41,6 +43,10 @@ class  Project extends Model
     }
     public function getPreprojectQuoteAttribute(){
         return $this->preproject?->quote?->total_amount;
+    }
+
+    public function getPreprojectQuoteNoMarginAttribute(){
+        return $this->preproject->quote->total_amount_no_margin;
     }
     
 

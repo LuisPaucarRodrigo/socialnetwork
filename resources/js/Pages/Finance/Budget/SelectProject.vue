@@ -1,6 +1,6 @@
 <template>
     <Head title="Selección del Proyecto" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'selectproject.index'">
         <template #header>
             Selección del Proyecto
         </template>

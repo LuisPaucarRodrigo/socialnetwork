@@ -15,6 +15,7 @@ class Purchase_product extends Model
         'name', 
         'unit',
         'description',
+        'type',
         'state'
     ];
 
@@ -44,11 +45,19 @@ class Purchase_product extends Model
     public function getCodeAttribute()
     {
         if ($this->exists) {
-            return 'PR' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+            if ($this->type == 'Producto') {
+                return 'PR' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+            } elseif ($this->type == 'Servicio') {
+                return 'SE' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+            } elseif ($this->type == 'Activo') {
+                return 'AC' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+            } else {
+                // Si el tipo no coincide con ninguno de los valores especificados, regresa null o un valor predeterminado
+                return null; // O puedes devolver 'XX' u otro valor predeterminado si lo prefieres
+            }
         } else {
             return 'TMP' . now()->format('ymdHis');
         }
     }
-
 }
 
