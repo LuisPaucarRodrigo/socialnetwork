@@ -361,7 +361,7 @@ class PreProjectController extends Controller
     public function purchase_quote($id)
     {
         return Inertia::render('ProjectArea/PreProject/Expense', [
-            'expenses' => Purchase_quote::with('provider', 'purchasing_requests')
+            'quotes' => Purchase_quote::with('provider', 'purchasing_requests')
                 ->whereHas('purchasing_requests', function ($query) use ($id) {
                     $query->where('preproject_id', $id);
                 })

@@ -4,6 +4,7 @@ namespace App\Http\Requests\HumanResource;
 
 use App\Models\Employee;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Date;
 
 class UpdateManagementEmployees extends FormRequest
 {
@@ -29,7 +30,7 @@ class UpdateManagementEmployees extends FormRequest
             'lastname' => 'required|string|max:255',
             'gender' => 'required|string|in:Masculino,Femenino',
             'state_civil' => 'required|string|in:Casado(a),Soltero(a),Viudo(a),Divorciado(a),Conviviente',
-            'birthdate' => 'required|date',
+            'birthdate' => 'required|date|before_or_equal:' . Date::now()->subYears(18)->format('Y-m-d'),
             'dni' => 'required|numeric|digits:8',
             'email' => 'required|email|max:255',
             'email_company' => 'nullable|email|max:255',

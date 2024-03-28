@@ -250,59 +250,13 @@ class ProjectManagementController extends Controller
         }
     }
 
-    public function project_purchases_quote_index($project_id)
+    public function project_purchases_request_details($id)
     {
-        return Inertia::render('ProjectArea/ProjectManagement/Expense', [
-            'expenses' => Purchase_quote::with('provider', 'purchasing_requests')
-                ->whereHas('purchasing_requests', function ($query) use ($project_id) {
-                    $query->whereNotNull('due_date')
-                        ->where('project_id', $project_id);
-                })
-                ->paginate()
+        return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', [
+            'details' => Purchasing_request::with('project', 'products')->find($id),
+            'boolean' => true
         ]);
     }
-
-    public function details(Purchase_quote $purchase_quote)
-    {
-        $expense = $purchase_quote->load('purchasing_requests.project', 'purchase_order', 'provider', 'products');
-        return Inertia::render('Finance/ManagementExpense/Details', ['expense' => $expense]);
-    }
-
-    // public function project_expenses(Project $project_id){
-    //     $last_update = BudgetUpdate::where('project_id', $project_id->id)
-    //         ->with('project')
-    //         ->with('user')
-    //         ->orderByDesc('id')
-    //         ->first();
-    //     $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
-    //     $expenses = Purchasing_request::with([
-    //         'purchase_quotes' => function ($query) {
-    //             $query->whereHas('purchase_order', function ($subQuery) {
-    //                 $subQuery->where('state', 'Completada');
-    //             })->with('purchase_order');
-    //         }
-    //     ])
-    //         ->where([
-    //             ['project_id', $project_id->id],
-    //             ['state', 'Aceptado'],
-    //         ])
-    //         ->whereHas('purchase_quotes.purchase_order', function ($query) {
-    //             $query->where('state', 'Completada');
-    //         });
-    //     $total_expenses = $expenses->get()->sum(function ($expense) {
-    //         return $expense->purchase_quotes[0]['amount'];
-    //     });
-
-    //     $total_expenses += $project_id->additionalCosts->sum('amount');
-    //     $additionalCosts = $project_id->additionalCosts->sum('amount');
-    //     $remaining_budget = $current_budget - $total_expenses;
-    //     return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
-    //         'current_budget' => $current_budget,
-    //         'remaining_budget' => $remaining_budget,
-    //         'project' => $project_id,
-    //         'additionalCosts' => $additionalCosts,
-    //     ]);
-    // }
 
     public function project_expenses(Project $project_id)
     {
@@ -369,6 +323,19 @@ class ProjectManagementController extends Controller
         $update_due_date = Purchasing_request::find($request->purchase_id);
         $update_due_date->update([
             'due_date' => $request->due_date
+        ]);
+    }
+
+    public function project_purchases_request_update_quote_deadline(Request $request)
+    {
+        $request->validate([
+            'quote_deadline' => 'required|date|before_or_equal:due_date',
+            'due_date' => 'required|date',
+            'quote_id' => 'required|numeric'
+        ]);
+        $update_due_date = Purchase_quote::find($request->quote_id);
+        $update_due_date->update([
+            'quote_deadline' => $request->quote_deadline
         ]);
     }
 

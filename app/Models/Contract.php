@@ -17,7 +17,8 @@ class Contract extends Model
 
         'truncated_month',
         'truncated_days',
-        'salary',
+        'half_salary',
+        'salary_day',
 
         'truncated_vacations',
         'snp',
@@ -59,7 +60,12 @@ class Contract extends Model
         return Carbon::parse($this->fired_date)->diffInDays(Carbon::parse($this->hire_date)) - ($truncatedMonth * 30) + 1;
     }
 
-    public function getSalaryAttribute()
+    public function getHalfSalaryAttribute()
+    {
+        return $this->basic_salary / 2;
+    }
+
+    public function getSalaryDayAttribute()
     {
         return $this->basic_salary / 2;
     }
@@ -67,8 +73,8 @@ class Contract extends Model
     public function getTruncatedVacationsAttribute()
     {
         return $this->fired_date !== null && $this->state === 'Inactive'
-            ? ($this->salary / 12 * $this->truncated_month  +
-                ($this->salary / (30 * 12) * $this->truncated_days)) -
+            ? ($this->half_salary / 12 * $this->truncated_month  +
+                ($this->half_salary / (30 * 12) * $this->truncated_days)) -
             (($this->basic_salary / 30) * $this->days_taken)
             : 0;
     }
