@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->date('start_date');
             $table->date('end_date');
+            $table->boolean('state')->nullable()->default(null);
+            $table->text('reason')->nullable()->default(null);
             $table->unsignedBigInteger('formation_program_id')->nullable();
             $table->foreign('formation_program_id')
                 ->references('id')

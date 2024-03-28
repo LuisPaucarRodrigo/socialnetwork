@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('unit');
+            $table->string('type');
             $table->boolean('state')->default(true);
             $table->text('description')->nullable();
             $table->timestamps();

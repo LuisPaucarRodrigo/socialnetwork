@@ -22,7 +22,7 @@ class FormationProgram extends Model
 
     public function employees() 
     {
-        return $this->belongsToMany(Employee::class,'employee_formation_program', 'formation_program_id', 'employee_id');
+        return $this->belongsToMany(Employee::class,'employee_formation_program', 'formation_program_id', 'employee_id')->withPivot('id', 'state');
     }
 
 }

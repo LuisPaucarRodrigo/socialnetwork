@@ -22,24 +22,24 @@ class PurchaseRequestController extends Controller
     public function index()
     {
         return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
-            'purchases' => Purchasing_request::with('project','preproject','purchase_quotes')
+            'purchases' => Purchasing_request::with('project', 'preproject', 'purchase_quotes')
                 ->withCount([
                     'purchase_quotes',
                     'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
-                        $query->where('state',true);
+                        $query->where('state', true);
                     },
                     'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
-                        $query->where('state',false);
+                        $query->where('state', false);
                     }
                 ])
                 ->orderBy('created_at', 'desc')->paginate(),
         ]);
     }
 
-    public function create($project_id= null)
+    public function create($project_id = null)
     {
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
-            'allProducts'=>Purchase_product::all(),
+            'allProducts' => Purchase_product::all(),
             'project' => Project::find($project_id),
         ]);
     }
@@ -49,25 +49,25 @@ class PurchaseRequestController extends Controller
         $validateData = $request->validated();
         $prToCreate = Purchasing_request::create($validateData);
         $pr_products = $request->products;
-        foreach($pr_products as $item) {
+        foreach ($pr_products as $item) {
             Purchasing_requests_product::create([
-                'purchase_product_id'=> $item['id'],
-                'purchasing_request_id'=> $prToCreate->id,
+                'purchase_product_id' => $item['id'],
+                'purchasing_request_id' => $prToCreate->id,
                 'quantity' => $item['quantity'],
             ]);
         }
     }
 
-    public function edit($id, $project_id=null)
+    public function edit($id, $project_id = null)
     {
         $purchase = Purchasing_request::with('products')->find($id);
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
             'purchase' => $purchase,
-            'allProducts'=>Purchase_product::all(),
+            'allProducts' => Purchase_product::all(),
             'project' => Project::find($project_id),
         ]);
     }
-    
+
     public function update(UpdatePurchaseRequest $request, $id)
     {
         $validateData = $request->validated();
@@ -86,6 +86,19 @@ class PurchaseRequestController extends Controller
         ]);
     }
 
+    public function purchase_quote_deadline_complete($id)
+    {
+        return Inertia::render('ProjectArea/PreProject/Expense', [
+            'quotes' => Purchase_quote::with('provider', 'purchasing_requests')
+                ->whereHas('purchasing_requests', function ($query) use ($id) {
+                    $query->where('project_id', $id);
+                })
+                ->where('quote_deadline', null)
+                ->paginate(),
+            'purchases' => true
+        ]);
+    }
+
     public function destroy($id)
     {
         Purchasing_request::destroy($id);
@@ -94,7 +107,7 @@ class PurchaseRequestController extends Controller
 
     public function details($id)
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project','products')->find($id)]);
+        return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project', 'products')->find($id)]);
     }
 
     public function quote(CreatePurchaseQuoteRequest $request)
@@ -155,11 +168,12 @@ class PurchaseRequestController extends Controller
 
 
     //purchase request product
-    public function purchasing_request_product_store (Request $request) {
+    public function purchasing_request_product_store(Request $request)
+    {
         $data = $request->validate([
-            'purchase_product_id'=> 'required',
-            'purchasing_request_id'=> 'required',
-            'quantity'=> 'required',
+            'purchase_product_id' => 'required',
+            'purchasing_request_id' => 'required',
+            'quantity' => 'required',
         ]);
         $newProduct = Purchasing_requests_product::create($data);
         return response()->json([
@@ -167,42 +181,43 @@ class PurchaseRequestController extends Controller
         ], 200);
     }
 
-    public function purchasing_request_product_delete ($purchasing_request_product_id) {
+    public function purchasing_request_product_delete($purchasing_request_product_id)
+    {
         Purchasing_requests_product::find($purchasing_request_product_id)->delete();
         return redirect()->back();
     }
-    
+
     public function search($request)
     {
-        $searchTerm = strtolower($request); // Convertir a minúsculas
+        $searchTerm = strtolower($request);
 
-        $purchasing_requests_by_title = Purchasing_request::where(function($query) use ($searchTerm) {
-            $query->whereRaw('LOWER(title) like ?', ['%'.$searchTerm.'%'])
-                  ->withCount([
-                        'purchase_quotes',
-                        'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
-                            $query->where('state',true);
-                        },
-                        'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
-                            $query->where('state',false);
-                        }
-                    ])
-                   ->with('project','preproject','purchase_quotes')
-                   ->orderBy('created_at', 'desc');
+        $purchasing_requests_by_title = Purchasing_request::where(function ($query) use ($searchTerm) {
+            $query->whereRaw('LOWER(title) like ?', ['%' . $searchTerm . '%'])
+                ->withCount([
+                    'purchase_quotes',
+                    'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
+                        $query->where('state', true);
+                    },
+                    'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
+                        $query->where('state', false);
+                    }
+                ])
+                ->with('project', 'preproject', 'purchase_quotes')
+                ->orderBy('created_at', 'desc');
         })->get();
 
-        $queryByCode = Purchasing_request::where(function($query) use ($searchTerm) {
+        $queryByCode = Purchasing_request::where(function ($query) use ($searchTerm) {
             $query->withCount([
-                        'purchase_quotes',
-                        'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
-                            $query->where('state',true);
-                        },
-                        'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
-                            $query->where('state',false);
-                        }
-                    ])
-                   ->with('project','preproject','purchase_quotes')
-                   ->orderBy('created_at', 'desc');
+                'purchase_quotes',
+                'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
+                    $query->where('state', true);
+                },
+                'purchase_quotes as purchase_quotes_without_state_count' => function ($query) {
+                    $query->where('state', false);
+                }
+            ])
+                ->with('project', 'preproject', 'purchase_quotes')
+                ->orderBy('created_at', 'desc');
         });
 
         $purchasing_requests_by_code = $queryByCode->get()->filter(function ($purchasing_request) use ($searchTerm) {
@@ -215,5 +230,11 @@ class PurchaseRequestController extends Controller
             'purchases' => $combined_purchasing_requests,
             'search' => $request
         ]);
+    }
+
+    public function purchase_quote_complete_details(Purchase_quote $id)
+    {
+        $expense = $id->load('purchasing_requests.preproject', 'purchase_order', 'provider', 'products');
+        return Inertia::render('ProjectArea/PreProject/Details', ['expense' => $expense, 'quotes' => true]);
     }
 }

@@ -21,7 +21,8 @@ class Purchase_order extends Model
 
     protected $appends = [
         'purchase_arrival_date',
-        'code'
+        'code',
+        'is_payments_completed'
     ];
 
     public function getPurchaseArrivalDateAttribute(){
@@ -41,4 +42,21 @@ class Purchase_order extends Model
             return 'TMP' . now()->format('ymdHis');
         }
     }
+
+    public function getIsPaymentsCompletedAttribute()
+    {
+        $arrivalDate = $this->purchaseArrivalDate; // Obtener la fecha de llegada de la orden de compra
+        $quotePayments = $this->purchase_quote->payment; // Obtener todos los pagos relacionados con la cotización
+
+        foreach ($quotePayments as $payment) {
+            if ($payment->created_at <= $arrivalDate && $payment->state != 0) {
+                // Si encontramos algún pago con fecha anterior a la fecha de llegada y estado no completado (1), devolvemos false
+                return false;
+            }
+        }
+
+        // Si todos los pagos con fecha anterior a la llegada están completados (state = 1) o no hay ninguno, devolvemos true
+        return true;
+    }
+
 }

@@ -14,6 +14,7 @@ class Payment extends Model
         'description',
         'operation_number',
         'date',
+        'state',
         'payment_doc',
         'purchase_quote_id'
     ];
