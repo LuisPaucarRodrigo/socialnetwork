@@ -44,6 +44,12 @@
                         {{ expense.state === null ? 'Pendiente' : expense.state ? 'Aceptado' : 'Rechazado' }}
                     </p>
                 </div>
+
+                <div class="mb-4">
+                    <p class="text-sm text-gray-700 font-medium">Forma de pago:</p>
+                    <p class="text-lg text-gray-900">{{ expense.payment_type }}</p>
+                </div>
+
             </div>
 
             <div class="col-span-1 min-w-full rounded-lg shadow bg-white p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -106,15 +112,11 @@
                                     class="text-center border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600">
                                     P.U.
                                 </th>
-                                <!-- v-if="auth.user.role_id === 1 || preproject.quote === null" -->
+                                
                                 <th v-if="expense.igv"
                                     class="w-32 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                     Sin IGV
                                 </th>
-                                <!-- <th v-if="currency !== 'S/.'"
-                                                class="w-32 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                                                Soles
-                                            </th> -->
                                 <th
                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-right">
                                     Monto Total
@@ -122,7 +124,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- v v-for="(item, index) in (form.items)" :key="index" -->
+                           
                             <tr v-for="(item, index) in (expense.products)" :key="index"
                                 class="text-gray-700 hover:bg-gray-200 bg-white">
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">

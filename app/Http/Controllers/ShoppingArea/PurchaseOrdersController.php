@@ -5,11 +5,9 @@ namespace App\Http\Controllers\ShoppingArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseOrderRequest\CreatePurchaseOrderRequest;
 use App\Models\Purchase_order;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
-use Dompdf\Dompdf;
-use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseOrdersController extends Controller
 {
@@ -85,13 +83,11 @@ class PurchaseOrdersController extends Controller
         ]);
     }
 
-    public function purchase_orders_export($id)
+    public function purchase_orders_export(Purchase_order $id)
     {
-        $dompdf = new Dompdf();
-        $html = file_get_contents('ruta/a/tu/plantilla.html');
-        $dompdf->loadHtml($html);
-        $dompdf->render();
-        $pdfContent = $dompdf->output();
+        $purchase_order = $id->load('purchase_quote.provider','purchase_quote.purchasing_requests', 'purchase_quote.purchase_quote_products.purchase_product');
+        $pdf = Pdf::loadView('pdf.PurchaseOrderPDF', compact('purchase_order'));
+        return $pdf->stream();
     }
 
     public function showFacture(Purchase_order $id)
@@ -107,7 +103,7 @@ class PurchaseOrdersController extends Controller
     public function search($request, $history)
     {
         $searchTerm = strtolower($request); // Convertir a minúsculas
-        $query;
+        $query = null;
 
         if ($history == 'history') {
             $query = Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.payment')
