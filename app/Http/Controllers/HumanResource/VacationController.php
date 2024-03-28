@@ -30,31 +30,17 @@ class VacationController extends Controller
         $searchTerm = strtolower($request->query('searchTerm'));
         if ($searchTerm !== '') {
             $vacations = $vacations->where(function ($query) use ($searchTerm) {
-                if (preg_match('/^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])(?:\/\d{4})?(?: \d{2}:\d{2})?$/', $searchTerm)) {
-                    $searchDate = Carbon::createFromFormat('d/m/Y H:i', $searchTerm)->format('Y-m-d H:i');
-
-                    $query->where('start_date', 'like', '%' . $searchDate . '%')
-                        ->orWhere('end_date', 'like', '%' . $searchDate . '%')
-                        ->orWhere('start_permissions', 'like', '%' . $searchDate . '%')
-                        ->orWhere('end_permissions', 'like', '%' . $searchDate . '%')
-                        ->orWhere('review_date', 'like', '%' . $searchDate . '%');
-                    $query->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
-                        $subQuery->where('name', 'like', '%' . $searchTerm . '%')
-                            ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
-                    });
-                } else {
-                    $query->where('start_date', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('end_date', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('start_permissions', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('end_permissions', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('review_date', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('type', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('status', 'like', '%' . $searchTerm . '%');
-                    $query->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
-                        $subQuery->where('name', 'like', '%' . $searchTerm . '%')
-                            ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
-                    });
-                }
+                $query->where('start_date', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('end_date', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('start_permissions', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('end_permissions', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('review_date', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('type', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('status', 'like', '%' . $searchTerm . '%');
+                $query->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
+                });
             })->get();
         } else {
             $vacations = $vacations->paginate();

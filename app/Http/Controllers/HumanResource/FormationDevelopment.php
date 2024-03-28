@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HumanResource;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FormationRequest\FormationProgramRequest;
+use App\Models\EmployeeFormationProgram;
 use App\Models\FormationProgram;
 use App\Models\Training;
 use App\Models\Employee;
@@ -41,7 +42,7 @@ class FormationDevelopment extends Controller
         $data = $request->validated();
         $formationProgram = FormationProgram::create($data);
         $formationProgram->trainings()->sync($request->trainings);
-        return redirect()->route('management.employees.formation_development.formation_programs');
+        return redirect()->back();
     }
 
     public function formation_programs_destroy($id)
@@ -50,20 +51,10 @@ class FormationDevelopment extends Controller
         $formationProgram->delete();
         return Inertia::location(route('management.employees.formation_development.formation_programs'));
     }
-    public function formation_programs_destroy_employee(Request $request)
-    {
-        $request->validate([
-            'formation_program_id' => 'required|exists:formation_programs,id',
-            'employee_id' => 'required|exists:employees,id',
-        ]);
-        $formationProgram = FormationProgram::find($request->formation_program_id);
-        $employee = Employee::find($request->employee_id);
-        if ($formationProgram && $employee) {
-            $formationProgram->employees()->detach($employee);
-            return redirect()->route('management.employees.formation_development.view', ['id' => $formationProgram->id]);
-        }
 
-        return response()->json(['message' => 'Error al eliminar la relación'], 404);
+    public function formation_programs_destroy_employee($efp_id){
+        EmployeeFormationProgram::find($efp_id)->delete();
+        return redirect()->back();
     }
 
 
@@ -130,7 +121,7 @@ class FormationDevelopment extends Controller
         return Inertia::render('HumanResource/FormationDevelopments/AssignationCreate', [
             'employees' => Employee::with('contract')->whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
-            }),
+            })->get(),
             'formation_programs' => FormationProgram::all(),
         ]);
     }
@@ -151,6 +142,21 @@ class FormationDevelopment extends Controller
                 'end_date'=>$data['end_date']
             ]);
         }
+        return redirect()->back();
+    }
+
+    public function employees_in_programs_update (Request $request, $efp_id) {
+        if ($request->input('state') === true) {
+            $data = $request->validate([
+                'state' => 'required'
+            ]);
+        } else {
+            $data = $request->validate([
+                'state' => 'required',
+                'reason' => 'required'
+            ]);
+        }
+        EmployeeFormationProgram::find($efp_id)->update($data);
         return redirect()->back();
     }
 

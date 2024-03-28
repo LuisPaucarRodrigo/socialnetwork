@@ -3,7 +3,7 @@
     <Head title="Gestion de Gastos Cuadrilla" />
     <AuthenticatedLayout :redirectRoute="'managementexpense.index'">
         <template #header>
-            {{ expense.code }}dff
+            {{ expense.code }}  
         </template>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">

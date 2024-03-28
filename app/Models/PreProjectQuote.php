@@ -17,6 +17,8 @@ class PreProjectQuote extends Model
         "rev",
         "deliverable_time",
         "validity_time",
+        "deliverable_place",
+        "payment_type",
         "observations",
         "preproject_id",
         "state"
