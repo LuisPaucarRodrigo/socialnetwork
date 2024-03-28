@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Gestion de Vacaciones y Permisos" />
 
     <AuthenticatedLayout :redirectRoute="'management.vacation'">
@@ -10,9 +11,13 @@
             <div class="flex items-center justify-between gap-4 mb-4">
                 <button type="button" @click="add_information"
                     class="rounded-md bg-indigo-600 px-3 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
-                     + Agregar
+                    + Agregar
                 </button>
-                <div class="flex items-center">
+                <div class="flex items-center gap-x-3">
+                    <button @click="review" type="button"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        {{ boolean == true ? "Sin Revisar" : "Revisados" }}
+                    </button>
                     <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
                         <input type="text" placeholder="Buscar..."
                             class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -54,7 +59,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Estado
                             </th>
-                            <th
+                            <th v-if="boolean == true"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Revision
                             </th>
@@ -64,27 +69,36 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in (props.search === '' ? vacations.data :vacations)" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in (props.search === '' ? vacations.data : vacations)" :key="item.id"
+                            class="text-gray-700" :class="['text-gray-700', {
+        'border-l-8': boolean == true,
+        'border-green-500': item.status == 'Finalizado',
+        'border-red-500': item.status == 'Ausente',
+        'border-yellow-500': (Date.parse(item.end_date) <= Date.now() + (1 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado') ||
+            (Date.parse(item.end_permissions) <= Date.now() + (1 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado')
+    }]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.employee.name + " " +
-                                    item.employee.lastname
-                                }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ item.employee.name + " " + item.employee.lastname }}
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.type }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(item.start_date ? item.start_date :
-                                    item.start_permissions) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(item.start_date ?
+        item.start_date :
+        item.start_permissions) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(item.end_date ? item.end_date :
-                                    item.end_permissions) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(item.end_date ?
+        item.end_date :
+        item.end_permissions) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.status }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="boolean == true" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.review_date && formattedDate(item.review_date) }}
                                 </p>
@@ -101,39 +115,76 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <Link v-if="item.status == 'Pendiente' && hasPermission('UserManager')" class="text-blue-900 whitespace-no-wrap"
-                                        :href="route('management.vacation.information.edit', { id: item.id })">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                    </svg>
-                                    </Link>
-                                    <span v-else class="text-gray-200">
+                                    <template v-if="boolean == false">
+                                        <Link v-if="item.status == 'Pendiente' && hasPermission('UserManager')"
+                                            class="text-blue-900 whitespace-no-wrap"
+                                            :href="route('management.vacation.information.edit', { id: item.id })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                         </svg>
-                                    </span>
-                                    <Link v-if="item.status == 'Pendiente' && hasPermission('UserManager')"
-                                        :href="route('management.vacation.information.review', { id: item.id })"
-                                        class="text-blue-900 whitespace-no-wrap">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                    </svg>
-                                    </Link>
-                                    <span v-else class="text-gray-200">
+                                        </Link>
+                                        <span v-else class="text-gray-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                            </svg>
+                                        </span>
+                                        <Link v-if="item.status == 'Pendiente' && hasPermission('UserManager')"
+                                            :href="route('management.vacation.information.review', { id: item.id })"
+                                            class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                         </svg>
-                                    </span>
-                                    <button v-if="hasPermission('UserManager')" type="button" @click="confirmDeletion(item.id)"
-                                        class="text-blue-900 whitespace-no-wrap">
+                                        </Link>
+                                        <span v-else class="text-gray-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                            </svg>
+                                        </span>
+                                    </template>
+                                    <template v-else>
+                                        <button v-if="item.status == 'Aceptado'"
+                                            @click="sendStatus(item.id, 'Finalizado')" type="button"
+                                            class="flex items-center text-blue-500 hover:underline">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </button>
+                                        <span v-else class="text-gray-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </span>
+                                        <button v-if="item.status == 'Aceptado'" @click="sendModal(item.id, 'Ausente')"
+                                            type="button"
+                                            class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </button>
+                                        <span v-else class="text-gray-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </span>
+                                    </template>
+                                    <button v-if="hasPermission('UserManager')" type="button"
+                                        @click="confirmDeletion(item.id)" class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -147,10 +198,40 @@
                 </table>
             </div>
 
-            <div v-if="props.search === undefined || props.search === ''" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="props.search === undefined || props.search === ''"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="vacations.links" />
             </div>
         </div>
+        <Modal :show="showModalAbsent">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Ausente
+                </h2>
+                <form @submit.prevent="submit">
+                    <div class="space-y-12">
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="coment" class="font-medium leading-6 text-gray-900">Comentario
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.coment" id="coment"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.coment" />
+                                </div>
+                            </div>
+                            <div class="mt-6 flex items-center justify-end gap-x-6">
+                                <SecondaryButton @click="closeModalAbsent"> Cancelar
+                                </SecondaryButton>
+                                <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
         <ConfirmDeleteModal :confirmingDeletion="confirmingDeletion" itemType="vacaciones" :deleteFunction="deleteitem"
             @closeModal="closeModal" />
     </AuthenticatedLayout>
@@ -160,17 +241,27 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import Pagination from '@/Components/Pagination.vue'
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
     vacations: Object,
-    userPermissions:Array,
-    search: String
+    userPermissions: Array,
+    search: String,
+    boolean: Boolean
 })
 
-console.log(props.search)
+const form = useForm({
+    id: '',
+    status: '',
+    coment: ''
+})
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -178,6 +269,7 @@ const hasPermission = (permission) => {
 
 const confirmingDeletion = ref(false);
 const itemDelete = ref(null);
+const showModalAbsent = ref(false);
 
 const add_information = () => {
     router.get(route('management.vacation.information.create'));
@@ -201,6 +293,17 @@ const closeModal = () => {
     confirmingDeletion.value = false;
 };
 
+const reviewstate = ref(props.boolean);
+
+function review() {
+    if (props.boolean == true) {
+        router.get(route('management.vacation'))
+    } else {
+        reviewstate.value = true
+        router.get(route('management.vacation', { review: reviewstate.value }))
+    }
+}
+
 
 
 const searchForm = useForm({
@@ -208,8 +311,33 @@ const searchForm = useForm({
 })
 
 const search = () => {
-    let data = {searchTerm: searchForm.searchTerm}
+    let data = { searchTerm: searchForm.searchTerm }
     router.get(route('management.vacation'), data)
 }
 
+function sendStatus(id, status) {
+    router.post(route('management.vacation.information.reviewed_decline'), { id: id, status: status }, {
+        onSuccess: () => {
+            router.visit(route('management.vacation',{review: true}))
+        },
+    })
+}
+
+function sendModal(id, status) {
+    form.id = id
+    form.status = status
+    showModalAbsent.value = true;
+}
+
+function submit() {
+    form.post(route('management.vacation.information.reviewed_decline'), {
+        onSuccess: () => {
+            router.visit(route('management.vacation',{review: true}))
+        },
+    })
+}
+
+function closeModalAbsent() {
+    showModalAbsent.value = false;
+}
 </script>
