@@ -35,7 +35,7 @@
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Fecha de Documento</th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="border-b-2 border-gray-200 bg-gray-100 px-8 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Monto</th>
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -50,8 +50,8 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.expense_type }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.ruc }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.invoice_number }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.invoice_date) }}
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}
               </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">S/. {{ (item.amount).toFixed(2) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
@@ -115,22 +115,22 @@
                 </div>
               </div>
               <div>
-                <InputLabel for="invoice_number" class="font-medium leading-6 text-gray-900">Numero de Documento
+                <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.invoice_number" id="invoice_number"
+                  <input type="text" v-model="form.doc_number" id="doc_number"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <InputError :message="form.errors.invoice_number" />
+                  <InputError :message="form.errors.doc_number" />
                 </div>
               </div>
 
               <div>
-                <InputLabel for="invoice_date" class="font-medium leading-6 text-gray-900">Fecha de Documento
+                <InputLabel for="doc_date" class="font-medium leading-6 text-gray-900">Fecha de Documento
                 </InputLabel>
                 <div class="mt-2">
-                  <input type="date" v-model="form.invoice_date" id="invoice_date"
+                  <input type="date" v-model="form.doc_date" id="doc_date"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <InputError :message="form.errors.invoice_date" />
+                  <InputError :message="form.errors.doc_date" />
                 </div>
               </div>
 
@@ -208,22 +208,22 @@
                 </div>
               </div>
               <div>
-                <InputLabel for="invoice_number" class="font-medium leading-6 text-gray-900">Numero de Documento
+                <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.invoice_number" id="invoice_number"
+                  <input type="text" v-model="form.doc_number" id="doc_number"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <InputError :message="form.errors.invoice_number" />
+                  <InputError :message="form.errors.doc_number" />
                 </div>
               </div>
 
               <div>
-                <InputLabel for="invoice_date" class="font-medium leading-6 text-gray-900">Fecha de Documento
+                <InputLabel for="doc_date" class="font-medium leading-6 text-gray-900">Fecha de Documento
                 </InputLabel>
                 <div class="mt-2">
-                  <input type="date" v-model="form.invoice_date" id="invoice_date"
+                  <input type="date" v-model="form.doc_date" id="doc_date"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <InputError :message="form.errors.invoice_date" />
+                  <InputError :message="form.errors.doc_date" />
                 </div>
               </div>
 
@@ -289,8 +289,8 @@ const form = useForm({
   expense_type: '',
   ruc: '',
   type_doc: '',
-  invoice_number: '',
-  invoice_date: '',
+  doc_number: '',
+  doc_date: '',
   description: '',
   amount: null
 });
@@ -315,8 +315,8 @@ const openEditAdditionalModal = (additional) => {
   form.ruc = editingAdditional.value.ruc;
   form.amount = editingAdditional.value.amount;
   form.type_doc = editingAdditional.value.type_doc;
-  form.invoice_number = editingAdditional.value.invoice_number;
-  form.invoice_date = editingAdditional.value.invoice_date;
+  form.doc_number = editingAdditional.value.doc_number;
+  form.doc_date = editingAdditional.value.doc_date;
   form.amount = editingAdditional.value.amount;
   form.description = editingAdditional.value.description;
 

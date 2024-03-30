@@ -58,6 +58,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Tipo de Producto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Descripción
                             </th>
                             <th
@@ -80,6 +84,9 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <h2 class="text-sm font-semibold">{{ item.type }}</h2>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <h2 class="text-sm font-semibold">{{ item.type_product }}</h2>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <h2 class="text-sm font-semibold">{{ item.description }}</h2>
@@ -159,6 +166,20 @@
                                 </div>
                             </div>
 
+                            <div v-if="form.type === 'Producto'">
+                                <InputLabel for="type_product" class="font-medium leading-6 text-gray-900 mt-3">Tipo de Producto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select :to-uppercase="true" v-model="form.type_product" id="type_product"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="" disabled>Seleccione un tipo</option>
+                                        <option>EPP</option>
+                                        <option>OTROS</option>
+                                    </select>
+                                    <InputError :message="form.errors.type_product" />
+                                </div>
+                            </div>
+
                             <div>
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900 mt-3">
                                     Descripción
@@ -217,6 +238,7 @@ const form = useForm({
     name: '',
     unit: '',
     type: '',
+    type_product: '',
     description: ''
 });
 
@@ -244,6 +266,7 @@ const openEditProductModal = (product) => {
     form.description = editingProduct.value.description;
     form.unit = editingProduct.value.unit;
     form.type = editingProduct.value.type;
+    form.type_product = editingProduct.value.type_product;
     showModalEdit.value = true;
 };
 

@@ -25,8 +25,8 @@ class AdditionalCostsController extends Controller
             'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GEP',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
-            'invoice_number' => 'required|string',
-            'invoice_date' => 'required|date',
+            'doc_number' => 'required|string',
+            'doc_date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'required|string',
         ]);
@@ -35,8 +35,8 @@ class AdditionalCostsController extends Controller
             'expense_type' => $request->expense_type,
             'ruc' => $request->ruc,
             'type_doc' => $request->type_doc,
-            'invoice_number' => $request->invoice_number,
-            'invoice_date' => $request->invoice_date,
+            'doc_number' => $request->doc_number,
+            'doc_date' => $request->doc_date,
             'description' => $request->description,
             'amount' => $request->amount,
             'project_id' => $project_id->id
@@ -49,8 +49,8 @@ class AdditionalCostsController extends Controller
             'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GPE',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
-            'invoice_number' => 'required|string',
-            'invoice_date' => 'required|date',
+            'doc_number' => 'required|string',
+            'doc_date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'required|string',
         ]);
@@ -59,8 +59,8 @@ class AdditionalCostsController extends Controller
             'expense_type' => $request->expense_type,
             'ruc' => $request->ruc,
             'type_doc' => $request->type_doc,
-            'invoice_number' => $request->invoice_number,
-            'invoice_date' => $request->invoice_date,
+            'doc_number' => $request->doc_number,
+            'doc_date' => $request->doc_date,
             'description' => $request->description,
             'amount' => $request->amount,
         ]);     
