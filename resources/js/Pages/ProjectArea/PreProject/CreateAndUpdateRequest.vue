@@ -174,7 +174,8 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                             <datalist id="options">
-                                <option v-for="item in product_selected" :value="item.code" :data-value="item">{{ item.name }}
+                                <option v-for="item in product_selected" :value="item.code" :data-value="item">
+                                    {{ item.name }}
                                 </option>
                             </datalist>
                         </div>
@@ -305,6 +306,7 @@ const initialStateProduct = {
     quantity: '',
     pivot: {}
 }
+
 const productToAdd = ref(JSON.parse(JSON.stringify(initialStateProduct)))
 
 
@@ -357,7 +359,7 @@ function addProduct() {
 
 const handleAutocomplete = (e) => {
     const code = e.target.value;
-    let findedProduct = allProducts.find(item => item.code === code)
+    let findedProduct = product_selected.value.find(item => item.code === code)
     if (findedProduct) {
         productToAdd.value.id = findedProduct.id
         productToAdd.value.code = findedProduct.code

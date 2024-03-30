@@ -20,7 +20,7 @@
                             class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             v-model="searchForm.searchTerm" />
                         <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
-                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-gray-900 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -54,11 +54,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Tipo
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Tipo de Producto
+                                Tipo/Tipo de Producto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -74,22 +70,19 @@
                         <tr v-for="item in (props.search ? props.products : props.products.data)" :key="item.id"
                             class="text-gray-700 border-b">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <h2 class="text-sm font-semibold">{{ item.name }}</h2>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <h2 class="text-sm font-semibold">{{ item.code }}</h2>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.code }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <h2 class="text-sm font-semibold">{{ item.unit }}</h2>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.unit }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <h2 class="text-sm font-semibold">{{ item.type }}</h2>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.type }} {{ item.type_product ? '/'+item.type_product:'' }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <h2 class="text-sm font-semibold">{{ item.type_product }}</h2>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <h2 class="text-sm font-semibold">{{ item.description }}</h2>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="inline-flex justify-end gap-x-0">
@@ -196,7 +189,7 @@
                                 <SecondaryButton @click="create_product ? closeModal() : closeEditModal()"> Cancelar
                                 </SecondaryButton>
                                 <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    class="rounded-md bg-indigo-600 px-6 py-2 text-gray-900 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     {{ create_product ? 'Guardar' : 'Actualizar' }}</button>
                             </div>
                         </div>
@@ -300,6 +293,7 @@ const submit = () => {
 }
 
 const submitEdit = () => {
+    form.type_product = form.type == 'Producto' ? form.type_product : null
     form.put(route('inventory.purchaseproducts.update', { purchase_product: form.id }), {
         onSuccess: () => {
             closeEditModal();
