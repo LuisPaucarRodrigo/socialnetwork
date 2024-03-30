@@ -78,7 +78,7 @@ class PurchaseProductsController extends Controller
             'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
             'unit' => 'required',
             'type' => 'required|string|in:Producto,Servicio,Activo',
-            'type_product' => 'required|string',
+            'type_product' => 'nullable|string',
             'description' => 'nullable|string'
         ]);
 

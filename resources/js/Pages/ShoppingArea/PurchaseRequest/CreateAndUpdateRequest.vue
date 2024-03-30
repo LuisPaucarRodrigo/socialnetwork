@@ -1,14 +1,17 @@
 <template>
+
     <Head title="Agregar Solicitud" />
-    <AuthenticatedLayout :redirectRoute=" project ? { route: 'projectmanagement.purchases_request.index', params: { id: project.id } } : 'purchasesrequest.index'">
+    <AuthenticatedLayout
+        :redirectRoute="project ? { route: 'projectmanagement.purchases_request.index', params: { id: project.id } } : 'purchasesrequest.index'">
         <template #header>
-            {{ purchase ? purchase.code : (project ? 'Nueva solicitud de compra para:':'Nueva solicitud de compra') }}
+            {{ purchase ? purchase.code : (project ? 'Nueva solicitud de compra para:' : 'Nueva solicitud de compra') }}
         </template>
         <p class="mb-5 text-xl" v-if="project">{{ project.code }}</p>
         <form @submit.prevent="submit">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12 shadow-sm p-4 ring-1 ring-gray-200 rounded-lg">
-                    <h2 class="text-base font-semibold leading-7 text-gray-900 mb-6 border-b border-gray-300">Informacion
+                    <h2 class="text-base font-semibold leading-7 text-gray-900 mb-6 border-b border-gray-300">
+                        Informacion
                         básica</h2>
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 ">
                         <div class="sm:col-span-3">
@@ -23,7 +26,8 @@
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="due_date" class="font-medium leading-6 text-gray-900">Fecha Limite de Compra
+                            <InputLabel for="due_date" class="font-medium leading-6 text-gray-900">Fecha Limite de
+                                Compra
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.due_date" id="due_date" maxlength="9"
@@ -60,8 +64,8 @@
                                 <h2 class="text-base font-bold leading-6 text-gray-900 ">
                                     Añadir productos
                                 </h2>
-                                <button v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null" type="button"
-                                    @click="showProductModal = !showProductModal">
+                                <button v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
+                                    type="button" @click="showProductModal = !showProductModal">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="indigo" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -164,6 +168,20 @@
                     Añadir producto
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div v-if="!form.products.length" class="sm:col-span-3">
+                        <InputLabel for="type_product" class="font-medium leading-6 text-gray-900">
+                            Tipo de Producto
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select required id="type_product" v-model="type_product"
+                                @change="handleTypeProduct($event.target.value)"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccione tipo</option>
+                                <option> EPP </option>
+                                <option> OTROS </option>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="sm:col-span-3">
                         <InputLabel for="unit" class="font-medium leading-6 text-gray-900">
@@ -174,7 +192,8 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                             <datalist id="options">
-                                <option v-for="item in allProducts" :value="item.code" :data-value="item">{{ item.name }}
+                                <option v-for="item in product_selected" :value="item.code" :data-value="item">{{
+            item.name }}
                                 </option>
                             </datalist>
                         </div>
@@ -218,7 +237,8 @@
             message="Se añadió un nuevo producto a la solicitud" />
         <SuccessOperationModal :confirming="showModal3" title="Producto eliminado"
             message="Se quitó el producto de la solicitud" />
-        <ErrorOperationModal :showError="showErroModal" title="Error" message="El producto ya fue añadido o es inválido" />
+        <ErrorOperationModal :showError="showErroModal" title="Error"
+            message="El producto ya fue añadido o es inválido" />
     </AuthenticatedLayout>
 </template>
 
@@ -241,6 +261,8 @@ const showModal = ref(false);
 const showModal2 = ref(false);
 const showModal3 = ref(false);
 const showErroModal = ref(false);
+const type_product = ref('')
+const product_selected = ref([]);
 
 const { purchase, allProducts, project } = defineProps({
     purchase: {
@@ -251,6 +273,10 @@ const { purchase, allProducts, project } = defineProps({
     auth: Object,
     project: Object
 })
+
+function handleTypeProduct(product_value) {
+    product_selected.value = allProducts.filter(product => product.type_product === product_value);
+}
 
 const initialState = {
     title: '',
@@ -266,7 +292,7 @@ const form = useForm(purchase ? JSON.parse(JSON.stringify(purchase)) : { ...init
 const submit = () => {
     if (purchase) {
         form.put(route('purchasesrequest.update', purchase.id), {
-            onSuccess:()=>{
+            onSuccess: () => {
                 project ? router.visit(route('projectmanagement.purchases_request.index', { project_id: project.id })) :
                     router.visit(route('purchasesrequest.index'))
             }
@@ -278,7 +304,7 @@ const submit = () => {
                 setTimeout(() => {
                     showModal.value = false;
                     project ? router.visit(route('projectmanagement.purchases_request.index', { project_id: project.id })) :
-                    router.visit(route('purchasesrequest.index'))
+                        router.visit(route('purchasesrequest.index'))
                 }, 2000);
             },
             onError: () => {
@@ -352,7 +378,7 @@ function addProduct() {
 
 const handleAutocomplete = (e) => {
     const code = e.target.value;
-    let findedProduct = allProducts.find(item => item.code === code)
+    let findedProduct = product_selected.value.find(item => item.code === code)
     if (findedProduct) {
         productToAdd.value.id = findedProduct.id
         productToAdd.value.code = findedProduct.code
