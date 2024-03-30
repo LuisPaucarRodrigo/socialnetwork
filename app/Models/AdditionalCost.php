@@ -13,8 +13,8 @@ class AdditionalCost extends Model
         'expense_type',
         'ruc',
         'type_doc',
-        'invoice_number',
-        'invoice_date',
+        'doc_number',
+        'doc_date',
         'description',
         'amount',
         'project_id'
