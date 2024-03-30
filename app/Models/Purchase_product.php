@@ -16,6 +16,7 @@ class Purchase_product extends Model
         'unit',
         'description',
         'type',
+        'type_product',
         'state'
     ];
 

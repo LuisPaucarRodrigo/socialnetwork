@@ -63,7 +63,8 @@ class PurchaseProductsController extends Controller
         $validateData = $request->validate([
             'name' => 'required|string|unique:purchase_products',
             'unit' => 'required',
-            'type' => 'required',
+            'type' => 'required|string|in:Producto,Servicio,Activo',
+            'type_product' => 'nullable|string',
             'description' => 'nullable|string'
         ]);
 
@@ -73,9 +74,11 @@ class PurchaseProductsController extends Controller
     public function update(Request $request, Purchase_product $purchase_product)
     {
         $validateData =  $request->validate([
+            'name' => 'required|string|unique:purchase_products,name,' . $purchase_product->id,
             'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
             'unit' => 'required',
-            'type' => 'required',
+            'type' => 'required|string|in:Producto,Servicio,Activo',
+            'type_product' => 'required|string',
             'description' => 'nullable|string'
         ]);
 
