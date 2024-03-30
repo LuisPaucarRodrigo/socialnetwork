@@ -24,9 +24,11 @@ class CreatePurchaseOrderRequest extends FormRequest
         return [
             'id' => 'required|numeric',
             'state' => 'required|string|in:Pendiente,OC Enviada,Completada',
+            'serie_number' => 'sometimes|required|string',
             'facture_doc' => 'sometimes|required|mimes:pdf|max:2048',
             'facture_date' => 'sometimes|required|date',
             'facture_number' => 'sometimes|required|string',
+            'others' => 'sometimes|required|string',
             'remission_guide_doc'=> 'sometimes|required|mimes:pdf|max:2048',
             'remission_guide_date' => 'sometimes|required|date',
             'remission_guide_number' => 'sometimes|required|string',
