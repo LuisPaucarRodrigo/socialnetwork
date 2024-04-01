@@ -366,41 +366,6 @@ class ManagementEmployees extends Controller
         abort(404);
     }
 
-    public function uploadSchedule(Request $request)
-    {
-
-        $request->validate([
-            'document' => 'required|mimes:xlsx',
-        ]);
-
-        if ($request->hasFile('document')) {
-            $document = $request->file('document');
-            $documentName = 'EmployeesSchedule.xlsx';
-            $document->move(public_path('documents/schedule/'), $documentName);
-        }
-    }
-
-    public function updateSchedule(Request $request)
-    {
-        $request->validate([
-            'document' => 'required|mimes:xlsx',
-        ]);
-
-        if ($request->hasFile('document')) {
-            $filePath = "documents/schedule/EmployeesSchedule.xlsx";
-            $path = public_path($filePath);
-            if (file_exists($path)) {
-                unlink($path);
-            } else {
-                dd("El archivo no existe en la ruta: $filePath");
-            }
-
-            $document = $request->file('document');
-            $documentName = 'EmployeesSchedule.xlsx';
-            $document->move(public_path('documents/schedule/'), $documentName);
-        }
-    }
-
     public function reentry(Request $request, $id)
     {
         $reentry = Contract::find($id);
