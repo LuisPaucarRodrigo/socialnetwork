@@ -22,6 +22,7 @@ return new class extends Migration
             $table->date('review_date')->nullable();
             $table->string('doc_permission')->nullable();
             $table->text('reason');
+            $table->text('coment')->nullable();
             $table->string('status')->default('Pendiente');
             $table->timestamps();
 

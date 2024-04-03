@@ -22,7 +22,7 @@ class CreatePurchaseQuoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quote_deadline' => 'nullable|date',
+            'quote_deadline' => 'nullable|date|before_or_equal:due_date',
             'due_date' => 'nullable|date',
             'purchase_doc' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
             'igv' => 'required',
@@ -32,7 +32,7 @@ class CreatePurchaseQuoteRequest extends FormRequest
             'provider_id' => 'required',
             'currency' => 'required',
             'purchasing_request_id' => 'required|numeric',
-            'products'=> 'required|array',
+            'products' => 'required|array',
         ];
     }
 }

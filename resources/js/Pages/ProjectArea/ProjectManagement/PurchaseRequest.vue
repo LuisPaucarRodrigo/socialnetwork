@@ -81,7 +81,7 @@
                                 <div v-if="purchase.due_date" class="flex space-x-3 justify-center">
 
                                     <Link class="text-blue-900 "
-                                        :href="route('purchasingrequest.details', { id: purchase.id })">
+                                        :href="route('projectmanagement.purchases_request.details', { id: purchase.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -174,9 +174,9 @@
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModalDate"> Cancel </SecondaryButton>
 
-                    <DangerButton class="ml-3" @click="addDueDate()">
+                    <PrimaryButton class="ml-3" @click="addDueDate()">
                         Guardar
-                    </DangerButton>
+                    </PrimaryButton>
                 </div>
             </div>
         </Modal>
@@ -195,6 +195,7 @@ import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const confirmingPurchasesDeletion = ref(false);
 const showError = ref(false)

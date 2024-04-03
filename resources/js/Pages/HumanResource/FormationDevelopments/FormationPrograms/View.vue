@@ -29,11 +29,6 @@
                     </div>
                 </div>
 
-                <!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt class="text-sm font-medium leading-6 text-gray-900">Fecha</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ formatMonthYear(formation_program.month_year)
-                    }}</dd>
-                </div> -->
                 <br>
                 <p class="font-medium text-sm">Empleados:</p>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-x-24 sm:gap-y-8 sm:px-0">

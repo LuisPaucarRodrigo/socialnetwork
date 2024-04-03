@@ -47,7 +47,7 @@ class ExpenseManagementController extends Controller
 
     public function details(Purchase_quote $purchase_quote)
     {
-        $expense = $purchase_quote->load('purchasing_requests.project', 'purchase_order', 'provider', 'products');
+        $expense = $purchase_quote->load('purchasing_requests.project','purchasing_requests.preproject', 'purchase_order', 'provider', 'products');
         return Inertia::render('Finance/ManagementExpense/Details', ['expense' => $expense]);
     }
 
@@ -69,7 +69,6 @@ class ExpenseManagementController extends Controller
                 'purchase_quote_id' => $id
             ]);
         }
-        return to_route('managementexpense.index');
     }
 
     public function doTask()

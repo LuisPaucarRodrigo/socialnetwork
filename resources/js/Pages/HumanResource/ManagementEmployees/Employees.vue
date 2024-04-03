@@ -304,7 +304,6 @@ const reentrystate = ref(props.boolean);
 
 const reentry = () => {
     if (props.boolean == true) {
-        reentrystate.value = false
         router.get(route('management.employees'))
     } else {
         reentrystate.value = true

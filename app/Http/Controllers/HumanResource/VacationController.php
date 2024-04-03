@@ -20,38 +20,27 @@ use function PHPUnit\Framework\fileExists;
 class VacationController extends Controller
 {
 
-    public function index(Request $request)
+    public function index(Request $request, $review = false)
     {
-        $vacations = Vacation::with('employee');
+        if ($review == false) {
+            $vacations = Vacation::with('employee')->where('review_date', null);
+        } else {
+            $vacations = Vacation::with('employee')->where('review_date', '!=', null);
+        }
         $searchTerm = strtolower($request->query('searchTerm'));
         if ($searchTerm !== '') {
             $vacations = $vacations->where(function ($query) use ($searchTerm) {
-                if (preg_match('/^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])(?:\/\d{4})?(?: \d{2}:\d{2})?$/', $searchTerm)) {
-                    $searchDate = Carbon::createFromFormat('d/m/Y H:i', $searchTerm)->format('Y-m-d H:i');
-        
-                    $query->where('start_date', 'like', '%' . $searchDate . '%')
-                          ->orWhere('end_date', 'like', '%' . $searchDate . '%')
-                          ->orWhere('start_permissions', 'like', '%' . $searchDate . '%')
-                          ->orWhere('end_permissions', 'like', '%' . $searchDate . '%')
-                          ->orWhere('review_date', 'like', '%' . $searchDate . '%');
-                    $query->orWhereHas('employee', function ($subQuery) use ($searchTerm) { 
-                            $subQuery->where('name', 'like', '%' . $searchTerm . '%')
-                                ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
-                        });
-                } else {
-                    $query->where('start_date', 'like', '%' . $searchTerm . '%')
-                          ->orWhere('end_date', 'like', '%' . $searchTerm . '%')
-                          ->orWhere('start_permissions', 'like', '%' . $searchTerm . '%')
-                          ->orWhere('end_permissions', 'like', '%' . $searchTerm . '%')
-                          ->orWhere('review_date', 'like', '%' . $searchTerm . '%')
-                          ->orWhere('type', 'like', '%' . $searchTerm . '%')
-                          ->orWhere('status', 'like', '%' . $searchTerm . '%')
-                          ;
-                    $query->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
-                        $subQuery->where('name', 'like', '%' . $searchTerm . '%')
-                                 ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
-                    });
-                }
+                $query->where('start_date', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('end_date', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('start_permissions', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('end_permissions', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('review_date', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('type', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('status', 'like', '%' . $searchTerm . '%');
+                $query->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
+                });
             })->get();
         } else {
             $vacations = $vacations->paginate();
@@ -61,6 +50,7 @@ class VacationController extends Controller
         return Inertia::render('HumanResource/ManagementVacation/Vacation', [
             'vacations' => $vacations,
             'search' => $searchTerm,
+            'boolean' => boolval($review)
         ]);
     }
 
@@ -125,29 +115,28 @@ class VacationController extends Controller
         ]);
     }
 
-    public function reviewed($id)
+    public function reviewed_and_decline(Request $request)
     {
-
-        $reviewed = Vacation::find($id);
-        $reviewed->update([
-            'review_date' => Carbon::now(),
-            'status' => 'Aceptado'
+        $request->validate([
+            'id' => 'required|numeric',
+            'status' => 'required|in:Aceptado,Rechazado,Finalizado,Ausente',
+            'coment' => 'sometimes|required|string'
         ]);
-        return to_route('management.vacation');
-    }
-
-    public function decline($id)
-    {
-        $vacation = Vacation::find($id);
-        $vacation->update([
+        $reviewed = Vacation::find($request->id);
+        $dataToUpdate = [
             'review_date' => Carbon::now(),
-            'status' => 'Rechazado'
-        ]);
-        return to_route('management.vacation');
+            'status' => $request->status
+        ];
+
+        if ($request->has('coment')) {
+            $dataToUpdate['coment'] = $request->coment;
+        }
+
+        $reviewed->update($dataToUpdate);
     }
 
     public function destroy(Vacation $vacation)
-    {   
+    {
         if ($vacation->type == "Permisos") {
             $filePath = "documents/permissions/$vacation->doc_permission";
             $path = public_path($filePath);
@@ -183,5 +172,35 @@ class VacationController extends Controller
         }
 
         abort(404, 'Documento no encontrado');
+    }
+
+    public function alarmPermissions()
+    {
+        $now = Carbon::now();
+        $permissions = Vacation::where('type', 'Permisos')
+            ->where('end_permissions', '<=', $now->copy()->addHours(1))
+            ->where('review_date', '!=', null)
+            ->where('status', 'Aceptado')
+            ->get();
+        return response()->json([
+            'totalPermissions' => $permissions->count(),
+            'permissions' => $permissions,
+        ]);
+    }
+
+    public function alarmVacation()
+    {
+
+        $now = Carbon::now();
+        $currentDateUpdate = $now->subHours(5);
+        $vacation = Vacation::where('type', 'Vacaciones')
+            ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(1))
+            ->where('review_date', '!=', null)
+            ->where('status', 'Aceptado')
+            ->get();
+        return response()->json([
+            'totalVacation' => $vacation->count(),
+            'vacation' => $vacation,
+        ]);
     }
 }
