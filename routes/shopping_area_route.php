@@ -16,6 +16,7 @@ Route::get('/shopping_area/purchasesrequest/quotes/{id}', [PurchaseRequestContro
 Route::get('/shopping_area/purchasesrequest/deadline_complete/quotes/{id}', [PurchaseRequestController::class, 'purchase_quote_deadline_complete'])->name('purchasesrequest.quote_deadline.complete');
 Route::get('/shopping_area/purchasesrequest/quotes/{id}/preview', [PurchaseRequestController::class, 'showDocument'])->name('purchasesrequest.show');
 Route::get('/shopping_area/purchasesrequest/details/{id}', [PurchaseRequestController::class, 'details'])->name('purchasingrequest.details');
+Route::get('/shopping_area/purchasesrequest/export/{id}', [PurchaseRequestController::class, 'export'])->name('purchasingrequest.export');
 Route::post('/shopping_area/purchasesrequest/orders', [PurchaseRequestController::class, 'quote'])->name('purchasesrequest.storequotes');
 Route::post('/shopping_area/purchasesrequest/reject/{id}', [PurchaseRequestController::class, 'reject_request'])->name('purchasesrequest.reject_request');
 Route::get('/shopping_area/purchasesrequest/doTask', [PurchaseRequestController::class, 'doTask'])->name('purchasesrequest.task');

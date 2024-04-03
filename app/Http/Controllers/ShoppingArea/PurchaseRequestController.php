@@ -16,6 +16,7 @@ use App\Models\Purchase_quote;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Providers\GlobalFunctionsServiceProvider;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseRequestController extends Controller
 {
@@ -237,4 +238,12 @@ class PurchaseRequestController extends Controller
         $expense = $id->load('purchasing_requests.preproject', 'purchase_order', 'provider', 'products');
         return Inertia::render('ProjectArea/PreProject/Details', ['expense' => $expense, 'quotes' => true]);
     }
+
+    public function export(Purchasing_request $id)
+    {
+        $purchasing_request = $id->load('purchasing_request_product');
+        $pdf = Pdf::loadView('pdf.PurchasingRequestPDF', compact('purchasing_request'));
+        return $pdf->stream();
+    }
+
 }

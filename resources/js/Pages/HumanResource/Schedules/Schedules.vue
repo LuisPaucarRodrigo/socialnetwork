@@ -149,9 +149,9 @@ const props = defineProps({
 })
 
 const formSchedule = useForm({
-    document: null
+    document: null,
+    schedule: null
 })
-
 
 function openPreviewDocumentModal(documentId) {
     const routeToShow = route('management.employees.schedule.preview', { schedule: documentId });
@@ -171,6 +171,9 @@ function getDocumentUrl() {
 }
 
 const submitSchedule = () => {
+    if(props.file){
+        formSchedule.schedule = props.file.id;
+    }
     formSchedule.post(route('management.employees.schedule.post'), {
         onSuccess: () => {
             closeScheduleModal();

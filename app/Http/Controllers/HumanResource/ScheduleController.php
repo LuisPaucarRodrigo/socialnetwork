@@ -68,20 +68,40 @@ class ScheduleController extends Controller
         ]);
 
         $currentDate = Carbon::now();
+        $lastSchedule = Schedule::latest()->first();
         $monthName = $currentDate->locale('es')->translatedFormat('F'); // Obtiene el nombre del mes en español
         $year = $currentDate->year;
-
         $documentName = null;
-        if ($request->hasFile('document')) {
-            $document = $request->file('document');
-            $documentName = time() . '_Horario_' . $monthName . '_' . $year . '.pdf';
-            $document->move(public_path('documents/schedules/'), $documentName);
-        }
 
-        Schedule::create([
-            'schedule_title' => $documentName,
-            'date' => $currentDate->toDateString(),
-        ]);
+        if ($request->schedule) {
+            $editingSchedule = Schedule::find($request->schedule);
+            $fileName = $editingSchedule->schedule_title;
+            $filePath = "documents/schedules/$fileName";
+            $path = public_path($filePath);
+            if (file_exists($path)) {
+                unlink($path);
+                if ($request->hasFile('document')) {
+                    $document = $request->file('document');
+                    $documentName = time() . '_Horario_' . $monthName . '_' . $year . '.pdf';
+                    $document->move(public_path('documents/schedules/'), $documentName);
+                }
+                $editingSchedule->update([
+                    'schedule_title' => $documentName,
+                    'date' => $currentDate->toDateString(),
+                ]);
+            }
+            
+        } else {
+            if ($request->hasFile('document')) {
+                $document = $request->file('document');
+                $documentName = time() . '_Horario_' . $monthName . '_' . $year . '.pdf';
+                $document->move(public_path('documents/schedules/'), $documentName);
+            }
+            Schedule::create([
+                'schedule_title' => $documentName,
+                'date' => $currentDate->toDateString(),
+            ]);
+        } 
     }  
 
     public function download(Schedule $schedule)
