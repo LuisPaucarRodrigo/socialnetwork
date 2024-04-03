@@ -42,10 +42,7 @@ class  Project extends Model
         return $this->belongsTo(Preproject::class, 'preproject_id');
     }
     public function getPreprojectQuoteAttribute(){
-        return [
-            'margin' => $this->preproject?->quote?->total_amount_margin,
-            'no_margin' => $this->preproject?->quote?->total_amount_no_margin,
-        ];
+        return $this->preproject?->quote?->total_amount;
     }
 
     public function getPreprojectQuoteNoMarginAttribute(){

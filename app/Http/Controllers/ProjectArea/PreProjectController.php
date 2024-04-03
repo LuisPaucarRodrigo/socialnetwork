@@ -152,6 +152,7 @@ class PreProjectController extends Controller
             "days" => 'required',
             "quantity" => 'required',
             "unit_price" => 'required',
+            "profit_margin" => 'required',
             "preproject_quote_id" => 'required',
         ]);
         $newItem = PreProjectQuoteItem::create($data);
