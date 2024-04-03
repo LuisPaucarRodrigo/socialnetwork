@@ -124,6 +124,8 @@
 
         </Modal>
         <ErrorOperationModal :showError="errorAmount" :title="title" :message="message" />
+        <SuccessOperationModal :confirming="showModalSuccess" title="Pago registrados"
+            message="Los pagos se registraron correctamente" />
     </AuthenticatedLayout>
 </template>
 
@@ -136,12 +138,14 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 const props = defineProps({
     quote: Object
 })
 
 const showModalPayment = ref(false);
+const showModalSuccess = ref(false);    
 const amount = ref('');
 const description = ref('');
 const paymentsArray = ref([]);
@@ -165,7 +169,15 @@ function submit() {
             amount: payment.amount,
             description: payment.description
         }))
-        form.put(route('managementexpense.reviewed', { id: props.quote.id }), form)
+        form.put(route('managementexpense.reviewed', { id: props.quote.id }), {
+            onSuccess: () => {
+                showModalSuccess.value = true
+                setTimeout(() => {
+                    showModalSuccess.value = false;
+                    router.visit(route('managementexpense.index'))
+                }, 2000);
+            }
+        })
     } else {
         title.value = "Monto Menor"
         message.value = "La suma de pagos debe ser igual al monto total"
