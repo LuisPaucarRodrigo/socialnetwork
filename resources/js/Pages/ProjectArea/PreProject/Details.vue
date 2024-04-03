@@ -1,6 +1,8 @@
 <template>
+
     <Head title="Gestion de Gastos Cuadrilla" />
-    <AuthenticatedLayout :redirectRoute="{ route:'preprojects.purchase_quote', params: { id: expense.id }}">
+    <AuthenticatedLayout
+        :redirectRoute="expense.purchasing_requests.due_date ? { route: 'purchasesrequest.quote_deadline.complete', params: { id: expense.purchasing_requests.project_id } } : { route: 'preprojects.purchase_quote', params: { id: expense.purchasing_requests.preproject_id } }">
         <template #header>
             {{ expense.code }}
         </template>
@@ -18,12 +20,16 @@
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Monto Total:</p>
                     <p class="text-lg text-gray-900">{{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-        (expense.total_amount).toFixed(2) }}</p>
+            (expense.total_amount).toFixed(2) }}</p>
                 </div>
-                <!-- <div v-if="expense.quote_deadline" class="mb-4">
+                <div v-if="quotes" class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha Límite de Aprobación:</p>
-                    <p class="text-lg text-gray-900">{{ formattedDate(expense.quote_deadline) }}</p>
-                </div> -->
+                    <p v-if="expense.quote_deadline" class="text-lg text-gray-900">{{
+            formattedDate(expense.quote_deadline) }}
+                    </p>
+                    <button v-else @click="add_quote_deadline"
+                        class="text-md text-green-600 hover:underline flex items-center">+ Agregar</button>
+                </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Cotización/PDF:</p>
                     <button @click="openPreviewDocumentModal(expense.id)"
@@ -56,7 +62,8 @@
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha límite de compra:</p>
-                    <p class="text-lg text-gray-900">{{ formattedDate(expense.purchasing_requests.due_date) }}</p>
+                    <p class="text-lg text-gray-900">{{ expense.purchasing_requests.due_date ?
+            formattedDate(expense.purchasing_requests.due_date) : 'No hay fecha definida' }}</p>
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">IGV:</p>
@@ -148,22 +155,22 @@
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-center">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-                                            (item.pivot?.unitary_amount * (1/1.18)).toFixed(2) }}
+            (item.pivot?.unitary_amount * (1 / 1.18)).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td v-if="expense.igv"
                                     class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                     <p class="text-gray-900 whitespace-nowrap">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-                                           (item.pivot?.unitary_amount * (expense.igv ? 1/1.18 :1.18) 
-                                           * item.pivot?.quantity).toFixed(2) }}
+            (item.pivot?.unitary_amount * (expense.igv ? 1 / 1.18 : 1.18)
+                * item.pivot?.quantity).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-right">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-                                            ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) / 
-                                            (expense.igv ? 1 :1.18)).toFixed(2) }}
+            ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) /
+                (expense.igv ? 1 : 1.18)).toFixed(2) }}
                                     </p>
                                 </td>
                             </tr>
@@ -227,17 +234,59 @@
         </div>
         <br>
         <br>
+        <Modal :show="quote_deadline">
+            <form @submit.prevent="submit">
+                <div class="p-6">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        Ingrese Fecha de Limite Aprobacion de Finanzas
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-600">
+                        Ingrese la fecha de limite de aprobacion de finanzas para poder habilitar la aprobacion de la
+                        cotizacion en
+                        el Area de Finanzas
+                    </p>
+                    <TextInput type="date" v-model="form.quote_deadline" id="due_date" required
+                        class="mt-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <InputError :message="form.errors.quote_deadline" />
+
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton @click="closeModalQuoteDeadLine"> Cancel </SecondaryButton>
+
+                        <PrimaryButton type="submit" class="ml-3" :class="{ 'opacity-25': form.processing }">
+                            Guardar
+                        </PrimaryButton>
+                    </div>
+                </div>
+            </form>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
-import { Head } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import { ref } from 'vue';
+import InputError from '@/Components/InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
-    expense: Object
+    expense: Object,
+    quotes: {
+        type: Boolean,
+        required: false
+    }
+})
+
+const quote_deadline = ref(false)
+const form = useForm({
+    due_date: props.expense.purchasing_requests.due_date,
+    quote_deadline: '',
+    quote_id: ''
 })
 
 function openPreviewDocumentModal(documentId) {
@@ -251,11 +300,11 @@ function getTotals(products, hasIGV) {
     let igv = 0;
     let total = 0;
     products.forEach(item => {
-        subTotal += item.pivot.quantity * item.pivot.unitary_amount/(hasIGV?1:1.18) 
+        subTotal += item.pivot.quantity * item.pivot.unitary_amount / (hasIGV ? 1 : 1.18)
     });
     if (hasIGV) {
         total = subTotal.toFixed(2)
-        subTotal = (total/1.18).toFixed(2)
+        subTotal = (total / 1.18).toFixed(2)
         igv = (total - subTotal).toFixed(2)
     } else {
         subTotal = subTotal.toFixed(2)
@@ -265,5 +314,20 @@ function getTotals(products, hasIGV) {
     return { subTotal, igv, total }
 }
 
+function add_quote_deadline() {
+    quote_deadline.value = true
+}
 
+function closeModalQuoteDeadLine() {
+    quote_deadline.value = false
+}
+
+function submit() {
+    form.quote_id = props.expense.id
+    form.post(route('projectmanagement.update_quotedeadline'), {
+        onSuccess: () => {
+            router.get(route('purchasesrequest.quote_deadline.complete', { id: props.expense.purchasing_requests.project_id }))
+        }
+    });
+}
 </script>

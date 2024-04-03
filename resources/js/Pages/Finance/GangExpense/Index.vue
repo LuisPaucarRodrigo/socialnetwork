@@ -35,11 +35,11 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Numero
+                            Serie
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 mx-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Serie
+                            Numero
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -86,10 +86,10 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ expense.type_cdp }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.number }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.series }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.series }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ expense.number }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ expense.ruc }}</p>

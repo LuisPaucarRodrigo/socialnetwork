@@ -24,6 +24,7 @@ class UpdatePaymentRequest extends FormRequest
         return [
             'operation_number' => 'required|numeric',
             'date' => 'required|date',
+            'state' => 'required|numeric',
             'payment_doc' => 'nullable|mimes:png,jpg,jpeg,pdf|max:2048',
             'payment_id' => 'required|numeric',
             'price_dolar' => 'nullable|numeric',

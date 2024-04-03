@@ -33,7 +33,7 @@ class PreprojectQuoteRequest extends FormRequest
             'payment_type' => 'required',
             "observations" => 'nullable',
             'preproject_id' => 'required',
-            "items" => ['required_without:products', 'array'], 
+            "items" => ['required_without:products', 'array'],
             "products" => ['required_without:items', 'array'],
         ];
     }

@@ -1,4 +1,5 @@
 <template>
+
   <Head title="Calendario" />
   <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
     <h1>Calendario de Proyectos</h1>
@@ -102,7 +103,7 @@ const formatDate = (dateStr) => {
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin],
-  initialView: 'dayGridMonth',
+  initialView: 'dayGridMonth',  
   dateClick: handleDateClick,
   eventClick: handleEventClick,
   events: events.value,
@@ -176,4 +177,5 @@ h1 {
   font-weight: bold;
   font-size: x-large;
 }
+
 </style>

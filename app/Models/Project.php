@@ -19,7 +19,23 @@ class  Project extends Model
         'initial_budget'
     ];
 
-    protected $appends = ['total_assigned_resources_costs', 'total_percentage_tasks', 'total_used_resources_costs','remaining_budget', 'total_assigned_product_costs','total_refund_product_costs_no_different_price', 'total_product_costs_with_liquidation','preproject_quote', 'total_resources_costs_with_liquidation', 'total_employee_costs','name','code', 'start_date', 'end_date',];
+    protected $appends = [
+        'total_assigned_resources_costs', 
+        'total_percentage_tasks', 
+        'total_used_resources_costs',
+        'remaining_budget', 
+        'total_assigned_product_costs',
+        'total_refund_product_costs_no_different_price', 
+        'total_product_costs_with_liquidation',
+        'preproject_quote', 
+        'preproject_quote_no_margin',
+        'total_resources_costs_with_liquidation', 
+        'total_employee_costs',
+        'name',
+        'code', 
+        'start_date', 
+        'end_date',
+    ];
 
     
     public function preproject() {
@@ -30,6 +46,10 @@ class  Project extends Model
             'margin' => $this->preproject?->quote?->total_amount_margin,
             'no_margin' => $this->preproject?->quote?->total_amount_no_margin,
         ];
+    }
+
+    public function getPreprojectQuoteNoMarginAttribute(){
+        return $this->preproject->quote->total_amount_no_margin;
     }
     
 
@@ -98,7 +118,8 @@ class  Project extends Model
         return $this->hasMany(ResourceHistorial::class, 'project_id');
     }
 
-    public function products(){
+    public function products()
+    {
         return $this->belongsToMany(Product::class, 'project_product');
     }
 
@@ -158,12 +179,9 @@ class  Project extends Model
                 return $item->product->unit_price * $item->quantity;
             }
         });
-        return $totalCost; 
+        return $totalCost;
     }
 
-
-    
-    
 
     public function getTotalRefundProductCostsNoDifferentPriceAttribute(){
         $totalCost = $this->projectProducts()->with('product')->get()->sum(function($item) {

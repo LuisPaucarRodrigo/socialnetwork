@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Empleados en programas" />
 
     <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
