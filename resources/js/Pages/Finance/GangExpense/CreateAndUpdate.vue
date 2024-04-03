@@ -53,21 +53,21 @@
                         </div>
 
                         <div class="sm:col-span-2 sm:col-start-1">
-                            <InputLabel for="number" class="font-medium leading-6 text-gray-900">Numero</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="form.number" id="number" autocomplete="number"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.number" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-4">
                             <InputLabel for="series" class="font-medium leading-6 text-gray-900">Serie
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" id="series" v-model="form.series" autocomplete="series"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.series" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-4">
+                            <InputLabel for="number" class="font-medium leading-6 text-gray-900">Numero</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.number" id="number" autocomplete="number"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.number" />
                             </div>
                         </div>
 
@@ -101,7 +101,7 @@
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="type_expenses" class="font-medium leading-6 text-gray-900">Nivel Educativo
+                            <InputLabel for="type_expenses" class="font-medium leading-6 text-gray-900">Tipo de Gasto
                             </InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.type_expenses" id="type_expenses" 

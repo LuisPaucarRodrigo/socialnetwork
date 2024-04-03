@@ -25,15 +25,40 @@ class Preproject extends Model
     ];
 
 
-    public function project() {
+    public function project()
+    {
         return $this->hasOne(Project::class);
     }
 
-    public function imagepreproject() {
+    public function imagepreproject()
+    {
         return $this->HasMany(Imagespreproject::class);
     }
 
-    public function getStateAttribute() {
+    public function quote()
+    {
+        return $this->hasOne(PreProjectQuote::class, 'preproject_id');
+    }
+
+    public function contacts()
+    {
+        return $this->belongsToMany(Customers_contact::class, 'preprojects_contacts', 'preproject_id', 'customer_contact_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function purchasing_request()
+    {
+        return $this->hasMany(Purchasing_request::class);
+    }
+
+    
+    // CAMPOS CALCULADOS
+    public function getStateAttribute()
+    {
         foreach ($this->purchasing_request as $purchasingRequest) {
             if (is_null($purchasingRequest->project_id)) {
                 return false;
@@ -42,32 +67,20 @@ class Preproject extends Model
         return true;
     }
 
-    public function getHasPhotoReportAttribute() {
+    public function getHasPhotoReportAttribute()
+    {
         return true;
     }
 
-
-    public function quote() {
-        return $this->hasOne(PreProjectQuote::class,'preproject_id');
-    }
-    
-
-    public function getIsAppropriateAttribute(){
+    public function getIsAppropriateAttribute()
+    {
         $quote_status =  $this->quote()->first()?->state;
         $project = $this->project()->first();
         return $quote_status && ($project === null);
     }
 
-    public function getHasQuoteAttribute() {
-        return $this->quote()->first() ? true: false;
+    public function getHasQuoteAttribute()
+    {
+        return $this->quote()->first() ? true : false;
     }
-
-     public function contacts() {
-        return $this->belongsToMany(Customers_contact::class,'preprojects_contacts','preproject_id', 'customer_contact_id');
-     }
-
-     public function purchasing_request()
-     {
-         return $this->hasMany(Purchasing_request::class);
-     }
 }
