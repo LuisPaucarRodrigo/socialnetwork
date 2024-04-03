@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('expense_type');
             $table->string('ruc');
             $table->string('type_doc');
-            $table->string('invoice_number');
+            $table->string('doc_number');
             $table->date('invoice_date');
             $table->double('amount');
             $table->string('description')->nullable();
@@ -25,6 +25,7 @@ return new class extends Migration
                 ->constrained('projects')
                 ->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['ruc', 'doc_number']);
         });
     }
 

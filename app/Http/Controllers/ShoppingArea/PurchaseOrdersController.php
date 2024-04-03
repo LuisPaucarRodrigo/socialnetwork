@@ -45,9 +45,11 @@ class PurchaseOrdersController extends Controller
         $purchase_order = Purchase_order::find($request->id);
         $purchase_order->update([
             'state' => $request->state,
+            'serie_number' => $request->serie_number,
             'facture_doc' => $documentNameFacture,
             'facture_date' => $request->facture_date,
             'facture_number' => $request->facture_number,
+            'others' => $request->others,
             'remission_guide_doc' => $documentNameRemission,
             'remission_guide_date' => $request->remission_guide_date,
             'remission_guide_number' => $request->remission_guide_number,
