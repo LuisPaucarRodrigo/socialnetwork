@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('basic_salary');
             $table->string('state')->default('Active');
-            $table->boolean('discount_remuneration')->default(true);
+            $table->boolean('discount_remuneration');
             $table->integer('days_taken')->default(0);  
             $table->date('hire_date');
             $table->date('fired_date')->nullable();
