@@ -166,15 +166,15 @@
                                                         Nombre
                                                     </th>
                                                     <th
-                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        class="border-b-2  min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Cantidad
                                                     </th>
                                                     <th
-                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        class="border-b-2 min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Precio unitario
                                                     </th>
                                                     <th
-                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        class="border-b-2   min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Margen
                                                     </th>
                                                     <th
@@ -367,11 +367,11 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{
-        (item.unit_price *
-            item.quantity *
-            item.days *
-            (1 + item.profit_margin / 100))
-            .toFixed(2) }}
+                                                                (item.unit_price *
+                                                                    item.quantity *
+                                                                    item.days *
+                                                                    (1 + item.profit_margin / 100))
+                                                                    .toFixed(2) }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -516,13 +516,13 @@
                             <InputLabel for="unit" class="font-medium leading-6 text-gray-900">Unidad
                             </InputLabel>
                             <div class="mt-2">
-                                <select required id="unit" v-model="itemToAdd.unit"
+                                <select required  v-model="itemToAdd.unit"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
-                                    <option value="Unidad">Unidad</option>
-                                    <option value="Unidad">Kilos</option>
-                                    <option value="Unidad">Metros</option>
-                                    <option value="GLB">GLB</option>
+                                    <option>Unidad</option>
+                                    <option>Kilos</option>
+                                    <option>Metros</option>
+                                    <option>GLB</option>
                                 </select>
                             </div>
                         </div>

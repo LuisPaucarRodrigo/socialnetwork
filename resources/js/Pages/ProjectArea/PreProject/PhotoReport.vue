@@ -62,7 +62,14 @@
         <h2 class="text-base font-medium leading-7 text-gray-900 mb-6">
           Subir Documentos
         </h2>
-        <form @submit.prevent="submit">
+        <form 
+          @submit.prevent="submit(
+            e, 
+            photoreport?.id 
+              ? route('preprojects.photoreport.update', { 
+                photoreport: photoreport.id }) 
+              : route('preprojects.photoreport.store'))"
+        >
           <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-6">
               <div>
@@ -98,8 +105,14 @@
 
     <ConfirmDeleteModal :confirmingDeletion="confirmReportDelete" itemType="informe fotográfico"
       :deleteFunction="() => deleteDocument(photoreport?.id)" @closeModal="closeModalDoc" />
-    <ConfirmCreateModal :confirmingcreation="showModal" itemType="informe fotográfico" />
-    <ConfirmUpdateModal :confirmingupdate="showModalUpdate" itemType="informe fotográfico" />
+
+    
+
+    <SuccessOperationModal 
+      :confirming="showModal"
+      :title="`Informe fotográfico guardado`"
+      :message="`El informe fotográfico fue guardado con éxito.`"
+    />
   </AuthenticatedLayout>
 </template>
     
@@ -116,6 +129,7 @@ import Modal from '@/Components/Modal.vue';
 import { ref, computed, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 const { documents, preproject, photoreport, auth } = defineProps({
   photoreport: Object,
@@ -135,7 +149,6 @@ const form = useForm({
 
 const create_document = ref(false);
 const showModal = ref(false);
-const showModalUpdate = ref(false);
 const confirmReportDelete = ref(false);
 
 
@@ -147,15 +160,14 @@ const closeModal = () => {
   create_document.value = false;
 };
 
-const submit = () => {
-  let url = photoreport ? route('preprojects.photoreport.update', { photoreport: photoreport.id }) : route('preprojects.photoreport.store')
+const submit = (e, url) => {
   form.post(url, {
     onSuccess: () => {
       closeModal();
       form.reset();
-      photoreport ? showModalUpdate.value = true : showModal.value = true
+      showModal.value = true
       setTimeout(() => {
-        photoreport ? showModalUpdate.value = false : showModal.value = false
+        showModal.value = false
       }, 2000);
     },
     onError: () => {
