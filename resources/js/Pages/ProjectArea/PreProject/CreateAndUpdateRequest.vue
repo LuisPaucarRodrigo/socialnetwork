@@ -151,6 +151,19 @@
                     Añadir producto
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div v-if="!form.products.length" class="sm:col-span-3">
+                        <InputLabel for="type_product" class="font-medium leading-6 text-gray-900">
+                            Tipo de Producto
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select required id="type_product" v-model="type_product" @change="handleTypeProduct($event.target.value)"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccione tipo</option>
+                                <option> EPP </option>
+                                <option> OTROS </option>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="sm:col-span-3">
                         <InputLabel for="unit" class="font-medium leading-6 text-gray-900">
@@ -161,7 +174,8 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                             <datalist id="options">
-                                <option v-for="item in allProducts" :value="item.code" :data-value="item">{{ item.name }}
+                                <option v-for="item in product_selected" :value="item.code" :data-value="item">
+                                    {{ item.name }}
                                 </option>
                             </datalist>
                         </div>
@@ -228,6 +242,7 @@ const showModal = ref(false);
 const showModal2 = ref(false);
 const showModal3 = ref(false);
 const showErroModal = ref(false);
+const type_product = ref('')
 
 const { purchase, allProducts, preproject } = defineProps({
     purchase: {
@@ -238,6 +253,12 @@ const { purchase, allProducts, preproject } = defineProps({
     auth: Object,
     preproject: Object
 })
+
+const product_selected = ref([]);
+
+function handleTypeProduct(product_value) {
+    product_selected.value = allProducts.filter(product => product.type_product === product_value);
+}
 
 const initialState = {
     title: '',
@@ -285,6 +306,7 @@ const initialStateProduct = {
     quantity: '',
     pivot: {}
 }
+
 const productToAdd = ref(JSON.parse(JSON.stringify(initialStateProduct)))
 
 
@@ -337,7 +359,7 @@ function addProduct() {
 
 const handleAutocomplete = (e) => {
     const code = e.target.value;
-    let findedProduct = allProducts.find(item => item.code === code)
+    let findedProduct = product_selected.value.find(item => item.code === code)
     if (findedProduct) {
         productToAdd.value.id = findedProduct.id
         productToAdd.value.code = findedProduct.code

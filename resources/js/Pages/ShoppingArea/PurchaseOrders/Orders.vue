@@ -137,6 +137,17 @@
                                 Factura
                             </h2>
                             <div>
+                                <InputLabel for="serie_number" class="mt-2 font-medium leading-6 text-gray-900">
+                                    Numero de Serie
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.serie_number" id="serie_number" maxlength="8"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.serie_number" />
+                                </div>
+                            </div>
+            
+                            <div>
                                 <InputLabel for="facture_number" class="mt-2 font-medium leading-6 text-gray-900">
                                     Numero de Factura
                                 </InputLabel>
@@ -166,6 +177,17 @@
                                     <InputFile type="file" v-model="form.facture_doc" id="facture_doc"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.facture_doc" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="others" class="mt-2 font-medium leading-6 text-gray-900">
+                                    Otros
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.others" id="others"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.others" />
                                 </div>
                             </div>
                         </div>
@@ -298,9 +320,11 @@ const props = defineProps({
 const form = useForm({
     id: '',
     state: '',
+    serie_number: '',
     facture_number: '',
     facture_date: '',
     facture_doc: null,
+    others:'',
     remission_guide_number: '',
     remission_guide_date: '',
     remission_guide_doc: null,

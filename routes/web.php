@@ -1,27 +1,14 @@
 <?php
 
-use App\Http\Controllers\Finance\DepositController;
-use App\Http\Controllers\Finance\ExpenseManagementController;
-use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
-use App\Http\Controllers\HumanResource\ScheduleController;
-use App\Http\Controllers\HumanResource\SpreadsheetsController;
-use App\Http\Controllers\ProjectArea\CalendarController;
-use App\Http\Controllers\Finance\BudgetUpdateController;
 use App\Http\Controllers\Finance\GangExpenseController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
-use App\Http\Controllers\ProjectArea\LiquidationController;
-use App\Http\Controllers\ProjectArea\ProjectScheduleController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
-use App\Http\Controllers\ProjectArea\ProjectReportsController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
-use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ShoppingArea\PurchaseRequestController;
-use App\Http\Controllers\ShoppingArea\ProviderController;
-use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
@@ -29,16 +16,8 @@ use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
-use App\Http\Controllers\Inventory\InventoryControlController;
-use App\Http\Controllers\Inventory\WarehousesController;
-use App\Http\Controllers\Inventory\ProductController;
-use App\Http\Controllers\Inventory\PurchaseProductsController;
-use App\Http\Controllers\ProjectArea\CustomerVisitController;
-use App\Http\Controllers\ShoppingArea\PaymentController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 
 // use App\Http\Controllers\VacationController;
 
