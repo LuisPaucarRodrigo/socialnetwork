@@ -11,9 +11,11 @@ class Purchase_order extends Model
     protected $fillable = [
         'state',
         'purchase_quote_id', 
+        'serie_number',
         'facture_doc',
         'facture_date',
         'facture_number',
+        'others',
         'remission_guide_doc',
         'remission_guide_date',
         'remission_guide_number',

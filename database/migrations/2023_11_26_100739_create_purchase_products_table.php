@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('unit');
             $table->string('type');
+            $table->string('type_product')->nullable();
             $table->boolean('state')->default(true);
             $table->text('description')->nullable();
             $table->timestamps();
