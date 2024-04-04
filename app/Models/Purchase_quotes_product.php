@@ -28,6 +28,11 @@ class Purchase_quotes_product extends Model
         return $this->belongsTo(Purchase_quote::class, 'purchase_quote_id');
     }
 
+    public function purchase_entry()
+    {
+        return $this->hasOne(PurchasesEntry::class);
+    }
+
 }
 
  
