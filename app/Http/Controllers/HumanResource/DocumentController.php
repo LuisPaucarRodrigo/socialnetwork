@@ -157,7 +157,6 @@ class DocumentController extends Controller
         return to_route('documents.index');
     }
 
-
     public function downloadDocument(Document $document)
     {
         $fileName = $document->title;

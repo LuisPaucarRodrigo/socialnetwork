@@ -16,9 +16,20 @@ class Customer extends Model
         'address'
     ];
 
+    //Relations
     public function customer_contacts()
     {
         return $this->hasMany(Customers_contact::class);
+    }
+
+    public function customer_warehouse()
+    {
+        return $this->hasMany(CustomerWarehouse::class);
+    }
+
+    public function preproject()
+    {
+        return $this->hasMany(Preproject::class);
     }
 
 }
