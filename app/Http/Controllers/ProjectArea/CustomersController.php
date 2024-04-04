@@ -22,6 +22,7 @@ class CustomersController extends Controller
             $searchQuery = $request->input('searchQuery');
             $customers = Customer::where('ruc', 'like', "%$searchQuery%")
                 ->orWhere('business_name', 'like', "%$searchQuery%")
+                ->orWhere('category', 'like', "%$searchQuery%")
                 ->paginate();
 
             return response()->json([
@@ -41,6 +42,7 @@ class CustomersController extends Controller
         $customer = Customer::create([
             'ruc' => $request->ruc,
             'business_name' => $request->business_name,
+            'category' => 'Normal',
             'address' => $request->address
         ]);
     }
@@ -55,6 +57,8 @@ class CustomersController extends Controller
         $customer->update([
             'ruc' => $request->ruc,
             'business_name' => $request->business_name,
+            'category' => $request->category,
+            'category' => 'Normal',
             'address' => $request->address
         ]);
     }
