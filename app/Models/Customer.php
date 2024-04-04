@@ -12,6 +12,7 @@ class Customer extends Model
     protected $fillable = [
         'ruc',
         'business_name',
+        'category',
         'address'
     ];
 
