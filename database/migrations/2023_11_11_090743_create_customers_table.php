@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('ruc');
             $table->string('business_name');
+            $table->string('category');
             $table->string('address');
             $table->timestamps();
         });
