@@ -105,9 +105,6 @@
 
     <ConfirmDeleteModal :confirmingDeletion="confirmReportDelete" itemType="informe fotográfico"
       :deleteFunction="() => deleteDocument(photoreport?.id)" @closeModal="closeModalDoc" />
-
-    
-
     <SuccessOperationModal 
       :confirming="showModal"
       :title="`Informe fotográfico guardado`"
