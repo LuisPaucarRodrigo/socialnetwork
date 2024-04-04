@@ -10,23 +10,39 @@ class Warehouse extends Model
     use HasFactory;
 
     protected $fillable = [
+        // 'name',
+        // 'location',
+        // 'manager'
+        'code',
         'name',
-        'location',
-        'manager'
+        'description',
+        'person_in_change',
+        'category'
     ];
 
-    public function headers()
+    //Relations
+    public function customer_warehouse()
     {
-        return $this->belongsToMany(Header::class, 'warehouses_headers', 'warehouse_id', 'header_id')->withTimestamps();
-    }
-    
-    public function warehouseHeaders()
-    {
-        return $this->hasMany(WarehousesHeader::class, 'warehouse_id');
+        return $this->hasMany(CustomerWarehouse::class);
     }
 
-    public function products()
+    public function inventory()
     {
-        return $this->hasMany(Product::class, 'warehouse_id');
+        return $this->hasMany(Inventory::class);
     }
+
+    // public function headers()
+    // {
+    //     return $this->belongsToMany(Header::class, 'warehouses_headers', 'warehouse_id', 'header_id')->withTimestamps();
+    // }
+    
+    // public function warehouseHeaders()
+    // {
+    //     return $this->hasMany(WarehousesHeader::class, 'warehouse_id');
+    // }
+
+    // public function products()
+    // {
+    //     return $this->hasMany(Product::class, 'warehouse_id');
+    // }
 }
