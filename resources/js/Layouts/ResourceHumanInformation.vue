@@ -115,10 +115,12 @@ export default {
       }
       return value;
     },
+
     downloadDocument(documentId) {
       const backendDocumentUrl = route('management.employees.information.details.download', { id: documentId });
       window.open(backendDocumentUrl, '_blank');
     },
+    
     formattedDate(fecha) {
       return formattedDate(fecha);
     }
