@@ -13,6 +13,9 @@ use App\Models\Provider;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Header;
+use App\Models\Warehouse;
+use App\Models\Customer;
+use App\Models\CustomerWarehouse;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -116,44 +119,27 @@ class DatabaseSeeder extends Seeder
         Pension::insert($data);
         // Employee::factory()->count(1000)->create();
 
-        $headerData = [
-            ['name' => 'Guía de Remisión', 'type' => 'text'],
-            ['name' => 'Guía Recibida', 'type' => 'text'],
-            ['name' => 'Guía de Traspaso CONPROCO', 'type' => 'text'],
-            ['name' => 'Guía de Traspaso CICSA-CONPROCO', 'type' => 'text'],
-            ['name' => 'Proyecto Asignado', 'type' => 'text'],
-            ['name' => 'Código SAP', 'type' => 'text'],
-            ['name' => 'Fecha', 'type' => 'date'],
-            ['name' => 'Cantidad', 'type' => 'number'],
-            ['name' => 'Unidad de Medida Base', 'type' => 'text'],
-            ['name' => 'Descripción del Producto', 'type' => 'text'],
-            ['name' => 'C/Proyecto/Almacén', 'type' => 'text'],
-            ['name' => 'Número de Serie', 'type' => 'text'],
-            ['name' => 'Servicio', 'type' => 'text'],
-            ['name' => 'Fecha de Salida', 'type' => 'date'],
-            ['name' => 'Cliente', 'type' => 'text'],
-            ['name' => 'Observación', 'type' => 'text'],
-            ['name' => 'Modo', 'type' => 'text'],
-            ['name' => 'Fecha de Ingreso', 'type' => 'date'],
-            ['name' => 'Fecha de Traspaso', 'type' => 'date'],
-            ['name' => 'Código AX', 'type' => 'text'],
-            ['name' => 'Localidad Origen', 'type' => 'text'],
-            ['name' => 'Traspaso Recibido', 'type' => 'text'],
-            //['name' => 'Total', 'type' => 'double'],
-            //['name' => 'Usado', 'type' => 'double'],
-            //['name' => 'Sobra', 'type' => 'double'],
-            ['name' => 'Localidad de Destino', 'type' => 'text'],
-            ['name' => 'Resumen', 'type' => 'text'],
-            ['name' => 'Contratista', 'type' => 'text'],
-            ['name' => 'Ciudad', 'type' => 'text'],
-            ['name' => 'Código', 'type' => 'text'],
-            ['name' => 'Requerimiento', 'type' => 'text'],
-            //['name' => 'Cantidad Enviada', 'type' => 'number'],
-            ['name' => 'Precio', 'type' => 'double'],
-            ['name' => 'Factura', 'type' => 'text'],
-            ['name' => 'RUC', 'type' => 'number'],
-            ['name' => 'Precio en Presupuesto', 'type' => 'boolean'],
+        $customersData = [
+            ['id' => 1, 'ruc' => 1, 'business_name' => 'CLARO CICSA', 'category' => 'Especial', 'address' => '-'],
+            ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],
         ];
-        Header::insert($headerData);
+        $warehousesData = [
+            ['id' => 1, 'name' => 'CLARO CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
+            ['id' => 2, 'name' => 'GTD CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
+            ['id' => 3, 'name' => 'CONPROCO', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+            ['id' => 4, 'name' => 'RECUPEROS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+        ];
+        $warehousesCustomerData = [
+            ['id' => 1, 'customer_id' => 1, 'warehouse_id' => 1],
+            ['id' => 2, 'customer_id' => 1, 'warehouse_id' => 3],
+            ['id' => 3, 'customer_id' => 1, 'warehouse_id' => 4],
+            ['id' => 4, 'customer_id' => 1, 'warehouse_id' => 2],
+            ['id' => 5, 'customer_id' => 1, 'warehouse_id' => 3],
+            ['id' => 6, 'customer_id' => 1, 'warehouse_id' => 4],
+        ];
+
+        Customer::insert($customersData);
+        Warehouse::insert($warehousesData);
+        CustomerWarehouse::insert($warehousesCustomerData);
     }
 }
