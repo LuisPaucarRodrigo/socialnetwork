@@ -13,10 +13,9 @@ class Warehouse extends Model
         // 'name',
         // 'location',
         // 'manager'
-        'code',
         'name',
         'description',
-        'person_in_change',
+        'person_in_charge',
         'category'
     ];
 
