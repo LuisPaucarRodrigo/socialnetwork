@@ -13,6 +13,8 @@ class ProjectEntry extends Model
         'entry_id',
         'special_inventory_id',
         'quantify',
+        'observation',
+        'unitary_price',
         'state'
     ];
 
