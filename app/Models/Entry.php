@@ -24,7 +24,6 @@ class Entry extends Model
         return $this->belongsTo(Inventory::class,'inventory_id');
     }
 
-
     public function project_entry()
     {
         return $this->hasMany(ProjectEntry::class);

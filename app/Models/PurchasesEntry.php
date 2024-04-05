@@ -10,7 +10,7 @@ class PurchasesEntry extends Model
     use HasFactory;
     protected $fillable = [
         'entry_id',
-        'purchase_quote_product_id'
+        'purchase_quotes_product_id'
     ];
 
 
@@ -22,6 +22,6 @@ class PurchasesEntry extends Model
 
     public function purchase_quote_product()
     {
-        return $this->belongsTo(Purchase_quotes_product::class, 'purchase_quote_product_id');
+        return $this->belongsTo(Purchase_quotes_product::class, 'purchase_quotes_product_id');
     }
 }
