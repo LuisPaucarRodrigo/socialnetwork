@@ -11,10 +11,14 @@ class Entry extends Model
     protected $fillable = [
         'inventory_id',
         'type',
-        'quantify',
+        'quantity',
         'unitary_price',
         'entry_date',
         'observations',
+    ];
+
+    protected $appends = [
+        'used_quantity'
     ];
 
 
@@ -42,5 +46,10 @@ class Entry extends Model
     public function retrieval_entry()
     {
         return $this->hasOne(RetrievalEntry::class);
+    }
+
+    public function getUsedQuantityAttribute()
+    {
+        return 0;
     }
 }
