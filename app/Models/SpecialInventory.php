@@ -15,10 +15,10 @@ class SpecialInventory extends Model
         'referral_guide',
         'entry_date',
         'sub_warehouse',
-        'quantify',
+        'quantity',
         'product_serial_number',
         'entry_observations',
-        'available_quantify'
+        'available_quantity'
     ];
 
     //Relations
