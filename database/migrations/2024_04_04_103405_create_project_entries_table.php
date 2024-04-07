@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained();
             $table->foreignId('entry_id')->constrained()->nullable();
             $table->foreignId('special_inventory_id')->constrained()->nullable();
-            $table->integer('quantify');
+            $table->integer('quantity');
             $table->text('observation')->nullable();
             $table->decimal('unitary_price')->nullable();
             $table->boolean('state')->default(true);

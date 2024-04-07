@@ -55,12 +55,12 @@
         </h3>
         <div class="text-gray-500 text-sm">
           <div class="grid grid-cols-1 gap-y-1">
+            <Link v-if="item.id === 3" :href="route('warehouses.purchaseorders.approve', { warehouse: item.id })"
+              class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras</Link>
             <Link :href="route('warehouses.products', { warehouse: item.id })"
               class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos</Link>
-            <Link :href="route('warehouses.outputs', { warehouse: item.id })"
-              class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Salidas</Link>
-              <Link v-if="item.id === 3" :href="route('warehouses.purchaseorders.approve', { warehouse: item.id })"
-              class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Aprobar Ingresos Por Compras</Link>
+            <Link :href="route('warehouses.dispatches', { warehouse: item.id })"
+              class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Despachos</Link>
           </div>
         </div>
       </div>
