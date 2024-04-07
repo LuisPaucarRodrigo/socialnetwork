@@ -13,6 +13,7 @@ use App\Models\Inventory;
 use App\Models\Entry;
 use App\Models\NormalEntry;
 use App\Models\PurchasesEntry;
+use App\Models\ProjectEntry;
 use App\Models\Purchase_product;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\GlobalFunctionsServiceProvider;
@@ -215,4 +216,28 @@ class WarehousesController extends Controller
         }
     }
 
+    public function showDispatches(Warehouse $warehouse)
+    {
+        $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
+            $query->where('warehouse_id', $warehouse->id);
+        })->where('state', null)->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project')->paginate(10);
+
+        return Inertia::render('Inventory/WarehouseManagement/Dispatches', [
+            'project_entries' => $project_entries,
+            'warehouseId' => $warehouse->id
+        ]);
+    }
+
+    public function acceptOrDeclineDispatch(Warehouse $warehouse, Request $request)
+    {
+        $request->validate([
+            'state' => 'required|boolean',
+            'project_entry_id' => 'required|numeric'
+        ]);
+
+        $project_entry = ProjectEntry::find($request->project_entry_id);
+        $project_entry->update([
+            'state' => $request->state
+        ]);
+    }
 }
