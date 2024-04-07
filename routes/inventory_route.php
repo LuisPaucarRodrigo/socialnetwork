@@ -3,6 +3,7 @@
 use App\Http\Controllers\Inventory\ProductController;
 use App\Http\Controllers\Inventory\PurchaseProductsController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
+use App\Http\Controllers\Inventory\SpecialWarehouseController;
 use App\Http\Controllers\Inventory\WarehousesController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,3 +43,15 @@ Route::get('/inventory/purchase_products/products/search/{request}', [PurchasePr
 Route::post('/inventory/purchase_products/products/post', [PurchaseProductsController::class, 'store'])->name('inventory.purchaseproducts.store');
 Route::put('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
 Route::put('/inventory/purchase_products/products/{purchase_product}/disable', [PurchaseProductsController::class, 'disable'])->name('inventory.purchaseproducts.disable');
+
+
+
+
+//Special Warehouses
+Route::get('/inventory/{warehouse_id}/special_products/', [SpecialWarehouseController::class, 'special_products_index'])->name('inventory.special_products.index');
+Route::get('/inventory/{warehouse_id}/special_products/create/{special_inventory_id?}', [SpecialWarehouseController::class, 'special_products_create'])->name('inventory.special_products.create');
+Route::post('/inventory/special_products/store/{special_inventory_id?}', [SpecialWarehouseController::class, 'special_products_store'])->name('inventory.special_products.store');
+Route::delete('/inventory/special_products/destroy/{special_inventory_id?}', [SpecialWarehouseController::class, 'special_products_destroy'])->name('inventory.special_products.destroy');
+
+
+Route::get('/inventory/{warehouse_id}/special_dispatch_index/', [SpecialWarehouseController::class, 'special_dispatch_index'])->name('inventory.special_dispatch.index');
