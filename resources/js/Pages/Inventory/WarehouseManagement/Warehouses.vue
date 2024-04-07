@@ -59,9 +59,9 @@
         </h3>
         <div class="text-gray-500 text-sm">
           <div class="grid grid-cols-1 gap-y-1">
-            <Link :href="'#'"
+            <Link :href="route('inventory.special_products.index', {warehouse_id:item.id})"
               class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos</Link>
-            <Link :href="'#'"
+            <Link :href="route('inventory.special_dispatch.index', {warehouse_id:item.id})"
               class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Despachos</Link>
             <Link :href="'#'"
               class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Devoluciones</Link>

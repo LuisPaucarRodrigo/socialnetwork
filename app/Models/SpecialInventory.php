@@ -18,7 +18,6 @@ class SpecialInventory extends Model
         'quantity',
         'product_serial_number',
         'entry_observations',
-        'available_quantity'
     ];
 
     //Relations
@@ -27,7 +26,7 @@ class SpecialInventory extends Model
         return $this->hasMany(ProjectEntry::class);
     }
 
-    public function purchase_product_id()
+    public function purchase_product()
     {
         return $this->belongsTo(Purchase_product::class, 'purchase_product_id');
     }
