@@ -16,11 +16,13 @@ class WarehousesController extends Controller
     //Warehouses
     public function showWarehouses()
     {
-        $warehouses = Warehouse::paginate();
+        $special_warehouses = Warehouse::where('category', 'Especial')->get();
+        $warehouses = Warehouse::all();
         $headers = Header::all();
         $warehouse_headers = WarehousesHeader::with('header')->get();
         return Inertia::render('Inventory/WarehouseManagement/Warehouses', [
             'warehouses' => $warehouses,
+            'special_warehouses' => $special_warehouses,
             'headers' => $headers,
             'warehouse_headers' => $warehouse_headers,
         ]);
