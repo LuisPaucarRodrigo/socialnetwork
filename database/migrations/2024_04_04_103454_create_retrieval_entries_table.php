@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('retrieval_entries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('entry_id')->constrained();
-            $table->foreignId('liquidation_id')->constrained();
+            $table->foreignId('project_entry_liquidation_id')->constrained();
             $table->timestamps();
         });
     }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('unitary_price')->nullable();
             $table->date('entry_date');
-            $table->text('observations');
+            $table->text('observations')->nullable();
             $table->foreignId('inventory_id')->constrained();
             $table->timestamps();
         });

@@ -10,8 +10,14 @@ class ProjectEntryLiquidation extends Model
     use HasFactory;
     protected $fillable = [
         'project_entry_id',
-        'liquidated_quantify',
-        'refund_quantify'
+        'liquidated_quantity',
+        'refund_quantity',
+        'liquidations',
+        'observations'
+    ];
+
+    protected $appends = [
+        'type'
     ];
 
     //Relations
@@ -28,5 +34,16 @@ class ProjectEntryLiquidation extends Model
     public function retrieval_entry()
     {
         return $this->hasMany(RetrievalEntry::class);
+    }
+
+    public function getTypeAttribute()
+    {
+        if($this->refund()->first()){
+            return 'Devoluciones';
+        }else if ($this->retrieval_entry()->first()){
+            return 'Recuperos';
+        }else{
+            return '-';
+        }
     }
 }
