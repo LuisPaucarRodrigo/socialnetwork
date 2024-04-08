@@ -72,5 +72,4 @@ class ProjectEntry extends Model
                 < $this->quantity ;
     }
 
-
 }
