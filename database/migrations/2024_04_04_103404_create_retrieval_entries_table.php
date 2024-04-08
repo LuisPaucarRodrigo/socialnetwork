@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('entry_id')->constrained();
             $table->foreignId('liquidation_id')->constrained();
+            $table->boolean('state')->nullable();
             $table->timestamps();
         });
     }

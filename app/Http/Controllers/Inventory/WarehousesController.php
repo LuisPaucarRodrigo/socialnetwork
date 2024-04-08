@@ -8,6 +8,9 @@ use Inertia\Inertia;
 use App\Models\Warehouse;
 use App\Models\WarehousesHeader;
 use App\Models\Header;
+use App\Models\Inventory;
+use App\Models\ProjectEntry;
+use App\Models\RetrievalEntry;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\GlobalFunctionsServiceProvider;
 
@@ -48,7 +51,7 @@ class WarehousesController extends Controller
             'location' => $request->location,
             'manager' => $request->manager,
         ]);
-    
+
         // Asocia las cabeceras seleccionadas con el almacén
         $warehouse->headers()->attach($request->header_ids);
     }
@@ -92,5 +95,51 @@ class WarehousesController extends Controller
         }
     }
 
+    //RETRIEVALENTRY
 
+    public function retrievalEntryIndex($boolean = false)
+    {
+        if ($boolean) {
+            $retrieval = RetrievalEntry::with('project_entry_liquidation.project_entry.project.preproject', 'entry.inventory.purchase_product.name')
+                ->where('state' != true)
+                ->paginate();
+        } else {
+            $retrieval = RetrievalEntry::with('project_entry_liquidation.project_entry.project.preproject', 'entry.inventory.purchase_product.name')
+                ->where('state' == true)
+                ->paginate();
+        }
+
+        return Inertia::render('Inventory/WarehouseManagement/RetrievalEntry', [
+            'retrievalEntry' => $retrieval,
+            'boolean' => boolval($boolean)
+        ]);
+    }
+
+    public function retrievalEntry(RetrievalEntry $retrieval)
+    {
+        $retrieval->update([
+            'state' => true
+        ]);
+    }
+
+    //RETRIEVALPRODUCT
+
+    public function retrievalProduct()
+    {
+        $retrievalProducts = Inventory::where('warehouse_id', 4)->with('entry.retrieval_entry');
+        return Inertia::render('Inventory/WarehouseManagement/RetrievalProduct', [
+            'retrievalProducts' => $retrievalProducts
+        ]);
+    }
+
+    //RETRIEVALDISPATH
+    public function retrievalDispatch()
+    {
+        $retrievalDispatch = ProjectEntry::with('project.preproject')
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+        return Inertia::render('Inventory/WarehouseManagement/RetrievalDispatch', [
+            'retrievalDispatch' => $retrievalDispatch
+        ]);
+    }
 }

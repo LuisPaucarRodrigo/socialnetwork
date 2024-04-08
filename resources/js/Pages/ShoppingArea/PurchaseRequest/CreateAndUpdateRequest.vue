@@ -99,7 +99,6 @@
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                     Unidad
                                                 </th>
-                                                <!-- v-if="auth.user.role_id === 1 || preproject.quote === null" -->
                                                 <th v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                     Acciones
@@ -107,7 +106,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- v v-for="(item, index) in (form.items)" :key="index" -->
                                             <tr v-for="(item, index) in (form.products)" :key="index"
                                                 class="text-gray-700 hover:bg-gray-200 bg-white">
                                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
@@ -192,8 +190,8 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                             <datalist id="options">
-                                <option v-for="item in product_selected" :value="item.code" :data-value="item">{{
-            item.name }}
+                                <option v-for="item in product_selected" :value="item.code" :data-value="item">
+                                {{ item.name }}
                                 </option>
                             </datalist>
                         </div>
@@ -255,7 +253,7 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { TrashIcon } from '@heroicons/vue/24/outline';
-import { ref } from 'vue';
+import { ref,watch } from 'vue';
 
 const showModal = ref(false);
 const showModal2 = ref(false);
@@ -313,8 +311,6 @@ const submit = () => {
         })
     }
 }
-
-
 
 //Modal
 const showProductModal = ref(false)
@@ -399,4 +395,18 @@ function deleteProduct(index, id = null) {
     form.products.splice(index, 1)
 }
 
+// Observador para form.products
+watch(form.products, (newProducts) => {
+    // Obtener los IDs de todos los productos
+    const productIds = newProducts.map(product => product.id);
+    console.log("Esto", form.products)
+    console.log("Estos son los id", productIds)
+    axios.post('/shopping_area/existing/products', { product_ids: productIds })
+        .then(response => {
+            // Manejar la respuesta si es necesario
+        })
+        .catch(error => {
+            console.error('Error al hacer la petición:', error);
+        });
+});
 </script>
