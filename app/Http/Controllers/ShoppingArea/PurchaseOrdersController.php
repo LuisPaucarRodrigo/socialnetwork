@@ -5,7 +5,11 @@ namespace App\Http\Controllers\ShoppingArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseOrderRequest\CreatePurchaseOrderRequest;
 use App\Models\Purchase_order;
+use App\Models\Warehouse;
 use Inertia\Inertia;
+use App\Models\Entry;
+use App\Models\Inventory;
+use App\Models\PurchasesEntry;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -13,16 +17,24 @@ class PurchaseOrdersController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseOrders/Orders', ['orders' => Purchase_order::with('purchase_quote.purchasing_requests','purchase_quote.provider')
-            ->where('state','!=','Completada')
-            ->paginate()]);
+        return Inertia::render('ShoppingArea/PurchaseOrders/Orders', [
+            'orders' => Purchase_order::with('purchase_quote.purchasing_requests','purchase_quote.provider')
+                ->where('state', '!=', 'Completada')
+                ->where('state', '!=', 'Completada/Aprobada')
+                ->paginate()
+        ]);
     }
+
 
     public function history()
     {
         $completedOrders = Purchase_order::with('purchase_quote.purchasing_requests','purchase_quote.payment')
-            ->where('state', 'Completada')
-            ->paginate();
+            ->where(function ($query) {
+                $query->where('state', 'Completada')
+                    ->orWhere('state', 'Completada/Aprobada');
+            })
+            ->paginate(10);
+
 
         return Inertia::render('ShoppingArea/PurchaseOrders/HistoryOrders', ['orders' => $completedOrders]);
     }
@@ -42,7 +54,9 @@ class PurchaseOrdersController extends Controller
             $documentNameRemission = time() . '._' . $document->getClientOriginalName();
             $document->move(public_path('documents/purchaseorder/remission/'), $documentNameRemission);
         }
+        
         $purchase_order = Purchase_order::find($request->id);
+ 
         $purchase_order->update([
             'state' => $request->state,
             'serie_number' => $request->serie_number,
@@ -61,12 +75,14 @@ class PurchaseOrdersController extends Controller
         $today = Carbon::now();
         $purchaseOrders3d = Purchase_order::with('purchase_quote.purchasing_requests')
             ->where('state', '!=', 'Completada')
+            ->where('state', '!=', 'Completada/Aprobada')
             ->whereHas('purchase_quote.purchasing_requests', function ($query) use ($today) {
                 $query->where('due_date', '<=', $today->copy()->addDays(3));
             })
             ->get();
         $purchaseOrders7d = Purchase_order::with('purchase_quote.purchasing_requests')
             ->where('state', '!=', 'Completada')
+            ->where('state', '!=', 'Completada/Aprobada')
             ->whereHas('purchase_quote.purchasing_requests', function ($query) use ($today) {
                 $query->where('due_date', '>=', $today->copy()->addDays(3))
                     ->where('due_date', '<=', $today->copy()->addDays(7));
@@ -105,14 +121,16 @@ class PurchaseOrdersController extends Controller
     public function search($request, $history)
     {
         $searchTerm = strtolower($request); // Convertir a minúsculas
-        $query = null;
+        
+        $query = Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.payment');
 
         if ($history == 'history') {
-            $query = Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.payment')
-                ->where('state', 'Completada');
+            $query->where(function ($query) {
+                $query->where('state', 'Completada')
+                    ->orWhere('state', 'Completada/Aprobada');
+            });
         } else {
-            $query = Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.provider')
-                ->where('state', '!=', 'Completada');
+            $query->whereNotIn('state', ['Completada', 'Completada/Aprobada']);
         }
     
 

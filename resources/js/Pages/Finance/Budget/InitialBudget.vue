@@ -208,7 +208,7 @@ const form2 = useForm({
 });
 
 const form3 = useForm({
-  initial_budget: 0,
+  initial_budget: null,
 });
 
 const defineModal = ref(false);

@@ -74,7 +74,7 @@ class SpecialWarehouseController extends Controller
             ->orderBy('created_at', 'desc')
             ->get()
             ->filter(function ($projectEntry) {
-                return $projectEntry->output_state === true;
+                return $projectEntry->outputs_state === true;
             });
         $currentPageItems = $results->slice(($page - 1) * $perPage, $perPage);
         $disToApToCom = new LengthAwarePaginator(
@@ -108,7 +108,7 @@ class SpecialWarehouseController extends Controller
             ->orderBy('created_at', 'desc')
             ->get()
             ->filter(function ($projectEntry) {
-                return $projectEntry->output_state === false;
+                return $projectEntry->outputs_state === false;
             });
         $currentPageItems = $results->slice(($page - 1) * $perPage, $perPage);
         $disToApToCom = new LengthAwarePaginator(
