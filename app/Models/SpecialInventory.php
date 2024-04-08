@@ -18,7 +18,6 @@ class SpecialInventory extends Model
         'quantify',
         'product_serial_number',
         'entry_observations',
-        'available_quantify'
     ];
 
     //Relations
