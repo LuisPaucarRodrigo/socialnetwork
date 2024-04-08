@@ -64,3 +64,8 @@ Route::post('/inventory/special_dispatch_output_store', [SpecialWarehouseControl
 Route::get('/inventory/{warehouse_id}/special_refund_index/', [SpecialWarehouseController::class, 'special_refund_index'])->name('inventory.special_refund.index');
 Route::post('/inventory/special_refund_index/accept-decline/{refund_id}', [SpecialWarehouseController::class, 'special_refund_accept_decline'])->name('inventory.special_refund.accept_decline');
 Route::get('/inventory/{warehouse_id}/special_refund_historial/', [SpecialWarehouseController::class, 'special_refund_historial'])->name('inventory.special_refund.historial');
+
+
+//Retrieval_entry
+Route::get('/inventory/warehouses/retrieval_entry/{retrieval?}', [WarehousesController::class, 'retrievalEntryIndex'])->name('retrievalEntry.index');
+Route::get('/inventory/warehouses/{retrieval}/retrieval_entry', [WarehousesController::class, 'retrievalEntry'])->name('retrievalEntry.approbe');
