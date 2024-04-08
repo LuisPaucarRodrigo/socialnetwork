@@ -133,9 +133,9 @@ class DatabaseSeeder extends Seeder
             ['id' => 1, 'customer_id' => 1, 'warehouse_id' => 1],
             ['id' => 2, 'customer_id' => 1, 'warehouse_id' => 3],
             ['id' => 3, 'customer_id' => 1, 'warehouse_id' => 4],
-            ['id' => 4, 'customer_id' => 1, 'warehouse_id' => 2],
-            ['id' => 5, 'customer_id' => 1, 'warehouse_id' => 3],
-            ['id' => 6, 'customer_id' => 1, 'warehouse_id' => 4],
+            ['id' => 4, 'customer_id' => 2, 'warehouse_id' => 2],
+            ['id' => 5, 'customer_id' => 2, 'warehouse_id' => 3],
+            ['id' => 6, 'customer_id' => 2, 'warehouse_id' => 4],
         ];
 
         Customer::insert($customersData);
