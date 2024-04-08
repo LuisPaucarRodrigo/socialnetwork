@@ -12,6 +12,10 @@ class SpecialInventoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        $user = Auth::user();
+        if ($this->input('id')){
+            return $user->role_id === 1;
+        }
         return Auth::check();
     }
 
