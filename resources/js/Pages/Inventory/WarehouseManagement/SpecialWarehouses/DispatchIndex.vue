@@ -295,6 +295,7 @@ const showError = ref(false)
 const { warehouse, disToApToCom } = defineProps({
     warehouse: Object,
     disToApToCom: Object,
+    auth: Object,
 });
 
 //Expandible row
@@ -355,7 +356,11 @@ const optionChange = (e) => {
 }
 
 
-
+const deleteOutput = (id) => {
+    router.delete(route('inventory.special_dispatch_output.destroy', {
+        project_entry_output_id:id
+    }))
+}
 
 
 </script>
