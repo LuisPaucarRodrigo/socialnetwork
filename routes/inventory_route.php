@@ -55,5 +55,6 @@ Route::delete('/inventory/special_products/destroy/{special_inventory_id?}', [Sp
 
 
 Route::get('/inventory/{warehouse_id}/special_dispatch_index/', [SpecialWarehouseController::class, 'special_dispatch_index'])->name('inventory.special_dispatch.index');
+Route::get('/inventory/{warehouse_id}/special_dispatch_historial/', [SpecialWarehouseController::class, 'special_dispatch_historial'])->name('inventory.special_dispatch.historial');
 Route::post('/inventory/special_dispatch_accept_decline/{project_entry_id}', [SpecialWarehouseController::class, 'special_dispatch_accept_decline'])->name('inventory.special_dispatch.accept_decline');
 Route::post('/inventory/special_dispatch_output_store', [SpecialWarehouseController::class, 'special_dispatch_output_store'])->name('inventory.special_dispatch_output.store');
