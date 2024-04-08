@@ -230,7 +230,11 @@ const optionChange = (e) => {
     }
 }
 
-
+const deleteOutput = (id) => {
+    router.delete(route('inventory.special_dispatch_output.destroy', {
+        project_entry_output_id:id
+    }))
+}
 
 
 </script>

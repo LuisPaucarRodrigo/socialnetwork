@@ -138,5 +138,8 @@ class SpecialWarehouseController extends Controller
         ProjectEntryOutput::create($data);
         return redirect()->back();
     }
-
+    public function special_dispatch_output_destroy ($project_entry_output_id) {
+        ProjectEntryOutput::find($project_entry_output_id)->delete();
+        return redirect()->back();
+    }
 }
