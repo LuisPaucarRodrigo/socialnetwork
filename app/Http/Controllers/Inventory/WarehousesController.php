@@ -17,7 +17,7 @@ class WarehousesController extends Controller
     public function showWarehouses()
     {
         $special_warehouses = Warehouse::where('category', 'Especial')->get();
-        $warehouses = Warehouse::all();
+        $warehouses = Warehouse::where('category', 'Normal')->get();
         $headers = Header::all();
         $warehouse_headers = WarehousesHeader::with('header')->get();
         return Inertia::render('Inventory/WarehouseManagement/Warehouses', [
