@@ -7,6 +7,7 @@ use App\Http\Requests\SpecialInventoryRequest\SpecialInventoryRequest;
 use App\Models\ProjectEntry;
 use App\Models\ProjectEntryOutput;
 use App\Models\Purchase_product;
+use App\Models\Refund;
 use App\Models\SpecialInventory;
 use App\Models\Warehouse;
 use Inertia\Inertia;
@@ -90,7 +91,6 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
-
     public function special_dispatch_historial ($warehouse_id) {
         $warehouse = Warehouse::find($warehouse_id);
         $perPage = 15;
@@ -141,5 +141,14 @@ class SpecialWarehouseController extends Controller
     public function special_dispatch_output_destroy ($project_entry_output_id) {
         ProjectEntryOutput::find($project_entry_output_id)->delete();
         return redirect()->back();
+    }
+
+
+    //DEVOLUCIONES
+    public function special_refund_index ($warehouse_id) {
+        $refunds = Refund::whereHas();
+        return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/RefundsIndex', [
+            "refunds" => $refunds,
+        ]);
     }
 }
