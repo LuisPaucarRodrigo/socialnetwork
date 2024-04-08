@@ -12,7 +12,7 @@
                     @change="optionChange"
                 >
                     <option>Por Aprobar</option>
-                    <option>Historial</option>
+                    <option selected>Historial</option>
                 </select>
 
             </div>
@@ -43,7 +43,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Cantidad Actual de Salidas
+                                Cantidad de Salida
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -97,54 +97,11 @@
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
-                                    <div v-if="item.state === null"
-                                        class="flex space-x-3 justify-center">
-                                        <button 
-                                            @click="()=>setDispatchStatus(item.id, true)"
-                                            class="flex items-center text-blue-500 hover:underline">
-                                            <svg 
-                                                xmlns="http://www.w3.org/2000/svg" 
-                                                fill="none" 
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5" 
-                                                stroke="currentColor" 
-                                                class="w-6 h-6 text-green-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
-                                        </button>
-                                        <button 
-                                            @click="()=>setDispatchStatus(item.id, false)"
-                                            type="button"
-                                            class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div v-else>
-                                        <p v-if="item.state == true" :class="'text-green-500 whitespace-nowrap'">
-                                            Aceptado - <span class="text-red-500">Incompleto</span>
-                                        </p>
-                                        <p v-if="item.state == false" :class="'text-red-500'">
-                                            Rechazado
+                                    <div>
+                                        <p :class="'text-green-500 whitespace-nowrap'">
+                                            Aceptado - Completo
                                         </p>
                                     </div>
-                                </td>
-                                <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
-                                    <button 
-                                        @click="()=>showModalOutput(item.id)"
-                                        class="text-blue-900 whitespace-no-wrap"
-                                        :disabled="item.state?false:true"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" :class="`w-6 h-6 ${item.state?'':'opacity-50'}`">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
-                                        </svg>
-                                    </button>
                                 </td>
     
                                 <!-- Expandible row -->
@@ -172,7 +129,7 @@
                             <template v-if="row == item.id">
                                 
                                 <tr class="bg-white h-16">
-                                    <td colspan="11" class="py-5 px-10">
+                                    <td colspan="10" class="py-5 px-10">
                                         <table class="w-full ">
                                             <thead>
                                                 <tr
@@ -189,9 +146,9 @@
                                                         class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider ">
                                                         Fecha de Salida
                                                     </th>
-                                                    
                                                     <th v-if="auth.user.role_id === 1"
-                                                        class=" px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider ">
+                                                        class="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider ">
+                                                        
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -228,7 +185,7 @@
                                             </tbody>
                                         </table>
                                     </td>
-                                </tr>                               
+                                </tr>
                             </template>
                         </template>
                     </tbody> 
@@ -237,64 +194,23 @@
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="disToApToCom.links" />
             </div>
-
-            <Modal :show="showModal">
-                <form class="p-6" @submit.prevent="submit">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Registrar la salida
-                    </h2>
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                        <div class="sm:col-span-6">
-                            <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
-                            <div class="mt-2">
-                                <input id="quantity" type="number" min="1" v-model="form.quantity"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError 
-                                    :message="form.errors.quantity"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex gap-3 justify-end">
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                            type="button" @click="closeModal"> Cerrar </button>
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                            type="submit"> Agregar </button>
-                    </div>
-                </form>
-            </Modal>
-
-            
         </div>
-        <ConfirmCreateModal :confirmingcreation="showSuccessModal" itemType="salida" />
-        <!-- <ConfirmDeleteModal :confirmingDeletion="confirmDelete" itemType="producto"
-            :nameText="`esta entrada del producto ${prod.name}`" :deleteFunction="deleteProduct"
-            @closeModal="closeModal" />
-
-        <ErrorOperationModal :showError="showError" title="No hay presupuesto"
-            message="La cantidad disponible del presupuesto esta en cero o no está definido" /> -->
     </AuthenticatedLayout>
 </template>
+
+
 <script setup>
-import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
-const showError = ref(false)
+import { Head, router } from '@inertiajs/vue3';
 
 
 const { warehouse, disToApToCom } = defineProps({
     warehouse: Object,
     disToApToCom: Object,
+    auth: Object,
 });
 
 //Expandible row
@@ -308,52 +224,11 @@ const toggleDetails = (outputs) => {
     }
 }
 
-//Activate Deactivate
-const setDispatchStatus = (id, state) => {
-    router.post(
-        route('inventory.special_dispatch.accept_decline', {project_entry_id:id}),
-        {state},
-    )
-}
-
-
-//Registrate output
-const showModal = ref(false)
-const showSuccessModal = ref(false)
-const form = useForm({
-    project_entry_id:'',
-    quantity:''
-})
-                                    
-const showModalOutput = (id) => {
-    form.project_entry_id = id
-    showModal.value = true
-}
-
-const closeModal = () => {
-    showModal.value = false
-    form.reset()
-}
-
-const submit = () => {
-    form.post(route('inventory.special_dispatch_output.store'), {
-        onSuccess: () => {
-            closeModal();
-            showSuccessModal.value = true
-            setTimeout(()=>{
-                showSuccessModal.value = false
-            }, 2000)
-        },
-    })
-}
-
-
 const optionChange = (e) => {
-    if (e.target.value === "Historial" ) {
-        router.get(route('inventory.special_dispatch.historial', {warehouse_id: warehouse.id}))
+    if (e.target.value === "Por Aprobar" ) {
+        router.get(route('inventory.special_dispatch.index', {warehouse_id: warehouse.id}))
     }
 }
-
 
 
 
