@@ -42,3 +42,7 @@ Route::get('/inventory/purchase_products/products/search/{request}', [PurchasePr
 Route::post('/inventory/purchase_products/products/post', [PurchaseProductsController::class, 'store'])->name('inventory.purchaseproducts.store');
 Route::put('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
 Route::put('/inventory/purchase_products/products/{purchase_product}/disable', [PurchaseProductsController::class, 'disable'])->name('inventory.purchaseproducts.disable');
+
+//Retrieval_entry
+Route::get('/inventory/warehouses/retrieval_entry/{retrieval?}', [WarehousesController::class, 'retrievalEntryIndex'])->name('retrievalEntry.index');
+Route::get('/inventory/warehouses/{retrieval}/retrieval_entry', [WarehousesController::class, 'retrievalEntry'])->name('retrievalEntry.approbe');
