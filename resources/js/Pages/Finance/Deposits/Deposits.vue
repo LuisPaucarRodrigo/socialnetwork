@@ -149,7 +149,9 @@
                             <InputLabel for="codes" class="text-gray-700">Seleccionar Código:</InputLabel>
                             <select v-model="summaryForm.code" id="codes" class="border rounded-md px-3 py-2 mb-3 w-full">
                                 <option value="">Todos</option>
-                                <option v-for="code in accounts" :key="code.id" :value="code.id">{{ code.code }}</option>
+                                <option v-for="code in accounts" :key="code.id" :value="code.id">
+                                    {{ code.code }}
+                                </option>
                             </select>
                             <InputError :message="summaryForm.errors.section_id" />
                         </div>
