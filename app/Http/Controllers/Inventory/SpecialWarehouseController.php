@@ -90,6 +90,41 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
+
+    public function special_dispatch_historial ($warehouse_id) {
+        $warehouse = Warehouse::find($warehouse_id);
+        $perPage = 15;
+        $page = LengthAwarePaginator::resolveCurrentPage() ?: 1;
+        $results = ProjectEntry::with(
+                'special_inventory.purchase_product',
+                'project_entry_outputs',
+                'project')
+            ->whereHas(
+                'special_inventory',
+                function ($query) use ($warehouse_id) {
+                    $query->where('warehouse_id', $warehouse_id );
+                }
+            )
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->filter(function ($projectEntry) {
+                return $projectEntry->output_state === false;
+            });
+        $currentPageItems = $results->slice(($page - 1) * $perPage, $perPage);
+        $disToApToCom = new LengthAwarePaginator(
+            $currentPageItems,
+            $results->count(),
+            $perPage,
+            $page,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
+
+        return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/DispatchHistorial', [
+            "warehouse" => $warehouse,
+            "disToApToCom" => $disToApToCom,
+        ]);
+    }
+
     public function special_dispatch_accept_decline (Request $request, $project_entry_id) {
         $data = $request->validate([
             "state" => "required|boolean"
