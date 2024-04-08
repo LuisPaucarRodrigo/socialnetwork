@@ -146,8 +146,26 @@ class SpecialWarehouseController extends Controller
 
     //DEVOLUCIONES
     public function special_refund_index ($warehouse_id) {
-        $refunds = Refund::whereHas();
+        $warehouse = Warehouse::find($warehouse_id);
+        $refunds = Refund::with(
+                'project_entry_liquidation',
+                'project_entry',
+                'special_inventory.purchase_product'
+            )
+            ->whereHas('project_entry_liquidation', function($query) use ($warehouse_id) {
+                $query->whereHas('project_entry', function($subQuery) use ($warehouse_id) {
+                    $subQuery->whereHas('special_inventory', function ($finalQuery) use ($warehouse_id){
+                        $finalQuery->where('warehouse_id', $warehouse_id);
+                    });
+                });
+            })
+            ->where('state',false)
+            ->orWhere('state',null)
+            ->orderBy('cpe', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
         return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/RefundsIndex', [
+            "warehouse" => $warehouse,
             "refunds" => $refunds,
         ]);
     }
