@@ -10,7 +10,7 @@ class Refund extends Model
     use HasFactory;
     protected $fillable = [
         'project_entry_liquidation_id',
-        'quantify',
+        'quantity',
         'warehouse_id'  
     ];
 

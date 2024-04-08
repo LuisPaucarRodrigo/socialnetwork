@@ -12,10 +12,14 @@ class ProjectEntry extends Model
         'project_id',
         'entry_id',
         'special_inventory_id',
-        'quantify',
+        'quantity',
         'observation',
         'unitary_price',
         'state'
+    ];
+
+    protected $appends = [
+        'outputs_state'
     ];
 
     //Relations
@@ -34,7 +38,7 @@ class ProjectEntry extends Model
         return $this->belongsTo(Entry::class,'entry_id');
     }
 
-    public function project_entry_outout ()
+    public function project_entry_output ()
     {
         return $this->hasMany(ProjectEntryOutput::class);
     }
@@ -47,5 +51,10 @@ class ProjectEntry extends Model
     public function dispath ()
     {
         return $this->hasMany(Dispatch::class);
+    }
+
+    public function getOutputsStateAttribute()
+    {
+        return true;
     }
 }
