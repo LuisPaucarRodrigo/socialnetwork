@@ -20,7 +20,7 @@ class ProjectEntry extends Model
     ];
 
     protected $appends = [
-        'output_state',
+        'outputs_state',
         'current_output_quantity',
         'remaining_quantity'
     ];
@@ -67,7 +67,7 @@ class ProjectEntry extends Model
                 $this->getCurrentOutputQuantityAttribute();
     }
     
-    public function getOutputStateAttribute (){
+    public function getOutputsStateAttribute (){
         return $this->getCurrentOutputQuantityAttribute() 
                 < $this->quantity ;
     }

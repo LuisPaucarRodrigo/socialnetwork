@@ -20,17 +20,21 @@ Route::post('resource_description/store', [ResourceManagementController::class, 
 //warehouses
 Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');
 Route::get('/inventory/warehouses/{warehouse}', [WarehousesController::class, 'showWarehouse'])->name('warehouses.warehouse');
-Route::get('/inventory/warehouses/{warehouse}/header', [WarehousesController::class, 'showWarehouseHeader'])->name('warehouses.warehouseHeader');
-Route::post('/inventory/warehouses/{warehouse}/header', [WarehousesController::class, 'storeWarehouseHeader'])->name('warehouses.storeWarehouseHeader');
-Route::post('/inventory/warehouses', [WarehousesController::class, 'storeWarehouse'])->name('warehouses.storeWarehouse');
-Route::delete('/inventory/warehouses/{warehouse}/destroy', [WarehousesController::class, 'destroyWarehouse'])->name('warehouses.destroyWarehouse');
 
 //products
-Route::get('/inventory/warehouses/{warehouse}/product', [ProductController::class, 'index'])->name('warehouses.products');
-Route::get('/inventory/warehouses/{warehouse}/product/create', [ProductController::class, 'create'])->name('warehouses.createProduct');
-Route::get('/inventory/warehouses/{warehouse}/product/{product}/show', [ProductController::class, 'show'])->name('warehouses.showProduct');
-Route::post('/inventory/warehouses/{warehouse}/product/create', [ProductController::class, 'store'])->name('warehouses.storeProduct');
-Route::delete('/inventory/warehouses/{warehouse}/product/{product}/destroy', [ProductController::class, 'destroy'])->name('warehouses.destroyProduct');
+Route::get('/inventory/products/{warehouse}', [WarehousesController::class, 'showProducts'])->name('warehouses.products');
+Route::get('/inventory/products/{warehouse}/{inventory}/get', [WarehousesController::class, 'showEntries'])->name('warehouses.products.entries');
+Route::get('/inventory/products/{warehouse}/create', [WarehousesController::class, 'createProducts'])->name('warehouses.createNormalProduct');
+Route::post('/inventory/products/{warehouse}/store', [WarehousesController::class, 'storeProducts'])->name('warehouses.storeNormalProduct');
+
+//approvePurchaseOrders
+Route::get('/inventory/approve_purchase_orders/{warehouse}', [WarehousesController::class, 'approvePurchaseOrders'])->name('warehouses.purchaseorders.approve');
+Route::post('/inventory/approve_purchase_orders/{warehouse}/approve', [WarehousesController::class, 'approve'])->name('warehouses.purchaseorders.approve.post');
+
+//dispatches
+Route::get('/inventory/dispatches/{warehouse}', [WarehousesController::class, 'showDispatches'])->name('warehouses.dispatches');
+Route::post('/inventory/dispatches/{warehouse}/accept_or_decline', [WarehousesController::class, 'acceptOrDeclineDispatch'])->name('warehouses.dispatches.acceptordecline');
+
 //outputs
 Route::get('/inventory/warehouses/{warehouse}/outputs', [ProductController::class, 'outputs_index'])->name('warehouses.outputs');
 Route::post('/inventory/warehouses//outputs/store', [ProductController::class, 'outputs_store'])->name('projectmanagement.outputs.store');
