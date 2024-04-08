@@ -63,7 +63,7 @@
               class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos</Link>
             <Link :href="route('inventory.special_dispatch.index', {warehouse_id:item.id})"
               class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Despachos</Link>
-            <Link :href="'#'"
+            <Link :href="route('inventory.special_refund.index',{warehouse_id:item.id})"
               class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Devoluciones</Link>
           </div>
         </div>
