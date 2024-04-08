@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Inventory;
 
+use App\Http\Requests\SpecialInventoryRequest\SpecialInventoryOutputRequest;
 use App\Http\Requests\SpecialInventoryRequest\SpecialInventoryRequest;
 use App\Models\ProjectEntry;
+use App\Models\ProjectEntryOutput;
 use App\Models\Purchase_product;
 use App\Models\SpecialInventory;
 use App\Models\Warehouse;
@@ -56,27 +58,18 @@ class SpecialWarehouseController extends Controller
     //DESPACHOS
     public function special_dispatch_index ($warehouse_id) {
         $warehouse = Warehouse::find($warehouse_id);
-        // $dispatchIncomplete = ProjectEntry::with('project_entry_outputs')
-        //     ->whereHas(
-        //         'special_inventory',
-        //         function ($query) use ($warehouse_id) {
-        //             $query->where('warehouse_id', $warehouse_id );
-        //         }
-        //     )
-        //     // ->where(como pongo aqui el campo calculado de output state que debe ser true)
-        //     ->paginate(15);
-
         $perPage = 15;
         $page = LengthAwarePaginator::resolveCurrentPage() ?: 1;
-        $results = ProjectEntry::with('special_inventory.purchase_product', 'project')
+        $results = ProjectEntry::with(
+                'special_inventory.purchase_product',
+                'project_entry_outputs',
+                'project')
             ->whereHas(
                 'special_inventory',
                 function ($query) use ($warehouse_id) {
                     $query->where('warehouse_id', $warehouse_id );
                 }
             )
-            ->where('state', null)
-            ->orWhere('state', false)
             ->orderBy('created_at', 'desc')
             ->get()
             ->filter(function ($projectEntry) {
@@ -97,10 +90,18 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
+    public function special_dispatch_accept_decline (Request $request, $project_entry_id) {
+        $data = $request->validate([
+            "state" => "required|boolean"
+        ]);
+        ProjectEntry::find($project_entry_id)->update($data);
+        return redirect()->back();
+    }
 
-
-
-
-
+    public function special_dispatch_output_store (SpecialInventoryOutputRequest $request) {
+        $data = $request->validated();
+        ProjectEntryOutput::create($data);
+        return redirect()->back();
+    }
 
 }
