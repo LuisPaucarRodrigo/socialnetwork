@@ -10,7 +10,7 @@ class ProjectEntryOutput extends Model
     use HasFactory;
     protected $fillable = [
         'project_entry_id',
-        'quantify',
+        'quantity',
     ];
 
     //Relations
