@@ -10,7 +10,8 @@ class RetrievalEntry extends Model
     use HasFactory;
     protected $fillable = [
         'entry_id',
-        'project_entry_liquidation_id'
+        'project_entry_liquidation_id',
+        'state'
     ];
 
 

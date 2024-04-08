@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseQuoteRequest\CreatePurchaseQuoteRequest;
 use App\Http\Requests\PurchaseRequest\CreatePurchaseRequest;
 use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
+use App\Models\NormalEntry;
 use App\Models\Project;
 use App\Models\Purchase_product;
 use App\Models\Purchasing_requests_product;
@@ -13,6 +14,8 @@ use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Purchase_order;
 use App\Models\Purchase_quote;
+use App\Models\RetrievalEntry;
+use App\Models\SpecialInventory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Providers\GlobalFunctionsServiceProvider;
@@ -246,4 +249,30 @@ class PurchaseRequestController extends Controller
         return $pdf->stream();
     }
 
+    public function existing_products(Request $request)
+    {
+        $ids = $request->all(); // Aquí obtienes [2, 3] como una matriz de IDs
+
+        // Inicializar el arreglo para almacenar los resultados
+        $results = [];
+
+        // Iterar sobre cada ID proporcionado
+        foreach ($ids as $id) {
+            $result = new \stdClass;
+
+            $result->cantidadRetrieval = RetrievalEntry::whereHas('entry.inventory', function ($query) use ($id) {
+                $query->where('purchase_product_id', $id);
+            })->where('purchase_product_id', $id)->value('quantity');
+
+            $result->cantidadNormal = NormalEntry::whereHas('entry.inventory', function ($query) use ($id) {
+                $query->where('purchase_product_id', $id);
+            })->where('purchase_product_id', $id)->value('quantity');
+
+            $result->cantidadSpecial = SpecialInventory::where('purchase_product_id', $id)->value('quantity');
+
+            $results[] = $result;
+        }
+
+        return $results;
+    }
 }
