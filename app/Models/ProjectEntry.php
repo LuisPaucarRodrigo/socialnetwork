@@ -21,7 +21,8 @@ class ProjectEntry extends Model
 
     protected $appends = [
         'output_state',
-        'current_output_quantity'
+        'current_output_quantity',
+        'remaining_quantity'
     ];
 
     //Relations
@@ -59,8 +60,13 @@ class ProjectEntry extends Model
                             ->get()
                             ->sum(function($item) {
                                 return $item->quantity;
-                            });
+                            })?? 0;
     }
+    public function getRemainingQuantityAttribute (){
+        return $this->quantity -
+                $this->getCurrentOutputQuantityAttribute();
+    }
+    
     public function getOutputStateAttribute (){
         return $this->getCurrentOutputQuantityAttribute() 
                 < $this->quantity ;

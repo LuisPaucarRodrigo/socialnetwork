@@ -279,17 +279,4 @@ function submit () {
     })
 }
 
-
-function deleteProduct(index, id = null) {
-    // if (id) router.delete(route('purchasing_request_product.delete', { purchasing_request_product_id: id }), {
-    //     onSuccess: () => {
-    //         showModal3.value = true
-    //         setTimeout(() => {
-    //             showModal3.value = false
-    //         }, 1000)
-    //     }
-    // })
-    // form.products.splice(index, 1)
-}
-
 </script>

@@ -14,8 +14,7 @@ class ProjectEntryOutput extends Model
     ];
 
     //Relations
-    public function project_entry()
-    {
+    public function project_entry(){
         return $this->belongsTo(ProjectEntry::class, 'project_entry_id');
     }
 }
