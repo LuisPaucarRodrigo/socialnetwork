@@ -65,7 +65,16 @@ Route::get('/inventory/{warehouse_id}/special_refund_index/', [SpecialWarehouseC
 Route::post('/inventory/special_refund_index/accept-decline/{refund_id}', [SpecialWarehouseController::class, 'special_refund_accept_decline'])->name('inventory.special_refund.accept_decline');
 Route::get('/inventory/{warehouse_id}/special_refund_historial/', [SpecialWarehouseController::class, 'special_refund_historial'])->name('inventory.special_refund.historial');
 
-
 //Retrieval_entry
-Route::get('/inventory/warehouses/retrieval_entry/{retrieval?}', [WarehousesController::class, 'retrievalEntryIndex'])->name('retrievalEntry.index');
-Route::get('/inventory/warehouses/{retrieval}/retrieval_entry', [WarehousesController::class, 'retrievalEntry'])->name('retrievalEntry.approbe');
+Route::get('/inventory/retrieval_entry/warehouses/{boolean?}', [WarehousesController::class, 'retrieval_entry_index'])->name('inventory.retrieval_entry.index');
+Route::post('/inventory/warehouses/retrieval_entry', [WarehousesController::class, 'retrievalEntryApprove'])->name('retrievalentry.approbe');
+
+//Retrieval_product
+Route::get('/inventory/retrieval_product/warehouses', [WarehousesController::class, 'retrievalProduct'])->name('inventory.retrievalProduct.index');
+Route::get('/inventory/show/retrieval_product/{product}/warehouses', [WarehousesController::class, 'retrievalProductShow'])->name('inventory.retrievalProduct.show');
+
+//Retrieval_dispatch
+Route::get('/inventory/retrieval_dispatch/warehouses', [WarehousesController::class, 'retrievalDispatch'])->name('inventory.retrievalDispatch.index');
+Route::post('/inventory/approve/retrieval_dispatch/warehouses', [WarehousesController::class, 'retrievalDispatchApprove'])->name('inventory.retrievalDispatch.approve');
+
+

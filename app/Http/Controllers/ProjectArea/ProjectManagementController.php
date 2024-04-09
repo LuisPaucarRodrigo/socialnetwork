@@ -10,6 +10,7 @@ use App\Models\Employee;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
+use App\Models\Entry;
 use App\Models\Inventory;
 use App\Models\ProjectComponentOrMaterial;
 use App\Models\ProjectNetworkEquipment;
@@ -301,14 +302,7 @@ class ProjectManagementController extends Controller
 
     public function project_product_index($project_id)
     {
-        $assigned_products = ProjectProduct::where('project_id', $project_id)
-            ->with([
-                'product',
-                'output_project_product' => function ($query) {
-                    $query->whereDoesntHave('liquidation');
-                },
-            ])
-            ->paginate(10);
+        $assigned_products = ProjectEntry::where('project_id', $project_id)->with('entry.inventory.purchase_product','special_inventory.purchase_product')->paginate(10);
 
         $warehouses = Warehouse::all();
 
@@ -345,36 +339,50 @@ class ProjectManagementController extends Controller
     }
 
     public function warehouse_products(Warehouse $warehouse)
-    {   
-        if ($warehouse->category == 'Especial') {
-            $products = SpecialInventory::all();
+    {
+        if ($warehouse->category === 'Especial') {
+            $products = SpecialInventory::with('purchase_product')->get();
             return response()->json(['products' => $products]);
         } else {
-            $products = Inventory::where('warehouse_id', $warehouse->id)->get();
+            $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse->id)->get();
             return response()->json(['products' => $products]);
         }
-        // $warehouse_products = Product::where('warehouse_id', $warehouse_id)
-        //     ->get()
-        //     ->filter(function ($product) {
-        //         return $product->state === 'Disponible';
-        //     });;
-        // return response()->json($warehouse_products);
+    }
+
+    public function inventory_products(Inventory $inventory)
+    {
+        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')->where('inventory_id', $inventory->id)->get();
+        return response()->json(['inventory' => $inventory]);
     }
 
     public function project_product_store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'project_id' => 'required|numeric',
-            'entry_id' => 'nullable|numeric',
             'special_inventory_id' => 'nullable|numeric',
-            'quantity' => 'required',
+            'quantity' => 'required|numeric',
+            'entry_id' => 'nullable|numeric'
         ]);
-        ProjectEntry::create($data);
+
+        if ($request->special_inventory_id != null) {
+            ProjectEntry::create([
+                'project_id' => $request->project_id,
+                'special_inventory_id' => $request->special_inventory_id,
+                'quantity' => $request->quantity
+            ]);
+        } else {
+            $unitary_price = Entry::find($request->entry_id);
+            ProjectEntry::create([
+                'project_id' => $request->project_id,
+                'entry_id' => $request->entry_id,
+                'quantity' => $request->quantity,
+                'unitary_price' => $unitary_price->unitary_price
+            ]);
+        }
+
         return redirect()->back();
-        // $data['unit_price'] = $request->total_price;
-        // ProjectProduct::create($data);
-        // return redirect()->back();
     }
+    
     public function project_product_update(ProjectProduct $project_product)
     {
         $output_quantity = $project_product->total_output_project_product;
