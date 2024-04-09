@@ -26,4 +26,9 @@ class RetrievalEntry extends Model
     {
         return $this->belongsTo(ProjectEntryLiquidation::class, 'project_entry_liquidation_id');
     }
+
+    public function purchase_product()
+    {
+        return $this->belongsTo(Purchase_product::class, 'purchase_product_id');
+    }
 }

@@ -73,7 +73,6 @@
                         </button>
                     </form>
                 </div>
-
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full whitespace-no-wrap">

@@ -44,7 +44,8 @@ class WarehousesController extends Controller
         ]);
     }
 
-    public function showProducts(Warehouse $warehouse){
+    public function showProducts(Warehouse $warehouse)
+    {
         $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry', 'purchase_product')->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Inventory', [
             'products' => $products,
@@ -52,7 +53,8 @@ class WarehousesController extends Controller
         ]);
     }
 
-    public function createProducts(Warehouse $warehouse){
+    public function createProducts(Warehouse $warehouse)
+    {
         $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry')->paginate(10);
         $purchase_products = Purchase_product::where('type', 'Producto')->get();
         return Inertia::render('Inventory/WarehouseManagement/InventoryForm', [
@@ -71,7 +73,8 @@ class WarehousesController extends Controller
         ]);
     }
 
-    public function approvePurchaseOrders(Warehouse $warehouse){
+    public function approvePurchaseOrders(Warehouse $warehouse)
+    {
         $purchase_orders = Purchase_order::where('state', 'Completada')->with('purchase_quote.purchase_quote_products.purchase_product')->paginate(5);
         return Inertia::render('Inventory/WarehouseManagement/ApprovePurchaseOrders', [
             'purchase_orders' => $purchase_orders,
@@ -80,7 +83,7 @@ class WarehousesController extends Controller
     }
 
     public function approve(Request $request, Warehouse $warehouse)
-    {    
+    {
         $request->validate([
             'purchase_order_id' => 'required|numeric'
         ]);
@@ -109,7 +112,7 @@ class WarehousesController extends Controller
 
                 $purchase_entry = PurchasesEntry::create([
                     'entry_id' => $entry->id,
-                    'purchase_quotes_product_id' => $purchaseQuoteProduct->id, 
+                    'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                 ]);
             }
         } else {
@@ -117,7 +120,7 @@ class WarehousesController extends Controller
             foreach ($purchase_order->purchase_quote->purchase_quote_products as $purchaseQuoteProduct) {
                 // Verificar si hay un inventario existente con el mismo purchase_product_id
                 $existingInventory = $warehouse->inventory->firstWhere('purchase_product_id', $purchaseQuoteProduct->purchase_product->id);
-            
+
                 if ($existingInventory) {
                     // Si se encuentra un inventario existente, crear un entry y un purchase_entry asociados a ese inventario
                     $entry = Entry::create([
@@ -128,10 +131,10 @@ class WarehousesController extends Controller
                         'entry_date' => $today,
                         'observations' => $request->observations
                     ]);
-            
+
                     $purchase_entry = PurchasesEntry::create([
                         'entry_id' => $entry->id,
-                        'purchase_quotes_product_id' => $purchaseQuoteProduct->id, 
+                        'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
                 } else {
                     // Si no se encuentra un inventario existente, crear uno nuevo y luego un entry y un purchase_entry asociados a ese inventario
@@ -139,7 +142,7 @@ class WarehousesController extends Controller
                         'purchase_product_id' => $purchaseQuoteProduct->purchase_product->id,
                         'warehouse_id' => 3
                     ]);
-            
+
                     $entry = Entry::create([
                         'inventory_id' => $inventory->id,
                         'type' => 'purchase',
@@ -148,10 +151,10 @@ class WarehousesController extends Controller
                         'entry_date' => $today,
                         'observations' => $request->observations
                     ]);
-            
+
                     $purchase_entry = PurchasesEntry::create([
                         'entry_id' => $entry->id,
-                        'purchase_quotes_product_id' => $purchaseQuoteProduct->id, 
+                        'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
                 }
             }
@@ -162,9 +165,10 @@ class WarehousesController extends Controller
         ]);
     }
 
-    public function storeProducts(Request $request, Warehouse $warehouse){
-        
-        $request->validate = ([
+    public function storeProducts(Request $request, Warehouse $warehouse)
+    {
+
+        $request->validate([
             'quantity' => 'required|numeric',
             'unitary_price' => 'required|numeric',
             'entry_date' => 'required|date',
@@ -177,7 +181,7 @@ class WarehousesController extends Controller
         foreach ($warehouse->inventory as $inventoryItem) {
             if ($inventoryItem->purchase_product_id == $request->purchase_product_id) {
                 $found = $inventoryItem->id;
-                break; 
+                break;
             }
         }
 
@@ -197,7 +201,6 @@ class WarehousesController extends Controller
                 'purchase_product_id' => $request->purchase_product_id,
                 'referral_guide' => $request->referral_guide
             ]);
-
         } else {
 
             $inventory = Inventory::create([
@@ -219,7 +222,6 @@ class WarehousesController extends Controller
                 'purchase_product_id' => $request->purchase_product_id,
                 'referral_guide' => $request->referral_guide
             ]);
-
         }
     }
 
@@ -247,51 +249,99 @@ class WarehousesController extends Controller
             'state' => $request->state
         ]);
     }
-    //RETRIEVALENTRY
 
-    public function retrievalEntryIndex($boolean = false)
+    //RETRIEVALENTRY
+    public function retrieval_entry_index($boolean = false)
     {
-        if ($boolean) {
-            $retrieval = RetrievalEntry::with('project_entry_liquidation.project_entry.project.preproject', 'entry.inventory.purchase_product.name')
-                ->where('state' != true)
-                ->paginate();
+        if ($boolean == false) {
+            $retrieval = Entry::with('retrieval_entry.purchase_product')->whereHas('retrieval_entry', function ($query) {
+                $query->where('state', null);
+            })->paginate();
         } else {
-            $retrieval = RetrievalEntry::with('project_entry_liquidation.project_entry.project.preproject', 'entry.inventory.purchase_product.name')
-                ->where('state' == true)
-                ->paginate();
+            $retrieval = Entry::with('retrieval_entry.purchase_product')->whereHas('retrieval_entry', function ($query) {
+                $query->where('state', true);
+            })->paginate();
         }
 
-        return Inertia::render('Inventory/WarehouseManagement/RetrievalEntry', [
+        return Inertia::render('Inventory/WarehouseManagement/Retrieval/RetrievalEntry', [
             'retrievalEntry' => $retrieval,
             'boolean' => boolval($boolean)
         ]);
     }
 
-    public function retrievalEntry(RetrievalEntry $retrieval)
+    public function retrievalEntryApprove(Request $request)
     {
-        $retrieval->update([
-            'state' => true
-        ]);
+        $entry = Entry::with('retrieval_entry')->find($request->retrieval);
+        $retrieval_entry = RetrievalEntry::where('entry_id', $entry->id);
+        $warehouse = Warehouse::with('inventory')->find(4);
+        $found = null;
+
+        foreach ($warehouse->inventory as $inventoryItem) {
+            if ($inventoryItem->purchase_product_id == $entry->retrieval_entry->purchase_product_id) {
+                $found = $inventoryItem->id;
+                break;
+            }
+        }
+        $date = Carbon::now();
+        if ($found) {
+            $entry->update([
+                'entry_date' => $date,
+                'inventory_id' => $found
+            ]);
+            $retrieval_entry->update([
+                'state' => 1
+            ]);
+        } else {
+
+            $inventory = Inventory::create([
+                'purchase_product_id' => $entry->retrieval_entry->purchase_product_id,
+                'warehouse_id' => $warehouse->id
+            ]);
+
+            $entry->update([
+                'entry_date' => $date,
+                'inventory_id' => $inventory->id
+            ]);
+            $retrieval_entry->update([
+                'state' => 1
+            ]);
+        }
     }
 
     //RETRIEVALPRODUCT
-
     public function retrievalProduct()
     {
-        $retrievalProducts = Inventory::where('warehouse_id', 4)->with('entry.retrieval_entry');
-        return Inertia::render('Inventory/WarehouseManagement/RetrievalProduct', [
+        $retrievalProducts = Inventory::where('warehouse_id', 4)->with('entry.retrieval_entry', 'purchase_product')->paginate();
+        return Inertia::render('Inventory/WarehouseManagement/Retrieval/RetrievalProduct', [
             'retrievalProducts' => $retrievalProducts
+        ]);
+    }
+
+    public function retrievalProductShow($product)
+    {
+        $retrievalProductShow = Entry::where('inventory_id', $product)->with('inventory.purchase_product')->paginate();
+        return Inertia::render('Inventory/WarehouseManagement/Retrieval/RetrievalProductShow', [
+            'retrievalProductsShow' => $retrievalProductShow
         ]);
     }
 
     //RETRIEVALDISPATH
     public function retrievalDispatch()
     {
-        $retrievalDispatch = ProjectEntry::with('project.preproject')
+        $retrievalDispatch = ProjectEntry::with('project.preproject', 'entry.inventory.purchase_product', 'special_inventory.purchase_product')
+            ->where('state', null)
             ->orderBy('created_at', 'desc')
             ->paginate();
-        return Inertia::render('Inventory/WarehouseManagement/RetrievalDispatch', [
+        return Inertia::render('Inventory/WarehouseManagement/Retrieval/RetrievalDispatch', [
             'retrievalDispatch' => $retrievalDispatch
+        ]);
+    }
+
+    public function retrievalDispatchApprove(Request $request)
+    {
+        $approve = ProjectEntry::find($request->dispatch);
+        $approve->update([
+            'state' => 1
         ]);
     }
 }
