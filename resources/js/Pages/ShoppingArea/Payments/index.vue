@@ -108,7 +108,7 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             {{ payment.currency == 'sol' ? "S/" : "$" }} {{
-        paymentDetail.amount.toFixed(2) }}
+                                            paymentDetail.amount.toFixed(2) }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">

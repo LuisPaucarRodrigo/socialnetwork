@@ -10,7 +10,9 @@ class RetrievalEntry extends Model
     use HasFactory;
     protected $fillable = [
         'entry_id',
-        'project_entry_liquidation_id'
+        'project_entry_liquidation_id',
+        'state',
+        'purchase_product_id'
     ];
 
 
@@ -23,5 +25,10 @@ class RetrievalEntry extends Model
     public function project_entry_liquidation()
     {
         return $this->belongsTo(ProjectEntryLiquidation::class, 'project_entry_liquidation_id');
+    }
+
+    public function purchase_product()
+    {
+        return $this->belongsTo(Purchase_product::class, 'purchase_product_id');
     }
 }
