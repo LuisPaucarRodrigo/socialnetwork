@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('entry_id')->constrained();
             $table->foreignId('project_entry_liquidation_id')->constrained();
             $table->boolean('state')->nullable();
+            $table->foreignId('purchase_product_id')->constrained();
             $table->timestamps();
         });
     }

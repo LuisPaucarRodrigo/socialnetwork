@@ -11,7 +11,8 @@ class RetrievalEntry extends Model
     protected $fillable = [
         'entry_id',
         'project_entry_liquidation_id',
-        'state'
+        'state',
+        'purchase_product_id'
     ];
 
 
