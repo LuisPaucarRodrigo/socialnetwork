@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('project_entries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_id')->constrained();
-            $table->foreignId('entry_id')->constrained()->nullable();
-            $table->foreignId('special_inventory_id')->constrained()->nullable();
-            $table->integer('quantify');
+            $table->foreignId('entry_id')->nullable()->constrained();
+            $table->foreignId('special_inventory_id')->nullable()->constrained();
+            $table->integer('quantity');
             $table->text('observation')->nullable();
             $table->decimal('unitary_price')->nullable();
-            $table->boolean('state')->default(true);
+            $table->boolean('state')->nullable();
             $table->timestamps();
         });
     }

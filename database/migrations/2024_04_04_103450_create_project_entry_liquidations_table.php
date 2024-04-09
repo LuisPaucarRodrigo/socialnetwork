@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('project_entry_liquidations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_entry_id')->constrained();
-            $table->integer('liquidated_quantify');
-            $table->integer('refund_quantify');
+            $table->integer('liquidated_quantity');
+            $table->integer('refund_quantity');
+            $table->text('observations')->nullable();
             $table->timestamps();
         });
     }
