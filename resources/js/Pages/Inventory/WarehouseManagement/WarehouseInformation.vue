@@ -13,24 +13,18 @@
             <div class="text-lg text-gray-500">{{ props.warehouse.name }}</div>
           </div>
           <div class="flex gap-2 items-center">
-            <div class="text-lg font-semibold">Ubicación:</div>
-            <div class="text-lg text-gray-500">{{ props.warehouse.location }}</div>
+            <div class="text-lg font-semibold">Descripción:</div>
+            <div class="text-lg text-gray-500">{{ props.warehouse.description }}</div>
           </div>
           <div class="flex gap-2 items-center">
             <div class="text-lg font-semibold">Encargado:</div>
-            <div class="text-lg text-gray-500">{{ props.warehouse.manager }}</div>
+            <div class="text-lg text-gray-500">{{ props.warehouse.person_in_charge }}</div>
           </div>
-          <div class="flex flex-col gap-2 ">
-            <div class="text-lg font-semibold">Cabeceras:</div>
-            <div v-if="props.warehouse.headers.length === 0" class="text-lg text-gray-500">No hay cabeceras asociadas.
-            </div>
-            <div v-else>
-              <ul>
-                <li v-for="header in props.warehouse.headers" :key="header.id" class="text-lg text-gray-500">{{
-                  header.name }}</li>
-              </ul>
-            </div>
+          <div class="flex gap-2 items-center">
+            <div class="text-lg font-semibold">Categoría:</div>
+            <div class="text-lg text-gray-500">{{ props.warehouse.category }}</div>
           </div>
+          
         </div>
         <div class="inline-block text-center">
           <Link

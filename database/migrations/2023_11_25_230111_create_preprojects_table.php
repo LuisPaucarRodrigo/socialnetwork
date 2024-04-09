@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable()->constrained('customers')->onDelete('set null');
             $table->foreignId('subcustomer_id')->nullable()->constrained('customers')->onDelete('set null');
             $table->string('code');
+            $table->string('cpe')->nullable();
             $table->string('description');
             $table->date('date');
             $table->string('observation')->nullable();
