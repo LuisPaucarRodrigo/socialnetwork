@@ -48,7 +48,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ retrieval.lastname }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ retrieval.quantify }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ retrieval.quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <button type="button" @click="approve_retrieval(retrieval.id)"
