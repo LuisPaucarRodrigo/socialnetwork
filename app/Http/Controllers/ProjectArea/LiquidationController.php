@@ -11,8 +11,10 @@ use App\Models\ProjectProduct;
 use App\Models\Warehouse;
 use App\Models\ProjectEntry;
 use App\Models\Refund;
+use App\Models\Entry;
 use App\Models\ProjectEntryLiquidation;
 use App\Models\RetrievalEntry;
+use Carbon\Carbon;
 
 class LiquidationController extends Controller
 {
@@ -64,7 +66,7 @@ class LiquidationController extends Controller
     public function liquidateForm($project_id, ProjectEntry $project_entry)
     {
         return Inertia::render('ProjectArea/ProjectManagement/LiquidationForm', [
-            'project_entry' => $project_entry,
+            'project_entry' => $project_entry->load('special_inventory', 'entry'),
             'project_id' => $project_id
         ]);
     }
@@ -82,6 +84,8 @@ class LiquidationController extends Controller
             'refund_quantity' => $request->refund_quantity,
             'observations' => $request->observations
         ]);
+
+        
 
         if($request->devolution_value == 1){
 
@@ -102,10 +106,27 @@ class LiquidationController extends Controller
 
         }else if ($request->devolution_value == 0){
 
-            $project_entry_id = ProjectEntry::find($project_entry);
+            $today = Carbon::now();
+            $project_entry_liquidation->load('project_entry.entry.inventory', 'project_entry.special_inventory');
+            $purchase_product_id = null;
+
+            if ($project_entry_liquidation->project_entry->entry){
+                $purchase_product_id = $project_entry_liquidation->project_entry->entry->inventory->purchase_product_id;
+            }else{
+                $purchase_product_id = $project_entry_liquidation->project_entry->special_inventory->purchase_product_id;
+            }
+
+            $entry = Entry::create([
+                'quantity' => $request->refund_quantity,
+                'unitary_price' => $project_entry_liquidation->project_entry->unitary_price,
+                'entry_date' => $today,
+                'type' => 'retrieval'
+            ]);
+
             RetrievalEntry::create([
                 'project_entry_liquidation_id' => $project_entry_liquidation->id,
-                'entry_id' => $project_entry_id->entry_id
+                'entry_id' => $entry->id,
+                'purchase_product_id' => $purchase_product_id
             ]);
         }
     }

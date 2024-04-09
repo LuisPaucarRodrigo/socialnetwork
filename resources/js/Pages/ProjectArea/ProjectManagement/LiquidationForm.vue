@@ -33,19 +33,6 @@
   
                       <div v-if="form.refund_quantity > 0 || form.refund_quantity">
                         <div v-if="props.project_entry.special_inventory">
-                            <input type="hidden" name="devolution_value" :value="form.devolution_value = 1">
-                            <div class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
-                                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                                </svg>
-                                <span class="sr-only">Info</span>
-                                <div>
-                                <span class="font-small">La cantidad devuelta irá automáticamente al almacén de devoluciones.</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div v-else>
                           <InputLabel for="devolution" class="font-medium leading-6 text-gray-900 mt-2">Seleccione el almacén</InputLabel>
                           <div class="mt-2 flex">
                             <!-- Alineación horizontal de los radiobuttons -->
@@ -58,6 +45,20 @@
                               <label for="devolution_1" class="ml-2 block text-sm text-gray-900">Devoluciones</label>
                             </div>
                           </div>
+                            
+                        </div>
+
+                        <div v-else>
+                          <input type="hidden" name="devolution_value" :value="form.devolution_value = 0">
+                            <div class="inline-flex items-center p-2 mb-4  mt-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div>
+                                <span class="font-small">La cantidad devuelta irá automáticamente al almacén de recuperos.</span>
+                                </div>
+                            </div>
                         </div>
                       </div>
   
@@ -101,7 +102,7 @@
     project_entry: Object,
     project_id: String
   });
-  
+
   const showModal = ref(false);
   
   const form = useForm({
