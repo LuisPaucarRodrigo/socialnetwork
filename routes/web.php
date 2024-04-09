@@ -16,6 +16,7 @@ use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\Inventory\ResourceManagementController;
+use App\Http\Controllers\Inventory\SpecialWarehouseController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -103,6 +104,21 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     //activos
     Route::post('resource_description/store', [ResourceManagementController::class, 'resource_description_store'])->name('resource_description.store');
     Route::post('resource_category/store', [ResourceManagementController::class, 'resource_category_store'])->name('resource_category.store');
+
+
+
+
+
+
+
+
+
+
+    //Special Warehouses
+    Route::delete('/inventory/special_products/destroy/{special_inventory_id?}', [SpecialWarehouseController::class, 'special_products_destroy'])->name('inventory.special_products.destroy');
+    Route::delete('/inventory/special_dispatch_output_delete/{project_entry_output_id}', [SpecialWarehouseController::class, 'special_dispatch_output_destroy'])->name('inventory.special_dispatch_output.destroy');
+
+
 
     //HumanResource
     Route::get('/management_employees/edit/{id}', [ManagementEmployees::class, 'edit'])->name('management.employees.edit');

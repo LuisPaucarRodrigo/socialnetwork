@@ -13,6 +13,10 @@ class Inventory extends Model
         'warehouse_id',
     ];
 
+    protected $appends = [
+        'available_quantity'
+    ];
+
     //Relations
     public function purchase_product()
     {
@@ -27,5 +31,10 @@ class Inventory extends Model
     public function entry()
     {
         return $this->hasMany(Entry::class);
+    }
+
+    public function getAvailableQuantityAttribute()
+    {
+        return $this->entry()->sum('quantity');
     }
 }

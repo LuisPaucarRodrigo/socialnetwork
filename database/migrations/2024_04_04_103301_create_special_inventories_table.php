@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('sub_warehouse');
             $table->integer('quantity');
             $table->string('product_serial_number');
-            $table->text('entry_observations');
+            $table->text('entry_observations')->nullable();
             $table->foreignId('purchase_product_id')->constrained();
             $table->foreignId('warehouse_id')->constrained();
             $table->timestamps();

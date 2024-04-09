@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('project_entry_outputs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_entry_id')->constrained();
-            $table->integer('quantify');
+            $table->integer('quantity');
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ class SpecialInventory extends Model
         'referral_guide',
         'entry_date',
         'sub_warehouse',
-        'quantify',
+        'quantity',
         'product_serial_number',
         'entry_observations',
     ];
@@ -26,7 +26,7 @@ class SpecialInventory extends Model
         return $this->hasMany(ProjectEntry::class);
     }
 
-    public function purchase_product_id()
+    public function purchase_product()
     {
         return $this->belongsTo(Purchase_product::class, 'purchase_product_id');
     }
