@@ -1,9 +1,9 @@
 <template>
 
     <Head title="Gestion de Empleados" />
-    <AuthenticatedLayout :redirectRoute="'retrievalDispatch.index'">
+    <AuthenticatedLayout :redirectRoute="'inventory.retrievalProduct.index'">
         <template #header>
-            Despachos
+            Entradas de Producto
         </template>
 
         <div class="min-w-full rounded-lg shadow">
@@ -14,7 +14,7 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Proyecto
+                                Codigo de Producto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -26,74 +26,44 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Precio Unitario
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="dispatch in retrievalDispatch.data" :key="dispatch.id" class="text-gray-700">
+                        <tr class="text-gray-700" v-for="product in retrievalProductsShow.data" :key="product.id">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ dispatch.project.preproject.code }}
+                                <p class="text-gray-900 whitespace-no-wrap">{{ product.inventory.purchase_product.code }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ dispatch.lastname }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ product.inventory.purchase_product.name }}
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ dispatch.quantity }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ product.quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button type="button" @click="approve_retrieval(dispatch.id)"
-                                    class="text-blue-900 whitespace-no-wrap">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
-                                </button>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ product.unitary_price ? 'S/ ' + product.unitary_price : 'Precio Especial' }}</p>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="retrievalDispatch.links" />
+                <Pagination :links="retrievalProductsShow.links" />
             </div>
         </div>
-
-        <ConfirmAcceptModal :confirmingaccept="showModalApprove" itemtype="recuperacion de producto" />
     </AuthenticatedLayout>
 </template>
 <script setup>
+import Pagination from '@/Components/Pagination.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmAcceptModal from '@/Components/ConfirmAcceptModal.vue';
-import { Head, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
 
 const props = defineProps({
-    retrievalDispatch: Object,
+    retrievalProductsShow: Object,
 })
-
-const showModalApprove = ref(false);
-
-function approve_retrieval(dispatch) {
-    router.get(route('retrievalDispatch.approbe', { dispatch: dispatch }), {
-        onSuccess: () => {
-            showModalApprove.value = true
-            setTimeout(() => {
-                showModalApprove.value = false;
-                router.visit(route('retrievalDispatch.index'))
-            }, 2000);
-        },
-    })
-}
-
-function boolean() {
-    if (props.boolean == true) {
-        router.get(route('retrievalDispatch.index'))
-    } else {
-        router.get(route('retrievalDispatch.index', { dispatch: props.boolean }))
-    }
-}
+console.log(props.retrievalProductsShow);
 
 </script>

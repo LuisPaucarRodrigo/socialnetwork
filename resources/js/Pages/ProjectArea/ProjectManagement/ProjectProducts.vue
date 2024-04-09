@@ -21,7 +21,15 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Descripcion
+                                Còdigo Producto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Producto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Tipo
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -54,16 +62,27 @@
         }
     ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.product.name }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ item.entry_id ? item.entry.inventory.purchase_product.code : item.special_inventory.purchase_product.code }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ item.entry_id ? item.entry.inventory.purchase_product.name : item.special_inventory.purchase_product.name }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.entry_id ? 'Normal' : 'Especial' }}
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.total_output_project_product }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formatearFecha(item.created_at) }}</p>
@@ -123,31 +142,47 @@
                         <div class="flex justify-start items-center">
                             <InputLabel for="product_id" class="font-medium leading-6 text-gray-900 mr-auto">Producto
                             </InputLabel>
-                            <!-- <InputLabel v-if="form.product_id !== ''" for="product_id"
-                                class="font-medium leading-6 text-slate-500  ml-auto">Disponible: {{
-        productFinded?.total_available }}
-                            </InputLabel> -->
                         </div>
-                        <div class="mt-2" v-if="warehouseProducts.cpe">
+                        <div class="mt-2" v-if="warehouseProductsfirst">
                             <select required id="product_id" v-model="form.special_inventory_id"
-                                @change="handleTotalPriceVisibility"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled value="">Seleccione uno</option>
+                                <option disabled value="">Seleccione especial</option>
                                 <option v-for="item in warehouseProducts" :key="item.id" :value="item.id">
-                                    {{ item.name }}
+                                    {{ item.purchase_product.name }}
                                 </option>
                             </select>
                         </div>
+
+
                         <div class="mt-2" v-else>
-                            <select required id="product_id" v-model="form.entry_id"
-                                @change="handleTotalPriceVisibility"
+                            <select required id="product_id" @change="product_inventory($event.target.value)"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled value="">Seleccione uno</option>
+                                <option disabled value="">Seleccione normal</option>
                                 <option v-for="item in warehouseProducts" :key="item.id" :value="item.id">
-                                    {{ item.name }}
+                                    {{ item.purchase_product.name }}
                                 </option>
                             </select>
                         </div>
+
+                        <template v-if="warehouseInventory.length != 0 && !warehouseInventory.cpe">
+                            <div class="flex justify-start items-center">
+                                <InputLabel for="inventory_id" class="font-medium leading-6 text-gray-900 mr-auto">
+                                    Inventario
+                                </InputLabel>
+                            </div>
+                            <div class="mt-2">
+                                <select required id="inventory_id" v-model="form.entry_id"
+                                    @change="handleTotalPriceVisibility"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccione uno</option>
+                                    <option v-for="item in warehouseInventory" :key="item.id" :value="item.id">
+                                        {{ item.inventory.purchase_product.name }} -
+                                        {{ item.quantity }} -
+                                        S/ {{ item.unitary_price }}
+                                    </option>
+                                </select>
+                            </div>
+                        </template>
                     </div>
 
                     <div class="sm:col-span-3">
@@ -161,11 +196,11 @@
 
 
                     <div v-if="enableInput" class="sm:col-span-3">
-                        <InputLabel for="total_price" class="font-medium leading-6 text-gray-900">Precio unitario a
+                        <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio unitario a
                             descontar en
                             Proyecto</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="total_price" type="number" min="1" step="0.01" v-model="form.total_price"
+                            <TextInput id="unitary_price" type="number" min="1" step="0.01" v-model="form.unitary_price"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -232,16 +267,27 @@ const closeModal = () => {
     form.reset()
 };
 
-const closeModalLiquidate = () => {
-    showModalLiquidate.value = false;
-};
-
 //Load warehouse's product
+const warehouseProductsfirst = ref(null);
 const warehouseProducts = ref([])
+const warehouseInventory = ref([])
 const product_warehouse = (warehouse) => {
-    axios.get(route('projectmanagement.warehouse_products', { warehouse }))
+    warehouseProducts.value = []
+    warehouseInventory.value = []
+    axios.get(route('projectmanagement.warehouse_products', { warehouse: warehouse }))
         .then(response => {
             warehouseProducts.value = response.data.products;
+            warehouseProductsfirst.value = warehouseProducts.value[0]?.cpe;
+        })
+        .catch(error => {
+            console.error('Error al cargar la data:', error);
+        });
+};
+
+const product_inventory = (inventory) => {
+    axios.get(route('projectmanagement.inventory_products', { inventory: inventory }))
+        .then(response => {
+            warehouseInventory.value = response.data.inventory;
         })
         .catch(error => {
             console.error('Error al cargar la data:', error);
@@ -254,35 +300,29 @@ const errorAsignation = ref(false)
 
 const form = useForm({
     project_id: project_id,
-    entry_id: null,
     special_inventory_id: null,
-    quantity: '',
-    total_price: null,
+    quantity: null,
+    unitary_price: null,
+    entry_id: null
 });
 
 
 const submit = () => {
-    if (sufficientQuantity(form)) {
-        form.post(route('projectmanagement.products.store'), {
-            onSuccess: () => {
-                form.reset();
-                successAsignation.value = true
-                warehouseProducts.value = []
-                let almacen_select = document.getElementById('almacen_id')
-                almacen_select.value = ""
-                enableInput.value = false
-                setTimeout(() => {
-                    successAsignation.value = false
-                }, 1500)
+    console.log(form);
+    form.post(route('projectmanagement.products.store'), {
+        onSuccess: () => {
+            form.reset();
+            successAsignation.value = true
+            warehouseProducts.value = []
+            // let almacen_select = document.getElementById('almacen_id')
+            // almacen_select.value = ""
+            // enableInput.value = false
+            setTimeout(() => {
+                successAsignation.value = false
+            }, 2000)
 
-            }
-        })
-    } else {
-        errorAsignation.value = true
-        setTimeout(() => {
-            errorAsignation.value = false
-        }, 1500)
-    }
+        }
+    })
 }
 
 //formatear fecha and check quantity
@@ -349,8 +389,8 @@ const enableInput = ref(false)
 //     let product = warehouseProducts.value.find((i) => i.id == form.product_id)
 //     productFinded.value = product
 //     enableInput.value = product.has_different_price
-//     if (form.total_price) {
-//         form.total_price = null
+//     if (form.unitary_price) {
+//         form.unitary_price = null
 //     }
 // }
 
