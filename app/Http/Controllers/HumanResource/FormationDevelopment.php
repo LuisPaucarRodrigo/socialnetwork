@@ -97,25 +97,6 @@ class FormationDevelopment extends Controller
         return Inertia::location(route('management.employees.formation_development.trainings'));
     }
 
-    public function assignate_employee_fprogram(Request $request)
-    {   
-        $data= $request->validate([
-            'employees'=>  'required|array',
-            'formation_programs'=>  'required|array',
-            'start_date'=> 'required',
-            'end_date'=> 'required'
-        ]);
-        $employees = $data['employees'];
-        $formationPrograms = $data['formation_programs'];
-        foreach ($employees as $emp) {
-            $employee = Employee::find($emp);
-            $employee->formation_programs()->sync($formationPrograms, [
-                'start_date'=>$data['start_date'],
-                'end_date'=>$data['end_date']
-            ]);
-        }
-        return redirect()->back();
-    }
 
     public function assignate_create()
     {
@@ -131,8 +112,8 @@ class FormationDevelopment extends Controller
         $data= $request->validate([
             'employees'=>  'required|array',
             'formation_programs'=>  'required|array',
-            'start_date'=> 'required',
-            'end_date'=> 'required'
+            'start_date'=> 'required|date',
+            'end_date'=> 'required|date|after_or_equal:start_date'
         ]);
         $employees = $data['employees'];
         $formationPrograms = $data['formation_programs'];
@@ -179,19 +160,19 @@ class FormationDevelopment extends Controller
         $alarm3d = Employee::with('assignated_programs.formation_program')
             ->whereHas('assignated_programs', function($query) use ($today) {
                 $query->where('end_date', '<=', $today->copy()->addDays(3))
-                      ->where('state', false);
+                      ->where('state', null);
             })
             ->get();
-        $alarm7 = Employee::with('assignated_programs.formation_program')
+        $alarm7d = Employee::with('assignated_programs.formation_program')
             ->whereHas('assignated_programs', function($query) use ($today) {
                 $query->where('end_date', '>=', $today->copy()->addDays(3))
                       ->where('end_date', '<=', $today->copy()->addDays(7))
-                      ->where('state', false);
+                      ->where('state', null);
             })
             ->get();
         return response()->json([
             'alarm3d' => $alarm3d,
-            'alarm7' => $alarm7,
+            'alarm7d' => $alarm7d,
         ]);
     }
 
