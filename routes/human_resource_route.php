@@ -66,6 +66,7 @@ Route::post('/management_employees/formation_development/trainings/store/{id?}',
 //Employees in programs
 Route::get('/management_employees/formation_development/employees_in_programs', [FormationDevelopment::class,'employees_in_programs'])->name('management.employees.formation_development.employees_in_programs');
 Route::post('/management_employees/formation_development/employees_in_programs/{efp_id}', [FormationDevelopment::class,'employees_in_programs_update'])->name('management.employees.formation_development.employees_in_programs.update');
+Route::get('/management_employees/formation_development/employees_in_programs/detail/{employee_id}', [FormationDevelopment::class, 'employees_in_programs_details'])->name('management.employees.formation_development.detail');
 
 
 //Vacation
