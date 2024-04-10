@@ -87,7 +87,7 @@
                     <MyTransition v-for="item in formationProgramsAlarms" :key="item.id" class="ml-4"
                         :transitiondemonstration="showFormationProgramsAlarms">
                         <Link class="w-full flex items-center"
-                            :href="'#'">
+                            :href="route('management.employees.formation_development.detail', {employee_id: item.id})">
                         <svg :class="`w-4 h-4 mr-2 ${item.critical ? 'text-red-600' : 'text-yellow-400'} dark:text-red`"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                             viewBox="0 0 20 20">
