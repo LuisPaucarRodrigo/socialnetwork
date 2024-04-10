@@ -182,8 +182,6 @@ const { employees } = defineProps({
     employees: Object
 })
 
-console.log(employees.data)
-
 const showNotCompletedModal = ref(false)
 const apNotCompleted = ref(null)
 const form = useForm({
