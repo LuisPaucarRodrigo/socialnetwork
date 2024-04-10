@@ -10,6 +10,7 @@ use App\Models\Training;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class FormationDevelopment extends Controller
 {
@@ -170,6 +171,28 @@ class FormationDevelopment extends Controller
                 ->paginate(),
             ]
         );
+    }
+
+
+    public function employees_in_programs_alarms () {
+        $today = Carbon::now();
+        $alarm3d = Employee::with('assignated_programs.formation_program')
+            ->whereHas('assignated_programs', function($query) use ($today) {
+                $query->where('end_date', '<=', $today->copy()->addDays(3))
+                      ->where('state', false);
+            })
+            ->get();
+        $alarm7 = Employee::with('assignated_programs.formation_program')
+            ->whereHas('assignated_programs', function($query) use ($today) {
+                $query->where('end_date', '>=', $today->copy()->addDays(3))
+                      ->where('end_date', '<=', $today->copy()->addDays(7))
+                      ->where('state', false);
+            })
+            ->get();
+        return response()->json([
+            'alarm3d' => $alarm3d,
+            'alarm7' => $alarm7,
+        ]);
     }
 
 }
