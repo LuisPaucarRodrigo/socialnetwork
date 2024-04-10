@@ -43,7 +43,8 @@
                     </thead>
                     <tbody>
                         <tr v-for="(item, i) in employees.data" :key="item.id"
-                            class="text-gray-700 hover:bg-gray-200 bg-white">
+                            class="text-gray-700 hover:bg-gray-200 bg-white"
+                            >
                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
                             </td>
@@ -61,7 +62,15 @@
                             </td>
                             <td class="border-b border-gray-200 text-sm">
                                 <div v-for="ap in item.assignated_programs"
-                                    class="lg:w-full w-[600px] grid grid-cols-3 gap-3 items-center hover:bg-gray-300 py-2 px-5">
+                                    class="lg:w-full w-[600px] grid grid-cols-3 gap-3 items-center hover:bg-gray-300 py-2 px-5"
+                                    :class="[
+                                        {
+                                            'border-l-8': true,
+                                            'border-yellow-500': ap.urgent_state === 'medium',
+                                            'border-red-500': ap.urgent_state === 'high',
+                                        }
+                                    ]"
+                                    >
                                     <p class="text-left">{{ ap.formation_program.name }}</p>
                                     <p class="text-center whitespace-nowrap">{{ formattedDate(ap.start_date) }} -
                                         {{ formattedDate(ap.end_date) }}
@@ -69,12 +78,12 @@
                                     <div v-if="ap.state === null" class="text-center flex gap-3 justify-center ">
                                         <button  @click="UpdateToCompleted(ap.id)"
                                             class="flex items-center text-blue-500 rounded-xl hover:bg-green-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </button>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </button>
                                         <button  @click="openNotCompletedModal(ap.id)" type="button"
                                             class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -161,10 +170,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { formattedDate } from '@/utils/utils.js';
@@ -174,6 +182,7 @@ const { employees } = defineProps({
     employees: Object
 })
 
+console.log(employees.data)
 
 const showNotCompletedModal = ref(false)
 const apNotCompleted = ref(null)
