@@ -17,5 +17,8 @@ class EmployeeFormationProgram extends Model
     public function formation_program() {
         return $this->belongsTo(FormationProgram::class, 'formation_program_id');
     }
+    public function employee() {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
 
 }

@@ -22,8 +22,8 @@
                         </path>
                     </svg>
                 </template>
-Usuarios
-</nav-link> -->
+                Usuarios
+            </nav-link> -->
             <template v-if="hasPermission('UserManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingUsersAndRols = !showingUsersAndRols">
@@ -71,10 +71,25 @@ Usuarios
                 </MyTransition>
 
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('management.employees.formation_development')">Formacion y
-                    Desarrollo
-                    </Link>
+                    <div class="relative">
+                        <button @click="showFormationProgramsAlarms = !showFormationProgramsAlarms">
+                            <Link class="w-full" :href="route('management.employees.formation_development')">Formacion y Desarrollo
+                            </Link>
+                            <span v-if="formationProgramsAlarms.length > 0"
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{formationProgramsAlarms.length }}
+                            </span>
+                        </button>
+                    </div>
                 </MyTransition>
+
+
+
+
+
+
+
+
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
                         <button @click="alarmVacaPermisions">
@@ -123,9 +138,12 @@ Usuarios
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
-                        <button @click="toggleMembers"><span v-if="subSectionsCount + subSectionsCount7 > 0"
-                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
-        subSectionsCount + subSectionsCount7 }}</span></button>
+                        <button @click="toggleMembers"
+                            ><span v-if="subSectionsCount + subSectionsCount7 > 0"
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{ subSectionsCount + subSectionsCount7 }}
+                            </span>
+                            </button>
                         <Link class="w-full" :href="route('sections.subSections')">Alarmas RRHH</Link>
                     </div>
                 </MyTransition>
@@ -208,8 +226,9 @@ Usuarios
                     <div class="relative">
                         <button @click="tooglePurchaseRequest"><span
                                 v-if="shoppingPurchasesTotal + shoppingPurchasesTotal7 > 0"
-                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
-        shoppingPurchasesTotal + shoppingPurchasesTotal7 }}</span></button>
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{shoppingPurchasesTotal + shoppingPurchasesTotal7 }}</span>
+                            </button>
                         <Link class="w-full" :href="route('purchasesrequest.index')">Solicitudes</Link>
                     </div>
                 </MyTransition>
@@ -252,8 +271,9 @@ Usuarios
                     <div class="relative">
                         <button @click="showPurchaseOrdersAlarms = !showPurchaseOrdersAlarms">
                             <span v-if="purchaseOrdersAlarms.length > 0"
-                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
-        purchaseOrdersAlarms.length }}</span>
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{purchaseOrdersAlarms.length }}
+                            </span>
                         </button>
                         <Link class="w-full" :href="route('purchaseorders.index')">Ordenes</Link>
                     </div>
@@ -384,8 +404,9 @@ Usuarios
                     <div class="relative">
                         <button @click="tooglePurchaseQuote"><span
                                 v-if="financePurchasesTotal + financePurchasesTotal7 > 0"
-                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">{{
-        financePurchasesTotal + financePurchasesTotal7 }}</span></button>
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{financePurchasesTotal + financePurchasesTotal7 }}</span>
+                        </button>
                         <Link class="w-full" :href="route('managementexpense.index')">Aprobacion de Compras</Link>
                     </div>
                 </MyTransition>
@@ -465,6 +486,7 @@ export default {
             cicsasubSectionsPorVencer7: [],
 
             purchaseOrdersAlarms: [],
+            formationProgramsAlarms: [],
 
             financePurchasesTotal: 0,
             financePurchasesTotal7: 0,
@@ -495,9 +517,10 @@ export default {
         let cicsashowingMembers7 = ref(false)
 
         let showPurchaseOrdersAlarms = ref(false)
-        let isCriticalPurchaseOrdersAlarms = ref(false)
         let showFinancePurchaseQuoteAlarms = ref(false)
         let showShoppingPurchaseRequestAlarms = ref(false)
+        let showFormationProgramsAlarms = ref(false)
+
         return {
             showingUsersAndRols,
             showingHumanResource,
@@ -514,6 +537,7 @@ export default {
             showPurchaseOrdersAlarms,
             showFinancePurchaseQuoteAlarms,
             showShoppingPurchaseRequestAlarms,
+            showFormationProgramsAlarms
         }
     },
 
@@ -593,6 +617,20 @@ export default {
                 console.error('Error al obtener alarmas de finanzas:', error);
             }
         },
+
+        async fetchFormationProgramAlarms() {
+            try {
+                const response = await axios.get(route('employees_in_programs.alarms'))
+                this.formationProgramsAlarms = [
+                    ...response.data.alarm3d.map(i=>({...i, critical: true})),
+                    ...response.data.alarm7d
+                ]
+            } catch (error) {
+                console.error('Error al obtener alarmas de programa de formación:', error);
+            }
+        },
+
+
         async fetchFinancePurchases() {
             try {
                 const response = await axios.get(route('finance.task'));
@@ -648,6 +686,7 @@ export default {
         this.fetchFinanceAlarms();
         this.fetchFinancePurchases();
         this.fetchPurchasesRequest();
+        this.fetchFormationProgramAlarms();
         setInterval(() => {
             this.fetchAlarmPermissionsCount();
             this.fetchAlarmVacationCount();
@@ -658,6 +697,7 @@ export default {
             this.fetchFinanceAlarms();
             this.fetchFinancePurchases();
             this.fetchPurchasesRequest();
+            this.fetchFormationProgramAlarms();
         }, 60000);
     },
 
@@ -665,3 +705,5 @@ export default {
 </script>
 
 <!-- <style scoped></style> -->
+
+<!-- employees_in_programs.alarms -->
