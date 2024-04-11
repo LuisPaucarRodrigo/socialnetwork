@@ -30,7 +30,9 @@ class Purchasing_requests_product extends Model
     }
 
     public function getActualQuotesQuantityAttribute () {
-        $pr = $this->purchasing_request()->with('purchase_quotes.purchase_quote_products')->first();
+        $pr = $this->purchasing_request()
+            ->with('purchase_quotes.purchase_quote_products')
+            ->first();
         $pqProductsTotal = 0;
         foreach ($pr->purchase_quotes as $quote){
             if ($quote->state === null || $quote->state === true){

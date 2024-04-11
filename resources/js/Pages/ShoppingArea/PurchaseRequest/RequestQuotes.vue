@@ -137,7 +137,16 @@
 
                         <div class="sm:col-span-3">
                             <InputLabel class="text-sm font-medium leading-6 text-gray-900">
-                                ¿IGV incluido?
+                                <div class="flex gap-3">
+                                    <span>
+                                        ¿IGV inlcuido?
+                                    </span>
+                                    <select v-model="form.igv_percentage"
+                                        class="w-32 block rounded-md border-0 py-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ">
+                                        <option :value="0.18">18%</option>
+                                        <option :value="0.00">0%</option>
+                                    </select>
+                                </div>
                             </InputLabel>
                             <div class="mt-2 class flex gap-4">
                                 <label class="flex gap-2 items-center">
@@ -279,13 +288,18 @@
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-500 whitespace-nowrap text-center">
                                                     {{ currency }} {{ ((form.products[item.purchase_product.id].unitary_amount ?
-                                                    form.products[item.purchase_product.id].amount : 0 ) / (form.igv ? 1.18:1) / form.products[item.purchase_product.id].quantity).toFixed(2) }}
+                                                        form.products[item.purchase_product.id].amount : 0 ) 
+                                                        / (form.igv ? (1+form.igv_percentage):1) 
+                                                        / (form.products[item.purchase_product.id].quantity 
+                                                            ? form.products[item.purchase_product.id].quantity 
+                                                            : 1)
+                                                        ).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <td v-if="form.igv"
                                                 class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                                 <p class="text-gray-500 whitespace-nowrap">
-                                                    {{ currency }} {{ (form.products[item.purchase_product.id].amount * 1/1.18).toFixed(2) }}
+                                                    {{ currency }} {{ (form.products[item.purchase_product.id].amount * 1/(1+form.igv_percentage)).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <!-- <td v-if="currency !== 'S/.'"
@@ -423,6 +437,7 @@ const form = useForm({
     quote_deadline: '',
     purchase_doc: null,
     igv: true,
+    igv_percentage: 0.18,
     deliverable_time: '',
     payment_type: '',
     account_number: '',
@@ -492,7 +507,7 @@ const reject_quote = (id) => {
 const currency = ref('S/.')
 // const currencyChange = ref(1)
 
-const handleWithIgv = (e) => { (addItemsNewAmount(JSON.parse(e.target.value))) };
+const handleWithIgv = (e) => { form.igv_percentage = 0.18;   addItemsNewAmount(JSON.parse(e.target.value)) };
 const handleItemIgv = (id) => { getTrueAmount(id, form.igv) }
 
 function getTotals(products, hasIGV) {
@@ -506,11 +521,11 @@ function getTotals(products, hasIGV) {
     }
     if (hasIGV) {
         total = subTotal.toFixed(2)
-        subTotal = (total/1.18).toFixed(2)
+        subTotal = (total/(1+form.igv_percentage)).toFixed(2)
         igv = (total - subTotal).toFixed(2)
     } else {
         subTotal = subTotal.toFixed(2)
-        igv = (subTotal * .18).toFixed(2)
+        igv = (subTotal * (form.igv_percentage)).toFixed(2)
         total = (+subTotal + +igv).toFixed(2)
     }
     return { subTotal, igv, total }
@@ -533,7 +548,7 @@ function addItemsNewAmount(has_igv) {
 function getTrueAmount(id, has_igv) {
     let amount = form.products[id].amount
     form.products[id].unitary_amount = +(typeof amount !== 'number' || isNaN(amount) ?
-        (0).toFixed(2) : ((amount * (has_igv ? 1 : 1.18))/(+form.products[id].quantity)).toFixed(6));
+        (0).toFixed(2) : ((amount * (has_igv ? 1 : (1+Number(form.igv_percentage))))/(+form.products[id].quantity)).toFixed(6));
 }
 
 </script>
