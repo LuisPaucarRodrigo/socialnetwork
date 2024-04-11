@@ -3,6 +3,8 @@
 namespace App\Http\Requests\PurchaseQuoteRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Purchasing_request;
+use Illuminate\Support\Facades\Auth;
 
 class CreatePurchaseQuoteRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class CreatePurchaseQuoteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -21,7 +23,16 @@ class CreatePurchaseQuoteRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $purchasing_request = Purchasing_request::find($this->input('purchasing_request_id'));
+        if ($purchasing_request) {
+            $isPermitted = $purchasing_request ->checkQuotesProductsQuantity(
+                $this->input('products')
+            );
+        } else {
+            dd("a vre que paso");
+        }
+
+        $rules = [
             'quote_deadline' => 'nullable|date|before_or_equal:due_date',
             'due_date' => 'nullable|date',
             'purchase_doc' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
@@ -32,7 +43,19 @@ class CreatePurchaseQuoteRequest extends FormRequest
             'provider_id' => 'required',
             'currency' => 'required',
             'purchasing_request_id' => 'required|numeric',
-            'products' => 'required|array',
+            'products' => [
+                'required',
+                'array',
+                function ($attribute, $value, $fail) use ($isPermitted) {
+                    if (!$isPermitted) {
+                        $fail(__('Uno o más productos exceden la cantidad disponible, disminuya la cantidad o rechace alguna de las otras cotizaciones hechas para esta solicitud'));
+                    }
+                }
+            ],
         ];
+
+        return $rules;
     }
+
 }
+

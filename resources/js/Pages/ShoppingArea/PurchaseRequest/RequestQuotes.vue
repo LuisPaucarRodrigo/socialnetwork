@@ -231,7 +231,7 @@
                                     </thead>
                                     <tbody>
                                         <!-- v v-for="(item, index) in (form.items)" :key="index" -->
-                                        <tr v-for="(item, index) in (purchases.products)" :key="index"
+                                        <tr v-for="(item, index) in (purchases.purchasing_request_product)" :key="index"
                                             class="text-gray-700 hover:bg-gray-200 bg-white">
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p>
@@ -240,26 +240,28 @@
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p>
-                                                    {{ item.code }}
+                                                    {{ item.purchase_product.code }}
                                                 </p>
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-900">
-                                                    {{ item.name }}
+                                                    {{ item.purchase_product.name }}
                                                 </p>
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 
                                                 <div class="grid grid-cols-3">
-                                                    <div class="text-center">
-                                                        {{ item.pivot?.quantity }}
+                                                    <div class="flex items-center justify-center">
+                                                        {{ item.quantity }}
                                                     </div>
-                                                    <div class="text-center">En otras</div>
+                                                    <div class="flex items-center justify-center">
+                                                        {{ item.actual_quotes_quantity }}
+                                                    </div>
                                                     <div class="flex justify-center">
                                                         <input 
                                                             type="number" 
                                                             min="0" 
-                                                            v-model="form.products[item.id].quantity"
+                                                            v-model="form.products[item.purchase_product.id].quantity"
                                                             class="block rounded-md w-[150px] border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
                                                         />
 
@@ -271,19 +273,19 @@
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-900">
-                                                    {{ item.unit }}
+                                                    {{ item.purchase_product.unit }}
                                                 </p>
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-500 whitespace-nowrap text-center">
-                                                    {{ currency }} {{ ((form.products[item.id].unitary_amount ?
-                                                    form.products[item.id].amount : 0 ) / (form.igv ? 1.18:1) / form.products[item.id].quantity).toFixed(2) }}
+                                                    {{ currency }} {{ ((form.products[item.purchase_product.id].unitary_amount ?
+                                                    form.products[item.purchase_product.id].amount : 0 ) / (form.igv ? 1.18:1) / form.products[item.purchase_product.id].quantity).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <td v-if="form.igv"
                                                 class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                                 <p class="text-gray-500 whitespace-nowrap">
-                                                    {{ currency }} {{ (form.products[item.id].amount * 1/1.18).toFixed(2) }}
+                                                    {{ currency }} {{ (form.products[item.purchase_product.id].amount * 1/1.18).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <!-- <td v-if="currency !== 'S/.'"
@@ -296,8 +298,8 @@
                                                 <div class="flex items-center justify-end gap-2">
                                                     {{ currency }}
                                                     <input required type="number" min="0" step="0.01"
-                                                        v-model="form.products[item.id].amount"
-                                                        @input="() => handleItemIgv(item.id)"
+                                                        v-model="form.products[item.purchase_product.id].amount"
+                                                        @input="() => handleItemIgv(item.purchase_product.id)"
                                                         class="tracking-wide w-28 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-right" />
 
                                                 </div>
@@ -410,10 +412,11 @@ const props = defineProps({
 function arrayToObject(products) {
     let rpta = {}
     products.forEach(item => {
-        rpta[item.id] = { id: item.id, amount: '', quantity: "" }
+        rpta[item.purchase_product.id] = { id: item.purchase_product.id, amount: '', quantity: "" }
     });
     return rpta
 }
+
 
 const form = useForm({
     due_date: props.purchases.due_date,
@@ -427,13 +430,14 @@ const form = useForm({
     purchasing_request_id: props.purchases.id,
     currency:'sol',
     products: {
-        ...arrayToObject(props.purchases.products)
+        ...arrayToObject(props.purchases.purchasing_request_product)
     }
 })
 
 const showError = ref(false)
 const successRegistration = ref(false)
 const submit = () => {
+    // console.log(form.data())
     if (props.purchases.project && form.amount > props.purchases.project.remaining_budget) {
         showError.value = true
         setTimeout(() => {
