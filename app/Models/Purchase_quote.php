@@ -14,6 +14,7 @@ class Purchase_quote extends Model
         'response', 
         'state',
         'igv',
+        'igv_percentage',
         'deliverable_time',
         'payment_type',
         'account_number',
