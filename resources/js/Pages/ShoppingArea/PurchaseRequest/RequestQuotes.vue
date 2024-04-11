@@ -197,8 +197,14 @@
                                                 Nombre del producto
                                             </th>
                                             <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                Cantidad
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 min-w-[450px]">
+                                                <div class="text-center my-2">Cantidad</div>
+                                                <div class="grid grid-cols-3">
+                                                    <div class="text-center">Original</div>
+                                                    <div class="text-center">En otras</div>
+                                                    <div class="text-center">Para registrar</div>
+                                                </div>
+                                                
                                             </th>
                                             <th
                                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -243,9 +249,25 @@
                                                 </p>
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
-                                                <p class="text-gray-900">
+                                                
+                                                <div class="grid grid-cols-3">
+                                                    <div class="text-center">
+                                                        {{ item.pivot?.quantity }}
+                                                    </div>
+                                                    <div class="text-center">En otras</div>
+                                                    <div class="flex justify-center">
+                                                        <input 
+                                                            type="number" 
+                                                            min="0" 
+                                                            v-model="form.products[item.id].quantity"
+                                                            class="block rounded-md w-[150px] border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                                                        />
+
+                                                    </div>
+                                                </div>
+                                                <!-- <p class="text-gray-900">
                                                     {{ item.pivot?.quantity }}
-                                                </p>
+                                                </p> -->
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-900">
@@ -388,7 +410,7 @@ const props = defineProps({
 function arrayToObject(products) {
     let rpta = {}
     products.forEach(item => {
-        rpta[item.id] = { id: item.id, amount: '', quantity: item.pivot.quantity }
+        rpta[item.id] = { id: item.id, amount: '', quantity: "" }
     });
     return rpta
 }
