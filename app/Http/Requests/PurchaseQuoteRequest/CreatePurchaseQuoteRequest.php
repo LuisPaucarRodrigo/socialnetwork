@@ -37,6 +37,7 @@ class CreatePurchaseQuoteRequest extends FormRequest
             'due_date' => 'nullable|date',
             'purchase_doc' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
             'igv' => 'required',
+            'igv_percentage' => 'required',
             'deliverable_time' => 'required',
             'payment_type' => 'required',
             'account_number' => 'required',
