@@ -268,7 +268,8 @@
                                                             type="number" 
                                                             min="0" 
                                                             v-model="form.products[item.purchase_product.id].quantity"
-                                                            class="block rounded-md w-[150px] border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                                                            @input="() => handleItemIgv(item.purchase_product.id)"
+                                                            class="block rounded-md w-[150px] border-0 py-1.5 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
                                                         />
 
                                                     </div>
@@ -456,7 +457,6 @@ const form = useForm({
 const showError = ref(false)
 const successRegistration = ref(false)
 const submit = () => {
-    // console.log(form.data())
     if (props.purchases.project && form.amount > props.purchases.project.remaining_budget) {
         showError.value = true
         setTimeout(() => {

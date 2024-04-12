@@ -39,12 +39,14 @@ class Purchasing_requests_product extends Model
                 && ($quote->preproject_state === null || $quote->preproject_state === true) ){
                 $key = array_search(
                     $this->purchase_product->id, 
-                    array_column($quote->purchase_quote_products->toArray(), 'id')
+                    array_column($quote->purchase_quote_products->toArray(), 'purchase_product_id')
                 );
                 $product = $quote->purchase_quote_products[$key];
                 $pqProductsTotal += $product->quantity;
             }
         }
+
+
         return $pqProductsTotal;
     }
 
