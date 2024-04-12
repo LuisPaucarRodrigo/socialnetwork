@@ -519,7 +519,8 @@ function getTotals(products, hasIGV) {
     let igv = 0;
     let total = 0;
     for (const key in products) {
-        if (products[key].amount !== '' && !isNaN(products[key].amount)) {
+        if (products[key].amount !== '' && !isNaN(products[key].amount)
+            && products[key].quantity !== '' && products[key].quantity !== 0) {
             subTotal += parseFloat(products[key].amount);
         }
     }
@@ -551,8 +552,12 @@ function addItemsNewAmount(has_igv) {
 }
 function getTrueAmount(id, has_igv) {
     let amount = form.products[id].amount
-    form.products[id].unitary_amount = +(typeof amount !== 'number' || isNaN(amount) ?
-        (0).toFixed(2) : ((amount * (has_igv ? 1 : (1+Number(form.igv_percentage))))/(+form.products[id].quantity)).toFixed(6));
+    form.products[id].unitary_amount = 
+        form.products[id].quantity !== 0 &&
+        form.products[id].quantity !== "" ?
+            +(typeof amount !== 'number' || isNaN(amount) ?
+                (0).toFixed(2) : ((amount * (has_igv ? 1 : (1+Number(form.igv_percentage))))/(+form.products[id].quantity)).toFixed(6))
+            : 0;
 }
 
 </script>
