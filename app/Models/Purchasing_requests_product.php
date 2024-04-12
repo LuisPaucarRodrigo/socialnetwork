@@ -35,8 +35,8 @@ class Purchasing_requests_product extends Model
             ->first();
         $pqProductsTotal = 0;
         foreach ($pr->purchase_quotes as $quote){
-            if (($quote->state === null || $quote->state === true)
-                && ($quote->preproject_state === null || $quote->preproject_state === true) ){
+            if (($quote->state === null || $quote->state === 1)
+                && ($quote->preproject_state === null || $quote->preproject_state === 1) ){
                 $key = array_search(
                     $this->purchase_product->id, 
                     array_column($quote->purchase_quote_products->toArray(), 'purchase_product_id')
