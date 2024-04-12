@@ -181,9 +181,6 @@
                                 <p class="text-sm font-medium leading-6 text-indigo-900">
                                     El valor de tipo de cambio será definido al momento del registro de pago.
                                 </p>
-                                <!-- <input v-model="currencyChange" type="number" step="0.001"
-                                    @input="handleCurrencyChange" autocomplete="off" placeholder="$ -> S/."
-                                    class="tracking-wide block w-32 bg-white rounded-md border-0 py-1 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" /> -->
                             </div>
                         </div>
                         <div class="col-span-1 sm:col-span-6 ">
@@ -287,19 +284,26 @@
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-500 whitespace-nowrap text-center">
-                                                    {{ currency }} {{ ((form.products[item.purchase_product.id].unitary_amount ?
+                                                    {{ currency }} {{ 
+                                                    form.products[item.purchase_product.id].quantity !== 0 &&
+                                                    form.products[item.purchase_product.id].quantity !== "" ?
+                                                    ((form.products[item.purchase_product.id].unitary_amount ?
                                                         form.products[item.purchase_product.id].amount : 0 ) 
                                                         / (form.igv ? (1+form.igv_percentage):1) 
-                                                        / (form.products[item.purchase_product.id].quantity 
-                                                            ? form.products[item.purchase_product.id].quantity 
-                                                            : 1)
-                                                        ).toFixed(2) }}
+                                                        / (form.products[item.purchase_product.id].quantity ?
+                                                            form.products[item.purchase_product.id].quantity : 1)
+                                                        ).toFixed(2)
+                                                    : (0).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <td v-if="form.igv"
                                                 class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                                 <p class="text-gray-500 whitespace-nowrap">
-                                                    {{ currency }} {{ (form.products[item.purchase_product.id].amount * 1/(1+form.igv_percentage)).toFixed(2) }}
+                                                    {{ currency }} {{ 
+                                                        form.products[item.purchase_product.id].quantity !== 0 &&
+                                                        form.products[item.purchase_product.id].quantity !== "" ?
+                                                        (form.products[item.purchase_product.id].amount * 1/(1+form.igv_percentage)).toFixed(2)
+                                                    : (0).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <!-- <td v-if="currency !== 'S/.'"

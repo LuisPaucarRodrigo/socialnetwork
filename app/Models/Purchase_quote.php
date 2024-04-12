@@ -22,6 +22,7 @@ class Purchase_quote extends Model
         'provider_id',
         'currency',
         'change_value',
+        'preproject_state'
     ];
 
     public $appends = [
