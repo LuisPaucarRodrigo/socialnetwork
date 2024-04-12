@@ -214,6 +214,7 @@ const form = useForm({
     segment: '',
     zone: '',
     ruc: '',
+    provider_id: null,
 });
 
 const formname = useForm({
@@ -235,6 +236,7 @@ if (props.providers) {
 
 const submit = () => {
     if (props.providers) {
+        form.provider_id = props.providers.id
         form.put(route('providersmanagement.update', props.providers.id), form)
     } else {
         form.post(route('providersmanagement.store'), {

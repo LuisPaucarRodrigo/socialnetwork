@@ -17,9 +17,7 @@ return new class extends Migration
             $table->double('new_budget', 10, 2);
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->text('reason');
-            $table->date('update_date');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->date('approved_update_date');
             $table->timestamps();
         });
     }
