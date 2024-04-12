@@ -317,8 +317,6 @@ const props = defineProps({
     search: String
 })
 
-console.log(props.orders)
-
 const form = useForm({
     id: '',
     state: '',
