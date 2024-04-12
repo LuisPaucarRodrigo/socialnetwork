@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Providers\GlobalFunctionsServiceProvider;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseRequestController extends Controller
 {
@@ -244,8 +245,9 @@ class PurchaseRequestController extends Controller
 
     public function export(Purchasing_request $id)
     {
+        $user = Auth::user();
         $purchasing_request = $id->load('purchasing_request_product');
-        $pdf = Pdf::loadView('pdf.PurchasingRequestPDF', compact('purchasing_request'));
+        $pdf = Pdf::loadView('pdf.PurchasingRequestPDF', compact('purchasing_request', 'user'));
         return $pdf->stream();
     }
 
