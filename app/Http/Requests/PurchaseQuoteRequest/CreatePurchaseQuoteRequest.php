@@ -51,6 +51,18 @@ class CreatePurchaseQuoteRequest extends FormRequest
                     if (!$isPermitted) {
                         $fail(__('Uno o más productos exceden la cantidad disponible, disminuya la cantidad o rechace alguna de las otras cotizaciones hechas para esta solicitud'));
                     }
+                },
+                function ($attribute, $value, $fail) {
+                    $allZeroQuantity = true;
+                    foreach ($value as $product) {
+                        if ($product['quantity'] !== 0) {
+                            $allZeroQuantity = false;
+                            break;
+                        }
+                    }
+                    if ($allZeroQuantity) {
+                        $fail(__('Cantidad Inválida de uno o más productos, se recomienda rechazar alguna de las cotizaciones hechas para esta solicitud'));
+                    }
                 }
             ],
         ];
