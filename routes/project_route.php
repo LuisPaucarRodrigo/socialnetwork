@@ -80,6 +80,8 @@ Route::post('/preprojects/providers_quotes/store', [PreProjectController::class,
 Route::get('/preprojects/providers_quotes/show/{providerquote_id}', [PreProjectController::class, 'preproject_providersquotes_show'])->name('preprojects.providersquotes.show');
 Route::get('/preprojects/providers_quotes/download/{providerquote_id}', [PreProjectController::class, 'preproject_providersquotes_download'])->name('preprojects.providersquotes.download');
 
+Route::post('/preprojects/purchase_quote/accept_decline/{purchase_quote_id}', [PreProjectController::class, "accept_decline_quote"])->name('preprojects.purchase_quote.accept_decline');
+
 
 //test api
 Route::get('/sunat_ruc', [HttpController::class, 'sunat_ruc'])->name('sunat');
