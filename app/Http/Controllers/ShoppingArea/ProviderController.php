@@ -45,7 +45,7 @@ class ProviderController extends Controller
         return Inertia::render('ShoppingArea/ProviderManagement/ProviderCreateAndUpdate', [
             'providers' => Provider::find($id),
             'category' => ProviderCategory::all(),
-            'segment' => ProviderSegment::all()
+            'segment' => ProviderSegment::all(),
         ]);
     }
 

@@ -18,7 +18,8 @@ class Entry extends Model
     ];
 
     protected $appends = [
-        'used_quantity'
+        'used_quantity',
+        'currency'
     ];
 
 
@@ -51,5 +52,18 @@ class Entry extends Model
     public function getUsedQuantityAttribute()
     {
         return 0;
+    }
+
+    public function getCurrencyAttribute()
+    {
+        if ($this->purchase_entry){
+            if($this->purchase_entry->purchase_quote_product->purchase_quote->currency == 'dolar'){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 }

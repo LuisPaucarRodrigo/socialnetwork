@@ -59,7 +59,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.inventory.purchase_product.code }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.unitary_price }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.currency ? '$ ' : 'S/. ' }}{{ item.unitary_price }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
@@ -97,5 +97,7 @@ const props = defineProps({
     auth: Object,
     warehouseId: Number,
 });
+
+console.log(props.entries)
 
 </script>

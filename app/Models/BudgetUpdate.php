@@ -13,10 +13,9 @@ class BudgetUpdate extends Model
         'new_budget',
         'difference',
         'project_id',
-        'reason',
-        'update_date',        
+        'reason',     
         'user_id',
-        'approved_update_date',
+        'created_at'
     ];
 
     public function project()
