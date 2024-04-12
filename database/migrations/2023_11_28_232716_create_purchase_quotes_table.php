@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('quote_deadline')->nullable();
             $table->string('purchase_doc');
             $table->boolean('state')->nullable()->default(null);
+            $table->boolean('preproject_state')->nullable()->default(null);
             $table->boolean('igv')->nullable()->default(false);
             $table->double('igv_percentage');
             $table->integer('deliverable_time');
