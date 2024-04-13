@@ -159,8 +159,7 @@
                             <select required id="type_product" v-model="type_product" @change="handleTypeProduct($event.target.value)"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione tipo</option>
-                                <option> EPP </option>
-                                <option> OTROS </option>
+                                <option v-for="item in typeProduct" :key="item.id" :value="item.name"> {{ item.name }} </option>
                             </select>
                         </div>
                     </div>
@@ -242,16 +241,17 @@ const showModal = ref(false);
 const showModal2 = ref(false);
 const showModal3 = ref(false);
 const showErroModal = ref(false);
-const type_product = ref('')
+const type_product = ref('');
 
-const { purchase, allProducts, preproject } = defineProps({
+const { purchase, allProducts, preproject, typeProduct } = defineProps({
     purchase: {
         type: Object,
         requerid: false
     },
     allProducts: Object,
     auth: Object,
-    preproject: Object
+    preproject: Object,
+    typeProduct: Object
 })
 
 const product_selected = ref([]);

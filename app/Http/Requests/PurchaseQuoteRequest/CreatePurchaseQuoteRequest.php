@@ -44,7 +44,7 @@ class CreatePurchaseQuoteRequest extends FormRequest
             'igv' => 'required',
             'igv_percentage' => 'required',
             'deliverable_time' => 'required',
-            'payment_type' => 'required',
+            'payment_type' => 'required|string',
             'account_number' => 'required',
             'provider_id' => 'required',
             'currency' => 'required',

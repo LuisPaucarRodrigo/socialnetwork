@@ -108,7 +108,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center">
-                                    <a :href="route('purchasingrequest.export', { id: purchase.id })"
+                                    <a target="_blank" :href="route('purchasingrequest.export', { id: purchase.id })"
                                         class="text-green-600 hover:underline">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

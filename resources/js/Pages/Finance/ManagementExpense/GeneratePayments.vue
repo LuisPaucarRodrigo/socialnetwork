@@ -62,13 +62,17 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ payment.description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }} {{ (payment.amount).toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }}
+                                    {{
+        (payment.amount).toFixed(2) }}</p>
                             </td>
                         </tr>
                         <tr class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-lg" colspan="1">Totales:</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }} {{ (currentTotal).toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }}
+                                    {{
+        (currentTotal).toFixed(2) }}</p>
                             </td>
                         </tr>
                     </tbody>
@@ -145,7 +149,7 @@ const props = defineProps({
 })
 
 const showModalPayment = ref(false);
-const showModalSuccess = ref(false);    
+const showModalSuccess = ref(false);
 const amount = ref('');
 const description = ref('');
 const paymentsArray = ref([]);
@@ -196,14 +200,23 @@ function addItem() {
         const quoteTotal = props.quote.total_amount.toFixed(2);
 
         if (total_array <= quoteTotal) {
-            currentTotal.value = total_amount.value + newAmount;
-            total_amount.value += newAmount;
-            paymentsArray.value.push({
-                amount: newAmount,
-                description: description.value
-            });
-            amount.value = '';
-            description.value = '';
+            if (props.quote.payment_type === "Contado" && paymentsArray.value.length >= 1) {
+                title.value = "Pago Contado"
+                message.value = "Ya se ha agregado un pago para esta cotización"
+                errorAmount.value = true
+                setTimeout(() => {
+                    errorAmount.value = false
+                }, 2000)
+            } else {
+                currentTotal.value = total_amount.value + newAmount;
+                total_amount.value += newAmount;
+                paymentsArray.value.push({
+                    amount: newAmount,
+                    description: description.value
+                });
+                amount.value = '';
+                description.value = '';
+            }
         } else {
             title.value = "Monto Excedido"
             message.value = "No es una cantidad válida"
