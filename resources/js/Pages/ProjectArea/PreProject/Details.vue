@@ -63,10 +63,11 @@
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha límite de compra:</p>
                     <p class="text-lg text-gray-900">{{ expense.purchasing_requests.due_date ?
-            formattedDate(expense.purchasing_requests.due_date) : 'No hay fecha definida' }}</p>
+                        formattedDate(expense.purchasing_requests.due_date) : 'No hay fecha definida' }}
+                    </p>
                 </div>
                 <div class="mb-4">
-                    <p class="text-sm text-gray-700 font-medium">IGV:</p>
+                    <p class="text-sm text-gray-700 font-medium">IGV: ({{ expense.igv_percentage*100 }}%)</p>
                     <p class="text-lg text-gray-900">{{ expense.igv ? 'Si' : 'No' }}</p>
                 </div>
             </div>
@@ -154,23 +155,26 @@
                                 </td>
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-center">
-                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-            (item.pivot?.unitary_amount * (1 / 1.18)).toFixed(2) }}
+                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} 
+                                        {{ (item.pivot?.unitary_amount * (1 / (1+props.expense.igv_percentage))).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td v-if="expense.igv"
                                     class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                     <p class="text-gray-900 whitespace-nowrap">
-                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-            (item.pivot?.unitary_amount * (expense.igv ? 1 / 1.18 : 1.18)
-                * item.pivot?.quantity).toFixed(2) }}
+                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} 
+                                        {{ (item.pivot?.unitary_amount 
+                                            * (expense.igv ? 1 / (1+props.expense.igv_percentage) 
+                                                           : (1+props.expense.igv_percentage))
+                                            * item.pivot?.quantity).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-right">
-                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-            ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) /
-                (expense.igv ? 1 : 1.18)).toFixed(2) }}
+                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} 
+                                        {{ ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) 
+                                            / (expense.igv ? 1 : (1+props.expense.igv_percentage))
+                                        ).toFixed(2) }}
                                     </p>
                                 </td>
                             </tr>
@@ -300,15 +304,15 @@ function getTotals(products, hasIGV) {
     let igv = 0;
     let total = 0;
     products.forEach(item => {
-        subTotal += item.pivot.quantity * item.pivot.unitary_amount / (hasIGV ? 1 : 1.18)
+        subTotal += item.pivot.quantity * item.pivot.unitary_amount / (hasIGV ? 1 : (1+props.expense.igv_percentage))
     });
     if (hasIGV) {
         total = subTotal.toFixed(2)
-        subTotal = (total / 1.18).toFixed(2)
+        subTotal = (total / (1+props.expense.igv_percentage)).toFixed(2)
         igv = (total - subTotal).toFixed(2)
     } else {
         subTotal = subTotal.toFixed(2)
-        igv = (subTotal * .18).toFixed(2)
+        igv = (subTotal * (props.expense.igv_percentage)).toFixed(2)
         total = (+subTotal + +igv).toFixed(2)
     }
     return { subTotal, igv, total }

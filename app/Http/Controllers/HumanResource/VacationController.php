@@ -9,13 +9,9 @@ use App\Models\Vacation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Employee;
-use BaconQrCode\Renderer\Path\Move;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
-use function PHPUnit\Framework\fileExists;
 
 class VacationController extends Controller
 {
@@ -30,16 +26,10 @@ class VacationController extends Controller
         $searchTerm = strtolower($request->query('searchTerm'));
         if ($searchTerm !== '') {
             $vacations = $vacations->where(function ($query) use ($searchTerm) {
-                $query->where('start_date', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('end_date', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('start_permissions', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('end_permissions', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('review_date', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('type', 'like', '%' . $searchTerm . '%')
+                $query->Where('type', 'like', '%' . $searchTerm . '%')
                     ->orWhere('status', 'like', '%' . $searchTerm . '%');
                 $query->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
-                    $subQuery->where('name', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
+                    $subQuery->where(DB::raw("CONCAT(name, ' ', lastname)"), 'like', '%' . $searchTerm . '%');
                 });
             })->get();
         } else {
