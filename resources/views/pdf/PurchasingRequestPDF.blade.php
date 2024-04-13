@@ -28,7 +28,7 @@
     <tbody>
       <tr>
         <td class="td-custom" colspan="1" style="height: 70px;"><img src="image/projectimage/logo_ccip.jpeg" width="80px" alt=""></td>
-        <td class="td-custom" colspan="2" style="text-align: center; font-weight: bold; font-size: 18px">{{ $purchasing_request->title }}</td>
+        <td class="td-custom" colspan="2" style="text-align: center; font-weight: bold; font-size: 18px">Solicitud de Cotización</td>
         <td class="td-custom" colspan="1" style="text-align: center">{{ $purchasing_request->code }}</td>
       </tr>
       <tr>
@@ -64,6 +64,18 @@
       @endforeach
     </tbody>
   </table>
+
+  <div style="padding-top: 15px">
+      <p style="font-size: 14px; font-weight: bold; line-height: 0.5;">Datos de la Empresa:</p>
+      <p style="font-size: 14px; line-height: 0.5;">CONPROCO S.R.L.</p>
+      <p style="font-size: 14px; line-height: 0.5;">RUC: 20559246272</p>
+  </div>
+
+  <div style="padding-top: 15px">
+      <p style="font-size: 14px; font-weight: bold; line-height: 0.5;">Persona de contacto:</p>
+      <p style="font-size: 14px; line-height: 0.5;">Nombre: {{ $user->name }}</p>
+      <p style="font-size: 14px; line-height: 0.5;">Email: {{ $user->email }}</p>
+  </div>
 
 
 </body>

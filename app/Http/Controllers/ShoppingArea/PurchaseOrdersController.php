@@ -12,6 +12,7 @@ use App\Models\Inventory;
 use App\Models\PurchasesEntry;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseOrdersController extends Controller
 {
@@ -103,8 +104,9 @@ class PurchaseOrdersController extends Controller
 
     public function purchase_orders_export(Purchase_order $id)
     {
-        $purchase_order = $id->load('purchase_quote.provider','purchase_quote.purchasing_requests', 'purchase_quote.purchase_quote_products.purchase_product');
-        $pdf = Pdf::loadView('pdf.PurchaseOrderPDF', compact('purchase_order'));
+        $user = Auth::user();
+        $purchase_order = $id->load('purchase_quote.payment', 'purchase_quote.provider','purchase_quote.purchasing_requests', 'purchase_quote.purchase_quote_products.purchase_product');
+        $pdf = Pdf::loadView('pdf.PurchaseOrderPDF', compact('purchase_order', 'user'));
         return $pdf->stream();
     }
 
