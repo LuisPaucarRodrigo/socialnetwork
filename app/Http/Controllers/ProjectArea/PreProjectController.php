@@ -146,7 +146,6 @@ class PreProjectController extends Controller
             }
         }
 
-
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
             'preproject' => Preproject::with(
                 'quote.items', 
@@ -156,7 +155,7 @@ class PreProjectController extends Controller
             'products' => Purchase_product::all(),
             'purchasing_requests' => Purchasing_request::with('products')
                 ->where('preproject_id', $preproject_id)->get(),
-            'testall'=> $existingProducts
+            'existingProducts'=> $existingProducts
         ]);
     }
 

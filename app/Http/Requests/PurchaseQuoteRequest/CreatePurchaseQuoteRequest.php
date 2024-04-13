@@ -13,6 +13,11 @@ class CreatePurchaseQuoteRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        $purchasing_request = Purchasing_request::with('preproject')
+                                ->find($this->input('purchasing_request_id'));
+        if ($purchasing_request->preproject){
+            return !$purchasing_request->preproject->has_quote;
+        }
         return Auth::check();
     }
 
@@ -66,7 +71,6 @@ class CreatePurchaseQuoteRequest extends FormRequest
                 }
             ],
         ];
-
         return $rules;
     }
 

@@ -197,7 +197,7 @@ class PurchaseRequestController extends Controller
     {
         $searchTerm = strtolower($request);
 
-        $purchasing_requests_by_title = Purchasing_request::where(function ($query) use ($searchTerm) {
+        $purchasing_requests_by_title = Purchasing_request::with('project', 'preproject', 'purchase_quotes')->where(function ($query) use ($searchTerm) {
             $query->whereRaw('LOWER(title) like ?', ['%' . $searchTerm . '%'])
                 ->withCount([
                     'purchase_quotes',
@@ -212,7 +212,7 @@ class PurchaseRequestController extends Controller
                 ->orderBy('created_at', 'desc');
         })->get();
 
-        $queryByCode = Purchasing_request::where(function ($query) use ($searchTerm) {
+        $queryByCode = Purchasing_request::with('project', 'preproject', 'purchase_quotes')->where(function ($query) use ($searchTerm) {
             $query->withCount([
                 'purchase_quotes',
                 'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
