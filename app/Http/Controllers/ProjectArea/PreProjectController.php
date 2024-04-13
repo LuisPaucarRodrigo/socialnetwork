@@ -108,6 +108,45 @@ class PreProjectController extends Controller
 
 
     public function quote($preproject_id) {
+        $allPurchasingRequest = Purchasing_request::with(['purchase_quotes' => function ($query) {
+                                        $query->where('preproject_state', true);
+                                    }
+                                    ,'purchase_quotes.purchase_quote_products.purchase_product'])
+                                    ->where('preproject_id', $preproject_id)
+                                    ->get();
+        
+        $existingProducts = [];
+        
+        foreach($allPurchasingRequest as $pr_item){
+            $allPurchaseQuotes = $pr_item->purchase_quotes;
+            foreach($allPurchaseQuotes as $pq_item){
+                $allPurchaseQuoteProducts = $pq_item->purchase_quote_products;
+                foreach($allPurchaseQuoteProducts as $pqp_item){
+                    $id = $pqp_item->purchase_product_id;
+                    $key = array_search($id, array_column($existingProducts, 'purchase_product_id'));
+                    if ($pq_item->quantity !== 0){
+                        if ($key !== false){
+                            $newQuantity = $existingProducts[$key]["quantity"] + $pqp_item->quantity;
+                            $newUnitaryPrice = (($existingProducts[$key]["quantity"] * $existingProducts[$key]["unitary_price"]) +
+                                                ($pqp_item->quantity * $pqp_item->unitary_amount_no_igv))/ $newQuantity;
+                            $existingProducts[$key]["quantity"] = $newQuantity;
+                            $existingProducts[$key]["unitary_price"] = $newUnitaryPrice;
+                        } else{
+                            array_push($existingProducts, [
+                                "profit_margin"=> "",
+                                "purchase_product"=> $pqp_item->purchase_product,
+                                "purchase_product_id"=>$pqp_item->purchase_product_id,
+                                "quantity"=>$pqp_item->quantity,
+                                "unitary_price"=> $pqp_item->unitary_amount_no_igv
+                            ]);
+                            
+                        }
+                    }
+                }
+            }
+        }
+
+
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
             'preproject' => Preproject::with(
                 'quote.items', 
@@ -116,7 +155,8 @@ class PreProjectController extends Controller
                 ->find($preproject_id),
             'products' => Purchase_product::all(),
             'purchasing_requests' => Purchasing_request::with('products')
-                ->where('preproject_id', $preproject_id)->get()
+                ->where('preproject_id', $preproject_id)->get(),
+            'testall'=> $existingProducts
         ]);
     }
 
