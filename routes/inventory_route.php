@@ -48,7 +48,7 @@ Route::post('/inventory/purchase_products/products/post', [PurchaseProductsContr
 Route::put('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
 Route::put('/inventory/purchase_products/products/{purchase_product}/disable', [PurchaseProductsController::class, 'disable'])->name('inventory.purchaseproducts.disable');
 
-
+Route::post('/inventory/purchase_products/type_product/store', [PurchaseProductsController::class, 'typeProducts'])->name('inventory.purchaseproducts.typeProduct');
 
 
 //Special Warehouses

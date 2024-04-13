@@ -63,18 +63,6 @@
               <textarea id="reason" name="reason" v-model="form2.reason" required
                 class="mt-1 p-2 border rounded-md w-full" />
             </div>
-            <div class="mb-4">
-              <label for="update_date" class="block text-sm font-medium text-gray-700">Fecha de
-                Actualización</label>
-              <input type="date" id="update_date" name="update_date" v-model="form2.update_date" required
-                class="mt-1 p-2 border rounded-md w-full">
-            </div>
-            <div class="mb-4">
-              <label for="approved_update_date" class="block text-sm font-medium text-gray-700">Fecha de
-                Actualización Aprobada</label>
-              <input type="date" id="approved_update_date" name="approved_update_date"
-                v-model="form2.approved_update_date" required class="mt-1 p-2 border rounded-md w-full">
-            </div>
             <div class="flex justify-end">
               <SecondaryButton type="button" @click="closeModal2" class="text-gray-500 mr-2">Cancelar</SecondaryButton>
               <PrimaryButton type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Guardar</PrimaryButton>
@@ -130,10 +118,6 @@
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               Usuario
             </th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Fecha de Aprobación
-            </th>
 
           </tr>
         </thead>
@@ -159,13 +143,10 @@
               <p class="text-gray-900 whitespace-no-wrap">{{ update.reason }}</p>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(update.update_date) }}</p>
+              <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(update.created_at) }}</p>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <p class="text-gray-900 whitespace-no-wrap">{{ update.user.name }}</p>
-            </td>
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(update.approved_update_date) }}</p>
             </td>
           </tr>
         </tbody>
@@ -202,9 +183,7 @@ const form2 = useForm({
   project_id: null,
   difference: null,
   reason: '',
-  update_date: '',
   user_id: null,
-  approved_update_date: '',
 });
 
 const form3 = useForm({
@@ -231,9 +210,7 @@ const closeModal2 = () => {
   form2.new_budget = null;
   form2.project_id = null;
   form2.reason = '';
-  form2.update_date = '';
   form2.user_id = null;
-  form2.approved_update_date = '';
 };
 
 const submit2 = () => {
