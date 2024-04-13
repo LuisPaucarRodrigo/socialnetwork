@@ -20,9 +20,7 @@ class BudgetUpdateController extends Controller
             'new_budget' => 'required',
             'project_id' => 'required',
             'reason' => 'required',
-            'update_date' => 'required',
             'difference' => 'required',
-            'approved_update_date' => 'required',
         ]);
 
         BudgetUpdate::create([
@@ -30,9 +28,7 @@ class BudgetUpdateController extends Controller
             'difference' => $request->difference,
             'project_id' => $request->project_id,
             'reason' => $request->reason,
-            'update_date' => $request->update_date,
             'user_id' => $user_id,
-            'approved_update_date' => $request->approved_update_date,
         ]);
 
         return to_route('initialbudget.index', ['project' => $project->id]);
