@@ -16,6 +16,7 @@ use App\Models\Purchase_order;
 use App\Models\Purchase_quote;
 use App\Models\RetrievalEntry;
 use App\Models\SpecialInventory;
+use App\Models\TypeProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Providers\GlobalFunctionsServiceProvider;
@@ -45,6 +46,7 @@ class PurchaseRequestController extends Controller
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
             'project' => Project::find($project_id),
+            'typeProduct' => TypeProduct::all()
         ]);
     }
 

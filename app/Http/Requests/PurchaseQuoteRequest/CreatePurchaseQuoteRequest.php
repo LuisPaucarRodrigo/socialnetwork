@@ -27,7 +27,7 @@ class CreatePurchaseQuoteRequest extends FormRequest
             'purchase_doc' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
             'igv' => 'required',
             'deliverable_time' => 'required',
-            'payment_type' => 'required',
+            'payment_type' => 'required|string',
             'account_number' => 'required',
             'provider_id' => 'required',
             'currency' => 'required',

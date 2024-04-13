@@ -21,6 +21,7 @@ use App\Models\Product;
 use App\Models\Purchase_quote;
 use App\Models\Purchasing_request;
 use App\Models\Purchasing_requests_product;
+use App\Models\TypeProduct;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -326,6 +327,7 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
             'preproject' => Preproject::find($id),
+            'typeProduct' => TypeProduct::all()
         ]);
     }
 
