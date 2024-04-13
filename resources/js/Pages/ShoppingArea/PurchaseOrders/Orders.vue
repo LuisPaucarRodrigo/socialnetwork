@@ -87,12 +87,12 @@
                                     {{ formattedDate(order.purchase_quote.purchasing_requests.due_date) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ order.purchase_arrival_date }}
+                                <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(order.purchase_arrival_date) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center">
-                                    <a :href="route('purchaseorders.export.order', { id: order.id })"
+                                    <a target="_blank" :href="route('purchaseorders.export.order', { id: order.id })"
                                         class="text-green-600 hover:underline">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
