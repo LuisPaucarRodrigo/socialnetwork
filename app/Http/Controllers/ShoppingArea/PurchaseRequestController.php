@@ -86,7 +86,7 @@ class PurchaseRequestController extends Controller
 
     public function index_quotes(Purchasing_request $id)
     {
-        $purchases = Purchasing_request::with('project', 'products')->find($id->id);
+        $purchases = Purchasing_request::with('project', 'purchasing_request_product.purchase_product')->find($id->id);
         return Inertia::render('ShoppingArea/PurchaseRequest/RequestQuotes', [
             'providers' => Provider::all(),
             'purchases' => $purchases
@@ -117,8 +117,8 @@ class PurchaseRequestController extends Controller
         return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project', 'products')->find($id)]);
     }
 
-    public function quote(CreatePurchaseQuoteRequest $request)
-    {
+
+    public function quote(CreatePurchaseQuoteRequest $request) {
         $data = $request->validated();
         if ($request->hasFile('purchase_doc')) {
             $croppedImage = $request->file('purchase_doc');
@@ -133,6 +133,8 @@ class PurchaseRequestController extends Controller
         $purchaseQuote->products()->sync($cleanedProducts);
         return redirect()->back();
     }
+
+    
 
     public function showDocument(Purchase_quote $id)
     {
