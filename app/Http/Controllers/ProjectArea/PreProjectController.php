@@ -361,11 +361,11 @@ class PreProjectController extends Controller
 
     // ------------------------------- REQUEST SHOPPING -------------------------------
 
-    public function request($id)
-    {
+    public function request($id) {
+        $preproject = Preproject::find($id);
         return Inertia::render('ProjectArea/PreProject/PurchaseRequest', [
             'purchases' => Purchasing_request::with('project')->where('preproject_id', $id)->paginate(),
-            'preproject' => $id
+            'preproject' => $preproject
         ]);
     }
 
@@ -379,6 +379,11 @@ class PreProjectController extends Controller
 
     public function request_shopping_store(Request $request)
     {
+        $prepro =Preproject::find($request->input('preproject_id'));
+        if ($prepro->has_quote){
+            abort(403, 'Ya no es posible guardar solicitudes de este anteproyecto.');
+        }
+            
         $validateData = $request->validate([
             'title' => 'required|string',
             'preproject_id' => 'required|numeric',
@@ -416,6 +421,10 @@ class PreProjectController extends Controller
 
     public function request_shopping_update(UpdatePurchaseRequest $request, $id)
     {
+        $prepro =Preproject::find($request->input('preproject_id'));
+        if ($prepro->has_quote){
+            abort(403, 'Ya no es posible modificar la solicitud de este anteproyecto.');
+        }
         $validateData = $request->validated();
         $purchases = Purchasing_request::with('preproject')->findOrFail($id);
         $purchases->update($validateData);
