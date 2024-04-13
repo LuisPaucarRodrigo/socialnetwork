@@ -615,13 +615,15 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const showModal = ref(false)
 const showErroModal = ref(false)
 
-const { preproject, auth, products, purchasing_requests } = defineProps({
+const { preproject, auth, products, purchasing_requests, testall } = defineProps({
     products: Object,
     preproject: Object,
     purchasing_requests: Object,
+    testall: Object,
     auth: Object
 })
 
+console.log(testall)
 
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
@@ -683,10 +685,13 @@ const initialState = {
     preproject_id: preproject.id
 }
 
+
 const form = useForm(
     { ...(preproject.quote ? preproject.quote : initialState) }
 )
 
+console.log(form.products)
+    
 const submit = () => {
     let url = route('preprojects.quote.store')
     if (preproject.quote) {
