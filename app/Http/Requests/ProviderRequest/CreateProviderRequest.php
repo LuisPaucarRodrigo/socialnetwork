@@ -4,6 +4,7 @@ namespace App\Http\Requests\ProviderRequest;
 
 use App\Models\Provider;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateProviderRequest extends FormRequest
 {
@@ -20,19 +21,40 @@ class CreateProviderRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    
     public function rules(): array
     {
         return [
             'company_name' => 'required|string|max:255',
             'contact_name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone1' => 'required|numeric|digits:9|unique:'.Provider::class,
-            'phone2' => 'nullable|numeric|digits:9|unique:'.Provider::class,
-            'email' => 'required|email|max:255|unique:'.Provider::class,
+            'phone1' => [
+                'required',
+                'numeric',
+                'digits:9',
+                Rule::unique('providers', 'phone1')
+            ],
+            'phone2' => [
+                'nullable',
+                'numeric',
+                'digits:9',
+                Rule::unique('providers', 'phone2')
+            ],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('providers', 'email')
+            ],
             'category' => 'required|string|max:255',
             'segment' => 'required|string|max:255',
             'zone' => 'required|string',
-            'ruc' => 'required|string|size:11',
+            'ruc' => [
+                'required',
+                'string',
+                'size:11',
+                Rule::unique('providers', 'ruc')
+            ],
         ];
     }
 }
