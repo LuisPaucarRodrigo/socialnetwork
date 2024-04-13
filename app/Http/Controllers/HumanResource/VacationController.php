@@ -194,7 +194,7 @@ class VacationController extends Controller
         $now = Carbon::now();
         $currentDateUpdate = $now->subHours(5);
         $vacation = Vacation::where('type', 'Vacaciones')
-            ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(1))
+            ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(3))
             ->where('review_date', '!=', null)
             ->where('status', 'Aceptado')
             ->get();

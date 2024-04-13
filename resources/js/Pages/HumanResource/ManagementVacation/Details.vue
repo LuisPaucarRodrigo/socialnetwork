@@ -22,28 +22,28 @@
                 <div v-if="type == 'Vacaciones'" class="sm:w-1/2 sm:pl-4">
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Inicio</dt>
-                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-        formattedDate(details.start_date) }}</dd>
+                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                            {{ formattedDate(details.start_date) }}
+                        </dd>
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Fecha Culminacion</dt>
-                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-        formattedDate(details.end_date) }}
+                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                            {{ formattedDate(details.end_date) }}
                         </dd>
                     </div>
                 </div>
                 <div v-else class="sm:w-1/2 lg:pr-4 sm:mb-0">
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Hora Inicio</dt>
-                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-        details.start_permissions
-    }}
+                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                            {{ details.start_permissions }}
                         </dd>
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Hora Final</dt>
-                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
-            details.end_permissions }}
+                        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                            {{ details.end_permissions }}
                         </dd>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                         </dd>
                     </div>
                 </div>
-                <div v-if="details.status == 'Ausente'" class="sm:w-1/2 lg:pr-4 sm:mb-0">
+                <div v-if="details.status == 'Ausente'" class="sm:w-1/2 sm:pl-4">
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900">Razon de Falta</dt>
                         <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
@@ -90,7 +90,7 @@
 
         </div>
         <div v-if="vacation" class="mt-6 flex items-center justify-end gap-x-6">
-            <button @click="sendStatus(vacation.id,'Aceptado')"
+            <button @click="sendStatus(vacation.id, 'Aceptado')"
                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Aceptar</button>
             <button @click="sendStatus(vacation.id,'Rechazado')"

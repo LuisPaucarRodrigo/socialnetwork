@@ -3,7 +3,7 @@
     <Head title="Crear Proveedor" />
     <AuthenticatedLayout :redirectRoute="'providersmanagement.index'">
         <template #header>
-            {{ providers ? 'Editar Proveedor' : 'Crear Proveedor'}}
+            {{ providers ? 'Editar Proveedor' : 'Crear Proveedor' }}
         </template>
         <form @submit.prevent="submit">
             <div class="space-y-12">
@@ -101,8 +101,8 @@
                                 <select v-model="form.category" id="category"
                                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                                     <option disabled value="">Seleccione</option>
-                                    <option v-for="item in props.category" :key="item.id" :value="item.name">{{
-        item.name }}
+                                    <option v-for="item in props.category" :key="item.id" :value="item.name">
+                                    {{ item.name }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.category" />
