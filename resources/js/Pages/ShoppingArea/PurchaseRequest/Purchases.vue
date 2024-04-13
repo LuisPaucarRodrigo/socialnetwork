@@ -228,11 +228,14 @@ import { formattedDate } from '@/utils/utils';
 const confirmingPurchasesDeletion = ref(false);
 const purchaseToDelete = ref(null);
 
+
 const props = defineProps({
     purchases: Object,
     auth: Object,
     search: String
 });
+
+
 
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;

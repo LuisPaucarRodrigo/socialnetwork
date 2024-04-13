@@ -55,10 +55,8 @@ class WarehousesController extends Controller
 
     public function createProducts(Warehouse $warehouse)
     {
-        $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry')->paginate(10);
         $purchase_products = Purchase_product::where('type', 'Producto')->get();
         return Inertia::render('Inventory/WarehouseManagement/InventoryForm', [
-            'products' => $products,
             'purchase_products' => $purchase_products,
             'warehouseId' => $warehouse->id
         ]);

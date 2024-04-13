@@ -64,15 +64,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700" :class="[
-        'text-gray-700',
-        {
-            'border-l-8': true,
-            'border-green-500': expense.state != 0 && expense.state != null,
-            'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) >= 4 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.state != 1,
-            'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.state != 1,
-        }
-    ]">
+                        <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700" 
+                        :class="[
+                                'text-gray-700',
+                                {
+                                    'border-l-8': true,
+                                    'border-green-500': expense.state != 0 && expense.state != null,
+                                    'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) >= 4 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.state != 1,
+                                    'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.state != 1,
+                                }
+                            ]">
 
                             <template v-if="expense.purchasing_request_id != null">
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
