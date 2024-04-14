@@ -70,7 +70,7 @@ class Purchase_quote extends Model
         $allCompleted = true; // Suponemos que todos los pagos están completados
 
         foreach ($quotePayments as $payment) {
-            if ($payment->state) {
+            if (!$payment->state) {
                 // Si al menos uno de los pagos no está completado, marcamos la bandera como falsa
                 $allCompleted = false;
                 break; // No es necesario seguir iterando
