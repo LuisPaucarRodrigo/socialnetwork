@@ -51,7 +51,7 @@ class Purchase_order extends Model
         $quotePayments = $this->purchase_quote->payment;
 
         foreach ($quotePayments as $payment) {
-            if ($payment->created_at->lte($arrivalDate) && !$payment->date) {
+            if ($payment->register_date < $arrivalDate && !$payment->payment_doc) {
                 return false; // Si algún pago está pendiente antes de la fecha de llegada, devolvemos false
             }
         }
