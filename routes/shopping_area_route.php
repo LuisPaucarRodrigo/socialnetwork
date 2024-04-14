@@ -47,4 +47,6 @@ Route::get('/shopping_area/payment', [PaymentController::class, 'index'])->name(
 Route::get('/shopping_area/payment/search/{request}', [PaymentController::class, 'search'])->name('payment.search');
 Route::post('/shopping_area/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
 
-Route::post('/shopping_area/existing/products',[PurchaseRequestController::class,'existing_products'])->name('existing.products');
+Route::get('/shopping_area/alarm/payment', [PaymentController::class, 'alarm_payments'])->name('payment.alarm');
+
+// Route::post('/shopping_area/existing/products',[PurchaseRequestController::class,'existing_products'])->name('existing.products');

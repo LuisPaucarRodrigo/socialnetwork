@@ -46,6 +46,10 @@
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            <th v-if="quote.payment_type == 'Credito'"
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Pago
+                            </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Descripcion
@@ -58,17 +62,22 @@
                     </thead>
                     <tbody>
                         <tr v-for="payment in paymentsArray" :key="payment.id" class="text-gray-700">
+                            <td v-if="quote.payment_type == 'Credito'"
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ payment.register_date }}</p>
+                            </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ payment.description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }}
-                                    {{
-        (payment.amount).toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ quote.currency == 'sol' ? "S/" : "$" }}
+                                    {{ (payment.amount).toFixed(2) }}
+                                </p>
                             </td>
                         </tr>
                         <tr class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-lg" colspan="1">Totales:</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-lg" :colspan="quote.payment_type == 'Credito' ? 2:1">Totales:</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }}
                                     {{
@@ -107,6 +116,14 @@
                         </InputLabel>
                         <div class="mt-2">
                             <input required type="number" v-model="amount" id="amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                        </div>
+                    </div>
+                    <div v-if="quote.payment_type == 'Credito'" class="mt-2">
+                        <InputLabel for="register_date" class="font-medium leading-6 text-gray-900">Fecha de Pago
+                        </InputLabel>
+                        <div class="mt-2">
+                            <input required type="date" v-model="register_date" id="amount"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -152,6 +169,7 @@ const showModalPayment = ref(false);
 const showModalSuccess = ref(false);
 const amount = ref('');
 const description = ref('');
+const register_date = ref('');
 const paymentsArray = ref([]);
 const form = useForm({
     state: true,
@@ -171,7 +189,8 @@ function submit() {
     if (currentTotal.value == props.quote.total_amount.toFixed(2)) {
         form.payments = paymentsArray.value.map(payment => ({
             amount: payment.amount,
-            description: payment.description
+            description: payment.description,
+            register_date: payment.register_date,
         }))
         form.put(route('managementexpense.reviewed', { id: props.quote.id }), {
             onSuccess: () => {
@@ -212,10 +231,12 @@ function addItem() {
                 total_amount.value += newAmount;
                 paymentsArray.value.push({
                     amount: newAmount,
-                    description: description.value
+                    description: description.value,
+                    register_date: register_date.value
                 });
                 amount.value = '';
                 description.value = '';
+                register_date.value = '';
             }
         } else {
             title.value = "Monto Excedido"

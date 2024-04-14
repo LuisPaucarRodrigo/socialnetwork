@@ -1,13 +1,18 @@
 <template>
+
     <Head title="Gestion de Gastos Cuadrilla" />
     <AuthenticatedLayout :redirectRoute="'managementexpense.index'">
         <template #header>
             Aprobacion de Compras
         </template>
         <div class="min-w-full rounded-lg">
-            <div class="mt-6 flex items-center justify-end gap-x-6">
-            <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
-        </div>
+            <div class="mt-6 flex items-center justify-end gap-x-4">
+                <button @click="reentry" type="button"
+                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    {{ boolean == false ? "Revisados" : "Sin Aprobar" }}
+                </button>
+                <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
+            </div>
             <div class="overflow-x-auto shadow">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
@@ -64,16 +69,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700" 
-                        :class="[
-                                'text-gray-700',
-                                {
-                                    'border-l-8': true,
-                                    'border-green-500': expense.state != 0 && expense.state != null,
-                                    'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) >= 4 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.state != 1,
-                                    'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.state != 1,
-                                }
-                            ]">
+                        <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700" :class="[
+        'text-gray-700',
+        {
+            'border-l-8': true,
+            'border-green-500': expense.state != 0 && expense.state != null,
+            'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) >= 4 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.state != 1,
+            'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.state != 1,
+        }
+    ]">
 
                             <template v-if="expense.purchasing_request_id != null">
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -108,8 +112,9 @@
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(expense.purchasing_requests.due_date)
-                                        }}
+                                    <p class="text-gray-900 whitespace-no-wrap">{{
+        formattedDate(expense.purchasing_requests.due_date)
+    }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -172,7 +177,8 @@ import { formattedDate } from '@/utils/utils';
 import { ref } from 'vue';
 
 const props = defineProps({
-    expenses: Object
+    expenses: Object,
+    boolean: Boolean
 })
 
 const expenses = ref(props.expenses);
@@ -180,7 +186,7 @@ const expenses = ref(props.expenses);
 const sendReply = (state, id) => {
     router.put(route('managementexpense.reviewed', { id: id }), { state }, {
         preserveScroll: true,
-        onSuccess:() => {
+        onSuccess: () => {
             router.visit(route('managementexpense.index'))
         }
     });
@@ -199,5 +205,13 @@ const search = async ($search) => {
         console.error('Error searching:', error);
     }
 };
+
+const reentry = () => {
+    if (props.boolean == true) {
+        router.get(route('managementexpense.index'))
+    } else {
+        router.get(route('managementexpense.index', { boolean: true }))
+    }
+}
 
 </script>

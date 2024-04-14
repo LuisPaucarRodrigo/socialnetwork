@@ -13,7 +13,6 @@
                 </button>
                 <div class="flex items-center">
                     <form @submit.prevent="search" class="flex items-center">
-
                         <input type="text" placeholder="Buscar..."
                             class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             v-model="searchForm.searchTerm" />
