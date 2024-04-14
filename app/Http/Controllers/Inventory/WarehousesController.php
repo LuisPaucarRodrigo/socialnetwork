@@ -103,12 +103,12 @@ class WarehousesController extends Controller
                     'inventory_id' => $inventory->id,
                     'type' => 'purchase',
                     'quantity' => $purchaseQuoteProduct->quantity,
-                    'unitary_price' => $purchaseQuoteProduct->unitary_amount,
+                    'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
                     'entry_date' => $today,
                     'observations' => $request->observations
                 ]);
 
-                $purchase_entry = PurchasesEntry::create([
+                PurchasesEntry::create([
                     'entry_id' => $entry->id,
                     'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                 ]);
@@ -125,12 +125,12 @@ class WarehousesController extends Controller
                         'inventory_id' => $existingInventory->id,
                         'type' => 'purchase',
                         'quantity' => $purchaseQuoteProduct->quantity,
-                        'unitary_price' => $purchaseQuoteProduct->unitary_amount,
+                        'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
                         'entry_date' => $today,
                         'observations' => $request->observations
                     ]);
 
-                    $purchase_entry = PurchasesEntry::create([
+                    PurchasesEntry::create([
                         'entry_id' => $entry->id,
                         'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
@@ -145,12 +145,12 @@ class WarehousesController extends Controller
                         'inventory_id' => $inventory->id,
                         'type' => 'purchase',
                         'quantity' => $purchaseQuoteProduct->quantity,
-                        'unitary_price' => $purchaseQuoteProduct->unitary_amount,
+                        'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
                         'entry_date' => $today,
                         'observations' => $request->observations
                     ]);
 
-                    $purchase_entry = PurchasesEntry::create([
+                    PurchasesEntry::create([
                         'entry_id' => $entry->id,
                         'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
@@ -162,6 +162,7 @@ class WarehousesController extends Controller
             'state' => 'Completada/Aprobada'
         ]);
     }
+
 
     public function storeProducts(Request $request, Warehouse $warehouse)
     {
