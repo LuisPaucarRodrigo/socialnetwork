@@ -40,10 +40,6 @@
                                 Titulo de Solicitud
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Cotizacion
-                            </th>
-                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Tipo de Pago
                             </th>
@@ -53,6 +49,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Estado
                             </th>
                         </tr>
                     </thead>
@@ -96,9 +93,43 @@
                                 </td>
                             </tr>
                             <template v-if="paymentRow == payment.id">
+                                <tr 
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    <th colspan="1"
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        Codigo de Pago
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        Fecha de Pago
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        Monto
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        Descripcion
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    </th>
+                                </tr>
                                 <tr v-for="paymentDetail in payment.payment" :key="paymentDetail.id"
-                                    class="bg-gray-100">
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="2">
+                                    class="bg-gray-100"
+                                    :class="[
+        'text-gray-700',
+        {
+            'border-l-8': true,
+            'border-green-500': paymentDetail.state,
+            'border-red-500': Date.parse(paymentDetail.register_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000) && !paymentDetail.state,
+            'border-yellow-500': Date.parse(paymentDetail.register_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(paymentDetail.register_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) && !paymentDetail.state
+        }
+    ]">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="1">
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap">
@@ -107,18 +138,23 @@
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap">
-                                            {{ payment.currency == 'sol' ? "S/" : "$" }} {{
-                                            paymentDetail.amount.toFixed(2) }}
+                                            {{ formattedDate(paymentDetail.register_date) }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">
+                                            {{ payment.currency == 'sol' ? "S/" : "$" }}
+                                            {{ paymentDetail.amount.toFixed(2) }}
+                                        </p>
+                                    </td>
+                                    <td colspan="1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             {{ paymentDetail.description }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-2 py-5 text-sm text-center">
                                         <div>
-                                            <button v-if="paymentDetail.state" type="button"
+                                            <button v-if="!paymentDetail.state" type="button"
                                                 @click="pay_payment(paymentDetail, payment.currency)"
                                                 class="text-green-500 whitespace-no-wrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -226,6 +262,7 @@ import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     payments: Object,

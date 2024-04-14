@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('state')->nullable()->default(false);
             $table->string('operation_number')->nullable();
+            $table->date('register_date')->nullable();
             $table->date('date')->nullable();
             $table->string('payment_doc')->nullable();
             $table->foreignId('purchase_quote_id')->constrained('purchase_quotes')->onDelete('cascade');
