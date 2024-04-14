@@ -14,7 +14,7 @@ use Inertia\Inertia;
 
 class ExpenseManagementController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $boolean = false)
     {
         if ($request->isMethod('get')) {
             return Inertia::render('Finance/ManagementExpense/Expense', [
@@ -23,7 +23,9 @@ class ExpenseManagementController extends Controller
                         $query->whereNotNull('due_date');
                     })
                     ->whereNotNull('quote_deadline')
-                    ->paginate()
+                    ->where('state', $boolean ? 1 : null)
+                    ->paginate(),
+                'boolean' => boolval($boolean)
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -47,20 +49,23 @@ class ExpenseManagementController extends Controller
 
     public function details(Purchase_quote $purchase_quote)
     {
-        $expense = $purchase_quote->load('purchasing_requests.project','purchasing_requests.preproject', 'purchase_order', 'provider', 'products');
+        $expense = $purchase_quote->load('purchasing_requests.project', 'purchasing_requests.preproject', 'purchase_order', 'provider', 'products');
         return Inertia::render('Finance/ManagementExpense/Details', ['expense' => $expense]);
     }
 
     public function reviewed(ReviewedExpenseRequest $request, $id)
     {
         $data = $request->validated();
-        Purchase_quote::find($id)->update($data);
+        $quote = Purchase_quote::find($id);
+        $quote->update($data);
         $date_issue = Carbon::today();
         if ($data['state']) {
             foreach ($data['payments'] as $paymentData) {
+                $register_date = $quote->payment_type == 'Contado' ? $this->calculateRegisterDate() : $paymentData['register_date'];
                 Payment::create([
                     'amount' => $paymentData['amount'],
                     'description' => $paymentData['description'],
+                    'register_date' => $register_date,
                     'purchase_quote_id' => $id
                 ]);
             }
@@ -113,5 +118,16 @@ class ExpenseManagementController extends Controller
         return Inertia::render('Finance/ManagementExpense/GeneratePayments', [
             'quote' => Purchase_quote::find($id)
         ]);
+    }
+
+    private function calculateRegisterDate()
+    {
+        $currentHour = Carbon::now()->hour;
+
+        if ($currentHour >= 17) {
+            return Carbon::tomorrow();
+        } else {
+            return Carbon::today();
+        }
     }
 }
