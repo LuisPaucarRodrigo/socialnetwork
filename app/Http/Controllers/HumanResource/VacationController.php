@@ -180,7 +180,6 @@ class VacationController extends Controller
 
     public function alarmVacation()
     {
-
         $now = Carbon::now();
         $currentDateUpdate = $now->subHours(5);
         $vacation = Vacation::where('type', 'Vacaciones')

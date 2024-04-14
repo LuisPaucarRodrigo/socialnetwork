@@ -13,6 +13,7 @@ class Payment extends Model
         'amount',
         'description',
         'operation_number',
+        'register_date',
         'date',
         'state',
         'payment_doc',
@@ -37,9 +38,9 @@ class Payment extends Model
     public function getStateAttribute()
     {
         if (!is_null($this->operation_number) && !is_null($this->date) && !is_null($this->payment_doc)) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
 }
