@@ -69,7 +69,7 @@
                                     <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">{{ item.current_output_quantity }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
@@ -106,7 +106,9 @@
                                     </div>
                                     <div v-else>
                                         <p v-if="item.state == true" :class="'text-green-500 whitespace-nowrap'">
-                                            Aceptado - <span class="text-red-500">Incompleto</span>
+                                            Aceptado - 
+                                            <span v-if="item.remaining_quantity === 0" class="text-green-500">Completo</span>
+                                            <span v-else class="text-red-500">Incompleto</span>
                                         </p>
                                         <p v-if="item.state == false" :class="'text-red-500'">
                                             Rechazado
@@ -130,7 +132,7 @@
                                 <!-- Expandible row -->
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <button 
-                                        :disabled="item.project_entry_outputs.length>0?false:true"
+                                        :disabled="(item.project_entry_outputs.length>0)?false:true"
                                         type="button" 
                                         @click="toggleDetails(item.project_entry_outputs)"
                                         :class="`text-blue-900 `">
@@ -341,10 +343,10 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 
 const props = defineProps({
     project_entries: Object,
-    warehouseId: Number
+    warehouseId: Number,
+    auth: Object
 });
 
-console.log(props.project_entries)
 
 const declineModal = ref(false);
 const acceptModal = ref(false);
@@ -373,7 +375,7 @@ const declineRequest = () => {
   router.post(route('warehouses.dispatches.acceptordecline', {warehouse: props.warehouseId}), data, {
     preserveScroll: true,
     onSuccess:() => {
-      router.visit(route('warehouses.dispatches', {warehouse: props.warehouseId}))
+      acceptModal.value = false
     }
   });
 }
@@ -384,6 +386,7 @@ const acceptRequest = () => {
     preserveScroll: true,
     onSuccess:() => {
       router.visit(route('warehouses.dispatches', {warehouse: props.warehouseId}))
+      declineModal.value = false
     }
   });
 }
@@ -392,7 +395,6 @@ const acceptRequest = () => {
 //Expandible row
 const row = ref(0);
 const toggleDetails = (outputs) => {
-    console.log(outputs[0].project_entry_id)
     if (row.value === outputs[0].project_entry_id) {
         row.value = 0;
     } else {
