@@ -226,7 +226,7 @@ class WarehousesController extends Controller
 
     public function showDispatches(Warehouse $warehouse)
     {
-        $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
+        $project_entries = ProjectEntry::with('project_entry_outputs')->whereHas('entry.inventory', function ($query) use ($warehouse) {
             $query->where('warehouse_id', $warehouse->id);
         })->where('state', null)->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project')->paginate(10);
 

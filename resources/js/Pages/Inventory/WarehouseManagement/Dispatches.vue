@@ -29,11 +29,15 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Cantidad
+                                Precio Unitario
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Precio Unitario
+                                Cantidad Solicitada
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Cantidad Actual de Salidas
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -57,15 +61,99 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.entry.inventory.purchase_product.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">S/. {{ item.unitary_price }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">S/. {{ item.unitary_price }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
                             </td>
+
+
+                            <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
+                                <div v-if="item.state === null"
+                                    class="flex space-x-3 justify-center">
+                                    <button 
+                                        @click="()=>openAcceptModal(item.id)"
+                                        class="flex items-center text-blue-500 hover:underline">
+                                        <svg 
+                                            xmlns="http://www.w3.org/2000/svg" 
+                                            fill="none" 
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5" 
+                                            stroke="currentColor" 
+                                            class="w-6 h-6 text-green-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                    <button 
+                                        @click="()=>openDeclineModal(item.id)"
+                                        type="button"
+                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div v-else>
+                                    <p v-if="item.state == true" :class="'text-green-500 whitespace-nowrap'">
+                                        Aceptado - <span class="text-red-500">Incompleto</span>
+                                    </p>
+                                    <p v-if="item.state == false" :class="'text-red-500'">
+                                        Rechazado
+                                    </p>
+                                </div>
+                            </td>
+                            <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
+                                <button 
+                                    @click="()=>showModalOutput(item.id)"
+                                    class="text-blue-900 whitespace-no-wrap"
+                                    :disabled="item.state?false:true"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" :class="`w-6 h-6 ${item.state?'':'opacity-50'}`">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    </svg>
+                                </button>
+                            </td>
+
+                            <!-- Expandible row -->
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <button 
+                                    :disabled="item.project_entry_outputs.length>0?false:true"
+                                    type="button" 
+                                    @click="toggleDetails(item.project_entry_outputs)"
+                                    :class="`text-blue-900 `">
+                                    <svg v-if="row !== item.id" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        :class="`w-6 h-6 ${item.project_entry_outputs.length>0?'':'opacity-50'}`">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                    </svg>
+                                </button>
+                            </td>
+
+
+
+
+
+
+
+
+                            <!-- <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center items-center">
                                     <button @click="openAcceptModal(item.id)" class="rounded-xl flex items-center text-blue-500 hover:bg-green-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -84,6 +172,9 @@
                                     </button>
                                 </div>
                             </td>
+ -->
+
+
                         </tr>
                     </tbody>
                 </table>
@@ -150,6 +241,8 @@ const props = defineProps({
     project_entries: Object,
     warehouseId: Number
 });
+
+console.log(props.project_entries)
 
 const declineModal = ref(false);
 const acceptModal = ref(false);
