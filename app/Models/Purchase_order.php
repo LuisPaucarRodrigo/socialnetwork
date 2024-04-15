@@ -28,7 +28,7 @@ class Purchase_order extends Model
     ];
 
     public function getPurchaseArrivalDateAttribute(){
-        return $this->created_at->addDays($this->purchase_quote->deliverable_time)->format('d/m/Y');
+        return $this->created_at->addDays($this->purchase_quote->deliverable_time+1)->format('Y-m-d');
     }    
 
     public function purchase_quote()
@@ -47,18 +47,15 @@ class Purchase_order extends Model
 
     public function getIsPaymentsCompletedAttribute()
     {
-        $arrivalDate = $this->purchaseArrivalDate; // Obtener la fecha de llegada de la orden de compra
-        $quotePayments = $this->purchase_quote->payment; // Obtener todos los pagos relacionados con la cotización
+        $arrivalDate = $this->purchaseArrivalDate;
+        $quotePayments = $this->purchase_quote->payment;
 
         foreach ($quotePayments as $payment) {
-            if ($payment->created_at <= $arrivalDate && $payment->state != 0) {
-                // Si encontramos algún pago con fecha anterior a la fecha de llegada y estado no completado (1), devolvemos false
-                return false;
+            if ($payment->register_date < $arrivalDate && !$payment->payment_doc) {
+                return false; // Si algún pago está pendiente antes de la fecha de llegada, devolvemos false
             }
         }
 
-        // Si todos los pagos con fecha anterior a la llegada están completados (state = 1) o no hay ninguno, devolvemos true
-        return true;
+        return true; // Si todos los pagos están completos o son posteriores a la fecha de llegada, devolvemos true
     }
-
 }

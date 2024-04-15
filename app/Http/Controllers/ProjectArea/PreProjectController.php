@@ -21,6 +21,7 @@ use App\Models\Product;
 use App\Models\Purchase_quote;
 use App\Models\Purchasing_request;
 use App\Models\Purchasing_requests_product;
+use App\Models\TypeProduct;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -108,6 +109,44 @@ class PreProjectController extends Controller
 
 
     public function quote($preproject_id) {
+        $allPurchasingRequest = Purchasing_request::with(['purchase_quotes' => function ($query) {
+                                        $query->where('preproject_state', true);
+                                    }
+                                    ,'purchase_quotes.purchase_quote_products.purchase_product'])
+                                    ->where('preproject_id', $preproject_id)
+                                    ->get();
+        
+        $existingProducts = [];
+        
+        foreach($allPurchasingRequest as $pr_item){
+            $allPurchaseQuotes = $pr_item->purchase_quotes;
+            foreach($allPurchaseQuotes as $pq_item){
+                $allPurchaseQuoteProducts = $pq_item->purchase_quote_products;
+                foreach($allPurchaseQuoteProducts as $pqp_item){
+                    $id = $pqp_item->purchase_product_id;
+                    $key = array_search($id, array_column($existingProducts, 'purchase_product_id'));
+                    if ($pq_item->quantity !== 0){
+                        if ($key !== false){
+                            $newQuantity = $existingProducts[$key]["quantity"] + $pqp_item->quantity;
+                            $newUnitaryPrice = (($existingProducts[$key]["quantity"] * $existingProducts[$key]["unitary_price"]) +
+                                                ($pqp_item->quantity * $pqp_item->unitary_amount_no_igv))/ $newQuantity;
+                            $existingProducts[$key]["quantity"] = $newQuantity;
+                            $existingProducts[$key]["unitary_price"] = $newUnitaryPrice;
+                        } else{
+                            array_push($existingProducts, [
+                                "profit_margin"=> "",
+                                "purchase_product"=> $pqp_item->purchase_product,
+                                "purchase_product_id"=>$pqp_item->purchase_product_id,
+                                "quantity"=>$pqp_item->quantity,
+                                "unitary_price"=> $pqp_item->unitary_amount_no_igv
+                            ]);
+                            
+                        }
+                    }
+                }
+            }
+        }
+
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
             'preproject' => Preproject::with(
                 'quote.items', 
@@ -116,8 +155,18 @@ class PreProjectController extends Controller
                 ->find($preproject_id),
             'products' => Purchase_product::all(),
             'purchasing_requests' => Purchasing_request::with('products')
-                ->where('preproject_id', $preproject_id)->get()
+                ->where('preproject_id', $preproject_id)->get(),
+            'existingProducts'=> $existingProducts
         ]);
+    }
+
+
+    public function accept_decline_quote(Request $request, $purchase_quote_id) {
+        $data = $request->validate([
+            "preproject_state" => "required|boolean"
+        ]);
+        Purchase_quote::find($purchase_quote_id)->update($data);
+        return redirect()->back();
     }
 
 
@@ -313,11 +362,11 @@ class PreProjectController extends Controller
 
     // ------------------------------- REQUEST SHOPPING -------------------------------
 
-    public function request($id)
-    {
+    public function request($id) {
+        $preproject = Preproject::find($id);
         return Inertia::render('ProjectArea/PreProject/PurchaseRequest', [
             'purchases' => Purchasing_request::with('project')->where('preproject_id', $id)->paginate(),
-            'preproject' => $id
+            'preproject' => $preproject
         ]);
     }
 
@@ -326,11 +375,17 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
             'preproject' => Preproject::find($id),
+            'typeProduct' => TypeProduct::all()
         ]);
     }
 
     public function request_shopping_store(Request $request)
     {
+        $prepro =Preproject::find($request->input('preproject_id'));
+        if ($prepro->has_quote){
+            abort(403, 'Ya no es posible guardar solicitudes de este anteproyecto.');
+        }
+            
         $validateData = $request->validate([
             'title' => 'required|string',
             'preproject_id' => 'required|numeric',
@@ -368,6 +423,10 @@ class PreProjectController extends Controller
 
     public function request_shopping_update(UpdatePurchaseRequest $request, $id)
     {
+        $prepro =Preproject::find($request->input('preproject_id'));
+        if ($prepro->has_quote){
+            abort(403, 'Ya no es posible modificar la solicitud de este anteproyecto.');
+        }
         $validateData = $request->validated();
         $purchases = Purchasing_request::with('preproject')->findOrFail($id);
         $purchases->update($validateData);

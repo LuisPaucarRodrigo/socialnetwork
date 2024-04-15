@@ -13,7 +13,6 @@
                 </button>
                 <div class="flex items-center">
                     <form @submit.prevent="search" class="flex items-center">
-
                         <input type="text" placeholder="Buscar..."
                             class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             v-model="searchForm.searchTerm" />
@@ -108,7 +107,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center">
-                                    <a :href="route('purchasingrequest.export', { id: purchase.id })"
+                                    <a target="_blank" :href="route('purchasingrequest.export', { id: purchase.id })"
                                         class="text-green-600 hover:underline">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -120,14 +119,14 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-left">
-                                    <Link v-if="purchase.state == 'Pendiente' || purchase.state == 'En progreso'"
+                                    <Link v-if="!purchase.preproject?.has_quote && (purchase.state == 'Pendiente' || purchase.state == 'En progreso')"
                                         class="text-blue-900 "
                                         :href="purchase.state_quote == false && purchase.project_id != null ? route('purchasesrequest.quote_deadline.complete', { id: purchase.project_id }) : route('purchasesrequest.quotes', { id: purchase.id })">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                        </svg>
                                     </Link>
                                     <span v-else class="text-gray-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -228,11 +227,14 @@ import { formattedDate } from '@/utils/utils';
 const confirmingPurchasesDeletion = ref(false);
 const purchaseToDelete = ref(null);
 
+
 const props = defineProps({
     purchases: Object,
     auth: Object,
     search: String
 });
+
+
 
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;

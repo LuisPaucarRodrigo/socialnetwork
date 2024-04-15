@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('ruc');
             $table->string('type_doc');
             $table->string('doc_number');
-            $table->date('invoice_date');
+            $table->date('doc_date');
             $table->double('amount');
             $table->string('description')->nullable();
             $table->foreignId('project_id')

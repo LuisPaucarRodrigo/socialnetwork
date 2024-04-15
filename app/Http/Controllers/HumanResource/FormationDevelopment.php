@@ -10,6 +10,7 @@ use App\Models\Training;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class FormationDevelopment extends Controller
 {
@@ -96,25 +97,6 @@ class FormationDevelopment extends Controller
         return Inertia::location(route('management.employees.formation_development.trainings'));
     }
 
-    public function assignate_employee_fprogram(Request $request)
-    {   
-        $data= $request->validate([
-            'employees'=>  'required|array',
-            'formation_programs'=>  'required|array',
-            'start_date'=> 'required',
-            'end_date'=> 'required'
-        ]);
-        $employees = $data['employees'];
-        $formationPrograms = $data['formation_programs'];
-        foreach ($employees as $emp) {
-            $employee = Employee::find($emp);
-            $employee->formation_programs()->sync($formationPrograms, [
-                'start_date'=>$data['start_date'],
-                'end_date'=>$data['end_date']
-            ]);
-        }
-        return redirect()->back();
-    }
 
     public function assignate_create()
     {
@@ -130,8 +112,8 @@ class FormationDevelopment extends Controller
         $data= $request->validate([
             'employees'=>  'required|array',
             'formation_programs'=>  'required|array',
-            'start_date'=> 'required',
-            'end_date'=> 'required'
+            'start_date'=> 'required|date',
+            'end_date'=> 'required|date|after_or_equal:start_date'
         ]);
         $employees = $data['employees'];
         $formationPrograms = $data['formation_programs'];
@@ -170,6 +152,42 @@ class FormationDevelopment extends Controller
                 ->paginate(),
             ]
         );
+    }
+
+
+    public function employees_in_programs_alarms () {
+        $today = Carbon::now();
+        $alarm3d = Employee::with('assignated_programs.formation_program')
+            ->whereHas('assignated_programs', function($query) use ($today) {
+                $query->where('end_date', '<=', $today->copy()->addDays(3))
+                      ->where('state', null);
+            })
+            ->get();
+        $alarm7d = Employee::with('assignated_programs.formation_program')
+            ->whereHas('assignated_programs', function($query) use ($today, $alarm3d) {
+                $query->where('end_date', '>', $today->copy()->addDays(3))
+                      ->where('end_date', '<=', $today->copy()->addDays(7))
+                      ->where('state', null);
+                      
+            })
+            ->whereNotIn('id', $alarm3d->pluck('id'))
+            ->get();
+        return response()->json([
+            'alarm3d' => $alarm3d,
+            'alarm7d' => $alarm7d,
+        ]);
+    }
+
+
+    public function employees_in_programs_details($employee_id) {
+        $employee = Employee::with(['assignated_programs' => function ($query) {
+                            $query->with('formation_program')->where('state', null);
+                        }]
+                        )
+                        ->find($employee_id);
+        return Inertia::render('HumanResource/FormationDevelopments/Detail',[
+            'employee'=>$employee
+        ]);
     }
 
 }

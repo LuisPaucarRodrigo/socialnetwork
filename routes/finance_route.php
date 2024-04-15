@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('/finance/expensegang/store', [GangExpenseController::class, 'store'])->name('gangexpense.store');
     Route::get('/finance/expensegang/{id}/edit', [GangExpenseController::class, 'edit'])->name('gangexpense.edit');
 
-    Route::any('/finance/expencemanagement', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
+    Route::any('/finance/expencemanagement/{boolean?}', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
     Route::get('/finance/expencemanagement/details/{purchase_quote}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');
 
     Route::put('/finance/expencemanagement/reviewed/{id}', [ExpenseManagementController::class, 'reviewed'])->name('managementexpense.reviewed');
