@@ -117,8 +117,12 @@
                                 Forma de pago
                             </InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.payment_type" id="payment_type"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <select v-model="form.payment_type" id="payment_type"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccionar Tipo</option>
+                                    <option value="Contado">Contado</option>
+                                    <option value="Credito">Credito</option>
+                                </select>
                                 <InputError :message="form.errors.payment_type" />
                             </div>
                         </div>
@@ -137,7 +141,16 @@
 
                         <div class="sm:col-span-3">
                             <InputLabel class="text-sm font-medium leading-6 text-gray-900">
-                                ¿IGV incluido?
+                                <div class="flex gap-3">
+                                    <span>
+                                        ¿IGV inlcuido?
+                                    </span>
+                                    <select v-model="form.igv_percentage"
+                                        class="w-32 block rounded-md border-0 py-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ">
+                                        <option :value="0.18">18%</option>
+                                        <option :value="0.00">0%</option>
+                                    </select>
+                                </div>
                             </InputLabel>
                             <div class="mt-2 class flex gap-4">
                                 <label class="flex gap-2 items-center">
@@ -172,9 +185,6 @@
                                 <p class="text-sm font-medium leading-6 text-indigo-900">
                                     El valor de tipo de cambio será definido al momento del registro de pago.
                                 </p>
-                                <!-- <input v-model="currencyChange" type="number" step="0.001"
-                                    @input="handleCurrencyChange" autocomplete="off" placeholder="$ -> S/."
-                                    class="tracking-wide block w-32 bg-white rounded-md border-0 py-1 text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" /> -->
                             </div>
                         </div>
                         <div class="col-span-1 sm:col-span-6 ">
@@ -197,8 +207,14 @@
                                                 Nombre del producto
                                             </th>
                                             <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                Cantidad
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 min-w-[450px]">
+                                                <div class="text-center my-2">Cantidad</div>
+                                                <div class="grid grid-cols-3">
+                                                    <div class="text-center">Original</div>
+                                                    <div class="text-center">En otras</div>
+                                                    <div class="text-center">Para registrar</div>
+                                                </div>
+                                                
                                             </th>
                                             <th
                                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -225,7 +241,7 @@
                                     </thead>
                                     <tbody>
                                         <!-- v v-for="(item, index) in (form.items)" :key="index" -->
-                                        <tr v-for="(item, index) in (purchases.products)" :key="index"
+                                        <tr v-for="(item, index) in (purchases.purchasing_request_product)" :key="index"
                                             class="text-gray-700 hover:bg-gray-200 bg-white">
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p>
@@ -234,34 +250,65 @@
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p>
-                                                    {{ item.code }}
+                                                    {{ item.purchase_product.code }}
                                                 </p>
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-900">
-                                                    {{ item.name }}
+                                                    {{ item.purchase_product.name }}
                                                 </p>
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
-                                                <p class="text-gray-900">
+                                                
+                                                <div class="grid grid-cols-3">
+                                                    <div class="flex items-center justify-center">
+                                                        {{ item.quantity }}
+                                                    </div>
+                                                    <div class="flex items-center justify-center">
+                                                        {{ item.actual_quotes_quantity }}
+                                                    </div>
+                                                    <div class="flex justify-center">
+                                                        <input 
+                                                            type="number" 
+                                                            min="0" 
+                                                            v-model="form.products[item.purchase_product.id].quantity"
+                                                            @input="() => handleItemIgv(item.purchase_product.id)"
+                                                            class="block rounded-md w-[150px] border-0 py-1.5 text-gray-900 text-center shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                                                        />
+
+                                                    </div>
+                                                </div>
+                                                <!-- <p class="text-gray-900">
                                                     {{ item.pivot?.quantity }}
-                                                </p>
+                                                </p> -->
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-900">
-                                                    {{ item.unit }}
+                                                    {{ item.purchase_product.unit }}
                                                 </p>
                                             </td>
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <p class="text-gray-500 whitespace-nowrap text-center">
-                                                    {{ currency }} {{ ((form.products[item.id].unitary_amount ?
-                                                    form.products[item.id].amount : 0 ) / (form.igv ? 1.18:1) / form.products[item.id].quantity).toFixed(2) }}
+                                                    {{ currency }} {{ 
+                                                    form.products[item.purchase_product.id].quantity !== 0 &&
+                                                    form.products[item.purchase_product.id].quantity !== "" ?
+                                                    ((form.products[item.purchase_product.id].unitary_amount ?
+                                                        form.products[item.purchase_product.id].amount : 0 ) 
+                                                        / (form.igv ? (1+form.igv_percentage):1) 
+                                                        / (form.products[item.purchase_product.id].quantity ?
+                                                            form.products[item.purchase_product.id].quantity : 1)
+                                                        ).toFixed(2)
+                                                    : (0).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <td v-if="form.igv"
                                                 class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                                 <p class="text-gray-500 whitespace-nowrap">
-                                                    {{ currency }} {{ (form.products[item.id].amount * 1/1.18).toFixed(2) }}
+                                                    {{ currency }} {{ 
+                                                        form.products[item.purchase_product.id].quantity !== 0 &&
+                                                        form.products[item.purchase_product.id].quantity !== "" ?
+                                                        (form.products[item.purchase_product.id].amount * 1/(1+form.igv_percentage)).toFixed(2)
+                                                    : (0).toFixed(2) }}
                                                 </p>
                                             </td>
                                             <!-- <td v-if="currency !== 'S/.'"
@@ -274,8 +321,8 @@
                                                 <div class="flex items-center justify-end gap-2">
                                                     {{ currency }}
                                                     <input required type="number" min="0" step="0.01"
-                                                        v-model="form.products[item.id].amount"
-                                                        @input="() => handleItemIgv(item.id)"
+                                                        v-model="form.products[item.purchase_product.id].amount"
+                                                        @input="() => handleItemIgv(item.purchase_product.id)"
                                                         class="tracking-wide w-28 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-right" />
 
                                                 </div>
@@ -388,16 +435,18 @@ const props = defineProps({
 function arrayToObject(products) {
     let rpta = {}
     products.forEach(item => {
-        rpta[item.id] = { id: item.id, amount: '', quantity: item.pivot.quantity }
+        rpta[item.purchase_product.id] = { id: item.purchase_product.id, amount: '', quantity: "" }
     });
     return rpta
 }
+
 
 const form = useForm({
     due_date: props.purchases.due_date,
     quote_deadline: '',
     purchase_doc: null,
     igv: true,
+    igv_percentage: 0.18,
     deliverable_time: '',
     payment_type: '',
     account_number: '',
@@ -405,7 +454,7 @@ const form = useForm({
     purchasing_request_id: props.purchases.id,
     currency:'sol',
     products: {
-        ...arrayToObject(props.purchases.products)
+        ...arrayToObject(props.purchases.purchasing_request_product)
     }
 })
 
@@ -466,7 +515,7 @@ const reject_quote = (id) => {
 const currency = ref('S/.')
 // const currencyChange = ref(1)
 
-const handleWithIgv = (e) => { (addItemsNewAmount(JSON.parse(e.target.value))) };
+const handleWithIgv = (e) => { form.igv_percentage = 0.18;   addItemsNewAmount(JSON.parse(e.target.value)) };
 const handleItemIgv = (id) => { getTrueAmount(id, form.igv) }
 
 function getTotals(products, hasIGV) {
@@ -474,17 +523,18 @@ function getTotals(products, hasIGV) {
     let igv = 0;
     let total = 0;
     for (const key in products) {
-        if (products[key].amount !== '' && !isNaN(products[key].amount)) {
+        if (products[key].amount !== '' && !isNaN(products[key].amount)
+            && products[key].quantity !== '' && products[key].quantity !== 0) {
             subTotal += parseFloat(products[key].amount);
         }
     }
     if (hasIGV) {
         total = subTotal.toFixed(2)
-        subTotal = (total/1.18).toFixed(2)
+        subTotal = (total/(1+form.igv_percentage)).toFixed(2)
         igv = (total - subTotal).toFixed(2)
     } else {
         subTotal = subTotal.toFixed(2)
-        igv = (subTotal * .18).toFixed(2)
+        igv = (subTotal * (form.igv_percentage)).toFixed(2)
         total = (+subTotal + +igv).toFixed(2)
     }
     return { subTotal, igv, total }
@@ -506,8 +556,12 @@ function addItemsNewAmount(has_igv) {
 }
 function getTrueAmount(id, has_igv) {
     let amount = form.products[id].amount
-    form.products[id].unitary_amount = +(typeof amount !== 'number' || isNaN(amount) ?
-        (0).toFixed(2) : ((amount * (has_igv ? 1 : 1.18))/(+form.products[id].quantity)).toFixed(6));
+    form.products[id].unitary_amount = 
+        form.products[id].quantity !== 0 &&
+        form.products[id].quantity !== "" ?
+            +(typeof amount !== 'number' || isNaN(amount) ?
+                (0).toFixed(2) : ((amount * (has_igv ? 1 : (1+Number(form.igv_percentage))))/(+form.products[id].quantity)).toFixed(6))
+            : 0;
 }
 
 </script>

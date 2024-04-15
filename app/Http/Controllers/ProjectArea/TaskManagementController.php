@@ -23,6 +23,7 @@ class TaskManagementController extends Controller
         return Inertia::render('ProjectArea/TasksManagement/index', [
             'tasks' => $tasks,
             'project' => Project::find($projectId),
+            'projects' => Project::where('id','!=',$projectId)
         ]);
     }
 

@@ -16,10 +16,12 @@ use App\Models\Purchase_order;
 use App\Models\Purchase_quote;
 use App\Models\RetrievalEntry;
 use App\Models\SpecialInventory;
+use App\Models\TypeProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Providers\GlobalFunctionsServiceProvider;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseRequestController extends Controller
 {
@@ -45,6 +47,7 @@ class PurchaseRequestController extends Controller
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
             'project' => Project::find($project_id),
+            'typeProduct' => TypeProduct::all()
         ]);
     }
 
@@ -83,7 +86,7 @@ class PurchaseRequestController extends Controller
 
     public function index_quotes(Purchasing_request $id)
     {
-        $purchases = Purchasing_request::with('project', 'products')->find($id->id);
+        $purchases = Purchasing_request::with('project', 'purchasing_request_product.purchase_product')->find($id->id);
         return Inertia::render('ShoppingArea/PurchaseRequest/RequestQuotes', [
             'providers' => Provider::all(),
             'purchases' => $purchases
@@ -114,8 +117,8 @@ class PurchaseRequestController extends Controller
         return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project', 'products')->find($id)]);
     }
 
-    public function quote(CreatePurchaseQuoteRequest $request)
-    {
+
+    public function quote(CreatePurchaseQuoteRequest $request) {
         $data = $request->validated();
         if ($request->hasFile('purchase_doc')) {
             $croppedImage = $request->file('purchase_doc');
@@ -130,6 +133,8 @@ class PurchaseRequestController extends Controller
         $purchaseQuote->products()->sync($cleanedProducts);
         return redirect()->back();
     }
+
+    
 
     public function showDocument(Purchase_quote $id)
     {
@@ -195,7 +200,7 @@ class PurchaseRequestController extends Controller
     {
         $searchTerm = strtolower($request);
 
-        $purchasing_requests_by_title = Purchasing_request::where(function ($query) use ($searchTerm) {
+        $purchasing_requests_by_title = Purchasing_request::with('project', 'preproject', 'purchase_quotes')->where(function ($query) use ($searchTerm) {
             $query->whereRaw('LOWER(title) like ?', ['%' . $searchTerm . '%'])
                 ->withCount([
                     'purchase_quotes',
@@ -210,7 +215,7 @@ class PurchaseRequestController extends Controller
                 ->orderBy('created_at', 'desc');
         })->get();
 
-        $queryByCode = Purchasing_request::where(function ($query) use ($searchTerm) {
+        $queryByCode = Purchasing_request::with('project', 'preproject', 'purchase_quotes')->where(function ($query) use ($searchTerm) {
             $query->withCount([
                 'purchase_quotes',
                 'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
@@ -244,8 +249,9 @@ class PurchaseRequestController extends Controller
 
     public function export(Purchasing_request $id)
     {
+        $user = Auth::user();
         $purchasing_request = $id->load('purchasing_request_product');
-        $pdf = Pdf::loadView('pdf.PurchasingRequestPDF', compact('purchasing_request'));
+        $pdf = Pdf::loadView('pdf.PurchasingRequestPDF', compact('purchasing_request', 'user'));
         return $pdf->stream();
     }
 

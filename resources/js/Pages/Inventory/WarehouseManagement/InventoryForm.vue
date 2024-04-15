@@ -11,13 +11,24 @@
               <div>
                 <div>
 
-                  <div class="grid grid-cols-2 gap-4">
+                  <div class="grid grid-cols-2 gap-8">
                     <div>
-                        <InputLabel for="name" class="font-medium leading-6 text-gray-900 mt-2">Producto</InputLabel>
-                        <select v-model="form.purchase_product_id" id="product-select" class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2">
-                            <option disabled value="">Selecciona un producto</option>
-                            <option v-for="product in props.purchase_products" :value="product.id">{{ product.name }}</option>
-                        </select>
+                        <div class="flex gap-x-2 items-center">
+                          <div class="w-full">
+                            <InputLabel for="name" class="font-medium leading-6 text-gray-900 mt-2">Producto</InputLabel>
+                            <select v-model="form.purchase_product_id" id="product-select" class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2">
+                                <option disabled value="">Selecciona un producto</option>
+                                <option v-for="product in props.purchase_products" :value="product.id">{{ product.name }}</option>
+                            </select>
+
+                          </div>
+                          <div v-if="form.purchase_product_id">
+                            <InputLabel for="name" class="font-medium leading-6 text-gray-900 mt-2">Unidad:</InputLabel>
+                            <InputLabel   class="font-medium leading-6 text-gray-900 mt-2">
+                              {{ purchase_products.find(item=>item.id == form.purchase_product_id)?.unit }}
+                             </InputLabel>
+                          </div>
+                        </div>
                         <InputError :message="form.errors.purchase_product_id" />
                     </div>
                     <div>
@@ -93,7 +104,6 @@
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   
   const props = defineProps({
-    products: Object,
     purchase_products: Object,
     warehouseId: Number
   });

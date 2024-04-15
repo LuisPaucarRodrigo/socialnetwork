@@ -30,10 +30,10 @@ class Purchasing_request extends Model
         return $this->belongsTo(Preproject::class, 'preproject_id');
     }
 
-    public function purchase_quotes()
-    {
-        return $this->hasMany(Purchase_quote::class);
-    }
+
+
+
+
 
 
     public function getStateAttribute()
@@ -49,13 +49,9 @@ class Purchasing_request extends Model
         return 'Completada';
     }
 
-    public function purchasing_request_product()
-    {
-        return $this->hasMany(Purchasing_requests_product::class);
-    }
+    
 
-    public function products()
-    {
+    public function products() {
         return $this->belongsToMany(Purchase_product::class, 'purchasing_requests_products', 'purchasing_request_id', 'purchase_product_id')->withPivot('id', 'quantity');
     }
 
@@ -76,5 +72,25 @@ class Purchasing_request extends Model
         }
 
         return $allComplete;
+    }
+
+
+    public function purchase_quotes(){
+        return $this->hasMany(Purchase_quote::class);
+    }
+
+    public function purchasing_request_product() {
+        return $this->hasMany(Purchasing_requests_product::class);
+    }
+
+    public function checkQuotesProductsQuantity($objectToCheck){
+        $pr_products = $this->purchasing_request_product()->with('purchase_product')->get();
+        foreach ($pr_products as $pr_product) {
+            $id_product = $pr_product->purchase_product->id;
+            $productToEvaluate = $objectToCheck[$id_product];
+            if ($productToEvaluate["quantity"] > ($pr_product->quantity - $pr_product->actual_quotes_quantity))
+            return false;
+        }
+        return true;
     }
 }
