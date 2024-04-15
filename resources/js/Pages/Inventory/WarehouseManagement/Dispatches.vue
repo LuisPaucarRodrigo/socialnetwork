@@ -293,6 +293,36 @@
             </div>
         </Modal>
 
+        <Modal :show="showModal">
+            <form class="p-6" @submit.prevent="submit">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Registrar la salida
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div class="sm:col-span-6">
+                        <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
+                        <div class="mt-2">
+                            <input id="quantity" type="number" min="1" v-model="form.quantity"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <InputError 
+                                :message="form.errors.quantity"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <button
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
+                        type="button" @click="closeModal"> Cerrar </button>
+                    <button
+                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
+                        type="submit"> Agregar </button>
+                </div>
+            </form>
+        </Modal>
+        <ConfirmCreateModal :confirmingcreation="showSuccessModal" itemType="salida" />
+
+
     </AuthenticatedLayout>
 </template>
 
@@ -301,9 +331,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { formattedDate } from '@/utils/utils';
+import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+
 
 const props = defineProps({
     project_entries: Object,
@@ -363,6 +397,50 @@ const toggleDetails = (outputs) => {
         row.value = 0;
     } else {
         row.value = outputs[0].project_entry_id;
+    }
+}
+
+
+
+const showModal = ref(false)
+const showSuccessModal = ref(false)
+const form = useForm({
+    project_entry_id:'',
+    quantity:''
+})
+                                    
+const showModalOutput = (id) => {
+    form.project_entry_id = id
+    showModal.value = true
+}
+
+const closeModal = () => {
+    showModal.value = false
+    form.reset()
+}
+
+
+const submit = () => {
+    form.post(route('inventory.special_dispatch_output.store'), {
+        onSuccess: () => {
+            closeModal();
+            showSuccessModal.value = true
+            setTimeout(()=>{
+                showSuccessModal.value = false
+            }, 2000)
+        },
+    })
+}
+const deleteOutput = (id) => {
+    router.delete(route('inventory.special_dispatch_output.destroy', {
+        project_entry_output_id:id
+    }))
+}
+
+
+const optionChange = (e) => {
+    if (e.target.value === "Historial" ) {
+        router.get(route('inventory.special_dispatch.historial', {warehouse_id: warehouse.id}))
     }
 }
 
