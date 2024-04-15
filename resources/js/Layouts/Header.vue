@@ -8,7 +8,7 @@
             stroke-linejoin="round" />
         </svg>
       </button>
-      <a :href="redirectRoute ? getRoute() : 'management.employees.formation_development'"
+      <a :href="redirectRoute ? getRoute() : 'javascript:window.history.back()'"
         class="ml-4 text-gray-500 focus:outline-none">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>

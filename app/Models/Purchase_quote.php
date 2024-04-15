@@ -14,6 +14,7 @@ class Purchase_quote extends Model
         'response', 
         'state',
         'igv',
+        'igv_percentage',
         'deliverable_time',
         'payment_type',
         'account_number',
@@ -21,6 +22,7 @@ class Purchase_quote extends Model
         'provider_id',
         'currency',
         'change_value',
+        'preproject_state'
     ];
 
     public $appends = [
@@ -68,7 +70,7 @@ class Purchase_quote extends Model
         $allCompleted = true; // Suponemos que todos los pagos están completados
 
         foreach ($quotePayments as $payment) {
-            if ($payment->state) {
+            if (!$payment->state) {
                 // Si al menos uno de los pagos no está completado, marcamos la bandera como falsa
                 $allCompleted = false;
                 break; // No es necesario seguir iterando

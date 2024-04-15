@@ -336,6 +336,7 @@ const closeModal = () => {
     form.reset()
 }
 
+
 const submit = () => {
     form.post(route('inventory.special_dispatch_output.store'), {
         onSuccess: () => {
@@ -347,6 +348,11 @@ const submit = () => {
         },
     })
 }
+const deleteOutput = (id) => {
+    router.delete(route('inventory.special_dispatch_output.destroy', {
+        project_entry_output_id:id
+    }))
+}
 
 
 const optionChange = (e) => {
@@ -356,11 +362,7 @@ const optionChange = (e) => {
 }
 
 
-const deleteOutput = (id) => {
-    router.delete(route('inventory.special_dispatch_output.destroy', {
-        project_entry_output_id:id
-    }))
-}
+
 
 
 </script>

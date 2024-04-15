@@ -8,7 +8,7 @@
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2">
-                <button @click="add_purchase_request" type="button"
+                <button v-if="!preproject.has_quote" @click="add_purchase_request" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     + Agregar
                 </button>
@@ -139,7 +139,7 @@ const purchaseToDelete = ref(null);
 
 const props = defineProps({
     purchases: Object,
-    preproject: String,
+    preproject: Object,
 });
 
 const confirmPurchasesDeletion = (purchaseId) => {
@@ -162,19 +162,19 @@ const closeModal = () => {
 
 const add_purchase_request = () => {
     router.get(route('preprojects.request.create', {
-        id: props.preproject
+        id: props.preproject.id
     }));
 }
 
-const edit_purchase_request = (purchase_id) => {
-    router.get(route('projectmanagement.purchases_request.create', { id: props.preproject.id, purchase_id: purchase_id }));
-}
+// const edit_purchase_request = (purchase_id) => {
+//     router.get(route('projectmanagement.purchases_request.create', { id: props.preproject.id, purchase_id: purchase_id }));
+// }
 
-const expenses = () => {
-    router.get(route('projectmanagement.expenses', {
-        id: props.preproject
-    }));
-}
+// const expenses = () => {
+//     router.get(route('projectmanagement.expenses', {
+//         id: props.preproject
+//     }));
+// }
 
 
 

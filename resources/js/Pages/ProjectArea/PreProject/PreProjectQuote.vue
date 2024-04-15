@@ -146,7 +146,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <p class="text-sm my-2">Se muestran productos de las solicitudes de compra</p>
+                                <p class="text-sm my-2">Se muestran productos de las solicitudes de compra aceptadas para el anteproyecto</p>
                                 <div class="mt-2">
                                     <div class="overflow-x-auto mt-8">
                                         <table class="w-full">
@@ -174,7 +174,7 @@
                                                         Precio unitario
                                                     </th>
                                                     <th
-                                                        class="border-b-2   min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        class="border-b-2   min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Margen
                                                     </th>
                                                     <th
@@ -206,10 +206,11 @@
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                        <!-- v-if="preproject.quote" -->
+                                                        <p class="text-gray-900">
                                                             {{ item.quantity }}
                                                         </p>
-                                                        <div v-else class="flex space-x-2 items-center">
+                                                        <!-- <div v-else class="flex space-x-2 items-center">
                                                             <input  
                                                                required
                                                                type="number" 
@@ -217,13 +218,14 @@
                                                                step="0.01"
                                                                v-model="item.quantity"
                                                                class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                        </div>
+                                                        </div> -->
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                        <!-- v-if="preproject.quote" -->
+                                                        <p class="text-gray-900">
                                                             S/. {{ (item.unitary_price).toFixed(2) }}
                                                         </p>
-                                                        <div v-else class="flex space-x-2 items-center">
+                                                        <!-- <div v-else class="flex space-x-2 items-center">
                                                             <span>S/.</span><input  
                                                                required
                                                                type="number" 
@@ -231,7 +233,7 @@
                                                                step="0.01"
                                                                v-model="item.unitary_price"
                                                                class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                        </div>
+                                                        </div> -->
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p v-if="preproject.quote" class="text-gray-900">
@@ -615,10 +617,11 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const showModal = ref(false)
 const showErroModal = ref(false)
 
-const { preproject, auth, products, purchasing_requests } = defineProps({
+const { preproject, auth, products, purchasing_requests, existingProducts } = defineProps({
     products: Object,
     preproject: Object,
     purchasing_requests: Object,
+    existingProducts: Object,
     auth: Object
 })
 
@@ -666,27 +669,17 @@ const initialState = {
     payment_type: '',
     observations: '',
     items: [],
-    products: products.map(item => {
-        if (ids.includes(item.id)) {
-            return { ...initalProductState, 
-                    purchase_product_id: item.id,
-                    purchase_product: {
-                        code: item.code, 
-                        name: item.name, 
-                        unit:item.unit
-                    }
-                    };
-        } else {
-            return null;
-        }
-    }).filter(item => item !== null),
+    products: existingProducts,
     preproject_id: preproject.id
 }
+
 
 const form = useForm(
     { ...(preproject.quote ? preproject.quote : initialState) }
 )
 
+console.log(form.products)
+    
 const submit = () => {
     let url = route('preprojects.quote.store')
     if (preproject.quote) {

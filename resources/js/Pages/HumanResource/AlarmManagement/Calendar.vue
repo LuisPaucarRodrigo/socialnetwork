@@ -13,6 +13,7 @@
             <h3 class="event-title">{{ selectedEvent.title }}</h3>
             <p>Fecha de inicio: {{ formatDate(selectedEvent.start) }}</p>
             <p>Fecha de fin: {{ formatDate(selectedEvent.end) }}</p>
+            <p>Descripción: {{ selectedEvent.description }}</p>
           </div>
         </div>
       </div>
@@ -75,14 +76,14 @@ const calendarOptions = {
     meridiem: false
   },
   events: member.map((alarm) => ({
-    title: alarm.name,
+    title: alarm.name + " - " + alarm.description,
     start: new Date(alarm.start_date).toISOString().split('T')[0],
     end: new Date(new Date(alarm.end_date).getTime() + (24 * 60 * 60 * 1000)).toISOString().split('T')[0],
     color: getColorFromSet(),
-    description: alarm.status,
+    description: alarm.description,
     start_date: alarm.start_date + 'T00:00:01',
     end_date: alarm.end_date + 'T00:00:01',
-    textColor: 'black',
+    textColor: 'white',
   })),
   locale: 'ES',
 };

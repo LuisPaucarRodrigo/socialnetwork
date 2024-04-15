@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Purchase_product;
+use App\Models\TypeProduct;
 use Illuminate\Validation\Rule;
 
 class PurchaseProductsController extends Controller
@@ -17,6 +18,7 @@ class PurchaseProductsController extends Controller
             ->paginate(10);
         return Inertia::render('Inventory/PurchaseProducts/Products', [
             'products' => $products,
+            'type_product' => TypeProduct::all()
         ]);
     }
 
@@ -74,7 +76,6 @@ class PurchaseProductsController extends Controller
     public function update(Request $request, Purchase_product $purchase_product)
     {
         $validateData =  $request->validate([
-            'name' => 'required|string|unique:purchase_products,name,' . $purchase_product->id,
             'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
             'unit' => 'required',
             'type' => 'required|string|in:Producto,Servicio,Activo',
@@ -91,5 +92,14 @@ class PurchaseProductsController extends Controller
             'state' => false
         ]);
         return to_route('inventory.purchaseproducts');
+    }
+
+    public function typeProducts(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required'
+        ]);
+        $new = TypeProduct::create($data);
+        return response()->json(['new'=> $new],200);
     }
 }

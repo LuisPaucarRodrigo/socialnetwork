@@ -79,7 +79,8 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.unit }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.type }} {{ item.type_product ? '/'+item.type_product:'' }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.type }} {{ item.type_product ?
+        '/' + item.type_product : '' }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
@@ -145,7 +146,8 @@
                             </div>
 
                             <div>
-                                <InputLabel for="type" class="font-medium leading-6 text-gray-900 mt-3">Tipo
+                                <InputLabel for="type" class="font-medium leading-6 text-gray-900 mt-3">
+                                    Tipo
                                 </InputLabel>
                                 <div class="mt-2">
                                     <select :to-uppercase="true" v-model="form.type" id="type"
@@ -160,14 +162,26 @@
                             </div>
 
                             <div v-if="form.type === 'Producto'">
-                                <InputLabel for="type_product" class="font-medium leading-6 text-gray-900 mt-3">Tipo de Producto
-                                </InputLabel>
+                                <div class="flex mt-3 gap-2">
+                                    <InputLabel for="type_product" class="font-medium leading-6 text-gray-900">
+                                        Tipo de Producto
+                                    </InputLabel>
+                                    <button type="button" @click="add_product" class="item-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                </div>
+
                                 <div class="mt-2">
                                     <select :to-uppercase="true" v-model="form.type_product" id="type_product"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option value="" disabled>Seleccione un tipo</option>
-                                        <option>EPP</option>
-                                        <option>OTROS</option>
+                                        <option v-for="item in props.type_product" :key="item.id" :value="item.name">
+                                            {{ item.name }}
+                                        </option>
                                     </select>
                                     <InputError :message="form.errors.type_product" />
                                 </div>
@@ -178,8 +192,7 @@
                                     Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="form.description"
-                                        id="description"
+                                    <TextInput type="text" v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.description" />
                                 </div>
@@ -189,7 +202,7 @@
                                 <SecondaryButton @click="create_product ? closeModal() : closeEditModal()"> Cancelar
                                 </SecondaryButton>
                                 <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                    class="rounded-md bg-indigo-600 px-6 py-2 text-gray-900 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    class="rounded-md bg-indigo-600 px-6 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     {{ create_product ? 'Guardar' : 'Actualizar' }}</button>
                             </div>
                         </div>
@@ -197,10 +210,35 @@
                 </form>
             </div>
         </Modal>
+
+        <Modal :show="showModalAdd">
+            <form class="p-6" @submit.prevent="submitTypeProduct">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Nuevo tipo de producto
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div class="sm:col-span-6">
+                        <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
+                        <div class="mt-2">
+                            <TextInput id="name" :to-uppercase="true" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                v-model="formname.name" />
+                            <InputError :message="formname.errors.name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="closeAddModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
+                </div>
+            </form>
+        </Modal>
+
         <ConfirmDisableModal :confirmingDeletion="confirmingDocDeletion" itemType="Producto"
             :deleteFunction="deleteProduct" @closeModal="closeModalDoc" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Producto" />
         <ConfirmUpdateModal :confirmingupdate="showConfirmEdit" itemType="Producto" />
+        <SuccessOperationModal :confirming="addSuccess" title="" message="" />
 
     </AuthenticatedLayout>
 </template>
@@ -219,9 +257,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { PencilIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/Components/Modal.vue';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     products: Object,
+    type_product: Object,
     auth: Object,
     search: String
 });
@@ -235,6 +276,10 @@ const form = useForm({
     description: ''
 });
 
+const formname = useForm({
+    name: ''
+})
+
 const create_product = ref(false);
 const showModal = ref(false);
 const docToDelete = ref(null);
@@ -242,6 +287,8 @@ const confirmingDocDeletion = ref(false);
 const showModalEdit = ref(false);
 const editingProduct = ref(null);
 const showConfirmEdit = ref(false);
+const addSuccess = ref(false)
+const showModalAdd = ref(false);
 
 const openCreateProduct = () => {
     create_product.value = true;
@@ -340,4 +387,32 @@ const deleteProduct = () => {
     }
 };
 
+function submitTypeProduct() {
+    axios.post(route('inventory.purchaseproducts.typeProduct'), { ...formname.data() })
+        .then(response => {
+            if (response.status === 200) {
+                let newItem = response.data.new
+                props.type_product.push({ ...newItem })
+                closeAddModal()
+                addSuccess.value = true
+                setTimeout(() => {
+                    addSuccess.value = false
+                }, 600)
+                formname.reset()
+            } else {
+                throw new Error('Fallo en el servidor con status ' + response.status)
+            }
+        })
+        .catch(error => {
+            console.error(error)
+        })
+}
+
+function add_product () {
+    showModalAdd.value = true
+}
+
+function closeAddModal() {
+    showModalAdd.value = false
+}
 </script>

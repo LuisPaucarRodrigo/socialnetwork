@@ -76,8 +76,8 @@
             <td style="border: 1px solid #000; width: 250px;  padding-right: 50px">
                 <div style="padding-left: 5px; padding-top: 15px">
                     <p style="font-size: 14px; font-weight: bold; line-height: 0.5;">Persona de contacto:</p>
-                    <p style="font-size: 14px; line-height: 0.5;">CONPROCO S.R.L.</p>
-                    <p style="font-size: 14px; line-height: 0.5;">RUC: 20559246272</p>
+                    <p style="font-size: 14px; line-height: 0.5;">Nombre: {{ $user->name }}</p>
+                    <p style="font-size: 14px; line-height: 0.5;">Email: {{ $user->email }}</p>
                 </div>
             </td>
         </tr>
@@ -149,6 +149,42 @@
           @endif
         </tbody>
       </table>
+      <table class="mt-3" style="">
+        <thead>
+            <tr>
+                <th class="td-custom2" scope="col" colspan="5" style="text-align: center; font-weight: normal;">Pagos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="width: 200px; text-align: center; font-weight: normal; border: 1.5px solid #000; font-size: 14px;">Descripción</td>
+                <td style="width: 100px; text-align: center; font-weight: normal; border: 1.5px solid #000; font-size: 14px;">Estado</td>
+                <td style="width: 170.5px; text-align: center; font-weight: normal; border: 1.5px solid #000; font-size: 14px;">Número de Operación</td>
+                <td style="width: 100px; text-align: center; font-weight: normal; border: 1.5px solid #000; font-size: 14px;">Fecha del Pago</td>
+                <td style="width: 100px; text-align: center; font-weight: normal; border: 1.5px solid #000; font-size: 14px;">Monto</td>
+            </tr>
+            @php
+                $total = 0;
+            @endphp
+            @foreach ($purchase_order->purchase_quote->payment as $index => $item)
+            <tr>
+                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->description }}</td>
+                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->state ? 'Pendiente' : 'Completado' }}</td>
+                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->operation_number ? $item->operation_number : '-' }}</td>
+                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->date ? \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $item->date)->format('d/m/Y') : '-' }}</td>
+                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px; text-align: right;">{{ $item->purchase_quote->currency == 'sol' ? 'S/. ' : '$ '}}{{ $item->amount }}</td>
+            </tr>
+            @php
+                $total += $item->amount;
+            @endphp
+            @endforeach
+            <tr>
+                <td colspan="5" class="td-custom2" style="text-align: right; font-weight: normal; font-weight: bold">
+                Total: {{$purchase_order->purchase_quote->currency == 'sol' ? 'S/. ' : '$ ' }} {{ $total }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
 
 </body>
 </html>
