@@ -3,7 +3,7 @@
     <Head title="Productos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
-            Aprobación de Despachos
+            Despachos CONPROCO
         </template>
 
         <div class="min-w-full p-3 rounded-lg shadow">
@@ -240,7 +240,6 @@ import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { formattedDate } from '@/utils/utils';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -252,50 +251,6 @@ const props = defineProps({
     warehouseId: Number,
     auth: Object
 });
-
-
-const declineModal = ref(false);
-const acceptModal = ref(false);
-let project_entry_id = null;
-
-const closeAcceptModal = () => {
-    acceptModal.value = false;
-}
-
-const closeDeclineModal = () => {
-    declineModal.value = false;
-}
-
-const openAcceptModal = (id) => {
-  project_entry_id = id;
-  acceptModal.value = true;
-}
-
-const openDeclineModal = (id) => {
-  project_entry_id = id;
-  declineModal.value = true;
-}
-
-const declineRequest = () => { 
-  const data = { state: false, project_entry_id: project_entry_id };
-  router.post(route('warehouses.dispatches.acceptordecline', {warehouse: props.warehouseId}), data, {
-    preserveScroll: true,
-    onSuccess:() => {
-      acceptModal.value = false
-    }
-  });
-}
-
-const acceptRequest = () => {
-  const data = { state: true, project_entry_id: project_entry_id };
-  router.post(route('warehouses.dispatches.acceptordecline', {warehouse: props.warehouseId}), data, {
-    preserveScroll: true,
-    onSuccess:() => {
-      router.visit(route('warehouses.dispatches', {warehouse: props.warehouseId}))
-      declineModal.value = false
-    }
-  });
-}
 
 
 //Expandible row
