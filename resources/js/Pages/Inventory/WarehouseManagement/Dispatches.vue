@@ -3,7 +3,7 @@
     <Head title="Productos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
-            Aprobación de Despachos
+            Despachos CONPROCO
         </template>
 
         <div class="min-w-full p-3 rounded-lg shadow">
@@ -177,13 +177,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { formattedDate } from '@/utils/utils';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-
 
 const props = defineProps({
     project_entries: Object,
@@ -233,54 +228,6 @@ const acceptRequest = () => {
       declineModal.value = false
     }
   });
-}
-
-
-//Expandible row
-const row = ref(0);
-const toggleDetails = (outputs) => {
-    if (row.value === outputs[0].project_entry_id) {
-        row.value = 0;
-    } else {
-        row.value = outputs[0].project_entry_id;
-    }
-}
-
-
-
-const showModal = ref(false)
-const showSuccessModal = ref(false)
-const form = useForm({
-    project_entry_id:'',
-    quantity:''
-})
-                                    
-const showModalOutput = (id) => {
-    form.project_entry_id = id
-    showModal.value = true
-}
-
-const closeModal = () => {
-    showModal.value = false
-    form.reset()
-}
-
-
-const submit = () => {
-    form.post(route('inventory.special_dispatch_output.store'), {
-        onSuccess: () => {
-            closeModal();
-            showSuccessModal.value = true
-            setTimeout(()=>{
-                showSuccessModal.value = false
-            }, 2000)
-        },
-    })
-}
-const deleteOutput = (id) => {
-    router.delete(route('inventory.special_dispatch_output.destroy', {
-        project_entry_output_id:id
-    }))
 }
 
 
