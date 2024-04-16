@@ -12,7 +12,8 @@
                     @change="optionChange"
                 >
                     <option>Por Aprobar</option>
-                    <option>Historial</option>
+                    <option>Aprobados</option>
+                    <option>Rechazados</option>
                 </select>
 
             </div>
