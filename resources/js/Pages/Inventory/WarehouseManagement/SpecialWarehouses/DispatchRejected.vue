@@ -112,9 +112,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 
 
 const { warehouse, disToApToCom } = defineProps({
@@ -131,8 +130,5 @@ const optionChange = (e) => {
         router.get(route('inventory.special_dispatch.approved', {warehouse_id: warehouse.id}))
     }
 }
-
-
-
 
 </script>
