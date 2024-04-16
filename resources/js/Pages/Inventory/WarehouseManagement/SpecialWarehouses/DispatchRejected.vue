@@ -105,59 +105,16 @@
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="disToApToCom.links" />
             </div>
-
-            <Modal :show="showModal">
-                <form class="p-6" @submit.prevent="submit">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Registrar la salida
-                    </h2>
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                        <div class="sm:col-span-6">
-                            <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
-                            <div class="mt-2">
-                                <input id="quantity" type="number" min="1" v-model="form.quantity"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError 
-                                    :message="form.errors.quantity"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex gap-3 justify-end">
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                            type="button" @click="closeModal"> Cerrar </button>
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                            type="submit"> Agregar </button>
-                    </div>
-                </form>
-            </Modal>
-
-            
         </div>
-        <ConfirmCreateModal :confirmingcreation="showSuccessModal" itemType="salida" />
-        <!-- <ConfirmDeleteModal :confirmingDeletion="confirmDelete" itemType="producto"
-            :nameText="`esta entrada del producto ${prod.name}`" :deleteFunction="deleteProduct"
-            @closeModal="closeModal" />
 
-        <ErrorOperationModal :showError="showError" title="No hay presupuesto"
-            message="La cantidad disponible del presupuesto esta en cero o no está definido" /> -->
     </AuthenticatedLayout>
 </template>
 <script setup>
-import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
-const showError = ref(false)
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 
 const { warehouse, disToApToCom } = defineProps({
@@ -165,62 +122,6 @@ const { warehouse, disToApToCom } = defineProps({
     disToApToCom: Object,
     auth: Object,
 });
-
-//Expandible row
-const row = ref(0);
-const toggleDetails = (outputs) => {
-    console.log(outputs[0].project_entry_id)
-    if (row.value === outputs[0].project_entry_id) {
-        row.value = 0;
-    } else {
-        row.value = outputs[0].project_entry_id;
-    }
-}
-
-//Activate Deactivate
-const setDispatchStatus = (id, state) => {
-    router.post(
-        route('inventory.special_dispatch.accept_decline', {project_entry_id:id}),
-        {state},
-    )
-}
-
-
-//Registrate output
-const showModal = ref(false)
-const showSuccessModal = ref(false)
-const form = useForm({
-    project_entry_id:'',
-    quantity:''
-})
-                                    
-const showModalOutput = (id) => {
-    form.project_entry_id = id
-    showModal.value = true
-}
-
-const closeModal = () => {
-    showModal.value = false
-    form.reset()
-}
-
-
-const submit = () => {
-    form.post(route('inventory.special_dispatch_output.store'), {
-        onSuccess: () => {
-            closeModal();
-            showSuccessModal.value = true
-            setTimeout(()=>{
-                showSuccessModal.value = false
-            }, 2000)
-        },
-    })
-}
-const deleteOutput = (id) => {
-    router.delete(route('inventory.special_dispatch_output.destroy', {
-        project_entry_output_id:id
-    }))
-}
 
 
 const optionChange = (e) => {

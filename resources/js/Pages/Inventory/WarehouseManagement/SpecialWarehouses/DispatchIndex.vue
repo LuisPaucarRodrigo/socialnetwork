@@ -133,18 +133,10 @@
     </AuthenticatedLayout>
 </template>
 <script setup>
-import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
-const showError = ref(false)
+import { Head, router } from '@inertiajs/vue3';
 
 
 const { warehouse, disToApToCom } = defineProps({
@@ -153,60 +145,12 @@ const { warehouse, disToApToCom } = defineProps({
     auth: Object,
 });
 
-//Expandible row
-const row = ref(0);
-const toggleDetails = (outputs) => {
-    console.log(outputs[0].project_entry_id)
-    if (row.value === outputs[0].project_entry_id) {
-        row.value = 0;
-    } else {
-        row.value = outputs[0].project_entry_id;
-    }
-}
-
 //Activate Deactivate
 const setDispatchStatus = (id, state) => {
     router.post(
         route('inventory.special_dispatch.accept_decline', {project_entry_id:id}),
         {state},
     )
-}
-
-
-//Registrate output
-const showModal = ref(false)
-const showSuccessModal = ref(false)
-const form = useForm({
-    project_entry_id:'',
-    quantity:''
-})
-                                    
-const showModalOutput = (id) => {
-    form.project_entry_id = id
-    showModal.value = true
-}
-
-const closeModal = () => {
-    showModal.value = false
-    form.reset()
-}
-
-
-const submit = () => {
-    form.post(route('inventory.special_dispatch_output.store'), {
-        onSuccess: () => {
-            closeModal();
-            showSuccessModal.value = true
-            setTimeout(()=>{
-                showSuccessModal.value = false
-            }, 2000)
-        },
-    })
-}
-const deleteOutput = (id) => {
-    router.delete(route('inventory.special_dispatch_output.destroy', {
-        project_entry_output_id:id
-    }))
 }
 
 

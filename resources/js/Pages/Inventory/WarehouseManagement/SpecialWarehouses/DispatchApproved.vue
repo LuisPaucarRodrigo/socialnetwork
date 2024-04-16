@@ -240,18 +240,11 @@
             
         </div>
         <ConfirmCreateModal :confirmingcreation="showSuccessModal" itemType="salida" />
-        <!-- <ConfirmDeleteModal :confirmingDeletion="confirmDelete" itemType="producto"
-            :nameText="`esta entrada del producto ${prod.name}`" :deleteFunction="deleteProduct"
-            @closeModal="closeModal" />
 
-        <ErrorOperationModal :showError="showError" title="No hay presupuesto"
-            message="La cantidad disponible del presupuesto esta en cero o no está definido" /> -->
     </AuthenticatedLayout>
 </template>
 <script setup>
-import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -259,8 +252,7 @@ import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
-const showError = ref(false)
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 
 const { warehouse, disToApToCom } = defineProps({
@@ -280,13 +272,6 @@ const toggleDetails = (outputs) => {
     }
 }
 
-//Activate Deactivate
-const setDispatchStatus = (id, state) => {
-    router.post(
-        route('inventory.special_dispatch.accept_decline', {project_entry_id:id}),
-        {state},
-    )
-}
 
 
 //Registrate output
