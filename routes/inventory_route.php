@@ -33,6 +33,8 @@ Route::post('/inventory/approve_purchase_orders/{warehouse}/approve', [Warehouse
 
 //dispatches
 Route::get('/inventory/dispatches/{warehouse}', [WarehousesController::class, 'showDispatches'])->name('warehouses.dispatches');
+Route::get('/inventory/dispatches_approved/{warehouse}', [WarehousesController::class, 'showApprovedDispatches'])->name('warehouses.dispatches.approved');
+Route::get('/inventory/dispatches_rejected/{warehouse}', [WarehousesController::class, 'showRejectedDispatches'])->name('warehouses.dispatches.rejected');
 Route::post('/inventory/dispatches/{warehouse}/accept_or_decline', [WarehousesController::class, 'acceptOrDeclineDispatch'])->name('warehouses.dispatches.acceptordecline');
 
 //outputs

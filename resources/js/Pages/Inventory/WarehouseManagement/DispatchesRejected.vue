@@ -15,7 +15,7 @@
                 >
                     <option>Por Aprobar</option>
                     <option>Aprobados</option>
-                    <option>Rechazados</option>
+                    <option selected>Rechazados</option>
                 </select>
 
             </div>
@@ -84,38 +84,15 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
                                 </td>
-    
-    
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
-                                    <div v-if="item.state === null"
-                                        class="flex space-x-3 justify-center">
-                                        <button 
-                                            @click="()=>openAcceptModal(item.id)"
-                                            class="flex items-center text-blue-500 hover:underline">
-                                            <svg 
-                                                xmlns="http://www.w3.org/2000/svg" 
-                                                fill="none" 
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5" 
-                                                stroke="currentColor" 
-                                                class="w-6 h-6 text-green-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
-                                        </button>
-                                        <button 
-                                            @click="()=>openDeclineModal(item.id)"
-                                            type="button"
-                                            class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
-                                        </button>
+                                    <div>
+                                        <p v-if="item.state == false" :class="'text-red-500'">
+                                            Rechazado
+                                        </p>
                                     </div>
-                                </td>                    
-                            </tr>
+                                </td>
+                                
+                            </tr> 
                         </template>
                     </tbody>
                 </table>
@@ -124,51 +101,6 @@
                 <pagination :links="project_entries.links" />
             </div>
         </div>
-
-        <Modal :show="acceptModal" :maxWidth="'xl'">
-            <div class="p-5">
-                <div>
-                    <h2 class="text-lg font-medium text-gray-900">
-                        ¿Desea aceptar la solicitud de productos?
-                    </h2>
-                </div>
-                <p class="mt-1 text-sm text-gray-600">
-                    Esta acción le permitirá generar salidas de los productos solicitados por el proyecto.
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <button @click="acceptRequest(project_entry_id)" type="button"
-                        class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 mr-3">
-                        Aceptar
-                    </button>
-                    <SecondaryButton @click="closeAcceptModal"> Cancelar </SecondaryButton>
-
-                </div>
-            </div>
-        </Modal>
-
-        <Modal :show="declineModal" :maxWidth="'xl'">
-            <div class="p-5">
-                <div>
-                    <h2 class="text-lg font-medium text-gray-900">
-                        ¿Desea rechazar la solicitud de productos?
-                    </h2>
-                </div>
-                <p class="mt-1 text-sm text-gray-600">
-                    Esta acción no se podrá revertir más adelante.
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <button @click="declineRequest(project_entry_id)" type="button"
-                        class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mr-3">
-                        Rechazar
-                    </button>
-                    <SecondaryButton @click="closeDeclineModal"> Cancelar </SecondaryButton>
-
-                </div>
-            </div>
-        </Modal>
-
-
-
     </AuthenticatedLayout>
 </template>
 
@@ -284,11 +216,12 @@ const deleteOutput = (id) => {
 }
 
 
+
 const optionChange = (e) => {
-    if (e.target.value === "Aprobados" ) {
+    if (e.target.value === "Por Aprobar" ) {
+        router.get(route('warehouses.dispatches', {warehouse: props.warehouseId}))
+    } else if (e.target.value === "Aprobados") {
         router.get(route('warehouses.dispatches.approved', {warehouse: props.warehouseId}))
-    } else if (e.target.value === "Rechazados") {
-        router.get(route('warehouses.dispatches.rejected', {warehouse: props.warehouseId}))
     }
 }
 
