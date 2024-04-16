@@ -70,7 +70,7 @@ class ProjectEntry extends Model
     public function getOutputsStateAttribute (){
         //modificar
         return $this->getCurrentOutputQuantityAttribute() 
-                <= $this->quantity ;
+                === $this->quantity ;
     }
 
 }

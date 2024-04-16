@@ -47,6 +47,7 @@ class LiquidationController extends Controller
                 'special_inventory.purchase_product',
                 'project_entry_outputs',
             ])
+            ->where('state', true)
             ->whereDoesntHave('project_entry_liquidation')
             ->get();
     
