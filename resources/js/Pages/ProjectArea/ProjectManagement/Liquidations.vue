@@ -2,7 +2,7 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template #header>
-            Asignaciones de Productos
+            Productos para liquidar
         </template>
 
         <Link :href="route('projectmanagement.liquidate.history', {project_id: project_id})"
