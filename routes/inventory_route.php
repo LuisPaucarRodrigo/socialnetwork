@@ -59,7 +59,10 @@ Route::get('/inventory/{warehouse_id}/special_products/create/{special_inventory
 Route::post('/inventory/special_products/store/{special_inventory_id?}', [SpecialWarehouseController::class, 'special_products_store'])->name('inventory.special_products.store');
 
 Route::get('/inventory/{warehouse_id}/special_dispatch_index/', [SpecialWarehouseController::class, 'special_dispatch_index'])->name('inventory.special_dispatch.index');
-Route::get('/inventory/{warehouse_id}/special_dispatch_historial/', [SpecialWarehouseController::class, 'special_dispatch_historial'])->name('inventory.special_dispatch.historial');
+Route::get('/inventory/{warehouse_id}/special_dispatch_approved/', [SpecialWarehouseController::class, 'special_dispatch_approved'])->name('inventory.special_dispatch.approved');
+Route::get('/inventory/{warehouse_id}/special_dispatch_rejected/', [SpecialWarehouseController::class, 'special_dispatch_rejected'])->name('inventory.special_dispatch.rejected');
+
+
 Route::post('/inventory/special_dispatch_accept_decline/{project_entry_id}', [SpecialWarehouseController::class, 'special_dispatch_accept_decline'])->name('inventory.special_dispatch.accept_decline');
 Route::post('/inventory/special_dispatch_output_store', [SpecialWarehouseController::class, 'special_dispatch_output_store'])->name('inventory.special_dispatch_output.store');
 
