@@ -656,7 +656,7 @@ const { preproject, auth, products, purchasing_requests, services, resources } =
     services: Object,
     resources: Object
 })
-console.log(preproject.quote.preproject_quote_service)
+
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
     message: `La cotización para anteproyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
@@ -719,10 +719,15 @@ const initialState = {
     preproject_id: preproject.id
 }
 
+const updateState = {
+    ...preproject.quote,
+    items : [...preproject.quote.preproject_quote_service]
+}
+
 const form = useForm(
-    { ...(preproject.quote ? preproject.quote : initialState) }
+    { ...(preproject.quote ? updateState : initialState) }
 )
-console.log(form.item)
+
 const submit = () => {
     let url = route('preprojects.quote.store')
     if (preproject.quote) {

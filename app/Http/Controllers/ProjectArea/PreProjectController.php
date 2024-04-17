@@ -126,7 +126,6 @@ class PreProjectController extends Controller
         ]);
     }
 
-
     public function accept_decline_quote(Request $request, $purchase_quote_id) {
         $data = $request->validate([
             "preproject_state" => "required|boolean"
@@ -134,7 +133,6 @@ class PreProjectController extends Controller
         Purchase_quote::find($purchase_quote_id)->update($data);
         return redirect()->back();
     }
-
 
     public function quote_store(PreprojectQuoteRequest $request, $quote_id = null) {
         $data = $request->validated();
