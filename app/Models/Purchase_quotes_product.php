@@ -42,7 +42,7 @@ class Purchase_quotes_product extends Model
         if ($currency === "sol"){
             return $unitary_amount/(1 + $igv_percentage);
         } else if ($currency === "dolar") {
-            return ($change_value !== null ? $change_value : 1)
+            return ($change_value !== null ? $change_value : 3.70)
                     *$unitary_amount/(1 + $igv_percentage); 
         }
     }
