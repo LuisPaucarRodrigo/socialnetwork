@@ -119,6 +119,7 @@ Route::post('/projectmanagement/purchases_request/{project_id}/additional_costs'
 Route::get('/projectmanagement/products/{project_id}', [ProjectManagementController::class, 'project_product_index'])->name('projectmanagement.products');
 Route::post('/projectmanagement/products/{project_id}/liquidate', [LiquidationController::class, 'store'])->name('projectmanagement.productsLiquidate');
 Route::get('/projectmanagement/products/{project_id}/liquidateTable', [LiquidationController::class, 'index'])->name('projectmanagement.liquidate');
+Route::get('/projectmanagement/products/{project_id}/liquidateHistory', [LiquidationController::class, 'history'])->name('projectmanagement.liquidate.history');
 Route::get('/projectmanagement/products/{project_id}/{project_entry}', [LiquidationController::class, 'liquidateForm'])->name('projectmanagement.liquidate.form');
 Route::post('/projectmanagement/products/{project_id}/{project_entry}/liquidate', [LiquidationController::class, 'liquidate'])->name('projectmanagement.liquidate.post');
 

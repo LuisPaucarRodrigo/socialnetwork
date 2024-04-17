@@ -111,7 +111,7 @@ class WarehousesController extends Controller
                     'inventory_id' => $inventory->id,
                     'type' => 'purchase',
                     'quantity' => $purchaseQuoteProduct->quantity,
-                    'unitary_price' => $purchaseQuoteProduct->unitary_amount,
+                    'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
                     'entry_date' => $today,
                     'observations' => $request->observations
                 ]);
@@ -133,7 +133,7 @@ class WarehousesController extends Controller
                         'inventory_id' => $existingInventory->id,
                         'type' => 'purchase',
                         'quantity' => $purchaseQuoteProduct->quantity,
-                        'unitary_price' => $purchaseQuoteProduct->unitary_amount,
+                        'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
                         'entry_date' => $today,
                         'observations' => $request->observations
                     ]);
@@ -153,7 +153,7 @@ class WarehousesController extends Controller
                         'inventory_id' => $inventory->id,
                         'type' => 'purchase',
                         'quantity' => $purchaseQuoteProduct->quantity,
-                        'unitary_price' => $purchaseQuoteProduct->unitary_amount,
+                        'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
                         'entry_date' => $today,
                         'observations' => $request->observations
                     ]);
@@ -170,6 +170,7 @@ class WarehousesController extends Controller
             'state' => 'Completada/Aprobada'
         ]);
     }
+
 
     public function storeProducts(Request $request, Warehouse $warehouse)
     {
@@ -230,8 +231,11 @@ class WarehousesController extends Controller
     public function showDispatches(Warehouse $warehouse)
     {
         $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
-            $query->where('warehouse_id', $warehouse->id);
-        })->where('state', null)->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project')->paginate(10);
+                $query->where('warehouse_id', $warehouse->id);
+            })
+            ->where('state', null)
+            ->orderBy('created_at', 'desc')
+            ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
 
         return Inertia::render('Inventory/WarehouseManagement/Dispatches', [
             'project_entries' => $project_entries,
@@ -239,7 +243,40 @@ class WarehousesController extends Controller
         ]);
     }
 
-    public function acceptOrDeclineDispatch(Request $request)
+
+    public function showApprovedDispatches(Warehouse $warehouse)
+    {
+        $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse->id);
+            })
+            ->where('state', true)
+            ->orderBy('created_at', 'desc')
+            ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
+
+        return Inertia::render('Inventory/WarehouseManagement/DispatchesApproved', [
+            'project_entries' => $project_entries,
+            'warehouseId' => $warehouse->id
+        ]);
+    }
+
+    public function showRejectedDispatches(Warehouse $warehouse)
+    {
+        $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse->id);
+            })
+            ->where('state', false)
+            ->orderBy('created_at', 'desc')
+            ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
+
+        return Inertia::render('Inventory/WarehouseManagement/DispatchesRejected', [
+            'project_entries' => $project_entries,
+            'warehouseId' => $warehouse->id
+        ]);
+    }
+
+
+
+    public function acceptOrDeclineDispatch(Warehouse $warehouse, Request $request)
     {
         $request->validate([
             'state' => 'required|boolean',

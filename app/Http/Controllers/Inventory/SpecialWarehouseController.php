@@ -62,32 +62,20 @@ class SpecialWarehouseController extends Controller
     public function special_dispatch_index($warehouse_id)
     {
         $warehouse = Warehouse::find($warehouse_id);
-        $perPage = 15;
-        $page = LengthAwarePaginator::resolveCurrentPage() ?: 1;
-        $results = ProjectEntry::with(
-            'special_inventory.purchase_product',
-            'project_entry_outputs',
-            'project'
-        )
+        
+        $disToApToCom = ProjectEntry::with(
+                'special_inventory.purchase_product',
+                'project_entry_outputs',
+                'project')
             ->whereHas(
                 'special_inventory',
                 function ($query) use ($warehouse_id) {
                     $query->where('warehouse_id', $warehouse_id);
                 }
             )
+            ->where('state', null)
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->filter(function ($projectEntry) {
-                return $projectEntry->outputs_state === true;
-            });
-        $currentPageItems = $results->slice(($page - 1) * $perPage, $perPage);
-        $disToApToCom = new LengthAwarePaginator(
-            $currentPageItems,
-            $results->count(),
-            $perPage,
-            $page,
-            ['path' => LengthAwarePaginator::resolveCurrentPath()]
-        );
+            ->paginate(15);
 
         return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/DispatchIndex', [
             "warehouse" => $warehouse,
@@ -95,41 +83,48 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
-    public function special_dispatch_historial($warehouse_id)
-    {
+    public function special_dispatch_approved ($warehouse_id) {
         $warehouse = Warehouse::find($warehouse_id);
-        $perPage = 15;
-        $page = LengthAwarePaginator::resolveCurrentPage() ?: 1;
-        $results = ProjectEntry::with(
-            'special_inventory.purchase_product',
-            'project_entry_outputs',
-            'project'
-        )
+        $disToApToCom = ProjectEntry::with(
+                'special_inventory.purchase_product',
+                'project_entry_outputs',
+                'project')
             ->whereHas(
                 'special_inventory',
                 function ($query) use ($warehouse_id) {
                     $query->where('warehouse_id', $warehouse_id);
                 }
             )
+            ->where('state', true)
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->filter(function ($projectEntry) {
-                return $projectEntry->outputs_state === false;
-            });
-        $currentPageItems = $results->slice(($page - 1) * $perPage, $perPage);
-        $disToApToCom = new LengthAwarePaginator(
-            $currentPageItems,
-            $results->count(),
-            $perPage,
-            $page,
-            ['path' => LengthAwarePaginator::resolveCurrentPath()]
-        );
-
-        return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/DispatchHistorial', [
+            ->paginate(15);
+        return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/DispatchApproved', [
             "warehouse" => $warehouse,
             "disToApToCom" => $disToApToCom,
         ]);
     }
+    public function special_dispatch_rejected ($warehouse_id) {
+        $warehouse = Warehouse::find($warehouse_id);
+        $disToApToCom = ProjectEntry::with(
+                'special_inventory.purchase_product',
+                'project')
+            ->whereHas(
+                'special_inventory',
+                function ($query) use ($warehouse_id) {
+                    $query->where('warehouse_id', $warehouse_id );
+                }
+            )
+            ->where('state', false)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+        return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/DispatchRejected', [
+            "warehouse" => $warehouse,
+            "disToApToCom" => $disToApToCom,
+        ]);
+    }
+
+
+    
 
     public function special_dispatch_accept_decline(Request $request, $project_entry_id)
     {
