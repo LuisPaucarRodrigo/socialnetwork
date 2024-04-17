@@ -3,7 +3,7 @@
     <Head title="Productos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
-            Aprobar Ingreso de Productos por Compras
+            Aprobar Ingreso de {{purchase_orders ? 'Productos' : 'Activos'}} por Compras
         </template>
 
         <div class="min-w-full p-3 rounded-lg shadow">
@@ -45,7 +45,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in props.purchase_orders.data" :key="item.id"
+                        <tr v-for="item in purchase_orders ? purchase_orders.data : purchase_orders_resource.data" :key="item.id"
                             class="text-gray-700 border-b">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.code }}</p>
@@ -85,7 +85,7 @@
                 </table>
             </div>
             <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="purchase_orders.links" />
+                <pagination :links="purchase_orders ? purchase_orders.links : purchase_orders_resource.links" />
             </div>
         </div>
 
@@ -213,8 +213,15 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
-    purchase_orders: Object,
-    warehouseId: Number
+    purchase_orders: {
+        type: Object,
+        required: false
+    },
+    warehouseId: Number,
+    purchase_orders_resource: {
+        type: Object,
+        required: false
+    }
 });
 
 const approvating = ref(false);
@@ -246,14 +253,14 @@ let purchaseQuoteData = {
 };
 
 const submit = () => {
-    form.post(route('warehouses.purchaseorders.approve.post', { warehouse: props.warehouseId }), {
+    form.post(props.purchase_orders ? route('warehouses.purchaseorders.approve.post', { warehouse: props.warehouseId }) : route('warehouses.resource.approve'), {
         onSuccess: () => {
         closeApprove();
         form.reset();
         showModal.value = true
         setTimeout(() => {
             showModal.value = false;
-            router.visit(route('warehouses.purchaseorders.approve', { warehouse: props.warehouseId }))
+            router.visit(props.purchase_orders ? route('warehouses.purchaseorders.approve', { warehouse: props.warehouseId }) : route('warehouses.resource'))
         }, 2000);
         },
         onError: () => {

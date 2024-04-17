@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Purchase_product;
+use App\Models\ResourceType;
 use App\Models\TypeProduct;
 use Illuminate\Validation\Rule;
 
@@ -13,12 +14,13 @@ class PurchaseProductsController extends Controller
 {
     public function index()
     {
-        $products = Purchase_product::with('purchasing_request_product', 'purchase_quote_product')
+        $products = Purchase_product::with('resource_type')
             ->where('state', true)
             ->paginate(10);
         return Inertia::render('Inventory/PurchaseProducts/Products', [
             'products' => $products,
-            'type_product' => TypeProduct::all()
+            'type_product' => TypeProduct::all(),
+            'resource_type' => ResourceType::all()
         ]);
     }
 
@@ -67,7 +69,8 @@ class PurchaseProductsController extends Controller
             'unit' => 'required',
             'type' => 'required|string|in:Producto,Servicio,Activo',
             'type_product' => 'nullable|string',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'resource_type_id' => 'nullable|numeric'
         ]);
 
         Purchase_product::create($validateData);
@@ -98,9 +101,22 @@ class PurchaseProductsController extends Controller
     public function typeProducts(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'depreciation_value' => 'nullable|numeric',
+            'timelife' => 'nullable|numeric'
         ]);
         $new = TypeProduct::create($data);
+        return response()->json(['new'=> $new],200);
+    }
+
+    public function resourceType(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'depreciation_value' => 'required|numeric',
+            'timelife' => 'required|numeric'
+        ]);
+        $new = ResourceType::create($data);
         return response()->json(['new'=> $new],200);
     }
 }

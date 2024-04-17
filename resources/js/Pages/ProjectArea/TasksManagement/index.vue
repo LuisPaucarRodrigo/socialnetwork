@@ -98,14 +98,13 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <Link v-if="task.status == 'pendiente'"
-                                        :href="route('tasks.edit', { taskId: task.id })">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                    </svg>
-                                    </Link>
+                                    <button v-if="task.status == 'pendiente'" @click="showModalDate(task.id)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                        </svg>
+                                    </button>
                                     <span v-else class="text-gray-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
@@ -162,18 +161,20 @@
                     <h2 class="text-lg font-medium text-gray-900">
                         Duplicar Tareas
                     </h2>
-                    <p class="mt-1 text-sm text-gray-600">
+                    <InputLabel for="project_id_duplicated" class="font-medium leading-6 text-gray-900 mt-3">
                         Proyectos
-                    </p>
-                    <select v-model="form.project_id">
-                        <option value="" disabled>Seleccionar Proyecto</option>
-                        <option v-for="item in projects" :key="item.id" :value="item.id">{{ item.name }}</option>
-                    </select>
-                    <InputError :message="form.errors.quote_deadline" />
-
+                    </InputLabel>
+                    <div class="mt-2">
+                        <select v-model="form.project_id_duplicated" id="project_id_duplicated"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <option value="" disabled>Seleccionar Proyecto</option>
+                            <option v-for="item in projects" :key="item.id" :value="item.id">{{ item.name }}
+                            </option>
+                        </select>
+                        <InputError :message="form.errors.project_id_duplicated" />
+                    </div>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton @click="closeDuplicated"> Cancel </SecondaryButton>
-
                         <PrimaryButton type="submit" class="ml-3" :class="{ 'opacity-25': form.processing }">
                             Duplicar
                         </PrimaryButton>
@@ -182,29 +183,37 @@
             </form>
         </Modal>
 
-        <!-- <Modal :show="showModalDuplicated">
-            <form @submit.prevent="submit">
+        <Modal :show="showModalEditDate">
+            <form @submit.prevent="submitEditDate">
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
                         Fechas de Tareas
                     </h2>
-                    <p class="mt-1 text-sm text-gray-600">
-                        Modificar 
-                    </p>
-                    <TextInput type="date" v-model="form.quote_deadline" id="due_date" required
+                    <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">
+                        Fecha de Inicio
+                    </InputLabel>
+                    <TextInput type="date" v-model="formDate.start_date" id="start_date" required
                         class="mt-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                    <InputError :message="form.errors.quote_deadline" />
-
+                    <InputError :message="form.errors.start_date" />
+                    <InputLabel for="end_date" class="font-medium leading-6 text-gray-900 mt-3">
+                        Fecha de Fin
+                    </InputLabel>
+                    <TextInput type="date" v-model="formDate.end_date" id="end_date" required
+                        class="mt-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <InputError :message="form.errors.end_date" />
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton @click="closeModalDuplicated"> Cancel </SecondaryButton>
+                        <SecondaryButton @click="closeModalDate"> Cancel </SecondaryButton>
 
-                        <PrimaryButton type="submit" class="ml-3" :class="{ 'opacity-25': form.processing }">
+                        <PrimaryButton type="submit" class="ml-3" :class="{ 'opacity-25': formDate.processing }">
                             Guardar
                         </PrimaryButton>
                     </div>
                 </div>
             </form>
-        </Modal> -->
+        </Modal>
+        <SuccessOperationModal :confirming="showConfirmDuplicated" title="Tareas"
+            message="Tareas duplicadas con exito" />
+
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -212,12 +221,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref } from 'vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import { PlayIcon, PauseIcon, PlayPauseIcon, CheckIcon } from '@heroicons/vue/24/outline';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 
 const { tasks, project, projects } = defineProps({
     tasks: Object,
@@ -234,13 +245,22 @@ const statustask = (taskId, status) => {
 };
 
 const form = useForm({
-    project_id: ''
+    project_id: project.id,
+    project_id_duplicated: '',
+})
+
+const formDate = useForm({
+    id: '',
+    start_date: '',
+    end_date: ''
 })
 
 const showcompletetaskmodal = ref(false);
 const selectedTask = ref(null);
 const typereq = ref(null);
 const showModalDuplicated = ref(false);
+const showConfirmDuplicated = ref(false);
+const showModalEditDate = ref(false);
 
 const openModalComplete = (task_id) => {
     selectedTask.value = task_id;
@@ -266,7 +286,32 @@ function closeDuplicated() {
     showModalDuplicated.value = false
 }
 
+function showModalDate(id) {
+    formDate.id = id
+    showModalEditDate.value = true
+}
+
+function closeModalDate() {
+    showModalEditDate.value = false
+}
+
 function submitDuplicated() {
-    
+    form.post(route('tasks.duplicated'), {
+        onSuccess: () => {
+            showConfirmDuplicated.value = true
+            setTimeout(() => {
+                showConfirmDuplicated.value = false;
+                router.get(route('tasks.index', { id: project.id }))
+            }, 2000);
+        }
+    })
+}
+
+function submitEditDate() {
+    formDate.post(route('tasks.edit.date'), {
+        onSuccess: () => {
+            router.get(route('tasks.index', { id: project.id }))
+        }
+    })
 }
 </script>

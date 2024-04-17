@@ -42,27 +42,47 @@
                                 Estado
                             </InputLabel>
                             <div class="mt-2">
-                                <template v-if="purchase">
-                                    <span
-                                        :class="`uppercase inline-flex items-center gap-x-1 py-0 px-3 text-sm rounded-full font-medium bg-indigo-600 text-white`">
-                                        {{ purchase.state }}
-                                    </span>
-                                </template>
+                                <span
+                                    :class="`uppercase inline-flex items-center gap-x-1 py-0 px-3 text-sm rounded-full font-medium bg-indigo-600 text-white`">
+                                    {{ purchase.state }}
+                                </span>
                             </div>
                         </div>
 
-                        <div v-else class="sm:col-span-3 sm:col-start-1">
-                            <div class="mt-2">
-                                <InputLabel for="code" class="font-bold leading-6 text-indigo-700 py-2">
-                                    {{ 'El código se generará de forma automática' }}
-                                </InputLabel>
+                        <div v-if="!project && !purchase" class="sm:col-span-6 sm:col-start-1">
+                            <div class="flex items-center justify-between w-full">
+                                <div>
+                                    <InputLabel for="resorceOrProduct"
+                                        class="sm:text-sm font-medium leading-6 text-gray-900">
+                                        ¿Producto o Activos?
+                                    </InputLabel>
+                                    <div class="mt-2 flex gap-4">
+                                        <label class="flex gap-2 items-center">
+                                            Productos
+                                            <input type="radio" v-model="resorceOrProduct" id="resorceOrProduct"
+                                                :value="true"
+                                                class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                        </label>
+                                        <label class="flex gap-2 items-center">
+                                            Activos
+                                            <input type="radio" v-model="resorceOrProduct" id="resorceOrProduct"
+                                                :value="false"
+                                                class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <InputLabel for="code" class="font-bold leading-6 text-indigo-700 py-2">
+                                        {{ 'El código se generará de forma automática' }}
+                                    </InputLabel>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-4">
-                            <div class="flex gap-2 items-center">
+                        <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-2">
+                            <div class="flex gap-2 items-center mt-2">
                                 <h2 class="text-base font-bold leading-6 text-gray-900 ">
-                                    Añadir productos
+                                    Añadir {{ resorceOrProduct ? 'Producto' : 'Activo' }}
                                 </h2>
                                 <button v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
                                     type="button" @click="showProductModal = !showProductModal">
@@ -163,20 +183,31 @@
         <Modal :show="showProductModal">
             <form class="p-6" @submit.prevent="addProduct">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Añadir producto
+                    Añadir {{ resorceOrProduct ? 'Producto' : 'Activo' }}
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                     <div v-if="!form.products.length" class="sm:col-span-3">
                         <InputLabel for="type_product" class="font-medium leading-6 text-gray-900">
-                            Tipo de Producto
+                            Tipo de {{ resorceOrProduct ? 'Producto' : 'Activo' }}
                         </InputLabel>
-                        <div class="mt-2">
+                        <div v-if="resorceOrProduct" class="mt-2">
                             <select required id="type_product" v-model="type_product"
                                 @change="handleTypeProduct($event.target.value)"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione tipo</option>
-                                <option v-for="item in typeProduct" :key="item.id" :value="item.name"> 
-                                    {{ item.name }} 
+                                <option v-for="item in typeProduct" :key="item.id" :value="item.name">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div v-else class="mt-2">
+                            <select required id="type_product" v-model="type_product"
+                                @change="handleTypeResource($event.target.value)"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccione tipo</option>
+                                <option v-for="item in resourceType" :key="item.id" :value="item.id">
+                                    {{ item.name }}
                                 </option>
                             </select>
                         </div>
@@ -184,7 +215,7 @@
 
                     <div class="sm:col-span-3">
                         <InputLabel for="unit" class="font-medium leading-6 text-gray-900">
-                            Producto
+                            {{ resorceOrProduct ? 'Producto' : 'Activo' }}
                         </InputLabel>
                         <div class="mt-2">
                             <input required id="unit" list="options" @input="handleAutocomplete" autocomplete="off"
@@ -192,7 +223,7 @@
 
                             <datalist id="options">
                                 <option v-for="item in product_selected" :value="item.code" :data-value="item">
-                                {{ item.name }}
+                                    {{ item.name }}
                                 </option>
                             </datalist>
                         </div>
@@ -254,7 +285,7 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { TrashIcon } from '@heroicons/vue/24/outline';
-import { ref,watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const showModal = ref(false);
 const showModal2 = ref(false);
@@ -262,8 +293,9 @@ const showModal3 = ref(false);
 const showErroModal = ref(false);
 const type_product = ref('')
 const product_selected = ref([]);
+const resorceOrProduct = ref(true);
 
-const { purchase, allProducts, project, typeProduct } = defineProps({
+const { purchase, allProducts, project, typeProduct, resourceType } = defineProps({
     purchase: {
         type: Object,
         requerid: false
@@ -271,11 +303,16 @@ const { purchase, allProducts, project, typeProduct } = defineProps({
     allProducts: Object,
     auth: Object,
     project: Object,
-    typeProduct: Object
+    typeProduct: Object,
+    resourceType: Object
 })
 
 function handleTypeProduct(product_value) {
     product_selected.value = allProducts.filter(product => product.type_product === product_value);
+}
+
+function handleTypeResource(resource_id) {
+    product_selected.value = allProducts.filter(resource => resource.resource_type_id == resource_id);
 }
 
 const initialState = {
@@ -288,6 +325,9 @@ const initialState = {
 
 const form = useForm(purchase ? JSON.parse(JSON.stringify(purchase)) : { ...initialState })
 
+watch(resorceOrProduct, () => {
+    form.products = []
+});
 
 const submit = () => {
     if (purchase) {

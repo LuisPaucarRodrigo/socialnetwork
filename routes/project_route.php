@@ -142,6 +142,10 @@ Route::get('/edittask/{taskId}', [TaskManagementController::class, 'edit'])->nam
 Route::post('/edittask/comment', [TaskManagementController::class, 'comment'])->name('tasks.edit.comment');
 Route::post('/edittask/add', [TaskManagementController::class, 'add_employee'])->name('tasks.add.employee');
 Route::get('/statustask/{taskId}/{status}', [TaskManagementController::class, 'status_task'])->name('tasks.edit.status');
+
+Route::post('/tasks/duplicated', [TaskManagementController::class, 'task_duplicated'])->name('tasks.duplicated');
+Route::post('/tasks/edit/date', [TaskManagementController::class, 'task_edit_date'])->name('tasks.edit.date');
+
 //Calendar
 Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');
 Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');

@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Solicitudes" />
     <AuthenticatedLayout :redirectRoute="'purchasesrequest.index'">
         <template #header>

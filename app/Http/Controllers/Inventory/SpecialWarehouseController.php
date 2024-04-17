@@ -13,15 +13,14 @@ use App\Models\Warehouse;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class SpecialWarehouseController extends Controller
 {
 
     //PRODUCTOS
-    public function special_products_index ($warehouse_id) {
+    public function special_products_index($warehouse_id)
+    {
         $warehouse = Warehouse::find($warehouse_id);
         $special_products = SpecialInventory::with('purchase_product')
             ->where('warehouse_id', $warehouse_id)
@@ -34,7 +33,8 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
-    public function special_products_create ($warehouse_id, $special_inventory_id=null ) {
+    public function special_products_create($warehouse_id, $special_inventory_id = null)
+    {
         return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/ProductsCreate', [
             "products" => Purchase_product::where('type', 'Producto')->get(),
             "warehouse_id" => $warehouse_id,
@@ -42,33 +42,37 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
-    public function special_products_store (SpecialInventoryRequest $request, $special_inventory_id=null) {
+    public function special_products_store(SpecialInventoryRequest $request, $special_inventory_id = null)
+    {
         $data = $request->validated();
         $siToStore = SpecialInventory::find($special_inventory_id);
         $siToStore ? $siToStore->update($data)
-                   : SpecialInventory::create($data);
+            : SpecialInventory::create($data);
         return redirect()->back();
     }
 
-    public function special_products_destroy ( $special_inventory_id) {
+    public function special_products_destroy($special_inventory_id)
+    {
         SpecialInventory::find($special_inventory_id)->delete();
         return redirect()->back();
     }
 
 
     //DESPACHOS
-    public function special_dispatch_index ($warehouse_id) {
+    public function special_dispatch_index($warehouse_id)
+    {
         $warehouse = Warehouse::find($warehouse_id);
         $perPage = 15;
         $page = LengthAwarePaginator::resolveCurrentPage() ?: 1;
         $results = ProjectEntry::with(
-                'special_inventory.purchase_product',
-                'project_entry_outputs',
-                'project')
+            'special_inventory.purchase_product',
+            'project_entry_outputs',
+            'project'
+        )
             ->whereHas(
                 'special_inventory',
                 function ($query) use ($warehouse_id) {
-                    $query->where('warehouse_id', $warehouse_id );
+                    $query->where('warehouse_id', $warehouse_id);
                 }
             )
             ->orderBy('created_at', 'desc')
@@ -91,18 +95,20 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
-    public function special_dispatch_historial ($warehouse_id) {
+    public function special_dispatch_historial($warehouse_id)
+    {
         $warehouse = Warehouse::find($warehouse_id);
         $perPage = 15;
         $page = LengthAwarePaginator::resolveCurrentPage() ?: 1;
         $results = ProjectEntry::with(
-                'special_inventory.purchase_product',
-                'project_entry_outputs',
-                'project')
+            'special_inventory.purchase_product',
+            'project_entry_outputs',
+            'project'
+        )
             ->whereHas(
                 'special_inventory',
                 function ($query) use ($warehouse_id) {
-                    $query->where('warehouse_id', $warehouse_id );
+                    $query->where('warehouse_id', $warehouse_id);
                 }
             )
             ->orderBy('created_at', 'desc')
@@ -125,7 +131,8 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
-    public function special_dispatch_accept_decline (Request $request, $project_entry_id) {
+    public function special_dispatch_accept_decline(Request $request, $project_entry_id)
+    {
         $data = $request->validate([
             "state" => "required|boolean"
         ]);
@@ -133,27 +140,30 @@ class SpecialWarehouseController extends Controller
         return redirect()->back();
     }
 
-    public function special_dispatch_output_store (SpecialInventoryOutputRequest $request) {
+    public function special_dispatch_output_store(SpecialInventoryOutputRequest $request)
+    {
         $data = $request->validated();
         ProjectEntryOutput::create($data);
         return redirect()->back();
     }
-    public function special_dispatch_output_destroy ($project_entry_output_id) {
+    public function special_dispatch_output_destroy($project_entry_output_id)
+    {
         ProjectEntryOutput::find($project_entry_output_id)->delete();
         return redirect()->back();
     }
 
 
     //DEVOLUCIONES
-    public function special_refund_index ($warehouse_id) {
+    public function special_refund_index($warehouse_id)
+    {
         $warehouse = Warehouse::find($warehouse_id);
         $refunds = Refund::with(
             "project_entry_liquidation.project_entry.special_inventory.purchase_product"
-            )
+        )
             ->where('warehouse_id', $warehouse_id)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('state', null)
-                      ->orWhere('state', false);
+                    ->orWhere('state', false);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -162,11 +172,12 @@ class SpecialWarehouseController extends Controller
             "refunds" => $refunds,
         ]);
     }
-    public function special_refund_historial ($warehouse_id) {
+    public function special_refund_historial($warehouse_id)
+    {
         $warehouse = Warehouse::find($warehouse_id);
         $refunds = Refund::with(
             "project_entry_liquidation.project_entry.special_inventory.purchase_product"
-            )
+        )
             ->where('warehouse_id', $warehouse_id)
             ->where('state', true)
             ->orderBy('created_at', 'desc')
@@ -177,7 +188,8 @@ class SpecialWarehouseController extends Controller
         ]);
     }
 
-    public function special_refund_accept_decline (Request $request, $refund_id) {
+    public function special_refund_accept_decline(Request $request, $refund_id)
+    {
         $data = $request->validate([
             "state" => "required|boolean"
         ]);
