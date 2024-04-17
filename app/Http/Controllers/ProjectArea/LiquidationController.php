@@ -15,6 +15,7 @@ use App\Models\Entry;
 use App\Models\ProjectEntryLiquidation;
 use App\Models\RetrievalEntry;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class LiquidationController extends Controller
 {
@@ -38,6 +39,7 @@ class LiquidationController extends Controller
 
     public function index($project_id)
     {
+        // Obtener todos los registros de ProjectEntry relacionados con el proyecto
         $project_entries = ProjectEntry::where('project_id', $project_id)
             ->with([
                 'project',
@@ -45,20 +47,45 @@ class LiquidationController extends Controller
                 'special_inventory.purchase_product',
                 'project_entry_outputs',
             ])
+            ->where('state', true)
             ->whereDoesntHave('project_entry_liquidation')
-            ->paginate(10);
-
-        $project_entries->getCollection()->transform(function ($project_entry) {
-            return $project_entry->outputs_state ? $project_entry : null;
-        })->filter();
+            ->get();
     
+        // Filtrar los registros por el atributo calculado outputs_state
+        $filtered_entries = $project_entries->filter(function ($project_entry) {
+            return $project_entry->outputs_state;
+        });
+    
+        // Paginar los resultados filtrados
+        $perPage = 10;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentPageEntries = $filtered_entries->slice(($currentPage - 1) * $perPage, $perPage);
+    
+        // Crear un paginador con los resultados filtrados
+        $final_project_entries = new LengthAwarePaginator(
+            $currentPageEntries,
+            $filtered_entries->count(),
+            $perPage,
+            $currentPage,
+            ['path' => url()->current(), 'query' => []]
+        );
+    
+        // Renderizar la vista con los resultados paginados
+        return Inertia::render('ProjectArea/ProjectManagement/Liquidations', [
+            'project_entries' => $final_project_entries,
+            'project_id' => $project_id
+        ]);
+    }
+    
+
+
+    public function history($project_id){
         $liquidations = ProjectEntryLiquidation::whereHas('project_entry.project', function ($query) use ($project_id) {
             $query->where('project_id', $project_id);
         })->with('project_entry.entry.inventory.purchase_product', 'project_entry.special_inventory.purchase_product')->paginate(5);
     
-        return Inertia::render('ProjectArea/ProjectManagement/Liquidations', [
+        return Inertia::render('ProjectArea/ProjectManagement/LiquidationsHistory', [
             'liquidations' => $liquidations,
-            'project_entries' => $project_entries,
             'project_id' => $project_id
         ]);
     }
