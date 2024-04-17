@@ -79,8 +79,8 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.unit }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.type }} {{ item.type_product ?
-        '/' + item.type_product : '' }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.type }} {{ item.type === 'Producto' ?
+        '/' + item.type_product : item.resource_type ? '/' + item.resource_type.name : ''}}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
@@ -187,6 +187,32 @@
                                 </div>
                             </div>
 
+                            <div v-if="form.type === 'Activo'">
+                                <div class="flex mt-3 gap-2">
+                                    <InputLabel for="resource_type" class="font-medium leading-6 text-gray-900">
+                                        Tipo de Activo
+                                    </InputLabel>
+                                    <button type="button" @click="add_resource" class="item-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div class="mt-2">
+                                    <select :to-uppercase="true" v-model="form.resource_type_id" id="type_product"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="" disabled>Seleccione un tipo</option>
+                                        <option v-for="item in props.resource_type" :key="item.id" :value="item.id">
+                                            {{ item.name }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.resource_type" />
+                                </div>
+                            </div>
+
                             <div>
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900 mt-3">
                                     Descripción
@@ -214,17 +240,37 @@
         <Modal :show="showModalAdd">
             <form class="p-6" @submit.prevent="submitTypeProduct">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Nuevo tipo de producto
+                    Nuevo tipo de {{ form.type === 'Producto' ? 'producto' : 'activo' }}
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                     <div class="sm:col-span-6">
                         <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="name" :to-uppercase="true" required
+                            <TextInput id="name" required
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 v-model="formname.name" />
                             <InputError :message="formname.errors.name" />
                         </div>
+                    </div>
+
+                </div>
+                <div v-if="form.type === 'Activo'">
+                    <InputLabel for="depreciation_value" class="font-medium leading-6 text-gray-900 mt-3">
+                        Valor de Depreciacion
+                    </InputLabel>
+                    <div class="mt-2">
+                        <TextInput type="text" v-model="formname.depreciation_value" id="depreciation_value"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                        <InputError :message="formname.errors.depreciation_value" />
+                    </div>
+
+                    <InputLabel for="timelife" class="font-medium leading-6 text-gray-900 mt-3">
+                        Tiempo de vida
+                    </InputLabel>
+                    <div class="mt-2">
+                        <TextInput type="text" v-model="formname.timelife" id="timelife"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                        <InputError :message="formname.errors.timelife" />
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
@@ -263,6 +309,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const props = defineProps({
     products: Object,
     type_product: Object,
+    resource_type: Object,
     auth: Object,
     search: String
 });
@@ -273,11 +320,14 @@ const form = useForm({
     unit: '',
     type: '',
     type_product: '',
-    description: ''
+    description: '',
+    resource_type_id: ''
 });
 
 const formname = useForm({
-    name: ''
+    name: '',
+    depreciation_value: '',
+    timelife: ''
 })
 
 const create_product = ref(false);
@@ -307,6 +357,7 @@ const openEditProductModal = (product) => {
     form.unit = editingProduct.value.unit;
     form.type = editingProduct.value.type;
     form.type_product = editingProduct.value.type_product;
+    form.resource_type_id = editingProduct.value.resource_type_id;
     showModalEdit.value = true;
 };
 
@@ -388,11 +439,12 @@ const deleteProduct = () => {
 };
 
 function submitTypeProduct() {
-    axios.post(route('inventory.purchaseproducts.typeProduct'), { ...formname.data() })
+    const url = form.type === 'Producto' ? route('inventory.purchaseproducts.typeProduct'):route('inventory.purchaseproducts.resourceType')
+    axios.post(url, { ...formname.data() })
         .then(response => {
             if (response.status === 200) {
                 let newItem = response.data.new
-                props.type_product.push({ ...newItem })
+                form.type === 'Producto' ? props.type_product.push({ ...newItem }) : props.resource_type.push({ ...newItem })
                 closeAddModal()
                 addSuccess.value = true
                 setTimeout(() => {
@@ -408,11 +460,17 @@ function submitTypeProduct() {
         })
 }
 
-function add_product () {
+function add_product() {
     showModalAdd.value = true
 }
 
 function closeAddModal() {
     showModalAdd.value = false
+    formname.reset()
 }
+
+function add_resource() {
+    showModalAdd.value = true
+}
+
 </script>

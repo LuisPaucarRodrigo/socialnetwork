@@ -225,7 +225,7 @@
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
-                            <InputLabel for="fired_date" class="font-medium leading-6 text-gray-900">Fecha de Deceso:
+                            <InputLabel for="fired_date" class="font-medium">Fecha de Deceso:
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" id="fired_date" v-model="form.fired_date"
@@ -340,9 +340,6 @@ const submit = () => {
         })
     }
 }
-
-
-
 
 const confirmUserDeletion = (employeeId) => {
     employeeToDelete.value = employeeId;
