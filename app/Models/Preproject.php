@@ -24,7 +24,7 @@ class Preproject extends Model
         'state'
     ];
 
-
+    //RELATIONS
     public function project()
     {
         return $this->hasOne(Project::class);
@@ -56,7 +56,7 @@ class Preproject extends Model
     }
 
     
-    // CAMPOS CALCULADOS
+    // CALCULATED
     public function getStateAttribute()
     {
         foreach ($this->purchasing_request as $purchasingRequest) {

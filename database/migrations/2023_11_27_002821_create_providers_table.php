@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('ruc');
             $table->string('segment');
             $table->timestamps();
+
+            $table->unique(['ruc', 'email', 'phone1']);
         });
     }
 

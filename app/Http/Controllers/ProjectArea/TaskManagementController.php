@@ -17,29 +17,32 @@ use Inertia\Inertia;
 
 class TaskManagementController extends Controller
 {
-    public function index($id = null){
+    public function index($id = null)
+    {
         $projectId = $id;
         $tasks = Tasks::where('project_id', $projectId)->paginate(10);
         return Inertia::render('ProjectArea/TasksManagement/index', [
             'tasks' => $tasks,
             'project' => Project::find($projectId),
-            'projects' => Project::where('id','!=',$projectId)
+            'projects' => Project::where('id', '!=', $projectId)->get()
         ]);
     }
 
 
-    public function new($project_id){   
+    public function new($project_id)
+    {
         return Inertia::render('ProjectArea/TasksManagement/newTask', [
-            'project'=> Project::find($project_id),
+            'project' => Project::find($project_id),
             'tasks' => Tasks::all(),
         ]);
     }
 
 
-    public function edit($taskId){
+    public function edit($taskId)
+    {
         $task = Tasks::find($taskId);
         $employeesToAssign = ProjectEmployee::with('employee_information')
-            ->where('project_id',$task->project_id)->get();
+            ->where('project_id', $task->project_id)->get();
         $comment = TaskComments::where('task_id', $taskId)->get();
         $added_employees = Tasks::with('project_employee', 'project_employee.employee_information' . '')->where('id', $taskId)->first();
         return Inertia::render('ProjectArea/TasksManagement/editTask', [
@@ -99,5 +102,32 @@ class TaskManagementController extends Controller
         $projectId = $task->project_id;
         $task->delete();
         return redirect()->route('tasks.index', $projectId);
+    }
+
+    public function task_edit_date(Request $request)
+    {   
+        $data = $request->validate([
+            'id' => 'required|numeric',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date'
+        ]);
+        $tasks = Tasks::find($data['id']);
+        $tasks->update($data);
+    }
+
+    public function task_duplicated(Request $request)
+    {   
+        $request->validate([
+            'project_id_duplicated' => 'required|numeric',
+            'project_id' => 'required|numeric'
+        ]);
+        $originalTasks = Tasks::where('project_id', $request->project_id)->get();
+
+        foreach ($originalTasks as $task) {
+            $duplicatedTask = $task->replicate();
+            $duplicatedTask->project_id = $request->project_id_duplicated;
+            $duplicatedTask->status = "pendiente";
+            $duplicatedTask->save();
+        }
     }
 }

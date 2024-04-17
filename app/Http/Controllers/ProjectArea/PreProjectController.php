@@ -16,11 +16,14 @@ use App\Models\PreprojectProvidersQuote;
 use App\Models\PreProjectQuote;
 use App\Models\PreProjectQuoteItem;
 use App\Models\PreprojectQuoteProduct;
+use App\Models\PreprojectQuoteService;
 use App\Models\Purchase_product;
 use App\Models\Product;
 use App\Models\Purchase_quote;
 use App\Models\Purchasing_request;
 use App\Models\Purchasing_requests_product;
+use App\Models\ResourceEntry;
+use App\Models\Service;
 use App\Models\TypeProduct;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -73,16 +76,16 @@ class PreProjectController extends Controller
     }
 
 
-    public function showPreprojectFacade(Preproject $preproject)
-    {
-        $facadeName = $preproject->facade;
-        $facadePath = '/image/facades/' . $facadeName;
-        $path = public_path($facadePath);
-        if (file_exists($path)) {
-            return response()->file($path);
-        }
-        abort(404, 'Documento no encontrado');
-    }
+    // public function showPreprojectFacade(Preproject $preproject)
+    // {
+    //     $facadeName = $preproject->facade;
+    //     $facadePath = '/image/facades/' . $facadeName;
+    //     $path = public_path($facadePath);
+    //     if (file_exists($path)) {
+    //         return response()->file($path);
+    //     }
+    //     abort(404, 'Documento no encontrado');
+    // }
 
 
     public function update(PreprojectRequest $request, Preproject $preproject)
@@ -111,13 +114,15 @@ class PreProjectController extends Controller
     public function quote($preproject_id) {
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
             'preproject' => Preproject::with(
-                'quote.items', 
+                'quote.preproject_quote_service',  
                 'quote.products.purchase_product'
                 )
                 ->find($preproject_id),
             'products' => Purchase_product::all(),
             'purchasing_requests' => Purchasing_request::with('products')
-                ->where('preproject_id', $preproject_id)->get()
+                ->where('preproject_id', $preproject_id)->get(),
+            'services' => Service::with('purchase_product')->get(),
+            'resources' => ResourceEntry::whereNotNull('serial_number')->get()
         ]);
     }
 
@@ -140,8 +145,10 @@ class PreProjectController extends Controller
             $preproject_quote = PreProjectQuote::create($data);
             if ($request->has("items")) {
                 foreach ($request->get("items") as $item) {
-                    $quoteItem = new PreProjectQuoteItem($item);
-                    $preproject_quote->items()->save($quoteItem);
+                    $service_item = new PreprojectQuoteService($item);
+                    $preproject_quote->preproject_quote_service()->save($service_item);
+                    // $quoteItem = new PreProjectQuoteItem($item);
+                    // $preproject_quote->items()->save($quoteItem);
                 }
             }
             if ($request->has("products")) {
@@ -157,15 +164,18 @@ class PreProjectController extends Controller
 
     public function quote_item_store(Request $request)    {
         $data = $request->validate([
-            "description" => 'required',
-            "unit" => 'required',
-            "days" => 'required',
-            "quantity" => 'required',
-            "unit_price" => 'required',
-            "profit_margin" => 'required',
-            "preproject_quote_id" => 'required',
+            // "description" => 'required',
+            // "unit" => 'required',
+            // "days" => 'required',
+            // "quantity" => 'required',
+            // "unit_price" => 'required',
+            // "service_id" => 'required',
+            // "preproject_quote_id" => 'required',
+            "resource_entry_id" => 'required',
+            "service_id" => 'required|numeric',
+            "preproject_quote_id" => 'required|numeric',
         ]);
-        $newItem = PreProjectQuoteItem::create($data);
+        $newItem = PreprojectQuoteService::create($data);
         return response()->json(['id'=>$newItem->id]);
     }
 
