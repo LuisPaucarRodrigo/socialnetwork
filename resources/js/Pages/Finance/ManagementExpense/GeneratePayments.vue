@@ -77,7 +77,8 @@
                             </td>
                         </tr>
                         <tr class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-lg" :colspan="quote.payment_type == 'Credito' ? 2:1">Totales:</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-lg"
+                                :colspan="quote.payment_type == 'Credito' ? 2 : 1">Totales:</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency == 'sol' ? "S/" : "$" }}
                                     {{
@@ -116,6 +117,7 @@
                         </InputLabel>
                         <div class="mt-2">
                             <input required type="number" v-model="amount" id="amount"
+                                :disabled="quote.payment_type == 'Contado'"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -167,7 +169,7 @@ const props = defineProps({
 
 const showModalPayment = ref(false);
 const showModalSuccess = ref(false);
-const amount = ref('');
+const amount = ref(props.quote.payment_type == 'Contado' ? props.quote.total_amount.toFixed(2) : '');
 const description = ref('');
 const register_date = ref('');
 const paymentsArray = ref([]);

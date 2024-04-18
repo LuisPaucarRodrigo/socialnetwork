@@ -194,7 +194,7 @@
       </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Forma de Pago</td>
-        <td class="td-custom" style="width: 562.5px; border-left: none">: Según acuerdo Comercial</td>
+        <td class="td-custom" style="width: 562.5px; border-left: none">: {{ $preproject->quote->payment_type }}</td>
       </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Validez de la oferta</td>

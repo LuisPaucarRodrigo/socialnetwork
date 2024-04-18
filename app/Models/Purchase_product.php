@@ -17,12 +17,34 @@ class Purchase_product extends Model
         'description',
         'type',
         'type_product',
-        'state'
+        'state',
+        'resource_type_id'
     ];
 
     public $appends = [
         'code'
     ];
+
+    //CALCULATED FIELDS
+
+    public function getCodeAttribute()
+    {
+        if ($this->exists) {
+            if ($this->type == 'Producto') {
+                return 'PR' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+            } elseif ($this->type == 'Servicio') {
+                return 'SE' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+            } elseif ($this->type == 'Activo') {
+                return 'AC' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+            } else {
+                return null;
+            }
+        } else {
+            return 'TMP' . now()->format('ymdHis');
+        }
+    }
+
+    //RELATIONS
 
     public function purchasing_request_product()
     {
@@ -44,28 +66,25 @@ class Purchase_product extends Model
         return $this->belongsToMany(Purchase_quote::class, 'purchase_quotes_products', 'purchase_product_id', 'purchase_quote_id')->withPivot('id','quantity','unitary_amount');
     }
 
-    public function getCodeAttribute()
-    {
-        if ($this->exists) {
-            if ($this->type == 'Producto') {
-                return 'PR' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
-            } elseif ($this->type == 'Servicio') {
-                return 'SE' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
-            } elseif ($this->type == 'Activo') {
-                return 'AC' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
-            } else {
-                // Si el tipo no coincide con ninguno de los valores especificados, regresa null o un valor predeterminado
-                return null; // O puedes devolver 'XX' u otro valor predeterminado si lo prefieres
-            }
-        } else {
-            return 'TMP' . now()->format('ymdHis');
-        }
-    }
-
-    //Relations
     public function inventory()
     {
         return $this->hasMany(Inventory::class);
     }
+
+    public function resource_type()
+    {
+        return $this->belongsTo(ResourceType::class,'resource_type_id');
+    }
+
+    public function resource_entry()
+    {
+        return $this->hasMany(ResourceEntry::class);
+    }
+
+    public function service()
+    {
+        return $this->hasMany(Service::class);
+    }
+
 }
 

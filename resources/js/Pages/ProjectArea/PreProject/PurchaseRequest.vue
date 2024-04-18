@@ -161,6 +161,9 @@ const closeModal = () => {
 };
 
 const add_purchase_request = () => {
+    console.log(route('preprojects.request.create', {
+        id: props.preproject.id
+    }))
     router.get(route('preprojects.request.create', {
         id: props.preproject.id
     }));

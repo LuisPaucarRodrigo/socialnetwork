@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchase_products', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('unit');
-            $table->string('type');
-            $table->string('type_product')->nullable();
-            $table->boolean('state')->default(true);
+            $table->string('name')->unique();
             $table->text('description')->nullable();
-            $table->foreignId('resource_type_id')->nullable();
+            $table->decimal('rent_price');
+            $table->foreignId('purchase_product_id')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchase_products');
+        Schema::dropIfExists('services');
     }
 };

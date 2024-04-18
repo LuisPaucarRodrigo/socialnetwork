@@ -72,10 +72,13 @@
                         <tr v-for="item in (props.search === '' ? vacations.data : vacations)" :key="item.id"
                             class="text-gray-700" :class="['text-gray-700', {
         'border-l-8': boolean == true,
-        'border-green-500': item.status == 'Finalizado',
-        'border-red-500': item.status == 'Ausente',
-        'border-yellow-500': (Date.parse(item.end_date) <= Date.now() + (1 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado') ||
-            (Date.parse(item.end_permissions) <= Date.now() + (1 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado')
+        'border-green-500': item.status === 'Finalizado',
+        'border-red-900': item.status === 'Ausente',
+        'border-red-500': (Date.parse(item.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status === 'Aceptado') ||
+            (Date.parse(item.end_permissions) <= Date.now() + (1 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado'),
+        'border-yellow-500': (Date.parse(item.end_date) >= Date.now() + (3 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status === 'Aceptado') &&
+            (Date.parse(item.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado') ||
+            (Date.parse(item.end_permissions) <= Date.now() + (3 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado'),
     }]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
@@ -212,7 +215,9 @@
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
                             <div>
-                                <InputLabel for="coment" class="font-medium leading-6 text-gray-900">Ingrese la razón o motivo por el cual el trabajador no cumplio con lo acordado
+                                <InputLabel for="coment" class="font-medium leading-6 text-gray-900">Ingrese la razón o
+                                    motivo
+                                    por el cual el trabajador no cumplio con lo acordado
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="form.coment" id="coment"
@@ -318,7 +323,7 @@ const search = () => {
 function sendStatus(id, status) {
     router.post(route('management.vacation.information.reviewed_decline'), { id: id, status: status }, {
         onSuccess: () => {
-            router.visit(route('management.vacation',{review: true}))
+            router.visit(route('management.vacation', { review: true }))
         },
     })
 }
@@ -332,7 +337,7 @@ function sendModal(id, status) {
 function submit() {
     form.post(route('management.vacation.information.reviewed_decline'), {
         onSuccess: () => {
-            router.visit(route('management.vacation',{review: true}))
+            router.visit(route('management.vacation', { review: true }))
         },
     })
 }
