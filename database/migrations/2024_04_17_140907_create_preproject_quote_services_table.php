@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('preproject_quote_services', function (Blueprint $table) {
             $table->id();
+            $table->integer('days');
+            $table->double('profit_margin');
             $table->foreignId('preproject_quote_id');
             $table->foreignId('service_id');
-            $table->foreignId('resource_entry_id');
+            $table->foreignId('resource_entry_id')->nullable();
             $table->timestamps();
         });
     }
