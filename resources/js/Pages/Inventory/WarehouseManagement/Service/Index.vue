@@ -28,7 +28,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Producto
+                                Activo
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -49,7 +49,7 @@
                                 <p class="text-gray-900 whitespace-no-wrap">S/ {{ item.rent_price }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.purchase_product.name }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.purchase_product?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
@@ -100,10 +100,13 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="rent_price" class="font-medium leading-6 text-gray-900">Precio de Renta
+                        <InputLabel for="rent_price" class="font-medium leading-6 text-gray-900">Precio de Renta por Día
                         </InputLabel>
                         <div class="mt-2">
-                            <textarea id="rent_price" type="text" v-model="form.rent_price"
+                            <input id="rent_price" type="number"
+                                min="0"
+                                step="0.01"
+                                v-model="form.rent_price"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -165,6 +168,8 @@ function submit_add_service() {
     form.post(route('warehouses.service.store'),{
         onSuccess: () => {
             router.get(route('inventory.warehouses.service'));
+        }, onError: (e) => {
+            console.log(e)
         }
     })
 }
