@@ -678,19 +678,6 @@ const modalVariables = ref({
     message: `La cotización para anteproyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
 })
 
-function productListMaker(purReqArray) {
-    let ids = []
-    purReqArray.forEach(item => {
-        item.products.forEach(prod => {
-            if (!ids.includes(prod.id)) {
-                ids.push(prod.id)
-            }
-        })
-    });
-    return ids
-}
-
-let ids = productListMaker(purchasing_requests)
 
 const initalProductState = {
     purchase_product_id: '',
@@ -723,7 +710,7 @@ const initialState = {
 
 const updateState = {
     ...preproject.quote,
-    items: [...preproject.quote.preproject_quote_service]
+    items: preproject.quote? [...preproject.quote.preproject_quote_service]: []
 }
 
 const form = useForm(
