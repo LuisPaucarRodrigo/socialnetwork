@@ -126,7 +126,7 @@ Route::post('/projectmanagement/products/{project_id}/{project_entry}/liquidate'
 
 
 
-Route::get('/projectmanagement/warehouse_products/{warehouse}', [ProjectManagementController::class, 'warehouse_products'])->name('projectmanagement.warehouse_products');
+Route::get('/projectmanagement/warehouse_products/{project}/{warehouse}', [ProjectManagementController::class, 'warehouse_products'])->name('projectmanagement.warehouse_products');
 
 Route::get('/projectmanagement/inventory_products/{inventory}', [ProjectManagementController::class, 'inventory_products'])->name('projectmanagement.inventory_products');
 
