@@ -173,7 +173,6 @@ class VacationController extends Controller
             ->where('status', 'Aceptado')
             ->get();
         return response()->json([
-            'totalPermissions' => $permissions->count(),
             'permissions' => $permissions,
         ]);
     }
@@ -182,14 +181,20 @@ class VacationController extends Controller
     {
         $now = Carbon::now();
         $currentDateUpdate = $now->subHours(5);
-        $vacation = Vacation::where('type', 'Vacaciones')
+        $vacation3 = Vacation::where('type', 'Vacaciones')
             ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(3))
             ->where('review_date', '!=', null)
             ->where('status', 'Aceptado')
             ->get();
+        $vacation7 = Vacation::where('type', 'Vacaciones')
+            ->where('end_date', '>=', $currentDateUpdate->copy()->addDays(3))
+            ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(7))
+            ->where('review_date', '!=', null)
+            ->where('status', 'Aceptado')
+            ->get();
         return response()->json([
-            'totalVacation' => $vacation->count(),
-            'vacation' => $vacation,
+            'vacation3' => $vacation3,
+            'vacation7' => $vacation7,
         ]);
     }
 }

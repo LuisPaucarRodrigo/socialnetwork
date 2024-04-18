@@ -37,6 +37,13 @@ Route::get('/inventory/dispatches_approved/{warehouse}', [WarehousesController::
 Route::get('/inventory/dispatches_rejected/{warehouse}', [WarehousesController::class, 'showRejectedDispatches'])->name('warehouses.dispatches.rejected');
 Route::post('/inventory/dispatches/{warehouse}/accept_or_decline', [WarehousesController::class, 'acceptOrDeclineDispatch'])->name('warehouses.dispatches.acceptordecline');
 
+//RESOURCE
+Route::get('/inventory/resource/purchase_orders', [WarehousesController::class, 'resourcePurchaseOrders'])->name('warehouses.resource');
+Route::post('/inventory/resource/approve/purchase_orders', [WarehousesController::class, 'approveResourcePurchaseOrders'])->name('warehouses.resource.approve');
+Route::get('/inventory/resource/products/purchase_orders/{boolean?}', [WarehousesController::class, 'productResourcePurchaseOrders'])->name('warehouses.index.resource');
+Route::post('/inventory/resource/serial_number/purchase_orders', [WarehousesController::class, 'serialNumberResourcePurchaseOrders'])->name('warehouses.resource.add_serial_number');
+
+
 //outputs
 Route::get('/inventory/warehouses/{warehouse}/outputs', [ProductController::class, 'outputs_index'])->name('warehouses.outputs');
 Route::post('/inventory/warehouses//outputs/store', [ProductController::class, 'outputs_store'])->name('projectmanagement.outputs.store');
@@ -51,7 +58,7 @@ Route::put('/inventory/purchase_products/products/{purchase_product}/update', [P
 Route::put('/inventory/purchase_products/products/{purchase_product}/disable', [PurchaseProductsController::class, 'disable'])->name('inventory.purchaseproducts.disable');
 
 Route::post('/inventory/purchase_products/type_product/store', [PurchaseProductsController::class, 'typeProducts'])->name('inventory.purchaseproducts.typeProduct');
-
+Route::post('/inventory/purchase_products/resource_type/store', [PurchaseProductsController::class, 'resourceType'])->name('inventory.purchaseproducts.resourceType');
 
 //Special Warehouses
 Route::get('/inventory/{warehouse_id}/special_products/', [SpecialWarehouseController::class, 'special_products_index'])->name('inventory.special_products.index');
@@ -82,4 +89,7 @@ Route::get('/inventory/show/retrieval_product/{product}/warehouses', [Warehouses
 Route::get('/inventory/retrieval_dispatch/warehouses', [WarehousesController::class, 'retrievalDispatch'])->name('inventory.retrievalDispatch.index');
 Route::post('/inventory/approve/retrieval_dispatch/warehouses', [WarehousesController::class, 'retrievalDispatchApprove'])->name('inventory.retrievalDispatch.approve');
 
+//SERVICES
+Route::get('/inventory/services/warehouses', [WarehousesController::class, 'service_index'])->name('inventory.warehouses.service');
+Route::post('/inventory/services/warehouses/store', [WarehousesController::class, 'service_store'])->name('warehouses.service.store');
 

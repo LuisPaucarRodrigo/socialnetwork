@@ -46,6 +46,14 @@ Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
 
+// Route::get('/', function () {
+//     if (auth()->check()) {
+//         return Inertia::location(route('users.index'));
+//     } else {
+//         return Inertia::render('Auth/Login');
+//     }
+// })->name('home');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
