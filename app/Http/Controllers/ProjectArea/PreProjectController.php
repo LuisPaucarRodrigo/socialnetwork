@@ -28,6 +28,7 @@ use App\Models\TypeProduct;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class PreProjectController extends Controller
 {
@@ -169,8 +170,9 @@ class PreProjectController extends Controller
         $service = Service::find($service_id);
         $resources_entries = ResourceEntry::where('state', true)
                                 ->where('condition', 'Disponible')
-                                ->where('purchase_product_id', $service->purchase_product_id);
-        return response()->json($resources_entries);
+                                ->where('purchase_product_id', $service->purchase_product_id)
+                                ->get();
+        return response()->json($resources_entries, 200);
     }
 
     public function accept_decline_quote(Request $request, $purchase_quote_id)

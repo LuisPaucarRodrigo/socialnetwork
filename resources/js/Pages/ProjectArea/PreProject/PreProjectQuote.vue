@@ -659,6 +659,7 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import axios from 'axios';
 
 const showModal = ref(false)
 const showErroModal = ref(false)
@@ -921,7 +922,10 @@ function deleteProduct(index, id) {
     }
 }
 const active_selected = ref([])
-function handleService(e) {
-    active_selected.value = resources.filter(item => item.purchase_product_id == e);
+async function handleService(e) {
+    const res = await axios.get(route('load.resource_entries', {service_id: e}))
+    console.log(res.data)
+
+    // active_selected.value = resources.filter(item => item.purchase_product_id == e);
 }
 </script>
