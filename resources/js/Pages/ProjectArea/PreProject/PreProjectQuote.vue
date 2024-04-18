@@ -254,9 +254,9 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{ (item.unitary_price *
-        item.quantity *
-        (1 + (item.profit_margin) / 100))
-        .toFixed(2) }}</p>
+                                                                item.quantity *
+                                                                (1 + (item.profit_margin) / 100))
+                                                                .toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <div v-if="auth.user.role_id === 1 || preproject.quote === null"
