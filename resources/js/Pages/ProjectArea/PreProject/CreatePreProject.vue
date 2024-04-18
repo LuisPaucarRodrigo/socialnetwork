@@ -168,6 +168,17 @@
                                 <InputError :message="form.errors.code" />
                             </div>
 
+                            <div v-if="[1,2].includes(form.customer_id)">
+                                <label for="cpe" class="font-medium leading-6 text-gray-900">CPE</label>
+                                <div class="mt-2 flex justify-center items-center gap-2">
+                                    <input type="text" pattern="[A-Z0-9]+" v-model="form.cpe" id="cpe"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                </div>
+                                <!-- <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
+                                <p class="text-gray-400">CCCCC -> 5 iniciales cliente | PPPPP -> 5 iniciales proyecto </p> -->
+                                <InputError :message="form.errors.cpe" />
+                            </div>
+
                             <div>
                                 <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
                                 </InputLabel>
@@ -258,7 +269,8 @@ const initial_state = {
     date: '',
     observation: '',
     contacts: [],
-    hasSubcustomer: false
+    hasSubcustomer: false,
+    cpe: ''
 }
 
 const update_state = {
@@ -329,6 +341,7 @@ const submit = () => {
 
 
 const handleAutocomplete = (e, model) => {
+    form.cpe = '';
     const ruc = e.target.value;
     let matchedClient = customers.find(item => item.ruc == ruc)
     customerBusinnes.value = matchedClient.business_name

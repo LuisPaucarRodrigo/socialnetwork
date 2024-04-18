@@ -14,6 +14,7 @@ class Preproject extends Model
         'code',
         'description',
         'date',
+        'cpe',
         'observation',
     ];
 
