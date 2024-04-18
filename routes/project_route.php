@@ -52,6 +52,7 @@ Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'sh
 Route::get('/cotizationPDF/{preproject}', [PreProjectController::class, 'getPDF'])->name('preprojects.pdf');
 
 Route::get('/preprojects/{preproject_id}/quote', [PreProjectController::class, 'quote'])->name('preprojects.quote');
+Route::get('/preprojects/load_resource_entries/{service_id}', [PreProjectController::class, 'load_resource_entries'])->name('load.resource_entries');
 Route::post('/preprojects/quote_store/{quote_id?}', [PreProjectController::class, 'quote_store'])->name('preprojects.quote.store');
 Route::post('/preprojects/quote/{quote_id}', [PreProjectController::class, 'acceptCotization'])->name('preprojects.accept');
 
