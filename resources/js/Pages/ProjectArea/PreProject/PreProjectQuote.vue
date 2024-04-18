@@ -521,15 +521,25 @@
                             <InputLabel for="resource" class="font-medium leading-6 text-gray-900">Activos
                             </InputLabel>
                             <div class="mt-2">
-                                <input required id="resource" list="options" @input="handleAutocomplete"
+                                <select required v-model="itemToAdd.resource_entry_id"
+                                    id="service"
+                                    multiple
+                                    size="5"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccione uno o varios</option>
+                                    <option v-for="item in active_selected" :key="item.id" :value="item">
+                                        {{ item.purchase_product.name }} - {{ item.serial_number }}
+                                    </option>
+                                </select>
+                                <!-- <input required id="resource" list="options" @input="handleAutocomplete"
                                     v-model="itemToAdd.resource_entry_id" autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" /> -->
 
-                                <datalist id="options">
+                                <!-- <datalist id="options">
                                     <option v-for="item in active_selected" :value="item.id" :data-value="item">
                                         {{ item.serial_number }}
                                     </option>
-                                </datalist>
+                                </datalist> -->
                             </div>
                         </div>
 
@@ -538,6 +548,15 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <input required type="number" v-model="itemToAdd.days" min="1"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen (%)
+                            </InputLabel>
+                            <div class="mt-2">
+                                <input required type="number" v-model="itemToAdd.profit_margin" min="0" step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -664,14 +683,13 @@ import axios from 'axios';
 const showModal = ref(false)
 const showErroModal = ref(false)
 
-const { preproject, auth, products, purchasing_requests, existingProducts, services, resources } = defineProps({
+const { preproject, auth, products, purchasing_requests, existingProducts, services } = defineProps({
     products: Object,
     preproject: Object,
     purchasing_requests: Object,
     existingProducts: Object,
     auth: Object,
     services: Object,
-    resources: Object
 })
 
 const modalVariables = ref({
@@ -752,12 +770,14 @@ const showFinishAccept = ref(false);
 //     unit_price: '',
 // }
 const itemInitialState = {
+    days:'',
+    profit_margin:'',
     service_id: '',
-    resource_entry_id: '',
+    resource_entry_id: [],
     days: ''
 }
 const itemToAdd = ref(JSON.parse(JSON.stringify(itemInitialState)))
-
+const active_selected = ref([])
 
 const showItemAddModal = ref(false);
 const showItemRemoveModal = ref(false);
@@ -776,7 +796,11 @@ const showToAddItem = () => {
 }
 const closeModal = () => {
     showModalMember.value = false;
+    itemToAdd.value = JSON.parse(JSON.stringify(itemInitialState))
+    active_selected.value = []
 };
+
+
 const addItem = () => {
     if (preproject.quote) {
         axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
@@ -921,11 +945,10 @@ function deleteProduct(index, id) {
         form.products.splice(index, 1)
     }
 }
-const active_selected = ref([])
+
+
 async function handleService(e) {
     const res = await axios.get(route('load.resource_entries', {service_id: e}))
-    console.log(res.data)
-
-    // active_selected.value = resources.filter(item => item.purchase_product_id == e);
+    active_selected.value = res.data
 }
 </script>
