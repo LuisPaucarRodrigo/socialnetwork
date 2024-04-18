@@ -464,8 +464,8 @@ class WarehousesController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'rent_price' => 'required|numeric',
-            'description' => 'required|string',
-            'purchase_product_id' => 'required|numeric'
+            'description' => 'string|nullable',
+            'purchase_product_id' => 'numeric|nullable'
         ]);
 
         Service::create($data);
