@@ -27,6 +27,7 @@ class PreprojectRequest extends FormRequest
             'description' => 'required',
             'date' => 'required',
             'observation' => 'nullable',
+            'cpe' => 'nullable',
             'contacts' => 'required|array',
         ];
         if ($this->has('hasSubcustomer') && $this->input('hasSubcustomer')) {
