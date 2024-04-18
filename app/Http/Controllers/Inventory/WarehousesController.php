@@ -411,7 +411,7 @@ class WarehousesController extends Controller
                 ResourceEntry::create([
                     'entry_date' => $today,
                     'referral_guide' => $purchase_order->remission_guide_number,
-                    'entry_price' => $purchaseQuoteProduct->unitary_amount,
+                    'entry_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
                     'purchase_product_id' => $purchaseQuoteProduct->purchase_product->id,
                 ]);
             }
@@ -427,11 +427,11 @@ class WarehousesController extends Controller
         //dd($boolean);
         if ($boolean == false) {
             $resources = ResourceEntry::with('purchase_product')
-                ->whereNotNull('serial_number')
+                ->where('state', true)
                 ->paginate(10);
         } else {
             $resources = ResourceEntry::with('purchase_product')
-                ->whereNull('serial_number')
+                ->where('state', null)
                 ->paginate(10);
         }
         return Inertia::render('Inventory/WarehouseManagement/Inventory', [
@@ -444,7 +444,9 @@ class WarehousesController extends Controller
     {   
         $resource_id = ResourceEntry::find($request->resource_id);
         $resource_id->update([
-            'serial_number' => $request->serial_number
+            'serial_number' => $request->serial_number,
+            'state'=>true,
+            'condition'=>'Disponible'
         ]);
     }
 

@@ -44,6 +44,14 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Numero de Serie
                             </th>
+                            <th v-if="resources && !boolean"
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Precio de Entrada
+                            </th>
+                            <th v-if="resources && !boolean"
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Condición
+                            </th>
                             <th v-if="products || boolean"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
@@ -67,6 +75,14 @@
                             <td v-if="resources && !boolean"
                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.serial_number }}</p>
+                            </td>
+                            <td v-if="resources && !boolean"
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">S/. {{ item.entry_price }}</p>
+                            </td>
+                            <td v-if="resources && !boolean"
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.condition }}</p>
                             </td>
                             <td v-if="products || boolean" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div v-if="products" class="flex justify-center items-center space-x-3">
@@ -111,13 +127,14 @@
                     <div class="mt-2">
                         <InputLabel for="serial_number" class="font-medium" value="Numero de Serie" />
                         <div class="mt-2">
-                            <TextInput id="serial_number" type="text" v-model="form.serial_number" />
+                            <TextInput required id="serial_number" type="text" v-model="form.serial_number" />
                         </div>
+                        <InputError :message="form.errors.serial_number" class="mt-2" />
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
                     <DangerButton type="button" @click="close_add_serial_number" > Cerrar </DangerButton>
-                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
+                    <PrimaryButton type="submit"> Aceptar </PrimaryButton>
                 </div>
             </form>
         </Modal>
@@ -138,6 +155,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
     products: {
@@ -208,7 +226,8 @@ function submit_add_serial_number() {
     form.resource_id = resource_id.value
     form.post(route('warehouses.resource.add_serial_number'),{
         onSuccess: () => {
-            router.get(route('warehouses.index.resource'))
+            form.reset()
+            close_add_serial_number()
         }
     })
 }

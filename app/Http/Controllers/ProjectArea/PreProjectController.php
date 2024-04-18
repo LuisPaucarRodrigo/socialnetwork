@@ -165,6 +165,13 @@ class PreProjectController extends Controller
         ]);
     }
 
+    public function load_resource_entries ($service_id) {
+        $service = Service::find($service_id);
+        $resources_entries = ResourceEntry::where('state', true)
+                                ->where('condition', 'Disponible')
+                                ->where('purchase_product_id', $service->purchase_product_id);
+        return response()->json($resources_entries);
+    }
 
     public function accept_decline_quote(Request $request, $purchase_quote_id)
     {
