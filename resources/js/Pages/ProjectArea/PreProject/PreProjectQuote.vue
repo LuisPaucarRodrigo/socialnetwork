@@ -874,19 +874,19 @@ const showProductModal = ref(false)
 const productToAdd = ref(JSON.parse(JSON.stringify(initalProductState)))
 
 const handleAutocomplete = (e) => {
-    // const code = e.target.value;
-    // let findedProduct = products.find(item => item.code === code)
-    // if (findedProduct) {
-    //     productToAdd.value.purchase_product_id = findedProduct.id
-    //     productToAdd.value.purchase_product.name = findedProduct.name
-    //     productToAdd.value.purchase_product.code = findedProduct.code
-    //     productToAdd.value.purchase_product.unit = findedProduct.unit
-    // } else {
-    //     productToAdd.value.purchase_product_id = ''
-    //     productToAdd.value.purchase_product.name = ''
-    //     productToAdd.value.purchase_product.unit = ''
-    //     productToAdd.value.purchase_product.code = ''
-    // }
+    const code = e.target.value;
+    let findedProduct = products.find(item => item.code === code)
+    if (findedProduct) {
+        productToAdd.value.purchase_product_id = findedProduct.id
+        productToAdd.value.purchase_product.name = findedProduct.name
+        productToAdd.value.purchase_product.code = findedProduct.code
+        productToAdd.value.purchase_product.unit = findedProduct.unit
+    } else {
+        productToAdd.value.purchase_product_id = ''
+        productToAdd.value.purchase_product.name = ''
+        productToAdd.value.purchase_product.unit = ''
+        productToAdd.value.purchase_product.code = ''
+    }
 }
 
 function openProductModal() {

@@ -341,7 +341,7 @@ class ProjectManagementController extends Controller
     public function warehouse_products(Warehouse $warehouse)
     {
         if ($warehouse->category === 'Especial') {
-            $products = SpecialInventory::with('purchase_product')->get();
+            $products = SpecialInventory::with('purchase_product')->where('warehouse_id', $warehouse->id)->get();
             return response()->json(['products' => $products]);
         } else {
             $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse->id)->get();
