@@ -384,7 +384,7 @@ class PreProjectController extends Controller
     {
         return Inertia::render('ProjectArea/PreProject/PurchaseRequest', [
             'purchases' => Purchasing_request::with('project')->where('preproject_id', $id)->paginate(),
-            'preproject' => $id
+            'preproject' => Preproject::find($id)
         ]);
     }
 
