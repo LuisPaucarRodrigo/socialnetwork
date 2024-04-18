@@ -164,7 +164,10 @@
                             </select>
                         </div>
 
-                        <template v-if="warehouseInventory.length != 0 && !warehouseInventory.cpe">
+                        
+                    </div>
+
+                    <div class="sm:col-span-3" v-if="warehouseInventory.length != 0 && !warehouseInventory.cpe">
                             <div class="flex justify-start items-center">
                                 <InputLabel for="inventory_id" class="font-medium leading-6 text-gray-900 mr-auto">
                                     Inventario
@@ -182,8 +185,7 @@
                                     </option>
                                 </select>
                             </div>
-                        </template>
-                    </div>
+                        </div>
 
                     <div class="sm:col-span-3">
                         <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
@@ -193,6 +195,8 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
+
+                    
 
 
                     <div v-if="enableInput" class="sm:col-span-3">
@@ -249,7 +253,7 @@ import axios from 'axios';
 const { assigned_products, warehouses, project_id } = defineProps({
     assigned_products: Object,
     warehouses: Object,
-    project_id: String,
+    project_id: Number,
     auth: Object
 
 })
@@ -272,28 +276,18 @@ const closeModal = () => {
 const warehouseProductsfirst = ref(null);
 const warehouseProducts = ref([])
 const warehouseInventory = ref([])
-const product_warehouse = (warehouse) => {
+const product_warehouse = async (warehouse) => {
     form.reset();
     warehouseProducts.value = []
     warehouseInventory.value = []
-    axios.get(route('projectmanagement.warehouse_products', { warehouse: warehouse }))
-        .then(response => {
-            warehouseProducts.value = response.data.products;
-            warehouseProductsfirst.value = warehouseProducts.value[0]?.cpe;
-        })
-        .catch(error => {
-            console.error('Error al cargar la data:', error);
-        });
+    const res = await axios.get(route('projectmanagement.warehouse_products', { project: project_id, warehouse: warehouse }))
+    warehouseProducts.value = res.data.products;
+    warehouseProductsfirst.value = warehouseProducts.value[0]?.cpe;
 };
 
-const product_inventory = (inventory) => {
-    axios.get(route('projectmanagement.inventory_products', { inventory: inventory }))
-        .then(response => {
-            warehouseInventory.value = response.data.inventory;
-        })
-        .catch(error => {
-            console.error('Error al cargar la data:', error);
-        });
+const product_inventory = async (inventory) => {
+    const res = await axios.get(route('projectmanagement.inventory_products', { inventory: inventory }))
+    warehouseInventory.value = res.data.inventory;
 };
 
 //form

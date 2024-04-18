@@ -300,16 +300,24 @@ class ProjectManagementController extends Controller
     }
 
 
-    public function project_product_index($project_id)
+    public function project_product_index(Project $project_id)
     {
-        $assigned_products = ProjectEntry::where('project_id', $project_id)->with('entry.inventory.purchase_product','special_inventory.purchase_product')->paginate(10);
+        $assigned_products = ProjectEntry::where('project_id', $project_id->id)->with('entry.inventory.purchase_product','special_inventory.purchase_product')->paginate(10);
+        $project_id->load('preproject');
 
-        $warehouses = Warehouse::all();
+        if ($project_id->preproject->customer_id == 1){
+            $warehouses = Warehouse::whereIn('id', [1, 3, 4])->get();
+        }else if ($project_id->preproject->customer_id == 2){
+            $warehouses = Warehouse::whereIn('id', [2, 3, 4])->get();
+        }else {
+            $warehouses = Warehouse::whereIn('id', [3, 4])->get();
+        }
+        
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectProducts', [
             'assigned_products' => $assigned_products,
             'warehouses' => $warehouses,
-            'project_id' => $project_id
+            'project_id' => $project_id->id
         ]);
     }
 
@@ -338,10 +346,11 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function warehouse_products(Warehouse $warehouse)
+    public function warehouse_products(Project $project, Warehouse $warehouse)
     {
         if ($warehouse->category === 'Especial') {
-            $products = SpecialInventory::with('purchase_product')->where('warehouse_id', $warehouse->id)->get();
+            $project->load('preproject');
+            $products = SpecialInventory::with('purchase_product')->where('warehouse_id', $warehouse->id)->where('cpe', $project->preproject->cpe)->get();
             return response()->json(['products' => $products]);
         } else {
             $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse->id)->get();
