@@ -227,14 +227,50 @@ class WarehousesController extends Controller
     public function showDispatches(Warehouse $warehouse)
     {
         $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
-            $query->where('warehouse_id', $warehouse->id);
-        })->where('state', null)->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project')->paginate(10);
+                $query->where('warehouse_id', $warehouse->id);
+            })
+            ->where('state', null)
+            ->orderBy('created_at', 'desc')
+            ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
 
         return Inertia::render('Inventory/WarehouseManagement/Dispatches', [
             'project_entries' => $project_entries,
             'warehouseId' => $warehouse->id
         ]);
     }
+
+
+    public function showApprovedDispatches(Warehouse $warehouse)
+    {
+        $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse->id);
+            })
+            ->where('state', true)
+            ->orderBy('created_at', 'desc')
+            ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
+
+        return Inertia::render('Inventory/WarehouseManagement/DispatchesApproved', [
+            'project_entries' => $project_entries,
+            'warehouseId' => $warehouse->id
+        ]);
+    }
+
+    public function showRejectedDispatches(Warehouse $warehouse)
+    {
+        $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
+                $query->where('warehouse_id', $warehouse->id);
+            })
+            ->where('state', false)
+            ->orderBy('created_at', 'desc')
+            ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
+
+        return Inertia::render('Inventory/WarehouseManagement/DispatchesRejected', [
+            'project_entries' => $project_entries,
+            'warehouseId' => $warehouse->id
+        ]);
+    }
+
+
 
     public function acceptOrDeclineDispatch(Warehouse $warehouse, Request $request)
     {
