@@ -155,7 +155,7 @@
 
 
                         <div class="mt-2" v-else>
-                            <select required id="product_id" @change="product_inventory($event.target.value)"
+                            <select required id="product_id" v-model="form.normal_inventory_id" @change="product_inventory($event.target.value)"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione normal</option>
                                 <option v-for="item in warehouseProducts" :key="item.id" :value="item.id">
@@ -262,7 +262,8 @@ const showToAddProduct = () => {
 }
 
 const closeModal = () => {
-    warehouseProducts.value = []
+    warehouseProducts.value = [];
+    warehouseInventory.value = [];
     showModal.value = false;
     form.reset()
 };
@@ -272,6 +273,7 @@ const warehouseProductsfirst = ref(null);
 const warehouseProducts = ref([])
 const warehouseInventory = ref([])
 const product_warehouse = (warehouse) => {
+    form.reset();
     warehouseProducts.value = []
     warehouseInventory.value = []
     axios.get(route('projectmanagement.warehouse_products', { warehouse: warehouse }))
@@ -303,7 +305,8 @@ const form = useForm({
     special_inventory_id: null,
     quantity: null,
     unitary_price: null,
-    entry_id: null
+    entry_id: null,
+    normal_inventory_id: null
 });
 
 
