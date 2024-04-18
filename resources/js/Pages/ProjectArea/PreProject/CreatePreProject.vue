@@ -29,8 +29,8 @@
                                     Cliente
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input id="unit" list="options" @input="(e) => handleAutocomplete(e, 'customer_id')"  placeholder="Nombre o RUC"
-                                        autocomplete="off" v-model="customerRuc"
+                                    <input id="unit" list="options" @input="(e) => handleAutocomplete(e, 'customer_id')"
+                                        placeholder="Nombre o RUC" autocomplete="off" v-model="customerRuc"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                                     <datalist id="options">
@@ -43,7 +43,8 @@
                             </div>
                             <div>
                                 <div class="flex gap-3 items-center">
-                                    <InputLabel for="customer" class="font-medium leading-6 text-gray-900">¿Tiene cliente
+                                    <InputLabel for="customer" class="font-medium leading-6 text-gray-900">¿Tiene
+                                        cliente
                                         final?
                                     </InputLabel>
 
@@ -64,7 +65,7 @@
 
                                 </div>
                                 <div v-if="form.hasSubcustomer" class="mt-2">
-                                    <input id="unit" list="options"  placeholder="Nombre o RUC"
+                                    <input id="unit" list="options" placeholder="Nombre o RUC"
                                         @input="(e) => handleAutocomplete(e, 'subcustomer_id')" autocomplete="off"
                                         v-model="subCustomerRuc"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -87,12 +88,11 @@
                                 <InputLabel class="font-medium leading-6 text-gray-900">Nombre:
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">
-                                    {{ customers.find(item =>
-        item.id == (form.hasSubcustomer
-            ? form.subcustomer_id
-            : form.customer_id)
+                                    {{ customers.find(item => item.id == (form.hasSubcustomer
+        ? form.subcustomer_id : form.customer_id)
     )?.business_name }}
                                 </InputLabel>
+
                                 <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">{{ customers.find(item =>
@@ -117,7 +117,7 @@
                                 </div>
 
 
-                                <div v-for="(item, i) in contactsList" :key="i" class="">
+                                <div v-for="( item, i ) in  contactsList " :key="i" class="">
                                     <div v-if="form.contacts.includes(item.id)"
                                         class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">
@@ -159,13 +159,12 @@
                                 </InputLabel>
 
                                 <div class="mt-2 flex justify-center items-center gap-2">
-                                    <input type="text" v-model="form.code" id="name" pattern="[a-zA-Z]{5}-[a-zA-Z]{5}"
-                                        maxlength="11"
+                                    <input type="text" v-model="form.code" id="name" maxlength="11" disabled
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 uppercase" />
                                 </div>
-                                <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
+                                <!-- <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
                                 <p class="text-gray-400">CCCCC -> 5 iniciales cliente | PPPPP -> 5 iniciales proyecto
-                                </p>
+                                </p> -->
                                 <InputError :message="form.errors.code" />
                             </div>
 
@@ -199,7 +198,7 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
 
                                 <option disabled value="">Seleccione</option>
-                                <option v-for="item in contactsList" :value="item.id">
+                                <option v-for=" item  in contactsList" :value="item.id">
                                     {{ item.name }}
                                 </option>
                             </select>
@@ -236,7 +235,7 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -274,6 +273,7 @@ const form = useForm({
     ...(preproject ? update_state : initial_state)
 });
 
+const customerBusinnes = ref('')
 
 const contactsList = ref([])
 const contactItem = ref("")
@@ -330,8 +330,8 @@ const submit = () => {
 
 const handleAutocomplete = (e, model) => {
     const ruc = e.target.value;
-    form.contacts = []
     let matchedClient = customers.find(item => item.ruc == ruc)
+    customerBusinnes.value = matchedClient.business_name
     if (matchedClient) {
         form[model] = matchedClient.id
     } else {
@@ -339,10 +339,6 @@ const handleAutocomplete = (e, model) => {
     }
     helperContactList(form.customer_id, form.subcustomer_id, form.hasSubcustomer)
 }
-
-
-
-
 
 const showContactModal = ref(false)
 function openContactModal() {
@@ -358,9 +354,11 @@ function submitContact() {
         showErrorContact.value = true
         setTimeout(() => {
             showErrorContact.value = false
+            closeContactModal()
         }, 1500)
     } else {
         form.contacts.push(contactItem.value)
+        closeContactModal()
     }
     contactItem.value = ''
 }
@@ -378,5 +376,14 @@ const handleSubClient = (e) => {
     form.contacts = []
     helperContactList(form.customer_id, form.subcustomer_id, JSON.parse(e.target.value))
 }
+
+const updateProjectCode = () => {
+    const customerName = customerBusinnes.value.substring(0, 5);
+    const description = form.description.replace(' ', '').substring(0, 5);
+
+    form.code = `${customerName}-${description}`;
+};
+
+watch(() => [customerBusinnes.value, form.description], updateProjectCode);
 
 </script>

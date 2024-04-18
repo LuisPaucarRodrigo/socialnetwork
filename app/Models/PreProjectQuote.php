@@ -29,18 +29,7 @@ class PreProjectQuote extends Model
         'total_amount_no_margin'
     ];
 
-    public function preproject () {
-        return $this->belongsTo(Preproject::class,"preproject_id");
-    }
-
-    public function items() {
-        return $this->hasMany(PreProjectQuoteItem::class,"preproject_quote_id");
-    }
-    
-    public function products() {
-        return $this->hasMany(PreprojectQuoteProduct::class,"preproject_quote_id");
-    }
-
+    //CALCULATED
     public function getTotalAmountAttribute() {
         $totalItems = $this->items()->get()->sum(function ($item) {
             return $item->quantity * $item->unit_price * (1+ $item->profit_margin/100) * $item->days;
@@ -69,5 +58,22 @@ class PreProjectQuote extends Model
         } else {
             return 'TMP' . now()->format('ymdHis');
         }
+    }
+
+    //RELATIONS
+    public function preproject () {
+        return $this->belongsTo(Preproject::class,"preproject_id");
+    }
+
+    public function items() {
+        return $this->hasMany(PreProjectQuoteItem::class,"preproject_quote_id");
+    }
+    
+    public function products() {
+        return $this->hasMany(PreprojectQuoteProduct::class,"preproject_quote_id");
+    }
+
+    public function preproject_quote_service(){
+        return $this->hasMany(PreprojectQuoteService::class,"preproject_quote_id");
     }
 }

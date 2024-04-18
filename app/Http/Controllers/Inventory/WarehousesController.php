@@ -15,7 +15,10 @@ use App\Models\NormalEntry;
 use App\Models\PurchasesEntry;
 use App\Models\ProjectEntry;
 use App\Models\Purchase_product;
+use App\Models\ResourceEntry;
+use App\Models\ResourceType;
 use App\Models\RetrievalEntry;
+use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\GlobalFunctionsServiceProvider;
 use Carbon\Carbon;
@@ -73,7 +76,12 @@ class WarehousesController extends Controller
 
     public function approvePurchaseOrders(Warehouse $warehouse)
     {
-        $purchase_orders = Purchase_order::where('state', 'Completada')->with('purchase_quote.purchase_quote_products.purchase_product')->paginate(5);
+        $purchase_orders = Purchase_order::where('state', 'Completada')
+            ->whereHas('purchase_quote.purchase_quote_products.purchase_product', function ($query) {
+                $query->where('type', 'Producto');
+            })
+            ->with('purchase_quote.purchase_quote_products.purchase_product')
+            ->paginate(5);
         return Inertia::render('Inventory/WarehouseManagement/ApprovePurchaseOrders', [
             'purchase_orders' => $purchase_orders,
             'warehouseId' => $warehouse->id
@@ -174,18 +182,14 @@ class WarehousesController extends Controller
             'referral_guide' => 'required|string',
             'purchase_product_id' => 'required|numeric'
         ]);
-
         $found = null;
-
         foreach ($warehouse->inventory as $inventoryItem) {
             if ($inventoryItem->purchase_product_id == $request->purchase_product_id) {
                 $found = $inventoryItem->id;
                 break;
             }
         }
-
         if ($found) {
-
             $entry = Entry::create([
                 'inventory_id' => $found,
                 'type' => 'normal',
@@ -195,7 +199,7 @@ class WarehousesController extends Controller
                 'observations' => $request->observations,
             ]);
 
-            $normal_entry = NormalEntry::create([
+            NormalEntry::create([
                 'entry_id' => $entry->id,
                 'purchase_product_id' => $request->purchase_product_id,
                 'referral_guide' => $request->referral_guide
@@ -216,7 +220,7 @@ class WarehousesController extends Controller
                 'observations' => $request->observations,
             ]);
 
-            $normal_entry = NormalEntry::create([
+            NormalEntry::create([
                 'entry_id' => $entry->id,
                 'purchase_product_id' => $request->purchase_product_id,
                 'referral_guide' => $request->referral_guide
@@ -378,5 +382,94 @@ class WarehousesController extends Controller
         $approve->update([
             'state' => 1
         ]);
+    }
+
+    //RESOURCE
+
+    public function resourcePurchaseOrders()
+    {
+        $purchase_orders_resource = Purchase_order::where('state', 'Completada')
+            ->whereHas('purchase_quote.purchase_quote_products.purchase_product', function ($query) {
+                $query->where('type', 'Activo');
+            })
+            ->with('purchase_quote.purchase_quote_products.purchase_product')
+            ->paginate(5);
+        return Inertia::render('Inventory/WarehouseManagement/ApprovePurchaseOrders', [
+            'purchase_orders_resource' => $purchase_orders_resource
+        ]);
+    }
+
+    public function approveResourcePurchaseOrders(Request $request)
+    {
+        $request->validate([
+            'purchase_order_id' => 'required|numeric'
+        ]);
+        $purchase_order = Purchase_order::with('purchase_quote.purchase_quote_products.purchase_product')->find($request->purchase_order_id);
+        $today = Carbon::now();
+        foreach ($purchase_order->purchase_quote->purchase_quote_products as $purchaseQuoteProduct) {
+            for ($i = 0; $i < $purchaseQuoteProduct->quantity; $i++) {
+                ResourceEntry::create([
+                    'entry_date' => $today,
+                    'referral_guide' => $purchase_order->remission_guide_number,
+                    'entry_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
+                    'purchase_product_id' => $purchaseQuoteProduct->purchase_product->id,
+                ]);
+            }
+
+            $purchase_order->update([
+                'state' => 'Completada/Aprobada'
+            ]);
+        }
+    }
+
+    public function productResourcePurchaseOrders($boolean = false)
+    {
+        //dd($boolean);
+        if ($boolean == false) {
+            $resources = ResourceEntry::with('purchase_product')
+                ->where('state', true)
+                ->paginate(10);
+        } else {
+            $resources = ResourceEntry::with('purchase_product')
+                ->where('state', null)
+                ->paginate(10);
+        }
+        return Inertia::render('Inventory/WarehouseManagement/Inventory', [
+            'resources' => $resources,
+            'boolean' => boolval($boolean)
+        ]);
+    }
+
+    public function serialNumberResourcePurchaseOrders(Request $request)
+    {   
+        $resource_id = ResourceEntry::find($request->resource_id);
+        $resource_id->update([
+            'serial_number' => $request->serial_number,
+            'state'=>true,
+            'condition'=>'Disponible'
+        ]);
+    }
+
+    //SERVICES
+    public function service_index()
+    {
+        $services = Service::with('purchase_product')->paginate(10);
+        $resources = Purchase_product::with('resource_type')->whereNotNull('resource_type_id')->get();
+        return Inertia::render('Inventory/WarehouseManagement/Service/Index', [
+            'services' => $services,
+            'resources' => $resources
+        ]);
+    }
+
+    public function service_store(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'rent_price' => 'required|numeric',
+            'description' => 'string|nullable',
+            'purchase_product_id' => 'numeric|nullable'
+        ]);
+
+        Service::create($data);
     }
 }
