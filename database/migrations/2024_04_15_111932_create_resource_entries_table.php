@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('serial_number')->nullable();
             $table->string('referral_guide');
             $table->decimal('entry_price');
-            $table->boolean('state')->default(true);
+            $table->boolean('state')->nullable();
+            $table->string('condition')->nullable();
             $table->foreignId('purchase_product_id');
             $table->timestamps();
         });
