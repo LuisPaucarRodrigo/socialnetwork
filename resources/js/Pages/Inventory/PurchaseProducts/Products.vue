@@ -79,8 +79,12 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.unit }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.type }} {{ item.type === 'Producto' ?
-        '/' + item.type_product : item.resource_type ? '/' + item.resource_type.name : ''}}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ item.type }} 
+                                    {{ item.type === 'Producto' 
+                                            ? '/' + item.type_product : item.resource_type 
+                                            ? '/' + item.resource_type.name 
+                                            : ''}}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
@@ -246,7 +250,7 @@
                     <div class="sm:col-span-6">
                         <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="name" required
+                            <TextInput id="name" required :to-uppercase="true"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 v-model="formname.name" />
                             <InputError :message="formname.errors.name" />
@@ -259,7 +263,10 @@
                         Valor de Depreciacion
                     </InputLabel>
                     <div class="mt-2">
-                        <TextInput type="text" v-model="formname.depreciation_value" id="depreciation_value"
+                        <input type="number" v-model="formname.depreciation_value" id="depreciation_value" 
+                            min="0"
+                            step="0.01"
+                            max="1"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         <InputError :message="formname.errors.depreciation_value" />
                     </div>
