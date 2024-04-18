@@ -354,9 +354,11 @@ function submitContact() {
         showErrorContact.value = true
         setTimeout(() => {
             showErrorContact.value = false
+            closeContactModal()
         }, 1500)
     } else {
         form.contacts.push(contactItem.value)
+        closeContactModal()
     }
     contactItem.value = ''
 }
@@ -377,9 +379,9 @@ const handleSubClient = (e) => {
 
 const updateProjectCode = () => {
     const customerName = customerBusinnes.value.substring(0, 5);
-    const description = form.description.substring(0, 5);
+    const description = form.description.replace(' ', '').substring(0, 5);
 
-    form.code = `${customerName} - ${description}`;
+    form.code = `${customerName}-${description}`;
 };
 
 watch(() => [customerBusinnes.value, form.description], updateProjectCode);
