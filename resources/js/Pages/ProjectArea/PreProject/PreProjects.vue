@@ -53,6 +53,12 @@
                             proveedores
                             </Link>
                         </div> -->
+
+                        <div>
+                            <Link :href="route('preprojects.products', { preproject: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos de Almacén
+                            </Link>
+                        </div>
                         <div v-if="item.project == null">
                             <Link :href="route('preprojects.request.index', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de
