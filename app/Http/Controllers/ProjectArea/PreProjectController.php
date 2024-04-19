@@ -19,6 +19,10 @@ use App\Models\PreprojectQuoteProduct;
 use App\Models\PreprojectQuoteService;
 use App\Models\Purchase_product;
 use App\Models\Product;
+use App\Models\Inventory;
+use App\Models\Entry;
+use App\Models\Warehouse;
+use App\Models\PreprojectEntry;
 use App\Models\Purchase_quote;
 use App\Models\Purchasing_request;
 use App\Models\Purchasing_requests_product;
@@ -596,4 +600,47 @@ class PreProjectController extends Controller
 
         return redirect()->back();
     }
+
+    public function preproject_products_index(Preproject $preproject)
+    {
+        $assigned_products = PreprojectEntry::where('preproject_id', $preproject->id)->with('entry.inventory.purchase_product')->paginate(10);
+        $warehouses = Warehouse::whereIn('id', [3,4])->get();
+        return Inertia::render('ProjectArea/PreProject/PreProjectProducts', [
+            'assigned_products' => $assigned_products,
+            'warehouses' => $warehouses,
+            'preproject_id' => $preproject->id
+        ]);
+    }
+
+    public function preproject_warehouse_products($warehouse_id)
+    {
+        $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse_id)->get();
+        return response()->json(['products' => $products]);
+    }
+
+    public function preproject_inventory_products($inventory_id)
+    {
+        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')->where('inventory_id', $inventory_id)->get();
+        return response()->json(['inventory' => $inventory]);
+    }
+
+    public function preproject_product_store(Request $request)
+    {
+        $request->validate([
+            'preproject_id' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'entry_id' => 'nullable|numeric'
+        ]);
+
+        $unitary_price = Entry::find($request->entry_id);
+        PreprojectEntry::create([
+            'preproject_id' => $request->preproject_id,
+            'entry_id' => $request->entry_id,
+            'quantity' => $request->quantity,
+            'unitary_price' => $unitary_price->unitary_price
+        ]);
+
+        return redirect()->back();
+    }
+
 }
