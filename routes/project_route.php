@@ -83,6 +83,13 @@ Route::get('/preprojects/providers_quotes/download/{providerquote_id}', [PreProj
 
 Route::post('/preprojects/purchase_quote/accept_decline/{purchase_quote_id}', [PreProjectController::class, "accept_decline_quote"])->name('preprojects.purchase_quote.accept_decline');
 
+//preprojectsproducts
+Route::get('/preprojects/products/{preproject}', [PreProjectController::class, 'preproject_products_index'])->name('preprojects.products');
+Route::post('/preprojects/products/post', [PreProjectController::class, 'preproject_product_store'])->name('preprojects.products.store');
+Route::get('/preprojects/products/{warehouse_id}/getWarehouse', [PreProjectController::class, 'preproject_warehouse_products'])->name('preprojects.warehouse_products');
+Route::get('/preprojects/products/{inventory_id}/getInventory', [PreProjectController::class, 'preproject_inventory_products'])->name('preprojects.inventory_products');
+
+
 
 //test api
 Route::get('/sunat_ruc', [HttpController::class, 'sunat_ruc'])->name('sunat');
