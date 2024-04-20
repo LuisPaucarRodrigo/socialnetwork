@@ -157,7 +157,8 @@ class PreProjectController extends Controller
 
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
             'preproject' => Preproject::with(
-                'quote.preproject_quote_service',
+                'quote.preproject_quote_services.resource_entry.purchase_product',
+                'quote.preproject_quote_services.service',
                 'quote.products.purchase_product',
             )
                 ->find($preproject_id),
@@ -198,10 +199,29 @@ class PreProjectController extends Controller
             $preproject_quote = PreProjectQuote::create($data);
             if ($request->has("items")) {
                 foreach ($request->get("items") as $item) {
-                    $service_item = new PreprojectQuoteService($item);
-                    $preproject_quote->preproject_quote_service()->save($service_item);
-                    // $quoteItem = new PreProjectQuoteItem($item);
-                    // $preproject_quote->items()->save($quoteItem);
+                    if (count($item["resource_entries"]) !== 0){
+                        foreach($item["resource_entries"] as $subItem) {
+                            $service_item_with_sub = new PreprojectQuoteService([
+                                'preproject_quote_id' => $preproject_quote->id,
+                                'service_id' => $item["service_info"]["id"],
+                                'resource_entry_id' => $subItem["id"],
+                                'days' => $item["days"],
+                                'profit_margin' => $item["profit_margin"],
+                                'rent_price' => $item["service_info"]["rent_price"],
+                            ]);
+                            $preproject_quote->preproject_quote_services()->save($service_item_with_sub);
+                        }
+                    } else {
+                        $service_item = new PreprojectQuoteService([
+                            'preproject_quote_id' => $preproject_quote->id,
+                            'service_id' => $item["service_info"]["id"],
+                            'days' => $item["days"],
+                            'profit_margin' => $item["profit_margin"],
+                            'rent_price' => $item["service_info"]["rent_price"],
+                            
+                        ]);
+                        $preproject_quote->preproject_quote_services()->save($service_item);
+                    }
                 }
             }
             if ($request->has("products")) {
