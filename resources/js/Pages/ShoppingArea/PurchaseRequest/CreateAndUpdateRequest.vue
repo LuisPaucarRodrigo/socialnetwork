@@ -54,7 +54,7 @@
                                 <div>
                                     <InputLabel for="resorceOrProduct"
                                         class="sm:text-sm font-medium leading-6 text-gray-900">
-                                        ¿Producto o Activos?
+                                        ¿Productos o Activos?
                                     </InputLabel>
                                     <div class="mt-2 flex gap-4">
                                         <label class="flex gap-2 items-center">

@@ -89,17 +89,17 @@
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">
                                     {{ customers.find(item => item.id == (form.hasSubcustomer
-        ? form.subcustomer_id : form.customer_id)
-    )?.business_name }}
+                                        ? form.subcustomer_id : form.customer_id)
+                                    )?.business_name }}
                                 </InputLabel>
 
                                 <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">{{ customers.find(item =>
-        item.id == (form.hasSubcustomer
-            ? form.subcustomer_id
-            : form.customer_id)
-    )?.address }}
+                                    item.id == (form.hasSubcustomer
+                                        ? form.subcustomer_id
+                                        : form.customer_id)
+                                )?.address }}
                                 </InputLabel>
 
                             </div>
@@ -171,7 +171,7 @@
                             <div v-if="[1,2].includes(form.customer_id)">
                                 <label for="cpe" class="font-medium leading-6 text-gray-900">CPE</label>
                                 <div class="mt-2 flex justify-center items-center gap-2">
-                                    <input type="text" pattern="[A-Z0-9]+" v-model="form.cpe" id="cpe"
+                                    <input requirede="text" pattern="[A-Z0-9]+" v-model="form.cpe" id="cpe"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 </div>
                                 <!-- <p class="text-gray-400">Ejemplo: CCCCC-PPPPP </p>
@@ -391,7 +391,7 @@ const handleSubClient = (e) => {
 }
 
 const updateProjectCode = () => {
-    const customerName = customerBusinnes.value.substring(0, 5);
+    const customerName = customerBusinnes.value.replace(' ', '').substring(0, 5);
     const description = form.description.replace(' ', '').substring(0, 5);
 
     form.code = `${customerName}-${description}`;
