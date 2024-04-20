@@ -13,9 +13,14 @@ class PreprojectEntry extends Model
         'preproject_id',
         'entry_id',
         'quantity',
+        'margin',
         'observation',
         'unitary_price',
         'state'
+    ];
+
+    protected $appends = [
+        'unitary_price_with_margin'
     ];
 
     //Relations
@@ -26,6 +31,11 @@ class PreprojectEntry extends Model
 
     public function entry (){
         return $this->belongsTo(Entry::class,'entry_id');
+    }
+
+    public function getUnitaryPriceWithMarginAttribute()
+    {
+        return $this->unitary_price * $this->margin;
     }
 
 }

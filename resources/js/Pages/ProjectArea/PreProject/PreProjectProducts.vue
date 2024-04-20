@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
             Productos asignados
         </template>
@@ -21,7 +21,7 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Còdigo Producto
+                                Código Producto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -34,6 +34,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cantidad Enviada
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Margen de Ganancia
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -72,6 +76,9 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.current_output_quantity }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.margin }} %</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ }}</p>
@@ -178,6 +185,14 @@
                         </div>
                     </div>
 
+                    <div class="sm:col-span-3">
+                        <InputLabel for="margin" class="font-medium leading-6 text-gray-900">Margen (%)</InputLabel>
+                        <div class="mt-2">
+                            <input id="margin" type="number" step="0.01" min="0" v-model="form.margin"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                        </div>
+                    </div>
+
                     
                     <!-- <div v-if="enableInput" class="sm:col-span-3">
                         <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio unitario a
@@ -274,6 +289,7 @@ const errorAsignation = ref(false)
 const form = useForm({
     preproject_id: preproject_id,
     quantity: null,
+    margin: null,
     unitary_price: null,
     entry_id: null,
     normal_inventory_id: null
