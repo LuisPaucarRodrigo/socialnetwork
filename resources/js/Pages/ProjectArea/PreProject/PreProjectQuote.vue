@@ -271,8 +271,115 @@
                                             </tbody>
                                         </table>
                                     </div>
+
+
+
+
+                                    <div class="overflow-x-auto mt-8">
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr
+                                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Partida
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Código
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Nombre
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2  min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Cantidad
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Precio unitario
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2   min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Margen
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Valor total
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(item, index) in (preproject_products)" :key="index"
+                                                    class="text-gray-700">
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p>
+                                                            {{ index + 1 }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p>
+                                                            {{ item.entry.inventory.purchase_product.code }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            {{ item.entry.inventory.purchase_product.name }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <!-- v-if="preproject.quote" -->
+                                                        <p class="text-gray-900">
+                                                            {{ item.quantity }}
+                                                        </p>
+
+                                                        <!-- <div v-else class="flex space-x-2 items-center">
+                                                            <input  
+                                                               required
+                                                               type="number" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               v-model="item.quantity"
+                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        </div> -->
+
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <!-- v-if="preproject.quote" -->
+                                                        <p class="text-gray-900">
+                                                            S/. {{ (item.unitary_price) }}
+                                                        </p>
+                                                        <!-- <div v-else class="flex space-x-2 items-center">
+                                                            <span>S/.</span><input  
+                                                               required
+                                                               type="number" 
+                                                               min="0" 
+                                                               step="0.01"
+                                                               v-model="item.unitary_price"
+                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        </div> -->
+
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900 text-center">
+                                                            {{ item.margin }} %
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            S/.{{ (item.unitary_price *
+                                                                item.quantity *
+                                                                (1 + (item.margin) / 100))
+                                                                .toFixed(2) }}</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
                                 </div>
-                                <InputError :message="form.errors.products" />
                             </div>
 
 
@@ -752,13 +859,14 @@ import axios from 'axios';
 const showModal = ref(false)
 const showErroModal = ref(false)
 
-const { preproject, auth, products, purchasing_requests, existingProducts, services } = defineProps({
+const { preproject, auth, products, purchasing_requests, existingProducts, services, preproject_products } = defineProps({
     products: Object,
     preproject: Object,
     purchasing_requests: Object,
     existingProducts: Object,
     auth: Object,
     services: Object,
+    preproject_products: Object
 })
 
 const modalVariables = ref({
