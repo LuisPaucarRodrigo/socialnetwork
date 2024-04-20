@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('days');
             $table->double('profit_margin');
+            $table->double('rent_price');
             $table->foreignId('preproject_quote_id');
             $table->foreignId('service_id');
             $table->foreignId('resource_entry_id')->nullable();

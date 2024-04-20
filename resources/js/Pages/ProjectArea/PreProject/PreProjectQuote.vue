@@ -136,7 +136,7 @@
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Productos
                                     </h2>
 
-                                    <button v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                    <button v-if="auth.user.role_id === 1 && preproject.quote === null"
                                         @click="openProductModal" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
@@ -280,7 +280,7 @@
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Servicios
                                     </h2>
-                                    <button v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                    <button v-if="auth.user.role_id === 1 && preproject.quote === null"
                                         @click="showToAddItem" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
@@ -306,11 +306,15 @@
                                                     </th>
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                        Activo
+                                                        Cantidad de Activos
                                                     </th>
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Días
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Precio de IUnitario
                                                     </th>
                                                     <!-- <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -319,7 +323,7 @@
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Valor unitario
-                                                    </th>
+                                                    </th>-->
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Margen
@@ -327,14 +331,24 @@
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Valor total
-                                                    </th> -->
+                                                    </th> 
                                                     <th v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Acciones
                                                     </th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+
+
+
+
+
+                                            <!-- salvaguardando erro -->
+
+
+
+
+                                            <tbody> 
                                                 <tr v-for="(item, index) in (form.items)" :key="index"
                                                     class="text-gray-700">
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -344,16 +358,21 @@
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p>
-                                                            {{ item.service_id }}
+                                                            {{ item.service_info.name }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
-                                                            {{ item.resource_entry_id }}
+                                                            {{ item.resource_entries.length === 0 ? '-' : item.resource_entries.length }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">{{ item.days }}</p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            S/. {{ item.service_info.rent_price }}
+                                                        </p>
                                                     </td>
                                                     <!-- <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">{{ item.quantity }}</p>
@@ -361,7 +380,7 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">S/.{{ (item.unit_price).toFixed(2) }}
                                                         </p>
-                                                    </td>
+                                                    </td> -->
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             {{ (item.profit_margin) }}%
@@ -369,19 +388,28 @@
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
-                                                            S/.{{ (item.unit_price * item.quantity * item.days *
-        (1 + item.profit_margin / 100)).toFixed(2) }}
+                                                            S/.{{ (item.service_info.rent_price *  
+                                                                    (item.resource_entries.length === 0 ? 1 : item.resource_entries.length) 
+                                                                    * item.days * (1 + item.profit_margin / 100)).toFixed(2) }}
                                                         </p>
-                                                    </td> -->
+                                                    </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <div v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                                            class="flex justify-end">
-                                                            <button type="button"
+                                                        
+                                                        
+                                                        
+                                                        <div class="flex justify-center space-x-3">
+
+                                                            <button v-if="item.resource_entries.length !== 0 " type="button" @click="showServiceDetailsModal(item.resource_entries)" class="text-blue-600 hover:underline">
+                                                                <EyeIcon class="h-4 w-4" />
+                                                            </button>
+                                                            <button type="button" v-if="auth.user.role_id === 1 || preproject.quote === null"
                                                                 @click=" preproject.quote ? deleteAlreadyItem(item.id, index) : deleteItem(index)"
                                                                 class="col-span-1 flex justify-end">
                                                                 <TrashIcon class=" text-red-500 h-4 w-4 " />
                                                             </button>
                                                         </div>
+
+
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -506,22 +534,22 @@
                             <InputLabel for="service" class="font-medium leading-6 text-gray-900">Servicios
                             </InputLabel>
                             <div class="mt-2">
-                                <select required v-model="itemToAdd.service_id"
-                                    @change="handleService($event.target.value)" id="service"
+                                <select required v-model="itemToAdd.service_info"
+                                    @change="handleService" id="service"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
-                                    <option v-for="item in services" :key="item.id" :value="item.id">
+                                    <option v-for="item in services" :key="item.id" :value="item">
                                         {{ item.name }}
                                     </option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3">
+                        <div v-if="itemToAdd.service_info?.purchase_product" class="sm:col-span-3">
                             <InputLabel for="resource" class="font-medium leading-6 text-gray-900">Activos
                             </InputLabel>
                             <div class="mt-2">
-                                <select required v-model="itemToAdd.resource_entry_id"
+                                <select required v-model="itemToAdd.resource_entries"
                                     id="service"
                                     multiple
                                     size="5"
@@ -531,15 +559,6 @@
                                         {{ item.purchase_product.name }} - {{ item.serial_number }}
                                     </option>
                                 </select>
-                                <!-- <input required id="resource" list="options" @input="handleAutocomplete"
-                                    v-model="itemToAdd.resource_entry_id" autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" /> -->
-
-                                <!-- <datalist id="options">
-                                    <option v-for="item in active_selected" :value="item.id" :data-value="item">
-                                        {{ item.serial_number }}
-                                    </option>
-                                </datalist> -->
                             </div>
                         </div>
 
@@ -566,6 +585,55 @@
                         <PrimaryButton type="submit"> Agregar </PrimaryButton>
                     </div>
                 </form>
+            </Modal>
+
+
+            <Modal :show="showServiceDetails" @close="showServiceDetails = false" :maxWidth="'lg'">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-base font-medium leading-7">
+                            Activos Asignados a este servicio
+                        </h2>
+                        <button @click="closeServiceDetailsModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto mt-4">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Activo
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Número de serie
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Precio Unitario
+                                </th>
+                                <!-- Agrega más encabezados según sea necesario -->
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr v-for="(item, index) in service_resources" :key="index">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ item.purchase_product.name }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ item.serial_number }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">S/. {{ item.current_price }}</div>
+                                </td>
+                                <!-- Agrega más celdas según sea necesario -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </Modal>
 
             <!-- <Modal :show="showModalMember">
@@ -678,6 +746,7 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 import axios from 'axios';
 
 const showModal = ref(false)
@@ -727,16 +796,44 @@ const initialState = {
     preproject_id: preproject.id
 }
 
+function agruparPorServiceId(datos) {
+    var grupos = {};
+    datos.forEach(function(elemento) {
+        var clave = elemento.service_id + "-" + elemento.days + "-" + elemento.profit_margin;
+        if (!grupos.hasOwnProperty(clave)) {
+            grupos[clave] = {
+                days: elemento.days,
+                profit_margin: elemento.profit_margin,
+                rent_price: elemento.rent_price,
+                resource_entries: [],
+                service_info: elemento.service
+            };
+        }
+        if (elemento.resource_entry !== null) {
+            grupos[clave].resource_entries.push(elemento.resource_entry);
+        }
+    });
+    var resultado = [];
+    for (var clave in grupos) {
+        resultado.push(grupos[clave]);
+    }
+    return resultado;
+}
+
+
+
+
 const updateState = {
     ...preproject.quote,
-    items: preproject.quote? [...preproject.quote.preproject_quote_service]: []
+    items: preproject?.quote?.preproject_quote_services 
+                ? agruparPorServiceId(preproject.quote.preproject_quote_services)
+                : []
 }
 
 const form = useForm(
     { ...(preproject.quote ? updateState : initialState) }
 )
 
-console.log(form.products)
 
 const submit = () => {
     let url = route('preprojects.quote.store')
@@ -772,9 +869,9 @@ const showFinishAccept = ref(false);
 const itemInitialState = {
     days:'',
     profit_margin:'',
-    service_id: '',
-    resource_entry_id: [],
-    days: ''
+    service_info: {},
+    resource_entries: [],
+    rent_price: ''
 }
 const itemToAdd = ref(JSON.parse(JSON.stringify(itemInitialState)))
 const active_selected = ref([])
@@ -819,7 +916,7 @@ const addItem = () => {
             .catch(e => console.log(e))
     } else {
         form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
-        itemToAdd.value = JSON.parse(JSON.stringify(itemInitialState))
+        closeModal()
     }
 }
 
@@ -948,7 +1045,38 @@ function deleteProduct(index, id) {
 
 
 async function handleService(e) {
-    const res = await axios.get(route('load.resource_entries', {service_id: e}))
+    const res = await axios.get(route('load.resource_entries', {service_id: itemToAdd.value.service_info.id}))
     active_selected.value = res.data
 }
+
+const showServiceDetails = ref(false)
+const service_resources = ref([])
+
+function showServiceDetailsModal (array) {
+    console.log(array)
+    service_resources.value = [...array]
+    showServiceDetails.value = true
+}
+
+const closeServiceDetailsModal = () => {
+    showServiceDetails.value = false
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
