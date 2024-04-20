@@ -155,6 +155,8 @@ class PreProjectController extends Controller
             }
         }
 
+        $preproject_products = PreprojectEntry::where('preproject_id', $preproject_id)->with('entry.inventory.purchase_product')->get();
+
         return Inertia::render('ProjectArea/PreProject/PreProjectQuote', [
             'preproject' => Preproject::with(
                 'quote.preproject_quote_services.resource_entry.purchase_product',
@@ -167,6 +169,7 @@ class PreProjectController extends Controller
             'purchasing_requests' => Purchasing_request::with('products')
                 ->where('preproject_id', $preproject_id)->get(),
             'services' => Service::with('purchase_product')->get(),
+            'preproject_products' => $preproject_products
         ]);
     }
 
@@ -284,7 +287,7 @@ class PreProjectController extends Controller
 
     public function getPDF(Preproject $preproject)
     {
-        $preproject = $preproject->load('quote.items', 'quote.products.purchase_product');
+        $preproject = $preproject->load('quote.preproject_quote_services', 'quote.products.purchase_product', 'preproject_entries.entry.inventory.purchase_product');
         $pdf = Pdf::loadView('pdf.CotizationPDF', compact('preproject'));
         return $pdf->stream();
         //return view('pdf.CotizationPDF', compact('preproject'));
@@ -649,6 +652,7 @@ class PreProjectController extends Controller
         $request->validate([
             'preproject_id' => 'required|numeric',
             'quantity' => 'required|numeric',
+            'margin' => 'required|numeric',
             'entry_id' => 'nullable|numeric'
         ]);
 
@@ -657,6 +661,7 @@ class PreProjectController extends Controller
             'preproject_id' => $request->preproject_id,
             'entry_id' => $request->entry_id,
             'quantity' => $request->quantity,
+            'margin' => $request->margin,
             'unitary_price' => $unitary_price->unitary_price
         ]);
 

@@ -17,6 +17,10 @@ class PreprojectQuoteService extends Model
         'rent_price',
     ];
 
+    protected $appends = [
+        'rent_price_with_margin'
+    ];
+
     //RELATIONS
     public function preproject_quote_services()
     {
@@ -29,5 +33,10 @@ class PreprojectQuoteService extends Model
 
     public function service () {
         return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    public function getRentPriceWithMarginAttribute()
+    {
+        return $this->rent_price * $this->profit_margin;
     }
 }
