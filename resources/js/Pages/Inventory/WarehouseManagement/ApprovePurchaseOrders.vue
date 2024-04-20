@@ -137,65 +137,63 @@
         </Modal>
 
         <Modal :show="showQuoteDetailsModal" @close="showQuoteDetailsModal = false" :maxWidth="'xl'">
-    <div class="p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-base font-medium leading-7">
-                Detalles de la Cotización
-            </h2>
-            <button @click="closeQuoteDetailsModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                <!-- Puedes usar un símbolo de cierre, como una X -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <!-- O simplemente usar la palabra "Cerrar" -->
-                <!-- Cerrar -->
-            </button>
-        </div>
-        <div class="mb-4">
-            <p class="font-medium text-gray-900">Fecha límite de cotización: <span class="text-gray-600">{{ formattedDate(purchaseQuoteData.quote_deadline) }}</span></p>
-            <p class="font-medium text-gray-900">Tiempo de entrega: <span class="text-gray-600">{{ purchaseQuoteData.deliverable_time }}</span></p>
-            <p class="font-medium text-gray-900">Tipo de pago: <span class="text-gray-600">{{ purchaseQuoteData.payment_type }}</span></p>
-            <p class="font-medium text-gray-900">Moneda: <span class="text-gray-600">{{ purchaseQuoteData.currency }}</span></p>
-            <p class="font-medium text-gray-900">Número de cuenta: <span class="text-gray-600">{{ purchaseQuoteData.account_number }}</span></p>
-        </div>
-        <p class="font-medium">Productos:</p>
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-base font-medium leading-7">
+                        Detalles de la Cotización
+                    </h2>
+                    <button @click="closeQuoteDetailsModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <!-- Puedes usar un símbolo de cierre, como una X -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <!-- O simplemente usar la palabra "Cerrar" -->
+                        <!-- Cerrar -->
+                    </button>
+                </div>
+                <div class="mb-4">
+                    <p class="font-medium text-gray-900">Fecha límite de cotización: <span class="text-gray-600">{{ formattedDate(purchaseQuoteData.quote_deadline) }}</span></p>
+                    <p class="font-medium text-gray-900">Tiempo de entrega: <span class="text-gray-600">{{ purchaseQuoteData.deliverable_time }}</span></p>
+                    <p class="font-medium text-gray-900">Tipo de pago: <span class="text-gray-600">{{ purchaseQuoteData.payment_type }}</span></p>
+                    <p class="font-medium text-gray-900">Moneda: <span class="text-gray-600">{{ purchaseQuoteData.currency }}</span></p>
+                    <p class="font-medium text-gray-900">Número de cuenta: <span class="text-gray-600">{{ purchaseQuoteData.account_number }}</span></p>
+                </div>
+                <p class="font-medium">Productos:</p>
 
-        <div class="overflow-x-auto mt-4">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Producto
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Cantidad
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Precio Unitario
-                    </th>
-                    <!-- Agrega más encabezados según sea necesario -->
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="(product, index) in purchaseQuoteData.products" :key="index">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ product.purchase_product.name }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ product.quantity }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ purchaseQuoteData.currency === 'sol' ? 'S/. ' : '$ ' }}{{ product.unitary_amount.toFixed(2) }}</div>
-                    </td>
-                    <!-- Agrega más celdas según sea necesario -->
-                    </tr>
-                </tbody>
-                </table>
-        </div>
-    </div>
-</Modal>
-
-
+                <div class="overflow-x-auto mt-4">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Producto
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Cantidad
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Precio Unitario
+                            </th>
+                            <!-- Agrega más encabezados según sea necesario -->
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr v-for="(product, index) in purchaseQuoteData.products" :key="index">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ product.purchase_product.name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ product.quantity }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ purchaseQuoteData.currency === 'sol' ? 'S/. ' : '$ ' }}{{ product.unitary_amount.toFixed(2) }}</div>
+                            </td>
+                            <!-- Agrega más celdas según sea necesario -->
+                            </tr>
+                        </tbody>
+                        </table>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 
@@ -274,8 +272,9 @@ const showQuoteDoc = (purchase_order) => {
     window.open(routeToShow, '_blank');
 }
 
-const showQuoteDetails = (purchase_order) => {
 
+
+const showQuoteDetails = (purchase_order) => {
     purchaseQuoteData = {
         quote_deadline: purchase_order.purchase_quote.quote_deadline,
         deliverable_time: purchase_order.purchase_quote.deliverable_time,

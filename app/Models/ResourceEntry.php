@@ -24,8 +24,8 @@ class ResourceEntry extends Model
     ];
 
     //CALCULATED
-    public function getCurrentPriceAttribute()
-    {
+    public function getCurrentPriceAttribute(){
+        return $this->entry_price;
     }
 
     //RELATIONS

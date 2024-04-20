@@ -11,12 +11,23 @@ class PreprojectQuoteService extends Model
     protected $fillable = [
         'preproject_quote_id',
         'service_id',
-        'resource_entry_id'
+        'resource_entry_id',
+        'days',
+        'profit_margin',
+        'rent_price',
     ];
 
     //RELATIONS
-    public function preproject_quote_service()
+    public function preproject_quote_services()
     {
         return $this->belongsTo(PreProjectQuote::class,'preproject_quote_id');
+    }
+
+    public function resource_entry () {
+        return $this->belongsTo(ResourceEntry::class, 'resource_entry_id');
+    }
+
+    public function service () {
+        return $this->belongsTo(Service::class, 'service_id');
     }
 }
