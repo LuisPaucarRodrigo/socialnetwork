@@ -56,6 +56,11 @@ class Preproject extends Model
         return $this->hasMany(Purchasing_request::class);
     }
 
+    public function preproject_entries()
+    {
+        return $this->hasMany(PreprojectEntry::class);
+    }
+
     
     // CALCULATED
     public function getStateAttribute()

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('preproject_id')->constrained();
             $table->foreignId('entry_id')->nullable()->constrained();
             $table->integer('quantity');
+            $table->double('margin');
             $table->text('observation')->nullable();
             $table->decimal('unitary_price')->nullable();
             $table->boolean('state')->nullable();
