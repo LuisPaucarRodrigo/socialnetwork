@@ -73,7 +73,7 @@ class PreProjectQuote extends Model
         return $this->hasMany(PreprojectQuoteProduct::class,"preproject_quote_id");
     }
 
-    public function preproject_quote_service(){
+    public function preproject_quote_services(){
         return $this->hasMany(PreprojectQuoteService::class,"preproject_quote_id");
     }
 }
