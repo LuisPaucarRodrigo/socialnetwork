@@ -287,8 +287,69 @@ class PreProjectController extends Controller
 
     public function getPDF(Preproject $preproject)
     {
-        $preproject = $preproject->load('quote.preproject_quote_services', 'quote.products.purchase_product', 'preproject_entries.entry.inventory.purchase_product');
-        $pdf = Pdf::loadView('pdf.CotizationPDF', compact('preproject'));
+        $preproject = $preproject->load(
+                        'quote.preproject_quote_services.service', 
+                        'quote.products.purchase_product', 
+                        'preproject_entries.entry.inventory.purchase_product'
+                    );
+
+        $productsFromQuotes = $preproject->quote->products;
+        $productsFromWarehouses = $preproject->preproject_entries;
+        $servicesResources = $preproject->quote->preproject_quote_services;
+
+        $finalProducts = [];
+
+        foreach ($productsFromQuotes as $pfq) {
+            array_push($finalProducts, [
+                "purchase_product_id" => $pfq->purchase_product_id,
+                "name" => $pfq->purchase_product->name,
+                "unit" => $pfq->purchase_product->unit,
+                "quantity" => $pfq->quantity,
+                "unitary_price" => $pfq->unitary_price_with_margin,
+            ]);
+        }
+
+        foreach ($productsFromWarehouses as $pfw){
+            $id = $pfw->entry->inventory->purchase_product_id; 
+            $key = array_search($id, array_column($finalProducts, 'purchase_product_id'));
+            if ( $key!== false ) {
+                $newQuantity = $finalProducts[$key]["quantity"] + $pfw->quantity;
+                $newUnitaryPrice = (
+                    ($finalProducts[$key]["quantity"] * $finalProducts[$key]["unitary_price"]) +
+                    ($pfw->quantity * $pfw->unitary_price_with_margin)
+                ) / $newQuantity;
+                $finalProducts[$key]["quantity"] = $newQuantity;
+                $finalProducts[$key]["unitary_price"] = $newUnitaryPrice;
+            } else {
+                array_push($finalProducts, [
+                    "purchase_product_id" => $pfw->entry->inventory->purchase_product_id,
+                    "name" => $pfw->entry->inventory->purchase_product->name,
+                    "unit" => $pfw->entry->inventory->purchase_product->unit,
+                    "quantity" => $pfw->quantity,
+                    "unitary_price" => $pfw->unitary_price_with_margin,
+                ]);
+            }
+        }
+
+        $finalServices = [];
+
+        foreach ($servicesResources as $sr) {
+            $id = $sr->service_id; 
+            $key = array_search($id, array_column($finalServices, 'service_id'));
+            if ( $key!== false ) {
+                $finalServices[$key]["resources_quantity"] += 1;
+            } else {
+                array_push($finalServices, [
+                    "service_id" => $sr->service_id,
+                    "name" => $sr->service->name,
+                    "days" => $sr->days,
+                    "resources_quantity" => 1,
+                    "rent_price" => $sr->rent_price_with_margin,
+                ]);
+            }
+        }
+
+        $pdf = Pdf::loadView('pdf.CotizationPDF', compact('preproject', 'finalProducts', 'finalServices'));
         return $pdf->stream();
         //return view('pdf.CotizationPDF', compact('preproject'));
     }

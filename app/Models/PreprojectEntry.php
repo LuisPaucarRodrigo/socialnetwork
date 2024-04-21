@@ -35,7 +35,7 @@ class PreprojectEntry extends Model
 
     public function getUnitaryPriceWithMarginAttribute()
     {
-        return $this->unitary_price * $this->margin;
+        return $this->unitary_price * (1+$this->margin/100);
     }
 
 }
