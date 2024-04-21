@@ -3,7 +3,7 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template #header>
-            Productos asignados
+            Productos asignados para Proyecto
         </template>
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
@@ -54,13 +54,13 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in assigned_products.data" :key="item.id" :class="[
-        'text-gray-700',
-        {
-            'border-l-8': true,
-            'border-green-500': item.state === 'Completo',
-            'border-red-500': item.state === 'Incompleto'
-        }
-    ]">
+                                'text-gray-700',
+                                {
+                                    'border-l-8': true,
+                                    'border-green-500': item.state === 'Completo',
+                                    'border-red-500': item.state === 'Incompleto'
+                                }
+                            ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.entry_id ? item.entry.inventory.purchase_product.code : item.special_inventory.purchase_product.code }}
