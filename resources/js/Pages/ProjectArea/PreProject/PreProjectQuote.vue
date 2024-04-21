@@ -405,14 +405,7 @@
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Precio Unitario de Renta
                                                     </th>
-                                                    <!-- <th
-                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                        Metrado
-                                                    </th>
-                                                    <th
-                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                        Valor unitario
-                                                    </th>-->
+                                            
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Margen
@@ -459,17 +452,11 @@
                                                         <p class="text-gray-900">{{ item.days }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">
+                                                        <p class="text-gray-900 whitespace-nowrap">
                                                             S/. {{ item.service_info.rent_price }}
                                                         </p>
                                                     </td>
-                                                    <!-- <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">{{ item.quantity }}</p>
-                                                    </td>
-                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        <p class="text-gray-900">S/.{{ (item.unit_price).toFixed(2) }}
-                                                        </p>
-                                                    </td> -->
+                                                
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             {{ (item.profit_margin) }}%
@@ -814,39 +801,39 @@ const initialState = {
     preproject_id: preproject.id
 }
 
-function agruparPorServiceId(datos) {
-    var grupos = {};
-    datos.forEach(function(elemento) {
-        var clave = elemento.service_id + "-" + elemento.days + "-" + elemento.profit_margin;
-        if (!grupos.hasOwnProperty(clave)) {
-            grupos[clave] = {
-                days: elemento.days,
-                profit_margin: elemento.profit_margin,
-                rent_price: elemento.rent_price,
-                resource_entries: [],
-                service_info: elemento.service
-            };
+function servicesArrayMaker(data) {
+    let result = []
+    data.forEach((item)=> {
+        let fo = result.find((x)=>x.service_id === item.service_id)
+        if (fo) {
+            fo.resource_entries.push(item.resource_entry)
+            fo.ids.push(item.id)
+        } else {
+            result.push({
+                service_id : item.service_id,
+                days : item.days,
+                profit_margin: item.profit_margin,
+                service_info: item.service,
+                resource_entries: item.resource_entry_id
+                                    ? [item.resource_entry]
+                                    : [],
+                rent_price : item.rent_price,
+                ids: [item.id]
+            })
         }
-        if (elemento.resource_entry !== null) {
-            grupos[clave].resource_entries.push(elemento.resource_entry);
-        }
-    });
-    var resultado = [];
-    for (var clave in grupos) {
-        resultado.push(grupos[clave]);
-    }
-    return resultado;
+    })
+    return result
 }
-
-
 
 
 const updateState = {
     ...preproject.quote,
     items: preproject?.quote?.preproject_quote_services 
-                ? agruparPorServiceId(preproject.quote.preproject_quote_services)
+                ? servicesArrayMaker(preproject.quote.preproject_quote_services)
                 : []
 }
+
+console.log(updateState.items)
 
 const form = useForm(
     { ...(preproject.quote ? updateState : initialState) }
