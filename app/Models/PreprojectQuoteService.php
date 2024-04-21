@@ -37,6 +37,6 @@ class PreprojectQuoteService extends Model
 
     public function getRentPriceWithMarginAttribute()
     {
-        return $this->rent_price * $this->profit_margin;
+        return $this->rent_price * (1+$this->profit_margin/100);
     }
 }
