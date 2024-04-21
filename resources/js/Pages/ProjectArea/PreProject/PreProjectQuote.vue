@@ -136,7 +136,7 @@
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Productos
                                     </h2>
 
-                                    <button v-if="auth.user.role_id === 1 && preproject.quote === null"
+                                    <button v-if="auth.user.role_id === 1 || preproject.quote === null"
                                         @click="openProductModal" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
@@ -147,7 +147,7 @@
                                     </button>
                                 </div>
                                 <p class="text-sm my-2">
-                                    Se muestran productos de las solicitudes de compra aceptadas
+                                    Productos de las solicitudes de compra aceptadas
                                     para el
                                     anteproyecto</p>
                                 <div class="mt-2">
@@ -369,7 +369,7 @@
                                 <div class="flex gap-2 items-center">
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Servicios
                                     </h2>
-                                    <button v-if="auth.user.role_id === 1 && preproject.quote === null"
+                                    <button v-if="auth.user.role_id === 1 || preproject.quote === null"
                                         @click="showToAddItem" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
@@ -420,15 +420,6 @@
                                                     </th>
                                                 </tr>
                                             </thead>
-
-
-
-
-
-                                            <!-- salvaguardando erro -->
-
-
-
 
                                             <tbody> 
                                                 <tr v-for="(item, index) in (form.items)" :key="index"
@@ -715,6 +706,8 @@
         </div>
         <ErrorOperationModal :showError="showErroModal" title="Error"
             message="El producto ya fue añadido o es inválido" />
+        <ErrorOperationModal :showError="showErroModal2" title="Error"
+            message="El servicio ya fue añadido o es inválido" />
 
         <SuccessOperationModal :confirming="showModal" :title="modalVariables.title"
             :message="modalVariables.message" />
@@ -755,6 +748,7 @@ import axios from 'axios';
 
 const showModal = ref(false)
 const showErroModal = ref(false)
+const showErroModal2 = ref(false)
 
 const { preproject, auth, products, purchasing_requests, existingProducts, services, preproject_products } = defineProps({
     products: Object,
@@ -904,11 +898,12 @@ const closeModal = () => {
 
 
 const addItem = () => {
-    if (preproject.quote) {
+    if (itemToAdd.value.service_info.id && form.items.find(item => item.service_info?.id == itemToAdd.value.service_info.id) == undefined) {
+        if (preproject.quote) {
         axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
             .then(response => {
                 if (response.status = 200) {
-                    itemToAdd.value.id = response.data.id
+                    itemToAdd.value.ids = response.data.ids
                     showItemAddModal.value = true
                     setTimeout(() => {
                         showItemAddModal.value = false;
@@ -919,9 +914,15 @@ const addItem = () => {
                 }
             })
             .catch(e => console.log(e))
+            } else {
+                form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
+                closeModal()
+            }
     } else {
-        form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
-        closeModal()
+        showErroModal2.value = true
+        setTimeout(() => {
+            showErroModal2.value = false
+        }, 1000)
     }
 }
 
