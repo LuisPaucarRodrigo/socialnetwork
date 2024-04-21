@@ -38,7 +38,6 @@ class CreatePurchaseQuoteRequest extends FormRequest
         }
 
         $rules = [
-            'quote_deadline' => 'required|date|before_or_equal:due_date',
             'due_date' => 'nullable|date',
             'purchase_doc' => 'required|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
             'igv' => 'required',
@@ -71,6 +70,11 @@ class CreatePurchaseQuoteRequest extends FormRequest
                 }
             ],
         ];
+
+        if($this->input('due_date')) {
+            $rules['quote_deadline'] = 'required|date|before_or_equal:due_date';
+        }
+
         return $rules;
     }
 

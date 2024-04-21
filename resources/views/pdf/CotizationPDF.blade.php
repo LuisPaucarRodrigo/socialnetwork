@@ -89,18 +89,20 @@
       @php
       $subtotalProd = 0; // Inicializa una variable para almacenar la suma
       @endphp
-      @foreach ($preproject->quote->products as $index => $item)
+      @foreach ($finalProducts as $index => $item)
       <tr>
 
         <td class="td-custom" style="text-align: right">1.0{{ $index+1 }}</td>
-        <td class="td-custom">{{ $item->purchase_product->name }}</td>
-        <td class="td-custom" style="text-align: center">{{ $item->purchase_product->unit }}</td>
-        <td class="td-custom" style="text-align: center">{{ $item->quantity }}</td>
-        <td class="td-custom" style="text-align: right">S/. {{ number_format($item->unitary_price*(1+ $item->profit_margin/100), 2) }}</td>
-        <td class="td-custom" style="text-align: right">S/. {{ number_format($item->quantity * $item->unitary_price*(1+ $item->profit_margin/100), 2) }}</td>
+        <td class="td-custom">{{ $item['name'] }}</td>
+        <td class="td-custom" style="text-align: center">{{ $item['unit'] }}</td>
+        <td class="td-custom" style="text-align: center">{{ $item['quantity'] }}</td>
+        <td class="td-custom" style="text-align: right">
+          S/. {{ number_format($item['unitary_price'], 2) }}
+        </td>
+        <td class="td-custom" style="text-align: right">S/. {{ number_format($item['quantity'] * $item['unitary_price'], 2) }}</td>
       </tr>
       @php
-      $subtotalProd += $item->quantity * $item->unitary_price*(1+ $item->profit_margin/100);
+      $subtotalProd +=  number_format($item['quantity'] * $item['unitary_price'], 2);
       @endphp
       @endforeach
       @php
@@ -111,37 +113,35 @@
   <table class="table mt-3">
     <thead>
       <tr>
-        <th class="td-custom" scope="col" colspan="7" style="text-align: center; background: #2e75b5; font-weight: normal;">Servicios</th>
+        <th class="td-custom" scope="col" colspan="6" style="text-align: center; background: #2e75b5; font-weight: normal;">Servicios</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td class="td-custom" style="width: 60px; text-align: center; background: #2e75b5; font-weight: normal;">Partida</td>
-        <td class="td-custom" style="width: 280px; text-align: center; background: #2e75b5; font-weight: normal;">Descripción</td>
-        <td class="td-custom" style="width: 55px; text-align: center; background: #2e75b5; font-weight: normal;">Unidad</td>
+        <td class="td-custom" style="width: 286px; text-align: center; background: #2e75b5; font-weight: normal;">Descripción</td>
         <td class="td-custom" style="width: 55px; text-align: center; background: #2e75b5; font-weight: normal;">Días</td>
-        <td class="td-custom" style="width: 67px; text-align: center; background: #2e75b5; font-weight: normal;">Metrado</td>
+        <td class="td-custom" style="width: 122px; text-align: center; background: #2e75b5; font-weight: normal;">N° de Productos</td>
         <td class="td-custom" style="width: 73px; text-align: center; background: #2e75b5; font-weight: normal;">Valor Unitario</td>
         <td class="td-custom" style="width: 80px; text-align: center; background: #2e75b5; font-weight: normal;">Valor total</td>
       </tr>
       @php
-      $subtotal = 0; // Inicializa una variable para almacenar la suma
+      $subtotal = 0.00; // Inicializa una variable para almacenar la suma
       @endphp
-      @foreach ($preproject->quote->items as $index => $item)
+      @foreach ($finalServices as $index => $item)
       <tr>
 
         <td class="td-custom" style="text-align: right">1.0{{ $index+1 }}</td>
-        <td class="td-custom">{{ $item->description }}</td>
-        <td class="td-custom" style="text-align: center">{{ $item->unit }}</td>
-        <td class="td-custom" style="text-align: center">{{ number_format($item->days, 2) }}</td>
-        <td class="td-custom" style="text-align: center">{{ number_format($item->quantity, 2) }}</td>
-        <td class="td-custom" style="text-align: right">S/. {{ number_format($item->unit_price *(1+ $item->profit_margin/100), 2) }}</td>
+        <td class="td-custom">{{ $item['name'] }}</td>
+        <td class="td-custom" style="text-align: center">{{ ($item['days']) }}</td>
+        <td class="td-custom" style="text-align: center">{{ $item['resources_quantity']}}</td>
+        <td class="td-custom" style="text-align: right">S/. {{ number_format($item['rent_price'], 2) }}</td>
         <td class="td-custom" style="text-align: right">
-          S/. {{ number_format(($item->quantity * $item->unit_price * $item->days *(1+ $item->profit_margin/100)), 2) }}
+          S/. {{ number_format($item['resources_quantity'] * $item['rent_price'] * $item['days'], 2) }}
         </td>
       </tr>
       @php
-      $subtotal += $item->quantity * $item->unit_price * $item->days *(1+ $item->profit_margin/100);
+      $subtotal += $item['days']*$item['resources_quantity']*$item['rent_price']
       @endphp
       @endforeach
       @php
@@ -161,6 +161,7 @@
             <tr>
               <td class="td-custom" style="width: 146px; font-size: 10.5px; text-align: right; background: #bcd6ed">SUB TOTAL ACUMULADO</td>
               <td class="td-custom" style="width: 83px; font-size: 10.5px; text-align: right">
+
                 S/. {{ number_format($subtotal + $subtotalProd, 2) }}
               </td>
             </tr>
@@ -190,7 +191,9 @@
       </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Lugar de entrega</td>
-        <td class="td-custom" style="width: 562.5px; border-left: none">: MDD</td>
+        <td class="td-custom" style="width: 562.5px; border-left: none">
+         : {{$preproject->quote->deliverable_place}}
+        </td>
       </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Forma de Pago</td>
