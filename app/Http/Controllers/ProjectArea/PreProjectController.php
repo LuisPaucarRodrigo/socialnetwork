@@ -276,9 +276,12 @@ class PreProjectController extends Controller
     }
 
 
-    public function quote_item_delete(PreProjectQuoteItem $quote_item_id)
+    public function quote_item_delete(Request $request)
     {
-        $quote_item_id->delete();
+        $ids = $request->input('ids');
+        foreach ($ids as $id) {
+            PreprojectQuoteService::find($id)->delete();
+        }
         return redirect()->back();
     }
 
