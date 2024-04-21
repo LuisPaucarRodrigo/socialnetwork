@@ -241,19 +241,38 @@ class PreProjectController extends Controller
     public function quote_item_store(Request $request)
     {
         $data = $request->validate([
-            // "description" => 'required',
-            // "unit" => 'required',
-            // "days" => 'required',
-            // "quantity" => 'required',
-            // "unit_price" => 'required',
-            // "service_id" => 'required',
-            // "preproject_quote_id" => 'required',
-            "resource_entry_id" => 'required',
-            "service_id" => 'required|numeric',
             "preproject_quote_id" => 'required|numeric',
+            "service_info" => 'required',
+            "resource_entries" => 'array|nullable',
+            "days" => 'required',
+            "profit_margin" => 'required',
         ]);
-        $newItem = PreprojectQuoteService::create($data);
-        return response()->json(['id' => $newItem->id]);
+
+        $ids = [];
+        
+        if ($data["resource_entries"]) {
+            foreach($data["resource_entries"] as $item) {
+                $res = PreprojectQuoteService::create([
+                    'preproject_quote_id' => $data["preproject_quote_id"],
+                    'service_id' => $data['service_info']['id'],
+                    'resource_entry_id' => $item['id'],
+                    'days' => $data['days'],
+                    'profit_margin' => $data['profit_margin'],
+                    'rent_price' => $data['service_info']['rent_price'],
+                ]);
+                array_push($ids, $res->id);
+            }
+        } else {
+            $res = PreprojectQuoteService::create([
+                'preproject_quote_id' => $data["preproject_quote_id"],
+                'service_id' => $data['service_info']['id'],
+                'days' => $data['days'],
+                'profit_margin' => $data['profit_margin'],
+                'rent_price' => $data['service_info']['rent_price'],
+            ]);
+            array_push($ids, $res->id);
+        }
+        return response()->json(['ids' => $ids]);
     }
 
 
