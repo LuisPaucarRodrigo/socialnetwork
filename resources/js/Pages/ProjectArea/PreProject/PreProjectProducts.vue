@@ -3,7 +3,7 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
-            Productos asignados
+            Productos asignados para Anteproyecto
         </template>
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
@@ -33,15 +33,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Cantidad Enviada
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Margen de Ganancia
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Observaciones
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -54,13 +46,13 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in assigned_products.data" :key="item.id" :class="[
-        'text-gray-700',
-        {
-            'border-l-8': true,
-            'border-green-500': item.state === 'Completo',
-            'border-red-500': item.state === 'Incompleto'
-        }
-    ]">
+                                'text-gray-700',
+                                {
+                                    'border-l-8': true,
+                                    'border-green-500': item.state === 'Completo',
+                                    'border-red-500': item.state === 'Incompleto'
+                                }
+                            ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.entry.inventory.purchase_product.code}}
@@ -74,15 +66,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.current_output_quantity }}</p>
-                            </td>
+                            
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.margin }} %</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ }}</p>
-                            </td>
+                            
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formatearFecha(item.created_at) }}</p>
                             </td>
@@ -117,7 +105,7 @@
                 <pagination :links="assigned_products.links" />
             </div>
         </div>
-        <Modal :show="showModal">
+        <Modal :show="showModal" @close="showModal = false">
             <form class="p-6" @submit.prevent="submit">
                 <h2 class="text-lg font-medium text-gray-900">
                     Solo productos disponibles
