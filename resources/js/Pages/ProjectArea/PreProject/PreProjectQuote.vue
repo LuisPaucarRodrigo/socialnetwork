@@ -146,7 +146,8 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <p class="text-sm my-2">Se muestran productos de las solicitudes de compra aceptadas
+                                <p class="text-sm my-2">
+                                    Se muestran productos de las solicitudes de compra aceptadas
                                     para el
                                     anteproyecto</p>
                                 <div class="mt-2">
@@ -212,32 +213,12 @@
                                                         <p class="text-gray-900">
                                                             {{ item.quantity }}
                                                         </p>
-
-                                                        <!-- <div v-else class="flex space-x-2 items-center">
-                                                            <input  
-                                                               required
-                                                               type="number" 
-                                                               min="0" 
-                                                               step="0.01"
-                                                               v-model="item.quantity"
-                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                        </div> -->
-
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <!-- v-if="preproject.quote" -->
                                                         <p class="text-gray-900">
                                                             S/. {{ (item.unitary_price).toFixed(2) }}
                                                         </p>
-                                                        <!-- <div v-else class="flex space-x-2 items-center">
-                                                            <span>S/.</span><input  
-                                                               required
-                                                               type="number" 
-                                                               min="0" 
-                                                               step="0.01"
-                                                               v-model="item.unitary_price"
-                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                        </div> -->
 
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -272,8 +253,9 @@
                                         </table>
                                     </div>
 
-
-
+                                    <p class="text-sm my-2">
+                                        Productos de alamcén reservador para el proyecto
+                                    </p>
 
                                     <div class="overflow-x-auto mt-8">
                                         <table class="w-full">
@@ -743,78 +725,6 @@
                 </div>
             </Modal>
 
-            <!-- <Modal :show="showModalMember">
-                <form class="p-6" @submit.prevent="addItem">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Agregar un item a la valorización
-                    </h2>
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-
-                        <div class="sm:col-span-3">
-                            <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput required type="text" v-model="itemToAdd.description"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel for="unit" class="font-medium leading-6 text-gray-900">Unidad
-                            </InputLabel>
-                            <div class="mt-2">
-                                <select required v-model="itemToAdd.unit"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccione uno</option>
-                                    <option>Unidad</option>
-                                    <option>Kilos</option>
-                                    <option>Metros</option>
-                                    <option>GLB</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel for="days" class="font-medium leading-6 text-gray-900">Días
-                            </InputLabel>
-                            <div class="mt-2">
-                                <input required type="number" v-model="itemToAdd.days" min="1"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad
-                            </InputLabel>
-                            <div class="mt-2">
-                                <input required type="number" v-model="itemToAdd.quantity" min="1"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel for="unit_price" class="font-medium leading-6 text-gray-900">Precio Unitario
-                            </InputLabel>
-                            <div class="mt-2">
-                                <input required type="number" v-model="itemToAdd.unit_price" min="0" step="0.01"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            </div>
-                        </div>
-                        <div class="sm:col-span-3">
-                            <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen (%)
-                            </InputLabel>
-                            <div class="mt-2">
-                                <input required type="number" v-model="itemToAdd.profit_margin" min="0" step="0.01"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex gap-3 justify-end">
-                        <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
-                        <PrimaryButton type="submit"> Agregar </PrimaryButton>
-                    </div>
-                </form>
-            </Modal> -->
         </div>
         <ErrorOperationModal :showError="showErroModal" title="Error"
             message="El producto ya fue añadido o es inválido" />
@@ -1169,21 +1079,6 @@ function showServiceDetailsModal (array) {
 const closeServiceDetailsModal = () => {
     showServiceDetails.value = false
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
