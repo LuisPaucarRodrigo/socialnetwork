@@ -470,7 +470,9 @@
                                                                 <EyeIcon class="h-4 w-4" />
                                                             </button>
                                                             <button type="button" v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                                                @click=" preproject.quote ? deleteAlreadyItem(item.id, index) : deleteItem(index)"
+                                                                @click=" preproject.quote 
+                                                                            ? deleteAlreadyItem(item.ids, index) 
+                                                                            : deleteItem(index)"
                                                                 class="col-span-1 flex justify-end">
                                                                 <TrashIcon class=" text-red-500 h-4 w-4 " />
                                                             </button>
@@ -931,8 +933,8 @@ const deleteItem = (index) => {
     form.items.splice(index, 1);
 }
 
-const deleteAlreadyItem = (id, index) => {
-    router.delete(route('preprojects.quote.item.delete', { quote_item_id: id }), {
+const deleteAlreadyItem = (ids, index) => {
+    router.post(route('preprojects.quote.item.delete'),{ ids: ids }, {
         onError: () => {
             alert('SERVER ERROR')
         },
