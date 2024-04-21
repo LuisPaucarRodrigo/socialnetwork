@@ -474,6 +474,8 @@ const submit = () => {
                     successRegistration.value = false
                     router.visit(route('purchasesrequest.index'))
                 },1500)
+            }, onError: (e) => {
+                console.log(e)
             }
         })
     }

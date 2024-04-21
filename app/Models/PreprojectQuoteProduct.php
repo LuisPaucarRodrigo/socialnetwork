@@ -27,6 +27,6 @@ class PreprojectQuoteProduct extends Model
 
     public function getUnitaryPriceWithMarginAttribute()
     {
-        return $this->unitary_price * $this->profit_margin;
+        return $this->unitary_price * (1+$this->profit_margin/100);
     }
 }
