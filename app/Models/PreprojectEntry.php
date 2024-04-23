@@ -20,22 +20,23 @@ class PreprojectEntry extends Model
     ];
 
     protected $appends = [
-        'unitary_price_with_margin'
+        'unitary_price_with_margin',
     ];
 
-    //Relations
-    public function preproject ()
+    //RELATIONS
+    public function preproject()
     {
-        return $this->belongsTo(Preproject::class,'preproject_id');
-    } 
-
-    public function entry (){
-        return $this->belongsTo(Entry::class,'entry_id');
+        return $this->belongsTo(Preproject::class, 'preproject_id');
     }
 
+    public function entry()
+    {
+        return $this->belongsTo(Entry::class, 'entry_id');
+    }
+
+    //CALCULATED
     public function getUnitaryPriceWithMarginAttribute()
     {
-        return $this->unitary_price * (1+$this->margin/100);
+        return $this->unitary_price * (1 + $this->margin / 100);
     }
-
 }
