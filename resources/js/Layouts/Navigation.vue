@@ -444,6 +444,7 @@ Usuarios
 
                     <span class="mx-3">Finanzas</span>
                 </a>
+                //ElIMINAR GASTOS EN UN FUTURO
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('gangexpense.index')">Gastos</Link>
                 </MyTransition>
