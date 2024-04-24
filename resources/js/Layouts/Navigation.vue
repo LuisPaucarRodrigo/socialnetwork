@@ -20,8 +20,8 @@
                         </path>
                     </svg>
                 </template>
-Usuarios
-</nav-link> -->
+                Usuarios
+            </nav-link> -->
             <template v-if="hasPermission('UserManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingUsersAndRols = !showingUsersAndRols">
@@ -225,13 +225,14 @@ Usuarios
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingShoppingArea = !showingShoppingArea">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        :stroke="purchaseOrdersAlarms.length + shoppingPurchases.length + shoppingPurchases7.length +
+                        :stroke="purchaseOrdersAlarms.length + shoppingPurchasesTotal + shoppingPurchasesTotal7 +
                         paymentAlarms3.length + paymentAlarms7.length > 0 ? 'red' : 'currentColor'"
                         class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
-                    <span class="mx-3">Area de Compras</span>
+                    <span class="mx-3">Area de Compras {{ purchaseOrdersAlarms.length + shoppingPurchasesTotal + shoppingPurchasesTotal7 +
+                        paymentAlarms3.length + paymentAlarms7.length  }}</span>
                 </a>
 
                 <MyTransition :transitiondemonstration="showingShoppingArea">
@@ -444,7 +445,7 @@ Usuarios
 
                     <span class="mx-3">Finanzas</span>
                 </a>
-                //ElIMINAR GASTOS EN UN FUTURO
+                
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('gangexpense.index')">Gastos</Link>
                 </MyTransition>
@@ -633,6 +634,7 @@ const fetchCicsaSubSectionsCount7 = async () => {
 const fetchPaymentsAlarm = async () => {
     try {
         const response = await axios.get(route('payment.alarm'));
+        console.log("porque  tu si", response.data.payment3Days)
         paymentAlarms3.value = response.data.payment3Days;
         paymentAlarms7.value = response.data.payment7Days;
     } catch (error) {
@@ -679,6 +681,7 @@ const fetchFinancePurchases = async () => {
 const fetchPurchasesRequest = async () => {
     try {
         const response = await axios.get(route('purchasesrequest.task'));
+        console.log("a ver a hora", response.data.purchasesLessThanThreeDays)
         shoppingPurchases.value = response.data.purchasesLessThanThreeDays;
         shoppingPurchasesTotal.value = response.data.totalPurchasesLessThanThreeDays;
         shoppingPurchases7.value = response.data.purchasesBetweenFourAndSevenDays;
