@@ -8,7 +8,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button type="button" @click="showToAddProduct"
+                <button v-if="preproject.project === null" type="button" @click="showToAddProduct"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
@@ -231,10 +231,10 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
 
-const { assigned_products, warehouses, preproject_id } = defineProps({
+const { assigned_products, warehouses, preproject } = defineProps({
     assigned_products: Object,
     warehouses: Object,
-    preproject_id: Number,
+    preproject: Number,
     auth: Object
 })
 
@@ -274,7 +274,7 @@ const successAsignation = ref(false)
 const errorAsignation = ref(false)
 
 const form = useForm({
-    preproject_id: preproject_id,
+    preproject_id: preproject.id,
     quantity: null,
     margin: null,
     unitary_price: null,

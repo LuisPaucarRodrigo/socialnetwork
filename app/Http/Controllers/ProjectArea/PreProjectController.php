@@ -717,7 +717,7 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/PreProjectProducts', [
             'assigned_products' => $assigned_products,
             'warehouses' => $warehouses,
-            'preproject_id' => $preproject->id
+            'preproject' => $preproject->load('project')
         ]);
     }
 
