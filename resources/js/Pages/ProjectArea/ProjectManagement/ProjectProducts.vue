@@ -21,16 +21,17 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Almacén
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Còdigo Producto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Producto
                             </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Tipo
-                            </th>
+                            
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cantidad Asignada
@@ -63,6 +64,14 @@
                             ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ item.entry_id 
+                                        ? item.entry.inventory.warehouse.name 
+                                        : item.special_inventory.warehouse.name
+                                    }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.entry_id ? item.entry.inventory.purchase_product.code : item.special_inventory.purchase_product.code }}
                                 </p>
                             </td>
@@ -72,9 +81,11 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.entry_id ? 'Normal' : 'Especial' }}
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    S/. {{ item.unitary_price }}
                                 </p>
                             </td>
+                            
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                             </td>

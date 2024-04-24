@@ -25,14 +25,19 @@ class Entry extends Model
     ];
 
     //CALCULATED
-    public function getQuantityAvailableAttribute()
-    {
-        return $this->quantity - $this->reserved_quantity;
+    public function getQuantityAvailableAttribute() {
+        return $this->quantity - $this->reserved_quantity - $this->used_quantity;
     }
 
     public function getUsedQuantityAttribute()
     {
-        return $this->reserved_quantity;
+        return $this->project_entry()
+                    ->whereDoesntHave('project_entry_liquidation')
+                    ->get()
+                    ->filter(function($item){
+                        return $item->outputs_state;
+                    })
+                    ->sum('quantity');
     }
 
     public function getCurrencyAttribute()
@@ -48,24 +53,20 @@ class Entry extends Model
         }
     }
 
-
-
     public function getReservedQuantityAttribute(){
-        $quantityInPreproject = $this->preproject_entries()->get()->sum('quantity');
+        $quantityInPreproject = $this->preproject_entries()
+                                    ->whereDoesntHave('preproject.project')
+                                    ->get()
+                                    ->sum('quantity');
         $quantityInProjects = $this->project_entry()
-                                   ->whereDoesntHave('project_entry_liquidation')
-                                   ->get()
-                                   ->sum('quantity');
+                                    ->whereDoesntHave('project_entry_liquidation')
+                                    ->get()
+                                    ->filter(function($item){
+                                        return !$item->outputs_state;
+                                    })
+                                    ->sum('quantity');
         return $quantityInPreproject + $quantityInProjects;
     }
-
-
-
-
-
-
-
-
 
 
 

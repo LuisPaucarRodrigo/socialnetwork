@@ -46,13 +46,13 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in assigned_products.data" :key="item.id" :class="[
-        'text-gray-700',
-        {
-            'border-l-8': true,
-            'border-green-500': item.state === 'Completo',
-            'border-red-500': item.state === 'Incompleto'
-        }
-    ]">
+                                'text-gray-700',
+                                {
+                                    'border-l-8': true,
+                                    'border-green-500': item.state === 'Completo',
+                                    'border-red-500': item.state === 'Incompleto'
+                                }
+                            ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.entry.inventory.purchase_product.code }}

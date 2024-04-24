@@ -7,6 +7,7 @@ use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Models\ComponentOrMaterial;
 use App\Models\NetworkEquipment;
 use App\Models\Employee;
+use App\Models\PreprojectEntry;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
@@ -85,6 +86,20 @@ class ProjectManagementController extends Controller
             Purchasing_request::where('preproject_id', $request->preproject_id)
                 ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
+
+            //Automatic assignation products from warehouse
+            $preproject_entries = PreprojectEntry::where('preproject_id', $data["preproject_id"])
+                            ->get();
+            foreach($preproject_entries as $item) {
+                ProjectEntry::create([
+                    'project_id' => $project->id,
+                    'entry_id' => $item->entry_id,
+                    'quantity' => $item->quantity,
+                    'unitary_price' => $item->unitary_price
+                ]);
+            }
+            /////////////////////////////////////////////
+
             foreach ($employees as $employee) {
                 $empId = $employee['employee'];
                 $project->employees()->attach($empId['id'], ['charge' => $employee['charge']]);
@@ -302,7 +317,14 @@ class ProjectManagementController extends Controller
 
     public function project_product_index(Project $project_id)
     {
-        $assigned_products = ProjectEntry::where('project_id', $project_id->id)->with('entry.inventory.purchase_product','special_inventory.purchase_product')->paginate(10);
+        $assigned_products = ProjectEntry::where('project_id', $project_id->id)
+                                ->with(
+                                    'entry.inventory.purchase_product',
+                                    'entry.inventory.warehouse',
+                                    'special_inventory.purchase_product',
+                                    'special_inventory.warehouse'
+                                )
+                                ->paginate(10);
         $project_id->load('preproject');
 
         if ($project_id->preproject->customer_id == 1){
@@ -380,12 +402,12 @@ class ProjectManagementController extends Controller
                 'quantity' => $request->quantity
             ]);
         } else {
-            $unitary_price = Entry::find($request->entry_id);
+            $entry = Entry::find($request->entry_id);
             ProjectEntry::create([
                 'project_id' => $request->project_id,
                 'entry_id' => $request->entry_id,
                 'quantity' => $request->quantity,
-                'unitary_price' => $unitary_price->unitary_price
+                'unitary_price' => $entry->unitary_price
             ]);
         }
 
