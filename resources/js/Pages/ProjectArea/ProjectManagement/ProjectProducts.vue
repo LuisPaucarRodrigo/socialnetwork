@@ -186,7 +186,6 @@
                             </div>
                             <div class="mt-2">
                                 <select required id="inventory_id" v-model="form.entry_id"
-                                    @change="handleTotalPriceVisibility"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option v-for="item in warehouseInventory" :key="item.id" :value="item.id">
@@ -201,8 +200,9 @@
                     <div class="sm:col-span-3">
                         <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
-                                :max="productFinded ? productFinded.quantity_available : null"
+                            <TextInput id="quantity" type="number"
+                                 min="1" v-model="form.quantity"
+                                :max="form.entry_id ? warehouseInventory?.find(i=>i.id === form.entry_id)?.quantity_available : 0"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
