@@ -35,6 +35,7 @@ class Inventory extends Model
 
     public function getAvailableQuantityAttribute()
     {
-        return $this->entry()->sum('quantity');
+        $totalQuantity = $this->entry()->get()->sum('quantity_available');
+        return $totalQuantity;
     }
 }

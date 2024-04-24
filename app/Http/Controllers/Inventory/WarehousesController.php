@@ -49,11 +49,14 @@ class WarehousesController extends Controller
 
     public function showProducts(Warehouse $warehouse)
     {
+        
         $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry', 'purchase_product')->paginate(10);
+        // dd($products);
         return Inertia::render('Inventory/WarehouseManagement/Inventory', [
             'products' => $products,
             'warehouseId' => $warehouse->id
         ]);
+ 
     }
 
     public function createProducts(Warehouse $warehouse)
@@ -67,7 +70,12 @@ class WarehousesController extends Controller
 
     public function showEntries(Warehouse $warehouse, Inventory $inventory)
     {
-        $entries = Entry::where('inventory_id', $inventory->id)->with('inventory.purchase_product', 'normal_entry', 'purchase_entry')->paginate(10);
+        $entries = Entry::where('inventory_id', $inventory->id)
+                            ->with(
+                                'inventory.purchase_product', 
+                                'normal_entry', 'purchase_entry'
+                            )
+                            ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Entries', [
             'entries' => $entries,
             'warehouseId' => $warehouse->id
@@ -385,7 +393,6 @@ class WarehousesController extends Controller
     }
 
     //RESOURCE
-
     public function resourcePurchaseOrders()
     {
         $purchase_orders_resource = Purchase_order::where('state', 'Completada')
@@ -448,6 +455,27 @@ class WarehousesController extends Controller
             'state'=>true,
             'condition'=>'Disponible'
         ]);
+    }
+
+    public function resource_create()
+    {
+        return Inertia::render('Inventory/WarehouseManagement/CreateResource',[
+            'products' => Purchase_product::where('type','Activo')->get()
+        ]);
+    }
+
+    public function resource_store(Request $request)
+    {
+        $data = $request->validate([
+            'state' => 'required|numeric',
+            'condition' => 'required|string',
+            'entry_date' => 'required|date',
+            'serial_number' => 'required|numeric',
+            'referral_guide' => 'required|numeric',
+            'entry_price' => 'required|numeric',
+            'purchase_product_id' => 'required|numeric',
+        ]);
+        ResourceEntry::create($data);
     }
 
     //SERVICES

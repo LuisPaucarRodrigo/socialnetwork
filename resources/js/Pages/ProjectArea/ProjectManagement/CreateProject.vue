@@ -206,7 +206,6 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
@@ -225,6 +224,8 @@ const { employees, start_date, numberOfProjects, project, preprojects } = define
     project: Object,
     preprojects: Object
 })
+
+console.log(preprojects)
 
 const initialState = {
     preproject_id: '',

@@ -8,7 +8,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button type="button" @click="showToAddProduct"
+                <button v-if="preproject.project === null" type="button" @click="showToAddProduct"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
@@ -55,7 +55,7 @@
                             ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ item.entry.inventory.purchase_product.code}}
+                                    {{ item.entry.inventory.purchase_product.code }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -66,11 +66,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                             </td>
-                            
+
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.margin }} %</p>
                             </td>
-                            
+
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formatearFecha(item.created_at) }}</p>
                             </td>
@@ -92,7 +92,6 @@
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                         </svg>
-
                                     </button>
 
                                 </div>
@@ -132,7 +131,8 @@
                         </div>
 
                         <div class="mt-2">
-                            <select required id="product_id" v-model="form.normal_inventory_id" @change="product_inventory($event.target.value)"
+                            <select required id="product_id" v-model="form.normal_inventory_id"
+                                @change="product_inventory($event.target.value)"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione normal</option>
                                 <option v-for="item in warehouseProducts" :key="item.id" :value="item.id">
@@ -140,35 +140,33 @@
                                 </option>
                             </select>
                         </div>
-
-                        
                     </div>
 
                     <div class="sm:col-span-3" v-if="warehouseInventory.length != 0">
-                            <div class="flex justify-start items-center">
-                                <InputLabel for="inventory_id" class="font-medium leading-6 text-gray-900 mr-auto">
-                                    Inventario
-                                </InputLabel>
-                            </div>
-                            <div class="mt-2">
-                                <select required id="inventory_id" v-model="form.entry_id"
-                                    @change="handleTotalPriceVisibility"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccione uno</option>
-                                    <option v-for="item in warehouseInventory" :key="item.id" :value="item.id">
-                                        {{ item.inventory.purchase_product.name }} -
-                                        {{ item.quantity }} -
-                                        S/ {{ item.unitary_price }}
-                                    </option>
-                                </select>
-                            </div>
+                        <div class="flex justify-start items-center">
+                            <InputLabel for="inventory_id" class="font-medium leading-6 text-gray-900 mr-auto">
+                                Inventario
+                            </InputLabel>
                         </div>
+                        <div class="mt-2">
+                            <select required id="inventory_id" v-model="form.entry_id"
+                                @change="handleTotalQuantityVisibility($event.target.value)"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccione uno</option>
+                                <option v-for="item in warehouseInventory" :key="item.id" :value="item.id">
+                                    {{ item.inventory.purchase_product.name }} -
+                                    {{ item.quantity_available }} -
+                                    S/ {{ item.unitary_price }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="sm:col-span-3">
                         <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                         <div class="mt-2">
                             <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
-                                :max="productFinded ? productFinded.total_available : null"
+                                :max="productFinded.quantity_available"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -181,7 +179,7 @@
                         </div>
                     </div>
 
-                    
+
                     <!-- <div v-if="enableInput" class="sm:col-span-3">
                         <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio unitario a
                             descontar en
@@ -233,10 +231,10 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
 
-const { assigned_products, warehouses, preproject_id } = defineProps({
+const { assigned_products, warehouses, preproject } = defineProps({
     assigned_products: Object,
     warehouses: Object,
-    preproject_id: Number,
+    preproject: Number,
     auth: Object
 })
 
@@ -268,6 +266,7 @@ const product_warehouse = async (warehouse) => {
 const product_inventory = async (inventory) => {
     const res = await axios.get(route('preprojects.inventory_products', { inventory_id: inventory }))
     warehouseInventory.value = res.data.inventory;
+    console.log(warehouseInventory.value)
 };
 
 //form
@@ -275,7 +274,7 @@ const successAsignation = ref(false)
 const errorAsignation = ref(false)
 
 const form = useForm({
-    preproject_id: preproject_id,
+    preproject_id: preproject.id,
     quantity: null,
     margin: null,
     unitary_price: null,
@@ -315,7 +314,6 @@ const sufficientQuantity = (form) => {
     return form.quantity <= product.total_available;
 }
 
-
 //delete
 const confirmingDeletion = ref(false);
 const assignedToDelete = ref(null);
@@ -323,9 +321,11 @@ const confirmDelete = (assigned_id) => {
     assignedToDelete.value = assigned_id;
     confirmingDeletion.value = true;
 };
+
 const closeModalDoc = () => {
     confirmingDeletion.value = false;
 };
+
 const deleteAssigned = () => {
     const assigned_id = assignedToDelete.value;
     if (assigned_id) {
@@ -359,9 +359,10 @@ const updateAssignatedProduct = () => {
 
 
 //has different price
-const productFinded = ref(null)
+const productFinded = ref([])
 const enableInput = ref(false)
-// const handleTotalPriceVisibility = () => {
+
+// const handleTotalQuantityVisibility = () => {
 //     let product = warehouseProducts.value.find((i) => i.id == form.product_id)
 //     productFinded.value = product
 //     enableInput.value = product.has_different_price
@@ -369,5 +370,11 @@ const enableInput = ref(false)
 //         form.unitary_price = null
 //     }
 // }
+
+const handleTotalQuantityVisibility = (e) => {
+    const warehouseInventoryArray = Object.values(warehouseInventory.value);
+    let product = warehouseInventoryArray.find((i) => i.id == e);
+    productFinded.value = product;
+};
 
 </script>

@@ -20,8 +20,8 @@
                         </path>
                     </svg>
                 </template>
-Usuarios
-</nav-link> -->
+                Usuarios
+            </nav-link> -->
             <template v-if="hasPermission('UserManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingUsersAndRols = !showingUsersAndRols">
@@ -225,7 +225,7 @@ Usuarios
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingShoppingArea = !showingShoppingArea">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        :stroke="purchaseOrdersAlarms.length + shoppingPurchases.length + shoppingPurchases7.length +
+                        :stroke="purchaseOrdersAlarms.length + shoppingPurchasesTotal + shoppingPurchasesTotal7 +
                         paymentAlarms3.length + paymentAlarms7.length > 0 ? 'red' : 'currentColor'"
                         class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -444,6 +444,7 @@ Usuarios
 
                     <span class="mx-3">Finanzas</span>
                 </a>
+                
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('gangexpense.index')">Gastos</Link>
                 </MyTransition>
@@ -501,311 +502,30 @@ Usuarios
 </template>
 
 <script>
-import NavLink from '@/Components/NavLink.vue';
-import MyTransition from '@/Components/MyTransition.vue';
-import { Link, } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import axios from 'axios';
-
 export default {
     props: {
         userPermissions: {
             type: Array,
         }
     },
-    
-    components: {
-        NavLink,
-        Link,
-        MyTransition,
-    },
-
-    data() {
-        return {
-            permissionsPorVencer: [],
-            vacationPorVencer3: [],
-            vacationPorVencer7: [],
-            subSectionsCount: 0,
-            subSectionsCount7: 0,
-            subSectionsPorVencer: [],
-            subSectionsPorVencer7: [],
-            cicsasubSectionsCount: 0,
-            cicsasubSectionsCount7: 0,
-            cicsasubSectionsPorVencer: [],
-            cicsasubSectionsPorVencer7: [],
-
-            purchaseOrdersAlarms: [],
-            paymentAlarms3: [],
-            paymentAlarms7: [],
-            formationProgramsAlarms: [],
-
-            financePurchasesTotal: 0,
-            financePurchasesTotal7: 0,
-            financePurchases: [],
-            financePurchases7: [],
-
-            shoppingPurchasesTotal: 0,
-            shoppingPurchasesTotal7: 0,
-            shoppingPurchases: [],
-            shoppingPurchases7: [],
-        };
-    },
-
-    setup() {
-        let showingUsersAndRols = ref(false)
-        let showingHumanResource = ref(false)
-        let showingFinance = ref(false)
-        let showingInventory = ref(false)
-        let showingProyectArea = ref(false)
-        let showingShoppingArea = ref(false)
-
-        let showingPermissionsAlarm = ref(false)
-        let showingVacationAlarm = ref(false)
-
-        let showingMembers = ref(false)
-        let showingMembers7 = ref(false)
-        let cicsashowingMembers = ref(false)
-        let cicsashowingMembers7 = ref(false)
-
-        let showPurchaseOrdersAlarms = ref(false)
-        let paymentPorVencer = ref(false)
-        let showFinancePurchaseQuoteAlarms = ref(false)
-        let showShoppingPurchaseRequestAlarms = ref(false)
-        let showFormationProgramsAlarms = ref(false)
-
-        return {
-            showingUsersAndRols,
-            showingHumanResource,
-            showingFinance,
-            showingInventory,
-            showingProyectArea,
-            showingShoppingArea,
-            showingPermissionsAlarm,
-            showingVacationAlarm,
-            showingMembers,
-            showingMembers7,
-            cicsashowingMembers,
-            cicsashowingMembers7,
-            showPurchaseOrdersAlarms,
-            paymentPorVencer,
-            showFinancePurchaseQuoteAlarms,
-            showShoppingPurchaseRequestAlarms,
-            showFormationProgramsAlarms
-        }
-    },
-
     methods: {
         hasPermission(permission) {
             return this.$page.props.userPermissions.includes(permission);
         },
-
-        async fetchAlarmPermissionsCount() {
-            try {
-                const response = await axios.get('/permissions/alarm');
-                this.permissionsPorVencer = response.data.permissions;
-            } catch (error) {
-                console.error('Error al obtener el contador de permissions:', error);
-            }
-        },
-
-        async fetchAlarmVacationCount() {
-            try {
-                const response = await axios.get('/vacation/alarm');
-                this.vacationPorVencer3 = response.data.vacation3;
-                this.vacationPorVencer7 = response.data.vacation7;
-            } catch (error) {
-                console.error('Error al obtener el contador de vacation:', error);
-            }
-        },
-
-        async fetchSubSectionsCount() {
-            try {
-                const response = await axios.get('/doTask');
-                this.subSectionsCount = response.data.totalSubSections;
-                this.subSectionsPorVencer = response.data.subSections;
-            } catch (error) {
-                console.error('Error al obtener el contador de subsecciones:', error);
-            }
-        },
-
-        async fetchSubSectionsCount7() {
-            try {
-                const response = await axios.get('/doTask2');
-                this.subSectionsCount7 = response.data.totalSubSections;
-                this.subSectionsPorVencer7 = response.data.subSections;
-            } catch (error) {
-                console.error('Error al obtener el contador de subsecciones:', error);
-            }
-        },
-
-        async fetchCicsaSubSectionsCount() {
-            try {
-                const response = await axios.get('/cicsaDoTask');
-                this.cicsasubSectionsCount = response.data.totalSubSections;
-                this.cicsasubSectionsPorVencer = response.data.subSections;
-            } catch (error) {
-                console.error('Error al obtener el contador de subsecciones:', error);
-            }
-        },
-
-        async fetchCicsaSubSectionsCount7() {
-            try {
-                const response = await axios.get('/cicsaDoTask2');
-                this.cicsasubSectionsCount7 = response.data.totalSubSections;
-                this.cicsasubSectionsPorVencer7 = response.data.subSections;
-
-            } catch (error) {
-                console.error('Error al obtener el contador de subsecciones:', error);
-            }
-        },
-
-        async fetchPaymentsAlarm() {
-            try {
-                const response = await axios.get(route('payment.alarm'));
-                this.paymentAlarms3 = response.data.payment3Days;
-                this.paymentAlarms7 = response.data.payment7Days;
-
-            } catch (error) {
-                console.error('Error al obtener el contador de payments:', error);
-            }
-        },
-
-        async fetchFinanceAlarms() {
-            try {
-                const response = await axios.get(route('purchaseorders.alarms'));
-                this.purchaseOrdersAlarms = [...response.data.purchaseOrders3d.map(i => ({ ...i, 'critical': true })),
-                ...response.data.purchaseOrders7d
-                ]
-            } catch (error) {
-                console.error('Error al obtener alarmas de finanzas:', error);
-            }
-        },
-
-        async fetchFormationProgramAlarms() {
-            try {
-                const response = await axios.get(route('employees_in_programs.alarms'))
-                this.formationProgramsAlarms = [
-                    ...response.data.alarm3d.map(i => ({ ...i, critical: true })),
-                    ...response.data.alarm7d
-                ]
-            } catch (error) {
-                console.error('Error al obtener alarmas de programa de formación:', error);
-            }
-        },
-
-
-        async fetchFinancePurchases() {
-            try {
-                const response = await axios.get(route('finance.task'));
-                this.financePurchases = response.data.purchasesLessThanThreeDays;
-                this.financePurchasesTotal = response.data.totalPurchasesLessThanThreeDays;
-                this.financePurchases7 = response.data.purchasesBetweenFourAndSevenDays;
-                this.financePurchasesTotal7 = response.data.totalPurchasesBetweenFourAndSevenDays;
-            } catch (error) {
-                console.error('Error al obtener el contador de subsecciones:', error);
-            }
-        },
-
-        async fetchPurchasesRequest() {
-            try {
-                const response = await axios.get(route('purchasesrequest.task'));
-                this.shoppingPurchases = response.data.purchasesLessThanThreeDays;
-                this.shoppingPurchasesTotal = response.data.totalPurchasesLessThanThreeDays;
-                this.shoppingPurchases7 = response.data.purchasesBetweenFourAndSevenDays;
-                this.shoppingPurchasesTotal7 = response.data.totalPurchasesBetweenFourAndSevenDays;
-            } catch (error) {
-                console.error('Error al obtener el contador de subsecciones:', error);
-            }
-        },
-        alarmVacaPermisions() {
-            this.showingPermissionsAlarm = !this.showingPermissionsAlarm;
-            this.showingVacationAlarm = !this.showingVacationAlarm;
-        },
-
-        toggleMembers() {
-            this.showingMembers7 = !this.showingMembers7;
-            this.showingMembers = !this.showingMembers;
-        },
-        toggleMembersCicsa() {
-            this.cicsashowingMembers7 = !this.cicsashowingMembers7;
-            this.cicsashowingMembers = !this.cicsashowingMembers;
-        },
-        tooglePurchaseQuote() {
-            this.showFinancePurchaseQuoteAlarms = !this.showFinancePurchaseQuoteAlarms;
-        },
-        tooglePayment() {
-            this.paymentPorVencer = !this.paymentPorVencer;
-        },
-        tooglePurchaseRequest() {
-            this.showShoppingPurchaseRequestAlarms = !this.showShoppingPurchaseRequestAlarms;
-        }
-
     },
-
-    mounted() {
-        this.fetchAlarmPermissionsCount();
-        this.fetchAlarmVacationCount();
-        this.fetchSubSectionsCount();
-        this.fetchSubSectionsCount7();
-        this.fetchCicsaSubSectionsCount();
-        this.fetchCicsaSubSectionsCount7();
-        this.fetchFinanceAlarms();
-        this.fetchFinancePurchases();
-        this.fetchPurchasesRequest();
-        this.fetchPaymentsAlarm();
-        this.fetchFormationProgramAlarms();
-        setInterval(() => {
-            this.fetchAlarmPermissionsCount();
-            this.fetchAlarmVacationCount();
-            this.fetchSubSectionsCount();
-            this.fetchSubSectionsCount7();
-            this.fetchCicsaSubSectionsCount();
-            this.fetchCicsaSubSectionsCount7();
-            this.fetchFinanceAlarms();
-            this.fetchFinancePurchases();
-            this.fetchPurchasesRequest();
-            this.fetchPaymentsAlarm();
-            this.fetchFormationProgramAlarms();
-        }, 60000);
-    },
-
 }
 </script>
 
-<!-- <script setup>
+<script setup>
 import MyTransition from '@/Components/MyTransition.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
-import { defineProps } from 'vue';
+import axios from 'axios';
 
-const props = defineProps({
-    userPermissions: Array,
-})
-
-console.log(props.userPermissions)
-
-const showingUsersAndRols = ref(false);
-const showingHumanResource = ref(false);
-const showingFinance = ref(false);
-const showingInventory = ref(false);
-const showingProyectArea = ref(false);
-const showingShoppingArea = ref(false);
-const showingPermissionsAlarm = ref(false);
-const showingVacationAlarm = ref(false);
-const showingMembers = ref(false);
-const showingMembers7 = ref(false);
-const cicsashowingMembers = ref(false);
-const cicsashowingMembers7 = ref(false);
-const showPurchaseOrdersAlarms = ref(false);
-const paymentPorVencer = ref(false);
-const showFinancePurchaseQuoteAlarms = ref(false);
-const showShoppingPurchaseRequestAlarms = ref(false);
-const showFormationProgramsAlarms = ref(false);
-
-const permisionsCount = ref(0);
-const vacationCount = ref(0);
+// Variables reactivas
 const permissionsPorVencer = ref([]);
 const vacationPorVencer3 = ref([]);
+const vacationPorVencer7 = ref([]);
 const subSectionsCount = ref(0);
 const subSectionsCount7 = ref(0);
 const subSectionsPorVencer = ref([]);
@@ -814,27 +534,46 @@ const cicsasubSectionsCount = ref(0);
 const cicsasubSectionsCount7 = ref(0);
 const cicsasubSectionsPorVencer = ref([]);
 const cicsasubSectionsPorVencer7 = ref([]);
+
 const purchaseOrdersAlarms = ref([]);
 const paymentAlarms3 = ref([]);
 const paymentAlarms7 = ref([]);
 const formationProgramsAlarms = ref([]);
+
 const financePurchasesTotal = ref(0);
 const financePurchasesTotal7 = ref(0);
 const financePurchases = ref([]);
 const financePurchases7 = ref([]);
+
 const shoppingPurchasesTotal = ref(0);
 const shoppingPurchasesTotal7 = ref(0);
 const shoppingPurchases = ref([]);
 const shoppingPurchases7 = ref([]);
 
-const hasPermission = (permission) => {
-    return true;
-}
+const showingUsersAndRols = ref(false);
+const showingHumanResource = ref(false);
+const showingFinance = ref(false);
+const showingInventory = ref(false);
+const showingProyectArea = ref(false);
+const showingShoppingArea = ref(false);
+
+const showingPermissionsAlarm = ref(false);
+const showingVacationAlarm = ref(false);
+
+const showingMembers = ref(false);
+const showingMembers7 = ref(false);
+const cicsashowingMembers = ref(false);
+const cicsashowingMembers7 = ref(false);
+
+const showPurchaseOrdersAlarms = ref(false);
+const paymentPorVencer = ref(false);
+const showFinancePurchaseQuoteAlarms = ref(false);
+const showShoppingPurchaseRequestAlarms = ref(false);
+const showFormationProgramsAlarms = ref(false);
 
 const fetchAlarmPermissionsCount = async () => {
     try {
         const response = await axios.get('/permissions/alarm');
-        permisionsCount.value = response.data.totalPermissions;
         permissionsPorVencer.value = response.data.permissions;
     } catch (error) {
         console.error('Error al obtener el contador de permissions:', error);
@@ -844,8 +583,8 @@ const fetchAlarmPermissionsCount = async () => {
 const fetchAlarmVacationCount = async () => {
     try {
         const response = await axios.get('/vacation/alarm');
-        vacationCount.value = response.data.totalVacation;
-        vacationPorVencer3.value = response.data.vacation;
+        vacationPorVencer3.value = response.data.vacation3;
+        vacationPorVencer7.value = response.data.vacation7;
     } catch (error) {
         console.error('Error al obtener el contador de vacation:', error);
     }
@@ -905,7 +644,7 @@ const fetchFinanceAlarms = async () => {
     try {
         const response = await axios.get(route('purchaseorders.alarms'));
         purchaseOrdersAlarms.value = [
-            ...response.data.purchaseOrders3d.map(i => ({ ...i, 'critical': true })),
+            ...response.data.purchaseOrders3d.map(i => ({ ...i, critical: true })),
             ...response.data.purchaseOrders7d
         ];
     } catch (error) {
@@ -915,11 +654,11 @@ const fetchFinanceAlarms = async () => {
 
 const fetchFormationProgramAlarms = async () => {
     try {
-        const response = await axios.get(route('employees_in_programs.alarms'))
+        const response = await axios.get(route('employees_in_programs.alarms'));
         formationProgramsAlarms.value = [
             ...response.data.alarm3d.map(i => ({ ...i, critical: true })),
             ...response.data.alarm7d
-        ]
+        ];
     } catch (error) {
         console.error('Error al obtener alarmas de programa de formación:', error);
     }
@@ -976,6 +715,7 @@ const tooglePurchaseRequest = () => {
     showShoppingPurchaseRequestAlarms.value = !showShoppingPurchaseRequestAlarms.value;
 };
 
+// Métodos para la inicialización
 onMounted(() => {
     fetchAlarmPermissionsCount();
     fetchAlarmVacationCount();
@@ -988,6 +728,7 @@ onMounted(() => {
     fetchPurchasesRequest();
     fetchPaymentsAlarm();
     fetchFormationProgramAlarms();
+
     setInterval(() => {
         fetchAlarmPermissionsCount();
         fetchAlarmVacationCount();
@@ -1002,4 +743,4 @@ onMounted(() => {
         fetchFormationProgramAlarms();
     }, 60000);
 });
-</script> -->
+</script>

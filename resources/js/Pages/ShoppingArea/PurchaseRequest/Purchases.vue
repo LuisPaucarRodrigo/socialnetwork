@@ -199,7 +199,7 @@
                 </h2>
 
                 <p class="mt-1 text-sm text-gray-600">
-                    Se eliminara toda la informacion relacionada con la solicitudr.
+                    Se eliminara toda la informacion relacionada con la solicitud.
                 </p>
 
                 <div class="mt-6 flex justify-end">

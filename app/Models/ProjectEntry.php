@@ -46,7 +46,7 @@ class ProjectEntry extends Model
 
     public function project_entry_liquidation ()
     {
-        return $this->hasMany(ProjectEntryLiquidation::class);
+        return $this->hasOne(ProjectEntryLiquidation::class);
     }
 
     public function dispath ()

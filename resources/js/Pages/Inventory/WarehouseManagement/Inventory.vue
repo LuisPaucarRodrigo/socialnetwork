@@ -10,11 +10,15 @@
                 <div v-if="products" class="flex items-center flex-grow min-w-0">
                     <Link :href="route('warehouses.createNormalProduct', { warehouse: props.warehouseId })"
                         type="button"
-                        class="inline-flex items-center px-4 py-2 min-w-[115px] border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     + Agregar
                     </Link>
                 </div>
-                <PrimaryButton v-else @click="reentry" type="button" >
+                <Link :href="route('warehouses.resource.create')"
+                    class="inline-flex items-center px-4 py-2 min-w-[115px] border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                + Agregar
+                </Link>
+                <PrimaryButton v-if="resources" @click="reentry" type="button">
                     {{ boolean == false ? "Sin Revisar" : "Revisados" }}
                 </PrimaryButton>
             </div>
@@ -133,7 +137,7 @@
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <DangerButton type="button" @click="close_add_serial_number" > Cerrar </DangerButton>
+                    <DangerButton type="button" @click="close_add_serial_number"> Cerrar </DangerButton>
                     <PrimaryButton type="submit"> Aceptar </PrimaryButton>
                 </div>
             </form>
@@ -224,7 +228,7 @@ function close_add_serial_number() {
 
 function submit_add_serial_number() {
     form.resource_id = resource_id.value
-    form.post(route('warehouses.resource.add_serial_number'),{
+    form.post(route('warehouses.resource.add_serial_number'), {
         onSuccess: () => {
             form.reset()
             close_add_serial_number()
