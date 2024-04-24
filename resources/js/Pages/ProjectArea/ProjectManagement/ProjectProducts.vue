@@ -21,16 +21,17 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Almacén
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Còdigo Producto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Producto
                             </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Tipo
-                            </th>
+                            
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cantidad Asignada
@@ -63,6 +64,14 @@
                             ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ item.entry_id 
+                                        ? item.entry.inventory.warehouse.name 
+                                        : item.special_inventory.warehouse.name
+                                    }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.entry_id ? item.entry.inventory.purchase_product.code : item.special_inventory.purchase_product.code }}
                                 </p>
                             </td>
@@ -72,9 +81,11 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.entry_id ? 'Normal' : 'Especial' }}
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    S/. {{ item.unitary_price }}
                                 </p>
                             </td>
+                            
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                             </td>
@@ -175,12 +186,11 @@
                             </div>
                             <div class="mt-2">
                                 <select required id="inventory_id" v-model="form.entry_id"
-                                    @change="handleTotalPriceVisibility"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option v-for="item in warehouseInventory" :key="item.id" :value="item.id">
                                         {{ item.inventory.purchase_product.name }} -
-                                        {{ item.quantity }} -
+                                        {{ item.quantity_available }} -
                                         S/ {{ item.unitary_price }}
                                     </option>
                                 </select>
@@ -190,8 +200,9 @@
                     <div class="sm:col-span-3">
                         <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
-                                :max="productFinded ? productFinded.total_available : null"
+                            <TextInput id="quantity" type="number"
+                                 min="1" v-model="form.quantity"
+                                :max="form.entry_id ? warehouseInventory?.find(i=>i.id === form.entry_id)?.quantity_available : 0"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -199,7 +210,7 @@
                     
 
 
-                    <div v-if="enableInput" class="sm:col-span-3">
+                    <!-- <div v-if="enableInput" class="sm:col-span-3">
                         <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio unitario a
                             descontar en
                             Proyecto</InputLabel>
@@ -207,7 +218,7 @@
                             <TextInput id="unitary_price" type="number" min="1" step="0.01" v-model="form.unitary_price"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
@@ -281,6 +292,7 @@ const product_warehouse = async (warehouse) => {
     warehouseProducts.value = []
     warehouseInventory.value = []
     const res = await axios.get(route('projectmanagement.warehouse_products', { project: project_id, warehouse: warehouse }))
+    console.log(res.data.products)
     warehouseProducts.value = res.data.products;
     warehouseProductsfirst.value = warehouseProducts.value[0]?.cpe;
 };
@@ -382,13 +394,13 @@ const updateAssignatedProduct = () => {
 //has different price
 const productFinded = ref(null)
 const enableInput = ref(false)
-// const handleTotalPriceVisibility = () => {
-//     let product = warehouseProducts.value.find((i) => i.id == form.product_id)
-//     productFinded.value = product
-//     enableInput.value = product.has_different_price
-//     if (form.unitary_price) {
-//         form.unitary_price = null
-//     }
-// }
+const handleTotalPriceVisibility = () => {
+    let product = warehouseProducts.value.find((i) => i.id == form.product_id)
+    productFinded.value = product
+    enableInput.value = product.has_different_price
+    if (form.unitary_price) {
+        form.unitary_price = null
+    }
+}
 
 </script>
