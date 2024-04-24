@@ -35,6 +35,13 @@ class Inventory extends Model
 
     public function getAvailableQuantityAttribute()
     {
-        return $this->entry()->sum('quantity');
+        // Sumar la cantidad total de `quantity` en todos los `Entry` relacionados
+        $totalQuantity = $this->entry()->sum('quantity');
+
+        // Sumar `reserved_quantity` para cada objeto `Entry` en la colección
+        $totalReservedQuantity = $this->entry->sum('reserved_quantity');
+
+        // Calcular la cantidad disponible restando la cantidad reservada de la cantidad total
+        return $totalQuantity - $totalReservedQuantity;
     }
 }

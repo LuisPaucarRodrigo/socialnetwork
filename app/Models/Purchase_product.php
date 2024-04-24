@@ -26,7 +26,6 @@ class Purchase_product extends Model
     ];
 
     //CALCULATED FIELDS
-
     public function getCodeAttribute()
     {
         if ($this->exists) {
@@ -45,7 +44,6 @@ class Purchase_product extends Model
     }
 
     //RELATIONS
-
     public function purchasing_request_product()
     {
         return $this->hasMany(Purchasing_requests_product::class);
