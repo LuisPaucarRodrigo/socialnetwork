@@ -235,9 +235,9 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{ (item.unitary_price *
-                                                                item.quantity *
-                                                                (1 + (item.profit_margin) / 100))
-                                                                .toFixed(2) }}</p>
+        item.quantity *
+        (1 + (item.profit_margin) / 100))
+        .toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <div v-if="auth.user.role_id === 1 || preproject.quote === null"
@@ -334,9 +334,9 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{ (item.unitary_price *
-                                                                item.quantity *
-                                                                (1 + (item.margin) / 100))
-                                                                .toFixed(2) }}</p>
+        item.quantity *
+        (1 + (item.margin) / 100))
+        .toFixed(2) }}</p>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -385,7 +385,7 @@
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Precio Unitario de Renta
                                                     </th>
-                                            
+
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Margen
@@ -393,7 +393,7 @@
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Valor total
-                                                    </th> 
+                                                    </th>
                                                     <th v-if="auth.user.role_id === 1 || preproject.quote === null"
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                         Acciones
@@ -401,7 +401,7 @@
                                                 </tr>
                                             </thead>
 
-                                            <tbody> 
+                                            <tbody>
                                                 <tr v-for="(item, index) in (form.items)" :key="index"
                                                     class="text-gray-700">
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -416,7 +416,8 @@
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
-                                                            {{ item.resource_entries.length === 0 ? '-' : item.resource_entries.length }}
+                                                            {{ item.resource_entries.length === 0 ? '-' :
+        item.resource_entries.length }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -427,7 +428,7 @@
                                                             S/. {{ item.service_info.rent_price }}
                                                         </p>
                                                     </td>
-                                                
+
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             {{ (item.profit_margin) }}%
@@ -435,24 +436,29 @@
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
-                                                            S/.{{ (item.service_info.rent_price *  
-                                                                    (item.resource_entries.length === 0 ? 1 : item.resource_entries.length) 
-                                                                    * item.days * (1 + item.profit_margin / 100)).toFixed(2) }}
+                                                            S/.{{ (item.service_info.rent_price *
+        (item.resource_entries.length === 0 ? 1 :
+            item.resource_entries.length)
+        * item.days * (1 + item.profit_margin / 100)).toFixed(2) }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                        
-                                                        
-                                                        
+
+
+
                                                         <div class="flex justify-center space-x-3">
 
-                                                            <button v-if="item.resource_entries.length !== 0 " type="button" @click="showServiceDetailsModal(item.resource_entries)" class="text-blue-600 hover:underline">
+                                                            <button v-if="item.resource_entries.length !== 0"
+                                                                type="button"
+                                                                @click="showServiceDetailsModal(item.resource_entries)"
+                                                                class="text-blue-600 hover:underline">
                                                                 <EyeIcon class="h-4 w-4" />
                                                             </button>
-                                                            <button type="button" v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                                                @click=" preproject.quote 
-                                                                            ? deleteAlreadyItem(item.ids, index) 
-                                                                            : deleteItem(index)"
+                                                            <button type="button"
+                                                                v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                                                @click=" preproject.quote
+        ? deleteAlreadyItem(item.ids, index)
+        : deleteItem(index)"
                                                                 class="col-span-1 flex justify-end">
                                                                 <TrashIcon class=" text-red-500 h-4 w-4 " />
                                                             </button>
@@ -583,8 +589,7 @@
                             <InputLabel for="service" class="font-medium leading-6 text-gray-900">Servicios
                             </InputLabel>
                             <div class="mt-2">
-                                <select required v-model="itemToAdd.service_info"
-                                    @change="handleService" id="service"
+                                <select required v-model="itemToAdd.service_info" @change="handleService" id="service"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option v-for="item in services" :key="item.id" :value="item">
@@ -598,10 +603,7 @@
                             <InputLabel for="resource" class="font-medium leading-6 text-gray-900">Activos
                             </InputLabel>
                             <div class="mt-2">
-                                <select required v-model="itemToAdd.resource_entries"
-                                    id="service"
-                                    multiple
-                                    size="5"
+                                <select required v-model="itemToAdd.resource_entries" id="service" multiple size="5"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno o varios</option>
                                     <option v-for="item in active_selected" :key="item.id" :value="item">
@@ -643,9 +645,12 @@
                         <h2 class="text-base font-medium leading-7">
                             Activos Asignados a este servicio
                         </h2>
-                        <button @click="closeServiceDetailsModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <button @click="closeServiceDetailsModal"
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
@@ -654,30 +659,33 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Activo
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Número de serie
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Precio Unitario
-                                </th>
-                                <!-- Agrega más encabezados según sea necesario -->
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Activo
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Número de serie
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Precio Unitario
+                                    </th>
+                                    <!-- Agrega más encabezados según sea necesario -->
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="(item, index) in service_resources" :key="index">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ item.purchase_product.name }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ item.serial_number }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">S/. {{ item.current_price }}</div>
-                                </td>
-                                <!-- Agrega más celdas según sea necesario -->
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ item.purchase_product.name }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ item.serial_number }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">S/. {{ item.current_price }}</div>
+                                    </td>
+                                    <!-- Agrega más celdas según sea necesario -->
                                 </tr>
                             </tbody>
                         </table>
@@ -779,21 +787,21 @@ const initialState = {
 
 function servicesArrayMaker(data) {
     let result = []
-    data.forEach((item)=> {
-        let fo = result.find((x)=>x.service_id === item.service_id)
+    data.forEach((item) => {
+        let fo = result.find((x) => x.service_id === item.service_id)
         if (fo) {
             fo.resource_entries.push(item.resource_entry)
             fo.ids.push(item.id)
         } else {
             result.push({
-                service_id : item.service_id,
-                days : item.days,
+                service_id: item.service_id,
+                days: item.days,
                 profit_margin: item.profit_margin,
                 service_info: item.service,
                 resource_entries: item.resource_entry_id
-                                    ? [item.resource_entry]
-                                    : [],
-                rent_price : item.rent_price,
+                    ? [item.resource_entry]
+                    : [],
+                rent_price: item.rent_price,
                 ids: [item.id]
             })
         }
@@ -804,17 +812,14 @@ function servicesArrayMaker(data) {
 
 const updateState = {
     ...preproject.quote,
-    items: preproject?.quote?.preproject_quote_services 
-                ? servicesArrayMaker(preproject.quote.preproject_quote_services)
-                : []
+    items: preproject?.quote?.preproject_quote_services
+        ? servicesArrayMaker(preproject.quote.preproject_quote_services)
+        : []
 }
-
-console.log(updateState.items)
 
 const form = useForm(
     { ...(preproject.quote ? updateState : initialState) }
 )
-
 
 const submit = () => {
     let url = route('preprojects.quote.store')
@@ -848,8 +853,8 @@ const showFinishAccept = ref(false);
 //     unit_price: '',
 // }
 const itemInitialState = {
-    days:'',
-    profit_margin:'',
+    days: '',
+    profit_margin: '',
     service_info: {},
     resource_entries: [],
     rent_price: ''
@@ -882,24 +887,24 @@ const closeModal = () => {
 const addItem = () => {
     if (itemToAdd.value.service_info.id && form.items.find(item => item.service_info?.id == itemToAdd.value.service_info.id) == undefined) {
         if (preproject.quote) {
-        axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
-            .then(response => {
-                if (response.status = 200) {
-                    itemToAdd.value.ids = response.data.ids
-                    showItemAddModal.value = true
-                    setTimeout(() => {
-                        showItemAddModal.value = false;
-                    }, 1500);
-                    form.items.push({
-                        ...itemToAdd.value
-                    });
-                }
-            })
-            .catch(e => console.log(e))
-            } else {
-                form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
-                closeModal()
-            }
+            axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
+                .then(response => {
+                    if (response.status = 200) {
+                        itemToAdd.value.ids = response.data.ids
+                        showItemAddModal.value = true
+                        setTimeout(() => {
+                            showItemAddModal.value = false;
+                        }, 1500);
+                        form.items.push({
+                            ...itemToAdd.value
+                        });
+                    }
+                })
+                .catch(e => console.log(e))
+        } else {
+            form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
+            closeModal()
+        }
     } else {
         showErroModal2.value = true
         setTimeout(() => {
@@ -914,7 +919,7 @@ const deleteItem = (index) => {
 }
 
 const deleteAlreadyItem = (ids, index) => {
-    router.post(route('preprojects.quote.item.delete'),{ ids: ids }, {
+    router.post(route('preprojects.quote.item.delete'), { ids: ids }, {
         onError: () => {
             alert('SERVER ERROR')
         },
@@ -1033,14 +1038,14 @@ function deleteProduct(index, id) {
 
 
 async function handleService(e) {
-    const res = await axios.get(route('load.resource_entries', {service_id: itemToAdd.value.service_info.id}))
+    const res = await axios.get(route('load.resource_entries', { service_id: itemToAdd.value.service_info.id }))
     active_selected.value = res.data
 }
 
 const showServiceDetails = ref(false)
 const service_resources = ref([])
 
-function showServiceDetailsModal (array) {
+function showServiceDetailsModal(array) {
     console.log(array)
     service_resources.value = [...array]
     showServiceDetails.value = true

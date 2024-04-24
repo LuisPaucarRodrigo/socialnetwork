@@ -9,7 +9,6 @@ class ResourceEntry extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'state',
         'condition',
         'entry_date',
         'serial_number',
@@ -20,7 +19,7 @@ class ResourceEntry extends Model
     ];
 
     protected $appends = [
-        'current_price'
+        'current_price',
     ];
 
     //CALCULATED

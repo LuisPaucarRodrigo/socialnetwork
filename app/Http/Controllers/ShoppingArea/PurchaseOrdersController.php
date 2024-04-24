@@ -26,7 +26,6 @@ class PurchaseOrdersController extends Controller
         ]);
     }
 
-
     public function history()
     {
         $completedOrders = Purchase_order::with('purchase_quote.purchasing_requests','purchase_quote.payment')
@@ -161,8 +160,6 @@ class PurchaseOrdersController extends Controller
                 'search' => $request
             ]);
         }
-
-        
     }
 
 }
