@@ -5,6 +5,7 @@
         <template #header>
             {{ products ? 'Productos' : 'Activos' }}
         </template>
+        
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
                 <div v-if="products" class="flex items-center flex-grow min-w-0">

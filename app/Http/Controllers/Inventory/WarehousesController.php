@@ -49,11 +49,14 @@ class WarehousesController extends Controller
 
     public function showProducts(Warehouse $warehouse)
     {
+        
         $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry', 'purchase_product')->paginate(10);
+        // dd($products);
         return Inertia::render('Inventory/WarehouseManagement/Inventory', [
             'products' => $products,
             'warehouseId' => $warehouse->id
         ]);
+ 
     }
 
     public function createProducts(Warehouse $warehouse)
@@ -67,7 +70,12 @@ class WarehousesController extends Controller
 
     public function showEntries(Warehouse $warehouse, Inventory $inventory)
     {
-        $entries = Entry::where('inventory_id', $inventory->id)->with('inventory.purchase_product', 'normal_entry', 'purchase_entry')->paginate(10);
+        $entries = Entry::where('inventory_id', $inventory->id)
+                            ->with(
+                                'inventory.purchase_product', 
+                                'normal_entry', 'purchase_entry'
+                            )
+                            ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Entries', [
             'entries' => $entries,
             'warehouseId' => $warehouse->id
