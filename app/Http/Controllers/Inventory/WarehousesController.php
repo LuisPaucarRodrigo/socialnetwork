@@ -385,7 +385,6 @@ class WarehousesController extends Controller
     }
 
     //RESOURCE
-
     public function resourcePurchaseOrders()
     {
         $purchase_orders_resource = Purchase_order::where('state', 'Completada')
@@ -448,6 +447,27 @@ class WarehousesController extends Controller
             'state'=>true,
             'condition'=>'Disponible'
         ]);
+    }
+
+    public function resource_create()
+    {
+        return Inertia::render('Inventory/WarehouseManagement/CreateResource',[
+            'products' => Purchase_product::where('type','Activo')->get()
+        ]);
+    }
+
+    public function resource_store(Request $request)
+    {
+        $data = $request->validate([
+            'state' => 'required|numeric',
+            'condition' => 'required|string',
+            'entry_date' => 'required|date',
+            'serial_number' => 'required|numeric',
+            'referral_guide' => 'required|numeric',
+            'entry_price' => 'required|numeric',
+            'purchase_product_id' => 'required|numeric',
+        ]);
+        ResourceEntry::create($data);
     }
 
     //SERVICES

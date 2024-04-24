@@ -50,15 +50,15 @@ class PreProjectQuote extends Model
         return $totalItems + $totalProducts;
     }
 
-    public function getCodeAttribute()
-    {
-        if ($this->exists) {
-            $preprojectYear = date('Y', strtotime($this->preproject->date));
-            return 'C.T - ' . $preprojectYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
-        } else {
-            return 'TMP' . now()->format('ymdHis');
-        }
-    }
+    // public function getCodeAttribute()
+    // {
+    //     if ($this->exists) {
+    //         $preprojectYear = date('Y', strtotime($this->preproject->date));
+    //         return 'C.T - ' . $preprojectYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    //     } else {
+    //         return 'TMP' . now()->format('ymdHis');
+    //     }
+    // }
 
     //RELATIONS
     public function preproject () {
