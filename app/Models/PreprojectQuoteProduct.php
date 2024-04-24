@@ -21,12 +21,14 @@ class PreprojectQuoteProduct extends Model
         'unitary_price_with_margin'
     ];
 
-    public function purchase_product () {
-        return $this->belongsTo(Purchase_product::class, 'purchase_product_id');
-    }
-
+    //CALCULATED
     public function getUnitaryPriceWithMarginAttribute()
     {
         return $this->unitary_price * (1+$this->profit_margin/100);
+    }
+
+    //RELATIONS
+    public function purchase_product () {
+        return $this->belongsTo(Purchase_product::class, 'purchase_product_id');
     }
 }

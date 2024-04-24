@@ -173,12 +173,13 @@ class PreProjectController extends Controller
         ]);
     }
 
-    public function load_resource_entries ($service_id) {
+    public function load_resource_entries($service_id)
+    {
         $service = Service::find($service_id);
         $resources_entries = ResourceEntry::with('purchase_product')->where('state', true)
-                                ->where('condition', 'Disponible')
-                                ->where('purchase_product_id', $service->purchase_product_id)
-                                ->get();
+            ->where('condition', 'Disponible')
+            ->where('purchase_product_id', $service->purchase_product_id)
+            ->get();
         return response()->json($resources_entries, 200);
     }
 
@@ -202,8 +203,8 @@ class PreProjectController extends Controller
             $preproject_quote = PreProjectQuote::create($data);
             if ($request->has("items")) {
                 foreach ($request->get("items") as $item) {
-                    if (count($item["resource_entries"]) !== 0){
-                        foreach($item["resource_entries"] as $subItem) {
+                    if (count($item["resource_entries"]) !== 0) {
+                        foreach ($item["resource_entries"] as $subItem) {
                             $service_item_with_sub = new PreprojectQuoteService([
                                 'preproject_quote_id' => $preproject_quote->id,
                                 'service_id' => $item["service_info"]["id"],
@@ -213,6 +214,9 @@ class PreProjectController extends Controller
                                 'rent_price' => $item["service_info"]["rent_price"],
                             ]);
                             $preproject_quote->preproject_quote_services()->save($service_item_with_sub);
+                            ResourceEntry::find($subItem["id"])->update([
+                                'condition' => "No Disponible"
+                            ]);
                         }
                     } else {
                         $service_item = new PreprojectQuoteService([
@@ -221,7 +225,6 @@ class PreProjectController extends Controller
                             'days' => $item["days"],
                             'profit_margin' => $item["profit_margin"],
                             'rent_price' => $item["service_info"]["rent_price"],
-                            
                         ]);
                         $preproject_quote->preproject_quote_services()->save($service_item);
                     }
@@ -241,25 +244,47 @@ class PreProjectController extends Controller
     public function quote_item_store(Request $request)
     {
         $data = $request->validate([
-            // "description" => 'required',
-            // "unit" => 'required',
-            // "days" => 'required',
-            // "quantity" => 'required',
-            // "unit_price" => 'required',
-            // "service_id" => 'required',
-            // "preproject_quote_id" => 'required',
-            "resource_entry_id" => 'required',
-            "service_id" => 'required|numeric',
             "preproject_quote_id" => 'required|numeric',
+            "service_info" => 'required',
+            "resource_entries" => 'array|nullable',
+            "days" => 'required',
+            "profit_margin" => 'required',
         ]);
-        $newItem = PreprojectQuoteService::create($data);
-        return response()->json(['id' => $newItem->id]);
+
+        $ids = [];
+
+        if ($data["resource_entries"]) {
+            foreach ($data["resource_entries"] as $item) {
+                $res = PreprojectQuoteService::create([
+                    'preproject_quote_id' => $data["preproject_quote_id"],
+                    'service_id' => $data['service_info']['id'],
+                    'resource_entry_id' => $item['id'],
+                    'days' => $data['days'],
+                    'profit_margin' => $data['profit_margin'],
+                    'rent_price' => $data['service_info']['rent_price'],
+                ]);
+                array_push($ids, $res->id);
+            }
+        } else {
+            $res = PreprojectQuoteService::create([
+                'preproject_quote_id' => $data["preproject_quote_id"],
+                'service_id' => $data['service_info']['id'],
+                'days' => $data['days'],
+                'profit_margin' => $data['profit_margin'],
+                'rent_price' => $data['service_info']['rent_price'],
+            ]);
+            array_push($ids, $res->id);
+        }
+        return response()->json(['ids' => $ids]);
     }
 
 
-    public function quote_item_delete(PreProjectQuoteItem $quote_item_id)
+    public function quote_item_delete(Request $request)
     {
-        $quote_item_id->delete();
+        $ids = $request->input('ids');
+        foreach ($ids as $id) {
+            PreprojectQuoteService::find($id)->delete();
+        }
         return redirect()->back();
     }
 
@@ -288,10 +313,10 @@ class PreProjectController extends Controller
     public function getPDF(Preproject $preproject)
     {
         $preproject = $preproject->load(
-                        'quote.preproject_quote_services.service', 
-                        'quote.products.purchase_product', 
-                        'preproject_entries.entry.inventory.purchase_product'
-                    );
+            'quote.preproject_quote_services.service',
+            'quote.products.purchase_product',
+            'preproject_entries.entry.inventory.purchase_product'
+        );
 
         $productsFromQuotes = $preproject->quote->products;
         $productsFromWarehouses = $preproject->preproject_entries;
@@ -309,10 +334,10 @@ class PreProjectController extends Controller
             ]);
         }
 
-        foreach ($productsFromWarehouses as $pfw){
-            $id = $pfw->entry->inventory->purchase_product_id; 
+        foreach ($productsFromWarehouses as $pfw) {
+            $id = $pfw->entry->inventory->purchase_product_id;
             $key = array_search($id, array_column($finalProducts, 'purchase_product_id'));
-            if ( $key!== false ) {
+            if ($key !== false) {
                 $newQuantity = $finalProducts[$key]["quantity"] + $pfw->quantity;
                 $newUnitaryPrice = (
                     ($finalProducts[$key]["quantity"] * $finalProducts[$key]["unitary_price"]) +
@@ -334,9 +359,9 @@ class PreProjectController extends Controller
         $finalServices = [];
 
         foreach ($servicesResources as $sr) {
-            $id = $sr->service_id; 
+            $id = $sr->service_id;
             $key = array_search($id, array_column($finalServices, 'service_id'));
-            if ( $key!== false ) {
+            if ($key !== false) {
                 $finalServices[$key]["resources_quantity"] += 1;
             } else {
                 array_push($finalServices, [
@@ -688,11 +713,11 @@ class PreProjectController extends Controller
     public function preproject_products_index(Preproject $preproject)
     {
         $assigned_products = PreprojectEntry::where('preproject_id', $preproject->id)->with('entry.inventory.purchase_product')->paginate(10);
-        $warehouses = Warehouse::whereIn('id', [3,4])->get();
+        $warehouses = Warehouse::whereIn('id', [3, 4])->get();
         return Inertia::render('ProjectArea/PreProject/PreProjectProducts', [
             'assigned_products' => $assigned_products,
             'warehouses' => $warehouses,
-            'preproject_id' => $preproject->id
+            'preproject' => $preproject->load('project')
         ]);
     }
 
@@ -704,7 +729,13 @@ class PreProjectController extends Controller
 
     public function preproject_inventory_products($inventory_id)
     {
-        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')->where('inventory_id', $inventory_id)->get();
+        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')
+            ->where('inventory_id', $inventory_id)
+            ->get()
+            ->filter(function($item){
+                return $item->quantity_available > 0;
+            })
+            ->toArray();
         return response()->json(['inventory' => $inventory]);
     }
 
@@ -728,5 +759,4 @@ class PreProjectController extends Controller
 
         return redirect()->back();
     }
-
 }

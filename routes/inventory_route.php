@@ -42,6 +42,8 @@ Route::get('/inventory/resource/purchase_orders', [WarehousesController::class, 
 Route::post('/inventory/resource/approve/purchase_orders', [WarehousesController::class, 'approveResourcePurchaseOrders'])->name('warehouses.resource.approve');
 Route::get('/inventory/resource/products/purchase_orders/{boolean?}', [WarehousesController::class, 'productResourcePurchaseOrders'])->name('warehouses.index.resource');
 Route::post('/inventory/resource/serial_number/purchase_orders', [WarehousesController::class, 'serialNumberResourcePurchaseOrders'])->name('warehouses.resource.add_serial_number');
+Route::get('/inventory/resource/purchase_orders/create', [WarehousesController::class, 'resource_create'])->name('warehouses.resource.create');
+Route::post('/inventory/resource/purchase_orders/store', [WarehousesController::class, 'resource_store'])->name('warehouses.resource.store');
 
 
 //outputs
