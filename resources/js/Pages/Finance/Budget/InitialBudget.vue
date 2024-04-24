@@ -12,10 +12,10 @@
       </div>
       <div v-else>
         <p class="text-xl font-semibold text-gray-700">
-          Cotización de Anteproyecto: S/. {{ props.project.preproject_quote.toFixed(2) }}
+          Cotización de Anteproyecto: S/. {{ (project.preproject_quote + project.preproject.total_amount_entry).toFixed(2) }}
         </p>
         <p class="text-xl font-semibold text-gray-700">
-          Cotización de Anteproyecto sin Margen: S/. {{ props.project.preproject_quote_no_margin.toFixed(2) }}
+          Cotización de Anteproyecto sin Margen: S/. {{ (project.preproject_quote_no_margin + project.preproject.total_amount_entry_not_margin).toFixed(2) }}
         </p>
         <p class="text-xl font-semibold text-gray-700">
           Presupuesto Inicial: S/. {{ props.project.initial_budget.toFixed(2) }}

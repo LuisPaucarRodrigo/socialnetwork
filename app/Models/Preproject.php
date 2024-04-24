@@ -22,7 +22,9 @@ class Preproject extends Model
         'has_photo_report',
         'is_appropriate',
         'has_quote',
-        'state'
+        'state',
+        'total_amount_entry',
+        'total_amount_entry_not_margin'
     ];
 
     //RELATIONS
@@ -88,5 +90,19 @@ class Preproject extends Model
     public function getHasQuoteAttribute()
     {
         return $this->quote()->first() ? true : false;
+    }
+
+    public function getTotalAmountEntryAttribute()
+    {
+        return $this->preproject_entries()->get()->sum(function($item){
+            return $item->quantity * $item->unitary_price * (1+ $item->margin/100);
+        });
+    }
+
+    public function getTotalAmountEntryNotMarginAttribute()
+    {
+        return $this->preproject_entries()->get()->sum(function($item){
+            return $item->quantity * $item->unitary_price;
+        });
     }
 }

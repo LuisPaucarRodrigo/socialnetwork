@@ -19,14 +19,44 @@ class Entry extends Model
 
     protected $appends = [
         'used_quantity',
-        'currency'
+        'currency',
+        'reserved_quantity',
+        'quantity_available'
     ];
 
+    //CALCULATED
+    public function getQuantityAvailableAttribute()
+    {
+        return $this->quantity - $this->reserved_quantity;
+    }
 
-    //Relations
+    public function getUsedQuantityAttribute()
+    {
+        return $this->reserved_quantity;
+    }
+
+    public function getCurrencyAttribute()
+    {
+        if ($this->purchase_entry) {
+            if ($this->purchase_entry->purchase_quote_product->purchase_quote->currency == 'dolar') {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public function getReservedQuantityAttribute()
+    {
+        return $this->preproject_entries->sum('quantity');
+    }
+
+    //RELATIONS
     public function inventory()
     {
-        return $this->belongsTo(Inventory::class,'inventory_id');
+        return $this->belongsTo(Inventory::class, 'inventory_id');
     }
 
     public function project_entry()
@@ -49,21 +79,8 @@ class Entry extends Model
         return $this->hasOne(RetrievalEntry::class);
     }
 
-    public function getUsedQuantityAttribute()
+    public function preproject_entries()
     {
-        return 0;
-    }
-
-    public function getCurrencyAttribute()
-    {
-        if ($this->purchase_entry){
-            if($this->purchase_entry->purchase_quote_product->purchase_quote->currency == 'dolar'){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
+        return $this->hasMany(PreprojectEntry::class, 'entry_id');
     }
 }
