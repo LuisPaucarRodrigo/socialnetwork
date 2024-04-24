@@ -31,11 +31,6 @@ class Purchasing_request extends Model
     }
 
 
-
-
-
-
-
     public function getStateAttribute()
     {
         if ($this->is_accepted === 0) return 'Rechazada';

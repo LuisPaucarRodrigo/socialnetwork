@@ -48,10 +48,26 @@ class Entry extends Model
         }
     }
 
-    public function getReservedQuantityAttribute()
-    {
-        return $this->preproject_entries->sum('quantity');
+
+
+    public function getReservedQuantityAttribute(){
+        $quantityInPreproject = $this->preproject_entries()->get()->sum('quantity');
+        $quantityInProjects = $this->project_entry()
+                                   ->whereDoesntHave('project_entry_liquidation')
+                                   ->get()
+                                   ->sum('quantity');
+        return $quantityInPreproject + $quantityInProjects;
     }
+
+
+
+
+
+
+
+
+
+
 
     //RELATIONS
     public function inventory()

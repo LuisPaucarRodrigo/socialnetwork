@@ -634,7 +634,6 @@ const fetchCicsaSubSectionsCount7 = async () => {
 const fetchPaymentsAlarm = async () => {
     try {
         const response = await axios.get(route('payment.alarm'));
-        console.log("porque  tu si", response.data.payment3Days)
         paymentAlarms3.value = response.data.payment3Days;
         paymentAlarms7.value = response.data.payment7Days;
     } catch (error) {
@@ -681,7 +680,6 @@ const fetchFinancePurchases = async () => {
 const fetchPurchasesRequest = async () => {
     try {
         const response = await axios.get(route('purchasesrequest.task'));
-        console.log("a ver a hora", response.data.purchasesLessThanThreeDays)
         shoppingPurchases.value = response.data.purchasesLessThanThreeDays;
         shoppingPurchasesTotal.value = response.data.totalPurchasesLessThanThreeDays;
         shoppingPurchases7.value = response.data.purchasesBetweenFourAndSevenDays;
