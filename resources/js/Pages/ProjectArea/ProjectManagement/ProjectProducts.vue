@@ -191,7 +191,7 @@
                                     <option disabled value="">Seleccione uno</option>
                                     <option v-for="item in warehouseInventory" :key="item.id" :value="item.id">
                                         {{ item.inventory.purchase_product.name }} -
-                                        {{ item.quantity }} -
+                                        {{ item.quantity_available }} -
                                         S/ {{ item.unitary_price }}
                                     </option>
                                 </select>
@@ -202,7 +202,7 @@
                         <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                         <div class="mt-2">
                             <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
-                                :max="productFinded ? productFinded.total_available : null"
+                                :max="productFinded ? productFinded.quantity_available : null"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -210,7 +210,7 @@
                     
 
 
-                    <div v-if="enableInput" class="sm:col-span-3">
+                    <!-- <div v-if="enableInput" class="sm:col-span-3">
                         <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio unitario a
                             descontar en
                             Proyecto</InputLabel>
@@ -218,7 +218,7 @@
                             <TextInput id="unitary_price" type="number" min="1" step="0.01" v-model="form.unitary_price"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
@@ -292,6 +292,7 @@ const product_warehouse = async (warehouse) => {
     warehouseProducts.value = []
     warehouseInventory.value = []
     const res = await axios.get(route('projectmanagement.warehouse_products', { project: project_id, warehouse: warehouse }))
+    console.log(res.data.products)
     warehouseProducts.value = res.data.products;
     warehouseProductsfirst.value = warehouseProducts.value[0]?.cpe;
 };
@@ -393,13 +394,13 @@ const updateAssignatedProduct = () => {
 //has different price
 const productFinded = ref(null)
 const enableInput = ref(false)
-// const handleTotalPriceVisibility = () => {
-//     let product = warehouseProducts.value.find((i) => i.id == form.product_id)
-//     productFinded.value = product
-//     enableInput.value = product.has_different_price
-//     if (form.unitary_price) {
-//         form.unitary_price = null
-//     }
-// }
+const handleTotalPriceVisibility = () => {
+    let product = warehouseProducts.value.find((i) => i.id == form.product_id)
+    productFinded.value = product
+    enableInput.value = product.has_different_price
+    if (form.unitary_price) {
+        form.unitary_price = null
+    }
+}
 
 </script>

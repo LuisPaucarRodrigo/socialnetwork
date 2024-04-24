@@ -372,7 +372,9 @@ class ProjectManagementController extends Controller
     {
         if ($warehouse->category === 'Especial') {
             $project->load('preproject');
-            $products = SpecialInventory::with('purchase_product')->where('warehouse_id', $warehouse->id)->where('cpe', $project->preproject->cpe)->get();
+            $products = SpecialInventory::with('purchase_product')
+                            ->where('warehouse_id', $warehouse->id)
+                            ->where('cpe', $project->preproject->cpe)->get();
             return response()->json(['products' => $products]);
         } else {
             $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse->id)->get();
@@ -382,7 +384,11 @@ class ProjectManagementController extends Controller
 
     public function inventory_products(Inventory $inventory)
     {
-        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')->where('inventory_id', $inventory->id)->get();
+        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')->where('inventory_id', $inventory->id)->get()
+        ->filter(function($item){
+            return $item->quantity_available > 0;
+        })->values()->all();
+
         return response()->json(['inventory' => $inventory]);
     }
 
