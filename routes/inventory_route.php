@@ -2,21 +2,10 @@
 
 use App\Http\Controllers\Inventory\ProductController;
 use App\Http\Controllers\Inventory\PurchaseProductsController;
-use App\Http\Controllers\Inventory\ResourceManagementController;
 use App\Http\Controllers\Inventory\SpecialWarehouseController;
 use App\Http\Controllers\Inventory\WarehousesController;
 use Illuminate\Support\Facades\Route;
 
-//Resources
-Route::get('/resources', [ResourceManagementController::class, 'index'])->name('resources.index');
-Route::get('/resources/new', [ResourceManagementController::class, 'new'])->name('resources.new');
-Route::get('/resources/details/{id}', [ResourceManagementController::class, 'details'])->name('resources.details');
-Route::post('/resources/create', [ResourceManagementController::class, 'create'])->name('resource.create');
-Route::get('/resources/edit/{resourceId}', [ResourceManagementController::class, 'edit'])->name('resources.edit');
-Route::put('/resources/edit/{resourceId}', [ResourceManagementController::class, 'update'])->name('resource.update');
-Route::delete('/resources/delete/{resourceId}', [ResourceManagementController::class, 'destroy'])->name('resource.delete');
-
-Route::post('resource_description/store', [ResourceManagementController::class, 'resource_description_store'])->name('resource_description.store');
 //warehouses
 Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');
 Route::get('/inventory/warehouses/{warehouse}', [WarehousesController::class, 'showWarehouse'])->name('warehouses.warehouse');
@@ -48,7 +37,7 @@ Route::post('/inventory/resource/purchase_orders/store', [WarehousesController::
 
 //outputs
 Route::get('/inventory/warehouses/{warehouse}/outputs', [ProductController::class, 'outputs_index'])->name('warehouses.outputs');
-Route::post('/inventory/warehouses//outputs/store', [ProductController::class, 'outputs_store'])->name('projectmanagement.outputs.store');
+Route::post('/inventory/warehouses/outputs/store', [ProductController::class, 'outputs_store'])->name('projectmanagement.outputs.store');
 Route::get('/inventory/warehouses/{warehouse}/outputs_history', [ProductController::class, 'outputs_history_index'])->name('warehouses.outputs_history');
 Route::delete('/inventory/warehouses/output_delete/{output}', [ProductController::class, 'output_delete'])->name('warehouses.output_delete');
 
