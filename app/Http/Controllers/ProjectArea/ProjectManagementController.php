@@ -17,6 +17,7 @@ use App\Models\Resource;
 use App\Models\ProjectResource;
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
+use App\Models\PreprojectEntry;
 use App\Models\ResourceHistorial;
 use App\Models\Warehouse;
 use App\Models\Preproject;
@@ -278,7 +279,7 @@ class ProjectManagementController extends Controller
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
         $additionalCosts = $project_id->additionalCosts->sum('amount');
-        
+
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'project' => $project_id,
