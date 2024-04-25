@@ -176,6 +176,8 @@ const props = defineProps({
   budgetUpdates: Object
 });
 
+console.log(props.project);
+
 const isModalOpen2 = ref(false);
 
 const form2 = useForm({
