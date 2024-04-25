@@ -12,7 +12,6 @@ use App\Models\Purchase_product;
 use App\Models\Purchasing_requests_product;
 use App\Models\Purchasing_request;
 use App\Models\Provider;
-use App\Models\Purchase_order;
 use App\Models\Purchase_quote;
 use App\Models\ResourceType;
 use App\Models\RetrievalEntry;
@@ -20,7 +19,6 @@ use App\Models\SpecialInventory;
 use App\Models\TypeProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Providers\GlobalFunctionsServiceProvider;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
@@ -120,7 +118,8 @@ class PurchaseRequestController extends Controller
     }
 
 
-    public function quote(CreatePurchaseQuoteRequest $request) {
+    public function quote(CreatePurchaseQuoteRequest $request)
+    {
         $data = $request->validated();
         if ($request->hasFile('purchase_doc')) {
             $croppedImage = $request->file('purchase_doc');
@@ -136,7 +135,7 @@ class PurchaseRequestController extends Controller
         return redirect()->back();
     }
 
-    
+
 
     public function showDocument(Purchase_quote $id)
     {
@@ -161,19 +160,15 @@ class PurchaseRequestController extends Controller
         $filteredPurchasesLessThanThreeDays = $purchasesLessThanThreeDays->filter(function ($purchase) {
             return $purchase->state !== 'Completada';
         });
-        $totalPurchasesLessThanThreeDays = $filteredPurchasesLessThanThreeDays->count();
         $purchasesBetweenFourAndSevenDays = Purchasing_request::where('due_date', '>=', $currentDate->copy()->addDays(4))
             ->where('due_date', '<=', $currentDate->copy()->addDays(7))
             ->get();
         $filteredPurchasesBetweenFourAndSevenDays = $purchasesBetweenFourAndSevenDays->filter(function ($purchase) {
             return $purchase->state !== 'Completada';
         });
-        $totalPurchasesBetweenFourAndSevenDays = $filteredPurchasesBetweenFourAndSevenDays->count();
         return response()->json([
             'purchasesLessThanThreeDays' => $filteredPurchasesLessThanThreeDays,
-            'totalPurchasesLessThanThreeDays' => $totalPurchasesLessThanThreeDays,
             'purchasesBetweenFourAndSevenDays' => $filteredPurchasesBetweenFourAndSevenDays,
-            'totalPurchasesBetweenFourAndSevenDays' => $totalPurchasesBetweenFourAndSevenDays,
         ]);
     }
 

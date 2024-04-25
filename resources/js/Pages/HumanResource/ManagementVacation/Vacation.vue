@@ -9,19 +9,15 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex items-center justify-between gap-4 mb-4">
-                <button type="button" @click="add_information"
-                    class="rounded-md bg-indigo-600 px-3 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                <PrimaryButton type="button" @click="add_information">
                     + Agregar
-                </button>
+                </PrimaryButton>
                 <div class="flex items-center gap-x-3">
-                    <button @click="review" type="button"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    <PrimaryButton @click="review" type="button">
                         {{ boolean == true ? "Sin Revisar" : "Revisados" }}
-                    </button>
+                    </PrimaryButton>
                     <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                        <input type="text" placeholder="Buscar..."
-                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            v-model="searchForm.searchTerm" />
+                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
                         <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -215,22 +211,21 @@
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
                             <div>
-                                <InputLabel for="coment" class="font-medium leading-6 text-gray-900">Ingrese la razón o
+                                <InputLabel for="coment">Ingrese la razón o
                                     motivo
                                     por el cual el trabajador no cumplio con lo acordado
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="form.coment" id="coment"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="text" v-model="form.coment" id="coment" />
                                     <InputError :message="form.errors.coment" />
                                 </div>
                             </div>
                             <div class="mt-6 flex items-center justify-end gap-x-6">
                                 <SecondaryButton @click="closeModalAbsent"> Cancelar
                                 </SecondaryButton>
-                                <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Guardar</button>
+                                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                                    Guardar
+                                </PrimaryButton>
                             </div>
                         </div>
                     </div>
@@ -254,6 +249,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     vacations: Object,

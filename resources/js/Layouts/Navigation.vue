@@ -20,8 +20,8 @@
                         </path>
                     </svg>
                 </template>
-                Usuarios
-            </nav-link> -->
+Usuarios
+</nav-link> -->
             <template v-if="hasPermission('UserManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingUsersAndRols = !showingUsersAndRols">
@@ -225,7 +225,7 @@
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingShoppingArea = !showingShoppingArea">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        :stroke="purchaseOrdersAlarms.length + shoppingPurchasesTotal + shoppingPurchasesTotal7 +
+                        :stroke="purchaseOrdersAlarms.length + shoppingPurchases.length + shoppingPurchases7.length +
                         paymentAlarms3.length + paymentAlarms7.length > 0 ? 'red' : 'currentColor'"
                         class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -240,9 +240,9 @@
                 <MyTransition :transitiondemonstration="showingShoppingArea">
                     <div class="relative">
                         <button @click="tooglePurchaseRequest"><span
-                                v-if="shoppingPurchasesTotal + shoppingPurchasesTotal7 > 0"
+                                v-if="shoppingPurchases.length + shoppingPurchases7.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
-                                {{ shoppingPurchasesTotal + shoppingPurchasesTotal7 }}</span>
+                                {{ shoppingPurchases.length + shoppingPurchases7.length }}</span>
                         </button>
                         <Link class="w-full" :href="route('purchasesrequest.index')">Solicitudes</Link>
                     </div>
@@ -431,7 +431,7 @@
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingFinance = !showingFinance">
-                    <svg v-if="financePurchasesTotal + financePurchasesTotal7 > 0" xmlns="http://www.w3.org/2000/svg"
+                    <svg v-if="financePurchases.length + financePurchases7.length > 0" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -444,19 +444,15 @@
 
                     <span class="mx-3">Finanzas</span>
                 </a>
-                
-                <MyTransition :transitiondemonstration="showingFinance">
-                    <Link class="w-full" :href="route('gangexpense.index')">Gastos</Link>
-                </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('selectproject.index')">Presupuestos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingFinance">
                     <div class="relative">
                         <button @click="tooglePurchaseQuote"><span
-                                v-if="financePurchasesTotal + financePurchasesTotal7 > 0"
+                                v-if="financePurchases.length + financePurchases7.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
-                                {{ financePurchasesTotal + financePurchasesTotal7 }}</span>
+                                {{ financePurchases.length + financePurchases7.length }}</span>
                         </button>
                         <Link class="w-full" :href="route('managementexpense.index')">Aprobacion de Compras</Link>
                     </div>
@@ -522,7 +518,6 @@ import { Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-// Variables reactivas
 const permissionsPorVencer = ref([]);
 const vacationPorVencer3 = ref([]);
 const vacationPorVencer7 = ref([]);
@@ -540,13 +535,9 @@ const paymentAlarms3 = ref([]);
 const paymentAlarms7 = ref([]);
 const formationProgramsAlarms = ref([]);
 
-const financePurchasesTotal = ref(0);
-const financePurchasesTotal7 = ref(0);
 const financePurchases = ref([]);
 const financePurchases7 = ref([]);
 
-const shoppingPurchasesTotal = ref(0);
-const shoppingPurchasesTotal7 = ref(0);
 const shoppingPurchases = ref([]);
 const shoppingPurchases7 = ref([]);
 
@@ -668,9 +659,7 @@ const fetchFinancePurchases = async () => {
     try {
         const response = await axios.get(route('finance.task'));
         financePurchases.value = response.data.purchasesLessThanThreeDays;
-        financePurchasesTotal.value = response.data.totalPurchasesLessThanThreeDays;
         financePurchases7.value = response.data.purchasesBetweenFourAndSevenDays;
-        financePurchasesTotal7.value = response.data.totalPurchasesBetweenFourAndSevenDays;
     } catch (error) {
         console.error('Error al obtener el contador de subsecciones:', error);
     }
@@ -679,10 +668,8 @@ const fetchFinancePurchases = async () => {
 const fetchPurchasesRequest = async () => {
     try {
         const response = await axios.get(route('purchasesrequest.task'));
-        shoppingPurchases.value = response.data.purchasesLessThanThreeDays;
-        shoppingPurchasesTotal.value = response.data.totalPurchasesLessThanThreeDays;
-        shoppingPurchases7.value = response.data.purchasesBetweenFourAndSevenDays;
-        shoppingPurchasesTotal7.value = response.data.totalPurchasesBetweenFourAndSevenDays;
+        shoppingPurchases.value = Object.values(response.data.purchasesLessThanThreeDays);
+        shoppingPurchases7.value = Object.values(response.data.purchasesBetweenFourAndSevenDays);
     } catch (error) {
         console.error('Error al obtener el contador de subsecciones:', error);
     }
@@ -715,7 +702,6 @@ const tooglePurchaseRequest = () => {
     showShoppingPurchaseRequestAlarms.value = !showShoppingPurchaseRequestAlarms.value;
 };
 
-// Métodos para la inicialización
 onMounted(() => {
     fetchAlarmPermissionsCount();
     fetchAlarmVacationCount();

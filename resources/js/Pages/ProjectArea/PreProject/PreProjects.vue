@@ -128,7 +128,10 @@ const preprojects = ref(props.preprojects)
 const delete_project = () => {
     const projectId = projectToDelete.value;
     router.delete(route('preprojects.destroy', { preproject: projectId }), {
-        onSuccess: () => closeModal()
+        onSuccess: () => {
+            closeModal();
+            router.visit(route('preprojects.index'));
+        }
     });
 }
 
