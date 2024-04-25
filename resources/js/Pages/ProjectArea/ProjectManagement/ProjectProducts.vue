@@ -31,6 +31,10 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Producto
                             </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Precio Unitario
+                            </th>
                             
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -150,9 +154,10 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <div class="flex justify-start items-center">
-                            <InputLabel for="product_id" class="font-medium leading-6 text-gray-900 mr-auto">Producto
-                            </InputLabel>
+                        <div class="flex justify-between items-center">            
+                                <InputLabel for="product_id" class="font-medium leading-6 text-gray-900 mr-auto">Producto
+                                </InputLabel>
+                                <InputLabel class="font-medium leading-6 text-gray-900" v-if="form.special_inventory_id">{{ warehouseProducts?.find(i=>i.id === form.special_inventory_id)?.quantity }}</InputLabel>
                         </div>
                         <div class="mt-2" v-if="warehouseProductsfirst">
                             <select required id="product_id" v-model="form.special_inventory_id"
