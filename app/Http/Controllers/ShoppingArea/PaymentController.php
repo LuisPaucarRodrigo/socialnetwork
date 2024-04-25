@@ -7,7 +7,6 @@ use App\Http\Requests\PaymentRequest\UpdatePaymentRequest;
 use App\Models\Payment;
 use App\Models\Purchase_quote;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PaymentController extends Controller

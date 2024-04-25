@@ -1,30 +1,26 @@
 <template>
-  <div>
     <Head title="Gestion de Apartados" />
     <AuthenticatedLayout :redirectRoute="'sections.subSections'">
       <template #header>
         Gestión de Apartados
       </template>
       <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-        <button @click="openCreateSectionModal"
-          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+        <PrimaryButton @click="openCreateSectionModal">
           Crear Nuevo Apartado
-        </button>
+        </PrimaryButton>
         <div class="overflow-x-auto mt-5">
-          <table class="min-w-full divide-y divide-gray-200">
+          <table class="min-w-full whitespace-no-wrap">
             <thead>
-              <tr>
-                <th scope="col"
-                  class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                   Nombre
                 </th>
-                <th scope="col"
-                  class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody>
               <tr v-for="section in sections" :key="section.id">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm font-medium text-gray-900">{{ section.name }}</div>
@@ -51,18 +47,18 @@
             <div class="space-y-12">
               <div class="border-b border-gray-900/10 pb-12">
                 <div>
-                  <InputLabel for="name" class="font-medium leading-6 text-gray-900">Agregar nuevo apartado:
+                  <InputLabel for="name">Agregar nuevo apartado:
                   </InputLabel>
                   <div class="mt-2">
-                    <TextInput type="text" v-model="form.name" id="name" autocomplete="address-level1"
-                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <TextInput type="text" v-model="form.name" id="name" autocomplete="address-level1" />
                     <InputError :message="form.errors.name" />
                   </div>
                 </div>
                 <div class="mt-6 flex items-center justify-end gap-x-6">
                   <SecondaryButton @click="closeCreateSectionModal"> Cancel </SecondaryButton>
-                  <button type="submit" :class="{ 'opacity-25': form.processing }"
-                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                  <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                    Guardar
+                  </PrimaryButton>
                 </div>
               </div>
             </div>
@@ -73,9 +69,8 @@
       <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="seccion" :deleteFunction="deleteSection"
         @closeModal="closeModalSection" />
     </AuthenticatedLayout>
-  </div>
 </template>
-    
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -88,6 +83,8 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+
 
 const showModal = ref(false);
 
@@ -148,4 +145,3 @@ const deleteSection = async () => {
 };
 
 </script>
-    
