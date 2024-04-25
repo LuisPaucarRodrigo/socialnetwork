@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Warehouse;
-use App\Models\WarehousesHeader;
-use App\Models\Header;
 use App\Models\Purchase_order;
 use App\Models\Inventory;
 use App\Models\Entry;
@@ -27,13 +25,9 @@ class WarehousesController extends Controller
     {
         $special_warehouses = Warehouse::where('category', 'Especial')->get();
         $warehouses = Warehouse::where('category', 'Normal')->get();
-        $headers = Header::all();
-        $warehouse_headers = WarehousesHeader::with('header')->get();
         return Inertia::render('Inventory/WarehouseManagement/Warehouses', [
             'warehouses' => $warehouses,
             'special_warehouses' => $special_warehouses,
-            'headers' => $headers,
-            'warehouse_headers' => $warehouse_headers,
         ]);
     }
 
