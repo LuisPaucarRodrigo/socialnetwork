@@ -102,7 +102,7 @@ class WarehousesController extends Controller
             'purchase_order_id' => 'required|numeric'
         ]);
 
-        $purchase_order = Purchase_order::with('purchase_quote.purchase_quote_products.purchase_product')->find($request->purchase_order_id);
+        $purchase_order = Purchase_order::with('purchase_quote.purchase_quote_products.purchase_product', 'purchase_quote.purchasing_requests')->find($request->purchase_order_id);
         $warehouse = Warehouse::with('inventory')->find($warehouse->id);
         $today = Carbon::now();
 
@@ -128,6 +128,13 @@ class WarehousesController extends Controller
                     'entry_id' => $entry->id,
                     'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                 ]);
+
+                ProjectEntry::create([
+                    'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                    'entry_id' => $entry->id,
+                    'quantity' => $entry->quantity,
+                    'unitary_price' => $entry->unitary_price,
+                ]);
             }
         } else {
             // Si hay registros de inventario, procede con la lógica existente
@@ -150,6 +157,14 @@ class WarehousesController extends Controller
                         'entry_id' => $entry->id,
                         'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
+
+                    ProjectEntry::create([
+                        'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                        'entry_id' => $entry->id,
+                        'quantity' => $entry->quantity,
+                        'unitary_price' => $entry->unitary_price,
+                    ]);
+
                 } else {
                     // Si no se encuentra un inventario existente, crear uno nuevo y luego un entry y un purchase_entry asociados a ese inventario
                     $inventory = Inventory::create([
@@ -169,6 +184,13 @@ class WarehousesController extends Controller
                     PurchasesEntry::create([
                         'entry_id' => $entry->id,
                         'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
+                    ]);
+
+                    ProjectEntry::create([
+                        'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                        'entry_id' => $entry->id,
+                        'quantity' => $entry->quantity,
+                        'unitary_price' => $entry->unitary_price,
                     ]);
                 }
             }
