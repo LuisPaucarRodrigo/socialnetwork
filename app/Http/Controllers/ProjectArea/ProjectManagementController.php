@@ -5,16 +5,12 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Models\ComponentOrMaterial;
-use App\Models\NetworkEquipment;
 use App\Models\Employee;
-use App\Models\PreprojectEntry;
-use App\Models\Product;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
 use App\Models\Entry;
 use App\Models\Inventory;
 use App\Models\ProjectComponentOrMaterial;
-use App\Models\ProjectNetworkEquipment;
 use App\Models\ProjectProduct;
 use App\Models\ProjectResourceLiquidate;
 use App\Models\Resource;
@@ -24,15 +20,13 @@ use App\Models\Purchase_quote;
 use App\Models\ResourceHistorial;
 use App\Models\Warehouse;
 use App\Models\Preproject;
+use App\Models\PreprojectQuoteService;
 use App\Models\ProjectEntry;
 use App\Models\SpecialInventory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-
-use function Pest\Laravel\json;
 
 class ProjectManagementController extends Controller
 {
@@ -130,7 +124,8 @@ class ProjectManagementController extends Controller
 
     public function project_resources($project_id)
     {
-        $project = Project::with(['project_resources.resource', 'resource_historials.resource'])->find($project_id);
+        $project = Project::with(['project_resources.resource', 'resource_historials.resource', 'preproject.quote.preproject_quote_services.resource_entry',
+        'preproject.quote.preproject_quote_services.service'])->find($project_id);
         $resources = Resource::all();
         $resourcesDisponibles = $resources->filter(function ($resource) {
             return $resource->state === 'Disponible';
@@ -287,26 +282,9 @@ class ProjectManagementController extends Controller
             ->orderByDesc('id')
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
-        $expenses = Purchasing_request::with([
-            'purchase_quotes' => function ($query) {
-                $query->whereHas('purchase_order', function ($subQuery) {
-                    $subQuery->where('state', 'Completada');
-                })->with('purchase_order');
-            }
-        ])
-            ->where([
-                ['project_id', $project_id->id],
-                ['is_accepted', 1],
-            ])
-            ->whereHas('purchase_quotes.purchase_order', function ($query) {
-                $query->where('state', 'Completada');
-            });
-        $total_expenses = $expenses->get()->sum(function ($expense) {
-            return $expense->purchase_quotes[0]['amount'];
-        });
 
-        $total_expenses += $project_id->additionalCosts->sum('amount');
         $additionalCosts = $project_id->additionalCosts->sum('amount');
+        
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'project' => $project_id,

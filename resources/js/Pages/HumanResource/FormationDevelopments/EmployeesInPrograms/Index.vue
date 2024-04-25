@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Empleados en programas" />
 
     <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
@@ -43,8 +44,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(item, i) in employees.data" :key="item.id"
-                            class="text-gray-700 hover:bg-gray-200 bg-white"
-                            >
+                            class="text-gray-700 hover:bg-gray-200 bg-white">
                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
                             </td>
@@ -64,19 +64,18 @@
                                 <div v-for="ap in item.assignated_programs"
                                     class="lg:w-full w-[600px] grid grid-cols-3 gap-3 items-center hover:bg-gray-300 py-2 px-5"
                                     :class="[
-                                        {
-                                            'border-l-8': true,
-                                            'border-yellow-500': ap.urgent_state === 'medium',
-                                            'border-red-500': ap.urgent_state === 'high',
-                                        }
-                                    ]"
-                                    >
+        {
+            'border-l-8': true,
+            'border-yellow-500': ap.urgent_state === 'medium',
+            'border-red-500': ap.urgent_state === 'high',
+        }
+    ]">
                                     <p class="text-left">{{ ap.formation_program.name }}</p>
                                     <p class="text-center whitespace-nowrap">{{ formattedDate(ap.start_date) }} -
                                         {{ formattedDate(ap.end_date) }}
                                     </p>
                                     <div v-if="ap.state === null" class="text-center flex gap-3 justify-center ">
-                                        <button  @click="UpdateToCompleted(ap.id)"
+                                        <button @click="UpdateToCompleted(ap.id)"
                                             class="flex items-center text-blue-500 rounded-xl hover:bg-green-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
@@ -84,7 +83,7 @@
                                                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                         </button>
-                                        <button  @click="openNotCompletedModal(ap.id)" type="button"
+                                        <button @click="openNotCompletedModal(ap.id)" type="button"
                                             class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -123,21 +122,17 @@
                         Ingrese la razón o motivo por el cual el trabajador no cumplió el programa
                     </InputLabel>
                     <div class="mt-3">
-                        <textarea type="text" v-model="form.reason" id="reason" 
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" >
-                        </textarea>
+                        <textarea type="text" v-model="form.reason" id="reason"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </textarea>
                         <InputError :message="form.errors.reason" />
                     </div>
 
                     <div class="mt-6 flex justify-end">
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
-                            type="button" @click="closeModal()"> Cancelar
-                        </button>
-                        <button
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                            type="button" @click="UpdateToNotCompleted()"> Guardar
-                        </button>
+                        <SecondaryButton type="button" @click="closeModal()"> Cancelar
+                        </SecondaryButton>
+                        <PrimaryButton type="button" @click="UpdateToNotCompleted()"> Guardar
+                        </PrimaryButton>
                     </div>
                 </div>
             </Modal>
@@ -152,16 +147,11 @@
                     </p>
 
                     <div class="mt-6 flex justify-end">
-                        <PrimaryButton
-                            class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
-                            type="button" @click="closeModal2()"> Cerrar
+                        <PrimaryButton type="button" @click="closeModal2()"> Cerrar
                         </PrimaryButton>
                     </div>
                 </div>
             </Modal>
-
-
-
         </div>
     </AuthenticatedLayout>
 </template>
@@ -177,6 +167,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { formattedDate } from '@/utils/utils.js';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const { employees } = defineProps({
     employees: Object
@@ -185,8 +176,8 @@ const { employees } = defineProps({
 const showNotCompletedModal = ref(false)
 const apNotCompleted = ref(null)
 const form = useForm({
-    state:null,
-    reason:''
+    state: null,
+    reason: ''
 })
 
 const openNotCompletedModal = (id) => {
@@ -198,7 +189,7 @@ const closeModal = () => {
     showNotCompletedModal.value = false
     form.reset()
 }
-function updateHelper (form, id) {
+function updateHelper(form, id) {
     form.post(route('management.employees.formation_development.employees_in_programs.update', {
         efp_id: id
     }), {
@@ -223,7 +214,7 @@ const openReasonModal = (reason) => {
     currentReason.value = reason
 }
 
-const closeModal2  = () => {
+const closeModal2 = () => {
     showReason.value = false
     currentReason.value = ''
 }

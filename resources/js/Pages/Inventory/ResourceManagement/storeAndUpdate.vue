@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'resources.index'">
         <template #header>
@@ -7,11 +8,12 @@
         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div class="sm:col-span-3">
                 <div class="flex items-center gap-2">
-                    <label for="resource_description_id" class="block text-sm font-medium text-gray-700">Descripcion</label>
-                    <button v-if="auth.user.role_id === 1"  @click="()=>{
-                        showModal = true
-                        section = 1
-                    }">
+                    <label for="resource_description_id"
+                        class="block text-sm font-medium text-gray-700">Descripcion</label>
+                    <button v-if="auth.user.role_id === 1" @click="() => {
+        showModal = true
+        section = 1
+    }">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6 text-indigo-500">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -32,10 +34,10 @@
             <div class="sm:col-span-3">
                 <div class="flex items-center gap-2">
                     <label for="resource_category_id" class="block text-sm font-medium text-gray-700">Categoria</label>
-                    <button v-if="auth.user.role_id === 1"  @click="()=>{
-                        showModal = true
-                        section = 2
-                    }">
+                    <button v-if="auth.user.role_id === 1" @click="() => {
+        showModal = true
+        section = 2
+    }">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6 text-indigo-500">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -114,7 +116,8 @@
             </div>
             <!-- Descricion (text-Area) -->
             <div v-if="!resource" class="sm:col-span-2 sm:col-start-1">
-                <label for="conditional_rent" class="block text-sm font-medium text-gray-700">Si tiene un precio especial
+                <label for="conditional_rent" class="block text-sm font-medium text-gray-700">Si tiene un precio
+                    especial
                     para
                     alquiler</label>
                 <input type="checkbox" id="conditional_rent" v-model="newResource.conditional_rent"
@@ -140,7 +143,7 @@
         <Modal :show="showModal">
             <form class="p-6" @submit.prevent="submit">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Nueva {{ section === 1 ? 'descripción' : section===2&&'categoría' }}
+                    Nueva {{ section === 1 ? 'descripción' : section === 2 && 'categoría' }}
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
 
@@ -159,7 +162,7 @@
                 </div>
             </form>
         </Modal>
-        <SuccessOperationModal :confirming="addDescriptionSuccess" title="" message=""/>
+        <SuccessOperationModal :confirming="addDescriptionSuccess" title="" message="" />
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -182,7 +185,7 @@ const props = defineProps({
     resource: Object,
     descriptions: Object,
     types: Object,
-    auth:Object
+    auth: Object
 })
 
 const newResource = useForm({
@@ -261,18 +264,18 @@ const closeAddModal = () => {
 }
 
 const form = useForm({
-    name:''
+    name: ''
 })
 
 const submit = () => {
     let url
     if (section.value === 1) url = route('resource_description.store')
     if (section.value === 2) url = route('resource_category.store')
-    form.post(url,{
-        onSuccess:() => {
+    form.post(url, {
+        onSuccess: () => {
             closeAddModal()
             addDescriptionSuccess.value = true
-            setTimeout(()=>{
+            setTimeout(() => {
                 addDescriptionSuccess.value = false
             }, 600)
             form.reset()
