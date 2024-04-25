@@ -90,12 +90,12 @@
 
         </div>
         <div v-if="vacation" class="mt-6 flex items-center justify-end gap-x-6">
-            <button @click="sendStatus(vacation.id, 'Aceptado')"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Aceptar</button>
-            <button @click="sendStatus(vacation.id,'Rechazado')"
-                class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Rechazar</button>
+            <DangerButton @click="sendStatus(vacation.id, 'Rechazado')">
+                Rechazar
+            </DangerButton>
+            <PrimaryButton @click="sendStatus(vacation.id, 'Aceptado')">
+                Aceptar
+            </PrimaryButton>
         </div>
     </AuthenticatedLayout>
 </template>
@@ -104,6 +104,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
+
 
 const props = defineProps({
     details: Object,

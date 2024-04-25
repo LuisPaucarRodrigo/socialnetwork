@@ -90,9 +90,6 @@ class ExpenseManagementController extends Controller
             ->with('purchasing_requests')
             ->get();
 
-
-        $totalPurchasesLessThanThreeDays = $purchasesLessThanThreeDays->count();
-
         // Obtener todos los Purchase_quote dentro del rango de 4 a 7 días y cuyo estado sea 0 o nulo
         $purchasesBetweenFourAndSevenDays = Purchase_quote::where('quote_deadline', '>=', $currentDate->copy()->addDays(3))
             ->where('quote_deadline', '<=', $currentDate->copy()->addDays(7))
@@ -103,13 +100,9 @@ class ExpenseManagementController extends Controller
             ->with('purchasing_requests')
             ->get();
 
-        $totalPurchasesBetweenFourAndSevenDays = $purchasesBetweenFourAndSevenDays->count();
-
         return response()->json([
             'purchasesLessThanThreeDays' => $purchasesLessThanThreeDays,
-            'totalPurchasesLessThanThreeDays' => $totalPurchasesLessThanThreeDays,
-            'purchasesBetweenFourAndSevenDays' => $purchasesBetweenFourAndSevenDays,
-            'totalPurchasesBetweenFourAndSevenDays' => $totalPurchasesBetweenFourAndSevenDays,
+            'purchasesBetweenFourAndSevenDays' => $purchasesBetweenFourAndSevenDays
         ]);
     }
 

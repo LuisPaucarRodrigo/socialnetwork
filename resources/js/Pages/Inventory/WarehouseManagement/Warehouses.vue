@@ -152,8 +152,6 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 const props = defineProps({
   warehouses: Object,
   special_warehouses: Object,
-  headers: Object,
-  warehouse_headers: Object,
   auth: Object
 });
 
