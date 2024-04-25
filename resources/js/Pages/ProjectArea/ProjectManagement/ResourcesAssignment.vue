@@ -5,7 +5,7 @@
         <template #header>
             Servicios
         </template>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-1 gap-4">
             <div class="p-3 lg:col-span-1 rounded-lg shadow">
                 <div class="sm:col-span-3">
                     <div class="mt-7">
