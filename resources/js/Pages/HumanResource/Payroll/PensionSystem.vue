@@ -29,13 +29,11 @@
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <TextInput type="text" id="values" :value="pension.values" :disabled="pension.type == 'ONP'"
-                                @change="handleInputChange(pension.id, $event)"
-                                class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500" />
+                                @change="handleInputChange(pension.id, $event)" />
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <TextInput type="text" id="values" :value="pension.values_seg" :disabled="pension.type == 'ONP'"
-                                @change="handleInputChangeSeg(pension.id, $event)"
-                                class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500" />
+                                @change="handleInputChangeSeg(pension.id, $event)" />
                         </td>
                     </tr>
                 </tbody>
