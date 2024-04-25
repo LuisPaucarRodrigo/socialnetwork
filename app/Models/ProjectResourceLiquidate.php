@@ -16,7 +16,4 @@ class ProjectResourceLiquidate extends Model
         "observations",
     ];
 
-    public function project_resource() {
-        return $this->belongsTo(ProjectResource::class, "project_resource_id");
-    }
 }

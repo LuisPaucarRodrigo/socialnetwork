@@ -157,7 +157,6 @@ const form = useForm(
 const successAsignation = ref(false)
 
 const returned_showModal = ref(false)
-const resource_project_id = ref(null)
 const returned_initialState = {
     quantity: '',
     observation: '',
@@ -171,17 +170,6 @@ const returned_closeModal = () => {
 };
 const successReturn = ref(false)
 
-const returned_submit = () => {
-    form_to_returned.post(route('projectmanagement.resources.return', { id: resource_project_id.value }), {
-        onSuccess: () => {
-            form_to_returned.reset();
-            successReturn.value = true
-            setTimeout(() => {
-                successReturn.value = false
-            }, 1500)
-        }
-    })
-}
 
 // --------------------------liquidation process-------------------------- //
 
