@@ -21,13 +21,18 @@ class AdditionalCostsController extends Controller
 
     public function store(Project $project_id, Request $request)
     {
+        $remaining_budget = $project_id->remaining_budget;
+        
         $request->validate([
             'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GEP',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => 'required|string',
             'doc_date' => 'required|date',
-            'amount' => 'required|numeric',
+            'amount' => ['required', 'numeric', function($attribute, $value, $fail) use ($request, $remaining_budget){
+                if($value > $remaining_budget){
+                    $fail(__('El monto del gasto excede el presupuesto restante. S/. ' . number_format($remaining_budget, 2)));
+            }}],
             'description' => 'required|string',
         ]);
 

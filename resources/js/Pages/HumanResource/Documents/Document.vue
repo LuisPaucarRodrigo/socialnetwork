@@ -8,14 +8,14 @@
     <div class="flex gap-4 justify-between rounded-lg shadow">
       <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
         <div class="flex gap-4 items-center">
-          <button @click="openCreateDocumentModal" type="button"
+          <PrimaryButton @click="openCreateDocumentModal" type="button"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             + Agregar Documento
-          </button>
-          <button @click="management_section" type="button"
+          </PrimaryButton>
+          <PrimaryButton @click="management_section" type="button"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             Gestionar Secciones
-          </button>
+          </PrimaryButton>
 
           <div class="sm:hidden">
             <dropdown align='left'>
@@ -33,7 +33,7 @@
                 <div> <!-- Alineación a la derecha -->
                   <div class="dropdown">
                     <div class="dropdown-menu">
-                      <button  @click="openCreateDocumentModal" type="button"
+                      <button @click="openCreateDocumentModal" type="button"
                         class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                         + Agregar Documento
                       </button>
@@ -44,23 +44,16 @@
                       <button @click="management_section" type="button"
                         class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                         Gestionar Secciones
-                    </button>
+                      </button>
                     </div>
                   </div>
                 </div>
               </template>
             </dropdown>
           </div>
-
-
-
-
-
           <div class="flex sm:hidden items-center ml-auto sm:ml-0">
             <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-              <input type="text" placeholder="Buscar..."
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                v-model="searchForm.searchTerm" />
+              <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
               <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                 class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,8 +65,9 @@
             </form>
           </div>
         </div>
-        <div class="flex sm:flex-row flex-col sm:items-center">
-          <label for="selectElement" class="mr-2 text-sm text-indigo-600">Sección:</label>
+          
+        <div class="flex sm:space-x-3  sm:flex-row flex-col sm:items-center">
+          <InputLabel for="selectElement">Sección:</InputLabel>
           <select v-model="selectedSection" id="selectElement"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
             <option value="">Todos</option>
@@ -83,7 +77,7 @@
           </select>
 
           <!-- Nuevo filtro para subdivisiones -->
-          <label for="selectSubdivision" class="mr-2 text-sm text-indigo-600 sm:ml-3">Subdivisión:</label>
+          <InputLabel for="selectSubdivision">Subdivisión:</InputLabel>
           <select v-model="selectedSubdivision" id="selectSubdivision"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
             <option value="">Todas</option>
@@ -92,18 +86,11 @@
             </option>
           </select>
         </div>
-
-
-
-
-
       </div>
 
       <div class="hidden sm:flex sm:items-center">
         <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-          <input type="text" placeholder="Buscar..."
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            v-model="searchForm.searchTerm" />
+          <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
           <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -146,48 +133,46 @@
           {{ create_document ? 'Subir Documento' : 'Actualizar Documento' }}
         </h2>
         <form @submit.prevent="create_document ? submit() : submitEdit()">
-          <div class="space-y-12">
-            <div class="border-b border-gray-900/10 pb-12">
-              <div>
-                <InputLabel for="documentFile" class="font-medium leading-6 text-gray-900">Documento</InputLabel>
-                <div class="mt-2">
-                  <InputFile type="file" v-model="form.document" id="documentFile"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <InputError :message="form.errors.document" />
-                </div>
+          <div class="border-b border-gray-900/10 pb-12">
+            <div class="mt-2">
+              <InputLabel for="documentFile">Documento</InputLabel>
+              <div class="mt-2">
+                <InputFile type="file" v-model="form.document" id="documentFile" />
+                <InputError :message="form.errors.document" />
               </div>
-              <div>
-                <InputLabel for="documentSection" class="text-gray-700">Sección:</InputLabel>
-                <select v-model="form.section_id" id="documentSection" class="border rounded-md px-3 py-2 mb-3 w-full">
-                  <option value="">Seleccionar Seccion</option>
-                  <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.name }}</option>
+            </div>
+            <div class="mt-2">
+              <InputLabel for="documentSection">Sección:</InputLabel>
+              <select v-model="form.section_id" id="documentSection" class="border rounded-md px-3 py-2 mb-3 w-full">
+                <option value="">Seleccionar Seccion</option>
+                <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.name }}</option>
+              </select>
+              <InputError :message="form.errors.section_id" />
+            </div>
+            <div v-if="form.section_id">
+              <InputLabel for="documentSubdivision">Subdivisión:</InputLabel>
+
+              <template v-if="filteredSubdivisions.length > 0">
+                <select v-model="form.subdivision_id" id="documentSubdivision"
+                  class="border rounded-md px-3 py-2 mb-3 w-full">
+                  <option value="">Seleccionar Subdivisión</option>
+                  <option v-for="subdivision in filteredSubdivisions" :key="subdivision.id" :value="subdivision.id">
+                    {{ subdivision.name }}</option>
                 </select>
-                <InputError :message="form.errors.section_id" />
-              </div>
-              <div v-if="form.section_id">
-                <InputLabel for="documentSubdivision" class="text-gray-700">Subdivisión:</InputLabel>
+                <InputError :message="form.errors.subdivision_id" />
+              </template>
 
-                <template v-if="filteredSubdivisions.length > 0">
-                  <select v-model="form.subdivision_id" id="documentSubdivision"
-                    class="border rounded-md px-3 py-2 mb-3 w-full">
-                    <option value="">Seleccionar Subdivisión</option>
-                    <option v-for="subdivision in filteredSubdivisions" :key="subdivision.id" :value="subdivision.id">{{
-    subdivision.name }}</option>
-                  </select>
-                  <InputError :message="form.errors.subdivision_id" />
-                </template>
-
-                <template v-else>
-                  <p class="text-red-500">Cree subdivisiones para esta sección.</p>
-                </template>
-              </div>
+              <template class="mt-2" v-else>
+                <p class="text-red-500">Cree subdivisiones para esta sección.</p>
+              </template>
+            </div>
 
 
-              <div class="mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="create_document ? closeModal() : closeEditModal()"> Cancelar </SecondaryButton>
-                <button type="submit" :class="{ 'opacity-25': form.processing }"
-                  class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
-              </div>
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+              <SecondaryButton @click="create_document ? closeModal() : closeEditModal()"> Cancelar </SecondaryButton>
+              <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                Guardar
+              </PrimaryButton>
             </div>
           </div>
         </form>
@@ -211,6 +196,8 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputFile from '@/Components/InputFile.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, computed, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';

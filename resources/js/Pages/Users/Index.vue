@@ -6,10 +6,9 @@
             Usuarios
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
-            <button @click="add_users" type="button"
-                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+            <PrimaryButton @click="add_users" type="button">
                 + Agregar
-            </button>
+            </PrimaryButton>
             <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
@@ -133,6 +132,7 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, Head, router, useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const confirmingUserDeletion = ref(false);
 const usersToDelete = ref(null);
