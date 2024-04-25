@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Solicitudes" />
     <AuthenticatedLayout :redirectRoute="'purchasesrequest.index'">
         <template #header>
@@ -6,15 +7,12 @@
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <button @click="add_request" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <PrimaryButton @click="add_request" type="button">
                     + Agregar
-                </button>
+                </PrimaryButton>
                 <div class="flex items-center">
                     <form @submit.prevent="search" class="flex items-center">
-                        <input type="text" placeholder="Buscar..."
-                            class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            v-model="searchForm.searchTerm" />
+                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
                         <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -118,15 +116,15 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-left">
-                                    <Link v-if="!purchase.preproject?.has_quote && (purchase.state == 'Pendiente' || purchase.state == 'En progreso')"
-                                        class="text-blue-900 "
-                                        :href="purchase.state_quote == false && purchase.project_id != null ? route('purchasesrequest.quote_deadline.complete', { id: purchase.project_id }) : route('purchasesrequest.quotes', { id: purchase.id })">
+                                    <button
+                                        v-if="!purchase.preproject?.has_quote && (purchase.state == 'Pendiente' || purchase.state == 'En progreso')"
+                                        type="button" @click="confirmPurchase(purchase)" class="text-blue-900 ">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                         </svg>
-                                    </Link>
+                                    </button>
                                     <span v-else class="text-gray-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
@@ -204,13 +202,12 @@
 
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
-
-                    <DangerButton class="ml-3" @click="deletePurchase()">
-                        Eliminar
-                    </DangerButton>
+                    <DangerButton class="ml-3" @click="deletePurchase()">Eliminar</DangerButton>
                 </div>
             </div>
         </Modal>
+        <ErrorOperationModal :showError="error" :title="'Fecha de solicitud de compra'"
+            :message="'Debe ingresar la fecha de solicitud en proyectos'" />
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -222,19 +219,20 @@ import Modal from '@/Components/Modal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const confirmingPurchasesDeletion = ref(false);
 const purchaseToDelete = ref(null);
-
+const error = ref(false);
 
 const props = defineProps({
     purchases: Object,
     auth: Object,
     search: String
 });
-
-
-
+console.log(props.purchases)
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;
     confirmingPurchasesDeletion.value = true;
@@ -270,4 +268,14 @@ const search = () => {
 
 }
 
+function confirmPurchase(purchase) {
+    purchase.due_date === null && purchase.project ? errorPurchase() : purchase.state_quote == false && purchase.project_id != null ? router.get(route('purchasesrequest.quote_deadline.complete', { id: purchase.project_id })) : router.get(route('purchasesrequest.quotes', { id: purchase.id }))
+}
+
+function errorPurchase() {
+    error.value = true
+    setTimeout(() => {
+        error.value = false
+    },2000)
+}
 </script>

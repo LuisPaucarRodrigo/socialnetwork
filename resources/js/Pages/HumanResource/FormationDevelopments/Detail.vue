@@ -17,17 +17,12 @@
                 <div class="font-semibold text-gray-600">Nombre:</div>
                 <div class="text-gray-500">
                   {{ employee.name }} {{ employee.lastname }}
-                  <!-- <span
-                    :class="`inline-flex items-center gap-x-1 py-0 px-3 text-sm rounded-full font-medium ${bgBadget} text-white`">
-                    {{ formattedDate(purchase_order.purchase_quote.purchasing_requests.due_date) }}
-                  </span> -->
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <div class="font-semibold text-gray-600">DNI:</div>
                 <div class="text-gray-500">
                     {{ employee.dni }}
-                    <!-- {{ purchase_order.purchase_arrival_date }} -->
                 </div>
               </div>
               <div class="col-start-1 grid grid-cols-2 gap-2">
@@ -60,9 +55,9 @@
                 <table class="w-full">
                   <thead>
                       <tr class="border-b-2 border-gray-300">
-                          <th class="font-semibold text-sm py-2">Estado</th> <!-- Espacio vacío para el primer encabezado -->
-                          <th class="font-semibold text-sm py-2">Nombre</th> <!-- Encabezado de la segunda columna -->
-                          <th class="font-semibold text-sm py-2">Inicio - Fin</th> <!-- Encabezado de la tercera columna -->
+                          <th class="font-semibold text-sm py-2">Estado</th>
+                          <th class="font-semibold text-sm py-2">Nombre</th>
+                          <th class="font-semibold text-sm py-2">Inicio - Fin</th>
                       </tr>
                   </thead>
                   <tbody>
