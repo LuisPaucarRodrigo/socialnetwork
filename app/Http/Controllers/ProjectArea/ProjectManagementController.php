@@ -4,20 +4,15 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
-use App\Models\ComponentOrMaterial;
 use App\Models\Employee;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
 use App\Models\Entry;
 use App\Models\Inventory;
-use App\Models\ProjectComponentOrMaterial;
 use App\Models\ProjectProduct;
 use App\Models\ProjectResourceLiquidate;
-use App\Models\Resource;
-use App\Models\ProjectResource;
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
-use App\Models\ResourceHistorial;
 use App\Models\Warehouse;
 use App\Models\Preproject;
 use App\Models\ProjectEntry;
@@ -47,7 +42,7 @@ class ProjectManagementController extends Controller
         }
     }
 
-    public function project_create(Request $request, $project_id = null)
+    public function project_create($project_id = null)
     {
         $preprojects = Preproject::all()->filter(function ($item) {
             return $item->is_appropriate === true;
@@ -109,72 +104,13 @@ class ProjectManagementController extends Controller
 
     public function project_resources($project_id)
     {
-        $project = Project::with(['project_resources.resource', 'resource_historials.resource', 'preproject.quote.preproject_quote_services.resource_entry',
+        $project = Project::with(['preproject.quote.preproject_quote_services.resource_entry',
         'preproject.quote.preproject_quote_services.service'])->find($project_id);
-
-        $liquidations = ProjectResourceLiquidate::with('project_resource.project', 'project_resource.resource')
-            ->whereHas('project_resource.project', function ($query) use ($project_id) {
-                $query->where('id', $project_id);
-            })
-            ->get();
 
         return Inertia::render('ProjectArea/ProjectManagement/ResourcesAssignment', [
             'project' => $project,
-            'liquidations' => $liquidations,
         ]);
     }
-
-    public function project_resources_store(Request $request)
-    {
-        if ($request->unit_price === null) {
-            $price_resource = Resource::find($request->resource_id);
-            $request->merge(['unit_price' => $price_resource->unit_price]);
-        }
-        $data = $request->all();
-        ProjectResource::create($data);
-        $data['type'] = 'Asignamiento';
-        ResourceHistorial::create($data);
-        return redirect()->back();
-    }
-
-
-    public function project_resources_delete($resource_id)
-    {
-        $resource = ProjectResource::find($resource_id);
-        $resource->delete();
-    }
-
-    public function project_componentmaterial_store(Request $request)
-    {
-        $component_or_material = ComponentOrMaterial::find($request->component_or_material_id);
-        if ($component_or_material->leftover < $request->quantity) {
-            return response()->json(['error' => 'Cantidad excedida, recarga la página'], 500);
-        }
-        if ($component_or_material->leftover == $request->quantity) {
-            $component_or_material->update(['state' => 'Ocupado']);
-        }
-        ProjectComponentOrMaterial::create($request->all());
-        return redirect()->back();
-    }
-
-    public function project_resources_return(Request $request, $id)
-    {
-        $data = $request->all();
-        $data['type'] = 'Devolución';
-        $project_resource = ProjectResource::find($id);
-        if ($project_resource->quantity < $request->quantity) {
-            return response()->json(['error' => 'Cantidad excedida, recarga la página'], 500);
-        } else if ($project_resource->quantity == $request->quantity) {
-            $project_resource->delete();
-            ResourceHistorial::create($data);
-        } else {
-            $left = $project_resource->quantity - $request->quantity;
-            $project_resource->update(['quantity' => $left]);
-            ResourceHistorial::create($data);
-        }
-        return redirect()->back();
-    }
-
 
     public function project_resources_liquidate(Request $request)
     {
@@ -185,18 +121,6 @@ class ProjectManagementController extends Controller
             'observations' => 'nullable|string',
         ]);
         ProjectResourceLiquidate::create($data);
-        return redirect()->back();
-    }
-
-
-
-
-    public function project_componentmaterial_delete($component_or_material_id)
-    {
-        $componente_or_material = ProjectComponentOrMaterial::find($component_or_material_id);
-        $com = ComponentOrMaterial::find($componente_or_material->component_or_material_id);
-        $com->update(['state' => 'Disponible']);
-        $componente_or_material->delete();
         return redirect()->back();
     }
 
