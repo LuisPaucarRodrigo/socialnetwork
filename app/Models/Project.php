@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class  Project extends Model
@@ -20,27 +19,24 @@ class  Project extends Model
     ];
 
     protected $appends = [
-        'total_assigned_resources_costs',
         'total_percentage_tasks',
         'total_percentage_tasks_completed',
-        'total_used_resources_costs',
         'remaining_budget',
         'total_assigned_product_costs',
         'total_refund_product_costs_no_different_price',
         'total_product_costs_with_liquidation',
         'preproject_quote',
         'preproject_quote_no_margin',
-        'total_resources_costs_with_liquidation',
         'total_employee_costs',
         'name',
         'code',
         'start_date',
         'end_date',
-        'total_products_cost'
+        'total_products_cost',
+        'total_services_cost'
     ];
 
     // CALCULATED
-
     public function getPreprojectQuoteAttribute()
     {
         return $this->preproject?->quote?->total_amount;
@@ -55,7 +51,6 @@ class  Project extends Model
     {
         return $this->preproject()->first()?->quote?->name;
     }
-
 
     public function getCodeAttribute()
     {
@@ -100,6 +95,7 @@ class  Project extends Model
         $additionalCosts = $this->additionalCosts->sum('amount');
         return $currentBudget
             - $this->getTotalProductsCostAttribute()
+            - $this->getTotalServicesCostAttribute()
             - $additionalCosts;
     }
 
@@ -110,37 +106,12 @@ class  Project extends Model
         });
     }
 
-    // --------------------------------  Resources Costs ---------------------------------//
+    // --------------------------------  Services Costs ---------------------------------//
 
-    public function getTotalAssignedResourcesCostsAttribute()
+    public function getTotalServicesCostAttribute()
     {
-        return $this->project_resources()->get()->sum(function ($item) {
-            return $item->quantity * $item->unit_price;
-        });
+        return $this->preproject()->first()->total_services_cost;
     }
-
-
-    public function getTotalUsedResourcesCostsAttribute()
-    {
-        return $this->project_resources()->get()->sum(function ($item) {
-            $used_quantity = 0;
-            if ($item->project_resource_liquidate) {
-                $used_quantity = $item->project_resource_liquidate->liquidated_quantity -
-                    $item->project_resource_liquidate->refund_quantity;
-            }
-            return $item->project_resource_liquidate && $used_quantity > 0 ?
-                ($used_quantity) * $item->resource->unit_price -
-                ($used_quantity) * $item->unit_price
-                : 0;
-        });
-    }
-
-
-    public function getTotalResourcesCostsWithLiquidationAttribute()
-    {
-        return $this->getTotalAssignedResourcesCostsAttribute() + $this->getTotalUsedResourcesCostsAttribute();
-    }
-
 
     // --------------------------------  Product Costs ---------------------------------//
 
@@ -198,7 +169,6 @@ class  Project extends Model
     }
 
     //RELATIONS
-
     public function preproject()
     {
         return $this->belongsTo(Preproject::class, 'preproject_id');
@@ -227,16 +197,6 @@ class  Project extends Model
     public function purchasing_request()
     {
         return $this->hasMany(Purchasing_request::class);
-    }
-
-    public function project_resources()
-    {
-        return $this->hasMany(ProjectResource::class, 'resource_id');
-    }
-
-    public function resource_historials()
-    {
-        return $this->hasMany(ResourceHistorial::class, 'project_id');
     }
 
     public function budget_updates()
