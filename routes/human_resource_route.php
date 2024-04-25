@@ -114,8 +114,10 @@ Route::delete('/sections/{section}', [SectionController::class, 'destroySection'
 Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
 Route::get('/subSections/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
 Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
+
 // Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
 // Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
+
 Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
 Route::get('/doTask2', [SectionController::class, 'doTask2'])->name('sections.task2');
 

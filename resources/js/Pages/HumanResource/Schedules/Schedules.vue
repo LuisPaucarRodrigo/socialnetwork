@@ -8,10 +8,9 @@
 
         <div class="min-w-full rounded-lg shadow">
             <div class="overflow-x-auto">
-                <button @click="openScheduleModal" type="button"
-                    class="mx-3 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <PrimaryButton @click="openScheduleModal" type="button" >
                     + Horario
-                </button>
+                </PrimaryButton>
                 <Modal :show="showModalSchedule">
                     <div class="p-4 sm:p-8 md:p-12 lg:p-16">
                         <h2 class="text-lg md:text-xl lg:text-2xl font-medium leading-7 text-gray-900 mb-4">
@@ -37,9 +36,7 @@
                                 <div class="border-b border-gray-900/10 pb-4 sm:pb-6 lg:pb-8">
                                     <div>
                                         <div class="mb-2">
-                                            <InputFile type="file" v-model="formSchedule.document" id="documentFile"
-                                                accept=".pdf"
-                                                class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                            <InputFile type="file" v-model="formSchedule.document" id="documentFile" accept=".pdf" />
                                             <InputError :message="formSchedule.errors.document" />
                                         </div>
                                     </div>
@@ -51,10 +48,10 @@
                                 </div>
                                 <div class="flex items-center justify-end gap-x-4 sm:gap-x-6 lg:gap-x-8">
                                     <SecondaryButton @click="closeScheduleModal">Cancelar</SecondaryButton>
-                                    <button type="submit" :class="{ 'opacity-25': formSchedule.processing }"
+                                    <PrimaryButton type="submit" :class="{ 'opacity-25': formSchedule.processing }"
                                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                         Guardar
-                                    </button>
+                                    </PrimaryButton>
                                 </div>
                             </div>
                         </form>
@@ -120,24 +117,18 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Modal from '@/Components/Modal.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
-
-
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import InputFile from '@/Components/InputFile.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const createSchedule = ref(false);
 const updateSchedule = ref(false);

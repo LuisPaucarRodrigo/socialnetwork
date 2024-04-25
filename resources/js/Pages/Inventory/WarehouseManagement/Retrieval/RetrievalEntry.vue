@@ -9,10 +9,9 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-end">
                 <div class="flex items-center justify-end gap-x-6 w-full">
-                    <button @click="boolean" type="button"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    <PrimaryButton @click="boolean" type="button">
                         {{ entry_boolean == false ? "Sin Aprobar" : "Aprobados" }}
-                    </button>
+                    </PrimaryButton>
                 </div>
             </div>
             <div class="overflow-x-auto">
@@ -78,6 +77,7 @@ import ConfirmAcceptModal from '@/Components/ConfirmAcceptModal.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Pagination from '@/Components/Pagination.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     retrievalEntry: Object,

@@ -8,10 +8,9 @@
         </template>
         <div class="min-w-full">
             <div class="flex items-center">
-                <button @click="add_information" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <PrimaryButton @click="add_information" type="button">
                     Agregar Informacion
-                </button>
+                </PrimaryButton>
             </div>
         
             <div class="overflow-x-auto">
@@ -79,6 +78,7 @@ import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
 
 const props = defineProps({

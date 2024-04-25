@@ -254,7 +254,7 @@
                                     </div>
 
                                     <p class="text-sm my-2">
-                                        Productos de alamcén reservador para el proyecto
+                                        Productos de almacén reservador para el proyecto
                                     </p>
 
                                     <div class="overflow-x-auto mt-8">
@@ -806,6 +806,7 @@ const initialState = {
 }
 
 function servicesArrayMaker(data) {
+    
     let result = []
     data.forEach((item) => {
         let fo = result.find((x) => x.service_id === item.service_id)
@@ -1066,7 +1067,7 @@ const showServiceDetails = ref(false)
 const service_resources = ref([])
 
 function showServiceDetailsModal(array) {
-    console.log(array)
+    
     service_resources.value = [...array]
     showServiceDetails.value = true
 }
@@ -1074,7 +1075,5 @@ function showServiceDetailsModal(array) {
 const closeServiceDetailsModal = () => {
     showServiceDetails.value = false
 }
-
-
 
 </script>

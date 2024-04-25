@@ -5,15 +5,12 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Models\ComponentOrMaterial;
-use App\Models\NetworkEquipment;
 use App\Models\Employee;
-use App\Models\Product;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
 use App\Models\Entry;
 use App\Models\Inventory;
 use App\Models\ProjectComponentOrMaterial;
-use App\Models\ProjectNetworkEquipment;
 use App\Models\ProjectProduct;
 use App\Models\ProjectResourceLiquidate;
 use App\Models\Resource;
@@ -23,15 +20,13 @@ use App\Models\Purchase_quote;
 use App\Models\ResourceHistorial;
 use App\Models\Warehouse;
 use App\Models\Preproject;
+use App\Models\PreprojectQuoteService;
 use App\Models\ProjectEntry;
 use App\Models\SpecialInventory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-
-use function Pest\Laravel\json;
 
 class ProjectManagementController extends Controller
 {
@@ -115,7 +110,8 @@ class ProjectManagementController extends Controller
 
     public function project_resources($project_id)
     {
-        $project = Project::with(['project_resources.resource', 'resource_historials.resource'])->find($project_id);
+        $project = Project::with(['project_resources.resource', 'resource_historials.resource', 'preproject.quote.preproject_quote_services.resource_entry',
+        'preproject.quote.preproject_quote_services.service'])->find($project_id);
         $resources = Resource::all();
         $resourcesDisponibles = $resources->filter(function ($resource) {
             return $resource->state === 'Disponible';
