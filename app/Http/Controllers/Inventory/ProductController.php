@@ -7,46 +7,10 @@ use App\Models\OutputProjectProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Warehouse;
-use App\Models\WarehousesHeader;
 use App\Models\ProjectProduct;
-use App\Models\Header;
-use App\Models\Product;
-use App\Models\ProductsHeader;
 
 class ProductController extends Controller
 {
-    //Warehouses
-    public function index(Warehouse $warehouse)
-    {
-        $products = Product::where('warehouse_id', $warehouse->id)
-                       ->with('productHeaders', 'productHeaders.header')
-                       ->paginate(10);
-        return Inertia::render('Inventory/WarehouseManagement/Product', [
-            'products' => $products,
-            'warehouse' => $warehouse->load('headers'),
-        ]);
-    }
-
-    public function store(Warehouse $warehouse, Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-
-        $product = Product::create([
-            'name' => $request->name,
-            'warehouse_id' => $warehouse->id,
-        ]);
-
-        foreach ($request->contentIds as $headerId => $content) {
-            ProductsHeader::create([
-                'product_id' => $product->id,
-                'header_id' => $headerId,
-                'content' => $content,
-            ]);
-        }
-    }
-
     public function create(Warehouse $warehouse)
     {
         $headers = $warehouse->headers;
@@ -55,23 +19,6 @@ class ProductController extends Controller
             'warehouse' => $warehouse,
             'products' => $warehouse->products,
         ]);
-    }
-
-    public function show(Warehouse $warehouse, Product $product)
-    {
-        $headers = $warehouse->headers;
-        $product->load(['productHeaders', 'productHeaders.header']);
-        $product_headers = $product->productHeaders;
-        return Inertia::render('Inventory/WarehouseManagement/ProductInformation', [
-            'product' => $product,
-            'warehouse' => $warehouse,
-            'headers' => $product_headers->load('header'),
-        ]);
-    }
-
-    public function destroy(Warehouse $warehouse, Product $product) {
-        $product->delete();
-        return to_route('warehouses.products', ['warehouse' => $warehouse->id]);
     }
 
     public function outputs_index($warehouse) {
@@ -85,6 +32,7 @@ class ProductController extends Controller
             'warehouse' => $warehouse
         ]);
     }
+
     public function outputs_store(Request $request) {
         $data = $request->validate([
             'project_product_id' => 'required',
@@ -110,8 +58,5 @@ class ProductController extends Controller
         $output->delete();
         return redirect()->back();
     }
-
-
-
 
 }

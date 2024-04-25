@@ -74,10 +74,6 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     Route::get('rols/details/{id}', [ManagementRolsController::class, 'details'])->name('rols.details');
 
 
-    //FINANZAS
-
-
-
     //PROYECTOS
     //preprojects
     Route::post('/preprojects/{preproject}/update', [PreProjectController::class, 'update'])->name('preprojects.update');
@@ -89,7 +85,6 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     Route::post('/preprojects/quote_item_store', [PreProjectController::class, 'quote_item_store'])->name('preprojects.quote.item.store');
     Route::post('/preprojects/quote_product_store', [PreProjectController::class, 'quote_product_store'])->name('preprojects.quote.product.store');
     Route::delete('/preprojects/quote_product_delete/{quote_product_id}', [PreProjectController::class, 'quote_product_delete'])->name('preprojects.quote.product.delete');
-
 
     //projects
     Route::get('/projectmanagement/update/{project_id}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
@@ -106,11 +101,6 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     Route::delete('/cicsaSubSections/{subSection}/delete', [CicsaSectionController::class, 'destroySubSection'])->name('sections.cicsaDestroySubSection');
     Route::delete('/cicsaSections/{section}', [CicsaSectionController::class, 'destroySection'])->name('sections.cicsaDestroySection');
 
-
-    //INVENTARIO
-    //activos
-    Route::post('resource_description/store', [ResourceManagementController::class, 'resource_description_store'])->name('resource_description.store');
-    Route::post('resource_category/store', [ResourceManagementController::class, 'resource_category_store'])->name('resource_category.store');
 
 
 
