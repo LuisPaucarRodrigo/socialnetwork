@@ -20,7 +20,6 @@ use App\Models\Purchase_quote;
 use App\Models\ResourceHistorial;
 use App\Models\Warehouse;
 use App\Models\Preproject;
-use App\Models\PreprojectQuoteService;
 use App\Models\ProjectEntry;
 use App\Models\SpecialInventory;
 use Illuminate\Http\Request;
@@ -34,7 +33,7 @@ class ProjectManagementController extends Controller
     {
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/ProjectManagement/Project', [
-                'projects' => Project::with('resources')->paginate(),
+                'projects' => Project::paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -126,10 +125,6 @@ class ProjectManagementController extends Controller
     {
         $project = Project::with(['project_resources.resource', 'resource_historials.resource', 'preproject.quote.preproject_quote_services.resource_entry',
         'preproject.quote.preproject_quote_services.service'])->find($project_id);
-        $resources = Resource::all();
-        $resourcesDisponibles = $resources->filter(function ($resource) {
-            return $resource->state === 'Disponible';
-        });
 
         $liquidations = ProjectResourceLiquidate::with('project_resource.project', 'project_resource.resource')
             ->whereHas('project_resource.project', function ($query) use ($project_id) {
@@ -139,7 +134,6 @@ class ProjectManagementController extends Controller
 
         return Inertia::render('ProjectArea/ProjectManagement/ResourcesAssignment', [
             'project' => $project,
-            'resources' => $resourcesDisponibles,
             'liquidations' => $liquidations,
         ]);
     }
