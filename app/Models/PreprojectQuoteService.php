@@ -18,7 +18,8 @@ class PreprojectQuoteService extends Model
     ];
 
     protected $appends = [
-        'rent_price_with_margin'
+        'rent_price_with_margin',
+        'total_price'
     ];
 
     //RELATIONS
@@ -38,5 +39,14 @@ class PreprojectQuoteService extends Model
     public function getRentPriceWithMarginAttribute()
     {
         return $this->rent_price * (1+$this->profit_margin/100);
+    }
+
+    public function getTotalPriceAttribute()
+    {
+        if($this->resource_entry?->condition === 'Usado'){
+            return $this->resource_entry->current_price * $this->days;
+        }else{
+            return $this->rent_price * $this->days;
+        }
     }
 }

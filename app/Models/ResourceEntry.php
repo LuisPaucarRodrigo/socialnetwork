@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class ResourceEntry extends Model
 {
@@ -24,7 +25,18 @@ class ResourceEntry extends Model
 
     //CALCULATED
     public function getCurrentPriceAttribute(){
-        return $this->entry_price;
+        $entryDate = Carbon::parse($this->entry_date);
+        $yearsDifference = floor($entryDate->floatDiffInYears(Carbon::now()));
+        $depreciationFactor = $this->purchase_product->resource_type->depreciation_value / 100;
+        $currentPrice = number_format($this->entry_price * (1 - $yearsDifference * $depreciationFactor), 2);
+        
+        if($yearsDifference == 0){
+            return $this->entry_price;
+        }else if($currentPrice >= 0){
+            return $currentPrice;
+        }else{
+            return 0;
+        }
     }
 
     //RELATIONS
