@@ -223,11 +223,6 @@ class  Project extends Model
         return $this->hasMany(Purchasing_request::class);
     }
 
-    public function resources()
-    {
-        return $this->belongsToMany(Resource::class, 'project_resource')->withPivot('id', 'quantity', 'observation');
-    }
-
     public function project_resources()
     {
         return $this->hasMany(ProjectResource::class, 'resource_id');
@@ -236,11 +231,6 @@ class  Project extends Model
     public function resource_historials()
     {
         return $this->hasMany(ResourceHistorial::class, 'project_id');
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'project_product');
     }
 
     public function budget_updates()
