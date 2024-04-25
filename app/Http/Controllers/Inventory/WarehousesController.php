@@ -16,11 +16,8 @@ use App\Models\PurchasesEntry;
 use App\Models\ProjectEntry;
 use App\Models\Purchase_product;
 use App\Models\ResourceEntry;
-use App\Models\ResourceType;
 use App\Models\RetrievalEntry;
 use App\Models\Service;
-use Illuminate\Support\Facades\Auth;
-use App\Providers\GlobalFunctionsServiceProvider;
 use Carbon\Carbon;
 
 class WarehousesController extends Controller
@@ -393,7 +390,7 @@ class WarehousesController extends Controller
             })
             ->with('purchase_quote.purchase_quote_products.purchase_product')
             ->paginate(5);
-        return Inertia::render('Inventory/WarehouseManagement/ApprovePurchaseOrders', [
+        return Inertia::render('Inventory/WarehouseManagement/Resource/Entry', [
             'purchase_orders_resource' => $purchase_orders_resource
         ]);
     }
@@ -433,7 +430,7 @@ class WarehousesController extends Controller
                 ->where('state', null)
                 ->paginate(10);
         }
-        return Inertia::render('Inventory/WarehouseManagement/Inventory', [
+        return Inertia::render('Inventory/WarehouseManagement/Resource/Index', [
             'resources' => $resources,
             'boolean' => boolval($boolean)
         ]);

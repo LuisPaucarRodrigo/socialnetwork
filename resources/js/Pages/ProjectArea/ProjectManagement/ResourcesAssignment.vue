@@ -1,19 +1,20 @@
 <template>
+
     <Head title="Proyectos" />
     <AuthenticatedLayout redirectRoute="projectmanagement.index">
         <template #header>
-            Asignación de Activos
+            Servicios
         </template>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="p-3 lg:col-span-1 rounded-lg shadow">
                 <div class="sm:col-span-3">
-                    <div class="flex gap-2">
+                    <!-- <div class="flex gap-2">
                         <h3 class="text-lg leading-6 text-gray-900 font-bold">Añadir Activos
                         </h3>
                         <button @click="showToAddEmployee" type="button">
                             <PlusCircleIcon class="text-lg text-indigo-800 h-7 w-7 hover:text-purple-400" />
                         </button>
-                    </div>
+                    </div> -->
                     <div class="mt-7">
                         <div class="overflow-x-auto ">
                             <table class="w-full whitespace-no-wrap">
@@ -22,45 +23,60 @@
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Producto
+                                            Servicio
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Cantidad asignada
+                                            Cantidad de Activos
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Precio Original
+                                            Días
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Precio en Presupuesto
+                                            Precio Unitario de Renta
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Acciones
+                                            Margen
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                            Valor total
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v v-for="(resource, index) in project.project_resources" :key="index"
-                                        class="text-gray-700">
+                                    <tr v v-for="(resource, index) in servicesArrayMaker(project.preproject.quote.preproject_quote_services)" :key="index" class="text-gray-700">
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p>
-                                                {{ resource.resource.description }}
+                                                {{ resource.service_info.name }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">
-                                                {{ resource.quantity }}
+                                                {{ resource.resource_entries.length === 0 ? '-' : resource.resource_entries.length }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.resource.unit_price
-                                            }}</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.days
+                                                }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.unit_price }}</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.rent_price }}</p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.profit_margin }}</p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                S/.{{
+                                            (resource.service_info.rent_price *
+                                                (resource.resource_entries.length === 0 ? 1 :
+                                                resource.resource_entries.length)
+                                                * resource.days * (1 + resource.profit_margin / 100)).toFixed(2) }}
+                                            </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p v-if="resource.has_liquidation"
@@ -68,11 +84,12 @@
                                                 Liquidado
                                             </p>
                                             <div v-if="!resource.has_liquidation" class="flex gap-2">
-                                                <button v-if="auth.user.role_id === 1" type="button"
+                                                <!-- <button v-if="auth.user.role_id === 1" type="button"
                                                     @click="delete_resource(resource.resource.id, resource.id)"
                                                     class="flex justify-center ">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                        stroke-width="1.5" stroke="#3540A7" class="w-6 h-6">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="#3540A7"
+                                                        class="w-6 h-6">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                                     </svg>
@@ -81,7 +98,7 @@
                                                 <button type="button" @click="showToLiquidate(resource)"
                                                     class="rounded-md   bg-indigo-600 py-1 w-full text-center text-sm text-white hover:bg-indigo-500 ">
                                                     Liquidar
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </td>
                                     </tr>
@@ -152,7 +169,7 @@
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">{{
-                                                formattedDate(item.created_at) }}</p>
+                                        formattedDate(item.created_at) }}</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -196,21 +213,23 @@
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">{{
-                                                resource_historial.resource.unique_identification }} - {{
-        resource_historial.resource.description }}
+                                        resource_historial.resource.unique_identification }} - {{
+                                        resource_historial.resource.description }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource_historial.quantity }}
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource_historial.observation }}
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource_historial.quantity
+                                                }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">{{
-                                                formattedDate(resource_historial.created_at) }}</p>
+                                        resource_historial.observation }}
+                                            </p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <p class="text-gray-900 whitespace-no-wrap">{{
+                                        formattedDate(resource_historial.created_at) }}</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -232,7 +251,8 @@
                                 <InputLabel for="resource_id" class="font-medium leading-6 text-gray-900">Activos
                                 </InputLabel>
                                 <InputLabel v-if="form.resource_id !== ''"
-                                    class="font-medium leading-6 text-slate-500  ml-auto">Disponible: {{ maxQuantityVal }}
+                                    class="font-medium leading-6 text-slate-500  ml-auto">Disponible: {{ maxQuantityVal
+                                    }}
                                 </InputLabel>
                             </div>
                             <div class="mt-2">
@@ -315,7 +335,8 @@
                     </div>
                 </form>
             </Modal>
-            <SuccessOperationModal :confirming="successReturn" title="Recurso devuelto" message="La devolución exitosa" />
+            <SuccessOperationModal :confirming="successReturn" title="Recurso devuelto"
+                message="La devolución exitosa" />
             <Modal :show="showModalLiquidate">
                 <form class="p-6" @submit.prevent="submitLiquidate">
                     <h2 class="text-lg font-medium text-gray-900">
@@ -334,7 +355,8 @@
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="refund_quantity" class="font-medium leading-6 text-gray-900">Cantidad devuelta
+                            <InputLabel for="refund_quantity" class="font-medium leading-6 text-gray-900">Cantidad
+                                devuelta
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput id="refund_quantity" type="number" min="0"
@@ -371,7 +393,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
@@ -383,18 +404,17 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils';
 
 
-
 const showModal = ref(false);
 const input_rent = ref(false);
 
-const { project, resources, network_equipments, liquidations, auth } = defineProps({
+const { project, resources, liquidations, services, auth } = defineProps({
     project: Object,
     resources: Object,
-    network_equipments: Object,
+    services: Object,
     liquidations: Object,
     auth: Object
 })
-
+const servicesArray = ref([servicesArrayMaker(project.preproject.quote.preproject_quote_services)])
 //Recursos
 const initialState = {
     project_id: project.id,
@@ -505,9 +525,30 @@ const submitLiquidate = () => {
 
 const historialSelect = ref('Liquidación')
 
+function servicesArrayMaker(data) {
 
-
-
+    let result = []
+    data.forEach((item) => {
+        let fo = result.find((x) => x.service_id === item.service_id)
+        if (fo) {
+            fo.resource_entries.push(item.resource_entry)
+            fo.ids.push(item.id)
+        } else {
+            result.push({
+                service_id: item.service_id,
+                days: item.days,
+                profit_margin: item.profit_margin,
+                service_info: item.service,
+                resource_entries: item.resource_entry_id
+                    ? [item.resource_entry]
+                    : [],
+                rent_price: item.rent_price,
+                ids: [item.id]
+            })
+        }
+    })
+    return result
+}
 
 //Equipos
 // const initialState2 = {

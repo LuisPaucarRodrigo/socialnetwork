@@ -75,7 +75,6 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
 
 
     //FINANZAS
-    Route::put('/finance/expensegang/{id}/update', [GangExpenseController::class, 'update'])->name('gangexpense.update');
 
 
 

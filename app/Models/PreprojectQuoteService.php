@@ -22,7 +22,7 @@ class PreprojectQuoteService extends Model
     ];
 
     //RELATIONS
-    public function preproject_quote_services()
+    public function preproject_quote()
     {
         return $this->belongsTo(PreProjectQuote::class,'preproject_quote_id');
     }

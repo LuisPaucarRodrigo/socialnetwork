@@ -7,10 +7,9 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button @click="add_resource" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
+                <PrimaryButton @click="add_resource" type="button">
                     + Agregar
-                </button>
+                </PrimaryButton>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
@@ -82,7 +81,6 @@
                                         class="text-red-900 whitespace-no-wrap">
                                         <TrashIcon class="text-red-500 h-4 w-4" />
                                     </button>
-
                                 </div>
                             </td>
                         </tr>
@@ -104,6 +102,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModalDelete = ref(false);
 const selectedResource = ref(null);
