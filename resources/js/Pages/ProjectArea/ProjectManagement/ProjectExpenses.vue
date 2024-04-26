@@ -8,7 +8,7 @@
     Presupuesto restante: S/. {{ project.remaining_budget.toFixed(2) }}
     <br>
     <br>
-    Total gastos en activos: S/. {{ project.total_assigned_resources_costs.toFixed(2) }}<br>
+    Total gastos en servicios: S/. {{ project.total_services_cost.toFixed(2) }}<br>
     Total gastos en productos: S/. {{ project.total_products_cost.toFixed(2) }}<br>
     Gastos adicionales: S/. {{ additionalCosts.toFixed(2) }}
     <br>
