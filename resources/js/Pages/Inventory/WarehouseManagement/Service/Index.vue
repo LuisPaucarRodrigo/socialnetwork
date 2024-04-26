@@ -80,15 +80,14 @@
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                     <div class="sm:col-span-3">
-                        <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
+                        <InputLabel for="name">Nombre</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="name" type="text" v-model="form.name"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <TextInput id="name" type="text" v-model="form.name" />
                         </div>
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="purchase_product_id" class="font-medium leading-6 text-gray-900">Activo
+                        <InputLabel for="purchase_product_id">Activo
                         </InputLabel>
                         <div class="mt-2">
                             <select id="purchase_product_id" v-model="form.purchase_product_id"
@@ -100,7 +99,7 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="rent_price" class="font-medium leading-6 text-gray-900">Precio de Renta por Día
+                        <InputLabel for="rent_price">Precio de Renta por Día
                         </InputLabel>
                         <div class="mt-2">
                             <input id="rent_price" type="number"
@@ -112,7 +111,7 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripcion
+                        <InputLabel for="description">Descripcion
                         </InputLabel>
                         <div class="mt-2">
                             <textarea id="description" type="text" v-model="form.description"
@@ -122,12 +121,8 @@
 
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                        type="button" @click="close_service"> Cerrar </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="submit"> Agregar </button>
+                    <SecondaryButton type="button" @click="close_service"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
                 </div>
             </form>
         </Modal>
@@ -143,6 +138,7 @@ import Modal from '@/Components/Modal.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { ref } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     services: {

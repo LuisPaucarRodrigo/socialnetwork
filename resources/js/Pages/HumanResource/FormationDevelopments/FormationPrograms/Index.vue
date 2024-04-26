@@ -8,10 +8,9 @@
         </template>
         <div class="min-w-full">
             <div class="flex items-center">
-                <button @click="add_information" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <PrimaryButton @click="add_information" type="button" >
                     Agregar Informacion
-                </button>
+                </PrimaryButton>
             </div>
             
             <div class="overflow-x-auto">
@@ -81,6 +80,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     formationPrograms: Object,

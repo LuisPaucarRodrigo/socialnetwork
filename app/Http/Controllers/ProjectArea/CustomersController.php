@@ -39,7 +39,7 @@ class CustomersController extends Controller
             'address' => 'required'
         ]);
 
-        $customer = Customer::create([
+        Customer::create([
             'ruc' => $request->ruc,
             'business_name' => $request->business_name,
             'category' => 'Normal',
@@ -88,7 +88,7 @@ class CustomersController extends Controller
             'additional_information' => 'required',
         ]);
 
-        $contact = Customers_contact::create([
+        Customers_contact::create([
             'name' => $request->name,
             'phone' => $request->phone,
             'additional_information' => $request->additional_information,

@@ -5,10 +5,9 @@
             Roles
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
-            <button @click="add_rol" type="button"
-                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+            <PrimaryButton @click="add_rol" type="button">
                 + Agregar
-            </button>
+            </PrimaryButton>
             <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
@@ -74,24 +73,22 @@
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
                             <div>
-                                <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
+                                <InputLabel for="name">Nombre</InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="form.name" id="name"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="text" v-model="form.name" id="name" />
                                     <InputError :message="form.errors.name" />
                                 </div>
                             </div>
                             <div>
-                                <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripcion
+                                <InputLabel for="description">Descripcion
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="form.description" id="description"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="text" v-model="form.description" id="description" />
                                     <InputError :message="form.errors.description" />
                                 </div>
                             </div>
                             <div>
-                                <InputLabel for="permission" class="font-medium leading-6 text-gray-900">Permisos
+                                <InputLabel for="permission">Permisos
                                 </InputLabel>
                                 <select required multiple v-model="form.permission" id="permission"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -106,8 +103,7 @@
                             </div>
                             <div class="mt-6 flex items-center justify-end gap-x-6">
                                 <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
-                                <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
                             </div>
                         </div>
                     </div>
@@ -124,6 +120,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Pagination from '@/Components/Pagination.vue';

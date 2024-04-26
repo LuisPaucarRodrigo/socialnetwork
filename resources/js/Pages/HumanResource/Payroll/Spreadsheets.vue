@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Nomina" />
     <AuthenticatedLayout :redirectRoute="'spreadsheets.index'">
         <template #header>
@@ -10,10 +9,10 @@
                 <div class="flex items-center justify-between gap-x-6 w-full">
 
                     <div class="hidden sm:flex sm:space-x-3 sm:items-center">
-                        <button @click="management_pension" type="button"
+                        <PrimaryButton @click="management_pension" type="button"
                             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                             Gestion de Sistema de Pension
-                        </button>
+                        </PrimaryButton>
                         <a :href="route('spreadsheets.payroll.export')"
                             class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">
                             Exportar
@@ -54,17 +53,14 @@
                             </template>
                         </dropdown>
                     </div>
-                    <button @click="reentry" type="button"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    <PrimaryButton @click="reentry" type="button">
                         {{ reentrystate == false ? "Inactivos" : "Activos" }}
-                    </button>
+                    </PrimaryButton>
                 </div>
 
                 <div class="flex items-center">
                     <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                        <input type="text" placeholder="Buscar..."
-                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            v-model="searchForm.searchTerm" />
+                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
                         <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -339,6 +335,8 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import Pagination from '@/Components/Pagination.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
     spreadsheets: Object,
@@ -364,11 +362,6 @@ const reentry = () => {
     }
 };
 
-const formatNumber = (value) => {
-    return parseFloat(value).toFixed(2);
-}
-
-
 const searchForm = useForm({
     searchTerm: props.search,
 })
@@ -384,15 +377,5 @@ const search = () => {
     }
     
 }
-
-
-
-
-
-
-
-
-
-
 
 </script>

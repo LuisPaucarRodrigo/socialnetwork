@@ -62,7 +62,7 @@
                         <h5 class="font-semibold py-3 border-b-2 border-gray-300 sm:col-span-6">Registro</h5>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="provider_id" class="text-sm font-medium leading-6 text-gray-900">Proveedor
+                            <InputLabel for="provider_id">Proveedor
                             </InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.provider_id" id="provider_id"
@@ -79,41 +79,38 @@
                         </div>
 
                         <div v-if="purchases.due_date" class="sm:col-span-3">
-                            <InputLabel for="quote_deadline" class="text-sm font-medium leading-6 text-gray-900">
+                            <InputLabel for="quote_deadline" >
                                 Fecha limite de Aprobacion de Finanzas
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" v-model="form.quote_deadline" id="quote_deadline"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="date" v-model="form.quote_deadline" id="quote_deadline" />
                                 <InputError :message="form.errors.quote_deadline" />
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="deliverable_time" class="text-sm font-medium leading-6 text-gray-900">
+                            <InputLabel for="deliverable_time" >
                                 Tiempo de entrega (días)
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" min="0" v-model="form.deliverable_time" id="deliverable_time"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="number" min="0" v-model="form.deliverable_time" id="deliverable_time" />
                                 <InputError :message="form.errors.deliverable_time" />
                             </div>
                         </div>
 
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="account_number" class="text-sm font-medium leading-6 text-gray-900">
+                            <InputLabel for="account_number">
                                 Número de cuenta
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput v-model="form.account_number" id="account_number" pattern="[0-9]+(-[0-9]+)*"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput v-model="form.account_number" id="account_number" pattern="[0-9]+(-[0-9]+)*" />
                                 <InputError :message="form.errors.account_number" />
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="payment_type" class="text-sm font-medium leading-6 text-gray-900">
+                            <InputLabel for="payment_type">
                                 Forma de pago
                             </InputLabel>
                             <div class="mt-2">
@@ -129,18 +126,17 @@
 
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="purchase_image" class="text-sm font-medium leading-6 text-gray-900">
+                            <InputLabel for="purchase_image" >
                                 Documento de Cotizacion
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile type="file" v-model="form.purchase_doc" id="purchase_image"
-                                    class="mt-1 text-sm leading-6 border-0 ring-1 ring-gray-300 text-gray-700 sm:col-span-2 sm:mt-0 focus:ring-2 focus:ring-inset focus:ring-indigo-600" />
+                                <InputFile type="file" v-model="form.purchase_doc" id="purchase_image" />
                                 <InputError :message="form.errors.purchase_doc" />
                             </div>
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel class="text-sm font-medium leading-6 text-gray-900">
+                            <InputLabel >
                                 <div class="flex gap-3">
                                     <span>
                                         ¿IGV inlcuido?
@@ -168,7 +164,7 @@
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel class=" text-sm font-medium leading-6 text-gray-900">
+                            <InputLabel>
                                 <div class="flex gap-3">
                                     <span>
                                         Moneda
@@ -369,13 +365,11 @@
                     <InputError :message="form.errors.products" />
                     <div v-if="purchases.state == 'Pendiente' || purchases.state == 'En progreso'"
                         class="mt-6 sm:col-span-6 flex items-center justify-end gap-x-6">
-                        <button v-if="purchases.state == 'Pendiente'" @click.prevent="purchaseRequestReject()"
-                            class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                            :disabled="process">Rechazar</button>
-                        <button type="submit" :class="{ 'opacity-25': form.processing }"
-                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <SecondaryButton v-if="purchases.state == 'Pendiente'" @click.prevent="purchaseRequestReject()"
+                            :disabled="process">Rechazar</SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                             Guardar
-                        </button>
+                        </PrimaryButton>
                     </div>
                 </form>
             </dl>
@@ -395,10 +389,8 @@
                         </p>
                     </div>
                     <div v-else>
-                        <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
-                        <DangerButton class="ml-3" @click="reject_quote(purchases.id)">
-                            Rechazar
-                        </DangerButton>
+                        <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                        <DangerButton class="ml-3" @click="reject_quote(purchases.id)">Rechazar</DangerButton>
                     </div>
                 </div>
             </div>
@@ -417,7 +409,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
@@ -426,6 +417,8 @@ import Modal from '@/Components/Modal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate } from '@/utils/utils';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     purchases: Object,

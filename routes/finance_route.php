@@ -3,14 +3,7 @@
 use App\Http\Controllers\Finance\BudgetUpdateController;
 use App\Http\Controllers\Finance\DepositController;
 use App\Http\Controllers\Finance\ExpenseManagementController;
-use App\Http\Controllers\Finance\GangExpenseController;
 use Illuminate\Support\Facades\Route;
-
-    //Expense
-    Route::any('/finance/expensegang', [GangExpenseController::class, 'index'])->name('gangexpense.index');
-    Route::get('/finance/expensegang/create', [GangExpenseController::class, 'create'])->name('gangexpense.create');
-    Route::post('/finance/expensegang/store', [GangExpenseController::class, 'store'])->name('gangexpense.store');
-    Route::get('/finance/expensegang/{id}/edit', [GangExpenseController::class, 'edit'])->name('gangexpense.edit');
 
     Route::any('/finance/expencemanagement/{boolean?}', [ExpenseManagementController::class, 'index'])->name('managementexpense.index');
     Route::get('/finance/expencemanagement/details/{purchase_quote}', [ExpenseManagementController::class, 'details'])->name('managementexpense.details');

@@ -1,6 +1,6 @@
 <template>
     <input
-      class="block mt-1 w-full rounded-md form-input focus:border-indigo-600 py-1.5"
+      class="block w-full rounded-md form-input focus:border-indigo-600 py-1.5"
       :value="formattedModelValue"
       @input="handleInput"
       ref="input"

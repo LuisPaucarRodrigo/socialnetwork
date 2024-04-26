@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Solicitudes del proyecto" />
     <AuthenticatedLayout :redirect-route="'projectmanagement.index'">
         <template #header>
@@ -7,21 +8,20 @@
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2">
-                <button @click="add_purchase_request" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <PrimaryButton @click="add_purchase_request" type="button">
                     + Agregar
-                </button>
-                <button @click="expenses" type="button"
-                    class="rounded-md bg-teal-600 px-4 py-2 text-center text-sm text-white hover:bg-teal-500">
+                </PrimaryButton>
+                <PrimaryButton @click="expenses" type="button"
+                    class="bg-teal-600 hover:bg-teal-500">
                     Gastos
-                </button>
+                </PrimaryButton>
                 <Link :href="route('projectmanagement.additionalCosts', { project_id: props.project.id })"
                     class="rounded-md bg-gray-600 px-4 py-2 text-center text-sm text-white hover:bg-gray-500">
                 Gastos Adicionales
                 </Link>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full ">
+                <table class="min-w-full whitespace-no-wrap">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -51,8 +51,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="purchase in purchases.data" :key="purchase.id" class="text-gray-700" :class="[
-        'text-gray-700',
+                        <tr v-for="purchase in purchases.data" :key="purchase.id" class="text-gray-700" :class="['text-gray-700',
         {
             'border-l-8': true,
             'border-green-500': !['Rechazada', 'Pendiente', 'En progreso'].includes(purchase.state), // Si la fecha de finalización es 'Disponible', pinta el borde de verde
@@ -169,10 +168,9 @@
                 <p class="mt-1 text-sm text-gray-600">
                     Ingrese la fecha de limite de compra para poder habilitar la aprobacion de cotizaciones
                 </p>
-                <TextInput type="date" v-model="form.due_date" id="due_date"
-                    class="mt-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                <TextInput type="date" v-model="form.due_date" id="due_date"/>
                 <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModalDate"> Cancel </SecondaryButton>
+                    <SecondaryButton @click="closeModalDate">Cancel</SecondaryButton>
 
                     <PrimaryButton class="ml-3" @click="addDueDate()">
                         Guardar
@@ -210,7 +208,7 @@ const props = defineProps({
 });
 
 const form = useForm({
-    due_date:'',
+    due_date: '',
     purchase_id: ''
 })
 
@@ -236,11 +234,7 @@ const add_purchase_request = () => {
     router.get(route('purchasesrequest.create', {
         project_id: props.project.id
     }));
-}
-
-const edit_purchase_request = (purchase_id) => {
-    router.get(route('projectmanagement.purchases_request.create', { project_id: props.project.id, purchase_id: purchase_id }));
-}
+};
 
 const expenses = () => {
     router.get(route('projectmanagement.expenses', {
@@ -259,8 +253,8 @@ const closeModalDate = () => {
 
 function addDueDate() {
     form.purchase_id = purchaseToUpdate.value
-    form.post(route('projectmanagement.update_due_date'),{
-        onSuccess:() => {
+    form.post(route('projectmanagement.update_due_date'), {
+        onSuccess: () => {
             router.get(route('projectmanagement.purchases_request.index', { project_id: props.project.id }))
         }
     });

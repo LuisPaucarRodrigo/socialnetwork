@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('preproject_entries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('preproject_id')->constrained();
+            $table->foreignId('preproject_id')->constrained()->onDelete('cascade');
             $table->foreignId('entry_id')->nullable()->constrained();
             $table->integer('quantity');
             $table->double('margin');

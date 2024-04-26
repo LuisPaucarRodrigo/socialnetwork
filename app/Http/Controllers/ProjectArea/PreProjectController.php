@@ -5,20 +5,15 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest;
 use App\Http\Requests\PreprojectRequest\PreprojectQuoteRequest;
-use App\Http\Requests\ProjectRequest\CreateProjectRequest;
 use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
 use App\Models\Customer;
 use App\Models\PhotoReport;
 use App\Models\Preproject;
-use App\Models\Customervisit;
 use App\Models\Imagespreproject;
-use App\Models\PreprojectProvidersQuote;
 use App\Models\PreProjectQuote;
-use App\Models\PreProjectQuoteItem;
 use App\Models\PreprojectQuoteProduct;
 use App\Models\PreprojectQuoteService;
 use App\Models\Purchase_product;
-use App\Models\Product;
 use App\Models\Inventory;
 use App\Models\Entry;
 use App\Models\Warehouse;
@@ -32,7 +27,6 @@ use App\Models\TypeProduct;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Log;
 
 class PreProjectController extends Controller
 {
@@ -240,7 +234,6 @@ class PreProjectController extends Controller
         }
         return redirect()->back();
     }
-
 
     public function quote_item_store(Request $request)
     {

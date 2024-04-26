@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'management.employees'">
         <template #header>
@@ -10,10 +9,9 @@
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
                 <div class="flex items-center justify-between gap-x-6 w-full">
                     <div class="hidden sm:flex sm:items-center sm:space-x-4">
-                        <button @click="add_information" type="button"
-                            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        <PrimaryButton @click="add_information" type="button">
                             + Agregar
-                        </button>
+                        </PrimaryButton>
 
                         <Link :href="route('management.employees.schedule.index')"
                             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
@@ -52,16 +50,13 @@
                             </template>
                         </dropdown>
                     </div>
-                    <button @click="reentry" type="button"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    <PrimaryButton @click="reentry" type="button">
                         {{ reentrystate == false ? "Inactivos" : "Activos" }}
-                    </button>
+                    </PrimaryButton>
                 </div>
                 <div class="flex items-center mt-4 sm:mt-0">
                     <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                        <input type="text" placeholder="Buscar..."
-                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            v-model="searchForm.searchTerm" />
+                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
                         <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -195,28 +190,24 @@
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
-                            <InputLabel for="reentry_date" class="font-medium leading-6 text-gray-900">Fecha de
+                            <InputLabel for="reentry_date">Fecha de
                                 Reingreso o
                                 Recontratacion:
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" id="reentry_date" v-model="form1.reentry_date" required
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="date" id="reentry_date" v-model="form1.reentry_date" required />
                                 <InputError :message="form.errors.reentry_date" />
                             </div>
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeReentryModal"> Cancel </SecondaryButton>
-                            <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                Guardar
-                            </button>
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }"> Guardar
+                            </PrimaryButton>
                         </div>
                     </div>
                 </form>
             </div>
         </Modal>
-
         <Modal :show="showModalFired">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -225,29 +216,26 @@
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
-                            <InputLabel for="fired_date" class="font-medium">Fecha de Deceso:
+                            <InputLabel for="fired_date">Fecha de Deceso:
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" id="fired_date" v-model="form.fired_date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="date" id="fired_date" v-model="form.fired_date"/>
                                 <InputError :message="form.errors.fired_date" />
                             </div>
                         </div>
                         <div class="mt-6">
-                            <InputLabel for="days_taken" class="font-medium leading-6 text-gray-900">Dias Tomados:
+                            <InputLabel for="days_taken">Dias Tomados:
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" id="days_taken" v-model="form.days_taken"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="text" id="days_taken" v-model="form.days_taken"/>
                                 <InputError :message="form.errors.days_taken" />
                             </div>
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeFiredModal"> Cancel </SecondaryButton>
-                            <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                                 Guardar
-                            </button>
+                            </PrimaryButton>
                         </div>
                     </div>
                 </form>
@@ -276,6 +264,7 @@ import InputError from '@/Components/InputError.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import { formattedDate } from '@/utils/utils';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const confirmingUserDeletion = ref(false);
 const deleteButtonText = 'Eliminar';
@@ -285,7 +274,6 @@ const employeeReentry = ref(null);
 const showModalFired = ref(false);
 const createSchedule = ref(false);
 const updateSchedule = ref(false);
-const showModalSchedule = ref(false);
 const showModalReentry = ref(false);
 
 const props = defineProps({
@@ -372,7 +360,6 @@ const add_information = () => {
     router.get(route('management.employees.information'));
 };
 
-
 const employee_fired_date = ($id) => {
     employeeReentry.value = $id
     showModalReentry.value = true
@@ -381,7 +368,6 @@ const employee_fired_date = ($id) => {
 const closeReentryModal = () => {
     showModalReentry.value = false;
 };
-
 
 const searchForm = useForm({
     searchTerm: props.search ? props.search : '',
