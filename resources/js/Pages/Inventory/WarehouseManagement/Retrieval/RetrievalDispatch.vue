@@ -3,7 +3,7 @@
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
-            Despachos
+            Despachos de Recuperos
         </template>
 
         <div class="min-w-full rounded-lg shadow">
@@ -162,7 +162,7 @@ const declineRequest = () => {
     router.post(route('warehouses.dispatches.acceptordecline'), data, {
         preserveScroll: true,
         onSuccess: () => {
-            acceptModal.value = false
+            declineModal.value = false
         }
     });
 }
@@ -171,16 +171,19 @@ const acceptRequest = () => {
     router.post(route('warehouses.dispatches.acceptordecline'), data, {
         preserveScroll: true,
         onSuccess: () => {
-            declineModal.value = false
+            acceptModal.value = false
+        },
+        onError:(e) => {
+            console.log(e)
         }
     });
 }
 
 const optionChange = (e) => {
     if (e.target.value === "Aprobados") {
-        router.get(route('warehouses.dispatches.approved', { warehouse: props.warehouseId }))
+        router.get(route('inventory.retrievalDispatch.approved'))
     } else if (e.target.value === "Rechazados") {
-        router.get(route('warehouses.dispatches.rejected', { warehouse: props.warehouseId }))
+        router.get(route('inventory.retrievalDispatch.rejected'))
     }
 }
 

@@ -58,32 +58,36 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in assigned_products.data" :key="item.id" :class="[
-        'text-gray-700',
-        {
-            'border-l-8': true,
-            'border-green-500': item.state === 'Completo',
-            'border-red-500': item.state === 'Incompleto'
-        }
-    ]">
+                        <tr v-for="item in assigned_products.data" :key="item.id" 
+                            :class="[
+                                'text-gray-700',
+                                {
+                                    'border-l-8': true,
+                                    'border-green-500': item.state === 'Completo',
+                                    'border-red-500': item.state === 'Incompleto'
+                                }
+                            ]"
+                        >
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.entry_id
-        ? item.entry.inventory.warehouse.name
-        : item.special_inventory.warehouse.name
+                                        ? item.entry.inventory.warehouse.name
+                                        : item.special_inventory.warehouse.name
                                     }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ item.entry_id ? item.entry.inventory.purchase_product.code :
-        item.special_inventory.purchase_product.code }}
+                                    {{ item.entry_id 
+                                        ? item.entry.inventory.purchase_product.code 
+                                        : item.special_inventory.purchase_product.code }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ item.entry_id ? item.entry.inventory.purchase_product.name :
-        item.special_inventory.purchase_product.name }}
+                                    {{ item.entry_id 
+                                        ? item.entry.inventory.purchase_product.name 
+                                        : item.special_inventory.purchase_product.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -99,9 +103,10 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.current_output_quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.state === null ? 'Pendiente' :
-        (item.state
-            == true ? 'Aprobado' : 'Rechazado') }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ item.state === null 
+                                        ? 'Pendiente' 
+                                        : (item.state == true ? 'Aprobado' : 'Rechazado') }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ }}</p>

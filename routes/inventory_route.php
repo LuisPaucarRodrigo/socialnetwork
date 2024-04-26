@@ -78,6 +78,8 @@ Route::get('/inventory/show/retrieval_product/{product}/warehouses', [Warehouses
 
 //Retrieval_dispatch
 Route::get('/inventory/retrieval_dispatch/warehouses', [WarehousesController::class, 'retrievalDispatch'])->name('inventory.retrievalDispatch.index');
+Route::get('/inventory/retrieval_dispatch/warehouses/approved', [WarehousesController::class, 'retrievalDispatchApproved'])->name('inventory.retrievalDispatch.approved');
+Route::get('/inventory/retrieval_dispatch/warehouses/rejected', [WarehousesController::class, 'retrievalDispatchRejected'])->name('inventory.retrievalDispatch.rejected');
 
 //SERVICES
 Route::get('/inventory/services/warehouses', [WarehousesController::class, 'service_index'])->name('inventory.warehouses.service');
