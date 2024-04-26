@@ -101,7 +101,6 @@
 
                 <div class="mt-6">
                     <InputLabel for="password" value="Password" class="sr-only" />
-
                     <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
                         class="mt-1 block w-3/4" placeholder="Password" @keyup.enter="deleteUser" />
 

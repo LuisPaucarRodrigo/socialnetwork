@@ -78,10 +78,9 @@
   import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import InputError from '@/Components/InputError.vue';
-  import InputLabel from '@/Components/InputLabel.vue';
   import InputFile from '@/Components/InputFile.vue';
   import Modal from '@/Components/Modal.vue';
-  import { ref, computed, watch } from 'vue';
+  import { ref } from 'vue';
   import { Head, useForm, router } from '@inertiajs/vue3';
   import { TrashIcon, ArrowDownIcon, EyeIcon } from '@heroicons/vue/24/outline';
   
