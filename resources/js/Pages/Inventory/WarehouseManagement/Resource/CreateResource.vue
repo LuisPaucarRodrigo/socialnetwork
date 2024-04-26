@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Crear Proveedor" />
+    <Head title="Activos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.index.resource'">
         <template #header>
             Agregar Activo
@@ -10,17 +10,16 @@
                 <div class="border-b border-gray-900/10 pb-12">
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-3 sm:col-start-1">
-                            <InputLabel for="serial_number" class="font-medium leading-6 text-gray-900">Numero de Serie
+                            <InputLabel for="serial_number">Numero de Serie
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.serial_number" id="serial_number" pattern="\d*"
-                                    autocomplete="given-name" maxlength="11"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    autocomplete="given-name" maxlength="11" />
                                 <InputError :message="form.errors.serial_number" />
                             </div>
                         </div>
                         <div class="sm:col-span-3">
-                            <InputLabel for="referral_guide" class="font-medium leading-6 text-gray-900">Numero de Guia
+                            <InputLabel for="referral_guide">Numero de Guia
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.referral_guide" id="referral_guide"
@@ -30,30 +29,25 @@
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <InputLabel for="entry_date" class="font-medium leading-6 text-gray-900">
+                            <InputLabel for="entry_date">
                                 Fecha de Ingreso
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.entry_date" id="entry_date" :to-uppercase="true"
-                                    autocomplete="family-name"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    autocomplete="family-name" />
                                 <InputError :message="form.errors.entry_date" />
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <InputLabel for="entry_price" class="font-medium leading-6 text-gray-900">Precio de Entrada
-                            </InputLabel>
+                            <InputLabel for="entry_price">Precio de Entrada</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.entry_price" id="entry_price" :to-uppercase="true"
-                                    autocomplete="family-name"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    autocomplete="family-name" />
                                 <InputError :message="form.errors.entry_price" />
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <InputLabel for="purchase_product_id" class="font-medium leading-6 text-gray-900">
-                                Tipo de Activo
-                            </InputLabel>
+                            <InputLabel for="purchase_product_id">Tipo de Activo</InputLabel>
                             <select v-model="form.purchase_product_id" id="purchase_product_id"
                                 class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                                 <option disabled value="">Seleccione Activo</option>

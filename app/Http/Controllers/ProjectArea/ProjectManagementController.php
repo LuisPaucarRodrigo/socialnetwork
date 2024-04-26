@@ -10,7 +10,6 @@ use App\Models\BudgetUpdate;
 use App\Models\Entry;
 use App\Models\Inventory;
 use App\Models\ProjectProduct;
-use App\Models\ProjectResourceLiquidate;
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
 use App\Models\PreprojectEntry;
@@ -125,18 +124,6 @@ class ProjectManagementController extends Controller
         return Inertia::render('ProjectArea/ProjectManagement/ResourcesAssignment', [
             'project' => $project,
         ]);
-    }
-
-    public function project_resources_liquidate(Request $request)
-    {
-        $data = $request->validate([
-            'project_resource_id' => 'required',
-            'liquidated_quantity' => 'required',
-            'refund_quantity' => 'required',
-            'observations' => 'nullable|string',
-        ]);
-        ProjectResourceLiquidate::create($data);
-        return redirect()->back();
     }
 
     public function project_purchases_request_index($project_id)

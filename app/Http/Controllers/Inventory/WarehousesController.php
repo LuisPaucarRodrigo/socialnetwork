@@ -43,7 +43,7 @@ class WarehousesController extends Controller
         
         $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry', 'purchase_product')->paginate(10);
         // dd($products);
-        return Inertia::render('Inventory/WarehouseManagement/Inventory', [
+        return Inertia::render('Inventory/WarehouseManagement/Conproco/Inventory', [
             'products' => $products,
             'warehouseId' => $warehouse->id
         ]);
@@ -53,7 +53,7 @@ class WarehousesController extends Controller
     public function createProducts(Warehouse $warehouse)
     {
         $purchase_products = Purchase_product::where('type', 'Producto')->get();
-        return Inertia::render('Inventory/WarehouseManagement/InventoryForm', [
+        return Inertia::render('Inventory/WarehouseManagement/Conproco/InventoryForm', [
             'purchase_products' => $purchase_products,
             'warehouseId' => $warehouse->id
         ]);
@@ -67,7 +67,7 @@ class WarehousesController extends Controller
                                 'normal_entry', 'purchase_entry'
                             )
                             ->paginate(10);
-        return Inertia::render('Inventory/WarehouseManagement/Entries', [
+        return Inertia::render('Inventory/WarehouseManagement/Conproco/Entries', [
             'entries' => $entries,
             'warehouseId' => $warehouse->id
         ]);
@@ -81,7 +81,7 @@ class WarehousesController extends Controller
             })
             ->with('purchase_quote.purchase_quote_products.purchase_product')
             ->paginate(5);
-        return Inertia::render('Inventory/WarehouseManagement/ApprovePurchaseOrders', [
+        return Inertia::render('Inventory/WarehouseManagement/Conproco/ApprovePurchaseOrders', [
             'purchase_orders' => $purchase_orders,
             'warehouseId' => $warehouse->id
         ]);
@@ -258,7 +258,7 @@ class WarehousesController extends Controller
             ->orderBy('created_at', 'desc')
             ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
 
-        return Inertia::render('Inventory/WarehouseManagement/Dispatches', [
+        return Inertia::render('Inventory/WarehouseManagement/Conproco/Dispatches', [
             'project_entries' => $project_entries,
             'warehouseId' => $warehouse->id
         ]);
@@ -472,7 +472,7 @@ class WarehousesController extends Controller
 
     public function resource_create()
     {
-        return Inertia::render('Inventory/WarehouseManagement/CreateResource',[
+        return Inertia::render('Inventory/WarehouseManagement/Resource/CreateResource',[
             'products' => Purchase_product::where('type','Activo')->get()
         ]);
     }
