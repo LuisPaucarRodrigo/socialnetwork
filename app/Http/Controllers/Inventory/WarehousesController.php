@@ -297,7 +297,7 @@ class WarehousesController extends Controller
 
 
 
-    public function acceptOrDeclineDispatch(Warehouse $warehouse, Request $request)
+    public function acceptOrDeclineDispatch(Request $request)
     {
         $request->validate([
             'state' => 'required|boolean',

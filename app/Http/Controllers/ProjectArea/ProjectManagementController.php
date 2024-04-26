@@ -120,7 +120,6 @@ class ProjectManagementController extends Controller
     {
         $project = Project::with(['preproject.quote.preproject_quote_services.resource_entry',
         'preproject.quote.preproject_quote_services.service'])->find($project_id);
-
         return Inertia::render('ProjectArea/ProjectManagement/ResourcesAssignment', [
             'project' => $project,
         ]);
