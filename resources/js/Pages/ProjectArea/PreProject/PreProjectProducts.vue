@@ -8,7 +8,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button type="button" @click="showToAddProduct"
+                <button v-if="preproject.project === null" type="button" @click="showToAddProduct"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
@@ -46,13 +46,13 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in assigned_products.data" :key="item.id" :class="[
-        'text-gray-700',
-        {
-            'border-l-8': true,
-            'border-green-500': item.state === 'Completo',
-            'border-red-500': item.state === 'Incompleto'
-        }
-    ]">
+                                'text-gray-700',
+                                {
+                                    'border-l-8': true,
+                                    'border-green-500': item.state === 'Completo',
+                                    'border-red-500': item.state === 'Incompleto'
+                                }
+                            ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.entry.inventory.purchase_product.code }}
@@ -231,10 +231,10 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
 
-const { assigned_products, warehouses, preproject_id } = defineProps({
+const { assigned_products, warehouses, preproject } = defineProps({
     assigned_products: Object,
     warehouses: Object,
-    preproject_id: Number,
+    preproject: Number,
     auth: Object
 })
 
@@ -274,7 +274,7 @@ const successAsignation = ref(false)
 const errorAsignation = ref(false)
 
 const form = useForm({
-    preproject_id: preproject_id,
+    preproject_id: preproject.id,
     quantity: null,
     margin: null,
     unitary_price: null,

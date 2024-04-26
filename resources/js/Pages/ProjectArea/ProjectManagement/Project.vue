@@ -97,12 +97,15 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
+                            
                             <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                            Asignar Productos
+                                Asignar Productos
                             </Link>
                             <span v-else class="text-gray-400">Asignar Productos</span>
+
+                            
                             <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.liquidate', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">

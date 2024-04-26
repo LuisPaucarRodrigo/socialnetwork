@@ -20,6 +20,9 @@
         <p class="text-xl font-semibold text-gray-700">
           Presupuesto Inicial: S/. {{ props.project.initial_budget.toFixed(2) }}
         </p>
+        <p class="text-xl font-semibold text-gray-700">
+          Presupuesto Restante: S/. {{ props.project.remaining_budget.toFixed(2) }}
+        </p>
       </div>
       <br>
       <p v-if="props.budgetUpdate" class="text-xl font-semibold text-gray-700">Presupuesto Actual: S/. {{
@@ -175,6 +178,8 @@ const props = defineProps({
   budgetUpdate: Object,
   budgetUpdates: Object
 });
+
+console.log(props.project);
 
 const isModalOpen2 = ref(false);
 
