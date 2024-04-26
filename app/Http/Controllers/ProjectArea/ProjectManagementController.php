@@ -77,8 +77,8 @@ class ProjectManagementController extends Controller
 
             //Automatic assignation products from warehouse
             $preproject_entries = PreprojectEntry::where('preproject_id', $data["preproject_id"])
-                            ->get();
-            foreach($preproject_entries as $item) {
+                ->get();
+            foreach ($preproject_entries as $item) {
                 ProjectEntry::create([
                     'project_id' => $project->id,
                     'entry_id' => $item->entry_id,
@@ -118,8 +118,10 @@ class ProjectManagementController extends Controller
 
     public function project_resources($project_id)
     {
-        $project = Project::with(['preproject.quote.preproject_quote_services.resource_entry',
-        'preproject.quote.preproject_quote_services.service'])->find($project_id);
+        $project = Project::with([
+            'preproject.quote.preproject_quote_services.resource_entry',
+            'preproject.quote.preproject_quote_services.service'
+        ])->find($project_id);
 
         return Inertia::render('ProjectArea/ProjectManagement/ResourcesAssignment', [
             'project' => $project,
@@ -164,7 +166,8 @@ class ProjectManagementController extends Controller
         $data['code'] = 'SC' . str_pad($lastRequestId + 1, 5, '0', STR_PAD_LEFT);
 
         if ($request->id) {
-            if (Auth::user()->role_id !== 1) return response()->json(['error' => 'No tiene permisos'], 500);
+            if (Auth::user()->role_id !== 1)
+                return response()->json(['error' => 'No tiene permisos'], 500);
             $purchase_request = Purchasing_request::find($request->id);
             $purchase_request->update($data);
         } else {
@@ -202,23 +205,23 @@ class ProjectManagementController extends Controller
     public function project_product_index(Project $project_id)
     {
         $assigned_products = ProjectEntry::where('project_id', $project_id->id)
-                                ->with(
-                                    'entry.inventory.purchase_product',
-                                    'entry.inventory.warehouse',
-                                    'special_inventory.purchase_product',
-                                    'special_inventory.warehouse'
-                                )
-                                ->paginate(10);
+            ->with(
+                'entry.inventory.purchase_product',
+                'entry.inventory.warehouse',
+                'special_inventory.purchase_product',
+                'special_inventory.warehouse'
+            )
+            ->paginate(10);
         $project_id->load('preproject');
 
-        if ($project_id->preproject->customer_id == 1){
+        if ($project_id->preproject->customer_id == 1) {
             $warehouses = Warehouse::whereIn('id', [1, 3, 4])->get();
-        }else if ($project_id->preproject->customer_id == 2){
+        } else if ($project_id->preproject->customer_id == 2) {
             $warehouses = Warehouse::whereIn('id', [2, 3, 4])->get();
-        }else {
+        } else {
             $warehouses = Warehouse::whereIn('id', [3, 4])->get();
         }
-        
+
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectProducts', [
             'assigned_products' => $assigned_products,
@@ -257,8 +260,8 @@ class ProjectManagementController extends Controller
         if ($warehouse->category === 'Especial') {
             $project->load('preproject');
             $products = SpecialInventory::with('purchase_product')
-                            ->where('warehouse_id', $warehouse->id)
-                            ->where('cpe', $project->preproject->cpe)->get();
+                ->where('warehouse_id', $warehouse->id)
+                ->where('cpe', $project->preproject->cpe)->get();
             return response()->json(['products' => $products]);
         } else {
             $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse->id)->get();
@@ -268,10 +271,30 @@ class ProjectManagementController extends Controller
 
     public function inventory_products(Inventory $inventory)
     {
-        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')->where('inventory_id', $inventory->id)->get()
-        ->filter(function($item){
-            return $item->quantity_available > 0;
-        })->values()->all();
+        if ($inventory->warehouse_id === 4) {
+            $inventory = Entry::with(
+                'retrieval_entry',  
+                'inventory.purchase_product', 
+                )
+            ->whereHas('retrieval_entry', function($query){
+                $query->where('state', true);
+            })
+            ->where('inventory_id', $inventory->id)->get()
+            ->filter(function ($item) {
+                return $item->quantity_available > 0;
+            })->values()->all();
+        } else {
+            $inventory = Entry::with(
+                    'normal_entry', 
+                    'purchase_entry', 
+                    'inventory.purchase_product', 
+                    )
+                ->where('inventory_id', $inventory->id)->get()
+                ->filter(function ($item) {
+                    return $item->quantity_available > 0;
+                })->values()->all();
+        }
+
 
         return response()->json(['inventory' => $inventory]);
     }
@@ -303,7 +326,7 @@ class ProjectManagementController extends Controller
 
         return redirect()->back();
     }
-    
+
     public function project_product_update(ProjectProduct $project_product)
     {
         $output_quantity = $project_product->total_output_project_product;

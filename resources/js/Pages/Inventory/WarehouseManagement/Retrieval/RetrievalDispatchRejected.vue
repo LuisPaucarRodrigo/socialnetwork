@@ -3,7 +3,7 @@
     <Head title="Productos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
-            Despachos CONPROCO Rechazados
+            Despachos de Recuperos Rechazados
         </template>
 
         <div class="min-w-full p-3 rounded-lg shadow">
@@ -59,7 +59,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template  v-for="item in props.project_entries.data" :key="item.id">
+                        <template  v-for="item in props.retrievalDispatchesRejected.data" :key="item.id">
                             
                             <tr
                                 class="text-gray-700 border-b">
@@ -98,7 +98,7 @@
                 </table>
             </div>
             <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="project_entries.links" />
+                <pagination :links="retrievalDispatchesRejected.links" />
             </div>
         </div>
     </AuthenticatedLayout>
@@ -111,17 +111,16 @@ import { Head, router } from '@inertiajs/vue3';
 
 
 const props = defineProps({
-    project_entries: Object,
-    warehouseId: Number,
+    retrievalDispatchesRejected: Object,
     auth: Object
 });
 
 
 const optionChange = (e) => {
     if (e.target.value === "Por Aprobar" ) {
-        router.get(route('warehouses.dispatches', {warehouse: props.warehouseId}))
+        router.get(route('inventory.retrievalDispatch.index'))
     } else if (e.target.value === "Aprobados") {
-        router.get(route('warehouses.dispatches.approved', {warehouse: props.warehouseId}))
+        router.get(route('inventory.retrievalDispatch.approved'))
     }
 }
 

@@ -3,7 +3,7 @@
     <Head title="Productos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
-            Despachos CONPROCO Aprobados
+            Despachos De Recuperos Aprobados
         </template>
 
         <div class="min-w-full p-3 rounded-lg shadow">
@@ -59,7 +59,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template  v-for="item in props.project_entries.data" :key="item.id">
+                        <template  v-for="item in props.retrievalDispatchesApproved.data" :key="item.id">
                             
                             <tr
                                 class="text-gray-700 border-b">
@@ -196,7 +196,7 @@
                 </table>
             </div>
             <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="project_entries.links" />
+                <pagination :links="retrievalDispatchesApproved.links" />
             </div>
         </div>
 
@@ -247,10 +247,11 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 
 
 const props = defineProps({
-    project_entries: Object,
-    warehouseId: Number,
+    retrievalDispatchesApproved: Object,
     auth: Object
 });
+
+
 
 
 //Expandible row
@@ -303,9 +304,9 @@ const deleteOutput = (id) => {
 
 const optionChange = (e) => {
     if (e.target.value === "Por Aprobar" ) {
-        router.get(route('warehouses.dispatches', {warehouse: props.warehouseId}))
+        router.get(route('inventory.retrievalDispatch.index'))
     } else if (e.target.value === "Rechazados") {
-        router.get(route('warehouses.dispatches.rejected', {warehouse: props.warehouseId}))
+        router.get(route('inventory.retrievalDispatch.rejected'))
     }
 }
 

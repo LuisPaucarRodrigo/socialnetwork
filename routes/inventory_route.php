@@ -24,7 +24,7 @@ Route::post('/inventory/approve_purchase_orders/{warehouse}/approve', [Warehouse
 Route::get('/inventory/dispatches/{warehouse}', [WarehousesController::class, 'showDispatches'])->name('warehouses.dispatches');
 Route::get('/inventory/dispatches_approved/{warehouse}', [WarehousesController::class, 'showApprovedDispatches'])->name('warehouses.dispatches.approved');
 Route::get('/inventory/dispatches_rejected/{warehouse}', [WarehousesController::class, 'showRejectedDispatches'])->name('warehouses.dispatches.rejected');
-Route::post('/inventory/dispatches/{warehouse}/accept_or_decline', [WarehousesController::class, 'acceptOrDeclineDispatch'])->name('warehouses.dispatches.acceptordecline');
+Route::post('/inventory/dispatches/accept_or_decline', [WarehousesController::class, 'acceptOrDeclineDispatch'])->name('warehouses.dispatches.acceptordecline');
 
 //RESOURCE
 Route::get('/inventory/resource/purchase_orders', [WarehousesController::class, 'resourcePurchaseOrders'])->name('warehouses.resource');
@@ -78,7 +78,8 @@ Route::get('/inventory/show/retrieval_product/{product}/warehouses', [Warehouses
 
 //Retrieval_dispatch
 Route::get('/inventory/retrieval_dispatch/warehouses', [WarehousesController::class, 'retrievalDispatch'])->name('inventory.retrievalDispatch.index');
-Route::post('/inventory/approve/retrieval_dispatch/warehouses', [WarehousesController::class, 'retrievalDispatchApprove'])->name('inventory.retrievalDispatch.approve');
+Route::get('/inventory/retrieval_dispatch/warehouses/approved', [WarehousesController::class, 'retrievalDispatchApproved'])->name('inventory.retrievalDispatch.approved');
+Route::get('/inventory/retrieval_dispatch/warehouses/rejected', [WarehousesController::class, 'retrievalDispatchRejected'])->name('inventory.retrievalDispatch.rejected');
 
 //SERVICES
 Route::get('/inventory/services/warehouses', [WarehousesController::class, 'service_index'])->name('inventory.warehouses.service');
