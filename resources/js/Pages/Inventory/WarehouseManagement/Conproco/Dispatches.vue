@@ -60,19 +60,23 @@
                                         }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{
-        item.entry.inventory.purchase_product.name }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.entry.inventory.purchase_product.name }}
+                                    </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">S/. {{ item.unitary_price }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        S/. {{ item.unitary_price }}
+                                    </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.observation }}
+                                    </p>
                                 </td>
-
 
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <div v-if="item.state === null" class="flex space-x-3 justify-center">
@@ -114,7 +118,7 @@
                 <p class="mt-1 text-sm text-gray-600">
                     Esta acción le permitirá generar salidas de los productos solicitados por el proyecto.
                 </p>
-                <div class="mt-6 flex justify-end">
+                <div class="mt-6 flex justify-end gap-3">
                     <SecondaryButton @click="closeAcceptModal"> Cancelar </SecondaryButton>
                     <PrimaryButton @click="acceptRequest(project_entry_id)" type="button">
                         Aceptar
@@ -133,7 +137,7 @@
                 <p class="mt-1 text-sm text-gray-600">
                     Esta acción no se podrá revertir más adelante.
                 </p>
-                <div class="mt-6 flex justify-end">
+                <div class="mt-6 flex justify-end gap-3">
                     <SecondaryButton @click="closeDeclineModal"> Cancelar </SecondaryButton>
 
                     <DangerButton @click="declineRequest(project_entry_id)" type="button">
@@ -186,7 +190,7 @@ const openDeclineModal = (id) => {
 
 const declineRequest = () => {
     const data = { state: false, project_entry_id: project_entry_id };
-    router.post(route('warehouses.dispatches.acceptordecline', { warehouse: props.warehouseId }), data, {
+    router.post(route('warehouses.dispatches.acceptordecline'), data, {
         preserveScroll: true,
         onSuccess: () => {
             acceptModal.value = false
@@ -196,10 +200,9 @@ const declineRequest = () => {
 
 const acceptRequest = () => {
     const data = { state: true, project_entry_id: project_entry_id };
-    router.post(route('warehouses.dispatches.acceptordecline', { warehouse: props.warehouseId }), data, {
+    router.post(route('warehouses.dispatches.acceptordecline'), data, {
         preserveScroll: true,
         onSuccess: () => {
-            router.visit(route('warehouses.dispatches', { warehouse: props.warehouseId }))
             declineModal.value = false
         }
     });
