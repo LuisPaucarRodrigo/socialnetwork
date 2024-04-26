@@ -341,10 +341,6 @@ function formatearFecha(fecha) {
     return `${dia}/${mes}/${año}`;
 }
 
-const sufficientQuantity = (form) => {
-    let product = warehouseProducts.value.find((i) => i.id == form.product_id)
-    return form.quantity <= product.total_available;
-}
 
 
 //delete
@@ -388,17 +384,5 @@ const updateAssignatedProduct = () => {
     })
 }
 
-
-//has different price
-const productFinded = ref(null)
-const enableInput = ref(false)
-const handleTotalPriceVisibility = () => {
-    let product = warehouseProducts.value.find((i) => i.id == form.product_id)
-    productFinded.value = product
-    enableInput.value = product.has_different_price
-    if (form.unitary_price) {
-        form.unitary_price = null
-    }
-}
 
 </script>
