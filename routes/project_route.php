@@ -18,7 +18,6 @@ Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManag
 Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
 
 Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
-Route::post('/projectmanagement/resources/liquidate', [ProjectManagementController::class, 'project_resources_liquidate'])->name('projectmanagement.resourcesLiquidate');
 
 //CicsaSections
 Route::get('/cicsaSections', [CicsaSectionController::class, 'showSections'])->name('sections.cicsaSections');

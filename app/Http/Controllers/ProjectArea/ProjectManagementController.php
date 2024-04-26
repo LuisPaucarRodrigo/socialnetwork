@@ -112,18 +112,6 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_resources_liquidate(Request $request)
-    {
-        $data = $request->validate([
-            'project_resource_id' => 'required',
-            'liquidated_quantity' => 'required',
-            'refund_quantity' => 'required',
-            'observations' => 'nullable|string',
-        ]);
-        ProjectResourceLiquidate::create($data);
-        return redirect()->back();
-    }
-
     public function project_purchases_request_index($project_id)
     {
         $purchases = Purchasing_request::with('project')->where('project_id', $project_id)->paginate();
