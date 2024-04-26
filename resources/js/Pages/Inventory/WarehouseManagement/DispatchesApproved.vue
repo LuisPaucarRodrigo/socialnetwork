@@ -3,7 +3,7 @@
     <Head title="Productos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
-            Despachos CONPROCO
+            Despachos CONPROCO Aprobados
         </template>
 
         <div class="min-w-full p-3 rounded-lg shadow">
