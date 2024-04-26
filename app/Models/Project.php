@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class  Project extends Model
@@ -20,29 +19,24 @@ class  Project extends Model
     ];
 
     protected $appends = [
-        'total_assigned_resources_costs',
         'total_percentage_tasks',
         'total_percentage_tasks_completed',
-        'total_used_resources_costs',
         'remaining_budget',
         'total_assigned_product_costs',
         'total_refund_product_costs_no_different_price',
         'total_product_costs_with_liquidation',
         'preproject_quote',
         'preproject_quote_no_margin',
-        'total_resources_costs_with_liquidation',
         'total_employee_costs',
         'name',
         'code',
         'start_date',
         'end_date',
+        'total_products_cost',
+        'total_services_cost'
     ];
 
-
-    public function preproject()
-    {
-        return $this->belongsTo(Preproject::class, 'preproject_id');
-    }
+    // CALCULATED
     public function getPreprojectQuoteAttribute()
     {
         return $this->preproject?->quote?->total_amount;
@@ -53,12 +47,10 @@ class  Project extends Model
         return $this->preproject->quote->total_amount_no_margin;
     }
 
-
     public function getNameAttribute()
     {
         return $this->preproject()->first()?->quote?->name;
     }
-
 
     public function getCodeAttribute()
     {
@@ -76,32 +68,6 @@ class  Project extends Model
         $startDate = Carbon::parse($this->preproject()->first()?->quote->date);
         $daysFromQuote = optional($this->preproject()->first()->quote)->deliverable_time;
         return $startDate->addDays($daysFromQuote)->format('d/m/Y');
-    }
-
-
-    public function employees()
-    {
-        return $this->belongsToMany(Employee::class, 'project_employee')->withPivot('charge', 'id');
-    }
-
-    public function projectProducts()
-    {
-        return $this->hasMany(ProjectProduct::class);
-    }
-
-    public function tasks()
-    {
-        return $this->hasMany(Tasks::class);
-    }
-
-    public function additionalCosts()
-    {
-        return $this->hasMany(AdditionalCost::class);
-    }
-
-    public function purchasing_request()
-    {
-        return $this->hasMany(Purchasing_request::class);
     }
 
     public function getTotalPercentageTasksAttribute()
@@ -122,75 +88,30 @@ class  Project extends Model
         return $totalPercentageCompleted;
     }
 
-    public function resources()
-    {
-        return $this->belongsToMany(Resource::class, 'project_resource')->withPivot('id', 'quantity', 'observation');
-    }
-
-    public function project_resources()
-    {
-        return $this->hasMany(ProjectResource::class, 'resource_id');
-    }
-
-    public function resource_historials()
-    {
-        return $this->hasMany(ResourceHistorial::class, 'project_id');
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'project_product');
-    }
-
-
-    public function budget_updates()
-    {
-        return $this->hasMany(BudgetUpdate::class);
-    }
-
     public function getRemainingBudgetAttribute()
     {
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts->sum('amount');
         return $currentBudget
-            - $this->getTotalResourcesCostsWithLiquidationAttribute()
-            - $this->getTotalProductCostsWithLiquidationAttribute()
-            - $this->getTotalEmployeeCostsAttribute()
+            - $this->getTotalProductsCostAttribute()
+            - $this->getTotalServicesCostAttribute()
             - $additionalCosts;
     }
 
-    // --------------------------------  Resources Costs ---------------------------------//
-
-    public function getTotalAssignedResourcesCostsAttribute()
+    public function getTotalProductsCostAttribute()
     {
-        return $this->project_resources()->get()->sum(function ($item) {
-            return $item->quantity * $item->unit_price;
+        return $this->project_entries()->where('state', true)->get()->sum(function($item){
+            return $item->total_price;
         });
     }
 
+    // --------------------------------  Services Costs ---------------------------------//
 
-    public function getTotalUsedResourcesCostsAttribute()
+    public function getTotalServicesCostAttribute()
     {
-        return $this->project_resources()->get()->sum(function ($item) {
-            $used_quantity = 0;
-            if ($item->project_resource_liquidate) {
-                $used_quantity = $item->project_resource_liquidate->liquidated_quantity -
-                    $item->project_resource_liquidate->refund_quantity;
-            }
-            return $item->project_resource_liquidate && $used_quantity > 0 ?
-                ($used_quantity) * $item->resource->unit_price -
-                ($used_quantity) * $item->unit_price
-                : 0;
-        });
+        return $this->preproject()->first()->total_services_cost;
     }
-
-
-    public function getTotalResourcesCostsWithLiquidationAttribute()
-    {
-        return $this->getTotalAssignedResourcesCostsAttribute() + $this->getTotalUsedResourcesCostsAttribute();
-    }
-
 
     // --------------------------------  Product Costs ---------------------------------//
 
@@ -246,4 +167,46 @@ class  Project extends Model
             return $item->getSalaryPerDayAttribute() * $days;
         });
     }
+
+    //RELATIONS
+    public function preproject()
+    {
+        return $this->belongsTo(Preproject::class, 'preproject_id');
+    }
+
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'project_employee')->withPivot('charge', 'id');
+    }
+
+    public function projectProducts()
+    {
+        return $this->hasMany(ProjectProduct::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Tasks::class);
+    }
+
+    public function additionalCosts()
+    {
+        return $this->hasMany(AdditionalCost::class);
+    }
+
+    public function purchasing_request()
+    {
+        return $this->hasMany(Purchasing_request::class);
+    }
+
+    public function budget_updates()
+    {
+        return $this->hasMany(BudgetUpdate::class);
+    }
+
+    public function project_entries()
+    {
+        return $this->hasMany(ProjectEntry::class);
+    }
+
 }

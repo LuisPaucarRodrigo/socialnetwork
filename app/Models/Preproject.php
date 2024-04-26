@@ -24,7 +24,8 @@ class Preproject extends Model
         'has_quote',
         'state',
         'total_amount_entry',
-        'total_amount_entry_not_margin'
+        'total_amount_entry_not_margin',
+        'total_services_cost'
     ];
 
     //RELATIONS
@@ -104,5 +105,10 @@ class Preproject extends Model
         return $this->preproject_entries()->get()->sum(function($item){
             return $item->quantity * $item->unitary_price;
         });
+    }
+
+    public function getTotalServicesCostAttribute()
+    {
+        return $this->quote()->first()->total_services_cost;
     }
 }

@@ -12,7 +12,6 @@ use App\Models\SpecialInventory;
 use App\Models\Warehouse;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
 class SpecialWarehouseController extends Controller

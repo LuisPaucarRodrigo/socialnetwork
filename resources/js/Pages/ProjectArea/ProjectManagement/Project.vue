@@ -89,9 +89,9 @@
                             <span v-else class="text-gray-400">Calendario</span>
                             <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.resources', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Activos
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Servicios
                             </Link>
-                            <span v-else class="text-gray-400">Asignar Activos</span>
+                            <span v-else class="text-gray-400">Servicios</span>
                             <Link v-if="item.initial_budget >= 0"
                                 :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y

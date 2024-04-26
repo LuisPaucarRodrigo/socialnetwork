@@ -93,7 +93,6 @@ const regenerateRecoveryCodes = () => {
 
 const disableTwoFactorAuthentication = () => {
     disabling.value = true;
-
     router.delete(route('two-factor.disable'), {
         preserveScroll: true,
         onSuccess: () => {
