@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
         <template #header>
@@ -44,13 +45,13 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in project_products.data" :key="item.id" :class="[
-                            'text-gray-700',
-                            {
-                                'border-l-8': true,
-                                'border-green-500': item.state === 'Completo',
-                                'border-red-500': item.state === 'Incompleto'
-                            }
-                        ]">
+        'text-gray-700',
+        {
+            'border-l-8': true,
+            'border-green-500': item.state === 'Completo',
+            'border-red-500': item.state === 'Incompleto'
+        }
+    ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.product?.name }}</p>
                             </td>
@@ -93,15 +94,14 @@
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                     <div class="sm:col-span-3">
-                        <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
+                        <InputLabel for="quantity">Cantidad</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <TextInput id="quantity" type="number" min="1" v-model="form.quantity" />
                         </div>
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
+                        <InputLabel for="observation">Observaciones
                         </InputLabel>
                         <div class="mt-2">
                             <textarea id="observation" type="text" v-model="form.observation"
@@ -111,18 +111,15 @@
 
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                        type="button" @click="closeModal"> Cerrar </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="submit"> Agregar </button>
+                    <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
                 </div>
             </form>
         </Modal>
         <SuccessOperationModal :confirming="successAsignation" title="Salida registrada"
             message="Salida registrada de forma exitosa" />
-        <ErrorOperationModal :showError="errorAsignation" title="Cantidad Excedida" message="No es una cantidad válida" />
+        <ErrorOperationModal :showError="errorAsignation" title="Cantidad Excedida"
+            message="No es una cantidad válida" />
     </AuthenticatedLayout>
 </template>
 
@@ -131,12 +128,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Pagination from '@/Components/Pagination.vue'
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 
 
