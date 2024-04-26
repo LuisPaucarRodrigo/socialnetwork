@@ -22,7 +22,8 @@ class ProjectEntry extends Model
     protected $appends = [
         'outputs_state',
         'current_output_quantity',
-        'remaining_quantity'
+        'remaining_quantity',
+        'total_price'
     ];
 
     //Relations
@@ -71,6 +72,16 @@ class ProjectEntry extends Model
         //modificar
         return $this->getCurrentOutputQuantityAttribute() 
                 === $this->quantity ;
+    }
+
+    public function getTotalPriceAttribute()
+    {
+        // if ($this->project_entry_liquidation){
+        //     return $this->project_entry_liquidation->liquidated_quantity * $this->unitary_price ? $this->unitary_price : 0;
+        // } else{
+        //     return $this->quantity * $this->unitary_price ? $this->unitary_price : 0;
+        // }
+        return $this->quantity * ($this->unitary_price ? $this->unitary_price : 0);
     }
 
 }

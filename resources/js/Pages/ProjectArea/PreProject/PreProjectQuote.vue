@@ -786,6 +786,7 @@ const initialState = {
 }
 
 function servicesArrayMaker(data) {
+    
     let result = []
     data.forEach((item) => {
         let fo = result.find((x) => x.service_id === item.service_id)
@@ -1046,7 +1047,7 @@ const showServiceDetails = ref(false)
 const service_resources = ref([])
 
 function showServiceDetailsModal(array) {
-    console.log(array)
+    
     service_resources.value = [...array]
     showServiceDetails.value = true
 }
@@ -1054,7 +1055,5 @@ function showServiceDetailsModal(array) {
 const closeServiceDetailsModal = () => {
     showServiceDetails.value = false
 }
-
-
 
 </script>

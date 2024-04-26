@@ -37,7 +37,8 @@
                     <!-- Empleados -->
                     <div>
                         <div class="text-sm font-normal leading-6 text-gray-900 mb-3">Actualmente en el programa</div>
-                        <div v-for="employee in formation_program.employees.filter(item=>item.pivot.state === null)" :key="employee.id"
+                        <div v-for="employee in formation_program.employees.filter(item => item.pivot.state === null)"
+                            :key="employee.id"
                             class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0 border-b-2 border-gray-200">
                             <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
                             <button @click="openModalDelete(employee)" class="ml-2 flex-shrink-0">
@@ -47,14 +48,16 @@
                     </div>
                     <div>
                         <div class="text-sm font-normal leading-6 text-green-600 mb-3">Completaron el programa</div>
-                        <div v-for="employee in formation_program.employees.filter(item=>item.pivot.state == true)" :key="employee.id"
+                        <div v-for="employee in formation_program.employees.filter(item => item.pivot.state == true)"
+                            :key="employee.id"
                             class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0">
                             <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
                         </div>
                     </div>
                     <div>
                         <div class="text-sm font-normal leading-6 text-red-600 mb-3">No completaron el programa</div>
-                        <div v-for="employee in formation_program.employees.filter(item=>item.pivot.state == false)" :key="employee.id"
+                        <div v-for="employee in formation_program.employees.filter(item => item.pivot.state == false)"
+                            :key="employee.id"
                             class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0">
                             <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
                         </div>
@@ -77,14 +80,9 @@
                     Formacion. Esta accion no se podra revertir mas adelante.
                 </p>
                 <div class="mt-6 flex justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
-                        type="button" @click="closeModal()"> Cancelar
-                    </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="button" @click="delete_employee(selectedEmployee.pivot.id)"> Eliminar
-                    </button>
+                    <SecondaryButton type="button" @click="closeModal()">Cancelar</SecondaryButton>
+                    <DangerButton type="button" @click="delete_employee(selectedEmployee.pivot.id)">Eliminar
+                    </DangerButton>
                 </div>
             </div>
         </Modal>
@@ -97,6 +95,8 @@ import { Head, router } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 
 const { formation_program } = defineProps(['formation_program']);
 
