@@ -8,11 +8,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button type="button" @click="showToAddProduct"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
-                    + Agregar
-                </button>
-
+                <PrimaryButton type="button" @click="showToAddProduct">+ Agregar</PrimaryButton>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -35,7 +31,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Precio Unitario
                             </th>
-                            
+
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cantidad Asignada
@@ -63,29 +59,31 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in assigned_products.data" :key="item.id" :class="[
-                                'text-gray-700',
-                                {
-                                    'border-l-8': true,
-                                    'border-green-500': item.state === 'Completo',
-                                    'border-red-500': item.state === 'Incompleto'
-                                }
-                            ]">
+        'text-gray-700',
+        {
+            'border-l-8': true,
+            'border-green-500': item.state === 'Completo',
+            'border-red-500': item.state === 'Incompleto'
+        }
+    ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ item.entry_id 
-                                        ? item.entry.inventory.warehouse.name 
-                                        : item.special_inventory.warehouse.name
+                                    {{ item.entry_id
+        ? item.entry.inventory.warehouse.name
+        : item.special_inventory.warehouse.name
                                     }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ item.entry_id ? item.entry.inventory.purchase_product.code : item.special_inventory.purchase_product.code }}
+                                    {{ item.entry_id ? item.entry.inventory.purchase_product.code :
+        item.special_inventory.purchase_product.code }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ item.entry_id ? item.entry.inventory.purchase_product.name : item.special_inventory.purchase_product.name }}
+                                    {{ item.entry_id ? item.entry.inventory.purchase_product.name :
+        item.special_inventory.purchase_product.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -93,7 +91,7 @@
                                     S/. {{ item.unitary_price }}
                                 </p>
                             </td>
-                            
+
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                             </td>
@@ -101,7 +99,9 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.current_output_quantity }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.state === null ? 'Pendiente' : (item.state == true ? 'Aprobado' : 'Rechazado') }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.state === null ? 'Pendiente' :
+        (item.state
+            == true ? 'Aprobado' : 'Rechazado') }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ }}</p>
@@ -148,8 +148,7 @@
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="warehouse" class="font-medium leading-6 text-gray-900">Almacenes
-                        </InputLabel>
+                        <InputLabel for="warehouse">Almacenes</InputLabel>
                         <div class="mt-2">
                             <select required id="warehouse" @change="product_warehouse($event.target.value)"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -161,10 +160,10 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <div class="flex justify-between items-center">            
-                                <InputLabel for="product_id" class="font-medium leading-6 text-gray-900 mr-auto">Producto
-                                </InputLabel>
-                                <InputLabel class="font-medium leading-6 text-gray-900" v-if="form.special_inventory_id">{{ warehouseProducts?.find(i=>i.id === form.special_inventory_id)?.quantity }}</InputLabel>
+                        <div class="flex justify-between items-center">
+                            <InputLabel for="product_id">Producto</InputLabel>
+                            <InputLabel class="font-medium leading-6 text-gray-900" v-if="form.special_inventory_id">{{
+        warehouseProducts?.find(i => i.id === form.special_inventory_id)?.quantity }}</InputLabel>
                         </div>
                         <div class="mt-2" v-if="warehouseProductsfirst">
                             <select required id="product_id" v-model="form.special_inventory_id"
@@ -178,7 +177,8 @@
 
 
                         <div class="mt-2" v-else>
-                            <select required id="product_id" v-model="form.normal_inventory_id" @change="product_inventory($event.target.value)"
+                            <select required id="product_id" v-model="form.normal_inventory_id"
+                                @change="product_inventory($event.target.value)"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione normal</option>
                                 <option v-for="item in warehouseProducts" :key="item.id" :value="item.id">
@@ -187,59 +187,38 @@
                             </select>
                         </div>
 
-                        
+
                     </div>
 
                     <div class="sm:col-span-3" v-if="warehouseInventory.length != 0 && !warehouseInventory.cpe">
-                            <div class="flex justify-start items-center">
-                                <InputLabel for="inventory_id" class="font-medium leading-6 text-gray-900 mr-auto">
-                                    Inventario
-                                </InputLabel>
-                            </div>
-                            <div class="mt-2">
-                                <select required id="inventory_id" v-model="form.entry_id"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccione uno</option>
-                                    <option v-for="item in warehouseInventory" :key="item.id" :value="item.id">
-                                        {{ item.inventory.purchase_product.name }} -
-                                        {{ item.quantity_available }} -
-                                        S/ {{ item.unitary_price }}
-                                    </option>
-                                </select>
-                            </div>
+                        <div class="flex justify-start items-center">
+                            <InputLabel for="inventory_id">Inventario</InputLabel>
                         </div>
-
-                    <div class="sm:col-span-3">
-                        <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="quantity" type="number"
-                                 min="1" v-model="form.quantity"
-                                :max="form.entry_id ? warehouseInventory?.find(i=>i.id === form.entry_id)?.quantity_available : 0"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <select required id="inventory_id" v-model="form.entry_id"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccione uno</option>
+                                <option v-for="item in warehouseInventory" :key="item.id" :value="item.id">
+                                    {{ item.inventory.purchase_product.name }} -
+                                    {{ item.quantity_available }} -
+                                    S/ {{ item.unitary_price }}
+                                </option>
+                            </select>
                         </div>
                     </div>
 
-                    
-
-
-                    <!-- <div v-if="enableInput" class="sm:col-span-3">
-                        <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio unitario a
-                            descontar en
-                            Proyecto</InputLabel>
+                    <div class="sm:col-span-3">
+                        <InputLabel for="quantity">Cantidad</InputLabel>
                         <div class="mt-2">
-                            <TextInput id="unitary_price" type="number" min="1" step="0.01" v-model="form.unitary_price"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
+                                :max="form.entry_id ? warehouseInventory?.find(i => i.id === form.entry_id)?.quantity_available : 0" />
                         </div>
-                    </div> -->
+                    </div>
 
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                        type="button" @click="closeModal"> Cerrar </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="submit"> Agregar </button>
+                    <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
                 </div>
             </form>
         </Modal>
@@ -266,6 +245,8 @@ import { ref } from 'vue';
 import Pagination from '@/Components/Pagination.vue'
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Modal from '@/Components/Modal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import ConfirmateModal from '@/Components/ConfirmateModal.vue';
