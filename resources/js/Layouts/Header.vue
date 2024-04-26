@@ -71,7 +71,6 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import { ref } from 'vue'
 import Modal from '@/Components/Modal.vue';
-import * as XLSX from 'xlsx';
 import axios from 'axios';
 
 const props = defineProps({

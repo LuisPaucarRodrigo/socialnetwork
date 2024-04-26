@@ -20,10 +20,6 @@
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Cantidad de Activos
-                                        </th>
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Días
                                         </th>
                                         <th
@@ -34,42 +30,24 @@
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Margen
                                         </th>
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Valor total
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v v-for="(resource, index) in servicesArrayMaker(project.preproject.quote.preproject_quote_services)" :key="index" class="text-gray-700">
+                                    <tr v v-for="(resource, index) in project.preproject.quote.preproject_quote_services" :key="index" class="text-gray-700">
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p>
-                                                {{ resource.service_info.name }}
+                                                {{ resource.service.name }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">
-                                                {{ resource.resource_entries.length === 0 ? '-' : resource.resource_entries.length }}
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.days
-                                                }}</p>
+                                                {{ resource.days }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.rent_price }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">{{ resource.profit_margin }}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">
-                                                S/.{{
-                                            (resource.service_info.rent_price *
-                                                (resource.resource_entries.length === 0 ? 1 :
-                                                resource.resource_entries.length)
-                                                * resource.days * (1 + resource.profit_margin / 100)).toFixed(2) }}
-                                            </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p v-if="resource.has_liquidation"
@@ -119,10 +97,6 @@
                     </div>
                 </form>
             </Modal>
-            <SuccessOperationModal :confirming="successReturn" title="Recurso devuelto"
-                message="La devolución exitosa" />
-            <SuccessOperationModal :confirming="successAsignationLiquidate" title="Recurso liquidado"
-                message="La liquidación fue exitosa" />
         </div>
     </AuthenticatedLayout>
 </template>
@@ -168,37 +142,6 @@ const form_to_returned = useForm({ ...returned_initialState })
 const returned_closeModal = () => {
     returned_showModal.value = false;
 };
-const successReturn = ref(false)
 
-
-// --------------------------liquidation process-------------------------- //
-
-
-const successAsignationLiquidate = ref(false);
-
-function servicesArrayMaker(data) {
-
-    let result = []
-    data.forEach((item) => {
-        let fo = result.find((x) => x.service_id === item.service_id)
-        if (fo) {
-            fo.resource_entries.push(item.resource_entry)
-            fo.ids.push(item.id)
-        } else {
-            result.push({
-                service_id: item.service_id,
-                days: item.days,
-                profit_margin: item.profit_margin,
-                service_info: item.service,
-                resource_entries: item.resource_entry_id
-                    ? [item.resource_entry]
-                    : [],
-                rent_price: item.rent_price,
-                ids: [item.id]
-            })
-        }
-    })
-    return result
-}
 
 </script>
