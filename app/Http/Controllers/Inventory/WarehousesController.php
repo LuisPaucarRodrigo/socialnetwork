@@ -40,14 +40,14 @@ class WarehousesController extends Controller
 
     public function showProducts(Warehouse $warehouse)
     {
-        
+
         $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry', 'purchase_product')->paginate(10);
         // dd($products);
         return Inertia::render('Inventory/WarehouseManagement/Conproco/Inventory', [
             'products' => $products,
             'warehouseId' => $warehouse->id
         ]);
- 
+
     }
 
     public function createProducts(Warehouse $warehouse)
@@ -62,11 +62,12 @@ class WarehousesController extends Controller
     public function showEntries(Warehouse $warehouse, Inventory $inventory)
     {
         $entries = Entry::where('inventory_id', $inventory->id)
-                            ->with(
-                                'inventory.purchase_product', 
-                                'normal_entry', 'purchase_entry'
-                            )
-                            ->paginate(10);
+            ->with(
+                'inventory.purchase_product',
+                'normal_entry',
+                'purchase_entry'
+            )
+            ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Conproco/Entries', [
             'entries' => $entries,
             'warehouseId' => $warehouse->id
@@ -252,8 +253,8 @@ class WarehousesController extends Controller
     public function showDispatches(Warehouse $warehouse)
     {
         $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
-                $query->where('warehouse_id', $warehouse->id);
-            })
+            $query->where('warehouse_id', $warehouse->id);
+        })
             ->where('state', null)
             ->orderBy('created_at', 'desc')
             ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
@@ -268,8 +269,8 @@ class WarehousesController extends Controller
     public function showApprovedDispatches(Warehouse $warehouse)
     {
         $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
-                $query->where('warehouse_id', $warehouse->id);
-            })
+            $query->where('warehouse_id', $warehouse->id);
+        })
             ->where('state', true)
             ->orderBy('created_at', 'desc')
             ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
@@ -283,8 +284,8 @@ class WarehousesController extends Controller
     public function showRejectedDispatches(Warehouse $warehouse)
     {
         $project_entries = ProjectEntry::whereHas('entry.inventory', function ($query) use ($warehouse) {
-                $query->where('warehouse_id', $warehouse->id);
-            })
+            $query->where('warehouse_id', $warehouse->id);
+        })
             ->where('state', false)
             ->orderBy('created_at', 'desc')
             ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
@@ -296,18 +297,18 @@ class WarehousesController extends Controller
     }
 
 
-
-    public function acceptOrDeclineDispatch(Warehouse $warehouse, Request $request)
+    public function acceptOrDeclineDispatch(Request $request)
     {
+        // dd('halo');
         $request->validate([
             'state' => 'required|boolean',
             'project_entry_id' => 'required|numeric'
         ]);
-
         $project_entry = ProjectEntry::find($request->project_entry_id);
         $project_entry->update([
             'state' => $request->state
         ]);
+        return redirect()->back();
     }
 
     //RETRIEVALENTRY
@@ -389,6 +390,9 @@ class WarehousesController extends Controller
     public function retrievalDispatch()
     {
         $retrievalDispatch = ProjectEntry::with('project.preproject', 'entry.inventory.purchase_product', 'special_inventory.purchase_product')
+            ->whereHas('entry', function ($query) {
+                $query->whereHas('retrieval_entry');
+            })
             ->where('state', null)
             ->orderBy('created_at', 'desc')
             ->paginate();
@@ -397,13 +401,48 @@ class WarehousesController extends Controller
         ]);
     }
 
-    public function retrievalDispatchApprove(Request $request)
-    {
-        $approve = ProjectEntry::find($request->dispatch);
-        $approve->update([
-            'state' => 1
-        ]);
+
+    public function retrievalDispatchApproved(){
+        $retrievalDispatchesApproved = ProjectEntry::with(
+                'project.preproject', 
+                'entry.inventory.purchase_product', 
+                'entry.inventory.warehouse', 
+                'special_inventory.purchase_product', 
+                'project_entry_outputs'
+            )
+            ->whereHas('entry', function ($query) {
+                $query->whereHas('retrieval_entry');
+            })
+            ->where('state', true)
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+        return Inertia::render(
+            'Inventory/WarehouseManagement/Retrieval/RetrivalDispatchApproved', 
+            ['retrievalDispatchesApproved' => $retrievalDispatchesApproved]
+        );
     }
+
+
+    public function retrievalDispatchRejected(){
+        $retrievalDispatchesRejected = ProjectEntry::with(
+                'project.preproject', 
+                'entry.inventory.purchase_product', 
+                'entry.inventory.warehouse', 
+                'special_inventory.purchase_product', 
+            )
+            ->whereHas('entry', function ($query) {
+                $query->whereHas('retrieval_entry');
+            })
+            ->where('state', false)
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+        return Inertia::render(
+            'Inventory/WarehouseManagement/Retrieval/RetrievalDispatchRejected', 
+            ['retrievalDispatchesRejected' => $retrievalDispatchesRejected]
+        );
+    }
+
+
 
     //RESOURCE
     public function resourcePurchaseOrders()
@@ -461,19 +500,19 @@ class WarehousesController extends Controller
     }
 
     public function serialNumberResourcePurchaseOrders(Request $request)
-    {   
+    {
         $resource_id = ResourceEntry::find($request->resource_id);
         $resource_id->update([
             'serial_number' => $request->serial_number,
-            'state'=>true,
-            'condition'=>'Disponible'
+            'state' => true,
+            'condition' => 'Disponible'
         ]);
     }
 
     public function resource_create()
     {
-        return Inertia::render('Inventory/WarehouseManagement/Resource/CreateResource',[
-            'products' => Purchase_product::where('type','Activo')->get()
+        return Inertia::render('Inventory/WarehouseManagement/Resource/CreateResource', [
+            'products' => Purchase_product::where('type', 'Activo')->get()
         ]);
     }
 

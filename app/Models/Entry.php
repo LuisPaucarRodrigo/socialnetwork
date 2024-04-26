@@ -29,10 +29,8 @@ class Entry extends Model
         return $this->quantity - $this->reserved_quantity - $this->used_quantity;
     }
 
-    public function getUsedQuantityAttribute()
-    {
+    public function getUsedQuantityAttribute() {
         return $this->project_entry()
-                    ->whereDoesntHave('project_entry_liquidation')
                     ->get()
                     ->filter(function($item){
                         return $item->outputs_state;
@@ -59,7 +57,6 @@ class Entry extends Model
                                     ->get()
                                     ->sum('quantity');
         $quantityInProjects = $this->project_entry()
-                                    ->whereDoesntHave('project_entry_liquidation')
                                     ->get()
                                     ->filter(function($item){
                                         return !$item->outputs_state;
