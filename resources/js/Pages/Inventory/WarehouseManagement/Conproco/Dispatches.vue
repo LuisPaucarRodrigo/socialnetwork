@@ -193,7 +193,7 @@ const declineRequest = () => {
     router.post(route('warehouses.dispatches.acceptordecline'), data, {
         preserveScroll: true,
         onSuccess: () => {
-            acceptModal.value = false
+            declineModal.value = false
         }
     });
 }
@@ -203,7 +203,7 @@ const acceptRequest = () => {
     router.post(route('warehouses.dispatches.acceptordecline'), data, {
         preserveScroll: true,
         onSuccess: () => {
-            declineModal.value = false
+            acceptModal.value = false
         }
     });
 }
