@@ -296,8 +296,7 @@ class WarehousesController extends Controller
     }
 
 
-
-    public function acceptOrDeclineDispatch(Warehouse $warehouse, Request $request)
+    public function acceptOrDeclineDispatch(Request $request)
     {
         $request->validate([
             'state' => 'required|boolean',
@@ -389,6 +388,9 @@ class WarehousesController extends Controller
     public function retrievalDispatch()
     {
         $retrievalDispatch = ProjectEntry::with('project.preproject', 'entry.inventory.purchase_product', 'special_inventory.purchase_product')
+            ->whereHas('entry', function($query){
+                $query->whereHas('retrieval_entry');
+            })
             ->where('state', null)
             ->orderBy('created_at', 'desc')
             ->paginate();
@@ -397,13 +399,14 @@ class WarehousesController extends Controller
         ]);
     }
 
-    public function retrievalDispatchApprove(Request $request)
-    {
-        $approve = ProjectEntry::find($request->dispatch);
-        $approve->update([
-            'state' => 1
-        ]);
+
+    public function retrievalDispatchApproved () {
+
+
+        return Inertia::render('Inventory/WarehouseManagement/Retrieval/RetrivalDispatchApproved');
     }
+
+
 
     //RESOURCE
     public function resourcePurchaseOrders()
