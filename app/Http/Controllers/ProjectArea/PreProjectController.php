@@ -170,7 +170,8 @@ class PreProjectController extends Controller
     public function load_resource_entries($service_id)
     {
         $service = Service::find($service_id);
-        $resources_entries = ResourceEntry::with('purchase_product')->where('state', true)
+        $resources_entries = ResourceEntry::with('purchase_product')
+            ->where('state', true)
             ->where('condition', 'Disponible')
             ->where('purchase_product_id', $service->purchase_product_id)
             ->get();
