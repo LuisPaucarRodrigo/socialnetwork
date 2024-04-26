@@ -109,6 +109,6 @@ class Preproject extends Model
 
     public function getTotalServicesCostAttribute()
     {
-        return $this->quote()->first()->total_services_cost;
+        return $this->quote()?->first()?->total_services_cost;
     }
 }
