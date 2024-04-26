@@ -107,8 +107,10 @@ class Preproject extends Model
         });
     }
 
-    public function getTotalServicesCostAttribute()
+    public function getTotalServicesCostAttribute() : float
     {
-        return $this->quote()?->first()?->total_services_cost;
+        return $this->quote()?->first()?->total_services_cost 
+                    ? $this->quote()?->first()?->total_services_cost 
+                    : number_format(0, 2) ;
     }
 }
