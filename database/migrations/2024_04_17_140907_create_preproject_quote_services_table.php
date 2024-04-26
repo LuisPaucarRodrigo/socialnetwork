@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignId('preproject_quote_id');
             $table->foreignId('service_id');
             $table->foreignId('resource_entry_id')->nullable();
+            $table->boolean('state')->nullable();
+            $table->double('final_price')->nullable();
             $table->timestamps();
         });
     }
