@@ -38,6 +38,9 @@
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Valor total
                                         </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,14 +60,14 @@
                                                 }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.rent_price }}</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">S/. {{ resource.rent_price.toFixed(2) }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.profit_margin }}</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.profit_margin }} %</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">
-                                                S/.{{
+                                                S/. {{
                                             (resource.service_info.rent_price *
                                                 (resource.resource_entries.length === 0 ? 1 :
                                                 resource.resource_entries.length)
@@ -76,6 +79,12 @@
                                                 class="col-span-2 text-indigo-500 flex justify-end">
                                                 Liquidado
                                             </p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <button @click="open_service_liquidate(resource.id)"
+                                                class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
+                                                Liquidar
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -119,6 +128,43 @@
                     </div>
                 </form>
             </Modal>
+
+            <Modal :show="service_liquidate">
+                <form class="p-6" @submit.prevent="liquidate">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        Liquidación de Servicio
+                    </h2>
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                        <div class="sm:col-span-6 mt-2">
+                            <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
+                            </InputLabel>
+                            <div class="mt-2">
+                                <textarea id="observation" type="text"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="formLiquidate.observations" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-6 mt-2">
+                            <InputLabel for="observation" class="font-medium leading-6 text-gray-900">¿El activo fue consumido?</InputLabel>
+                            <div class="mt-2 space-y-2">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" class="form-radio text-indigo-600" :value="true" v-model="formLiquidate.state">
+                                    <span class="ml-1">Si</span>
+                                </label>
+                                <label class="inline-flex items-center ml-3">
+                                    <input type="radio" class="form-radio text-indigo-600" :value="false" v-model="formLiquidate.state">
+                                    <span class="ml-1">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex gap-3 justify-end">
+                        <SecondaryButton type="button" @click="close_service_liquidate"> Cerrar </SecondaryButton>
+                        <PrimaryButton type="submit"> Liquidar </PrimaryButton>
+                    </div>
+                </form>
+            </Modal>
+
             <SuccessOperationModal :confirming="successReturn" title="Recurso devuelto"
                 message="La devolución exitosa" />
             <SuccessOperationModal :confirming="successAsignationLiquidate" title="Recurso liquidado"
@@ -143,6 +189,29 @@ const { project, liquidations, services, auth } = defineProps({
     liquidations: Object,
     auth: Object
 })
+
+const service_liquidate = ref(false);
+console.log(project.preproject.quote.preproject_quote_services)
+
+const open_service_liquidate = (id) => {
+    service_liquidate.value = true;
+    formLiquidate.preproject_quote_service_id = id;
+}
+
+const close_service_liquidate = () => {
+    service_liquidate.value = false;
+}
+
+const liquidate = () => {
+    console.log(observations.value, preproject_quote_service_id.value)
+}
+
+const formLiquidate = useForm({
+    observations: '',
+    preproject_quote_service_id: null,
+    state: false
+});
+
 //Recursos
 const initialState = {
     project_id: project.id,

@@ -9,6 +9,7 @@ use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
+use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use Illuminate\Support\Facades\Route;
 
 Route::any('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
@@ -18,6 +19,7 @@ Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManag
 Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
 
 Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
+Route::post('/projectmanagement/resources/liquidate', [ServicesLiquidationsController::class, 'store'])->name('projectmanagement.resources.liquidate');
 
 //CicsaSections
 Route::get('/cicsaSections', [CicsaSectionController::class, 'showSections'])->name('sections.cicsaSections');
