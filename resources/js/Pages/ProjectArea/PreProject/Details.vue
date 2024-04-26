@@ -2,7 +2,7 @@
 
     <Head title="Gestion de Gastos Cuadrilla" />
     <AuthenticatedLayout
-        :redirectRoute="expense.purchasing_requests.due_date ? { route: 'purchasesrequest.quote_deadline.complete', params: { id: expense.purchasing_requests.project_id } } : { route: 'preprojects.purchase_quote', params: { id: expense.purchasing_requests.preproject_id } }">
+        :redirectRoute="expense.purchasing_requests.due_date ? { route: 'purchasesrequest.quote_deadline.complete', params: { id: props.expense.purchasing_requests.project_id } } : { route: 'preprojects.purchase_quote', params: { id: props.expense.purchasing_requests.preproject_id } }">
         <template #header>
             {{ expense.code }}
         </template>

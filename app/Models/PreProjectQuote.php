@@ -26,7 +26,8 @@ class PreProjectQuote extends Model
 
     protected $appends = [
         'total_amount', 
-        'total_amount_no_margin'
+        'total_amount_no_margin',
+        'total_services_cost'
     ];
 
     //CALCULATED
@@ -48,6 +49,13 @@ class PreProjectQuote extends Model
             return $item->quantity * $item->unitary_price;
         });
         return $totalItems + $totalProducts;
+    }
+
+    public function getTotalServicesCostAttribute()
+    {
+        return $this->preproject_quote_services()->get()->sum(function($item){
+            return $item->total_price;
+        });
     }
 
     // public function getCodeAttribute()
