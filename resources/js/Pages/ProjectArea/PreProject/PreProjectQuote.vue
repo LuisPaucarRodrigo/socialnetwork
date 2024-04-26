@@ -136,7 +136,7 @@
                                     <h2 class="text-base font-bold leading-6 text-gray-900 ">Productos
                                     </h2>
 
-                                    <button v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                    <!-- <button v-if="auth.user.role_id === 1 || preproject.quote === null"
                                         @click="openProductModal" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
@@ -144,9 +144,9 @@
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                                         </svg>
-                                    </button>
+                                    </button> -->
                                 </div>
-                                <p class="text-sm my-2">
+                                <p class="text-sm mt-6">
                                     Productos de las solicitudes de compra aceptadas
                                     para el
                                     anteproyecto</p>
@@ -252,9 +252,11 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <br>
+                                    <br>
 
                                     <p class="text-sm my-2">
-                                        Productos de almacén reservador para el proyecto
+                                        Productos de almacén reservados para el anteproyecto
                                     </p>
 
                                     <div class="overflow-x-auto mt-8">
@@ -316,32 +318,13 @@
                                                             {{ item.quantity }}
                                                         </p>
 
-                                                        <!-- <div v-else class="flex space-x-2 items-center">
-                                                            <input  
-                                                               required
-                                                               type="number" 
-                                                               min="0" 
-                                                               step="0.01"
-                                                               v-model="item.quantity"
-                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                        </div> -->
-
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <!-- v-if="preproject.quote" -->
                                                         <p class="text-gray-900">
                                                             S/. {{ (item.unitary_price) }}
                                                         </p>
-                                                        <!-- <div v-else class="flex space-x-2 items-center">
-                                                            <span>S/.</span><input  
-                                                               required
-                                                               type="number" 
-                                                               min="0" 
-                                                               step="0.01"
-                                                               v-model="item.unitary_price"
-                                                               class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                        </div> -->
-
+                                                       
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900 text-center">
@@ -359,11 +342,8 @@
                                             </tbody>
                                         </table>
                                     </div>
-
-
                                 </div>
                             </div>
-
 
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-10">
                                 <div class="flex gap-2 items-center">

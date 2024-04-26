@@ -4,14 +4,13 @@
     <template #header>
       Gastos
     </template>
-    Presupuesto actual: S/. {{ current_budget }} <br>
-    Presupuesto restante: S/. {{ remainingBudget.toFixed(2) }}
+    Presupuesto actual: S/. {{ current_budget.toFixed(2) }} <br>
+    Presupuesto restante: S/. {{ project.remaining_budget.toFixed(2) }}
     <br>
     <br>
     Total gastos en activos: S/. {{ project.total_assigned_resources_costs.toFixed(2) }}<br>
-    Total gastos en productos: S/. {{ project.total_product_costs_with_liquidation.toFixed(2) }}<br>
-    Total gastos en empleados: S/. {{ project.total_employee_costs.toFixed(2) }}<br>
-    Gastos adicionales: S/. {{ additionalCosts }}
+    Total gastos en productos: S/. {{ project.total_products_cost.toFixed(2) }}<br>
+    Gastos adicionales: S/. {{ additionalCosts.toFixed(2) }}
     <br>
     <br>
     <div>
@@ -80,11 +79,7 @@ const { project, current_budget, additionalCosts } = defineProps({
   additionalCosts: Number
 })
 
-
 const expenses = { data: [], links: [] }
-
-const remainingBudget = current_budget - project.total_resources_costs_with_liquidation - project.total_product_costs_with_liquidation - project.total_employee_costs - additionalCosts;
-
 
 const updateChart = () => {
   const ctx = document.getElementById('pieChart').getContext('2d');
@@ -101,16 +96,16 @@ const updateChart = () => {
   // Agregar el presupuesto restante y los costos adicionales a la data\
 
 
-  const dataWithRemainingBudget = [remainingBudget, additionalCosts, project.total_assigned_resources_costs, project.total_product_costs_with_liquidation];
+  const dataWithRemainingBudget = [project.remaining_budget, additionalCosts, project.total_products_cost];
 
   // Crear un nuevo gráfico con los datos actualizados
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Presupuesto Restante', 'Costos Adicionales', 'Costos de Activos', 'Costos de Productos'],
+      labels: ['Presupuesto Restante', 'Costos Adicionales', 'Costos de Productos'],
       datasets: [{
         data: dataWithRemainingBudget,
-        backgroundColor: [getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()],
+        backgroundColor: [getRandomColor(), getRandomColor(), getRandomColor()],
       }],
     },
     options: {

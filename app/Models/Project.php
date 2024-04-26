@@ -32,6 +32,8 @@ class  Project extends Model
         'code',
         'start_date',
         'end_date',
+        'total_products_cost',
+        'total_services_cost'
     ];
 
     // CALCULATED
@@ -92,10 +94,23 @@ class  Project extends Model
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts->sum('amount');
         return $currentBudget
-            // - $this->getTotalResourcesCostsWithLiquidationAttribute()
-            - $this->getTotalProductCostsWithLiquidationAttribute()
-            - $this->getTotalEmployeeCostsAttribute()
+            - $this->getTotalProductsCostAttribute()
+            - $this->getTotalServicesCostAttribute()
             - $additionalCosts;
+    }
+
+    public function getTotalProductsCostAttribute()
+    {
+        return $this->project_entries()->where('state', true)->get()->sum(function($item){
+            return $item->total_price;
+        });
+    }
+
+    // --------------------------------  Services Costs ---------------------------------//
+
+    public function getTotalServicesCostAttribute()
+    {
+        return $this->preproject()->first()->total_services_cost;
     }
 
     // --------------------------------  Product Costs ---------------------------------//
@@ -187,6 +202,11 @@ class  Project extends Model
     public function budget_updates()
     {
         return $this->hasMany(BudgetUpdate::class);
+    }
+
+    public function project_entries()
+    {
+        return $this->hasMany(ProjectEntry::class);
     }
 
 }

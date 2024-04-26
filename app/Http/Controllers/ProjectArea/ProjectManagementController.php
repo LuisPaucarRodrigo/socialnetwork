@@ -13,6 +13,7 @@ use App\Models\ProjectProduct;
 use App\Models\ProjectResourceLiquidate;
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
+use App\Models\PreprojectEntry;
 use App\Models\Warehouse;
 use App\Models\Preproject;
 use App\Models\ProjectEntry;
@@ -74,6 +75,20 @@ class ProjectManagementController extends Controller
             Purchasing_request::where('preproject_id', $request->preproject_id)
                 ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
+
+            //Automatic assignation products from warehouse
+            $preproject_entries = PreprojectEntry::where('preproject_id', $data["preproject_id"])
+                            ->get();
+            foreach($preproject_entries as $item) {
+                ProjectEntry::create([
+                    'project_id' => $project->id,
+                    'entry_id' => $item->entry_id,
+                    'quantity' => $item->quantity,
+                    'unitary_price' => $item->unitary_price
+                ]);
+            }
+            /////////////////////////////////////////////
+
             foreach ($employees as $employee) {
                 $empId = $employee['employee'];
                 $project->employees()->attach($empId['id'], ['charge' => $employee['charge']]);
@@ -174,26 +189,9 @@ class ProjectManagementController extends Controller
             ->orderByDesc('id')
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
-        $expenses = Purchasing_request::with([
-            'purchase_quotes' => function ($query) {
-                $query->whereHas('purchase_order', function ($subQuery) {
-                    $subQuery->where('state', 'Completada');
-                })->with('purchase_order');
-            }
-        ])
-            ->where([
-                ['project_id', $project_id->id],
-                ['is_accepted', 1],
-            ])
-            ->whereHas('purchase_quotes.purchase_order', function ($query) {
-                $query->where('state', 'Completada');
-            });
-        $total_expenses = $expenses->get()->sum(function ($expense) {
-            return $expense->purchase_quotes[0]['amount'];
-        });
 
-        $total_expenses += $project_id->additionalCosts->sum('amount');
         $additionalCosts = $project_id->additionalCosts->sum('amount');
+
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'project' => $project_id,
@@ -204,7 +202,14 @@ class ProjectManagementController extends Controller
 
     public function project_product_index(Project $project_id)
     {
-        $assigned_products = ProjectEntry::where('project_id', $project_id->id)->with('entry.inventory.purchase_product','special_inventory.purchase_product')->paginate(10);
+        $assigned_products = ProjectEntry::where('project_id', $project_id->id)
+                                ->with(
+                                    'entry.inventory.purchase_product',
+                                    'entry.inventory.warehouse',
+                                    'special_inventory.purchase_product',
+                                    'special_inventory.warehouse'
+                                )
+                                ->paginate(10);
         $project_id->load('preproject');
 
         if ($project_id->preproject->customer_id == 1){
@@ -252,7 +257,9 @@ class ProjectManagementController extends Controller
     {
         if ($warehouse->category === 'Especial') {
             $project->load('preproject');
-            $products = SpecialInventory::with('purchase_product')->where('warehouse_id', $warehouse->id)->where('cpe', $project->preproject->cpe)->get();
+            $products = SpecialInventory::with('purchase_product')
+                            ->where('warehouse_id', $warehouse->id)
+                            ->where('cpe', $project->preproject->cpe)->get();
             return response()->json(['products' => $products]);
         } else {
             $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse->id)->get();
@@ -262,7 +269,11 @@ class ProjectManagementController extends Controller
 
     public function inventory_products(Inventory $inventory)
     {
-        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')->where('inventory_id', $inventory->id)->get();
+        $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')->where('inventory_id', $inventory->id)->get()
+        ->filter(function($item){
+            return $item->quantity_available > 0;
+        })->values()->all();
+
         return response()->json(['inventory' => $inventory]);
     }
 
@@ -282,12 +293,12 @@ class ProjectManagementController extends Controller
                 'quantity' => $request->quantity
             ]);
         } else {
-            $unitary_price = Entry::find($request->entry_id);
+            $entry = Entry::find($request->entry_id);
             ProjectEntry::create([
                 'project_id' => $request->project_id,
                 'entry_id' => $request->entry_id,
                 'quantity' => $request->quantity,
-                'unitary_price' => $unitary_price->unitary_price
+                'unitary_price' => $entry->unitary_price
             ]);
         }
 

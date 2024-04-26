@@ -206,7 +206,6 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
@@ -271,13 +270,13 @@ const closeModal = () => {
 };
 
 const add_employee = () => {
-    if (project.preproject.quote.deliverable_time * employeeToAdd.value.employee.salary_per_day > project.remaining_budget ) {
-        showEmployeeError.value = true
-        setTimeout(()=>{
-            showEmployeeError.value = false
-        }, 1500)
-        return
-    }
+    // if (project.preproject.quote.deliverable_time * employeeToAdd.value.employee.salary_per_day > project.remaining_budget ) {
+    //     showEmployeeError.value = true
+    //     setTimeout(()=>{
+    //         showEmployeeError.value = false
+    //     }, 1500)
+    //     return
+    // }
     if (project) {
         router.post(route('projectmanagement.add.employee', { project_id: project.id }), { ...employeeToAdd.value },
             {
@@ -289,11 +288,7 @@ const add_employee = () => {
                     setTimeout(() => {
                         showPersonalAddModal.value = false;
                     }, 1500);
-                    form.employees.push(JSON.parse(JSON.stringify({
-                        name: employeeToAdd.value.employee.name,
-                        lastname: employeeToAdd.value.employee.lastname,
-                        pivot: { charge: employeeToAdd.value.charge }
-                    })));
+                    router.visit(route('projectmanagement.update', {project_id: project.id}))
                 }
             }
         )
