@@ -297,7 +297,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils'
