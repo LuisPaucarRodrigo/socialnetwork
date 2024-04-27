@@ -37,7 +37,7 @@
                         <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Rol</dt>
                         <select v-model="form.role_id" id="rol"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500">
-                            <option :value="props.users.role.id" disabled> {{ props.users.role.name }} | {{ props.users.role.description }}</option>
+                            <option value="" disabled>Seleccione un rol</option>
                             <option v-for="rol in rols" :key="rol.id" :value="rol.id">
                                 {{ rol.name }} | {{ rol.description }}
                             </option>
@@ -68,6 +68,7 @@ const props = defineProps({
 });
 
 const form = useForm({
+    user_id: props.users.id,
     name: props.users.name,
     platform: props.users.platform,
     email: props.users.email,
@@ -76,6 +77,6 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('users.update', props.users.id), form)
+    form.put(route('users.update', {id: props.users.id}))
 }
 </script>
