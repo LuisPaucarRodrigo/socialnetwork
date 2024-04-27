@@ -90,7 +90,7 @@
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
               Compras</Link>
               <Link v-if="item.id === 5" :href="route('warehouses.index.resource')"
-                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos</Link>
+                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Activos</Link>
               <Link v-if="item.id === 6" :href="route('inventory.warehouses.service')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
               Servicios</Link>
