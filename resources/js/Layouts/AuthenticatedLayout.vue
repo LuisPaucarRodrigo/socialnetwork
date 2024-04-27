@@ -22,7 +22,7 @@ import Header from '@/Layouts/Header.vue';
 import Navigation from '@/Layouts/Navigation.vue';
 
 const props = defineProps({
-    redirectRoute: [String, Object]
+    redirectRoute: [String, Object],
 })
 
 </script>
