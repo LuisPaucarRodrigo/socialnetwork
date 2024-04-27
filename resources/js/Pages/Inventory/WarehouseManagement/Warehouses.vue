@@ -20,9 +20,12 @@
             </h2>
             <div class="inline-flex justify-end gap-x-0 mb-4">
               <div class="flex space-x-3 justify-center">
-                <Link :href="'#'" class="text-green-600 hover:underline">
+                <button class="text-green-600 hover:underline" @click="informationWarehouse(item)">
+                  <EyeIcon class="h-4 w-4 ml-1" />
+                </button>
+                <!-- <Link :href="'#'" class="text-green-600 hover:underline">
                 <EyeIcon class="h-4 w-4 ml-1" />
-                </Link>
+                </Link> -->
               </div>
             </div>
           </div>
@@ -54,9 +57,12 @@
             </h2>
             <div class="inline-flex justify-end gap-x-0 mb-4">
               <div class="flex space-x-3 justify-center">
-                <Link :href="route('warehouses.warehouse', { warehouse: item })" class="text-green-600 hover:underline">
+                <button class="text-green-600 hover:underline" @click="informationWarehouse(item)">
+                  <EyeIcon class="h-4 w-4 ml-1" />
+                </button>
+                <!-- <Link :href="route('warehouses.warehouse', { warehouse: item })" class="text-green-600 hover:underline">
                 <EyeIcon class="h-4 w-4 ml-1" />
-                </Link>
+                </Link> -->
               </div>
             </div>
           </div>
@@ -89,9 +95,12 @@
             </h2>
             <div class="inline-flex justify-end gap-x-0 mb-4">
               <div class="flex space-x-3 justify-center">
-                <Link :href="route('warehouses.warehouse', { warehouse: 1 })" class="text-green-600 hover:underline">
+                <!-- <button class="text-green-600 hover:underline" @click="informationWarehouse(item)">
+                  <EyeIcon class="h-4 w-4 ml-1" />
+                </button> -->
+                <!-- <Link :href="route('warehouses.warehouse', { warehouse: 1 })" class="text-green-600 hover:underline">
                 <EyeIcon class="h-4 w-4 ml-1" />
-                </Link>
+                </Link> -->
               </div>
             </div>
           </div>
@@ -119,9 +128,12 @@
             </h2>
             <div class="inline-flex justify-end gap-x-0 mb-4">
               <div class="flex space-x-3 justify-center">
-                <Link :href="route('warehouses.warehouse', { warehouse: 1 })" class="text-green-600 hover:underline">
+                <!-- <button class="text-green-600 hover:underline" @click="informationWarehouse(item)">
+                  <EyeIcon class="h-4 w-4 ml-1" />
+                </button> -->
+                <!-- <Link :href="route('warehouses.warehouse', { warehouse: 1 })" class="text-green-600 hover:underline">
                 <EyeIcon class="h-4 w-4 ml-1" />
-                </Link>
+                </Link> -->
               </div>
             </div>
           </div>
@@ -141,6 +153,28 @@
         </div>
       </div>
     </div>
+    <Modal :show="showInformationWarehouse" :maxWidth="'md'">
+      <div class="p-6">
+        <h2 class="text-lg font-medium text-gray-900">
+          Información de Almacen
+        </h2>
+        <div class="mt-4">
+          <p class="text-sm text-gray-600"><span class="font-medium">Nombre:</span>
+            {{ information.name }}</p>
+          <p class="text-sm text-gray-600"><span class="font-medium">Descripcion:</span>
+            {{ information.description }}</p>
+          <p class="text-sm text-gray-600"><span class="font-medium">Encargado:</span>
+            {{ information.person_in_charge }}
+          </p>
+          <p class="text-sm text-gray-600"><span class="font-medium">Categoria:</span>
+            {{ information.category }}
+          </p>
+          <div class="mt-6 flex justify-end">
+            <PrimaryButton @click="closeInformationWarehouse">Cerrar</PrimaryButton>
+          </div>
+        </div>
+      </div>
+    </Modal>
   </AuthenticatedLayout>
 </template>
 
@@ -148,6 +182,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
   warehouses: Object,
@@ -155,4 +192,15 @@ const props = defineProps({
   auth: Object
 });
 
+const showInformationWarehouse = ref(false)
+const information = ref([])
+
+function informationWarehouse(item) {
+  showInformationWarehouse.value = true
+  information.value = item
+}
+
+function closeInformationWarehouse(){
+  showInformationWarehouse.value = false
+}
 </script>

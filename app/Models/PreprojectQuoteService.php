@@ -50,8 +50,8 @@ class PreprojectQuoteService extends Model
 
     public function getTotalPriceAttribute()
     {
-        if($this->resource_entry?->condition === 'Usado'){
-            return $this->resource_entry->current_price * $this->days;
+        if($this->state){
+            return $this->final_price;
         }else{
             return $this->rent_price * $this->days;
         }
