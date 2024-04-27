@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\UserRequest;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserRequest extends FormRequest
@@ -23,7 +24,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'dni' => 'required|string|max:8|unique',
+            'dni' => 'required|string|max:8|unique:users,dni',
             'email' => 'required|string|email|max:255',
             'platform' => 'required|string|max:255',
             'role_id' => 'required|numeric',

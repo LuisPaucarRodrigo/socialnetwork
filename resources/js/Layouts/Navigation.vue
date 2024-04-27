@@ -42,7 +42,7 @@ Usuarios
             </template>
 
             <template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
-                <a v-if="subSectionsCount + subSectionsCount7 > 0 || permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0"
+                <a v-if="subSectionsPorVencer.length + subSectionsPorVencer7.length > 0 || permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0"
                     class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingHumanResource = (showingMembers && showingMembers7) ? false : !showingHumanResource; showingMembers = showingMembers7 = false">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -102,7 +102,8 @@ Usuarios
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
                         <button @click="alarmVacaPermisions">
-                            <span v-if="permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0"
+                            <span
+                                v-if="permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
                                 {{ permissionsPorVencer.length + vacationPorVencer3.length }}</span>
                         </button>
@@ -131,7 +132,7 @@ Usuarios
                             <Link class="w-full flex items-center"
                                 :href="route('management.vacation.information.details', { vacation: item.id })">
                             <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red"  aria-hidden="true"
+                                <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
@@ -145,7 +146,7 @@ Usuarios
                             <Link class="w-full flex items-center"
                                 :href="route('management.vacation.information.details', { vacation: item.id })">
                             <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow"  aria-hidden="true"
+                                <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
@@ -161,9 +162,10 @@ Usuarios
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
-                        <button @click="toggleMembers"><span v-if="subSectionsCount + subSectionsCount7 > 0"
+                        <button @click="toggleMembers"><span
+                                v-if="subSectionsPorVencer.length + subSectionsPorVencer7.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
-                                {{ subSectionsCount + subSectionsCount7 }}
+                                {{ subSectionsPorVencer.length + subSectionsPorVencer7.length }}
                             </span>
                         </button>
                         <Link class="w-full" :href="route('sections.subSections')">Alarmas RRHH</Link>
@@ -224,10 +226,8 @@ Usuarios
             <template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingShoppingArea = !showingShoppingArea">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        :stroke="purchaseOrdersAlarms.length + shoppingPurchases.length + shoppingPurchases7.length +
-                        paymentAlarms3.length + paymentAlarms7.length > 0 ? 'red' : 'currentColor'"
-                        class="w-6 h-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" :stroke="purchaseOrdersAlarms.length + shoppingPurchases.length + shoppingPurchases7.length +
+        paymentAlarms3.length + paymentAlarms7.length > 0 ? 'red' : 'currentColor'" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
@@ -353,7 +353,7 @@ Usuarios
             </template>
 
             <template v-if="hasPermission('ProjectManager') || hasPermission('Project')">
-                <a v-if="cicsasubSectionsCount + cicsasubSectionsCount7 > 0"
+                <a v-if="cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length > 0"
                     class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingProyectArea = (cicsashowingMembers && cicsashowingMembers7) ? false : !showingProyectArea; cicsashowingMembers = cicsashowingMembers7 = false">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -384,9 +384,9 @@ Usuarios
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">
                         <button @click="toggleMembersCicsa">
-                            <span v-if="cicsasubSectionsCount + cicsasubSectionsCount7 > 0"
+                            <span v-if="cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
-                                {{ cicsasubSectionsCount + cicsasubSectionsCount7 }}
+                                {{ cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length }}
                             </span>
                         </button>
                         <Link class="w-full" :href="route('sections.cicsaSubSections')">Alarmas Cicsa</Link>
@@ -431,8 +431,9 @@ Usuarios
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingFinance = !showingFinance">
-                    <svg v-if="financePurchases.length + financePurchases7.length > 0" xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="w-6 h-6">
+                    <svg v-if="financePurchases.length + financePurchases7.length > 0"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="red" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                     </svg>
@@ -498,235 +499,252 @@ Usuarios
 </template>
 
 <script>
+import NavLink from '@/Components/NavLink.vue';
+import MyTransition from '@/Components/MyTransition.vue';
+import { Link, } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import axios from 'axios';
+
 export default {
     props: {
         userPermissions: {
             type: Array,
         }
     },
+
+    components: {
+        NavLink,
+        Link,
+        MyTransition,
+    },
+
+    data() {
+        return {
+            permissionsPorVencer: [],
+            vacationPorVencer3: [],
+            vacationPorVencer7: [],
+            subSectionsPorVencer: [],
+            subSectionsPorVencer7: [],
+            cicsasubSectionsPorVencer: [],
+            cicsasubSectionsPorVencer7: [],
+
+            purchaseOrdersAlarms: [],
+            paymentAlarms3: [],
+            paymentAlarms7: [],
+            formationProgramsAlarms: [],
+
+            financePurchases: [],
+            financePurchases7: [],
+
+            shoppingPurchases: [],
+            shoppingPurchases7: [],
+        };
+    },
+
+    setup() {
+        let showingUsersAndRols = ref(false)
+        let showingHumanResource = ref(false)
+        let showingFinance = ref(false)
+        let showingInventory = ref(false)
+        let showingProyectArea = ref(false)
+        let showingShoppingArea = ref(false)
+
+        let showingPermissionsAlarm = ref(false)
+        let showingVacationAlarm = ref(false)
+
+        let showingMembers = ref(false)
+        let showingMembers7 = ref(false)
+        let cicsashowingMembers = ref(false)
+        let cicsashowingMembers7 = ref(false)
+
+        let showPurchaseOrdersAlarms = ref(false)
+        let paymentPorVencer = ref(false)
+        let showFinancePurchaseQuoteAlarms = ref(false)
+        let showShoppingPurchaseRequestAlarms = ref(false)
+        let showFormationProgramsAlarms = ref(false)
+
+        return {
+            showingUsersAndRols,
+            showingHumanResource,
+            showingFinance,
+            showingInventory,
+            showingProyectArea,
+            showingShoppingArea,
+            showingPermissionsAlarm,
+            showingVacationAlarm,
+            showingMembers,
+            showingMembers7,
+            cicsashowingMembers,
+            cicsashowingMembers7,
+            showPurchaseOrdersAlarms,
+            paymentPorVencer,
+            showFinancePurchaseQuoteAlarms,
+            showShoppingPurchaseRequestAlarms,
+            showFormationProgramsAlarms
+        }
+    },
+
     methods: {
         hasPermission(permission) {
             return this.$page.props.userPermissions.includes(permission);
         },
+
+        async fetchAlarmPermissionsCount() {
+            try {
+                const response = await axios.get(route('alarm.permissions'));
+                this.permissionsPorVencer = response.data.permissions;
+            } catch (error) {
+                console.error('Error al obtener el contador de permissions:', error);
+            }
+        },
+
+        async fetchAlarmVacationCount() {
+            try {
+                const response = await axios.get(route('alarm.vacation'));
+                this.vacationPorVencer3 = response.data.vacation3;
+                this.vacationPorVencer7 = response.data.vacation7;
+            } catch (error) {
+                console.error('Error al obtener el contador de vacation:', error);
+            }
+        },
+
+        async fetchSubSectionsCount() {
+            try {
+                const response = await axios.get(route('sections.task'));
+                this.subSectionsPorVencer = response.data.subSections;
+                this.subSectionsPorVencer7 = response.data.subSections7;
+            } catch (error) {
+                console.error('Error al obtener el contador de subsecciones:', error);
+            }
+        },
+
+        async fetchCicsaSubSectionsCount() {
+            try {
+                const response = await axios.get(route('sections.cicsaTask'));
+                this.cicsasubSectionsPorVencer = response.data.subSections;
+                this.cicsasubSectionsPorVencer7 = response.data.subSections7;
+            } catch (error) {
+                console.error('Error al obtener el contador de subsecciones:', error);
+            }
+        },
+
+        async fetchPaymentsAlarm() {
+            try {
+                const response = await axios.get(route('payment.alarm'));
+                this.paymentAlarms3 = response.data.payment3Days;
+                this.paymentAlarms7 = response.data.payment7Days;
+
+            } catch (error) {
+                console.error('Error al obtener el contador de payments:', error);
+            }
+        },
+
+        async fetchPurchaseOrderAlarms() {
+            try {
+                const response = await axios.get(route('purchaseorders.alarms'));
+                this.purchaseOrdersAlarms = [...response.data.purchaseOrders3d.map(i => ({ ...i, 'critical': true })),
+                ...response.data.purchaseOrders7d
+                ]
+            } catch (error) {
+                console.error('Error al obtener alarmas de finanzas:', error);
+            }
+        },
+
+        async fetchFormationProgramAlarms() {
+            try {
+                const response = await axios.get(route('employees_in_programs.alarms'))
+                this.formationProgramsAlarms = [
+                    ...response.data.alarm3d.map(i => ({ ...i, critical: true })),
+                    ...response.data.alarm7d
+                ]
+            } catch (error) {
+                console.error('Error al obtener alarmas de programa de formación:', error);
+            }
+        },
+
+        async fetchFinancePurchases() {
+            try {
+                const response = await axios.get(route('approve_quote.alarm'));
+                this.financePurchases = response.data.purchasesLessThanThreeDays;
+                this.financePurchases7 = response.data.purchasesBetweenFourAndSevenDays;
+            } catch (error) {
+                console.error('Error al obtener el contador de subsecciones:', error);
+            }
+        },
+
+        async fetchPurchasesRequest() {
+            try {
+                const response = await axios.get(route('purchasesrequest.task'));
+                this.shoppingPurchases = Object.values(response.data.purchasesLessThanThreeDays);
+                this.shoppingPurchases7 = Object.values(response.data.purchasesBetweenFourAndSevenDays);
+            } catch (error) {
+                console.error('Error al obtener el contador de subsecciones:', error);
+            }
+        },
+        alarmVacaPermisions() {
+            this.showingPermissionsAlarm = !this.showingPermissionsAlarm;
+            this.showingVacationAlarm = !this.showingVacationAlarm;
+        },
+
+        toggleMembers() {
+            this.showingMembers7 = !this.showingMembers7;
+            this.showingMembers = !this.showingMembers;
+        },
+        toggleMembersCicsa() {
+            this.cicsashowingMembers7 = !this.cicsashowingMembers7;
+            this.cicsashowingMembers = !this.cicsashowingMembers;
+        },
+        tooglePurchaseQuote() {
+            this.showFinancePurchaseQuoteAlarms = !this.showFinancePurchaseQuoteAlarms;
+        },
+        tooglePayment() {
+            this.paymentPorVencer = !this.paymentPorVencer;
+        },
+        tooglePurchaseRequest() {
+            this.showShoppingPurchaseRequestAlarms = !this.showShoppingPurchaseRequestAlarms;
+        }
     },
+
+    mounted() {
+        if (this.hasPermission('HumanResourceManager') || this.hasPermission('HumanResource')) {
+            this.fetchAlarmPermissionsCount();
+            this.fetchAlarmVacationCount();
+            this.fetchFormationProgramAlarms();
+            this.fetchSubSectionsCount();
+        }
+        if (this.hasPermission('ProjectManager') || this.hasPermission('Project')) {
+            this.fetchCicsaSubSectionsCount();
+        }
+
+        if (this.hasPermission('PurchasingManager') || this.hasPermission('Purchasing')) {
+            this.fetchPurchasesRequest();
+            this.fetchPurchaseOrderAlarms();
+            this.fetchPaymentsAlarm();
+        }
+        if (this.hasPermission('FinanceManager') || this.hasPermission('Finance')) {
+            this.fetchFinancePurchases();
+        }
+        setInterval(() => {
+            if (this.hasPermission('HumanResourceManager') || this.hasPermission('HumanResource')) {
+                this.fetchAlarmPermissionsCount();
+                this.fetchAlarmVacationCount();
+                this.fetchFormationProgramAlarms();
+                this.fetchSubSectionsCount();
+            }
+            if (this.hasPermission('ProjectManager') || this.hasPermission('Project')) {
+                this.fetchCicsaSubSectionsCount();
+            }
+
+            if (this.hasPermission('PurchasingManager') || this.hasPermission('Purchasing')) {
+                this.fetchPurchasesRequest();
+                this.fetchPurchaseOrderAlarms();
+                this.fetchPaymentsAlarm();
+            }
+            if (this.hasPermission('FinanceManager') || this.hasPermission('Finance')) {
+                this.fetchFinancePurchases();
+            }
+        }, 60000);
+    },
+
 }
-</script>
-
-<script setup>
-import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-
-const permissionsPorVencer = ref([]);
-const vacationPorVencer3 = ref([]);
-const vacationPorVencer7 = ref([]);
-const subSectionsCount = ref(0);
-const subSectionsCount7 = ref(0);
-const subSectionsPorVencer = ref([]);
-const subSectionsPorVencer7 = ref([]);
-const cicsasubSectionsCount = ref(0);
-const cicsasubSectionsCount7 = ref(0);
-const cicsasubSectionsPorVencer = ref([]);
-const cicsasubSectionsPorVencer7 = ref([]);
-
-const purchaseOrdersAlarms = ref([]);
-const paymentAlarms3 = ref([]);
-const paymentAlarms7 = ref([]);
-const formationProgramsAlarms = ref([]);
-
-const financePurchases = ref([]);
-const financePurchases7 = ref([]);
-
-const shoppingPurchases = ref([]);
-const shoppingPurchases7 = ref([]);
-
-const showingUsersAndRols = ref(false);
-const showingHumanResource = ref(false);
-const showingFinance = ref(false);
-const showingInventory = ref(false);
-const showingProyectArea = ref(false);
-const showingShoppingArea = ref(false);
-
-const showingPermissionsAlarm = ref(false);
-const showingVacationAlarm = ref(false);
-
-const showingMembers = ref(false);
-const showingMembers7 = ref(false);
-const cicsashowingMembers = ref(false);
-const cicsashowingMembers7 = ref(false);
-
-const showPurchaseOrdersAlarms = ref(false);
-const paymentPorVencer = ref(false);
-const showFinancePurchaseQuoteAlarms = ref(false);
-const showShoppingPurchaseRequestAlarms = ref(false);
-const showFormationProgramsAlarms = ref(false);
-
-const fetchAlarmPermissionsCount = async () => {
-    try {
-        const response = await axios.get('/permissions/alarm');
-        permissionsPorVencer.value = response.data.permissions;
-    } catch (error) {
-        console.error('Error al obtener el contador de permissions:', error);
-    }
-};
-
-const fetchAlarmVacationCount = async () => {
-    try {
-        const response = await axios.get('/vacation/alarm');
-        vacationPorVencer3.value = response.data.vacation3;
-        vacationPorVencer7.value = response.data.vacation7;
-    } catch (error) {
-        console.error('Error al obtener el contador de vacation:', error);
-    }
-};
-
-const fetchSubSectionsCount = async () => {
-    try {
-        const response = await axios.get('/doTask');
-        subSectionsCount.value = response.data.totalSubSections;
-        subSectionsPorVencer.value = response.data.subSections;
-    } catch (error) {
-        console.error('Error al obtener el contador de subsecciones:', error);
-    }
-};
-
-const fetchSubSectionsCount7 = async () => {
-    try {
-        const response = await axios.get('/doTask2');
-        subSectionsCount7.value = response.data.totalSubSections;
-        subSectionsPorVencer7.value = response.data.subSections;
-    } catch (error) {
-        console.error('Error al obtener el contador de subsecciones:', error);
-    }
-};
-
-const fetchCicsaSubSectionsCount = async () => {
-    try {
-        const response = await axios.get('/cicsaDoTask');
-        cicsasubSectionsCount.value = response.data.totalSubSections;
-        cicsasubSectionsPorVencer.value = response.data.subSections;
-    } catch (error) {
-        console.error('Error al obtener el contador de subsecciones:', error);
-    }
-};
-
-const fetchCicsaSubSectionsCount7 = async () => {
-    try {
-        const response = await axios.get('/cicsaDoTask2');
-        cicsasubSectionsCount7.value = response.data.totalSubSections;
-        cicsasubSectionsPorVencer7.value = response.data.subSections;
-    } catch (error) {
-        console.error('Error al obtener el contador de subsecciones:', error);
-    }
-};
-
-const fetchPaymentsAlarm = async () => {
-    try {
-        const response = await axios.get(route('payment.alarm'));
-        paymentAlarms3.value = response.data.payment3Days;
-        paymentAlarms7.value = response.data.payment7Days;
-    } catch (error) {
-        console.error('Error al obtener el contador de payments:', error);
-    }
-};
-
-const fetchFinanceAlarms = async () => {
-    try {
-        const response = await axios.get(route('purchaseorders.alarms'));
-        purchaseOrdersAlarms.value = [
-            ...response.data.purchaseOrders3d.map(i => ({ ...i, critical: true })),
-            ...response.data.purchaseOrders7d
-        ];
-    } catch (error) {
-        console.error('Error al obtener alarmas de finanzas:', error);
-    }
-};
-
-const fetchFormationProgramAlarms = async () => {
-    try {
-        const response = await axios.get(route('employees_in_programs.alarms'));
-        formationProgramsAlarms.value = [
-            ...response.data.alarm3d.map(i => ({ ...i, critical: true })),
-            ...response.data.alarm7d
-        ];
-    } catch (error) {
-        console.error('Error al obtener alarmas de programa de formación:', error);
-    }
-};
-
-const fetchFinancePurchases = async () => {
-    try {
-        const response = await axios.get(route('finance.task'));
-        financePurchases.value = response.data.purchasesLessThanThreeDays;
-        financePurchases7.value = response.data.purchasesBetweenFourAndSevenDays;
-    } catch (error) {
-        console.error('Error al obtener el contador de subsecciones:', error);
-    }
-};
-
-const fetchPurchasesRequest = async () => {
-    try {
-        const response = await axios.get(route('purchasesrequest.task'));
-        shoppingPurchases.value = Object.values(response.data.purchasesLessThanThreeDays);
-        shoppingPurchases7.value = Object.values(response.data.purchasesBetweenFourAndSevenDays);
-    } catch (error) {
-        console.error('Error al obtener el contador de subsecciones:', error);
-    }
-};
-
-const alarmVacaPermisions = () => {
-    showingPermissionsAlarm.value = !showingPermissionsAlarm.value;
-    showingVacationAlarm.value = !showingVacationAlarm.value;
-};
-
-const toggleMembers = () => {
-    showingMembers7.value = !showingMembers7.value;
-    showingMembers.value = !showingMembers.value;
-};
-
-const toggleMembersCicsa = () => {
-    cicsashowingMembers7.value = !cicsashowingMembers7.value;
-    cicsashowingMembers.value = !cicsashowingMembers.value;
-};
-
-const tooglePurchaseQuote = () => {
-    showFinancePurchaseQuoteAlarms.value = !showFinancePurchaseQuoteAlarms.value;
-};
-
-const tooglePayment = () => {
-    paymentPorVencer.value = !paymentPorVencer.value;
-};
-
-const tooglePurchaseRequest = () => {
-    showShoppingPurchaseRequestAlarms.value = !showShoppingPurchaseRequestAlarms.value;
-};
-
-onMounted(() => {
-    fetchAlarmPermissionsCount();
-    fetchAlarmVacationCount();
-    fetchSubSectionsCount();
-    fetchSubSectionsCount7();
-    fetchCicsaSubSectionsCount();
-    fetchCicsaSubSectionsCount7();
-    fetchFinanceAlarms();
-    fetchFinancePurchases();
-    fetchPurchasesRequest();
-    fetchPaymentsAlarm();
-    fetchFormationProgramAlarms();
-
-    setInterval(() => {
-        fetchAlarmPermissionsCount();
-        fetchAlarmVacationCount();
-        fetchSubSectionsCount();
-        fetchSubSectionsCount7();
-        fetchCicsaSubSectionsCount();
-        fetchCicsaSubSectionsCount7();
-        fetchFinanceAlarms();
-        fetchFinancePurchases();
-        fetchPurchasesRequest();
-        fetchPaymentsAlarm();
-        fetchFormationProgramAlarms();
-    }, 60000);
-});
 </script>

@@ -82,8 +82,8 @@ Route::get('/management_vacation/information_additional/{id}/showDocument', [Vac
 // Route::get('/management_vacation/information_additional/{id}/decline', [VacationController::class, 'decline'])->name('management.vacation.information.decline');
 // Route::delete('/management_vacation/information_additional/{vacation}/delete', [VacationController::class, 'destroy'])->name('management.vacation.information.destroy');
 
-Route::get('/permissions/alarm', [VacationController::class, 'alarmPermissions']);
-Route::get('/vacation/alarm', [VacationController::class, 'alarmVacation']);
+Route::get('/permissions/alarm', [VacationController::class, 'alarmPermissions'])->name('alarm.permissions');
+Route::get('/vacation/alarm', [VacationController::class, 'alarmVacation'])->name('alarm.vacation');
 
 
 
@@ -119,7 +119,6 @@ Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name
 // Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
 
 Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.task');
-Route::get('/doTask2', [SectionController::class, 'doTask2'])->name('sections.task2');
 
 Route::get('/calendar_alarm', [SectionController::class, 'calendarAlarm'])->name('sections.calendar');
 

@@ -11,8 +11,7 @@
                 <PrimaryButton @click="add_purchase_request" type="button">
                     + Agregar
                 </PrimaryButton>
-                <PrimaryButton @click="expenses" type="button"
-                    class="bg-teal-600 hover:bg-teal-500">
+                <PrimaryButton @click="expenses" type="button" class="bg-teal-600 hover:bg-teal-500">
                     Gastos
                 </PrimaryButton>
                 <Link :href="route('projectmanagement.additionalCosts', { project_id: props.project.id })"
@@ -91,7 +90,7 @@
                                     </Link>
                                     <div>
                                         <Link v-if="purchase.state == 'Pendiente'" class="text-blue-900 "
-                                            :href="route('purchasesrequest.edit', { id: purchase.id, project_id: project.id })">
+                                            :href="route('projectmanagement.purchases_request.edit', { id: purchase.id, project_id: project.id })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -168,7 +167,7 @@
                 <p class="mt-1 text-sm text-gray-600">
                     Ingrese la fecha de limite de compra para poder habilitar la aprobacion de cotizaciones
                 </p>
-                <TextInput type="date" v-model="form.due_date" id="due_date"/>
+                <TextInput type="date" v-model="form.due_date" id="due_date" />
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeModalDate">Cancel</SecondaryButton>
 
@@ -231,7 +230,7 @@ const closeModal = () => {
 };
 
 const add_purchase_request = () => {
-    router.get(route('purchasesrequest.create', {
+    router.get(route('projectmanagement.purchases_request.create', {
         project_id: props.project.id
     }));
 };
