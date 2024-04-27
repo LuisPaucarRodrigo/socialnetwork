@@ -141,7 +141,7 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_create($project_id, $purchase_id = null)
+    public function project_purchases_request_create($project_id)
     {
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
