@@ -14,7 +14,7 @@
           </label>
           <input type="file" id="imageInput" @change="loadImage" accept="image/*" class="hidden">
           <div class="mt-10 flex justify-end">
-            <button @click="cropAndSave" type="button"
+            <button v-if="imageUrl" @click="cropAndSave" type="button"
               class="bg-blue-500 text-white py-2 px-4 rounded mr-2">Guardar</button>
             <button @click="closeModal" type="button" class="bg-gray-300 py-2 px-4 rounded">Close</button>
           </div>

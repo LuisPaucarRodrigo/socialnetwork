@@ -41,7 +41,7 @@ class ManagementEmployees extends Controller
             })->paginate();
         }
         $employees->each(function ($employee) {
-            $employee->cropped_image = url('/image/profile/' . $employee->cropped_image);
+            $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
 
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
@@ -74,7 +74,7 @@ class ManagementEmployees extends Controller
         })
         ->get();
         $employees->each(function ($employee) {
-            $employee->cropped_image = url('/image/profile/' . $employee->cropped_image);
+            $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
 
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [

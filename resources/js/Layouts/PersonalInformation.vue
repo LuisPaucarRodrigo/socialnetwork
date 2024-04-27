@@ -4,7 +4,7 @@
     </div>
     <div class="mt-6 border-t border-gray-100">
         <div class="text-lg font-semibold mb-4">Personal</div>
-        <div v-if="details.cropped_image" class="flex justify-center mt-6">
+        <div class="flex justify-center mt-6">
             <img :src="image_url(details.cropped_image)" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
         </div>
         <div class="sm:flex lg:justify-between lg:gap-8">
@@ -71,7 +71,7 @@ export default {
     },
     methods: {
         image_url(croppedImage) {
-            return `/image/profile/${croppedImage}`;
+            return croppedImage ? `/image/profile/${croppedImage}` : `/image/projectimage/DefaultUser.png`;
         },
         formattedDate(fecha) {
             return formattedDate(fecha);
