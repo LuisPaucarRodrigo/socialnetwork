@@ -8,7 +8,7 @@
   </template>
   
   <script setup>
-  import { onMounted, ref, computed, defineProps, defineEmits } from 'vue';
+  import { onMounted, ref, computed } from 'vue';
   
   const props = defineProps(['modelValue', 'toUppercase']);
   const emits = defineEmits(['update:modelValue']);
