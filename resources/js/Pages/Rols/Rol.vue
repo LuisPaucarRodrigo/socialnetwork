@@ -80,16 +80,14 @@
                                 </div>
                             </div>
                             <div>
-                                <InputLabel for="description">Descripcion
-                                </InputLabel>
+                                <InputLabel for="description">Descripcion</InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="form.description" id="description" />
                                     <InputError :message="form.errors.description" />
                                 </div>
                             </div>
                             <div>
-                                <InputLabel for="permission">Permisos
-                                </InputLabel>
+                                <InputLabel for="permission">Permisos</InputLabel>
                                 <select required multiple v-model="form.permission" id="permission"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled>

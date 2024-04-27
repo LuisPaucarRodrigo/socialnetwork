@@ -180,7 +180,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
-import { Head, router, useForm, Link } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
