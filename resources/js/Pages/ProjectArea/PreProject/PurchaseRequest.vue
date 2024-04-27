@@ -5,13 +5,11 @@
         <template #header>
             Lista de solicitudes de Anteproyecto
         </template>
-
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2">
-                <button v-if="!preproject.has_quote" @click="add_purchase_request" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <PrimaryButton v-if="!preproject.has_quote" @click="add_purchase_request" type="button">
                     + Agregar
-                </button>
+                </PrimaryButton>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full ">
@@ -127,6 +125,7 @@
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Modal from '@/Components/Modal.vue';
@@ -161,9 +160,6 @@ const closeModal = () => {
 };
 
 const add_purchase_request = () => {
-    console.log(route('preprojects.request.create', {
-        id: props.preproject.id
-    }))
     router.get(route('preprojects.request.create', {
         id: props.preproject.id
     }));
