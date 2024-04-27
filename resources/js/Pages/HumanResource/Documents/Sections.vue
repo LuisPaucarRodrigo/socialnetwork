@@ -32,10 +32,10 @@
                   <div class="flex items-center space-x-2">
                     <Link :href="route('documents.subdivisions', { section: section.id })"
                       class="text-blue-600 hover:underline">
-                    <DocumentArrowUpIcon class="h-4 w-4" />
+                    <DocumentArrowUpIcon class="h-5 w-5" />
                     </Link>
                     <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
-                      <TrashIcon class="h-4 w-4" />
+                      <TrashIcon class="h-5 w-5" />
                     </button>
                   </div>
                 </td>
@@ -62,7 +62,7 @@
                   </div>
                 </div>
                 <div class="mt-6 flex items-center justify-end gap-x-6">
-                  <SecondaryButton @click="closeCreateSectionModal"> Cancel </SecondaryButton>
+                  <SecondaryButton @click="closeCreateSectionModal"> Cancelar </SecondaryButton>
                   <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                     Guardar
                   </PrimaryButton>
