@@ -11,6 +11,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class FormationDevelopment extends Controller
 {
@@ -163,6 +164,9 @@ class FormationDevelopment extends Controller
                       ->where('state', null);
             })
             ->get();
+            Log::info("=========================");
+            Log::info($alarm3d);
+            Log::info("=========================");
         $alarm7d = Employee::with('assignated_programs.formation_program')
             ->whereHas('assignated_programs', function($query) use ($today, $alarm3d) {
                 $query->where('end_date', '>', $today->copy()->addDays(3))
