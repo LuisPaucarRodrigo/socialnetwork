@@ -1,7 +1,7 @@
 <template>
     <Head title="Agregar Solicitud" />
     <AuthenticatedLayout
-        :redirectRoute="project ? { route: 'projectmanagement.purchases_request.index', params: { id: project.id } } : 'purchasesrequest.index'">
+        :redirectRoute="project ? { route: 'projectmanagement.purchases_request.index', params: { project_id: project.id } } : 'purchasesrequest.index'">
         <template #header>
             {{ purchase ? purchase.code : (project ? 'Nueva solicitud de compra para:' : 'Nueva solicitud de compra') }}
         </template>
@@ -10,13 +10,12 @@
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12 shadow-sm p-4 ring-1 ring-gray-200 rounded-lg">
                     <h2 class="text-base font-semibold leading-7 text-gray-900 mb-6 border-b border-gray-300">
-                        Informacion
-                        básica</h2>
+                        Informacion básica
+                    </h2>
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 ">
+
                         <div class="sm:col-span-3">
-                            <InputLabel for="title">
-                                Titulo de Solicitud
-                            </InputLabel>
+                            <InputLabel for="title">Titulo de Solicitud</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.title" id="title" autocomplete="family-name" />
                                 <InputError :message="form.errors.title" />
@@ -24,9 +23,7 @@
                         </div>
 
                         <div class="sm:col-span-3">
-                            <InputLabel for="due_date">Fecha Limite de
-                                Compra
-                            </InputLabel>
+                            <InputLabel for="due_date">Fecha Limite de Compra</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.due_date" id="due_date" maxlength="9"
                                     autocomplete="product_description-level1" />
@@ -35,9 +32,7 @@
                         </div>
 
                         <div v-if="purchase" class="sm:col-span-3 sm:col-start-1">
-                            <InputLabel for="code">
-                                Estado
-                            </InputLabel>
+                            <InputLabel for="code">Estado</InputLabel>
                             <div class="mt-2">
                                 <span
                                     :class="`uppercase inline-flex items-center gap-x-1 py-0 px-3 text-sm rounded-full font-medium bg-indigo-600 text-white`">
@@ -49,9 +44,7 @@
                         <div v-if="!project && !purchase" class="sm:col-span-6 sm:col-start-1">
                             <div class="flex items-center justify-between w-full">
                                 <div>
-                                    <InputLabel for="resorceOrProduct">
-                                        ¿Productos o Activos?
-                                    </InputLabel>
+                                    <InputLabel for="resorceOrProduct">¿Productos o Activos?</InputLabel>
                                     <div class="mt-2 flex gap-4">
                                         <label class="flex gap-2 items-center">
                                             Productos
@@ -68,9 +61,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-2">
-                                    <InputLabel for="code" class="font-bold">
-                                        {{ 'El código se generará de forma automática' }}
-                                    </InputLabel>
+                                    <InputLabel for="code" class="font-bold">El código se generará de forma automática</InputLabel>
                                 </div>
                             </div>
                         </div>
@@ -78,9 +69,9 @@
                         <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-2">
                             <div class="flex gap-2 items-center mt-2">
                                 <h2 class="text-base font-bold leading-6 text-gray-900 ">
-                                    Añadir {{ resorceOrProduct ? 'Producto' : 'Activo' }}
+                                    Añadir {{ resorceOrProduct === true ? 'Producto' : 'Activo' }}
                                 </h2>
-                                <button v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
+                                <button v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null"
                                     type="button" @click="showProductModal = !showProductModal">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="indigo" class="w-6 h-6">
@@ -115,7 +106,7 @@
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                     Unidad
                                                 </th>
-                                                <th v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
+                                                <th v-if="auth.user.role_id === 1 || purchase?.purchase_quotes === null"
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                     Acciones
                                                 </th>
@@ -149,7 +140,7 @@
                                                         {{ item.unit }}
                                                     </p>
                                                 </td>
-                                                <td v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
+                                                <td v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null"
                                                     class="border-b border-gray-200 px-5 py-5 text-sm">
                                                     <div @click=" deleteProduct(index, item.pivot?.id)"
                                                         class="flex justify-center">
@@ -182,9 +173,7 @@
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                     <div v-if="!form.products.length" class="sm:col-span-3">
-                        <InputLabel for="type_product">
-                            Tipo de {{ resorceOrProduct ? 'Producto' : 'Activo' }}
-                        </InputLabel>
+                        <InputLabel for="type_product">Tipo de {{ resorceOrProduct ? 'Producto' : 'Activo' }}</InputLabel>
                         <div v-if="resorceOrProduct" class="mt-2">
                             <select required id="type_product" v-model="type_product"
                                 @change="handleTypeProduct($event.target.value)"
@@ -209,9 +198,7 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="unit">
-                            {{ resorceOrProduct ? 'Producto' : 'Activo' }}
-                        </InputLabel>
+                        <InputLabel for="unit">{{ resorceOrProduct ? 'Producto' : 'Activo' }}</InputLabel>
                         <div class="mt-2">
                             <input required id="unit" list="options" @input="handleAutocomplete" autocomplete="off"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -225,16 +212,14 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel for="quantity">Cantidad
-                        </InputLabel>
+                        <InputLabel for="quantity">Cantidad</InputLabel>
                         <div class="mt-2">
                             <TextInput required type="number" v-model="productToAdd.quantity" min="1" id="quantity" />
                         </div>
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel class="leading-6 text-gray-100">Nombre:
-                        </InputLabel>
+                        <InputLabel class="leading-6 text-gray-100">Nombre:</InputLabel>
                         <div class="mt-2">
                             <InputLabel class="leading-6 text-gray-100">{{ productToAdd.name }}
                             </InputLabel>
@@ -242,8 +227,7 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <InputLabel class="leading-6 text-gray-100">Unidad:
-                        </InputLabel>
+                        <InputLabel class="leading-6 text-gray-100">Unidad:</InputLabel>
                         <div class="mt-2">
                             <InputLabel class="leading-6 text-gray-100">{{ productToAdd.unit }}
                             </InputLabel>
@@ -296,10 +280,18 @@ const { purchase, allProducts, project, typeProduct, resourceType } = defineProp
     },
     allProducts: Object,
     auth: Object,
-    project: Object,
+    project: {
+        type: Object,
+        requerid: false
+    },
     typeProduct: Object,
     resourceType: Object
 })
+
+if(purchase){
+    product_selected.value = allProducts
+    resorceOrProduct.value = allProducts[0].type === "Activo" ? false : true
+}
 
 function handleTypeProduct(product_value) {
     product_selected.value = allProducts.filter(product => product.type_product === product_value);
