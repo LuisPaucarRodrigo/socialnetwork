@@ -9,22 +9,35 @@
       <form @submit.prevent="submit">
         <div class="space-y-12">
           <div class="border-b border-gray-900/10 pb-12">
-            <div class="grid grid-cols-2 gap-8">
+            <div class="grid sm:grid-cols-2 gap-8">
               <div>
                 <div class="flex gap-x-2 items-center">
-                  <div class="w-full">
-                    <InputLabel for="name">Producto</InputLabel>
-                    <select v-model="form.purchase_product_id" id="product-select"
-                      class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-2">
-                      <option disabled value="">Selecciona un producto</option>
-                      <option v-for="product in props.purchase_products" :value="product.id">{{ product.name }}
-                      </option>
-                    </select>
-
-                  </div>
+                  <div class="sm:col-span-3 w-full">
+                            <InputLabel for="purchase_product_id" class="font-medium leading-6 text-gray-900">
+                                Producto
+                            </InputLabel>
+                            <div class="mt-2">
+                                <input 
+                                    @input="(e) => 
+                                        handleAutocomplete(e,'purchase_product_id')"  
+                                    list="options"
+                                    type="text" 
+                                    id="purchase_product_id" 
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <datalist id="options">
+                                    <option v-for="item in purchase_products" :value="item.code">
+                                        {{ item.name }}
+                                    </option>
+                                </datalist>
+                                <InputError 
+                                    :message="form.errors.purchase_product_id"
+                                />
+                            </div>
+                        </div>
                   <div v-if="form.purchase_product_id">
                     <InputLabel for="name">Unidad:</InputLabel>
-                    <InputLabel>
+                    <InputLabel class="flex mt-3">
                       {{ purchase_products.find(item => item.id == form.purchase_product_id)?.unit }}
                     </InputLabel>
                   </div>
@@ -128,5 +141,19 @@ const submit = () => {
     }
   });
 };
+
+const selectedProduct = ref({code:""});
+
+const handleAutocomplete = (e, model) => {
+    const code = e.target.value;
+    let findedProduct = props.purchase_products.find(item => item.code === code)
+    if (findedProduct) {
+        form.purchase_product_id = findedProduct.id
+        selectedProduct.value = {...findedProduct}
+    } else {
+        form.purchase_product_id = null
+        selectedProduct.value = {code:""}
+    }
+}
 
 </script>
