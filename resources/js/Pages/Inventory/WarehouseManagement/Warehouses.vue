@@ -73,7 +73,7 @@
             Encargado: {{ item.person_in_charge }}
           </h3>
           <div class="text-gray-500 text-sm">
-            <div class="grid grid-cols-1 gap-y-1">
+            <div v-if="item.id === 3 || item.id === 4" class="grid grid-cols-1 gap-y-1">
               <Link
                 :href="item.id === 3 ? route('warehouses.purchaseorders.approve', { warehouse: item.id }) : route('inventory.retrieval_entry.index')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -85,67 +85,13 @@
                 :href="item.id === 3 ? route('warehouses.dispatches', { warehouse: item.id }) : route('inventory.retrievalDispatch.index')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Despachos</Link>
             </div>
-          </div>
-        </div>
-
-        <div class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-          <div class="grid grid-cols-2">
-            <h2 class="text-sm font-semibold mb-3">
-              Activos
-            </h2>
-            <div class="inline-flex justify-end gap-x-0 mb-4">
-              <div class="flex space-x-3 justify-center">
-                <!-- <button class="text-green-600 hover:underline" @click="informationWarehouse(item)">
-                  <EyeIcon class="h-4 w-4 ml-1" />
-                </button> -->
-                <!-- <Link :href="route('warehouses.warehouse', { warehouse: 1 })" class="text-green-600 hover:underline">
-                <EyeIcon class="h-4 w-4 ml-1" />
-                </Link> -->
-              </div>
-            </div>
-          </div>
-          <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-            Descripción: Activos
-          </h3>
-          <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-            Encargado: Gustavo Flores
-          </h3>
-          <div class="text-gray-500 text-sm">
-            <div class="grid grid-cols-1 gap-y-1">
-              <Link :href="route('warehouses.resource')"
+            <div v-else-if="item.id === 5 || item.id === 6" class="grid grid-cols-1 gap-y-1">
+              <Link v-if="item.id === 5" :href="route('warehouses.resource')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
               Compras</Link>
-              <Link :href="route('warehouses.index.resource')"
+              <Link v-if="item.id === 5" :href="route('warehouses.index.resource')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos</Link>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-          <div class="grid grid-cols-2">
-            <h2 class="text-sm font-semibold mb-3">
-              Servicios
-            </h2>
-            <div class="inline-flex justify-end gap-x-0 mb-4">
-              <div class="flex space-x-3 justify-center">
-                <!-- <button class="text-green-600 hover:underline" @click="informationWarehouse(item)">
-                  <EyeIcon class="h-4 w-4 ml-1" />
-                </button> -->
-                <!-- <Link :href="route('warehouses.warehouse', { warehouse: 1 })" class="text-green-600 hover:underline">
-                <EyeIcon class="h-4 w-4 ml-1" />
-                </Link> -->
-              </div>
-            </div>
-          </div>
-          <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-            Descripción: Servicios
-          </h3>
-          <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-            Encargado: Gustavo Flores
-          </h3>
-          <div class="text-gray-500 text-sm">
-            <div class="grid grid-cols-1 gap-y-1">
-              <Link :href="route('inventory.warehouses.service')"
+              <Link v-if="item.id === 6" :href="route('inventory.warehouses.service')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
               Servicios</Link>
             </div>
@@ -200,7 +146,7 @@ function informationWarehouse(item) {
   information.value = item
 }
 
-function closeInformationWarehouse(){
+function closeInformationWarehouse() {
   showInformationWarehouse.value = false
 }
 </script>
