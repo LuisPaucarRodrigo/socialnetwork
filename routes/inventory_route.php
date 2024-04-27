@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Route;
 
 //warehouses
 Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');
-Route::get('/inventory/warehouses/{warehouse}', [WarehousesController::class, 'showWarehouse'])->name('warehouses.warehouse');
 
 //products
 Route::get('/inventory/products/{warehouse}', [WarehousesController::class, 'showProducts'])->name('warehouses.products');

@@ -51,7 +51,7 @@
                                             <p class="text-gray-900 whitespace-no-wrap">S/. {{ resource.rent_price.toFixed(2) }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">S/. {{ (resource.rent_price * resource.days).toFixed(2) }}</p>
+                                            <p class="text-gray-900 whitespace-nowrap">S/. {{ (resource.rent_price * resource.days).toFixed(2) }}</p>
                                         </td>
                                         
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -184,7 +184,6 @@ const initialState = {
 const form = useForm(
     { ...initialState }
 )
-const successAsignation = ref(false)
 
 const returned_showModal = ref(false)
 const returned_initialState = {
