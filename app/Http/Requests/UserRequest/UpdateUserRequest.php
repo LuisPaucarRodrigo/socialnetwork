@@ -34,6 +34,11 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users', 'dni')->ignore($userId)],
             'email' => 'required|string|email|max:255',
             'platform' => 'required|string|max:255',
+            'phone' => [
+                'required',
+                'string',
+                Rule::unique('users', 'phone')->ignore($userId)
+            ],
             'role_id' => 'required|numeric',
         ];
     }
