@@ -28,7 +28,7 @@
                                     @input="(e) => 
                                         handleAutocomplete(e,'purchase_product_id')"  
                                     list="options"
-                                    v-model="selectedProduct.code"
+                                    :defaultValue="form.id ? form.purchase_product.code : '' "
                                     type="text" 
                                     id="purchase_product_id" 
                                     autocomplete="off"
@@ -116,6 +116,30 @@
                             </div>
                         </div>
 
+                        <div class="sm:col-span-3">
+                            <InputLabel for="zone" class="font-medium leading-6 text-gray-900">
+                                Zona
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select 
+                                    v-model="form.zone"
+                                    id="zone" 
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                                >
+                                    <option value="" disabled>Seleccione</option>
+                                    <option>Arequipa</option>
+                                    <option>Cuzco</option>
+                                    <option>MDD</option>
+                                    <option>Juliaca</option>
+                                    <option>Otros</option>
+                                </select>
+                                <InputError 
+                                    :message="form.errors.zone"
+                                />
+                            </div>
+                        </div>
+
                     
                         <div class="sm:col-span-3">
                             <InputLabel for="entry_date" class="font-medium leading-6 text-gray-900">
@@ -191,7 +215,7 @@
             <div class="mt-6 flex items-center justify-end gap-x-6">
                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                    Guardar
+                    {{ special_product ? "Actualizar" : "Guardar" }}
                 </button>
             </div>
         </form>
@@ -223,7 +247,6 @@ const { products, warehouse_id, special_product } = defineProps({
     special_product: Object,
 })
 
-
 const initialState = {
     purchase_product_id: "",
     warehouse_id,
@@ -234,6 +257,7 @@ const initialState = {
     quantity: "",
     product_serial_number: "",
     entry_observations: "",
+    zone: ''
 }
 const updateState = {
     ...special_product
@@ -257,7 +281,7 @@ const handleAutocomplete = (e, model) => {
         selectedProduct.value = {...findedProduct}
     } else {
         form[model] = ""
-        selectedProduct.value = null
+        selectedProduct.value = {code:""}
     }
 }
 

@@ -37,7 +37,7 @@ class SpecialWarehouseController extends Controller
         return Inertia::render('Inventory/WarehouseManagement/SpecialWarehouses/ProductsCreate', [
             "products" => Purchase_product::where('type', 'Producto')->get(),
             "warehouse_id" => $warehouse_id,
-            "special_product" => SpecialInventory::find($special_inventory_id),
+            "special_product" => SpecialInventory::with('purchase_product')->find($special_inventory_id),
         ]);
     }
 
