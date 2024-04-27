@@ -33,7 +33,7 @@
                         <TextInput type="text" v-model="form.dni" id="dni" maxlength="8"/>
                         <InputError :message="form.errors.dni" />
                     </div>
-                    <div class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
+                    <div v-if="props.users.role_id != 1" class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Rol</dt>
                         <select v-model="form.role_id" id="rol"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500">
