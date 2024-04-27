@@ -9,7 +9,7 @@
                 <dl class="divide-y divide-gray-100">
                     <div class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Nombre</dt>
-                        <TextInput type="text" v-model="form.name" id="name" />
+                        <TextInput class="sm:col-span-4" type="text" v-model="form.name" id="name" />
                         <InputError :message="form.errors.name" />
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
@@ -25,14 +25,21 @@
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Email</dt>
-                        <TextInput type="email" v-model="form.email" id="email" />
+                        <TextInput class="sm:col-span-4"  type="email" v-model="form.email" id="email" />
                         <InputError :message="form.errors.email" />
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
-                        <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Dni</dt>
-                        <TextInput type="text" v-model="form.dni" id="dni" maxlength="8"/>
+                        <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">DNI</dt>
+                        <TextInput class="sm:col-span-4" type="text" v-model="form.dni" id="dni" maxlength="8"/>
                         <InputError :message="form.errors.dni" />
                     </div>
+
+                    <div class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
+                        <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Teléfono</dt>
+                        <TextInput class="sm:col-span-4" type="text" v-model="form.phone" id="phone"/>
+                        <InputError :message="form.errors.phone" />
+                    </div>
+
                     <div v-if="props.users.role_id != 1" class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Rol</dt>
                         <select v-model="form.role_id" id="rol"
@@ -73,6 +80,7 @@ const form = useForm({
     platform: props.users.platform,
     email: props.users.email,
     dni: props.users.dni,
+    phone: props.users.phone,
     role_id: props.users.role.id
 });
 

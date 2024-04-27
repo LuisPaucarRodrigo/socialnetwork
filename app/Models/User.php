@@ -29,7 +29,8 @@ class User extends Authenticatable
         'dni',
         'platform',
         'password',
-        'role_id'
+        'role_id',
+        'phone'
     ];
 
     /**
