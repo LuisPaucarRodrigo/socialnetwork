@@ -15,6 +15,8 @@ class PreprojectQuoteService extends Model
         'days',
         'profit_margin',
         'rent_price',
+        'state',
+        'final_price'
     ];
 
     protected $appends = [
@@ -36,6 +38,11 @@ class PreprojectQuoteService extends Model
         return $this->belongsTo(Service::class, 'service_id');
     }
 
+    public function service_liquidation () 
+    {
+        return $this->hasOne(ServicesLiquidation::class);
+    }
+
     public function getRentPriceWithMarginAttribute()
     {
         return $this->rent_price * (1+$this->profit_margin/100);
@@ -43,8 +50,8 @@ class PreprojectQuoteService extends Model
 
     public function getTotalPriceAttribute()
     {
-        if($this->resource_entry?->condition === 'Usado'){
-            return $this->resource_entry->current_price * $this->days;
+        if($this->state){
+            return $this->final_price;
         }else{
             return $this->rent_price * $this->days;
         }
