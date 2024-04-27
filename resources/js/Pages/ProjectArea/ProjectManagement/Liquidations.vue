@@ -73,9 +73,8 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
-import { formattedDate } from '@/utils/utils';
 
 const { project_entries, project_id, liquidations } = defineProps({
     project_entries: Object,

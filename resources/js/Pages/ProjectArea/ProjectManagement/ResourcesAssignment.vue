@@ -20,10 +20,6 @@
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Cantidad de Activos
-                                        </th>
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Días
                                         </th>
                                         <th
@@ -32,48 +28,32 @@
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Margen
-                                        </th>
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Valor total
                                         </th>
+
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v v-for="(resource, index) in servicesArrayMaker(project.preproject.quote.preproject_quote_services)" :key="index" class="text-gray-700">
+                                    <tr v v-for="(resource, index) in project.preproject.quote.preproject_quote_services" :key="index" class="text-gray-700">
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p>
-                                                {{ resource.service_info.name }}
+                                                {{ resource.service.name }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">
-                                                {{ resource.resource_entries.length === 0 ? '-' : resource.resource_entries.length }}
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.days
-                                                }}</p>
+                                                {{ resource.days }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap">S/. {{ resource.rent_price.toFixed(2) }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.profit_margin }} %</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">S/. {{ (resource.rent_price * resource.days).toFixed(2) }}</p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">
-                                                S/. {{
-                                            (resource.service_info.rent_price *
-                                                (resource.resource_entries.length === 0 ? 1 :
-                                                resource.resource_entries.length)
-                                                * resource.days * (1 + resource.profit_margin / 100)).toFixed(2) }}
-                                            </p>
-                                        </td>
+                                        
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p v-if="resource.has_liquidation"
                                                 class="col-span-2 text-indigo-500 flex justify-end">
@@ -81,10 +61,13 @@
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <button @click="open_service_liquidate(resource.id)"
+                                            <button v-if="resource.state === null" @click="open_service_liquidate(resource.id, resource.resource_entry_id)"
                                                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                                                 Liquidar
                                             </button>
+                                            <p v-else>
+                                                Liquidado {{ resource.state ? ' / Consumido' : '' }}
+                                            </p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -94,41 +77,6 @@
                 </div>
             </div>
             
-            <SuccessOperationModal :confirming="successAsignation" title="Recurso asignado"
-                message="La asignación fue exitosa" />
-
-            <!-- Devolver -->
-            <Modal :show="returned_showModal">
-                <form class="p-6" @submit.prevent="returned_submit">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Devolución de recursos
-                    </h2>
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                        <div class="sm:col-span-3">
-                            <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
-                            <div class="mt-2">
-                                <TextInput id="quantity" type="number" min="1"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form_to_returned.quantity" />
-                            </div>
-                        </div>
-                        <div class="sm:col-span-3">
-                            <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
-                            </InputLabel>
-                            <div class="mt-2">
-                                <textarea id="observation" type="text"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form_to_returned.observation" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex gap-3 justify-end">
-                        <SecondaryButton type="button" @click="returned_closeModal"> Cerrar </SecondaryButton>
-                        <PrimaryButton type="submit"> Devolver </PrimaryButton>
-                    </div>
-                </form>
-            </Modal>
-
             <Modal :show="service_liquidate">
                 <form class="p-6" @submit.prevent="liquidate">
                     <h2 class="text-lg font-medium text-gray-900">
@@ -144,7 +92,7 @@
                                     v-model="formLiquidate.observations" />
                             </div>
                         </div>
-                        <div class="sm:col-span-6 mt-2">
+                        <div v-if="hasResource" class="sm:col-span-6 mt-2">
                             <InputLabel for="observation" class="font-medium leading-6 text-gray-900">¿El activo fue consumido?</InputLabel>
                             <div class="mt-2 space-y-2">
                                 <label class="inline-flex items-center">
@@ -165,10 +113,9 @@
                 </form>
             </Modal>
 
-            <SuccessOperationModal :confirming="successReturn" title="Recurso devuelto"
-                message="La devolución exitosa" />
-            <SuccessOperationModal :confirming="successAsignationLiquidate" title="Recurso liquidado"
+            <SuccessOperationModal :confirming="showModal" title="Servicio liquidado"
                 message="La liquidación fue exitosa" />
+
         </div>
     </AuthenticatedLayout>
 </template>
@@ -191,19 +138,33 @@ const { project, liquidations, services, auth } = defineProps({
 })
 
 const service_liquidate = ref(false);
-console.log(project.preproject.quote.preproject_quote_services)
+const showModal = ref(false);
+const hasResource = ref(false);
 
-const open_service_liquidate = (id) => {
+const open_service_liquidate = (id, entry) => {
     service_liquidate.value = true;
     formLiquidate.preproject_quote_service_id = id;
+    if (entry){
+        hasResource.value = true;
+    }
 }
 
 const close_service_liquidate = () => {
+    formLiquidate.reset();
+    hasResource.value = false;
     service_liquidate.value = false;
 }
 
 const liquidate = () => {
-    console.log(observations.value, preproject_quote_service_id.value)
+    formLiquidate.post(route('projectmanagement.resources.liquidate'), {
+      onSuccess: () => {
+        close_service_liquidate();
+        showModal.value = true
+        setTimeout(() => {
+          showModal.value = false;
+        }, 2000);
+      },
+    });
 }
 
 const formLiquidate = useForm({
@@ -237,37 +198,6 @@ const form_to_returned = useForm({ ...returned_initialState })
 const returned_closeModal = () => {
     returned_showModal.value = false;
 };
-const successReturn = ref(false)
 
-
-// --------------------------liquidation process-------------------------- //
-
-
-const successAsignationLiquidate = ref(false);
-
-function servicesArrayMaker(data) {
-
-    let result = []
-    data.forEach((item) => {
-        let fo = result.find((x) => x.service_id === item.service_id)
-        if (fo) {
-            fo.resource_entries.push(item.resource_entry)
-            fo.ids.push(item.id)
-        } else {
-            result.push({
-                service_id: item.service_id,
-                days: item.days,
-                profit_margin: item.profit_margin,
-                service_info: item.service,
-                resource_entries: item.resource_entry_id
-                    ? [item.resource_entry]
-                    : [],
-                rent_price: item.rent_price,
-                ids: [item.id]
-            })
-        }
-    })
-    return result
-}
 
 </script>
