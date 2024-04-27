@@ -31,13 +31,6 @@ class WarehousesController extends Controller
         ]);
     }
 
-    public function showWarehouse(Warehouse $warehouse)
-    {
-        return Inertia::render('Inventory/WarehouseManagement/WarehouseInformation', [
-            'warehouse' => $warehouse,
-        ]);
-    }
-
     public function showProducts(Warehouse $warehouse)
     {
         
