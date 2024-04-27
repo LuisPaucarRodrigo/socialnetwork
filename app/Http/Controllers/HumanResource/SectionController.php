@@ -16,7 +16,7 @@ class SectionController extends Controller
     //Sections
     public function showSections()
     {
-        $sections = Section::all();
+        $sections = Section::paginate(10);
         return Inertia::render('HumanResource/AlarmManagement/Sections', [
             'sections' => $sections
         ]);
@@ -42,7 +42,7 @@ class SectionController extends Controller
     //SubSections
     public function showSubSections()
     {
-        $subSections = SubSection::with('section')->paginate();
+        $subSections = SubSection::with('section')->paginate(10);
         $sections = Section::all();
         return Inertia::render('HumanResource/AlarmManagement/SubSections', [
             'subSections' => $subSections,

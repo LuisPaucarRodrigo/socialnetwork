@@ -319,7 +319,7 @@
                     </tbody>
                 </table>
             </div>
-            <div
+            <div v-if="spreadsheets.links"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <Pagination :links="spreadsheets.links" />
             </div>
