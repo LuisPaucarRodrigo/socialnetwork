@@ -30,7 +30,6 @@ Route::get('/cicsaSubSections', [CicsaSectionController::class, 'showSubSections
 Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'showSubSection'])->name('sections.cicsaSubSection');
 Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
 Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
-Route::get('/cicsaDoTask2', [CicsaSectionController::class, 'doTask2'])->name('sections.cicsaTask2');
 
 //PreProjects
 Route::any('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
@@ -93,6 +92,7 @@ Route::delete('/preprojects/{preproject_id}/report/delete', [PreProjectControlle
 Route::get('/projectmanagement/purchases_request/{project_id}', [ProjectManagementController::class, 'project_purchases_request_index'])->name('projectmanagement.purchases_request.index');
 Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
 Route::post('/projectmanagement/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
+Route::get('/projectmanagement/purchases_request/edit/{id}/{project_id?}', [ProjectManagementController::class, 'project_purchases_request_edit'])->name('projectmanagement.purchases_request.edit');
 Route::get('/projectmanagement/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
 Route::get('/projectmanagement/purchases_request/details/{id}', [ProjectManagementController::class, 'project_purchases_request_details'])->name('projectmanagement.purchases_request.details');
 
