@@ -28,7 +28,7 @@
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Margen
+                                            Valor Total
                                         </th>
                                     </tr>
                                 </thead>
@@ -47,7 +47,7 @@
                                             <p class="text-gray-900 whitespace-no-wrap">S/.{{ resource.rent_price }}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.profit_margin }}</p>
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ resource.days * resource.rent_price}}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p v-if="resource.has_liquidation"
@@ -62,9 +62,6 @@
                     </div>
                 </div>
             </div>
-            
-            <SuccessOperationModal :confirming="successAsignation" title="Recurso asignado"
-                message="La asignación fue exitosa" />
 
             <!-- Devolver -->
             <Modal :show="returned_showModal">
@@ -128,7 +125,6 @@ const initialState = {
 const form = useForm(
     { ...initialState }
 )
-const successAsignation = ref(false)
 
 const returned_showModal = ref(false)
 const returned_initialState = {
