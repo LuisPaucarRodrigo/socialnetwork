@@ -143,23 +143,10 @@ class ProjectManagementController extends Controller
 
     public function project_purchases_request_create($project_id, $purchase_id = null)
     {
-        // if ($purchase_id) {
-        //     $purchase_request = Purchasing_request::find($purchase_id);
-        //     return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest', [
-        //         'allProducts' => Purchase_product::all(),
-        //         'project_id' => $project_id,
-        //         'purchase_request' => $purchase_request
-        //     ]);
-        // }
-        // return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest', [
-        //     'project_id' => $project_id,
-        // ]);
-        $purchase_request = Purchasing_request::find($purchase_id);
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
             'typeProduct' => TypeProduct::all(),
             'project' => Project::find($project_id),
-            'purchase_request' => $purchase_request
         ]);
     }
 
@@ -194,13 +181,22 @@ class ProjectManagementController extends Controller
     }
 
     public function project_purchases_request_edit($id, $project_id = null)
-    {   
+    {
         $purchase = Purchasing_request::with('products')->find($id);
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
             'purchase' => $purchase,
             'allProducts' => Purchase_product::all(),
             'project' => Project::find($project_id),
         ]);
+    }
+
+    public function project_purchases_request_update(UpdatePurchaseRequest $request, $id)
+    {
+        $validateData = $request->validated();
+        $purchases = Purchasing_request::with('project')->findOrFail($id);
+        $purchases->update($validateData);
+
+        return redirect()->back();
     }
 
     public function project_expenses(Project $project_id)

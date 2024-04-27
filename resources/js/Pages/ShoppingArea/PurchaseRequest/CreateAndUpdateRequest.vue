@@ -71,7 +71,7 @@
                                 <h2 class="text-base font-bold leading-6 text-gray-900 ">
                                     Añadir {{ resorceOrProduct === true ? 'Producto' : 'Activo' }}
                                 </h2>
-                                <button v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
+                                <button v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null"
                                     type="button" @click="showProductModal = !showProductModal">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="indigo" class="w-6 h-6">
@@ -106,7 +106,7 @@
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                     Unidad
                                                 </th>
-                                                <th v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
+                                                <th v-if="auth.user.role_id === 1 || purchase?.purchase_quotes === null"
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                                     Acciones
                                                 </th>
@@ -140,7 +140,7 @@
                                                         {{ item.unit }}
                                                     </p>
                                                 </td>
-                                                <td v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
+                                                <td v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null"
                                                     class="border-b border-gray-200 px-5 py-5 text-sm">
                                                     <div @click=" deleteProduct(index, item.pivot?.id)"
                                                         class="flex justify-center">

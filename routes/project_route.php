@@ -93,6 +93,7 @@ Route::get('/projectmanagement/purchases_request/{project_id}', [ProjectManageme
 Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
 Route::post('/projectmanagement/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
 Route::get('/projectmanagement/purchases_request/edit/{id}/{project_id?}', [ProjectManagementController::class, 'project_purchases_request_edit'])->name('projectmanagement.purchases_request.edit');
+Route::get('/projectmanagement/purchases_request/update/{id}', [ProjectManagementController::class, 'project_purchases_request_update'])->name('projectmanagement.purchases_request.update');
 Route::get('/projectmanagement/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
 Route::get('/projectmanagement/purchases_request/details/{id}', [ProjectManagementController::class, 'project_purchases_request_details'])->name('projectmanagement.purchases_request.details');
 
