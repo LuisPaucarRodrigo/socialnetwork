@@ -5,7 +5,7 @@
         <template #header>
             Productos en {{ warehouse.name }}
         </template>
-        <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+        <div class="min-w-full rounded-lg shadow">
             <div class="flex gap-2">
                 <button type="button" @click="() => router.get(
                     route('inventory.special_products.create', {
@@ -33,6 +33,18 @@
                                 Nombre
                             </th>
                             <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Guía de Remisión
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Subalmacén
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Zona
+                            </th>
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cantidad Ingresada
                             </th>
@@ -46,12 +58,9 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Guía de Referencia
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Número Serial
                             </th>
+                            
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Ingreso
@@ -72,7 +81,15 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 ">{{ item.purchase_product.name }}</p>
                             </td>
-                            
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 ">{{ item.referral_guide }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 ">{{ item.sub_warehouse }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 ">{{ item.zone }}</p>
+                            </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center ">{{ item.quantity }}</p>
                             </td>
@@ -83,11 +100,9 @@
                                 <p class="text-gray-900 ">{{ item.purchase_product.unit }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 ">{{ item.referral_guide }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 ">{{ item.product_serial_number }}</p>
                             </td>
+                            
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 ">
                                     {{ formattedDate(item.entry_date) }}
