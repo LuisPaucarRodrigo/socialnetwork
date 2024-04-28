@@ -31,7 +31,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-left">
                   <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
-                    <TrashIcon class="h-4 w-4" />
+                    <TrashIcon class="h-5 w-5" />
                   </button>
                 </td>
               </tr>
@@ -56,7 +56,7 @@
                   </div>
                 </div>
                 <div class="mt-6 flex items-center justify-end gap-x-6">
-                  <SecondaryButton @click="closeCreateSubdivisionModal"> Cancel </SecondaryButton>
+                  <SecondaryButton @click="closeCreateSubdivisionModal"> Cancelar </SecondaryButton>
                   <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
                 </div>
               </div>

@@ -36,6 +36,7 @@ class SpecialInventoryRequest extends FormRequest
             "quantity" => "required",
             "product_serial_number" => "required",
             "entry_observations" => "nullable",
+            "zone" => "required",
         ];
     }
 }

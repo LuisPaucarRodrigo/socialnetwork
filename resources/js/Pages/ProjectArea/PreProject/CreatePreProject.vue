@@ -344,8 +344,8 @@ const handleAutocomplete = (e, model) => {
     form.cpe = '';
     const ruc = e.target.value;
     let matchedClient = customers.find(item => item.ruc == ruc)
-    customerBusinnes.value = matchedClient.business_name
     if (matchedClient) {
+        customerBusinnes.value = matchedClient.business_name
         form[model] = matchedClient.id
     } else {
         form[model] = ''

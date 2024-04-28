@@ -104,6 +104,15 @@ class PreProjectController extends Controller
 
     public function destroy(Preproject $preproject)
     {
+        $preproject->load('quote');
+        if($preproject->quote){
+            $preproject_quote_services = PreprojectQuoteService::whereHas('resource_entry')
+            ->where('state', null)
+            ->where('preproject_quote_id', $preproject->quote->id)->get();
+            foreach ($preproject_quote_services as $item) {
+                ResourceEntry::find($item->resource_entry_id)->update(['condition' => 'Disponible']);
+            }
+        }        
         $preproject->delete();
         return redirect()->back();
     }
@@ -128,7 +137,7 @@ class PreProjectController extends Controller
                 foreach ($allPurchaseQuoteProducts as $pqp_item) {
                     $id = $pqp_item->purchase_product_id;
                     $key = array_search($id, array_column($existingProducts, 'purchase_product_id'));
-                    if ($pq_item->quantity !== 0) {
+                    if ($pqp_item->quantity !== 0) {
                         if ($key !== false) {
                             $newQuantity = $existingProducts[$key]["quantity"] + $pqp_item->quantity;
                             $newUnitaryPrice = (($existingProducts[$key]["quantity"] * $existingProducts[$key]["unitary_price"]) +

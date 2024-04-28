@@ -61,6 +61,7 @@ class DatabaseSeeder extends Seeder
             'dni' => '70969005',
             'email' => 'luis@gmail.com',
             'password' => Hash::make('12345678'),
+            'phone' => '923098157',
             'platform' => 'web',
             'role_id' => '1'
         ]);
@@ -128,8 +129,8 @@ class DatabaseSeeder extends Seeder
             ['id' => 2, 'name' => 'GTD CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
             ['id' => 3, 'name' => 'CONPROCO', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
             ['id' => 4, 'name' => 'RECUPEROS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
-            ['id' => 4, 'name' => 'ACTIVOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
-            ['id' => 5, 'name' => 'SERVICIOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+            ['id' => 5, 'name' => 'ACTIVOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+            ['id' => 6, 'name' => 'SERVICIOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
         ];
         $warehousesCustomerData = [
             ['id' => 1, 'customer_id' => 1, 'warehouse_id' => 1],

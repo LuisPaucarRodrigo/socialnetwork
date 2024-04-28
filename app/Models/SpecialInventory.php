@@ -17,7 +17,14 @@ class SpecialInventory extends Model
         'sub_warehouse',
         'quantity',
         'product_serial_number',
+        'zone',
         'entry_observations',
+    ];
+
+    protected $appends = [
+        'reserved_quantity',
+        'quantity_available',
+        'used_quantity'
     ];
 
     //Relations
@@ -34,5 +41,28 @@ class SpecialInventory extends Model
     public function warehouse()
     {
         return $this->belongsTo(Warehouse::class, 'warehouse_id');
+    }
+
+    public function getReservedQuantityAttribute(){
+        $quantityInProjects = $this->project_entry()
+                                    ->get()
+                                    ->filter(function($item){
+                                        return !$item->outputs_state;
+                                    })
+                                    ->sum('quantity');
+        return $quantityInProjects;
+    }
+
+    public function getUsedQuantityAttribute() {
+        return $this->project_entry()
+                    ->get()
+                    ->filter(function($item){
+                        return $item->outputs_state;
+                    })
+                    ->sum('quantity');
+    }
+
+    public function getQuantityAvailableAttribute() {
+        return $this->quantity - $this->reserved_quantity - $this->used_quantity;
     }
 }

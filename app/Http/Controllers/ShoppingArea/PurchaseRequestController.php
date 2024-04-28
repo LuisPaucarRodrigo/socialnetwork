@@ -41,11 +41,10 @@ class PurchaseRequestController extends Controller
         ]);
     }
 
-    public function create($project_id = null)
+    public function create()
     {
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::with('resource_type')->get(),
-            'project' => Project::find($project_id),
             'typeProduct' => TypeProduct::all(),
             'resourceType' => ResourceType::all()
         ]);
@@ -65,13 +64,16 @@ class PurchaseRequestController extends Controller
         }
     }
 
-    public function edit($id, $project_id = null)
-    {
+    public function edit($id)
+    {   
         $purchase = Purchasing_request::with('products')->find($id);
+        $type = $purchase->products->first()->type;
+        
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
             'purchase' => $purchase,
-            'allProducts' => Purchase_product::all(),
-            'project' => Project::find($project_id),
+            'typeProduct' => TypeProduct::all(),
+            'allProducts' => Purchase_product::with('resource_type')->where('type',$type)->get(),
+            'resourceType' => ResourceType::all()
         ]);
     }
 

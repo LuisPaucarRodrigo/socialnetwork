@@ -78,6 +78,7 @@
                     <p style="font-size: 14px; font-weight: bold; line-height: 0.5;">Persona de contacto:</p>
                     <p style="font-size: 14px; line-height: 0.5;">Nombre: {{ $user->name }}</p>
                     <p style="font-size: 14px; line-height: 0.5;">Email: {{ $user->email }}</p>
+                    <p style="font-size: 14px; line-height: 0.5;">Teléfono: {{ $user->phone }}</p>
                 </div>
             </td>
         </tr>
