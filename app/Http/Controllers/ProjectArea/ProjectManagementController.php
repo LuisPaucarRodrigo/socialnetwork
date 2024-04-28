@@ -115,6 +115,8 @@ class ProjectManagementController extends Controller
     public function project_destroy($project_id)
     {
         $project = Project::find($project_id);
+        Purchasing_request::where('project_id', $project->id)
+                ->update(['preproject_id' => $project->preproject_id]);
         $project->delete();
         return redirect()->back();
     }
