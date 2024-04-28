@@ -73,9 +73,9 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.unit }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
+                                <p class="text-gray-900 whitespace-nowrap">
                                     {{ item.type }}
-                                    {{ item.type === 'Producto' ? '/' + item.type_product : item.resource_type
+                                    {{ item.type === 'Producto' ? '/ ' + item.type_product : item.resource_type
         ? '/' + item.resource_type.name
         : '' }}</p>
                             </td>
@@ -117,7 +117,7 @@
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
 
-                            <div>
+                            <div class="mt-2">
                                 <InputLabel for="name">Nombre</InputLabel>
                                 <div class="mt-2">
                                     <TextInput :to-uppercase="true" type="text" v-model="form.name" id="name"
@@ -126,7 +126,7 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="mt-2">
                                 <InputLabel for="unit">Unidad</InputLabel>
                                 <div class="mt-2">
                                     <select :to-uppercase="true" v-model="form.unit" id="unit"
@@ -141,21 +141,20 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div v-if="create_product" class="mt-2">
                                 <InputLabel for="type">Tipo</InputLabel>
                                 <div class="mt-2">
                                     <select :to-uppercase="true" v-model="form.type" id="type"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option value="" disabled>Seleccione una opción</option>
                                         <option value="Producto">Producto</option>
-                                        <option value="Servicio">Servicio</option>
                                         <option value="Activo">Activo</option>
                                     </select>
                                     <InputError :message="form.errors.type" />
                                 </div>
                             </div>
 
-                            <div v-if="form.type === 'Producto'">
+                            <div class="mt-2" v-if="form.type === 'Producto'">
                                 <div class="flex mt-3 gap-2">
                                     <InputLabel for="type_product">
                                         Tipo de Producto
@@ -207,12 +206,12 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="mt-2">
                                 <InputLabel for="description">
                                     Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="form.description" id="description"
+                                    <textarea type="text" v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.description" />
                                 </div>
@@ -247,18 +246,18 @@
                     </div>
 
                 </div>
-                <div v-if="form.type === 'Activo'">
+                <div class="mt-2" v-if="form.type === 'Activo'">
                     <InputLabel for="depreciation_value">
-                        Valor de Depreciacion
+                        Valor de Depreciacion (%)
                     </InputLabel>
                     <div class="mt-2">
                         <input type="number" v-model="formname.depreciation_value" id="depreciation_value" min="0"
-                            step="0.01"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            step="0.01" max="100"
+                            class=",t-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         <InputError :message="formname.errors.depreciation_value" />
                     </div>
 
-                    <InputLabel for="timelife">
+                    <InputLabel class="mt-2" for="timelife">
                         Tiempo de vida
                     </InputLabel>
                     <div class="mt-2">

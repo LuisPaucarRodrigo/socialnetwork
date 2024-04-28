@@ -135,6 +135,10 @@
           </tbody>
         </table>
       </div>
+      <div
+           class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <pagination :links="subSections.links" />
+        </div>
     </div>
     <Modal :show="create_subSection">
       <div class="p-6">
@@ -145,7 +149,7 @@
           <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="name">Nombre</InputLabel>
                 <div class="mt-2">
                   <TextInput type="text" v-model="form.name" id="name" />
@@ -153,7 +157,7 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="description">Descripción</InputLabel>
                 <div class="mt-2">
                   <textarea v-model="form.description" id="description"
@@ -161,7 +165,7 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="start_date">Fecha de inicio
                 </InputLabel>
                 <div class="mt-2">
@@ -170,7 +174,7 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="end_date">Fecha de Fin</InputLabel>
                 <div class="mt-2">
                   <TextInput type="date" v-model="form.end_date" id="end_date" />
@@ -178,7 +182,7 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="requirements">Requerimientos
                 </InputLabel>
                 <div class="mt-2">
@@ -187,9 +191,9 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="Section" class="text-gray-700 mt-3">Sección:</InputLabel>
-                <select v-model="form.section_id" id="Section" class="border rounded-md px-3 py-2 mb-3 w-full">
+                <select v-model="form.section_id" id="Section" class="border rounded-md px-3 py-2 mb-3 w-full mt-2">
                   <option value="">Seleccionar Apartado</option>
                   <option v-for="section in props.sections" :key="section.id" :value="section.id">{{ section.name }}
                   </option>
@@ -217,7 +221,7 @@
           <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="name">Nombre</InputLabel>
                 <div class="mt-2">
                   <TextInput type="text" v-model="form.name" id="name" />
@@ -225,14 +229,15 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="description">Descripción</InputLabel>
                 <div class="mt-2">
-                  <textarea v-model="form.description" id="description" />
+                  <textarea class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    v-model="form.description" id="description" />
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="start_date">Fecha de inicio
                 </InputLabel>
                 <div class="mt-2">
@@ -241,7 +246,7 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="end_date">Fecha de Fin</InputLabel>
                 <div class="mt-2">
                   <TextInput type="date" v-model="form.end_date" id="end_date" />
@@ -249,7 +254,7 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="requirements">Requerimientos
                 </InputLabel>
                 <div class="mt-2">
@@ -258,7 +263,7 @@
                 </div>
               </div>
 
-              <div>
+              <div class="mt-2">
                 <InputLabel for="Section" class="text-gray-700 mt-3">Sección:</InputLabel>
                 <select v-model="form.section_id" id="Section" class="border rounded-md px-3 py-2 mb-3 w-full">
                   <option value="">Seleccionar Apartado</option>
@@ -303,6 +308,7 @@ import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
   sections: Object,

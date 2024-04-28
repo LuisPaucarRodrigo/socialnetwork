@@ -232,7 +232,7 @@ const props = defineProps({
     auth: Object,
     search: String
 });
-console.log(props.purchases)
+
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;
     confirmingPurchasesDeletion.value = true;
