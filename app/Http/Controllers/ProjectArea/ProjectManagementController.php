@@ -4,19 +4,22 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
+use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
 use App\Models\Employee;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
 use App\Models\Entry;
 use App\Models\Inventory;
-use App\Models\ProjectProduct;
+
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
 use App\Models\PreprojectEntry;
 use App\Models\Warehouse;
 use App\Models\Preproject;
 use App\Models\ProjectEntry;
+use App\Models\Purchase_product;
 use App\Models\SpecialInventory;
+use App\Models\TypeProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -112,6 +115,8 @@ class ProjectManagementController extends Controller
     public function project_destroy($project_id)
     {
         $project = Project::find($project_id);
+        Purchasing_request::where('project_id', $project->id)
+                ->update(['preproject_id' => $project->preproject_id]);
         $project->delete();
         return redirect()->back();
     }
@@ -138,20 +143,14 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_create($project_id, $purchase_id = null)
+    public function project_purchases_request_create($project_id)
     {
-        if ($purchase_id) {
-            $purchase_request = Purchasing_request::find($purchase_id);
-            return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest', [
-                'project_id' => $project_id,
-                'purchase_request' => $purchase_request
-            ]);
-        }
-        return Inertia::render('ProjectArea/ProjectManagement/CreatePurchaseRequest', [
-            'project_id' => $project_id,
+        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+            'allProducts' => Purchase_product::all(),
+            'typeProduct' => TypeProduct::all(),
+            'project' => Project::find($project_id),
         ]);
     }
-
 
     public function project_purchases_request_store(Request $request)
     {
@@ -181,6 +180,25 @@ class ProjectManagementController extends Controller
             'details' => Purchasing_request::with('project', 'products')->find($id),
             'boolean' => true
         ]);
+    }
+
+    public function project_purchases_request_edit($id, $project_id = null)
+    {
+        $purchase = Purchasing_request::with('products')->find($id);
+        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+            'purchase' => $purchase,
+            'allProducts' => Purchase_product::all(),
+            'project' => Project::find($project_id),
+        ]);
+    }
+
+    public function project_purchases_request_update(UpdatePurchaseRequest $request, $id)
+    {
+        $validateData = $request->validated();
+        $purchases = Purchasing_request::with('project')->findOrFail($id);
+        $purchases->update($validateData);
+
+        return redirect()->back();
     }
 
     public function project_expenses(Project $project_id)
@@ -273,22 +291,22 @@ class ProjectManagementController extends Controller
     {
         if ($inventory->warehouse_id === 4) {
             $inventory = Entry::with(
-                'retrieval_entry',  
-                'inventory.purchase_product', 
-                )
-            ->whereHas('retrieval_entry', function($query){
-                $query->where('state', true);
-            })
-            ->where('inventory_id', $inventory->id)->get()
-            ->filter(function ($item) {
-                return $item->quantity_available > 0;
-            })->values()->all();
+                'retrieval_entry',
+                'inventory.purchase_product',
+            )
+                ->whereHas('retrieval_entry', function ($query) {
+                    $query->where('state', true);
+                })
+                ->where('inventory_id', $inventory->id)->get()
+                ->filter(function ($item) {
+                    return $item->quantity_available > 0;
+                })->values()->all();
         } else {
             $inventory = Entry::with(
-                    'normal_entry', 
-                    'purchase_entry', 
-                    'inventory.purchase_product', 
-                    )
+                'normal_entry',
+                'purchase_entry',
+                'inventory.purchase_product',
+            )
                 ->where('inventory_id', $inventory->id)->get()
                 ->filter(function ($item) {
                     return $item->quantity_available > 0;
@@ -324,23 +342,6 @@ class ProjectManagementController extends Controller
             ]);
         }
 
-        return redirect()->back();
-    }
-
-    public function project_product_update(ProjectProduct $project_product)
-    {
-        $output_quantity = $project_product->total_output_project_product;
-        if ($output_quantity != 0) {
-            $project_product->update([
-                'quantity' => $output_quantity
-            ]);
-        }
-        return redirect()->back();
-    }
-
-    public function warehouse_products_delete(ProjectProduct $assigned)
-    {
-        $assigned->delete();
         return redirect()->back();
     }
 

@@ -16,9 +16,9 @@ return new class extends Migration
             $table->integer('days');
             $table->double('profit_margin');
             $table->double('rent_price');
-            $table->foreignId('preproject_quote_id');
-            $table->foreignId('service_id');
-            $table->foreignId('resource_entry_id')->nullable();
+            $table->foreignId('preproject_quote_id')->contrained()->onDelete('cascade');
+            $table->foreignId('service_id')->nullable()->onDelete('set null');
+            $table->foreignId('resource_entry_id')->nullable()->onDelete('set null');
             $table->boolean('state')->nullable();
             $table->double('final_price')->nullable();
             $table->timestamps();

@@ -70,7 +70,7 @@
           <InputLabel for="selectElement">Sección:</InputLabel>
           <select v-model="selectedSection" id="selectElement"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
-            <option value="">Todos</option>
+            <option :value="''">Todos</option>
             <option v-for="section in sections" :key="section.id" :value="section.id">
               {{ section.name }}
             </option>
@@ -80,7 +80,7 @@
           <InputLabel for="selectSubdivision">Subdivisión:</InputLabel>
           <select v-model="selectedSubdivision" id="selectSubdivision"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
-            <option value="">Todas</option>
+            <option :value="''">Todas</option>
             <option v-for="subdivision in subdivisionsForSelectedSection" :key="subdivision.id" :value="subdivision.id">
               {{ subdivision.name }}
             </option>
