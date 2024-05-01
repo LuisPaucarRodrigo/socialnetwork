@@ -147,56 +147,51 @@
                                 Factura
                             </h2>
                             <div>
-                                <InputLabel for="serie_number" class="mt-2 font-medium leading-6 text-gray-900">
+                                <InputLabel for="serie_number">
                                     Numero de Serie
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="number" v-model="form.serie_number" id="serie_number" maxlength="8"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="number" v-model="form.serie_number" id="serie_number" maxlength="8" />
                                     <InputError :message="form.errors.serie_number" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="facture_number" class="mt-2 font-medium leading-6 text-gray-900">
+                                <InputLabel for="facture_number">
                                     Numero de Factura
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="number" v-model="form.facture_number" id="facture_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="number" v-model="form.facture_number" id="facture_number" />
                                     <InputError :message="form.errors.facture_number" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="facture_date" class="mt-4 font-medium leading-6 text-gray-900">
+                                <InputLabel for="facture_date">
                                     Fecha de Factura
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="date" v-model="form.facture_date" id="facture_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="date" v-model="form.facture_date" id="facture_date" />
                                     <InputError :message="form.errors.facture_date" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="facture_doc" class="mt-4 font-medium leading-6 text-gray-900">
+                                <InputLabel for="facture_doc">
                                     Documento de Factura
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile type="file" v-model="form.facture_doc" id="facture_doc"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputFile type="file" v-model="form.facture_doc" id="facture_doc" />
                                     <InputError :message="form.errors.facture_doc" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="others" class="mt-2 font-medium leading-6 text-gray-900">
+                                <InputLabel for="others" >
                                     Otros
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.others" id="others"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="text" v-model="form.others" id="others" />
                                     <InputError :message="form.errors.others" />
                                 </div>
                             </div>
@@ -207,48 +202,42 @@
                                 Guia de Remision
                             </h2>
                             <div>
-                                <InputLabel for="remission_guide_number"
-                                    class="mt-2 font-medium leading-6 text-gray-900">
+                                <InputLabel for="remission_guide_number">
                                     Numero de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="number" v-model="form.remission_guide_number"
-                                        id="remission_guide_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="number" v-model="form.remission_guide_number"
+                                        id="remission_guide_number" />
                                     <InputError :message="form.errors.remission_guide_number" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="remission_guide_date" class="mt-4 font-medium leading-6 text-gray-900">
+                                <InputLabel for="remission_guide_date">
                                     Fecha de Guia de Remission
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="date" v-model="form.remission_guide_date" id="remission_guide_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="date" v-model="form.remission_guide_date"
+                                        id="remission_guide_date" />
                                     <InputError :message="form.errors.remission_guide_date" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="remission_guide_doc" class="mt-4 font-medium leading-6 text-gray-900">
-                                    Documento
-                                    de
-                                    Guia de Remision
+                                <InputLabel for="remission_guide_doc">
+                                    Documento de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile type="file" v-model="form.remission_guide_doc" id="remission_guide_doc"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputFile type="file" v-model="form.remission_guide_doc" id="remission_guide_doc" />
                                     <InputError :message="form.errors.remission_guide_doc" />
                                 </div>
                             </div>
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeModal()"> Cancelar </SecondaryButton>
-                            <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                                 Guardar
-                            </button>
+                            </PrimaryButton>
                         </div>
                     </div>
                 </form>
@@ -313,7 +302,7 @@ import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import { computed } from 'vue';
+import TextInput from '@/Components/TextInput.vue';
 
 const showModal = ref(false);
 const showCotization = ref(false);
