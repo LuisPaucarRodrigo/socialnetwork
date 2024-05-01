@@ -113,6 +113,7 @@
                                     </button>
                                 </div>
                             </td>
+                            <!-- @change="updateState(order.id, $event.target.value, order.is_payments_completed)" -->
 
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <select id="selectState"
@@ -151,7 +152,8 @@
                                     Numero de Serie
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="number" v-model="form.serie_number" id="serie_number" maxlength="8" />
+                                    <TextInput type="number" v-model="form.serie_number" id="serie_number"
+                                        maxlength="8" />
                                     <InputError :message="form.errors.serie_number" />
                                 </div>
                             </div>
@@ -187,7 +189,7 @@
                             </div>
 
                             <div>
-                                <InputLabel for="others" >
+                                <InputLabel for="others">
                                     Otros
                                 </InputLabel>
                                 <div class="mt-2">
@@ -228,7 +230,8 @@
                                     Documento de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile type="file" v-model="form.remission_guide_doc" id="remission_guide_doc" />
+                                    <InputFile type="file" v-model="form.remission_guide_doc"
+                                        id="remission_guide_doc" />
                                     <InputError :message="form.errors.remission_guide_doc" />
                                 </div>
                             </div>
@@ -250,20 +253,20 @@
                     Información de la Cotización
                 </h2>
                 <div class="mt-4">
-                    <p class="text-sm text-gray-600"><span class="font-medium">Codigo de Cotizacion:</span> {{
-        cotization.code
-    }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Monto:</span> S/ {{
-            cotization.amount.toFixed(2)
-        }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Codigo de Cotizacion:</span> {{ cotization.code }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Monto:</span> S/ {{ cotization.amount.toFixed(2) }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Proveedor:</span> {{ cotization.provider
                         }}
                     </p>
                     <p class="text-sm text-gray-600"><span class="font-medium">Fecha de solicitud de compra:</span>
                         {{ formattedDate(cotization.quote_deadline) }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Estado de Cotizacion:</span> {{
-        cotization.response
-    }}
+                    <p class="text-sm text-gray-600"><span class="font-medium">Estado de Cotizacion:</span>
+                        {{ cotization.response }}
                     </p>
                     <div class="flex items-center">
                         <p class="text-sm text-gray-600">
@@ -283,6 +286,9 @@
         </Modal>
         <ErrorOperationModal :showError="errorAmount" :title="title" :message="message" />
         <SuccessOperationModal :confirming="showModalSuccess" :title="title_order" :message="message_order" />
+        <ConfirmateModal :showConfirm="showModalUpdateSuccess" tittle="Confirmar"
+            text="El estado de la orden se cambiara" :actionFunction="updateStateOrder"
+            @closeModal="closeUpdateModal" />
 
     </AuthenticatedLayout>
 </template>
@@ -303,6 +309,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import TextInput from '@/Components/TextInput.vue';
+import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 
 const showModal = ref(false);
 const showCotization = ref(false);
@@ -310,11 +317,14 @@ const id = ref(null);
 const state = ref(null);
 const quoteToOpen = ref(null);
 const showModalSuccess = ref(false);
+const showModalUpdateSuccess = ref(false);
 const errorAmount = ref(false);
 const title = ref('');
 const message = ref('');
 const title_order = ref('');
 const message_order = ref('');
+const data = ref(null);
+const state_order = ref(null);
 
 const props = defineProps({
     orders: Object,
@@ -367,7 +377,7 @@ const closeCotizationModal = () => {
 const updateState = async (stateid, newState, is_payments_completed) => {
     id.value = stateid;
     state.value = newState;
-    const data = { state: state.value, id: id.value };
+    data.value = { state: state.value, id: id.value };
 
     if (state.value === "Completada") {
         if (is_payments_completed) {
@@ -383,40 +393,26 @@ const updateState = async (stateid, newState, is_payments_completed) => {
         }
 
     } else if (state.value === "Pendiente" || state.value === "OC Enviada") {
-        axios.post(route('purchaseorders.state'), data)
-            .then(() => {
-                title_order.value = state.value === "OC Enviada" ? "OC Enviada" : "Pendiente";
-                message_order.value = state.value === "OC Enviada" ? "Orden enviada correctamente" : "Orden cambiada a Pendiente";
-                showModalSuccess.value = true;
-                setTimeout(() => {
-                    showModalSuccess.value = false;
-                    router.visit(route('purchaseorders.index'));
-                }, 2000);
-            })
-            .catch(error => {
-                console.error("Hubo un error al enviar la orden:", error);
-            });
+        showModalUpdateSuccess.value = true
     }
 }
 
 const submit = () => {
     form.id = id
     form.state = state
-    axios.post(route('purchaseorders.state'), form)
-        .then(() => {
-            showCotization.value = false;
-            order_title.value = "Orden Completada";
-            order_message.value = "Orden completada correctamente";
-            showModalSuccess.value = true;
+    form.post(route('purchaseorders.state'), {
+        onSuccess: () => {
+            showCotization.value = false
+            title_order.value = "Orden Completada"
+            message_order.value = "Orden completada correctamente"
+            showModalSuccess.value = true
             setTimeout(() => {
-                showModalSuccess.value = false;
-                router.visit(route('purchaseorders.index'));
+                showModalSuccess.value = false
+                router.visit(route('purchaseorders.index'))
             }, 2000);
-        })
-        .catch(error => {
-            form.
-                console.error("Hubo un error al completar la orden:", error);
-        });
+
+        }
+    })
 }
 
 const closeModal = () => {
@@ -445,4 +441,25 @@ const availableOptions = (state) => {
         return ['Completada'];
     }
 };
+
+function updateStateOrder() {
+    showModalUpdateSuccess.value = false
+    axios.post(route('purchaseorders.state'), data.value)
+        .then(() => {
+            title_order.value = state.value === "OC Enviada" ? "OC Enviada" : "Pendiente";
+            message_order.value = state.value === "OC Enviada" ? "Orden enviada correctamente" : "Orden cambiada a Pendiente";
+            showModalSuccess.value = true;
+            setTimeout(() => {
+                showModalSuccess.value = false;
+                router.visit(route('purchaseorders.index'));
+            }, 2000);
+        })
+        .catch(error => {
+            console.error("Hubo un error al enviar la orden:", error);
+        });
+}
+
+function closeUpdateModal() {
+    showModalUpdateSuccess.value = false
+}
 </script>
