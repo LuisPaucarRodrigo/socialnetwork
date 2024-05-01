@@ -241,7 +241,6 @@ const props = defineProps({
     search: String
 });
 
-console.log(props.purchases.data)
 
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;

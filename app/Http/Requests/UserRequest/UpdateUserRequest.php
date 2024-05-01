@@ -33,7 +33,12 @@ class UpdateUserRequest extends FormRequest
                 'string',
                 'max:8',
                 Rule::unique('users', 'dni')->ignore($userId)],
-            'email' => 'required|string|email|max:255',
+            'email' => [
+                'required',
+                'string',
+                'max:255',
+                'email',
+                Rule::unique('users', 'email')->ignore($userId)],
             'platform' => 'required|string|max:255',
             'phone' => [
                 'required',

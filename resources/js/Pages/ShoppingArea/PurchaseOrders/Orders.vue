@@ -318,8 +318,8 @@ const showModalSuccess = ref(false);
 const errorAmount = ref(false);
 const title = ref('');
 const message = ref('');
-const order_title = ref('');
-const order_message = ref('');
+const title_order = ref('');
+const message_order = ref('');
 
 const props = defineProps({
     orders: Object,
@@ -387,17 +387,19 @@ const updateState = async (stateid, newState, is_payments_completed) => {
         }
 
     } else if (state.value === "Pendiente" || state.value === "OC Enviada") {
-        router.post(route('purchaseorders.state'), data, {
-            onSuccess: () => {
-                order_title.value = state.value === "OC Enviada" ? "OC Enviada" : "Pendiente"
-                order_message.value = state.value === "OC Enviada" ? "Orden enviada correctamente" : "Orden cambiada a Pendiente"
-                showModalSuccess.value = true
+        axios.post(route('purchaseorders.state'), data)
+            .then(() => {
+                title_order.value = state.value === "OC Enviada" ? "OC Enviada" : "Pendiente";
+                message_order.value = state.value === "OC Enviada" ? "Orden enviada correctamente" : "Orden cambiada a Pendiente";
+                showModalSuccess.value = true;
                 setTimeout(() => {
-                    showModalSuccess.value = false
-                    router.visit(route('purchaseorders.index'))
+                    showModalSuccess.value = false;
+                    router.visit(route('purchaseorders.index'));
                 }, 2000);
-            }
-        })
+            })
+            .catch(error => {
+                console.error("Hubo un error al enviar la orden:", error);
+            });
     }
 }
 
@@ -407,8 +409,8 @@ const submit = () => {
     form.post(route('purchaseorders.state'), {
         onSuccess: () => {
             showCotization.value = false
-            order_title.value = "Orden Completada"
-            order_message.value = "Orden completada correctamente"
+            title_order.value = "Orden Completada"
+            message_order.value = "Orden completada correctamente"
             showModalSuccess.value = true
             setTimeout(() => {
                 showModalSuccess.value = false
