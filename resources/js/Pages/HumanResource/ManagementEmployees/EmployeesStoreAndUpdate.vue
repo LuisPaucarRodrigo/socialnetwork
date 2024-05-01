@@ -501,7 +501,7 @@
                                 condición médica? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.medical_condition" id="medical_condition"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
                                 <InputError :message="form.errors.medical_condition" />
                             </div>
                         </div>
@@ -512,7 +512,7 @@
                                 medicamento? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.allergies" id="allergies"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
                                 <InputError :message="form.errors.allergies" />
                             </div>
                         </div>
@@ -522,7 +522,7 @@
                                 operación? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.operations" id="operations"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
                                 <InputError :message="form.errors.operations" />
                             </div>
                         </div>
@@ -532,7 +532,7 @@
                                 accidente grave? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.accidents" id="accidents"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
                                 <InputError :message="form.errors.accidents" />
                             </div>
                         </div>
@@ -543,7 +543,7 @@
                                 vacuna? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.vaccinations" id="vaccinations"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
                                 <InputError :message="form.errors.vaccinations" />
                             </div>
                         </div>
