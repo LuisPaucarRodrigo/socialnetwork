@@ -114,12 +114,14 @@ class WarehousesController extends Controller
                     'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                 ]);
 
-                ProjectEntry::create([
-                    'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                    'entry_id' => $entry->id,
-                    'quantity' => $entry->quantity,
-                    'unitary_price' => $entry->unitary_price,
-                ]);
+                if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                    ProjectEntry::create([
+                        'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                        'entry_id' => $entry->id,
+                        'quantity' => $entry->quantity,
+                        'unitary_price' => $entry->unitary_price,
+                    ]);
+                }
             }
         } else {
             // Si hay registros de inventario, procede con la lógica existente
@@ -143,12 +145,15 @@ class WarehousesController extends Controller
                         'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
 
-                    ProjectEntry::create([
-                        'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                        'entry_id' => $entry->id,
-                        'quantity' => $entry->quantity,
-                        'unitary_price' => $entry->unitary_price,
-                    ]);
+                    if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                        ProjectEntry::create([
+                            'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                            'entry_id' => $entry->id,
+                            'quantity' => $entry->quantity,
+                            'unitary_price' => $entry->unitary_price,
+                        ]);
+                    }
+
 
                 } else {
                     // Si no se encuentra un inventario existente, crear uno nuevo y luego un entry y un purchase_entry asociados a ese inventario
@@ -171,12 +176,14 @@ class WarehousesController extends Controller
                         'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
 
-                    ProjectEntry::create([
-                        'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                        'entry_id' => $entry->id,
-                        'quantity' => $entry->quantity,
-                        'unitary_price' => $entry->unitary_price,
-                    ]);
+                    if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                        ProjectEntry::create([
+                            'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                            'entry_id' => $entry->id,
+                            'quantity' => $entry->quantity,
+                            'unitary_price' => $entry->unitary_price,
+                        ]);
+                    }
                 }
             }
         }
