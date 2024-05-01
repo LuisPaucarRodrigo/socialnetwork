@@ -13,7 +13,7 @@
                             <InputLabel for="serial_number">Numero de Serie
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.serial_number" id="serial_number" pattern="\d*"
+                                <TextInput type="number" v-model="form.serial_number" id="serial_number" pattern="\d*"
                                     autocomplete="given-name" maxlength="11" />
                                 <InputError :message="form.errors.serial_number" />
                             </div>
@@ -22,7 +22,7 @@
                             <InputLabel for="referral_guide">Numero de Guia
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.referral_guide" id="referral_guide"
+                                <TextInput type="number" v-model="form.referral_guide" id="referral_guide"
                                     :to-uppercase="true" autocomplete="given-name"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.referral_guide" />
@@ -41,7 +41,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="entry_price">Precio de Entrada</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.entry_price" id="entry_price" :to-uppercase="true"
+                                <TextInput type="number" v-model="form.entry_price" id="entry_price" :to-uppercase="true"
                                     autocomplete="family-name" />
                                 <InputError :message="form.errors.entry_price" />
                             </div>
@@ -56,6 +56,15 @@
                                 </option>
                             </select>
                             <InputError :message="form.errors.purchase_product_id" />
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="description">Descripcion</InputLabel>
+                            <div class="mt-2">
+                                <textarea v-model="form.description" id="accidents"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <InputError :message="form.errors.description" />
+                            </div>
+                            <InputError :message="form.errors.description" />
                         </div>
                     </div>
                 </div>
@@ -97,6 +106,7 @@ const form = useForm({
     entry_price: '',
     purchase_product_id: '',
     condition: 'Disponible',
+    description: '',
     state: 1
 });
 
