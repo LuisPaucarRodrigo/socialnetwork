@@ -200,7 +200,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">
                                         {{ purchaseQuoteData.currency === 'sol' ? 'S/. ' : '$ ' }}
-                                        {{ product.unitary_amount.toFixed(2) }}
+                                        {{ product.unitary_amount_no_igv.toFixed(2) }}
                                     </div>
                                 </td>
                             </tr>

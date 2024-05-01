@@ -125,6 +125,9 @@
                                     <th
                                         class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    </th>
                                 </tr>
                                 <tr v-for="paymentDetail in payment.payment" :key="paymentDetail.id"
                                     class="bg-gray-100"
@@ -173,6 +176,9 @@
                                             </button>
                                             <p v-else class="text-green-500 whitespace-no-wrap">Pagado</p>
                                         </div>
+                                    </td>
+                                    <td colspan="1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+
                                     </td>
                                 </tr>
                             </template>

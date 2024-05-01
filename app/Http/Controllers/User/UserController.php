@@ -32,8 +32,6 @@ class UserController extends Controller
         $validatedData = $request->validated();
         $user = User::findOrFail($id);
         $user->update($validatedData);
-
-        return to_route('users.index');
     }
 
     public function delete(Request $request, $id)
