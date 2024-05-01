@@ -49,6 +49,10 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Entrada
                             </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Descripcion
+                            </th>
                             <th v-if="resources && !boolean"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Condición
@@ -85,6 +89,9 @@
                             <td v-if="!boolean"
                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-nowrap">{{ formattedDate(item.entry_date) }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
                             </td>
                             <td v-if="!boolean"
                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
