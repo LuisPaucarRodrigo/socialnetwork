@@ -22,6 +22,7 @@ class Purchasing_request extends Model
         'state', 
         'code', 
         'state_quote',
+        'products_state'
     ];
 
     public function getStateAttribute()
@@ -34,8 +35,19 @@ class Purchasing_request extends Model
                 return 'En progreso';
             }
         }
+        if (!$this->getProductsStateAttribute()) return 'En progreso';
         return 'Completada';
     }
+
+    public function getProductsStateAttribute() {
+        foreach($this->purchasing_request_product()->get() as $item){
+            if (!$item->completed_state){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public function getCodeAttribute()
     {
