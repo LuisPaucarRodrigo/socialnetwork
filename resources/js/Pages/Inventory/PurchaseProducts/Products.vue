@@ -76,7 +76,7 @@
                                 <p class="text-gray-900 whitespace-nowrap">
                                     {{ item.type }}
                                     {{ item.type === 'Producto' ? '/ ' + item.type_product : item.resource_type
-        ? '/' + item.resource_type.name
+        ? '/ ' + item.resource_type.name
         : '' }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -379,7 +379,6 @@ const submit = () => {
             }, 2000);
         },
         onError: () => {
-            form.reset();
         },
         onFinish: () => {
             form.reset();
@@ -399,8 +398,8 @@ const submitEdit = () => {
                 router.visit(route('inventory.purchaseproducts'))
             }, 2000);
         },
-        onError: () => {
-            form.reset();
+        onError: (e) => {
+            console.error("Error: ", e)
         },
         onFinish: () => {
             form.reset();
