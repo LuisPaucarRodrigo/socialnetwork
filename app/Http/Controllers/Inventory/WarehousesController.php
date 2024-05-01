@@ -34,8 +34,9 @@ class WarehousesController extends Controller
     public function showProducts(Warehouse $warehouse)
     {
 
-        $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry', 'purchase_product')->paginate(10);
-        // dd($products);
+        $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry', 'purchase_product')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Conproco/Inventory', [
             'products' => $products,
             'warehouseId' => $warehouse->id
@@ -60,6 +61,7 @@ class WarehousesController extends Controller
                 'normal_entry',
                 'purchase_entry'
             )
+            ->orderBy('entry_date','desc')
             ->paginate(10);
         return Inertia::render('Inventory/WarehouseManagement/Conproco/Entries', [
             'entries' => $entries,

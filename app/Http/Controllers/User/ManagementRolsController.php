@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RolRequest\CreateRolRequest;
 use App\Models\Permission;
 use App\Models\Role;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class ManagementRolsController extends Controller

@@ -21,7 +21,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="section in sections" :key="section.id">
+              <tr class="bg-white" v-for="section in sections.data" :key="section.id">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm font-medium text-gray-900">{{ section.name }}</div>
                 </td>
@@ -36,6 +36,10 @@
             </tbody>
           </table>
         </div>
+        <div
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <pagination :links="sections.links" />
+          </div>
 
       </div>
       <Modal :show="isCreateSectionModalOpen">
@@ -84,7 +88,7 @@ import { TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-
+import Pagination from '@/Components/Pagination.vue';
 
 const showModal = ref(false);
 

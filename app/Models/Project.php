@@ -19,13 +19,10 @@ class  Project extends Model
     ];
 
     protected $appends = [
+        'preproject_quote',
         'total_percentage_tasks',
         'total_percentage_tasks_completed',
         'remaining_budget',
-        'total_assigned_product_costs',
-        'total_refund_product_costs_no_different_price',
-        'total_product_costs_with_liquidation',
-        'preproject_quote',
         'preproject_quote_no_margin',
         'total_employee_costs',
         'name',
@@ -113,49 +110,6 @@ class  Project extends Model
         return $this->preproject()->first()->total_services_cost;
     }
 
-    // --------------------------------  Product Costs ---------------------------------//
-
-    public function getTotalAssignedProductCostsAttribute()
-    {
-        $totalCost = $this->projectProducts()->with('product')->get()->sum(function ($item) {
-            if ($item->product->has_different_price) {
-                return $item->unit_price * $item->quantity;
-            } else {
-                return $item->product->unit_price * $item->quantity;
-            }
-        });
-        return $totalCost;
-    }
-
-
-    public function getTotalRefundProductCostsNoDifferentPriceAttribute()
-    {
-        $totalCost = $this->projectProducts()->with('product')->get()->sum(function ($item) {
-            if (!$item->product->has_different_price) {
-                return $item->total_refund_quantity * $item->product->unit_price;
-            }
-        });
-        return $totalCost;
-    }
-
-
-    public function getTotalUsedProductCostsDifferentPriceAttribute()
-    {
-        $totalCost = $this->projectProducts()->with('product')->get()->sum(function ($item) {
-            if ($item->product->has_different_price) {
-                return ($item->total_used_quantity * $item->product->unit_price) - ($item->total_used_quantity * $item->unit_price);
-            }
-        });
-        return $totalCost;
-    }
-
-
-    public function getTotalProductCostsWithLiquidationAttribute()
-    {
-        return $this->getTotalAssignedProductCostsAttribute() - $this->getTotalRefundProductCostsNoDifferentPriceAttribute() +
-            $this->getTotalUsedProductCostsDifferentPriceAttribute();
-    }
-
     // --------------------------------  Employee Costs ---------------------------------//
 
 
@@ -177,11 +131,6 @@ class  Project extends Model
     public function employees()
     {
         return $this->belongsToMany(Employee::class, 'project_employee')->withPivot('charge', 'id');
-    }
-
-    public function projectProducts()
-    {
-        return $this->hasMany(ProjectProduct::class);
     }
 
     public function tasks()
