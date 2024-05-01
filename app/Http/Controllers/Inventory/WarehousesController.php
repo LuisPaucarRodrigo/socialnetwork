@@ -518,6 +518,7 @@ class WarehousesController extends Controller
             'serial_number' => 'required|numeric',
             'referral_guide' => 'required|numeric',
             'entry_price' => 'required|numeric',
+            'description' => 'required|string',
             'purchase_product_id' => 'required|numeric',
         ]);
         ResourceEntry::create($data);
