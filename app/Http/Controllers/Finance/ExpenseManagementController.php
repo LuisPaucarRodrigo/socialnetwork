@@ -76,7 +76,7 @@ class ExpenseManagementController extends Controller
         }
     }
 
-    public function doTask()
+    public function approve_quote_alarm()
     {
         // Obtener la fecha actual ajustada por el desfase
         $currentDate = Carbon::now();

@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Log;
 
 class SectionController extends Controller
 {
-    
+
     //Sections
     public function showSections()
     {
-        $sections = Section::all();
+        $sections = Section::paginate(10);
         return Inertia::render('HumanResource/AlarmManagement/Sections', [
             'sections' => $sections
         ]);
@@ -42,7 +42,7 @@ class SectionController extends Controller
     //SubSections
     public function showSubSections()
     {
-        $subSections = SubSection::with('section')->paginate();
+        $subSections = SubSection::with('section')->paginate(10);
         $sections = Section::all();
         return Inertia::render('HumanResource/AlarmManagement/SubSections', [
             'subSections' => $subSections,
@@ -112,40 +112,19 @@ class SectionController extends Controller
         // Obtener todos los SubSection que están a punto de vencerse en los próximos 3 días y los que ya vencieron
         $subSections = SubSection::where('end_date', '<=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 3 días y fechas pasadas
             ->get(); // Obtener una colección de resultados
-
-        $totalSubSections = $subSections->count();
-
-        return response()->json([
-            'totalSubSections' => $totalSubSections,
-            'subSections' => $subSections,
-        ]);
-    }
-
-
-    public function doTask2()
-    {
-        // Obtener la fecha actual ajustada por el desfase
-        $currentDate = Carbon::now();
-        $currentDateUpdate = $currentDate;
-
-        // Obtener todos los SubSection que están a punto de vencerse entre los próximos 4 y 7 días
-        $subSections = SubSection::where('end_date', '>=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 4 días
+        $subSections7 = SubSection::where('end_date', '>=', $currentDateUpdate->copy()->addDays(3)) // Ajustado para considerar los próximos 4 días
             ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(7)) // Ajustado para considerar los próximos 7 días
             ->get(); // Obtener una colección de resultados
-
-        $totalSubSections = $subSections->count();
-
         return response()->json([
-            'totalSubSections' => $totalSubSections,
             'subSections' => $subSections,
+            'subSections7' => $subSections7,
         ]);
     }
 
     public function calendarAlarm()
     {
-        return Inertia::render('HumanResource/AlarmManagement/Calendar',[
+        return Inertia::render('HumanResource/AlarmManagement/Calendar', [
             'member' => SubSection::all()
         ]);
     }
-
 }

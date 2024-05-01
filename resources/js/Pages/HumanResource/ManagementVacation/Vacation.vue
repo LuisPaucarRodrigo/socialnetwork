@@ -313,7 +313,11 @@ const searchForm = useForm({
 
 const search = () => {
     let data = { searchTerm: searchForm.searchTerm }
-    router.get(route('management.vacation'), data)
+    if (props.boolean == true) {
+        router.get(route('management.vacation', { review: reviewstate.value }), data)
+    } else {
+        router.get(route('management.vacation'), data)
+    }
 }
 
 function sendStatus(id, status) {

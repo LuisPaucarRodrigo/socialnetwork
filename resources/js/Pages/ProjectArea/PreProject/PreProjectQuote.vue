@@ -893,12 +893,14 @@ const addItem = () => {
                     if (response.status = 200) {
                         itemToAdd.value.ids = response.data.ids
                         showItemAddModal.value = true
+                        
                         setTimeout(() => {
                             showItemAddModal.value = false;
                         }, 1500);
                         form.items.push({
                             ...itemToAdd.value
                         });
+                        closeModal();
                     }
                 })
                 .catch(e => console.log(e))
