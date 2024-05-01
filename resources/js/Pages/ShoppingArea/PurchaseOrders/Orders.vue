@@ -117,11 +117,15 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <select id="selectState"
                                     @change="updateState(order.id, $event.target.value, order.is_payments_completed)"
-                                    :disabled="order.state == 'Completada'">
+                                    :disabled="order.state === 'Completada'">
                                     <option selected disabled>{{ order.state }}</option>
-                                    <option>Pendiente</option>
+                                    <option v-for="option in availableOptions(order.state)" :key="option"
+                                        :value="option">
+                                        {{ option }}
+                                    </option>
+                                    <!-- <option>Pendiente</option>
                                     <option>OC Enviada</option>
-                                    <option>Completada</option>
+                                    <option>Completada</option> -->
                                 </select>
                             </td>
                         </tr>
@@ -147,7 +151,7 @@
                                     Numero de Serie
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.serie_number" id="serie_number" maxlength="8"
+                                    <input type="number" v-model="form.serie_number" id="serie_number" maxlength="8"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.serie_number" />
                                 </div>
@@ -158,7 +162,7 @@
                                     Numero de Factura
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.facture_number" id="facture_number"
+                                    <input type="number" v-model="form.facture_number" id="facture_number"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.facture_number" />
                                 </div>
@@ -208,7 +212,8 @@
                                     Numero de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.remission_guide_number" id="remission_guide_number"
+                                    <input type="number" v-model="form.remission_guide_number"
+                                        id="remission_guide_number"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.remission_guide_number" />
                                 </div>
@@ -308,6 +313,7 @@ import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import { computed } from 'vue';
 
 const showModal = ref(false);
 const showCotization = ref(false);
@@ -318,12 +324,13 @@ const showModalSuccess = ref(false);
 const errorAmount = ref(false);
 const title = ref('');
 const message = ref('');
-const order_title = ref('');
-const order_message = ref('');
+const title_order = ref('');
+const message_order = ref('');
 
 const props = defineProps({
     orders: Object,
-    search: String
+    search: String,
+    userPermissions: Array
 })
 
 const form = useForm({
@@ -387,39 +394,44 @@ const updateState = async (stateid, newState, is_payments_completed) => {
         }
 
     } else if (state.value === "Pendiente" || state.value === "OC Enviada") {
-        router.post(route('purchaseorders.state'), data, {
-            onSuccess: () => {
-                order_title.value = state.value === "OC Enviada" ? "OC Enviada" : "Pendiente"
-                order_message.value = state.value === "OC Enviada" ? "Orden enviada correctamente" : "Orden cambiada a Pendiente"
-                showModalSuccess.value = true
+        axios.post(route('purchaseorders.state'), data)
+            .then(() => {
+                title_order.value = state.value === "OC Enviada" ? "OC Enviada" : "Pendiente";
+                message_order.value = state.value === "OC Enviada" ? "Orden enviada correctamente" : "Orden cambiada a Pendiente";
+                showModalSuccess.value = true;
                 setTimeout(() => {
-                    showModalSuccess.value = false
-                    router.visit(route('purchaseorders.index'))
+                    showModalSuccess.value = false;
+                    router.visit(route('purchaseorders.index'));
                 }, 2000);
-            }
-        })
+            })
+            .catch(error => {
+                console.error("Hubo un error al enviar la orden:", error);
+            });
     }
 }
 
 const submit = () => {
     form.id = id
     form.state = state
-    form.post(route('purchaseorders.state'), {
-        onSuccess: () => {
-            showCotization.value = false
-            order_title.value = "Orden Completada"
-            order_message.value = "Orden completada correctamente"
-            showModalSuccess.value = true
+    axios.post(route('purchaseorders.state'), form)
+        .then(() => {
+            showCotization.value = false;
+            order_title.value = "Orden Completada";
+            order_message.value = "Orden completada correctamente";
+            showModalSuccess.value = true;
             setTimeout(() => {
-                showModalSuccess.value = false
-                router.visit(route('purchaseorders.index'))
+                showModalSuccess.value = false;
+                router.visit(route('purchaseorders.index'));
             }, 2000);
-
-        }
-    })
+        })
+        .catch(error => {
+            form.
+                console.error("Hubo un error al completar la orden:", error);
+        });
 }
 
 const closeModal = () => {
+    form.reset
     showModal.value = false
 }
 
@@ -435,4 +447,13 @@ const search = () => {
     }
 }
 
+const availableOptions = (state) => {
+    if (state === 'Pendiente' || props.userPermissions.includes('UserManager')) {
+        return ['Pendiente', 'OC Enviada', 'Completada'];
+    } else if (state === 'OC Enviada') {
+        return ['OC Enviada', 'Completada'];
+    } else {
+        return ['Completada'];
+    }
+};
 </script>
