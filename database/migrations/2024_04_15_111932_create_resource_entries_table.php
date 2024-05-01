@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('entry_price');
             $table->boolean('state')->nullable();
             $table->string('condition')->nullable();
+            $table->text('description');
             $table->foreignId('purchase_product_id');
             $table->timestamps();
         });

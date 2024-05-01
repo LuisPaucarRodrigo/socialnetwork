@@ -68,7 +68,7 @@ class PurchaseProductsController extends Controller
             'name' => 'required|string|unique:purchase_products',
             'unit' => 'required',
             'type' => 'required|string|in:Producto,Servicio,Activo',
-            'type_product' => 'nullable|string',
+            'type_product' => 'required|string',
             'description' => 'nullable|string',
             'resource_type_id' => 'nullable|numeric'
         ]);
@@ -82,7 +82,7 @@ class PurchaseProductsController extends Controller
             'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
             'unit' => 'required',
             'type' => 'required|string|in:Producto,Servicio,Activo',
-            'type_product' => 'nullable|string',
+            'type_product' => 'required|string',
             'description' => 'nullable|string'
         ]);
 
