@@ -113,15 +113,20 @@
                                     </button>
                                 </div>
                             </td>
+                            <!-- @change="updateState(order.id, $event.target.value, order.is_payments_completed)" -->
 
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <select id="selectState"
                                     @change="updateState(order.id, $event.target.value, order.is_payments_completed)"
-                                    :disabled="order.state == 'Completada'">
+                                    :disabled="order.state === 'Completada'">
                                     <option selected disabled>{{ order.state }}</option>
-                                    <option>Pendiente</option>
+                                    <option v-for="option in availableOptions(order.state)" :key="option"
+                                        :value="option">
+                                        {{ option }}
+                                    </option>
+                                    <!-- <option>Pendiente</option>
                                     <option>OC Enviada</option>
-                                    <option>Completada</option>
+                                    <option>Completada</option> -->
                                 </select>
                             </td>
                         </tr>
@@ -143,56 +148,52 @@
                                 Factura
                             </h2>
                             <div>
-                                <InputLabel for="serie_number" class="mt-2 font-medium leading-6 text-gray-900">
+                                <InputLabel for="serie_number">
                                     Numero de Serie
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.serie_number" id="serie_number" maxlength="8"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="number" v-model="form.serie_number" id="serie_number"
+                                        maxlength="8" />
                                     <InputError :message="form.errors.serie_number" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="facture_number" class="mt-2 font-medium leading-6 text-gray-900">
+                                <InputLabel for="facture_number">
                                     Numero de Factura
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.facture_number" id="facture_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="number" v-model="form.facture_number" id="facture_number" />
                                     <InputError :message="form.errors.facture_number" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="facture_date" class="mt-4 font-medium leading-6 text-gray-900">
+                                <InputLabel for="facture_date">
                                     Fecha de Factura
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="date" v-model="form.facture_date" id="facture_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="date" v-model="form.facture_date" id="facture_date" />
                                     <InputError :message="form.errors.facture_date" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="facture_doc" class="mt-4 font-medium leading-6 text-gray-900">
+                                <InputLabel for="facture_doc">
                                     Documento de Factura
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile type="file" v-model="form.facture_doc" id="facture_doc"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputFile type="file" v-model="form.facture_doc" id="facture_doc" />
                                     <InputError :message="form.errors.facture_doc" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="others" class="mt-2 font-medium leading-6 text-gray-900">
+                                <InputLabel for="others">
                                     Otros
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.others" id="others"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="text" v-model="form.others" id="others" />
                                     <InputError :message="form.errors.others" />
                                 </div>
                             </div>
@@ -203,47 +204,43 @@
                                 Guia de Remision
                             </h2>
                             <div>
-                                <InputLabel for="remission_guide_number"
-                                    class="mt-2 font-medium leading-6 text-gray-900">
+                                <InputLabel for="remission_guide_number">
                                     Numero de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.remission_guide_number" id="remission_guide_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="number" v-model="form.remission_guide_number"
+                                        id="remission_guide_number" />
                                     <InputError :message="form.errors.remission_guide_number" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="remission_guide_date" class="mt-4 font-medium leading-6 text-gray-900">
+                                <InputLabel for="remission_guide_date">
                                     Fecha de Guia de Remission
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="date" v-model="form.remission_guide_date" id="remission_guide_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <TextInput type="date" v-model="form.remission_guide_date"
+                                        id="remission_guide_date" />
                                     <InputError :message="form.errors.remission_guide_date" />
                                 </div>
                             </div>
 
                             <div>
-                                <InputLabel for="remission_guide_doc" class="mt-4 font-medium leading-6 text-gray-900">
-                                    Documento
-                                    de
-                                    Guia de Remision
+                                <InputLabel for="remission_guide_doc">
+                                    Documento de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile type="file" v-model="form.remission_guide_doc" id="remission_guide_doc"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputFile type="file" v-model="form.remission_guide_doc"
+                                        id="remission_guide_doc" />
                                     <InputError :message="form.errors.remission_guide_doc" />
                                 </div>
                             </div>
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeModal()"> Cancelar </SecondaryButton>
-                            <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                                 Guardar
-                            </button>
+                            </PrimaryButton>
                         </div>
                     </div>
                 </form>
@@ -256,20 +253,20 @@
                     Información de la Cotización
                 </h2>
                 <div class="mt-4">
-                    <p class="text-sm text-gray-600"><span class="font-medium">Codigo de Cotizacion:</span> {{
-        cotization.code
-    }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Monto:</span> S/ {{
-            cotization.amount.toFixed(2)
-        }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Proveedor:</span> {{ cotization.provider
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Codigo de Cotizacion:</span> {{ cotization.code }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Monto:</span> S/ {{ cotization.amount.toFixed(2) }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium">Proveedor:</span> {{ cotization.provider
                         }}
                     </p>
                     <p class="text-sm text-gray-600"><span class="font-medium">Fecha de solicitud de compra:</span>
                         {{ formattedDate(cotization.quote_deadline) }}</p>
-                    <p class="text-sm text-gray-600"><span class="font-medium">Estado de Cotizacion:</span> {{
-        cotization.response
-    }}
+                    <p class="text-sm text-gray-600"><span class="font-medium">Estado de Cotizacion:</span>
+                        {{ cotization.response }}
                     </p>
                     <div class="flex items-center">
                         <p class="text-sm text-gray-600">
@@ -289,6 +286,9 @@
         </Modal>
         <ErrorOperationModal :showError="errorAmount" :title="title" :message="message" />
         <SuccessOperationModal :confirming="showModalSuccess" :title="title_order" :message="message_order" />
+        <ConfirmateModal :showConfirm="showModalUpdateSuccess" tittle="Confirmar"
+            text="El estado de la orden se cambiara" :actionFunction="updateStateOrder"
+            @closeModal="closeUpdateModal" />
 
     </AuthenticatedLayout>
 </template>
@@ -308,6 +308,8 @@ import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import TextInput from '@/Components/TextInput.vue';
+import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 
 const showModal = ref(false);
 const showCotization = ref(false);
@@ -315,15 +317,19 @@ const id = ref(null);
 const state = ref(null);
 const quoteToOpen = ref(null);
 const showModalSuccess = ref(false);
+const showModalUpdateSuccess = ref(false);
 const errorAmount = ref(false);
 const title = ref('');
 const message = ref('');
 const title_order = ref('');
 const message_order = ref('');
+const data = ref(null);
+const state_order = ref(null);
 
 const props = defineProps({
     orders: Object,
-    search: String
+    search: String,
+    userPermissions: Array
 })
 
 const form = useForm({
@@ -371,7 +377,7 @@ const closeCotizationModal = () => {
 const updateState = async (stateid, newState, is_payments_completed) => {
     id.value = stateid;
     state.value = newState;
-    const data = { state: state.value, id: id.value };
+    data.value = { state: state.value, id: id.value };
 
     if (state.value === "Completada") {
         if (is_payments_completed) {
@@ -387,19 +393,7 @@ const updateState = async (stateid, newState, is_payments_completed) => {
         }
 
     } else if (state.value === "Pendiente" || state.value === "OC Enviada") {
-        axios.post(route('purchaseorders.state'), data)
-            .then(() => {
-                title_order.value = state.value === "OC Enviada" ? "OC Enviada" : "Pendiente";
-                message_order.value = state.value === "OC Enviada" ? "Orden enviada correctamente" : "Orden cambiada a Pendiente";
-                showModalSuccess.value = true;
-                setTimeout(() => {
-                    showModalSuccess.value = false;
-                    router.visit(route('purchaseorders.index'));
-                }, 2000);
-            })
-            .catch(error => {
-                console.error("Hubo un error al enviar la orden:", error);
-            });
+        showModalUpdateSuccess.value = true
     }
 }
 
@@ -422,6 +416,7 @@ const submit = () => {
 }
 
 const closeModal = () => {
+    form.reset
     showModal.value = false
 }
 
@@ -437,4 +432,34 @@ const search = () => {
     }
 }
 
+const availableOptions = (state) => {
+    if (state === 'Pendiente' || props.userPermissions.includes('UserManager')) {
+        return ['Pendiente', 'OC Enviada', 'Completada'];
+    } else if (state === 'OC Enviada') {
+        return ['OC Enviada', 'Completada'];
+    } else {
+        return ['Completada'];
+    }
+};
+
+function updateStateOrder() {
+    showModalUpdateSuccess.value = false
+    axios.post(route('purchaseorders.state'), data.value)
+        .then(() => {
+            title_order.value = state.value === "OC Enviada" ? "OC Enviada" : "Pendiente";
+            message_order.value = state.value === "OC Enviada" ? "Orden enviada correctamente" : "Orden cambiada a Pendiente";
+            showModalSuccess.value = true;
+            setTimeout(() => {
+                showModalSuccess.value = false;
+                router.visit(route('purchaseorders.index'));
+            }, 2000);
+        })
+        .catch(error => {
+            console.error("Hubo un error al enviar la orden:", error);
+        });
+}
+
+function closeUpdateModal() {
+    showModalUpdateSuccess.value = false
+}
 </script>
