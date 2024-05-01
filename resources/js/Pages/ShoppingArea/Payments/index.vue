@@ -209,7 +209,7 @@
                             <InputLabel for="price_dolar" class="font-medium leading-6 text-gray-900">Precio del dolar:
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" id="price_dolar" v-model="form.price_dolar"
+                                <TextInput type="number" id="price_dolar" v-model="form.price_dolar"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.price_dolar" />
                             </div>
@@ -219,7 +219,7 @@
                                 Operacion:
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" id="operation_number" v-model="form.operation_number"
+                                <TextInput type="number" id="operation_number" v-model="form.operation_number"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.operation_number" />
                             </div>
