@@ -48,7 +48,7 @@
                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
                             </td>
-                            <td class="sticky left-0 z-10 border-b border-gray-200 px-5 py-5 text-sm">
+                            <td class="sticky left-0 z-10 border-b border-gray-200 px-5 py-5 text-sm bg-white">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.name }} {{ item.lastname }}</p>
                             </td>
                             <td class="border-b border-gray-200 px-5 py-5 text-sm">

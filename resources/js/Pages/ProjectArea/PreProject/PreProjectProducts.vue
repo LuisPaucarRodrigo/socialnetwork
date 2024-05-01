@@ -234,7 +234,7 @@ import axios from 'axios';
 const { assigned_products, warehouses, preproject } = defineProps({
     assigned_products: Object,
     warehouses: Object,
-    preproject: Number,
+    preproject: Object,
     auth: Object
 })
 
@@ -266,7 +266,6 @@ const product_warehouse = async (warehouse) => {
 const product_inventory = async (inventory) => {
     const res = await axios.get(route('preprojects.inventory_products', { inventory_id: inventory }))
     warehouseInventory.value = res.data.inventory;
-    console.log(warehouseInventory.value)
 };
 
 //form
@@ -287,8 +286,10 @@ const submit = () => {
     form.post(route('preprojects.products.store'), {
         onSuccess: () => {
             form.reset();
+            closeModal();
             successAsignation.value = true
             warehouseProducts.value = []
+            closeModal();
             // let almacen_select = document.getElementById('almacen_id')
             // almacen_select.value = ""
             // enableInput.value = false
