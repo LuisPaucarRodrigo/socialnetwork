@@ -22,7 +22,7 @@
                     <p class="text-lg text-gray-900">{{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
             (expense.total_amount).toFixed(2) }}</p>
                 </div>
-                <div v-if="quotes && props.expense.preproject_state" class="mb-4">
+                <div v-if="quotes" class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha Límite de Aprobación:</p>
                     <p v-if="expense.quote_deadline" class="text-lg text-gray-900">{{
             formattedDate(expense.quote_deadline) }}

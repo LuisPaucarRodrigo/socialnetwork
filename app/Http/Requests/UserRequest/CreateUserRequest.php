@@ -26,8 +26,15 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'dni' => 'required|string|max:8|unique:'.User::class,
-            'email' => 'required|string|email|max:255|unique:'.User::class,
+            'dni' => ['required',
+                      'string',
+                      'max:8',
+                      Rule::unique('users', 'dni')],
+            'email' => ['required',
+                        'string',
+                        'max:255',
+                        'email',
+                        Rule::unique('users', 'email')],
             'platform' => 'required|string|in:Movil,Web,Ambos',
             'phone' => [
                 'required',
