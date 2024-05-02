@@ -208,7 +208,7 @@
                                     Numero de Guia de Remision
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="number" v-model="form.remission_guide_number"
+                                    <TextInput type="text" v-model="form.remission_guide_number"
                                         id="remission_guide_number" />
                                     <InputError :message="form.errors.remission_guide_number" />
                                 </div>
