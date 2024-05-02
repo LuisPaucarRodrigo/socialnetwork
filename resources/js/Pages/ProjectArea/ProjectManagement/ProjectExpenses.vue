@@ -97,17 +97,16 @@ const updateChart = () => {
 
   // Agregar el presupuesto restante y los costos adicionales a la data\
 
-
-  const dataWithRemainingBudget = [project.remaining_budget, additionalCosts, project.total_products_cost];
+  const dataWithRemainingBudget = [project.remaining_budget < 0 ? 0 : project.remaining_budget, additionalCosts, project.total_products_cost, project.total_services_cost];
 
   // Crear un nuevo gráfico con los datos actualizados
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Presupuesto Restante', 'Costos Adicionales', 'Costos de Productos'],
+      labels: ['Presupuesto Restante', 'Costos Adicionales', 'Costos de Productos', 'Costos de Servicios'],
       datasets: [{
         data: dataWithRemainingBudget,
-        backgroundColor: [getRandomColor(), getRandomColor(), getRandomColor()],
+        backgroundColor: [getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()],
       }],
     },
     options: {

@@ -91,8 +91,8 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/. {{ item.unitary_price }}
+                                <p class="text-gray-900 whitespace-nowrap" :class="!item.unitary_price ? 'text-center' : ''">
+                                    {{ item.unitary_price ? 'S/. ' + item.unitary_price : '-' }}
                                 </p>
                             </td>
 
@@ -168,7 +168,7 @@
                         <div class="flex justify-between items-center">
                             <InputLabel for="product_id">Producto</InputLabel>
                             <InputLabel class="font-medium leading-6 text-gray-900" v-if="form.special_inventory_id">{{
-        warehouseProducts?.find(i => i.id === form.special_inventory_id)?.quantity }}</InputLabel>
+        warehouseProducts?.find(i => i.id === form.special_inventory_id)?.quantity_available }}</InputLabel>
                         </div>
                         <div class="mt-2" v-if="warehouseProductsfirst">
                             <select required id="product_id" v-model="form.special_inventory_id"
@@ -216,8 +216,8 @@
                         <InputLabel for="quantity">Cantidad</InputLabel>
                         <div class="mt-2">
                             <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
-                                :max="form.entry_id ? warehouseInventory?.find(i => i.id === form.entry_id)?.quantity_available : 0" />
-                        </div>
+                                :max="form.entry_id ? warehouseInventory?.find(i => i.id === form.entry_id)?.quantity_available : warehouseProducts?.find(i => i.id === form.special_inventory_id)?.quantity_available" />
+                            </div>
                     </div>
 
                 </div>
@@ -275,10 +275,11 @@ const showToAddProduct = () => {
 }
 
 const closeModal = () => {
+    form.reset()
     warehouseProducts.value = [];
     warehouseInventory.value = [];
     showModal.value = false;
-    form.reset()
+    
 };
 
 //Load warehouse's product
@@ -290,7 +291,6 @@ const product_warehouse = async (warehouse) => {
     warehouseProducts.value = []
     warehouseInventory.value = []
     const res = await axios.get(route('projectmanagement.warehouse_products', { project: project_id, warehouse: warehouse }))
-    console.log(res.data.products)
     warehouseProducts.value = res.data.products;
     warehouseProductsfirst.value = warehouseProducts.value[0]?.cpe;
 };
@@ -315,10 +315,9 @@ const form = useForm({
 
 
 const submit = () => {
-    console.log(form);
     form.post(route('projectmanagement.products.store'), {
         onSuccess: () => {
-            form.reset();
+            closeModal();
             successAsignation.value = true
             warehouseProducts.value = []
             // let almacen_select = document.getElementById('almacen_id')

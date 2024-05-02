@@ -107,7 +107,7 @@
                                 </div>
                             </div>
                             <div class="mt-6 flex items-center justify-end gap-x-6">
-                                <SecondaryButton @click="closeApprove"> Cancel </SecondaryButton>
+                                <SecondaryButton @click="closeApprove"> Cancelar </SecondaryButton>
                                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aprobar
                                     Ingreso</button>
@@ -200,7 +200,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">
                                         {{ purchaseQuoteData.currency === 'sol' ? 'S/. ' : '$ ' }}
-                                        {{ product.unitary_amount.toFixed(2) }}
+                                        {{ product.unitary_amount_no_igv.toFixed(2) }}
                                     </div>
                                 </td>
                             </tr>

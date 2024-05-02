@@ -97,68 +97,12 @@ class WarehousesController extends Controller
         if ($warehouse->inventory->isEmpty()) {
             // Crear registros de inventario directamente
             foreach ($purchase_order->purchase_quote->purchase_quote_products as $purchaseQuoteProduct) {
-                $inventory = Inventory::create([
-                    'purchase_product_id' => $purchaseQuoteProduct->purchase_product->id,
-                    'warehouse_id' => 3
-                ]);
-
-                $entry = Entry::create([
-                    'inventory_id' => $inventory->id,
-                    'type' => 'purchase',
-                    'quantity' => $purchaseQuoteProduct->quantity,
-                    'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
-                    'entry_date' => $today,
-                    'observations' => $request->observations
-                ]);
-
-                PurchasesEntry::create([
-                    'entry_id' => $entry->id,
-                    'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
-                ]);
-
-                ProjectEntry::create([
-                    'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                    'entry_id' => $entry->id,
-                    'quantity' => $entry->quantity,
-                    'unitary_price' => $entry->unitary_price,
-                ]);
-            }
-        } else {
-            // Si hay registros de inventario, procede con la lógica existente
-            foreach ($purchase_order->purchase_quote->purchase_quote_products as $purchaseQuoteProduct) {
-                // Verificar si hay un inventario existente con el mismo purchase_product_id
-                $existingInventory = $warehouse->inventory->firstWhere('purchase_product_id', $purchaseQuoteProduct->purchase_product->id);
-
-                if ($existingInventory) {
-                    // Si se encuentra un inventario existente, crear un entry y un purchase_entry asociados a ese inventario
-                    $entry = Entry::create([
-                        'inventory_id' => $existingInventory->id,
-                        'type' => 'purchase',
-                        'quantity' => $purchaseQuoteProduct->quantity,
-                        'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
-                        'entry_date' => $today,
-                        'observations' => $request->observations
-                    ]);
-
-                    PurchasesEntry::create([
-                        'entry_id' => $entry->id,
-                        'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
-                    ]);
-
-                    ProjectEntry::create([
-                        'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                        'entry_id' => $entry->id,
-                        'quantity' => $entry->quantity,
-                        'unitary_price' => $entry->unitary_price,
-                    ]);
-
-                } else {
-                    // Si no se encuentra un inventario existente, crear uno nuevo y luego un entry y un purchase_entry asociados a ese inventario
+                if($purchaseQuoteProduct->quantity > 0){
                     $inventory = Inventory::create([
                         'purchase_product_id' => $purchaseQuoteProduct->purchase_product->id,
                         'warehouse_id' => 3
                     ]);
-
+    
                     $entry = Entry::create([
                         'inventory_id' => $inventory->id,
                         'type' => 'purchase',
@@ -167,18 +111,85 @@ class WarehousesController extends Controller
                         'entry_date' => $today,
                         'observations' => $request->observations
                     ]);
-
+    
                     PurchasesEntry::create([
                         'entry_id' => $entry->id,
                         'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
+    
+                    if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                        ProjectEntry::create([
+                            'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                            'entry_id' => $entry->id,
+                            'quantity' => $entry->quantity,
+                            'unitary_price' => $entry->unitary_price,
+                        ]);
+                    }
+                }
+            }
+        } else {
+            // Si hay registros de inventario, procede con la lógica existente
+            foreach ($purchase_order->purchase_quote->purchase_quote_products as $purchaseQuoteProduct) {
+                // Verificar si hay un inventario existente con el mismo purchase_product_id
+                $existingInventory = $warehouse->inventory->firstWhere('purchase_product_id', $purchaseQuoteProduct->purchase_product->id);
 
-                    ProjectEntry::create([
-                        'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                        'entry_id' => $entry->id,
-                        'quantity' => $entry->quantity,
-                        'unitary_price' => $entry->unitary_price,
-                    ]);
+                if ($purchaseQuoteProduct->quantity > 0) {
+                    if ($existingInventory) {
+                        // Si se encuentra un inventario existente, crear un entry y un purchase_entry asociados a ese inventario
+                        $entry = Entry::create([
+                            'inventory_id' => $existingInventory->id,
+                            'type' => 'purchase',
+                            'quantity' => $purchaseQuoteProduct->quantity,
+                            'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
+                            'entry_date' => $today,
+                            'observations' => $request->observations
+                        ]);
+    
+                        PurchasesEntry::create([
+                            'entry_id' => $entry->id,
+                            'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
+                        ]);
+    
+                        if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                            ProjectEntry::create([
+                                'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                                'entry_id' => $entry->id,
+                                'quantity' => $entry->quantity,
+                                'unitary_price' => $entry->unitary_price,
+                            ]);
+                        }
+    
+    
+                    } else {
+                        // Si no se encuentra un inventario existente, crear uno nuevo y luego un entry y un purchase_entry asociados a ese inventario
+                        $inventory = Inventory::create([
+                            'purchase_product_id' => $purchaseQuoteProduct->purchase_product->id,
+                            'warehouse_id' => 3
+                        ]);
+    
+                        $entry = Entry::create([
+                            'inventory_id' => $inventory->id,
+                            'type' => 'purchase',
+                            'quantity' => $purchaseQuoteProduct->quantity,
+                            'unitary_price' => $purchaseQuoteProduct->unitary_amount_no_igv,
+                            'entry_date' => $today,
+                            'observations' => $request->observations
+                        ]);
+    
+                        PurchasesEntry::create([
+                            'entry_id' => $entry->id,
+                            'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
+                        ]);
+    
+                        if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                            ProjectEntry::create([
+                                'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                                'entry_id' => $entry->id,
+                                'quantity' => $entry->quantity,
+                                'unitary_price' => $entry->unitary_price,
+                            ]);
+                        }
+                    }
                 }
             }
         }
@@ -520,6 +531,7 @@ class WarehousesController extends Controller
             'serial_number' => 'required|numeric',
             'referral_guide' => 'required|numeric',
             'entry_price' => 'required|numeric',
+            'description' => 'required|string',
             'purchase_product_id' => 'required|numeric',
         ]);
         ResourceEntry::create($data);

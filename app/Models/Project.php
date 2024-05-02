@@ -30,7 +30,8 @@ class  Project extends Model
         'start_date',
         'end_date',
         'total_products_cost',
-        'total_services_cost'
+        'total_services_cost',
+        'current_budget'
     ];
 
     // CALCULATED
@@ -87,6 +88,9 @@ class  Project extends Model
 
     public function getRemainingBudgetAttribute()
     {
+        if($this->initial_budget === 0.00) {
+            return 0;
+        }
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts->sum('amount');
@@ -94,6 +98,13 @@ class  Project extends Model
             - $this->getTotalProductsCostAttribute()
             - $this->getTotalServicesCostAttribute()
             - $additionalCosts;
+    }
+
+    public function getCurrentBudgetAttribute()
+    {
+        $lastUpdate = $this->budget_updates()->latest()->first();
+        $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
+        return $currentBudget;
     }
 
     public function getTotalProductsCostAttribute()

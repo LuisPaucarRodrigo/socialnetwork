@@ -170,10 +170,10 @@
             @foreach ($purchase_order->purchase_quote->payment as $index => $item)
             <tr>
                 <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->description }}</td>
-                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->state ? 'Pendiente' : 'Completado' }}</td>
+                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->state ? 'Completado' : 'Pendiente' }}</td>
                 <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->operation_number ? $item->operation_number : '-' }}</td>
                 <td style="text-align: center; border: 1.5px solid #000; font-size: 14px;">{{ $item->date ? \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $item->date)->format('d/m/Y') : '-' }}</td>
-                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px; text-align: right;">{{ $item->purchase_quote->currency == 'sol' ? 'S/. ' : '$ '}}{{ $item->amount }}</td>
+                <td style="text-align: center; border: 1.5px solid #000; font-size: 14px; text-align: right;">{{ $item->purchase_quote->currency == 'sol' ? 'S/. ' : '$ '}}{{ number_format($item->amount, 2) }}</td>
             </tr>
             @php
                 $total += $item->amount;
@@ -181,7 +181,7 @@
             @endforeach
             <tr>
                 <td colspan="5" class="td-custom2" style="text-align: right; font-weight: normal; font-weight: bold">
-                Total: {{$purchase_order->purchase_quote->currency == 'sol' ? 'S/. ' : '$ ' }} {{ $total }}</td>
+                Total: {{$purchase_order->purchase_quote->currency == 'sol' ? 'S/. ' : '$ ' }} {{ number_format($total, 2) }}</td>
             </tr>
         </tbody>
     </table>

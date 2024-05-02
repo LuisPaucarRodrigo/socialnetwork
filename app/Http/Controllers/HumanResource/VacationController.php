@@ -167,8 +167,8 @@ class VacationController extends Controller
     public function alarmPermissions()
     {
         $now = Carbon::now();
-        $permissions = Vacation::where('type', 'Permisos')
-            ->where('end_permissions', '<=', $now->copy()->addHours(1))
+        $permissions = Vacation::with('employee')->where('type', 'Permisos')
+            ->where('end_permissions', '<=', $now->copy()->addHours(3))
             ->where('review_date', '!=', null)
             ->where('status', 'Aceptado')
             ->get();
@@ -181,12 +181,12 @@ class VacationController extends Controller
     {
         $now = Carbon::now();
         $currentDateUpdate = $now->subHours(5);
-        $vacation3 = Vacation::where('type', 'Vacaciones')
+        $vacation3 = Vacation::with('employee')->where('type', 'Vacaciones')
             ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(3))
             ->where('review_date', '!=', null)
             ->where('status', 'Aceptado')
             ->get();
-        $vacation7 = Vacation::where('type', 'Vacaciones')
+        $vacation7 = Vacation::with('employee')->where('type', 'Vacaciones')
             ->where('end_date', '>=', $currentDateUpdate->copy()->addDays(3))
             ->where('end_date', '<=', $currentDateUpdate->copy()->addDays(7))
             ->where('review_date', '!=', null)

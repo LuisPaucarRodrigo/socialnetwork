@@ -64,27 +64,47 @@ class PurchaseProductsController extends Controller
 
     public function store(Request $request)
     {
-        $validateData = $request->validate([
-            'name' => 'required|string|unique:purchase_products',
-            'unit' => 'required',
-            'type' => 'required|string|in:Producto,Servicio,Activo',
-            'type_product' => 'nullable|string',
-            'description' => 'nullable|string',
-            'resource_type_id' => 'nullable|numeric'
-        ]);
+        if($request->type_product){
+            $validateData =  $request->validate([
+                'name' => ['required','string',Rule::unique('purchase_products')],
+                'unit' => 'required',
+                'type' => 'required|string|in:Producto,Servicio,Activo',
+                'type_product' => 'required|string',
+                'description' => 'nullable|string'
+            ]);
+        }else{
+            $validateData =  $request->validate([
+                'name' => ['required','string',Rule::unique('purchase_products')],
+                'unit' => 'required',
+                'type' => 'required|string|in:Producto,Servicio,Activo',
+                'resource_type_id' => 'required',
+                'description' => 'nullable|string'
+            ]);
+        }
 
         Purchase_product::create($validateData);
     }
 
     public function update(Request $request, Purchase_product $purchase_product)
     {
-        $validateData =  $request->validate([
-            'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
-            'unit' => 'required',
-            'type' => 'required|string|in:Producto,Servicio,Activo',
-            'type_product' => 'nullable|string',
-            'description' => 'nullable|string'
-        ]);
+        if($request->type_product){
+            $validateData =  $request->validate([
+                'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
+                'unit' => 'required',
+                'type' => 'required|string|in:Producto,Servicio,Activo',
+                'type_product' => 'required|string',
+                'description' => 'nullable|string'
+            ]);
+        }else{
+            $validateData =  $request->validate([
+                'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
+                'unit' => 'required',
+                'type' => 'required|string|in:Producto,Servicio,Activo',
+                'resource_type_id' => 'required',
+                'description' => 'nullable|string'
+            ]);
+        }
+        
 
         $purchase_product->update($validateData);
     }

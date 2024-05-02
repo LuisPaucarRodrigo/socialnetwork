@@ -57,14 +57,22 @@
                 <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
             </div>
         </form>
+
+        <ConfirmUpdateModal :confirmingupdate="showModal" itemType="Usuario" />
+        <ErrorOperationModal :showError="errorModal" :title="'Error'" :message="'Ha ocurrido un error'" />
+
     </AuthenticatedLayout>
+
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue'
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
+import { ref } from 'vue';
 
 const props = defineProps({
     users: {
@@ -73,6 +81,9 @@ const props = defineProps({
     },
     rols: Object
 });
+
+const errorModal = ref(false);
+const showModal = ref(false);
 
 const form = useForm({
     user_id: props.users.id,
@@ -85,6 +96,21 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('users.update', {id: props.users.id}))
+    form.put(route('users.update', {id: props.users.id}), {
+        onSuccess: () => {
+            showModal.value = true;
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('users.index'))
+            }, 2000);
+        },
+        onError: () => {
+            errorModal.value = true;
+            setTimeout(() => {
+                errorModal.value = false
+            }, 1500);
+        },
+        onFinish: () => form.reset('password', 'password_confirmation'),
+    })
 }
 </script>

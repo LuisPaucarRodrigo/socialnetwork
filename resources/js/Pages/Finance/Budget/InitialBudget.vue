@@ -134,10 +134,10 @@
         }
       ]">
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p class="text-gray-900 whitespace-no-wrap">S/. {{ update.new_budget }}</p>
+              <p class="text-gray-900 whitespace-no-wrap">S/. {{ update.new_budget.toFixed(2) }}</p>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <p class="text-gray-900 whitespace-no-wrap">S/. {{ update.difference }}</p>
+              <p class="text-gray-900 whitespace-no-wrap">S/. {{ update.difference.toFixed(2) }}</p>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <p class="text-gray-900 whitespace-no-wrap">{{ update.project.name }}</p>
@@ -160,6 +160,27 @@
     <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
       <pagination :links="budgetUpdates.links" />
     </div>
+
+    <Modal :show="approvating">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    ¿Está seguro de aprobar este presupuesto?
+                </h2>
+                <p class="mt-1 text-sm text-gray-600">
+                  Este presupuesto sobrepasa el precio de la Cotización de Anteproyecto, lo
+                  cual generaría perdidas.
+                </p>
+                    <div class="space-y-12">
+                        <div class="border-gray-900/10">
+                            <div class="mt-6 flex items-center justify-end gap-x-6">
+                                <SecondaryButton @click="closeApprove"> Cancelar </SecondaryButton>
+                                <button @click="form3.initial_budget ? confirm(true, false) : confirm(true, true)" :class="{ 'opacity-25': form2.processing }"
+                                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Confirmar</button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </Modal>
   </AuthenticatedLayout>
 </template>
 
@@ -176,12 +197,16 @@ import { formattedDate } from '@/utils/utils';
 const props = defineProps({
   project: Object,
   budgetUpdate: Object,
-  budgetUpdates: Object
+  budgetUpdates: Object,
+  auth: Object
 });
 
-console.log(props.project);
-
 const isModalOpen2 = ref(false);
+const approvating = ref(false);
+
+const closeApprove = () => {
+  approvating.value = false;
+}
 
 const form2 = useForm({
   new_budget: null,
@@ -211,24 +236,53 @@ const closeDefine = () => {
 };
 
 const closeModal2 = () => {
+  form2.reset();
   isModalOpen2.value = false;
-  form2.new_budget = null;
-  form2.project_id = null;
-  form2.reason = '';
-  form2.user_id = null;
 };
 
 const submit2 = () => {
-  form2.project_id = props.project.id;
-  form2.user_id = 1;
-  form2.post(route('budgetupdates.create', { project: props.project.id }, form2));
-  closeModal2();
+  if (form2.new_budget > (props.project.preproject_quote + props.project.preproject.total_amount_entry)){
+    approvating.value = true;
+  }else{
+    form2.project_id = props.project.id;
+    form2.user_id = props.auth.user.id;
+    form2.post(route('budgetupdates.create', { project: props.project.id }, form2));
+    closeModal2();
+  }
 };
 
 const submit3 = () => {
-  form3.put(route('initialbudget.define', { project: props.project.id }));
-  closeDefine();
+  if (form3.initial_budget > (props.project.preproject_quote + props.project.preproject.total_amount_entry)){
+    approvating.value = true;
+  }else{
+    form3.put(route('initialbudget.define', { project: props.project.id }));
+    closeDefine();
+  }
 };
+
+const confirm = (val = false, form) => {
+  if (val){
+    if(form){
+      form2.project_id = props.project.id;
+      form2.user_id = props.auth.user.id;
+      form2.post(route('budgetupdates.create', { project: props.project.id }, form2));
+      closeApprove();
+      closeModal2();
+    }else{
+      form3.put(route('initialbudget.define', { project: props.project.id }));
+      closeApprove();
+      closeDefine();
+    }
+  }else{
+    if(form){
+      closeApprove();
+      closeModal2;
+    }else{
+      closeApprove();
+      closeDefine;
+    }
+  }
+}
 
 watch(() => form2.difference, (newVal) => {
   const diffValue = newVal !== '' ? newVal : 0;

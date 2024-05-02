@@ -16,6 +16,7 @@ class ResourceEntry extends Model
         'referral_guide',
         'entry_price',
         'state',
+        'description',
         'purchase_product_id'
     ];
 
