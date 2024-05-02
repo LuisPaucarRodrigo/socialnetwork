@@ -66,10 +66,7 @@ class ApiController extends Controller
             'preproject_id' => $request->id,
         ]);
 
-        $data = Preproject::find("1");
-        $data->facade = url('image/facades/' . $data->facade);
-
-        return response()->json($data);
+        return response()->noContent();
     }
 
     public function logout(Request $request)
