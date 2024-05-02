@@ -5,7 +5,7 @@
         ¿Estás seguro de aceptar el/la {{ itemType }}?
       </h2>
       <p class="mt-1 text-sm text-gray-600">
-        Se aceptará la {{ nameText == null ? itemType : nameText }}. Esta accion no
+        Se aceptará el/la {{ nameText == null ? itemType : nameText }}. Esta accion no
         se podra revertir mas adelante y permitirá crear un proyecto a partir de esta {{ nameText == null ? itemType :
     nameText }}.
       </p>
