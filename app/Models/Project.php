@@ -33,10 +33,17 @@ class  Project extends Model
         'start_date',
         'end_date',
         'total_products_cost',
-        'total_services_cost'
+        'total_services_cost',
+        'total_sum_task'
     ];
 
     // CALCULATED
+
+    public function getTotalSumTaskAttribute()
+    {
+        return $this->tasks()->get()->sum('percentage');
+    }
+
     public function getPreprojectQuoteAttribute()
     {
         return $this->preproject?->quote?->total_amount;

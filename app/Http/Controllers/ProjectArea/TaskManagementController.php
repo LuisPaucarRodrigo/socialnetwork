@@ -9,8 +9,6 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Tasks;
 use App\Models\TaskComments;
-use App\Models\TaskEmployee;
-use App\Models\Employee;
 use App\Models\ProjectEmployee;
 use Inertia\Inertia;
 
@@ -24,10 +22,10 @@ class TaskManagementController extends Controller
         return Inertia::render('ProjectArea/TasksManagement/index', [
             'tasks' => $tasks,
             'project' => Project::find($projectId),
-            'projects' => Project::where('id', '!=', $projectId)->get()
+            'projects' => Project::where('id', '!=', $projectId)
+                ->get()
         ]);
     }
-
 
     public function new($project_id)
     {
@@ -36,7 +34,6 @@ class TaskManagementController extends Controller
             'tasks' => Tasks::all(),
         ]);
     }
-
 
     public function edit($taskId)
     {
@@ -105,7 +102,7 @@ class TaskManagementController extends Controller
     }
 
     public function task_edit_date(Request $request)
-    {   
+    {
         $data = $request->validate([
             'id' => 'required|numeric',
             'start_date' => 'required|date',
@@ -116,7 +113,7 @@ class TaskManagementController extends Controller
     }
 
     public function task_duplicated(Request $request)
-    {   
+    {
         $request->validate([
             'project_id_duplicated' => 'required|numeric',
             'project_id' => 'required|numeric'
