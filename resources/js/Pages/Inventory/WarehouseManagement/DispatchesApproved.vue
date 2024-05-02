@@ -97,7 +97,7 @@
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <button 
-                                        @click="()=>showModalOutput(item.id)"
+                                        @click="()=>showModalOutput(item.id, item.remaining_quantity)"
                                         class="text-blue-900 whitespace-no-wrap"
                                         :disabled="(item.state && item.remaining_quantity !== 0)?false:true"
                                     >
@@ -208,6 +208,9 @@
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                     <div class="sm:col-span-6">
+                        <div class="flex">
+                            <p class="mt-1 text-sm text-black-600">Cantidad solicitada: </p><p class="mt-1 ml-1 text-sm text-gray-600">{{ requested_quantity }}</p>
+                        </div>
                         <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
                         <div class="mt-2">
                             <input id="quantity" type="number" min="1" v-model="form.quantity"
@@ -223,7 +226,7 @@
                         class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
                         type="button" @click="closeModal"> Cerrar </button>
                     <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
+                        class="inline-flex items-centeoseMor p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
                         type="submit"> Agregar </button>
                 </div>
             </form>
@@ -252,7 +255,7 @@ const props = defineProps({
     auth: Object
 });
 
-
+const requested_quantity = ref(null);
 //Expandible row
 const row = ref(0);
 const toggleDetails = (outputs) => {
@@ -272,13 +275,15 @@ const form = useForm({
     quantity:''
 })
                                     
-const showModalOutput = (id) => {
+const showModalOutput = (id, quantity) => {
     form.project_entry_id = id
+    requested_quantity.value = quantity;
     showModal.value = true
 }
 
 const closeModal = () => {
-    showModal.value = false
+    showModal.value = false;
+    requested_quantity.value = '';
     form.reset()
 }
 
@@ -286,6 +291,7 @@ const closeModal = () => {
 const submit = () => {
     form.post(route('inventory.special_dispatch_output.store'), {
         onSuccess: () => {
+            requested_quantity.value = null;
             closeModal();
             showSuccessModal.value = true
             setTimeout(()=>{

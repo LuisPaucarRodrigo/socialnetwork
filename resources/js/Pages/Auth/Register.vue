@@ -110,6 +110,8 @@
             </div>
         </form>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="usuario" />
+        <ErrorOperationModal :showError="errorModal" :title="'Error'" :message="'Ha ocurrido un error'" />
+
     </AuthenticatedLayout>
 </template>
 
@@ -121,12 +123,14 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const props = defineProps({
     rols: Object
 })
 
 const showModal = ref(false);
+const errorModal = ref(false);
 
 const form = useForm({
     name: '',
@@ -150,7 +154,10 @@ const submit = () => {
             }, 2000);
         },
         onError: () => {
-            alert('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
+            errorModal.value = true;
+            setTimeout(() => {
+                errorModal.value = false
+            }, 1500);
         },
         onFinish: () => form.reset('password', 'password_confirmation'),
     });

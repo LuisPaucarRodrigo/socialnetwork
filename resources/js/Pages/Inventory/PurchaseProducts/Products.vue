@@ -76,7 +76,7 @@
                                 <p class="text-gray-900 whitespace-nowrap">
                                     {{ item.type }}
                                     {{ item.type === 'Producto' ? '/ ' + item.type_product : item.resource_type
-        ? '/' + item.resource_type.name
+        ? '/ ' + item.resource_type.name
         : '' }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -159,7 +159,7 @@
                                     <InputLabel for="type_product">
                                         Tipo de Producto
                                     </InputLabel>
-                                    <button type="button" @click="add_product" class="item-center">
+                                    <button v-if="hasPermission('UserManager')" type="button" @click="add_product" class="item-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -185,7 +185,7 @@
                                     <InputLabel for="resource_type">
                                         Tipo de Activo
                                     </InputLabel>
-                                    <button type="button" @click="add_resource" class="item-center">
+                                    <button v-if="hasPermission('UserManager')" type="button" @click="add_resource" class="item-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -244,7 +244,6 @@
                             <InputError :message="formname.errors.name" />
                         </div>
                     </div>
-
                 </div>
                 <div class="mt-2" v-if="form.type === 'Activo'">
                     <InputLabel for="depreciation_value">
@@ -304,8 +303,13 @@ const props = defineProps({
     type_product: Object,
     resource_type: Object,
     auth: Object,
-    search: String
+    search: String,
+    userPermissions: Object
 });
+
+function hasPermission(permission) {
+    return props.userPermissions.includes(permission);
+}
 
 const form = useForm({
     id: '',
@@ -375,7 +379,6 @@ const submit = () => {
             }, 2000);
         },
         onError: () => {
-            form.reset();
         },
         onFinish: () => {
             form.reset();
@@ -395,8 +398,8 @@ const submitEdit = () => {
                 router.visit(route('inventory.purchaseproducts'))
             }, 2000);
         },
-        onError: () => {
-            form.reset();
+        onError: (e) => {
+            console.error("Error: ", e)
         },
         onFinish: () => {
             form.reset();
