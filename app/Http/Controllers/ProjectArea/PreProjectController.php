@@ -219,7 +219,7 @@ class PreProjectController extends Controller
                             ]);
                             $preproject_quote->preproject_quote_services()->save($service_item_with_sub);
                             ResourceEntry::find($subItem["id"])->update([
-                                'condition' => "No Disponible"
+                                'condition' => "Reservado"
                             ]);
                         }
                     } else {
