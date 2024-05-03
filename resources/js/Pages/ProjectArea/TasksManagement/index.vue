@@ -189,6 +189,12 @@
                     <h2 class="text-lg font-medium text-gray-900">
                         Fechas de Tareas
                     </h2>
+                    <p class="mt-2 font-medium text-gray-900">Fecha de Inicio del Proyecto:
+                        <span class="text-gray-600">{{ project.start_date }}</span>
+                    </p>
+                    <p class="font-medium text-gray-900">Fecha de Fin del Proyecto:
+                        <span class="text-gray-600">{{ project.end_date }}</span>
+                    </p>
                     <InputLabel for="start_date" class="font-medium leading-6 text-gray-900 mt-3">
                         Fecha de Inicio
                     </InputLabel>
@@ -202,7 +208,7 @@
                         class="mt-4 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     <InputError :message="form.errors.end_date" />
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton @click="closeModalDate"> Cancel </SecondaryButton>
+                        <SecondaryButton @click="closeModalDate"> Cancelar </SecondaryButton>
 
                         <PrimaryButton type="submit" class="ml-3" :class="{ 'opacity-25': formDate.processing }">
                             Guardar
