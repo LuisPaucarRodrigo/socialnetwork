@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Tarea" />
     <AuthenticatedLayout :redirectRoute="{ route: 'tasks.index', params: { id: tasks.project_id } }">
         <template #header>
@@ -68,11 +69,6 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-6 flex items-center justify-end gap-x-6">
-                <button type="submit" v-if="auth.user.role_id === 1 && tasks.status === 'pendiente'"
-                    @click="openModalDelete()"
-                    class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Eliminar tarea</button>
-            </div>
         </div>
 
 
@@ -89,8 +85,8 @@
                             <select required id="type" v-model="form.project_employee_id"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option selected disabled value="">Seleccione uno</option>
-                                <option v-for="item in employeesToAssign" :key="item.id" :value="item.id"> {{
-        item.employee_information.name }}
+                                <option v-for="item in employeesToAssign" :key="item.id" :value="item.id">
+                                    {{ item.employee_information.name }}
                                 </option>
                             </select>
                         </div>
@@ -126,33 +122,13 @@
                 </div>
             </div>
         </Modal>
-        <Modal :show="showModalDelete" :maxWidth="'md'">
-            <!-- Contenido del modal cuando no hay empleados -->
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    ¿Seguro de eliminar la Tarea?
-                </h2>
-                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
-                <p class="mt-2 text-sm text-gray-500">
-                    Esta seguro de eliminar la tarea? No se podran deshacer los cambios.
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400 mr-2"
-                        type="button" @click="closeModalDelete()"> Cancelar
-                    </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="button" @click="delete_task(tasks.id)"> Aceptar </button>
-                </div>
-            </div>
-        </Modal>
+
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -186,7 +162,6 @@ const addComment = () => {
 }
 const showModal = ref(false);
 const showModalNoEmployees = ref(false);
-
 
 const showToAddEmployee = () => {
     if (props.employeesToAssign.length > 0) {
@@ -233,16 +208,6 @@ const delete_already_employee = (project_employee_id) => {
             console.log('Se elimino correctamente')
         },
     });
-}
-const showModalDelete = ref(false);
-const delete_task = (taskId) => {
-    router.delete(route('tasks.delete', { taskId: taskId }))
-}
-const openModalDelete = () => {
-    showModalDelete.value = true;
-}
-const closeModalDelete = () => {
-    showModalDelete.value = false;
 }
 
 </script>
