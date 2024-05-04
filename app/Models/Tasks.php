@@ -17,6 +17,17 @@ class Tasks extends Model
         'status',
     ];
 
+    protected $appends = [
+        'total_sum_task'
+    ];
+
+    //CALCULATED
+    public function getTotalSumTaskAttribute()
+    {
+        return Tasks::where('project_id', $this->project->id)->sum('percentage');
+    }
+
+    //RELATIONS
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
@@ -26,7 +37,7 @@ class Tasks extends Model
     {
         return $this->hasMany(TaskComments::class);
     }
-    
+
     public function project_employee()
     {
         return $this->belongsToMany(ProjectEmployee::class, 'task_employees');

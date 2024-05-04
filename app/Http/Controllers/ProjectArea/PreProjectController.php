@@ -675,7 +675,7 @@ class PreProjectController extends Controller
     }
 
     public function delete_image($id)
-    {
+    {   
         $image = Imagespreproject::find($id);
         if ($image->image != null) {
             $filePath = "/image/imagereportpreproject/{$image->image}";
@@ -687,7 +687,6 @@ class PreProjectController extends Controller
             }
         }
         Imagespreproject::destroy($id);
-        return to_route('preprojects.imagereport.index');
     }
 
     public function show_image(Imagespreproject $image)
