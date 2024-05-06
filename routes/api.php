@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ApiController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -16,12 +15,16 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/login', [ApiController::class, 'login']);
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users', [ApiController::class, 'users']);
+
+    //Preprojects
     Route::get('/preproject', [ApiController::class, 'preproject']);
     Route::get('/preprojectespecific/{id}', [ApiController::class, 'preprojectespecific']);
     Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
+
+    //Project
+    Route::get('/project',[ApiController::class,'project']);
+
     Route::post('/logout', [ApiController::class, 'logout']);
 });
-
