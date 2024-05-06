@@ -108,7 +108,7 @@ class  Project extends Model
 
     public function getTotalProductsCostAttribute()
     {
-        return $this->project_entries()->where('state', true)->get()->sum(function($item){
+        return $this->project_entries()->where('state', true)->get()->sum(function ($item) {
             return $item->total_price;
         });
     }
@@ -216,4 +216,8 @@ class  Project extends Model
         return $this->hasMany(ProjectEntry::class);
     }
 
+    public function project_image()
+    {
+        return $this->hasMany(Projectimage::class);
+    }
 }

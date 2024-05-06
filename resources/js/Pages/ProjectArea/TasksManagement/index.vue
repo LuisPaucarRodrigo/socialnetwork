@@ -223,7 +223,7 @@
                 <div class="mt-6 flex space-x-3 justify-end">
                     <SecondaryButton type="button" @click="closeModalDelete()"> Cancelar
                     </SecondaryButton>
-                    <PrimaryButton type="button" @click="delete_task(tasks.id)"> Aceptar </PrimaryButton>
+                    <PrimaryButton type="button" @click="delete_task()"> Aceptar </PrimaryButton>
                 </div>
             </div>
         </Modal>
@@ -342,7 +342,7 @@ function submitEditDate() {
     })
 }
 
-const delete_task = (taskId) => {
+const delete_task = () => {
     router.delete(route('tasks.delete', { taskId: taskId }))
 }
 
