@@ -27,27 +27,40 @@ use App\Models\TypeProduct;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class PreProjectController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $preprojects_status = null)
     {
         if ($request->isMethod('get')) {
+            $preprojects_status = $request->input('status');
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
                 'preprojects' => Preproject::with('project')
-                                           ->where('status', null)
+                                           ->where('status', $preprojects_status)
+                                           ->orderBy('created_at')
                                            ->paginate(12),
+                'preprojects_status' => $preprojects_status
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
+            $preprojects_status = $request->input('preprojects_status');
+            
             $preprojects = Preproject::where('code', 'like', "%$searchQuery%")
-                ->paginate(12);
+                                     ->where('status', $preprojects_status)
+                                     ->orderBy('created_at')
+                                     ->paginate(12);
 
             return response()->json([
                 'preprojects' => $preprojects
             ]);
         }
     }
+
+
+
+
+
 
     public function create($preproject_id = null)
     {

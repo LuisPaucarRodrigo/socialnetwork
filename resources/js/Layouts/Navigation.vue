@@ -376,7 +376,7 @@ Usuarios
                     <Link class="w-full" :href="route('customers.index')">Clientes</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('preprojects.index')">Anteproyectos</Link>
+                    <Link class="w-full" :href="route('preprojects.index', {state: true})">Anteproyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>

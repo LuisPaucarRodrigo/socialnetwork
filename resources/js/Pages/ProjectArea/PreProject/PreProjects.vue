@@ -11,22 +11,25 @@
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 + Agregar
                 </Link>
-                <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
+                <div class="flex ">
+                    
+                    <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
+                </div>
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div v-for="item in preprojects.data" :key="item.id"
+                <div v-for="(item,i) in preprojects.data" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
                         <h2 class="text-sm font-semibold mb-3">
-                            N° {{ item.code }}
+                            N° {{ i }} {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2">
                             <Link :href="route('preprojects.create', { preproject_id: item.id })"
                                 class="text-green-600 hover:underline mb-4 flex items-start">
                             <PencilIcon class="h-4 w-4" />
                             </Link>
-                            <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
+                            <button class="flex items-start" @click="confirmProjectDeletion(item.id, i)">
                                 <TrashIcon class="h-4 w-4 text-red-500" />
                             </button>
                         </div>
@@ -121,22 +124,27 @@ const props = defineProps({
 
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
+const indexToSplice = ref('');
 const showModal = ref(false);
 const showModalEdit = ref(false);
 const preprojects = ref(props.preprojects)
+
+console.log(preprojects.valu)
 
 const delete_project = () => {
     const projectId = projectToDelete.value;
     router.delete(route('preprojects.destroy', { preproject: projectId }), {
         onSuccess: () => {
             closeModal();
-            router.visit(route('preprojects.index'));
+            preprojects.value.data.splice(indexToSplice, 1)
+            
         }
     });
 }
 
-const confirmProjectDeletion = (employeeId) => {
-    projectToDelete.value = employeeId;
+const confirmProjectDeletion = (id, i) => {
+    projectToDelete.value = id;
+    indexToSplice.value = i
     confirmingProjectDeletion.value = true;
 };
 
@@ -145,8 +153,9 @@ const closeModal = () => {
 };
 
 const search = async ($search) => {
+    if ($search === '') {router.get(route('preprojects.index'))}
     try {
-        const response = await axios.post(route('preprojects.index'), { searchQuery: $search });
+        const response = await axios.post(route('preprojects.index'), { searchQuery: $search, status: null });
         preprojects.value = response.data.preprojects;
     } catch (error) {
         console.error('Error searching:', error);

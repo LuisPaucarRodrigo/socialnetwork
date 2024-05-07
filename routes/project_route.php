@@ -31,8 +31,10 @@ Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'sh
 Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
 Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
 
+
+
 //PreProjects
-Route::any('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+Route::any('/preprojects/{status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
 Route::get('/preprojects/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
 Route::post('/preprojects/store', [PreProjectController::class, 'store'])->name('preprojects.store');
 Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
