@@ -34,8 +34,8 @@ Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sec
 
 
 //PreProjects
-Route::any('/preprojects/{status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
-Route::get('/preprojects/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
+Route::any('/preprojects/{preprojects_status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
+Route::get('/preprojects/officially/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
 Route::post('/preprojects/store', [PreProjectController::class, 'store'])->name('preprojects.store');
 Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
 Route::get('/cotizationPDF/{preproject}', [PreProjectController::class, 'getPDF'])->name('preprojects.pdf');

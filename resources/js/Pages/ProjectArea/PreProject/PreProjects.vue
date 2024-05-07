@@ -3,7 +3,10 @@
     <Head title="AnteProyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
-            Anteproyectos
+            Anteproyectos {{ preprojects_status !== null 
+                                                ? preprojects_status === '1' ?  'Aprobados'
+                                                                             :  'Rechazados'
+                                                : '' }}
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
@@ -11,8 +14,25 @@
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 + Agregar
                 </Link>
-                <div class="flex ">
-                    
+                <div class="flex gap-4">
+                    <PrimaryButton 
+                        v-if="preprojects_status === null"  
+                        @click="()=>{
+                            router.visit(route('preprojects.index', {preprojects_status: 1}))
+                        }"
+                        type="button"
+                    >
+                        Aprobados
+                    </PrimaryButton>
+                    <PrimaryButton 
+                        v-if="preprojects_status === null"  
+                        @click="()=>{
+                            router.visit(route('preprojects.index', {preprojects_status: 0}))
+                        }"
+                        type="button">
+                        Desaprobados
+                    </PrimaryButton>
+
                     <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
                 </div>
             </div>
@@ -111,6 +131,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, router, Link } from '@inertiajs/vue3';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
@@ -119,7 +140,8 @@ import { ref } from 'vue';
 
 const props = defineProps({
     preprojects: Object,
-    auth: Object
+    auth: Object,
+    preprojects_status: String
 })
 
 const confirmingProjectDeletion = ref(false);
@@ -128,8 +150,6 @@ const indexToSplice = ref('');
 const showModal = ref(false);
 const showModalEdit = ref(false);
 const preprojects = ref(props.preprojects)
-
-console.log(preprojects.valu)
 
 const delete_project = () => {
     const projectId = projectToDelete.value;
@@ -152,10 +172,15 @@ const closeModal = () => {
     confirmingProjectDeletion.value = false;
 };
 
+
 const search = async ($search) => {
-    if ($search === '') {router.get(route('preprojects.index'))}
+    //to avoid bug
+    if ($search === '') {router.visit(route('preprojects.index', {
+        preprojects_status: JSON.parse(props.preprojects_status)}))
+        return
+    }
     try {
-        const response = await axios.post(route('preprojects.index'), { searchQuery: $search, status: null });
+        const response = await axios.post(route('preprojects.index'), { searchQuery: $search, preprojects_status: props.preprojects});
         preprojects.value = response.data.preprojects;
     } catch (error) {
         console.error('Error searching:', error);

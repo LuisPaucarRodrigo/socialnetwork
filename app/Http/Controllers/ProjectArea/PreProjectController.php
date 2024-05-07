@@ -34,7 +34,6 @@ class PreProjectController extends Controller
     public function index(Request $request, $preprojects_status = null)
     {
         if ($request->isMethod('get')) {
-            $preprojects_status = $request->input('status');
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
                 'preprojects' => Preproject::with('project')
                                            ->where('status', $preprojects_status)
@@ -45,7 +44,6 @@ class PreProjectController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
             $preprojects_status = $request->input('preprojects_status');
-            
             $preprojects = Preproject::where('code', 'like', "%$searchQuery%")
                                      ->where('status', $preprojects_status)
                                      ->orderBy('created_at')
@@ -56,10 +54,6 @@ class PreProjectController extends Controller
             ]);
         }
     }
-
-
-
-
 
 
     public function create($preproject_id = null)
