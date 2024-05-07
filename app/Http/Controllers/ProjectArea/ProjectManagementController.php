@@ -10,7 +10,10 @@ use App\Models\Project;
 use App\Models\BudgetUpdate;
 use App\Models\Entry;
 use App\Models\Inventory;
-use App\Models\PreProjectQuoteService;
+use App\Models\PreprojectQuoteService;
+
+
+
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
 use App\Models\PreprojectEntry;
@@ -75,6 +78,7 @@ class ProjectManagementController extends Controller
             $project->update($data);
         } else {
             $project = Project::create($data);
+            Preproject::find($request->preproject_id)->update(['status'=>true]);
             Purchasing_request::where('preproject_id', $request->preproject_id)
                 ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
@@ -127,7 +131,9 @@ class ProjectManagementController extends Controller
         $project = Project::find($project_id);
         Purchasing_request::where('project_id', $project->id)
                 ->update(['preproject_id' => $project->preproject_id]);
+        Preproject::find($project->preproject_id)?->update(['status'=>null]);
         $project->delete();
+        
         return redirect()->back();
     }
 

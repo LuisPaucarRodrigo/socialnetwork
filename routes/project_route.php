@@ -89,6 +89,13 @@ Route::get('/preprojects/{image}/report/showimage', [PreProjectController::class
 Route::delete('/preprojects/{preproject_id}/report/delete', [PreProjectController::class, 'delete_image'])->name('preprojects.imagereport.delete');
 
 
+//Reject and change status
+Route::post('/preprojects/quote/oficially/rejected', [PreProjectController::class, 'preproject_quote_rejected'])->name('preproject_quote.rejected');
+Route::post('/preprojects/quote/oficially/canceled', [PreProjectController::class, 'preproject_quote_canceled'])->name('preproject_quote.canceled');
+
+
+
+
 Route::get('/projectmanagement/purchases_request/{project_id}', [ProjectManagementController::class, 'project_purchases_request_index'])->name('projectmanagement.purchases_request.index');
 Route::get('/projectmanagement/purchases_request/{project_id}/create/{purchase_id?}', [ProjectManagementController::class, 'project_purchases_request_create'])->name('projectmanagement.purchases_request.create');
 Route::post('/projectmanagement/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
