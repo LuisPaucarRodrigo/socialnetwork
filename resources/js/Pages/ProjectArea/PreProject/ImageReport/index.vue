@@ -61,7 +61,7 @@ const closeModalImage = () => {
 const deleteImage = () => {
     const docId = imageToDelete.value;
     if (docId) {
-        router.delete(route('documents.destroy', { id: docId }), {
+        router.delete(route('preprojects.imagereport.delete', { preproject_id: docId }), {
             onSuccess: () => closeModalImage()
         });
     }
