@@ -2,6 +2,12 @@
   <Head title="Calendario" />
   <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
     <h1>Calendario de Tareas del Proyecto: {{ project.name }}</h1>
+    <p class="mt-3 font-medium text-gray-900">Fecha de Inicio del Proyecto:
+                        <span class="text-gray-600">{{ project.start_date }}</span>
+                    </p>
+                    <p class="font-medium text-gray-900 mb-3">Fecha de Fin del Proyecto:
+                        <span class="text-gray-600">{{ project.end_date }}</span>
+                    </p>
     <FullCalendar :options="calendarOptions" />
     <teleport to="body">
       <div v-if="selectedEvent" class="modal-overlay" @click="closeModal">
@@ -55,7 +61,7 @@ const closeModal = () => {
 
 document.title = 'Calendario';
 
-const colorSet = ['#0979b0', '#0cb7f2', '#7cdaf9', '#b6ffff'];
+const colorSet = ['#91918F', '#B3B2AE', '#5D6363', '#293737'];
 let colorIndex = 0;
 
 const getColorFromSet = () => {
@@ -88,7 +94,7 @@ const calendarOptions = {
     description: task.status,
     start_date: task.start_date + 'T00:00:01',
     end_date: task.end_date + 'T00:00:01',
-    textColor: 'black',
+    textColor: 'white',
   })),
   locale: 'ES',
 };

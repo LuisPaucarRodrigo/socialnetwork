@@ -34,7 +34,9 @@ class PreProjectController extends Controller
     {
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
-                'preprojects' => Preproject::with('project')->paginate(12),
+                'preprojects' => Preproject::with('project')
+                                           ->where('status', null)
+                                           ->paginate(12),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -219,7 +221,7 @@ class PreProjectController extends Controller
                             ]);
                             $preproject_quote->preproject_quote_services()->save($service_item_with_sub);
                             ResourceEntry::find($subItem["id"])->update([
-                                'condition' => "No Disponible"
+                                'condition' => "Reservado"
                             ]);
                         }
                     } else {
@@ -311,6 +313,39 @@ class PreProjectController extends Controller
         PreprojectQuoteProduct::find($quote_product_id)->delete();
         return redirect()->back();
     }
+
+
+    public function preproject_quote_rejected(Request $request) {
+        $quote = PreProjectQuote::where('preproject_id', $request->preproject_id)->first();
+        if (!$quote || $quote->state) {
+            abort(403, 'Recarga la página');
+        }
+        PreprojectEntry::where('preproject_id', $request->preproject_id)->delete();
+        $preServEnt = PreprojectQuoteService::where('preproject_quote_id', $quote->id)->get();
+        foreach ($preServEnt as $item) {
+            ResourceEntry::find($item->resource_entry_id)?->update(["condition", "Disponible"]);
+        }
+        $quote->delete();
+    }
+
+
+
+    public function preproject_quote_canceled(Request $request) {
+        $quote = PreProjectQuote::where('preproject_id', $request->preproject_id)->first();
+        $preproject = Preproject::with('project')->find($request->preproject_id);
+        if ($preproject->project || !$quote || $quote->state) {
+            abort(403, 'Recarga la página');
+        }
+        PreprojectEntry::where('preproject_id', $request->preproject_id)->delete();
+        $preServEnt = PreprojectQuoteService::where('preproject_quote_id', $quote->id)->get();
+        foreach ($preServEnt as $item) {
+            ResourceEntry::find($item->resource_entry_id)?->update(["condition", "Disponible"]);
+        }
+        $preproject->update(['status' =>false]);
+        $quote->delete();
+    }
+
+
 
 
     public function getPDF(Preproject $preproject)
@@ -675,7 +710,7 @@ class PreProjectController extends Controller
     }
 
     public function delete_image($id)
-    {
+    {   
         $image = Imagespreproject::find($id);
         if ($image->image != null) {
             $filePath = "/image/imagereportpreproject/{$image->image}";
@@ -687,7 +722,6 @@ class PreProjectController extends Controller
             }
         }
         Imagespreproject::destroy($id);
-        return to_route('preprojects.imagereport.index');
     }
 
     public function show_image(Imagespreproject $image)

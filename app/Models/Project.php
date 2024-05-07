@@ -31,10 +31,17 @@ class  Project extends Model
         'end_date',
         'total_products_cost',
         'total_services_cost',
-        'current_budget'
+        'current_budget',
+        'total_sum_task'
     ];
 
     // CALCULATED
+
+    public function getTotalSumTaskAttribute()
+    {
+        return $this->tasks()->get()->sum('percentage');
+    }
+
     public function getPreprojectQuoteAttribute()
     {
         return $this->preproject?->quote?->total_amount;
@@ -109,7 +116,7 @@ class  Project extends Model
 
     public function getTotalProductsCostAttribute()
     {
-        return $this->project_entries()->where('state', true)->get()->sum(function($item){
+        return $this->project_entries()->where('state', true)->get()->sum(function ($item) {
             return $item->total_price;
         });
     }
@@ -169,4 +176,8 @@ class  Project extends Model
         return $this->hasMany(ProjectEntry::class);
     }
 
+    public function project_image()
+    {
+        return $this->hasMany(Projectimage::class);
+    }
 }

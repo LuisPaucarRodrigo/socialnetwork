@@ -97,12 +97,13 @@
         <td class="td-custom" style="text-align: center">{{ $item['unit'] }}</td>
         <td class="td-custom" style="text-align: center">{{ $item['quantity'] }}</td>
         <td class="td-custom" style="text-align: right">
-          S/. {{ number_format($item['unitary_price'], 2) }}
+          S/. {{ number_format($item['unitary_price'], 4) }}
         </td>
-        <td class="td-custom" style="text-align: right">S/. {{ number_format($item['quantity'] * number_format($item['unitary_price'],2), 2) }}</td>
+        <td class="td-custom" style="text-align: right">S/. {{ number_format($item['quantity'] * number_format($item['unitary_price'],4), 2) }}</td>
       </tr>
-      @php
-        $subtotalProd += number_format($item['quantity'] * number_format($item['unitary_price'],2), 2);      @endphp
+		@php
+        $subtotalProd +=  floatval($item['quantity'] * number_format($item['unitary_price'],4));      
+ @endphp
       @endforeach
       @php
       @endphp
@@ -140,7 +141,7 @@
         </td>
       </tr>
       @php
-      $subtotal += $item['days']*$item['resources_quantity']*number_format($item['rent_price'],2)      @endphp
+      $subtotal += floatval($item['days']*$item['resources_quantity']* number_format($item['rent_price'],2))      @endphp
       @endforeach
       @php
       @endphp
@@ -184,7 +185,7 @@
       </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Tiempo de entrega</td>
-        <td class="td-custom" style="width: 562.5px; border-left: none">: {{ $preproject->quote->deliverable_time }}</td>
+        <td class="td-custom" style="width: 562.5px; border-left: none">: {{ $preproject->quote->deliverable_time }} día(s)</td>
       </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Lugar de entrega</td>
@@ -197,7 +198,7 @@
       </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Validez de la oferta</td>
-        <td class="td-custom" style="width: 562.5px; border-left: none">: {{ $preproject->quote->validity_time }}</td>
+        <td class="td-custom" style="width: 562.5px; border-left: none">: {{ $preproject->quote->validity_time }} día(s)</td>
       </tr>
       <tr>
         <td class="td-custom" style="width: 140px; height: 50px; border-right: none">Observaciones</td>

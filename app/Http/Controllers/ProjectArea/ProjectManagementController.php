@@ -10,10 +10,14 @@ use App\Models\Project;
 use App\Models\BudgetUpdate;
 use App\Models\Entry;
 use App\Models\Inventory;
+use App\Models\PreprojectQuoteService;
+
+
 
 use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
 use App\Models\PreprojectEntry;
+use App\Models\ResourceEntry;
 use App\Models\Warehouse;
 use App\Models\Preproject;
 use App\Models\ProjectEntry;
@@ -74,6 +78,7 @@ class ProjectManagementController extends Controller
             $project->update($data);
         } else {
             $project = Project::create($data);
+            Preproject::find($request->preproject_id)->update(['status'=>true]);
             Purchasing_request::where('preproject_id', $request->preproject_id)
                 ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
@@ -89,12 +94,21 @@ class ProjectManagementController extends Controller
                     'unitary_price' => $item->unitary_price
                 ]);
             }
-            /////////////////////////////////////////////
-
+            
             foreach ($employees as $employee) {
                 $empId = $employee['employee'];
                 $project->employees()->attach($empId['id'], ['charge' => $employee['charge']]);
             }
+            
+            $project->load('preproject.quote');
+            $preproject_quote_services = PreprojectQuoteService::where('preproject_quote_id', $project->preproject->quote->id)->get();
+            foreach ($preproject_quote_services as $item) {
+                if($item->resource_entry_id){
+                    ResourceEntry::find($item->resource_entry_id)->update([
+                        'condition' => 'No disponible'
+                    ]);
+                }
+            }   
         }
     }
 
@@ -117,7 +131,9 @@ class ProjectManagementController extends Controller
         $project = Project::find($project_id);
         Purchasing_request::where('project_id', $project->id)
                 ->update(['preproject_id' => $project->preproject_id]);
+        Preproject::find($project->preproject_id)?->update(['status'=>null]);
         $project->delete();
+        
         return redirect()->back();
     }
 
