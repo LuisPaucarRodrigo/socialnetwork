@@ -66,7 +66,7 @@ const closeModal = () => {
 
 document.title = 'Calendario';
 
-const colorSet = ['#0979b0', '#0cb7f2', '#7cdaf9', '#b6ffff'];
+const colorSet = ['#91918F', '#B3B2AE', '#5D6363', '#293737'];
 let colorIndex = 0;
 
 const getColorFromSet = () => {
@@ -91,7 +91,7 @@ const events = ref(props.projects.map((project) => {
     end_date: endDateFormatted + 'T00:00:01',
     description: project.description,
     project_id: project.id,
-    textColor: 'black',
+    textColor: 'white',
   };
 }));
 

@@ -4,8 +4,14 @@
         <template #header>
             Nueva Tarea
         </template>
+        <p class="mt-2 font-medium text-gray-900">Fecha de Inicio del Proyecto:
+                        <span class="text-gray-600">{{ project.start_date }}</span>
+                    </p>
+                    <p class="font-medium text-gray-900">Fecha de Fin del Proyecto:
+                        <span class="text-gray-600">{{ project.end_date }}</span>
+                    </p>
         <form @submit.prevent="submitForm" >
-            <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 mt-3">
             <div class="sm:col-span-4">
                 <label for="tasks" class="block text-sm font-medium text-gray-700">Tarea</label>
                 <input type="text" id="task" v-model="form.task"
