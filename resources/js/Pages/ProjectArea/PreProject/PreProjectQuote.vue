@@ -324,7 +324,7 @@
                                                         <p class="text-gray-900">
                                                             S/. {{ (item.unitary_price) }}
                                                         </p>
-                                                       
+
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900 text-center">
@@ -458,8 +458,7 @@
                                                                 v-if="auth.user.role_id === 1 || preproject.quote === null"
                                                                 @click=" preproject.quote
         ? deleteAlreadyItem(item.ids, index)
-        : deleteItem(index)"
-                                                                class="col-span-1 flex justify-end">
+        : deleteItem(index)" class="col-span-1 flex justify-end">
                                                                 <TrashIcon class=" text-red-500 h-4 w-4 " />
                                                             </button>
                                                         </div>
@@ -477,22 +476,34 @@
                     </div>
                 </div>
 
-                <div class="mt-3 flex items-center justify-end gap-x-6">
+                <div class="mt-3 flex flex-col sm:flex-row items-center justify-end gap-4">
+
+                    <button v-if="preproject.quote && !preproject.quote.state" 
+                        type="button"
+                        @click="openPQCanceledModal"
+                        class="w-full text-center sm:w-auto rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                        Anular
+                    </button>
+                    <button v-if="preproject.quote && !preproject.quote.state" @click="openPQRejecteModal" type='button'
+                        class="w-full text-center sm:w-auto rounded-md bg-yellow-500 px-6 py-2 text-sm font-semibold text-black shadow-sm hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                        Rechazar Cotización
+                    </button>
                     <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
                         target="_blank" rel="noopener noreferrer"
-                        class="rounded-md bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                        class="w-full text-center sm:w-auto rounded-md bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
                         Exportar a PDF
                     </a>
 
                     <button v-if="preproject.quote && !preproject.quote.state" type="button" @click="acceptCotization"
                         :class="{ 'opacity-25': form.processing }"
-                        class="rounded-md bg-yellow-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:green-indigo-600">
+                        class="w-full text-center sm:w-auto rounded-md bg-yellow-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:green-indigo-600">
                         Aceptar Cotización</button>
 
-                    <div v-if="auth.user.role_id === 1 || preproject.quote === null">
-                        <button type="submit" :class="{ 'opacity-25': form.processing }"
-                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
-                    </div>
+
+                    <button v-if="auth.user.role_id === 1 || preproject.quote === null" type="submit"
+                        :class="{ 'opacity-25': form.processing }"
+                        class="w-full sm:w-auto rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+
                 </div>
 
             </form>
@@ -693,6 +704,43 @@
                 </div>
             </Modal>
 
+
+            <Modal :show="showPQRejectedModal" @close="closePQRejecteModal" >
+                <div class="p-6">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        ¿Estás seguro de rechazar la cotización actual?
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-600">
+                        Se eliminará toda la informacion relacionada cotización, pero podrá volver a crear otra
+                    </p>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton @click="closePQRejecteModal"> Cancelar </SecondaryButton>
+
+                        <PrimaryButton class="ml-3" type="button" @click="rejedtPreprojectQuote()">
+                            Rechazar
+                        </PrimaryButton>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal :show="showPQCanceledModal" @close="closePQCanceledModal" >
+                <div class="p-6">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        ¿Estás seguro de anular el Anteproyecto?
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-600">
+                        Se eliminará toda la informacion relacionada cotización, y el proyecto pasará a la sección de anulados.
+                    </p>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton @click="closePQCanceledModal"> Cancelar </SecondaryButton>
+
+                        <DangerButton class="ml-3" type="button" @click="cancelPreproject()">
+                            Anular
+                        </DangerButton>
+                    </div>
+                </div>
+            </Modal>
+
         </div>
         <ErrorOperationModal :showError="showErroModal" title="Error"
             message="El producto ya fue añadido o es inválido" />
@@ -733,6 +781,7 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import axios from 'axios';
 
@@ -786,7 +835,7 @@ const initialState = {
 }
 
 function servicesArrayMaker(data) {
-    
+
     let result = []
     data.forEach((item) => {
         let fo = result.find((x) => x.service_id === item.service_id)
@@ -893,7 +942,7 @@ const addItem = () => {
                     if (response.status = 200) {
                         itemToAdd.value.ids = response.data.ids
                         showItemAddModal.value = true
-                        
+
                         setTimeout(() => {
                             showItemAddModal.value = false;
                         }, 1500);
@@ -1049,7 +1098,7 @@ const showServiceDetails = ref(false)
 const service_resources = ref([])
 
 function showServiceDetailsModal(array) {
-    
+
     service_resources.value = [...array]
     showServiceDetails.value = true
 }
@@ -1057,5 +1106,44 @@ function showServiceDetailsModal(array) {
 const closeServiceDetailsModal = () => {
     showServiceDetails.value = false
 }
+
+
+//Reject and cancel
+const showPQRejectedModal = ref(false)
+const showPQCanceledModal = ref(false)
+
+const closePQRejecteModal = () => {
+    showPQRejectedModal.value = false
+}
+const closePQCanceledModal = () => {
+    showPQCanceledModal.value = false
+}
+
+
+const openPQRejecteModal = () => {
+    showPQRejectedModal.value = true
+}
+const openPQCanceledModal = () => {
+    showPQCanceledModal.value = true
+}
+
+const rejedtPreprojectQuote = () => {
+    router.post(route('preproject_quote.rejected'), { preproject_id:  preproject?.id}, {
+        onSuccess: () => {
+            router.visit(route('preprojects.index'))
+        }, onError: (e)=>console.log(e)
+    } )
+}
+
+const cancelPreproject = () => {
+    router.post(route('preproject_quote.canceled'), { preproject_id:  preproject?.id }, {
+        onSuccess: () => {
+            router.visit(route('preprojects.index'))
+        }, onError: (e)=>console.log(e)
+    })
+}
+
+
+
 
 </script>
