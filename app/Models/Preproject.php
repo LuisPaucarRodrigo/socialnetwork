@@ -114,4 +114,5 @@ class Preproject extends Model
                     ? $this->quote()?->first()?->total_services_cost 
                     : 0 ;
     }
+
 }

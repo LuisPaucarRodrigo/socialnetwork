@@ -32,7 +32,8 @@ class  Project extends Model
         'total_products_cost',
         'total_services_cost',
         'current_budget',
-        'total_sum_task'
+        'total_sum_task',
+        'is_liquidable'
     ];
 
     // CALCULATED
@@ -120,6 +121,27 @@ class  Project extends Model
             return $item->total_price;
         });
     }
+
+
+
+    public function getIsLiquidableAttribute() {
+        $project_entries = $this->project_entries()->get();
+        foreach($project_entries as $item){
+            if ($item->liquidation_state === false){ return false; }
+        }
+        $preproject = $this->preproject()
+                                ->with('quote.preproject_quote_services')
+                                ->first();
+        foreach($preproject->quote->preproject_quote_services as $item){
+            if ($item->liquidation_state === false){ return false; }
+        }
+        $tasks = $this->tasks()->get();
+        foreach($tasks as $item) {
+            if ($item->status !== 'completado'){ return false;}
+        }
+        return true;
+    }
+
 
     // --------------------------------  Services Costs ---------------------------------//
 

@@ -35,7 +35,17 @@
 
                     <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
                 </div>
+
+
+                
             </div>
+
+
+
+
+
+
+
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-for="(item,i) in preprojects.data" :key="item.id"
