@@ -276,7 +276,8 @@ class ProjectManagementController extends Controller
         return Inertia::render('ProjectArea/ProjectManagement/ProjectProducts', [
             'assigned_products' => $assigned_products,
             'warehouses' => $warehouses,
-            'project_id' => $project_id->id
+            'project_id' => $project_id->id,
+            'project' => $project_id
         ]);
     }
 
