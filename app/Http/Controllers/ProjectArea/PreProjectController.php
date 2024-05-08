@@ -31,9 +31,10 @@ use Illuminate\Support\Facades\Log;
 
 class PreProjectController extends Controller
 {
-    public function index(Request $request, $preprojects_status = null)
+    public function index(Request $request)
     {
         if ($request->isMethod('get')) {
+            $preprojects_status = $request->input('preprojects_status');
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
                 'preprojects' => Preproject::with('project')
                                            ->where('status', $preprojects_status)
@@ -44,7 +45,8 @@ class PreProjectController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
             $preprojects_status = $request->input('preprojects_status');
-            $preprojects = Preproject::where('code', 'like', "%$searchQuery%")
+            $preprojects = Preproject::with('project')
+                                     ->where('code', 'like', "%$searchQuery%")
                                      ->where('status', $preprojects_status)
                                      ->orderBy('created_at')
                                      ->paginate(12);
@@ -346,9 +348,9 @@ class PreProjectController extends Controller
         PreprojectEntry::where('preproject_id', $request->preproject_id)->delete();
         $preServEnt = PreprojectQuoteService::where('preproject_quote_id', $quote->id)->get();
         foreach ($preServEnt as $item) {
-            ResourceEntry::find($item->resource_entry_id)?->update(["condition", "Disponible"]);
+            ResourceEntry::find($item->resource_entry_id)?->update(["condition"=>"Disponible"]);
         }
-        $preproject->update(['status' =>false]);
+        $preproject->update(['status'=>false]);
         $quote->delete();
     }
 
@@ -701,7 +703,10 @@ class PreProjectController extends Controller
     public function index_image($preproject_id)
     {
         $images = Imagespreproject::where('preproject_id', $preproject_id)->get();
-        return Inertia::render('ProjectArea/PreProject/ImageReport/index', ['images' => $images]);
+        return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
+            'images' => $images,
+            'preproject' => Preproject::find($preproject_id),
+        ]);
     }
 
     public function download_image($id)

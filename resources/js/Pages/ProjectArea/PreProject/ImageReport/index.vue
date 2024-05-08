@@ -1,6 +1,6 @@
 <template>
     <Head title="Imagenes para Reporte" />
-    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
+    <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
             Imagenes para Reporte
         </template>
@@ -42,7 +42,16 @@ import { TrashIcon, ArrowDownIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     images: Object,
+    preproject: Object,
 });
+
+let backUrl = props.preproject.status === null 
+                ? 'preprojects.index' 
+                : props.preproject.status == true 
+                    ? {route: 'preprojects.index', params:{preprojects_status : 1}} 
+                    : {route: 'preprojects.index', params:{preprojects_status : 0}} 
+
+
 
 const confirmingImageDeletion = ref(false);
 const imageToDelete = ref(null);

@@ -10,7 +10,7 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
-                <Link :href="route('preprojects.create')"
+                <Link v-if="preprojects_status === null" :href="route('preprojects.create')"
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 + Agregar
                 </Link>
@@ -18,7 +18,7 @@
                     <PrimaryButton 
                         v-if="preprojects_status === null"  
                         @click="()=>{
-                            router.visit(route('preprojects.index', {preprojects_status: 1}))
+                            router.get(route('preprojects.index', {preprojects_status: '1'}))
                         }"
                         type="button"
                     >
@@ -27,7 +27,7 @@
                     <PrimaryButton 
                         v-if="preprojects_status === null"  
                         @click="()=>{
-                            router.visit(route('preprojects.index', {preprojects_status: 0}))
+                            router.get(route('preprojects.index', {preprojects_status: '0'}))
                         }"
                         type="button">
                         Desaprobados
@@ -82,7 +82,7 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos de Almacén
                             </Link>
                         </div>
-                        <div v-if="item.project == null">
+                        <div v-if="item.project == null && item.status === null">
                             <Link :href="route('preprojects.request.index', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de
                             Compras
@@ -93,7 +93,7 @@
                                 Solicitud de Compras
                             </span>
                         </div>
-                        <div v-if="item.project == null">
+                        <div v-if="item.project == null && item.status === null">
                             <Link :href="route('preprojects.purchase_quote', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de
                             Compras
@@ -104,7 +104,7 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de Solicitudes
                             </Link>
                         </div> -->
-                        <div v-if="item.has_photo_report">
+                        <div v-if="item.has_photo_report && (item.status === null || item.status == true)">
                             <Link :href="route('preprojects.quote', { preproject_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización para
                             proyecto
