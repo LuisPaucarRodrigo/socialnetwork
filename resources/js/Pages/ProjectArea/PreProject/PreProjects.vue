@@ -5,7 +5,7 @@
         <template #header>
             Anteproyectos {{ preprojects_status !== null 
                                                 ? preprojects_status === '1' ?  'Aprobados'
-                                                                             :  'Rechazados'
+                                                                             :  'Desaprobados'
                                                 : '' }}
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
