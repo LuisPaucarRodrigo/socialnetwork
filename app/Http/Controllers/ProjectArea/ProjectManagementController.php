@@ -32,11 +32,11 @@ class ProjectManagementController extends Controller
     {
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/ProjectManagement/Project', [
-                'projects' => Project::paginate(),
+                'projects' => Project::where('status', null)->paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $projects = Project::whereHas('preproject', function ($query) use ($searchQuery) {
+            $projects = Project::where('status', null)->whereHas('preproject', function ($query) use ($searchQuery) {
                 $query->where('code', 'like', "%$searchQuery%");
             })->paginate();
 
@@ -44,7 +44,26 @@ class ProjectManagementController extends Controller
                 'projects' => $projects
             ]);
         }
-    }
+    } 
+
+    public function historial(Request $request)
+    {
+        if ($request->isMethod('get')) {
+            return Inertia::render('ProjectArea/ProjectManagement/ProjectHistorial', [
+                'projects' => Project::where('status', true)->paginate(),
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->input('searchQuery');
+            $projects = Project::where('status', true)->whereHas('preproject', function ($query) use ($searchQuery) {
+                $query->where('code', 'like', "%$searchQuery%");
+            })->paginate();
+
+            return response()->json([
+                'projects' => $projects
+            ]);
+        }
+    } 
+
 
     public function project_create($project_id = null)
     {
@@ -367,5 +386,11 @@ class ProjectManagementController extends Controller
             $products = Inventory::where('warehouse_id', $warehouse->id)->get();
             return response()->json(['products' => $products]);
         }
+    }
+
+
+    public function liquidate_project (Request $request) {
+        Project::find($request->project_id)?->update(['status'=>true]);
+        return redirect()->back();
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use Illuminate\Support\Facades\Route;
 
 Route::any('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
+Route::any('/projectmanagement/historial', [ProjectManagementController::class, 'historial'])->name('projectmanagement.historial');
 Route::get('/projectmanagement/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
 Route::post('/projectmanagement/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
 Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
@@ -30,6 +31,9 @@ Route::get('/cicsaSubSections', [CicsaSectionController::class, 'showSubSections
 Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'showSubSection'])->name('sections.cicsaSubSection');
 Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
 Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
+
+//Projects liquidation
+Route::post('/projectmanagement/liquidation', [ProjectManagementController::class, 'liquidate_project'])->name('projectmanagement.liquidation');
 
 
 
