@@ -86,26 +86,40 @@ class ApiController extends Controller
 
     public function project_index()
     {
-        $data = Project::all();
-        return response()->json([$data]);
+        try {
+            $data = Project::all();
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
-    public function project($id)
+    public function project_show($id)
     {
-        $find = Project::find($id);
-        return response()->json([$find]);
+        try {
+            $find = Project::find($id);
+            return response()->json($find);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+            DB::rollBack();
+        }
     }
 
-    public function projectImage(Request $request){
+    public function project_store_image(ImageRequest $request)
+    {
         $validateData = $request->validated();
         DB::beginTransaction();
-        try{
+        try {
             $image = str_replace('data:image/png;base64,', '', $validateData['photo']);
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
             $imagename = time() . '.png';
             file_put_contents(public_path('image/imagereportproject/') . $imagename, $imageContent);
-            
+
             Projectimage::create([
                 'description' => $validateData['description'],
                 'image' => $imagename,
@@ -113,12 +127,11 @@ class ApiController extends Controller
             ]);
             DB::commit();
             return response()->json([200]);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
+            DB::rollback();
             return response()->json([
-                'error' => 'Hubo un problema al procesar su solicitud',
-                'message' => $e->getMessage()
-            ]);
-            DB::rollBack();
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
