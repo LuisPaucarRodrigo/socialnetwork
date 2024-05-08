@@ -854,6 +854,7 @@
         payment_type: '',
         observations: '',
         items: [],
+        preproject_products: preproject_products,
         products: existingProducts,
         preproject_id: preproject.id
     }
