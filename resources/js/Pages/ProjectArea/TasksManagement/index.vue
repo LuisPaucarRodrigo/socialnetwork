@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Tareas" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
             Tareas
         </template>
@@ -9,7 +9,7 @@
         <div class="grid sm:grid-cols-5">
             <div class="col-span-full flex flex-col space-y-5">
                 <div class="flex justify-start sm:space-x-3">
-                    <button @click="addTask" type="button"
+                    <button  v-if="project.status === null" @click="addTask" type="button"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         + Agregar
                     </button>
@@ -62,7 +62,7 @@
                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                         % de Proyecto
                     </th>
-                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-end text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    <th v-if="project.status === null" class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-end text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Acciones
                     </th>
                 </tr>
@@ -91,7 +91,7 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <p class="text-gray-900 whitespace-no-wrap">{{ task.percentage }}%</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="project.status === null" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex items-center gap-x-2 justify-end">
                                 <!-- Botones -->
                                 <button @click="openModalStart(task)" v-if="task.status === 'pendiente'"
@@ -284,6 +284,12 @@ const { tasks, project, projects } = defineProps({
     project: Object,
     projects: Object
 })
+
+let backUrl = project.status === null 
+                ? 'projectmanagement.index' 
+                : project.status == true 
+                    ? 'projectmanagement.historial'
+                    : 'projectmanagement.index' 
 
 const taskIdDelete = ref(null);
 

@@ -8,7 +8,7 @@
     </template>
     <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
       <div class="flex gap-4">
-        <button @click="openCreateAdditionalModal" type="button"
+        <button v-if="project_id.status === null" @click="openCreateAdditionalModal" type="button" 
           class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
           + Agregar
         </button>
@@ -40,7 +40,7 @@
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Descripción</th>
-              <th v-if="auth.user.role_id === 1"
+              <th v-if="auth.user.role_id === 1 && project_id.status === null" 
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Acciones</th>
             </tr>
@@ -55,7 +55,7 @@
               </td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">S/. {{ (item.amount).toFixed(2) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
-              <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+              <td v-if="auth.user.role_id === 1 && project_id.status === null" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
                   <button @click="openEditAdditionalModal(item)" class="text-orange-200 hover:underline mr-2">
                     <PencilIcon class="h-4 w-4 ml-1" />
@@ -283,6 +283,7 @@ const props = defineProps({
   project_id: Object,
   auth: Object
 });
+
 
 const form = useForm({
   id: '',
