@@ -1,14 +1,14 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
             Productos asignados para Proyecto
         </template>
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <PrimaryButton type="button" @click="showToAddProduct">+ Agregar</PrimaryButton>
+                <PrimaryButton v-if="project.status === null" type="button" @click="showToAddProduct">+ Agregar</PrimaryButton>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -52,7 +52,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha
                             </th>
-                            <th
+                            <th v-if="project.status === null"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -113,8 +113,8 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formatearFecha(item.created_at) }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            </td >
+                            <td v-if="project.status === null" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
                                     <button v-if="item.is_editable" type="button" @click="doUpdateAssignation(item.id)"
                                         class="text-red-900 whitespace-no-wrap">
@@ -259,13 +259,20 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
 
-const { assigned_products, warehouses, project_id } = defineProps({
+const { assigned_products, warehouses, project_id, project } = defineProps({
     assigned_products: Object,
     warehouses: Object,
     project_id: Number,
+    project: Object,
     auth: Object
-
 })
+
+
+let backUrl = project.status === null 
+                ? 'projectmanagement.index' 
+                : project.status == true 
+                    ? 'projectmanagement.historial'
+                    : 'projectmanagement.index' 
 
 //Modal functions
 const showModal = ref(false);

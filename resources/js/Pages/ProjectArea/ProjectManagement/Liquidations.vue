@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
             Productos para liquidar
         </template>
@@ -33,7 +33,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Observaciones
                         </th>
-                        <th
+                        <th v-if="project.status === null"
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         </th>
                     </tr>
@@ -52,7 +52,7 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="project.status === null" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex space-x-3 justify-center">
                                 <Link :href="route('projectmanagement.liquidate.form', {project_id: project_id, project_entry: item.id})"
                                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
@@ -76,9 +76,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 
-const { project_entries, project_id, liquidations } = defineProps({
+
+const { project_entries, project_id, liquidations, project } = defineProps({
     project_entries: Object,
     project_id: String,
+    project: Object
 })
+
+let backUrl = project.status === null 
+                ? 'projectmanagement.index' 
+                : project.status == true 
+                    ? 'projectmanagement.historial'
+                    : 'projectmanagement.index' 
 
 </script>

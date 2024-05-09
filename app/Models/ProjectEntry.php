@@ -23,7 +23,8 @@ class ProjectEntry extends Model
         'outputs_state',
         'current_output_quantity',
         'remaining_quantity',
-        'total_price'
+        'total_price',
+        'liquidation_state'
     ];
 
     //Relations
@@ -76,12 +77,12 @@ class ProjectEntry extends Model
 
     public function getTotalPriceAttribute()
     {
-        // if ($this->project_entry_liquidation){
-        //     return $this->project_entry_liquidation->liquidated_quantity * $this->unitary_price ? $this->unitary_price : 0;
-        // } else{
-        //     return $this->quantity * $this->unitary_price ? $this->unitary_price : 0;
-        // }
         return $this->quantity * ($this->unitary_price ? $this->unitary_price : 0);
+    }
+
+
+    public function getLiquidationStateAttribute () {
+        return $this->project_entry_liquidation()->exists();
     }
 
 }

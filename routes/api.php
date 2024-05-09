@@ -24,7 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
 
     //Project
-    Route::get('/project',[ApiController::class,'project']);
+    Route::get('/project',[ApiController::class,'project_index']);
+    Route::get('/project/show/{id}', [ApiController::class, 'project_show']);
+    Route::post('/project/store/image',[ApiController::class,'project_store_image']);
 
     Route::post('/logout', [ApiController::class, 'logout']);
 });
