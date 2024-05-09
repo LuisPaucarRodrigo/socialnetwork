@@ -332,7 +332,7 @@ class PreProjectController extends Controller
         PreprojectEntry::where('preproject_id', $request->preproject_id)->delete();
         $preServEnt = PreprojectQuoteService::where('preproject_quote_id', $quote->id)->get();
         foreach ($preServEnt as $item) {
-            ResourceEntry::find($item->resource_entry_id)?->update(["condition", "Disponible"]);
+            ResourceEntry::find($item->resource_entry_id)?->update(["condition" => "Disponible"]);
         }
         $quote->delete();
     }

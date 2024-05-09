@@ -5,7 +5,7 @@
         <template #header>
             Anteproyectos {{ preprojects_status !== null 
                                                 ? preprojects_status === '1' ?  'Aprobados'
-                                                                             :  'Desaprobados'
+                                                                             :  'Anulados'
                                                 : '' }}
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
@@ -30,21 +30,12 @@
                             router.get(route('preprojects.index', {preprojects_status: '0'}))
                         }"
                         type="button">
-                        Desaprobados
+                        Anulados
                     </PrimaryButton>
 
                     <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
                 </div>
-
-
-                
             </div>
-
-
-
-
-
-
 
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
