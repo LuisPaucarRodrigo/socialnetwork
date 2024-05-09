@@ -3,23 +3,11 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template #header>
-            Proyectos
+            Proyectos Culminados
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-4">
-                    <button @click="add_project" type="button"
-                        class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
-                        + Agregar
-                    </button>
-                    <Link :href="route('projectscalendar.index')"
-                        class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
-                    Calendario
-                    </Link>
-                    <button @click="()=>router.visit(route('projectmanagement.historial'))" type="button"
-                        class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
-                        Historial
-                    </button>
                 </div>
 
                 <div class="sm:hidden">
@@ -64,16 +52,6 @@
                             N° {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1" class="inline-flex justify-end items-start gap-x-2">
-                            <button 
-                                @click="()=>{router.post(route('projectmanagement.liquidation'),{project_id: item.id}, {
-                                    onSuccess: () => router.visit(route('projectmanagement.index'))
-                                })}"
-                                v-if="item.status === null " 
-                                :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.is_liquidable ? '': 'opacity-60'}`"
-                                :disabled="item.is_liquidable ? false: true"
-                            >
-                                Liquidar
-                            </button>
                             <Link :href="route('projectmanagement.update', { project_id: item.id })"
                                 class="flex items-start">
                             <PencilIcon class="h-4 w-4 text-teal-600" />
@@ -155,6 +133,7 @@ const props = defineProps({
     auth: Object
 })
 
+
 const projects = ref(props.projects);
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
@@ -182,7 +161,7 @@ const closeModal = () => {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.index'), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.historial'), { searchQuery: $search });
         projects.value = response.data.projects;
     } catch (error) {
         console.error('Error searching:', error);

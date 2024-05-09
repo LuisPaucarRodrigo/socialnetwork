@@ -9,6 +9,36 @@
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div class="sm:col-span-2">
+                            <InputLabel for="purchase_product_id">Tipo de Activo</InputLabel>
+                            <select v-model="form.purchase_product_id" id="purchase_product_id"
+                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                                <option disabled value="">Seleccione Activo</option>
+                                <option v-for="item in products" :key="item.id" :value="item.id">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                            <InputError :message="form.errors.purchase_product_id" />
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="entry_date">
+                                Fecha de Ingreso
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="date" v-model="form.entry_date" id="entry_date" :to-uppercase="true"
+                                    autocomplete="family-name" />
+                                <InputError :message="form.errors.entry_date" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="entry_price">Precio de Entrada</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.entry_price" id="entry_price"
+                                    :to-uppercase="true" autocomplete="family-name" />
+                                <InputError :message="form.errors.entry_price" />
+                            </div>
+                        </div>
+
                         <div class="sm:col-span-3 sm:col-start-1">
                             <InputLabel for="serial_number">Numero de Serie
                             </InputLabel>
@@ -28,40 +58,12 @@
                                 <InputError :message="form.errors.referral_guide" />
                             </div>
                         </div>
-                        <div class="sm:col-span-2">
-                            <InputLabel for="entry_date">
-                                Fecha de Ingreso
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" v-model="form.entry_date" id="entry_date" :to-uppercase="true"
-                                    autocomplete="family-name" />
-                                <InputError :message="form.errors.entry_date" />
-                            </div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <InputLabel for="entry_price">Precio de Entrada</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="number" v-model="form.entry_price" id="entry_price" :to-uppercase="true"
-                                    autocomplete="family-name" />
-                                <InputError :message="form.errors.entry_price" />
-                            </div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <InputLabel for="purchase_product_id">Tipo de Activo</InputLabel>
-                            <select v-model="form.purchase_product_id" id="purchase_product_id"
-                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
-                                <option disabled value="">Seleccione Activo</option>
-                                <option v-for="item in products" :key="item.id" :value="item.id">
-                                    {{ item.name }}
-                                </option>
-                            </select>
-                            <InputError :message="form.errors.purchase_product_id" />
-                        </div>
+
                         <div class="sm:col-span-2">
                             <InputLabel for="description">Descripcion</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.description" id="accidents"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.description" />
                             </div>
                             <InputError :message="form.errors.description" />
