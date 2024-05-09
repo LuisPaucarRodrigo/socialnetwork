@@ -854,6 +854,7 @@
         payment_type: '',
         observations: '',
         items: [],
+        preproject_products: preproject_products,
         products: existingProducts,
         preproject_id: preproject.id
     }
@@ -904,7 +905,8 @@
     }
 
     const subTotalServices = (array1) => {
-        let sum1 = array1.reduce((a, b) => a + b.rent_price * b.days * (1+(b.profit_margin/100)), 0)
+
+        let sum1 = array1.reduce((a, b) => a + b.service_info.rent_price * b.days * (b.resource_entries.length ? b.resource_entries.length : 1) * (1+(b.profit_margin/100)), 0)
         return sum1; 
     }
 

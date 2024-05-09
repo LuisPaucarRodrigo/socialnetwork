@@ -1,14 +1,14 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
+    <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
             Productos asignados para Anteproyecto
         </template>
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button v-if="preproject.project === null" type="button" @click="showToAddProduct"
+                <button v-if="preproject.status === null && preproject.project === null" type="button" @click="showToAddProduct"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
@@ -245,6 +245,12 @@ const { assigned_products, warehouses, preproject } = defineProps({
     preproject: Object,
     auth: Object
 })
+
+let backUrl = preproject.status === null 
+                ? 'preprojects.index' 
+                : preproject.status == true 
+                    ? {route: 'preprojects.index', params:{preprojects_status : 1}} 
+                    : {route: 'preprojects.index', params:{preprojects_status : 0}} 
 
 //Modal functions
 const showModal = ref(false);

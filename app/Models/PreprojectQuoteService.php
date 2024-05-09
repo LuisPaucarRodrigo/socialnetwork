@@ -21,8 +21,10 @@ class PreprojectQuoteService extends Model
 
     protected $appends = [
         'rent_price_with_margin',
-        'total_price'
+        'total_price',
+        'liquidation_state'
     ];
+    
 
     //RELATIONS
     public function preproject_quote()
@@ -55,5 +57,9 @@ class PreprojectQuoteService extends Model
         }else{
             return $this->rent_price * $this->days;
         }
+    }
+
+    public function getLiquidationStateAttribute () {
+        return $this->service_liquidation()->exists();
     }
 }

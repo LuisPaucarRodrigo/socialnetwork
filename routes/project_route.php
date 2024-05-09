@@ -13,13 +13,14 @@ use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use Illuminate\Support\Facades\Route;
 
 Route::any('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
+Route::any('/projectmanagement/historial', [ProjectManagementController::class, 'historial'])->name('projectmanagement.historial');
 Route::get('/projectmanagement/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
 Route::post('/projectmanagement/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
 Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
 Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
 
 Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
-Route::post('/projectmanagement/resources/liquidate', [ServicesLiquidationsController::class, 'store'])->name('projectmanagement.resources.liquidate');
+Route::post('/projectmanagement/resources_liquidation', [ServicesLiquidationsController::class, 'store'])->name('projectmanagement.resources.liquidate');
 
 //CicsaSections
 Route::get('/cicsaSections', [CicsaSectionController::class, 'showSections'])->name('sections.cicsaSections');
@@ -31,9 +32,16 @@ Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'sh
 Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
 Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
 
+//Projects liquidation
+Route::post('/projectmanagement/liquidation', [ProjectManagementController::class, 'liquidate_project'])->name('projectmanagement.liquidation');
+
+
+
 //PreProjects
-Route::any('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
-Route::get('/preprojects/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
+Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+Route::post('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+
+Route::get('/preprojects/officially/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
 Route::post('/preprojects/store', [PreProjectController::class, 'store'])->name('preprojects.store');
 Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
 Route::get('/cotizationPDF/{preproject}', [PreProjectController::class, 'getPDF'])->name('preprojects.pdf');

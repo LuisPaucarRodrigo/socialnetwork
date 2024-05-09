@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout redirectRoute="projectmanagement.index">
+    <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
             Servicios
         </template>
@@ -136,6 +136,12 @@ const { project, liquidations, services, auth } = defineProps({
     liquidations: Object,
     auth: Object
 })
+
+let backUrl = project.status === null 
+                ? 'projectmanagement.index' 
+                : project.status == true 
+                    ? 'projectmanagement.historial'
+                    : 'projectmanagement.index' 
 
 const service_liquidate = ref(false);
 const showModal = ref(false);
