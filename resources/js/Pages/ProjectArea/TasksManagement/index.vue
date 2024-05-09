@@ -8,8 +8,8 @@
 
         <div class="grid sm:grid-cols-5">
             <div class="col-span-full flex flex-col space-y-5">
-                <div v-if="project.status === null" class="flex justify-start sm:space-x-3">
-                    <button @click="addTask" type="button"
+                <div class="flex justify-start sm:space-x-3">
+                    <button  v-if="project.status === null" @click="addTask" type="button"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         + Agregar
                     </button>

@@ -155,7 +155,6 @@ const props = defineProps({
     auth: Object
 })
 
-
 const projects = ref(props.projects);
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
