@@ -33,8 +33,9 @@ class PreprojectQuoteRequest extends FormRequest
             'payment_type' => 'required',
             "observations" => 'nullable',
             'preproject_id' => 'required',
-            "items" => ['required_without:products', 'array'],
-            "products" => ['required_without:items', 'array'],
+            "preproject_products" => ['required_without_all:products,items', 'array'],
+            "items" => ['required_without_all:products,preproject_products', 'array'],
+            "products" => ['required_without_all:items,preproject_products', 'array'],
         ];
     }
 
@@ -46,8 +47,9 @@ class PreprojectQuoteRequest extends FormRequest
     public function messages()
     {
         return [
-            'items.required_without' => 'Debes proporcionar al menos uno entre items o productos.',
-            'products.required_without' => 'Debes proporcionar al menos uno entre items o productos.',
+            'items.required_without_all' => 'Debes proporcionar al menos uno entre servicios o productos.',
+            'products.required_without_all' => 'Debes proporcionar al menos uno entre servicios o productos.',
+            'preproject_products.required_without_all' => 'Debes proporcionar al menos uno entre servicios o productos.',
         ];
     }
 }

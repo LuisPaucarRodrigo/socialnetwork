@@ -1,14 +1,14 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
+    <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
             Productos asignados para Anteproyecto
         </template>
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button v-if="preproject.project === null" type="button" @click="showToAddProduct"
+                <button v-if="preproject.status === null && preproject.project === null" type="button" @click="showToAddProduct"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
@@ -179,6 +179,14 @@
                         </div>
                     </div>
 
+                    <div v-if="form.quantity && form.margin" class="sm:col-span-3">
+                        <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto Esperado</InputLabel>
+                        <div class="mt-2">
+                            <input id="amount" disabled type="text" step="0.01" min="0" :value="`S/ ${(form.quantity * (1+form.margin/100) * (warehouseInventory.find((item)=> item.id == form.entry_id) ? warehouseInventory.find((item)=> item.id == form.entry_id).unitary_price : 0)).toFixed(2)}`"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                        </div>
+                    </div>
+
 
                     <!-- <div v-if="enableInput" class="sm:col-span-3">
                         <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio unitario a
@@ -238,6 +246,12 @@ const { assigned_products, warehouses, preproject } = defineProps({
     auth: Object
 })
 
+let backUrl = preproject.status === null 
+                ? 'preprojects.index' 
+                : preproject.status == true 
+                    ? {route: 'preprojects.index', params:{preprojects_status : 1}} 
+                    : {route: 'preprojects.index', params:{preprojects_status : 0}} 
+
 //Modal functions
 const showModal = ref(false);
 
@@ -264,6 +278,10 @@ const product_warehouse = async (warehouse) => {
 };
 
 const product_inventory = async (inventory) => {
+    form.quantity = null;
+    form.margin = null;
+    form.unitary_price = null;
+
     const res = await axios.get(route('preprojects.inventory_products', { inventory_id: inventory }))
     warehouseInventory.value = res.data.inventory;
 };

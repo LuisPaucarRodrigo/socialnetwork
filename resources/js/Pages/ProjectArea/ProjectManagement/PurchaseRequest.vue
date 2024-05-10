@@ -1,14 +1,14 @@
 <template>
 
     <Head title="Solicitudes del proyecto" />
-    <AuthenticatedLayout :redirect-route="'projectmanagement.index'">
+    <AuthenticatedLayout :redirect-route="backUrl">
         <template #header>
             Lista de solicitudes
         </template>
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2">
-                <PrimaryButton @click="add_purchase_request" type="button">
+                <PrimaryButton v-if="project.status === null" @click="add_purchase_request" type="button">
                     + Agregar
                 </PrimaryButton>
                 <PrimaryButton @click="expenses" type="button" class="bg-teal-600 hover:bg-teal-500">
@@ -205,6 +205,12 @@ const props = defineProps({
     project: Object,
     auth: Object,
 });
+
+let backUrl = props.project.status === null 
+                ? 'projectmanagement.index' 
+                : props.project.status == true 
+                    ? 'projectmanagement.historial'
+                    : 'projectmanagement.index' 
 
 const form = useForm({
     due_date: '',

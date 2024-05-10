@@ -13,13 +13,14 @@ use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use Illuminate\Support\Facades\Route;
 
 Route::any('/projectmanagement', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
+Route::any('/projectmanagement/historial', [ProjectManagementController::class, 'historial'])->name('projectmanagement.historial');
 Route::get('/projectmanagement/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
 Route::post('/projectmanagement/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
 Route::post('/projectmanagement/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
 Route::delete('/projectmanagement/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
 
 Route::get('/projectmanagement/resources/{project_id}', [ProjectManagementController::class, 'project_resources'])->name('projectmanagement.resources');
-Route::post('/projectmanagement/resources/liquidate', [ServicesLiquidationsController::class, 'store'])->name('projectmanagement.resources.liquidate');
+Route::post('/projectmanagement/resources_liquidation', [ServicesLiquidationsController::class, 'store'])->name('projectmanagement.resources.liquidate');
 
 //CicsaSections
 Route::get('/cicsaSections', [CicsaSectionController::class, 'showSections'])->name('sections.cicsaSections');
@@ -31,9 +32,16 @@ Route::get('/cicsaSubSections/{subSection}', [CicsaSectionController::class, 'sh
 Route::post('/cicsaSubSections', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsaStoreSubSection');
 Route::get('/cicsaDoTask', [CicsaSectionController::class, 'doTask'])->name('sections.cicsaTask');
 
+//Projects liquidation
+Route::post('/projectmanagement/liquidation', [ProjectManagementController::class, 'liquidate_project'])->name('projectmanagement.liquidation');
+
+
+
 //PreProjects
-Route::any('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
-Route::get('/preprojects/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
+Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+Route::post('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+
+Route::get('/preprojects/officially/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
 Route::post('/preprojects/store', [PreProjectController::class, 'store'])->name('preprojects.store');
 Route::get('/preprojects/{preproject}/facade', [PreProjectController::class, 'showPreprojectFacade'])->name('preprojects.facade');
 Route::get('/cotizationPDF/{preproject}', [PreProjectController::class, 'getPDF'])->name('preprojects.pdf');
@@ -43,9 +51,22 @@ Route::get('/preprojects/load_resource_entries/{service_id}', [PreProjectControl
 Route::post('/preprojects/quote_store/{quote_id?}', [PreProjectController::class, 'quote_store'])->name('preprojects.quote.store');
 Route::post('/preprojects/quote/{quote_id}', [PreProjectController::class, 'acceptCotization'])->name('preprojects.accept');
 
+//codes
+Route::get('/preprojects/codes', [PreProjectController::class, 'showCodes'])->name('preprojects.codes');
+Route::post('/preprojects/codes/post', [PreProjectController::class, 'postCode'])->name('preprojects.codes.post');
+Route::put('/preprojects/codes/{code}/put', [PreProjectController::class, 'putCode'])->name('preprojects.codes.put');
+Route::delete('/preprojects/codes/{code}/delete', [PreProjectController::class, 'deleteCode'])->name('preprojects.codes.delete');
+
+//titles
+Route::get('/preprojects/titles', [PreProjectController::class, 'showTitles'])->name('preprojects.titles');
+Route::post('/preprojects/titles/post', [PreProjectController::class, 'postTitle'])->name('preprojects.titles.post');
+Route::put('/preprojects/titles/{title}/put', [PreProjectController::class, 'putTitle'])->name('preprojects.titles.put');
+Route::delete('/preprojects/titles/{title}/delete', [PreProjectController::class, 'deleteTitle'])->name('preprojects.titles.delete');
 
 
 Route::get('/preprojects/{preproject_id}/photoreport', [PreProjectController::class, 'photoreport_index'])->name('preprojects.photoreport.index');
+Route::post('/preprojects/assignUser', [PreProjectController::class, 'preproject_users'])->name('preprojects.assign.users');
+Route::post('/preprojects/assignTitle', [PreProjectController::class, 'preproject_titles'])->name('preprojects.assign.titles');
 Route::post('/preprojects/photoreport_store', [PreProjectController::class, 'photoreport_store'])->name('preprojects.photoreport.store');
 Route::get('/preprojects/photoreport_download/{report_name}', [PreProjectController::class, 'downloadPR'])->name('preprojects.photoreport.download');
 Route::get('/preprojects/photoreport_download_pdf/{pr_id}', [PreProjectController::class, 'download_pdf_PR'])->name('preprojects.photoreport_pdf.download');

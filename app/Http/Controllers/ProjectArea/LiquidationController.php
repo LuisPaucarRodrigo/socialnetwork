@@ -54,7 +54,8 @@ class LiquidationController extends Controller
         // Renderizar la vista con los resultados paginados
         return Inertia::render('ProjectArea/ProjectManagement/Liquidations', [
             'project_entries' => $final_project_entries,
-            'project_id' => $project_id
+            'project_id' => $project_id,
+            'project' => Project::find($project_id)
         ]);
     }
     
