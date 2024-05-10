@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\ProfileController;
 
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,11 @@ Route::get('/', function () {
 // })->name('home');
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/folder-structure/{path?}', [DocumentController::class, 'getFolderStructure'])->name('document.scan.folder');
+    Route::get('/test_new_folder', [DocumentController::class, 'createFolder'])->name('document.create_folder');
+    Route::get('/test_view_folder', [DocumentController::class, 'folder_tree_test'])->name('document.test_view_folder');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
