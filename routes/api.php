@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/preproject', [ApiController::class, 'preproject']);
     Route::get('/preprojectespecific/{id}', [ApiController::class, 'preprojectespecific']);
     Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
+    Route::get('/preproject/code/{id}', [ApiController::class, 'preprojectcodephoto']);
 
     //Project
     Route::get('/project',[ApiController::class,'project_index']);

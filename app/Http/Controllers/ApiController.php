@@ -49,6 +49,10 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
+    public function preprojectcodephoto($id){
+        
+    }
+
     public function preprojectespecific($id)
     {
         $data = Preproject::find($id);
