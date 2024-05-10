@@ -16,7 +16,8 @@ class Preproject extends Model
         'date',
         'cpe',
         'observation',
-        'status'
+        'status',
+        'title_id'
     ];
 
     protected $appends = [
@@ -48,6 +49,16 @@ class Preproject extends Model
     public function contacts()
     {
         return $this->belongsToMany(Customers_contact::class, 'preprojects_contacts', 'preproject_id', 'customer_contact_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'preproject_user')->withTimestamps();
+    }
+
+    public function title()
+    {
+        return $this->belongsTo(Title::class, 'title_id');
     }
 
     public function customer()
