@@ -1,6 +1,6 @@
 <template>
   <Head title="Calendario" />
-  <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+  <AuthenticatedLayout :redirectRoute="backUrl">
     <h1>Calendario de Tareas del Proyecto: {{ project.name }}</h1>
     <p class="mt-3 font-medium text-gray-900">Fecha de Inicio del Proyecto:
                         <span class="text-gray-600">{{ project.start_date }}</span>
@@ -43,6 +43,13 @@ const showModal = ref(false);
 const handleDateClick = (arg) => {
   alert('date click! ' + arg.dateStr);
 };
+
+let backUrl = project.status === null 
+                ? 'projectmanagement.index' 
+                : project.status == true 
+                    ? 'projectmanagement.historial'
+                    : 'projectmanagement.index' 
+
 
 const handleEventClick = (arg) => {
   selectedEvent.value = {
