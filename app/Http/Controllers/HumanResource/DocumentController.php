@@ -217,48 +217,49 @@ class DocumentController extends Controller
     }
 
     private function scanFolder($folderPath)
-{
-    $folderStructure = [];
-
-    // Encuentra la posición de la carpeta "public" en la ruta
-    $publicPosition = strpos($folderPath, 'public');
-
-    // Si la carpeta "public" no se encuentra, devuelve un error
-    if ($publicPosition === false) {
-        throw new \Exception('No se pudo encontrar la carpeta "public" en la ruta');
-    }
-
-    // Obtiene la parte de la ruta después de "public"
-    $publicPath = substr($folderPath, $publicPosition + strlen('public'));
-
-    // Escanea el contenido de la carpeta
-    $contents = scandir($folderPath);
-
-    foreach ($contents as $item) {
-        // Ignora los directorios especiales . y ..
-        if ($item != '.' && $item != '..') {
-            // Crea la ruta completa del elemento
-            $itemPath = $folderPath . '/' . $item;
-
-            
-
-            if (is_dir($itemPath)) {
-                // Si es una carpeta, agrega un objeto con las claves "name" y "path"
-                $folderStructure[] = [
-                    'name' => $item,
-                    'path' => $publicPath . '/' . $item // Ruta relativa desde "public"
-                ];
-            } else {
-                // Si es un archivo, agrega un objeto con las claves "name" y "path"
-                $folderStructure[] = [
-                    'name' => $item,
-                    'path' => $publicPath . '/' . $item // Ruta relativa desde "public"
-                ];
+    {
+        $folderStructure = [];
+    
+        // Encuentra la posición de la carpeta "public" en la ruta
+        $publicPosition = strpos($folderPath, 'public');
+    
+        // Si la carpeta "public" no se encuentra, devuelve un error
+        if ($publicPosition === false) {
+            throw new \Exception('No se pudo encontrar la carpeta "public" en la ruta');
+        }
+    
+        // Obtiene la parte de la ruta después de "public"
+        $publicPath = substr($folderPath, $publicPosition + strlen('public'));
+    
+        // Escanea el contenido de la carpeta
+        $contents = scandir($folderPath);
+    
+        foreach ($contents as $item) {
+            // Ignora los directorios especiales . y ..
+            if ($item != '.' && $item != '..') {
+                // Crea la ruta completa del elemento
+                $itemPath = $folderPath . '/' . $item;
+    
+                if (is_dir($itemPath)) {
+                    // Si es una carpeta, agrega un objeto con las claves "name" y "path"
+                    $folderStructure[] = [
+                        'name' => $item,
+                        'path' => $publicPath . '/' . $item, // Ruta relativa desde "public"
+                        'size' => null // Tamaño de la carpeta (se calculará más tarde)
+                    ];
+                } else {
+                    // Si es un archivo, agrega un objeto con las claves "name", "path" y "size"
+                    $folderStructure[] = [
+                        'name' => $item,
+                        'path' => $publicPath . '/' . $item, // Ruta relativa desde "public"
+                        'size' => filesize($itemPath) // Tamaño del archivo
+                    ];
+                }
             }
         }
+    
+        return $folderStructure;
     }
-
-    return $folderStructure;
-}
+    
 
 }
