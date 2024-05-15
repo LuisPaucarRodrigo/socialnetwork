@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('folder_area', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('folder_id')->constrained('folders')->onDelete('cascade');
+            $table->foreignId('area_id')->nullable()->constrained('areas')->onDelete('set null');
+            $table->boolean('see_download')->default(false);
+            $table->boolean('create')->default(false);
             $table->timestamps();
         });
     }
