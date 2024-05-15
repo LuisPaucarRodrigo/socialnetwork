@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('path');
             $table->string('type');
+            $table->string('archive_type');
             $table->boolean('state');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
