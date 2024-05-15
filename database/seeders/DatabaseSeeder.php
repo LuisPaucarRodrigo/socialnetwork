@@ -11,6 +11,7 @@ use App\Models\Project;
 use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Role;
+use App\Models\Area;
 use App\Models\User;
 use App\Models\Header;
 use App\Models\Warehouse;
@@ -56,6 +57,19 @@ class DatabaseSeeder extends Seeder
         }
 
 
+        $areasData = [
+            ['name' => 'Gerencia'],
+            ['name' => 'Contabilidad'],
+            ['name' => 'Administración'],
+            ['name' => 'Proyectos'],
+            ['name' => 'Logística'],
+            ['name' => 'I + D'],
+
+        ];
+
+        Area::insert($areasData);
+
+
         \App\Models\User::factory()->create([
             'name' => 'luis',
             'dni' => '70969005',
@@ -63,7 +77,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'phone' => '923098157',
             'platform' => 'web',
-            'role_id' => '1'
+            'role_id' => '1',
+            'area_id'=> 1
         ]);
         // User::factory()->count(20)->create();
         // Project::factory()->count(10)->create();
