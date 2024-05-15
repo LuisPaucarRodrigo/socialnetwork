@@ -11,6 +11,7 @@ use App\Models\Project;
 use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Role;
+use App\Models\Area;
 use App\Models\User;
 use App\Models\Header;
 use App\Models\Warehouse;
@@ -54,6 +55,19 @@ class DatabaseSeeder extends Seeder
             ]);
             $adminRole->permissions()->attach($permission);
         }
+
+
+        $areasData = [
+            ['name' => 'Gerencia'],
+            ['name' => 'Contabilidad'],
+            ['name' => 'Administración'],
+            ['name' => 'Proyectos'],
+            ['name' => 'Logística'],
+            ['name' => 'I + D'],
+
+        ];
+
+        Area::insert($areasData);
 
 
         \App\Models\User::factory()->create([
