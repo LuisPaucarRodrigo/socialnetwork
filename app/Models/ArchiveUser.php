@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class ArchiveUser extends Model
 {
     use HasFactory;
+    protected $table = 'archive_user';
+    protected $fillable = [
+        "folder_id",
+        "user_id",
+        "state",
+        "status",
+        "observation",
+        "evaluation_date",
+    ];
 }
