@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('archive_user', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('folder_id')->constrained('folders')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->string('state')->default('Pendiente');
+            $table->boolean('status')->default(true);
+            $table->text('observation')->nullable();
+            $table->date('evaluation_date')->nullable();
             $table->timestamps();
         });
     }
