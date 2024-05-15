@@ -13,8 +13,16 @@ return new class extends Migration
     {
         Schema::create('archives', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->text('path');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->double('version');
+            $table->foreignId('folder_id')->constrained('folders')->onDelete('cascade');
+
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE archives ADD CONSTRAINT chk_version_non_negative CHECK (version >= 0)');
     }
 
     /**
