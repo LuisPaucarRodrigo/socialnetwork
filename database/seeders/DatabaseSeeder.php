@@ -77,7 +77,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'phone' => '923098157',
             'platform' => 'web',
-            'role_id' => '1'
+            'role_id' => '1',
+            'area_id'=> 1
         ]);
         // User::factory()->count(20)->create();
         // Project::factory()->count(10)->create();
