@@ -24,16 +24,24 @@ class FolderCreateRequest extends FormRequest
     {
 
         $rules = [
-            'name' => 'required',
+            'name' => 'required|regex:/^[a-zA-Z0-9-_]+$/',
             'type' => 'required',
             'areas' => 'required',
             'user_id' => 'required'
         ];
 
-        if ($this->input('type')=== 'Archivos'){
+        if ($this->input('type') === 'Archivos') {
             $rules['archive_type'] = 'required';
         }
 
         return $rules;
+    }
+
+
+    public function messages(): array
+    {
+        return [
+            'name.regex' => 'El nombre solo puede contener letras mayúsculas, minúsculas, números, guiones, subguiones y sin espacios.',
+        ];
     }
 }
