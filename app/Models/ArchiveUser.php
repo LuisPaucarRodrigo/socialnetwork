@@ -10,7 +10,7 @@ class ArchiveUser extends Model
     use HasFactory;
     protected $table = 'archive_user';
     protected $fillable = [
-        "folder_id",
+        "archive_id",
         "user_id",
         "state",
         "status",
