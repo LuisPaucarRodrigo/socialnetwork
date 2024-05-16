@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentManagement\FolderController;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\ProfileController;
 
@@ -49,6 +50,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    Route::get('/documment_management/{folder_id?}', [FolderController::class, 'folder_index'])->name('documment.management.folders');
+
+
 });
 
 Route::middleware('auth', 'permission:UserManager')->group(function () {
