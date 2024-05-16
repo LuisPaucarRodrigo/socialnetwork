@@ -14,31 +14,47 @@ use Inertia\Inertia;
 class FolderController extends Controller
 {
     protected $main_directory;
-    public function __construct() {
+    public function __construct()
+    {
         $this->main_directory = 'CCIP';
     }
 
 
 
-    public function folder_index($folder_id = null){
+    public function folder_index($folder_id = null) {
         $path = Folder::find($folder_id) ? Folder::find($folder_id)->path
-                                         : $this->main_directory;
+            : $this->main_directory;
         $areas = Folder::find($folder_id) ? Folder::with('areas')->find($folder_id)->areas
-                                         : Area::all();
-      
+            : Area::all();
+
+        $previousPath = $this->getPreviusPath($path);
+        $previousId = $previousPath === $this->main_directory ? ''
+            : Folder::where('path', $previousPath)->first()?->id;
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
-       
+
         return Inertia::render('Document Management/Folder', [
-            'folders'=>$folderStructure,
-            'currentPath'=>$path,
-            'areas'=> $areas,
-            'currentId'=>$folder_id
+            'folders' => $folderStructure,
+            'currentPath' => $path,
+            'areas' => $areas,
+            'previousId' => $previousId
         ]);
     }
 
 
-    public function folder_store (FolderCreateRequest $request) {
+
+    function getPreviusPath($path){
+        $segments = explode('/', $path);
+        if (count($segments) > 1) {
+            array_pop($segments);
+        }
+        return implode('/', $segments);
+    }
+
+
+
+    public function folder_store(FolderCreateRequest $request)
+    {
         $data = $request->validated();
         $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
         $folder = Folder::create($data);
@@ -47,11 +63,12 @@ class FolderController extends Controller
     }
 
 
-    public function createFolder($path, $name) {
-        $publicPath = public_path($path. '/' . $name);
+    public function createFolder($path, $name)
+    {
+        $publicPath = public_path($path . '/' . $name);
         if (!file_exists($publicPath)) {
             mkdir($publicPath, 0777, true);
-            return $path. '/' . $name;
+            return $path . '/' . $name;
         } else {
             return abort(403, 'Carpeta ya existente');
         }
@@ -59,38 +76,39 @@ class FolderController extends Controller
 
 
 
-    private function scanFolder($folderPath) {
+    private function scanFolder($folderPath)
+    {
         $folderStructure = [];
         $publicPosition = strpos($folderPath, 'public');
-    
+
         if ($publicPosition === false) {
             return abort(404, 'Directorio no válido');
         }
-    
+
         $publicPath = substr($folderPath, $publicPosition + strlen('public/'));
         $contents = scandir($folderPath);
-    
+
         foreach ($contents as $item) {
             if ($item != '.' && $item != '..') {
                 $itemPath = $folderPath . '/' . $item;
                 if (is_dir($itemPath)) {
                     $folderStructure[] = [
                         'name' => $item,
-                        'path' => $publicPath . '/' . $item, 
+                        'path' => $publicPath . '/' . $item,
                         'size' => null,
                         'item_db' => Folder::where('name', $item)->where('path', $publicPath . '/' . $item)->first()
                     ];
                 } else {
                     $folderStructure[] = [
                         'name' => $item,
-                        'path' => $publicPath . '/' . $item, 
+                        'path' => $publicPath . '/' . $item,
                         'size' => filesize($itemPath),
                         'item_db' => Archive::where('name', $item)->where('path', $publicPath . '/' . $item)->first()
                     ];
                 }
             }
         }
-    
+
         return $folderStructure;
     }
 }

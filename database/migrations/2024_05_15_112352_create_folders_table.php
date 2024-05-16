@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('folders', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('path');
+            $table->text('path')->unique();
             $table->string('type');
             $table->string('archive_type')->nullable();
             $table->boolean('state')->default(false);
