@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DocumentManagement;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DocumentManagementRequest\FolderCreateRequest;
 use App\Models\Area;
 use App\Models\Folder;
 use Illuminate\Http\Request;
@@ -31,6 +32,11 @@ class FolderController extends Controller
             'currentPath'=>$real_path,
             'areas'=> $areas
         ]);
+    }
+
+
+    public function folder_store (FolderCreateRequest $request) {
+        dd('siuuu');
     }
 
 

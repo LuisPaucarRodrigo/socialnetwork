@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/documment_management/{folder_id?}', [FolderController::class, 'folder_index'])->name('documment.management.folders');
+    Route::post('/documment_management/store', [FolderController::class, 'folder_store'])->name('documment.management.folders.store');
 
 
 });
