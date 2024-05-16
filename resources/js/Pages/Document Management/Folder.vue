@@ -245,7 +245,6 @@ function submit() {
         }
 
     })
-    console.log(createFolderForm.data())
 }
 
 

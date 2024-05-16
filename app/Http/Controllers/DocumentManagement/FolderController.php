@@ -4,6 +4,7 @@ namespace App\Http\Controllers\DocumentManagement;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentManagementRequest\FolderCreateRequest;
+use App\Models\Archive;
 use App\Models\Area;
 use App\Models\Folder;
 use Illuminate\Http\Request;
@@ -38,7 +39,8 @@ class FolderController extends Controller
     public function folder_store (FolderCreateRequest $request) {
         $data = $request->validated();
         $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
-        Folder::create($data);
+        $folder = Folder::create($data);
+        $folder->areas()->sync($data['areas']);
         return redirect()->back();
     }
 
@@ -73,13 +75,15 @@ class FolderController extends Controller
                     $folderStructure[] = [
                         'name' => $item,
                         'path' => $publicPath . '/' . $item, 
-                        'size' => null
+                        'size' => null,
+                        'item_db' => Folder::where('name', $item)->where('path', $publicPath . '/' . $item)->first()
                     ];
                 } else {
                     $folderStructure[] = [
                         'name' => $item,
                         'path' => $publicPath . '/' . $item, 
-                        'size' => filesize($itemPath) 
+                        'size' => filesize($itemPath),
+                        'item_db' => Archive::where('name', $item)->where('path', $publicPath . '/' . $item)->first()
                     ];
                 }
             }
