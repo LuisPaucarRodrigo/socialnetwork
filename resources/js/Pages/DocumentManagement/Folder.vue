@@ -47,7 +47,7 @@
                                 </a>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <a
+                                <a :href="route('documment.management.folders.permissions', {folder_id: item.item_db.id})"
                                     class="text-indigo-500 hover:underline hover:text-indigo-400 hover:cursor-pointer">Administrar</a>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
