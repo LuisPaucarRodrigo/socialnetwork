@@ -41,11 +41,15 @@ class FolderCreateRequest extends FormRequest
             'type' => 'required',
             'areas' => 'required',
             'user_id' => 'required',
-            'currentPath' => 'required'
+            'currentPath' => 'required',
         ];
 
         if ($this->input('type') === 'Archivos') {
             $rules['archive_type'] = 'required';
+        }
+
+        if ($this->input('currentPath') !== 'CCIP'){
+            $rules['upper_folder_id'] = 'required';
         }
 
         return $rules;

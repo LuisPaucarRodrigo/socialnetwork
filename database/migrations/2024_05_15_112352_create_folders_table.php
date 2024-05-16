@@ -19,8 +19,11 @@ return new class extends Migration
             $table->string('archive_type')->nullable();
             $table->boolean('state')->default(false);
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('upper_folder_id')->nullable()->constrained('folders')->onDelete('cascade');
+       
             $table->timestamps();
         });
+
     }
 
     /**

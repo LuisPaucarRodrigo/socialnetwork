@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('folder_id')->constrained('folders')->onDelete('cascade');
             $table->foreignId('area_id')->nullable()->constrained('areas')->onDelete('set null');
-            $table->boolean('see_download')->default(false);
-            $table->boolean('create')->default(false);
+            $table->boolean('see_download')->default(true);
+            $table->boolean('create')->default(true);
             $table->timestamps();
         });
     }
