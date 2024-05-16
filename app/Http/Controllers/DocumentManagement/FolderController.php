@@ -8,6 +8,7 @@ use App\Models\Archive;
 use App\Models\Area;
 use App\Models\Folder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class FolderController extends Controller
@@ -21,17 +22,18 @@ class FolderController extends Controller
 
     public function folder_index($folder_id = null){
         $path = Folder::find($folder_id) ? Folder::find($folder_id)->path
-                                         : '';
+                                         : $this->main_directory;
         $areas = Folder::find($folder_id) ? Folder::with('areas')->find($folder_id)->areas
                                          : Area::all();
-        $real_path = $this->main_directory.$path;
-        $publicPath = public_path($real_path);
+      
+        $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
        
         return Inertia::render('Document Management/Folder', [
             'folders'=>$folderStructure,
-            'currentPath'=>$real_path,
-            'areas'=> $areas
+            'currentPath'=>$path,
+            'areas'=> $areas,
+            'currentId'=>$folder_id
         ]);
     }
 
@@ -65,7 +67,7 @@ class FolderController extends Controller
             return abort(404, 'Directorio no válido');
         }
     
-        $publicPath = substr($folderPath, $publicPosition + strlen('public'));
+        $publicPath = substr($folderPath, $publicPosition + strlen('public/'));
         $contents = scandir($folderPath);
     
         foreach ($contents as $item) {

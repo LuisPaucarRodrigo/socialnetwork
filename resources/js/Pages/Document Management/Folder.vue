@@ -2,7 +2,7 @@
 
     <Head title="G. Documentaria" />
 
-    <AuthenticatedLayout :redirectRoute="'users.index'">
+    <AuthenticatedLayout :redirectRoute="{route: 'documment.management.folders', params: {folder_id: previousId}}">
         <template #header>
             {{ currentPath }}
         </template>
@@ -36,13 +36,22 @@
                     <tbody>
                         <tr v-for="item in folders" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">{{ item.name }}</p>
+                                <a :href="route('documment.management.folders', {folder_id: item.item_db.id})">
+                                    <div>
+                                        <p
+                                            class="text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
+                                            {{ item.name }}
+                                        </p>
+                                    </div>
+
+                                </a>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">permisos</p>
+                                <a
+                                    class="text-indigo-500 hover:underline hover:text-indigo-400 hover:cursor-pointer">Administrar</a>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">tipo</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.item_db.type }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
@@ -134,7 +143,7 @@
                         </div>
 
 
-                        <div >
+                        <div>
                             <InputLabel>
                                 Areas
                             </InputLabel>
@@ -145,7 +154,7 @@
                                     <option v-for="item in areas" :key="item.id" :value="item.id">
                                         {{ item.name }}
                                     </option>
-                                    
+
                                 </select>
                                 <InputError :message="createFolderForm.errors.areas" />
                             </div>
@@ -195,13 +204,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 
-const { folders, currentPath, auth, areas } = defineProps({
+const { folders, currentPath, auth, areas, previousId } = defineProps({
     folders: Object,
     currentPath: String,
+    previousId: String,
     areas: Object,
     auth: Object
 })
-
 
 const showAddFolderModal = ref(false)
 const confirmFolderCreate = ref(false)
@@ -215,6 +224,7 @@ const createFolderForm = useForm({
     user_id: auth.user.id
 })
 
+
 function openAddFoldermodal() {
     showAddFolderModal.value = true
 }
@@ -227,7 +237,7 @@ function closeAddFolderModal() {
 
 
 
-function handleFolderType () {
+function handleFolderType() {
     createFolderForm.archive_type = ''
 }
 
@@ -236,10 +246,10 @@ function handleFolderType () {
 
 function submit() {
     createFolderForm.post(route('documment.management.folders.store'), {
-        onSuccess: () =>{
+        onSuccess: () => {
             closeAddFolderModal()
             confirmFolderCreate.value = true
-            setTimeout(()=>{
+            setTimeout(() => {
                 confirmFolderCreate.value = false
             }, 1300)
         }
