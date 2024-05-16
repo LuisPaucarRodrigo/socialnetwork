@@ -3,7 +3,7 @@
 
     <AuthenticatedLayout :redirectRoute="'users.index'">
         <template #header>
-            CCIP
+            {{currentPath}}
         </template>
         <div class="min-w-full rounded-lg shadow">
             <PrimaryButton @click="addFolder" type="button">
@@ -131,6 +131,7 @@ const passwordInput = ref(null);
 
 const props = defineProps({
     folders: Object,
+    currentPath: String,
     auth: Object
 })
 
