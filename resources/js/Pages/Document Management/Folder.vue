@@ -34,7 +34,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in folders.data" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in folders" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="6">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.name }}</p>
                             </td>
@@ -79,9 +79,6 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="users.links" />
-            </div>
         </div>
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
