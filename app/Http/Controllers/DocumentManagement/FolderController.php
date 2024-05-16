@@ -24,7 +24,8 @@ class FolderController extends Controller
         $folderStructure = $this->scanFolder($publicPath);
        
         return Inertia::render('Document Management/Folder', [
-            'folders'=>$folderStructure
+            'folders'=>$folderStructure,
+            'currentPath'=>$real_path
         ]);
     }
 
