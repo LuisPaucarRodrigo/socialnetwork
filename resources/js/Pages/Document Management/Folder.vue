@@ -1,12 +1,13 @@
 <template>
+
     <Head title="Usuarios" />
 
     <AuthenticatedLayout :redirectRoute="'users.index'">
         <template #header>
-            {{currentPath}}
+            {{ currentPath }}
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <PrimaryButton @click="addFolder" type="button">
+            <PrimaryButton @click="openAddFoldermodal" type="button">
                 + Agregar
             </PrimaryButton>
             <div class="overflow-x-auto">
@@ -15,8 +16,7 @@
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold sm:w-2/3 uppercase tracking-wider text-gray-600"
-                                >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold sm:w-2/3 uppercase tracking-wider text-gray-600">
                                 Nombre
                             </th>
                             <th
@@ -46,8 +46,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <Link class="text-blue-900 whitespace-no-wrap"
-                                        :href="'#'">
+                                    <Link class="text-blue-900 whitespace-no-wrap" :href="'#'">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -56,8 +55,7 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <Link class="text-blue-900 whitespace-no-wrap"
-                                        :href="'#'">
+                                    <Link class="text-blue-900 whitespace-no-wrap" :href="'#'">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -80,6 +78,104 @@
             </div>
 
         </div>
+
+
+        <Modal :show="showAddFolderModal" @close="closeModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Nueva Carpeta
+                </h2>
+                <br>
+                <form @submit.prevent="submit">
+                    <div class="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-2">
+                        <div class="">
+                            <InputLabel>Nombre</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="createFolderForm.name" id="first-name"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="createFolderForm.errors.name" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <InputLabel for="resorceOrProduct">Tipo de Carpeta</InputLabel>
+                            <div class="flex gap-4 items-center mt-4">
+                                <label class="flex gap-2 items-center text-sm">
+                                    Carpeta
+                                    <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
+                                        id="resorceOrProduct" :value="'Carpeta'"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center text-sm">
+                                    Archivos
+                                    <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
+                                        id="resorceOrProduct" :value="'Archivos'"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                            </div>
+                        </div>
+
+                        <div v-if="createFolderForm.type === 'Archivos'">
+                            <InputLabel>
+                                Tipo de Archivos
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select v-model="createFolderForm.archive_type" id="payment_type"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccionar Tipo</option>
+                                    <option>PDF</option>
+                                    <option>Word</option>
+                                    <option>Excel</option>
+                                    <option>Power Point</option>
+                                </select>
+                                <InputError :message="createFolderForm.errors.archive_type" />
+                            </div>
+                        </div>
+
+
+                        <div >
+                            <InputLabel>
+                                Tipo de Archivos
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select multiple size="4" v-model="createFolderForm.areas" id="payment_type"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Uno o Varios ctrl+click</option>
+                                    <option v-for="item in areas" :key="item.id" :value="item.id">
+                                        {{ item.name }}
+                                    </option>
+                                    
+                                </select>
+                                <InputError :message="createFolderForm.errors.areas" />
+                            </div>
+                        </div>
+
+
+
+
+
+
+                    </div>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeAddFolderModal"> Cancelar </SecondaryButton>
+
+                        <PrimaryButton class="ml-3" :class="{ 'opacity-25': createFolderForm.processing }"
+                            :disabled="createFolderForm.processing" type="submit">
+                            Guardar
+                        </PrimaryButton>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </Modal>
+
+
+
+
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
@@ -87,7 +183,8 @@
                 </h2>
 
                 <p class="mt-1 text-sm text-gray-600">
-                    Una vez que se elimine la cuenta, todos sus recursos y datos se eliminarán permanentemente. Por favor
+                    Una vez que se elimine la cuenta, todos sus recursos y datos se eliminarán permanentemente. Por
+                    favor
                     ingrese su contraseña para confirmar que desea eliminar permanentemente la cuenta.
                 </p>
 
@@ -114,7 +211,6 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import DangerButton from '@/Components/DangerButton.vue';
@@ -129,15 +225,48 @@ const confirmingUserDeletion = ref(false);
 const usersToDelete = ref(null);
 const passwordInput = ref(null);
 
-const props = defineProps({
+const { folders, currentPath, auth, areas } = defineProps({
     folders: Object,
     currentPath: String,
+    areas: Object,
     auth: Object
 })
 
-const addFolder = () => {
-    router.get(route('register'));
+
+const showAddFolderModal = ref(false)
+
+const createFolderForm = useForm({
+    name: '',
+    type: 'Carpeta',
+    archive_type: '',
+    areas: [],
+    user_id: auth.user.id
+})
+
+function openAddFoldermodal() {
+    showAddFolderModal.value = true
 }
+
+function closeAddFolderModal() {
+    showAddFolderModal.value = false
+    createFolderForm.reset()
+}
+
+
+
+
+function handleFolderType () {
+    createFolderForm.archive_type = ''
+}
+
+function submit() {
+    console.log(createFolderForm.data())
+}
+
+
+
+
+
 
 const form = useForm({
     password: '',
@@ -146,7 +275,7 @@ const form = useForm({
 const confirmUserDeletion = (userId) => {
     confirmingUserDeletion.value = true;
     usersToDelete.value = userId;
-   
+
 };
 
 const deleteUser = () => {
