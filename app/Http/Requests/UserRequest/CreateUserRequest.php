@@ -35,13 +35,13 @@ class CreateUserRequest extends FormRequest
                         'max:255',
                         'email',
                         Rule::unique('users', 'email')],
-            'platform' => 'required|string|in:Movil,Web,Ambos',
+            'platform' => 'required|string|in:Movil,Web,Web/Movil',
             'phone' => [
                 'required',
                 'string',
                 Rule::unique('users', 'phone')
             ],
-            'rol' => 'required|numeric',
+            'rol' => 'nullable|numeric',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ];
     }
