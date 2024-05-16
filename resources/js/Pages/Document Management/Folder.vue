@@ -207,6 +207,7 @@ const createFolderForm = useForm({
     type: 'Carpeta',
     archive_type: '',
     areas: [],
+    currentPath,
     user_id: auth.user.id
 })
 

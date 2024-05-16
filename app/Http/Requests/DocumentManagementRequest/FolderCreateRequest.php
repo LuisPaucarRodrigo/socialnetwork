@@ -27,7 +27,8 @@ class FolderCreateRequest extends FormRequest
             'name' => 'required|regex:/^[a-zA-Z0-9-_]+$/',
             'type' => 'required',
             'areas' => 'required',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'currentPath' => 'required'
         ];
 
         if ($this->input('type') === 'Archivos') {
