@@ -19,7 +19,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold sm:w-2/3 uppercase tracking-wider text-gray-600">
                                 Nombre
                             </th>
-                            <th
+                            <th v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Permisos
                             </th>
@@ -46,7 +46,7 @@
 
                                 </a>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <a :href="route('documment.management.folders.permissions', {folder_id: item.item_db.id})"
                                     class="text-indigo-500 hover:underline hover:text-indigo-400 hover:cursor-pointer">Administrar</a>
                             </td>
