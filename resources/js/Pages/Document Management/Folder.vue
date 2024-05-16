@@ -136,7 +136,7 @@
 
                         <div >
                             <InputLabel>
-                                Tipo de Archivos
+                                Areas
                             </InputLabel>
                             <div class="mt-2">
                                 <select multiple size="4" v-model="createFolderForm.areas" id="payment_type"
@@ -173,7 +173,8 @@
             </div>
         </Modal>
 
-
+        <SuccessOperationModal :confirming="confirmFolderCreate" :title="'Nueva Carpeta Creada'"
+            :message="'Carpeta creada con éxito'" />
 
 
     </AuthenticatedLayout>
@@ -191,6 +192,8 @@ import { Link, Head, router, useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+
 
 const { folders, currentPath, auth, areas } = defineProps({
     folders: Object,
@@ -201,6 +204,7 @@ const { folders, currentPath, auth, areas } = defineProps({
 
 
 const showAddFolderModal = ref(false)
+const confirmFolderCreate = ref(false)
 
 const createFolderForm = useForm({
     name: '',
@@ -231,7 +235,16 @@ function handleFolderType () {
 
 
 function submit() {
-    createFolderForm.post(route('documment.management.folders.store'))
+    createFolderForm.post(route('documment.management.folders.store'), {
+        onSuccess: () =>{
+            closeAddFolderModal()
+            confirmFolderCreate.value = true
+            setTimeout(()=>{
+                confirmFolderCreate.value = false
+            }, 1300)
+        }
+
+    })
     console.log(createFolderForm.data())
 }
 

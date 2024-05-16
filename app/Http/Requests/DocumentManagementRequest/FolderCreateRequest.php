@@ -4,6 +4,8 @@ namespace App\Http\Requests\DocumentManagementRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Models\Folder;
 
 class FolderCreateRequest extends FormRequest
 {
@@ -24,7 +26,18 @@ class FolderCreateRequest extends FormRequest
     {
 
         $rules = [
-            'name' => 'required|regex:/^[a-zA-Z0-9-_]+$/',
+            'name' => [
+                'required',
+                'regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚ\-_]+$/',
+                function ($attribute, $value, $fail){
+                    $name = $this->input('name');
+                    $currentPath = $this->input('currentPath');
+                    $folder = Folder::where('name', $name)->where('path', $currentPath.'/'.$name)->first();
+                    if ($folder){
+                        $fail(_('Ya existe una carpeta con ese nombre'));
+                    }
+                }  
+            ],
             'type' => 'required',
             'areas' => 'required',
             'user_id' => 'required',
