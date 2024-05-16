@@ -20,8 +20,8 @@
                         </path>
                     </svg>
                 </template>
-Usuarios
-</nav-link> -->
+            Usuarios
+            </nav-link> -->
             <template v-if="hasPermission('UserManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingUsersAndRols = !showingUsersAndRols">
@@ -507,7 +507,7 @@ Usuarios
                     <span class="mx-3">G. Documentaria</span>
                 </a>
                 <MyTransition :transitiondemonstration="showDocs">
-                    <Link class="w-full" :href="'#'">CCIP</Link>
+                    <Link class="w-full" :href="route('documment.management.folders')">CCIP</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="'#'">Aprobación</Link>

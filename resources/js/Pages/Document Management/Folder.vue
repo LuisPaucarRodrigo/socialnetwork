@@ -5,7 +5,7 @@
         <template #header>
             CCIP
         </template>
-        <div class="min-w-full overflow-hidden rounded-lg shadow">
+        <div class="min-w-full rounded-lg shadow">
             <PrimaryButton @click="addFolder" type="button">
                 + Agregar
             </PrimaryButton>
@@ -15,8 +15,8 @@
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                colspan="6">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold sm:w-2/3 uppercase tracking-wider text-gray-600"
+                                >
                                 Nombre
                             </th>
                             <th
@@ -28,15 +28,15 @@
                                 Tipo
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="item in folders" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="6">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.name }}</p>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-nowrap">{{ item.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">permisos</p>
