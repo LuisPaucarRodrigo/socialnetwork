@@ -105,7 +105,8 @@ Usuarios
                             <span
                                 v-if="permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
-                                {{ permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length }}</span>
+                                {{ permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length
+                                }}</span>
                         </button>
                         <Link class="w-full" :href="route('management.vacation')">Vacaciones y Permisos</Link>
                     </div>
@@ -494,6 +495,25 @@ Usuarios
                     <Link class="w-full" :href="route('deposits.index')">Depósitos</Link>
                 </MyTransition>
             </template>
+
+
+            <template v-if="true">
+                <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showDocs = !showDocs">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6 text-white">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" />
+                    </svg>
+                    <span class="mx-3">G. Documentaria</span>
+                </a>
+                <MyTransition :transitiondemonstration="showDocs">
+                    <Link class="w-full" :href="'#'">CCIP</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showDocs">
+                    <Link class="w-full" :href="'#'">Aprobación</Link>
+                </MyTransition>
+            </template>
+
         </nav>
     </div>
 </template>
@@ -563,6 +583,8 @@ export default {
         let showShoppingPurchaseRequestAlarms = ref(false)
         let showFormationProgramsAlarms = ref(false)
 
+        let showDocs = ref(false)
+
         return {
             showingUsersAndRols,
             showingHumanResource,
@@ -580,7 +602,8 @@ export default {
             paymentPorVencer,
             showFinancePurchaseQuoteAlarms,
             showShoppingPurchaseRequestAlarms,
-            showFormationProgramsAlarms
+            showFormationProgramsAlarms,
+            showDocs
         }
     },
 
