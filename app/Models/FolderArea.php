@@ -15,4 +15,8 @@ class FolderArea extends Model
         "see_download",
         "create",
     ];
+
+    public function areas() {
+        return $this->belongsTo(Area::class, 'area_id');
+    }
 }

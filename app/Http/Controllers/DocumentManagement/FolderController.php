@@ -7,6 +7,7 @@ use App\Http\Requests\DocumentManagementRequest\FolderCreateRequest;
 use App\Models\Archive;
 use App\Models\Area;
 use App\Models\Folder;
+use App\Models\FolderArea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -33,7 +34,7 @@ class FolderController extends Controller
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
 
-        return Inertia::render('Document Management/Folder', [
+        return Inertia::render('DocumentManagement/Folder', [
             'folders' => $folderStructure,
             'currentPath' => $path,
             'areas' => $areas,
@@ -41,7 +42,44 @@ class FolderController extends Controller
         ]);
     }
 
+    public function folder_permissions($folder_id) {
+        $permissions = FolderArea::with('area')->where('folder_id', $folder_id)->get();
+        $folder = Folder::find($folder_id);
+        return Inertia::render('DocumentManagement/FolderPermissions', [
+            'permissions' => $permissions,
+            'folder' => $folder
+        ]);
+    }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Helpers
 
     function getPreviusPath($path){
         $segments = explode('/', $path);
@@ -52,9 +90,7 @@ class FolderController extends Controller
     }
 
 
-
-    public function folder_store(FolderCreateRequest $request)
-    {
+    public function folder_store(FolderCreateRequest $request){
         $data = $request->validated();
         $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
         $folder = Folder::create($data);
@@ -63,8 +99,7 @@ class FolderController extends Controller
     }
 
 
-    public function createFolder($path, $name)
-    {
+    public function createFolder($path, $name){
         $publicPath = public_path($path . '/' . $name);
         if (!file_exists($publicPath)) {
             mkdir($publicPath, 0777, true);
@@ -75,19 +110,14 @@ class FolderController extends Controller
     }
 
 
-
-    private function scanFolder($folderPath)
-    {
+    private function scanFolder($folderPath){
         $folderStructure = [];
         $publicPosition = strpos($folderPath, 'public');
-
         if ($publicPosition === false) {
             return abort(404, 'Directorio no válido');
         }
-
         $publicPath = substr($folderPath, $publicPosition + strlen('public/'));
         $contents = scandir($folderPath);
-
         foreach ($contents as $item) {
             if ($item != '.' && $item != '..') {
                 $itemPath = $folderPath . '/' . $item;
@@ -108,7 +138,6 @@ class FolderController extends Controller
                 }
             }
         }
-
         return $folderStructure;
     }
 }
