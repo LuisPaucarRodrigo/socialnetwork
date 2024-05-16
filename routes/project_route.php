@@ -105,6 +105,9 @@ Route::get('/sunat_ruc', [HttpController::class, 'sunat_ruc'])->name('sunat');
 
 
 Route::get('/preprojects/{preproject_id}/report/image', [PreProjectController::class, 'index_image'])->name('preprojects.imagereport.index');
+Route::get('/preprojects/{preproject_id}/report/code/image', [PreProjectController::class, 'registerCodePhoto'])->name('preprojects.report.images');
+Route::put('/preprojects/{preproject_image_id}/report/image', [PreProjectController::class, 'approve_reject_image'])->name('preprojects.imagereport.approveReject');
+Route::get('/preprojects/{preproject_code_id}/codereport', [PreProjectController::class, 'approve_code'])->name('preprojects.codereport.approveCode');
 Route::get('/preprojects/{preproject_id}/report/download_image', [PreProjectController::class, 'download_image'])->name('preprojects.imagereport.download');
 Route::get('/preprojects/{image}/report/showimage', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
 Route::delete('/preprojects/{preproject_id}/report/delete', [PreProjectController::class, 'delete_image'])->name('preprojects.imagereport.delete');

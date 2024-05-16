@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('imagespreprojects', function (Blueprint $table) {
+        Schema::create('title_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->string('observation')->nullable();
-            $table->boolean('state')->nullable();
-            $table->string('image')->unique();
-            $table->foreignId('preproject_code_id')->onDelete('cascade');
+            $table->foreignId('title_id')->constrained('titles')->onDelete('cascade');
+            $table->foreignId('code_id')->constrained('codes')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('imagespreprojects');
+        Schema::dropIfExists('title_codes');
     }
 };

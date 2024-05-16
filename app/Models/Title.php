@@ -12,14 +12,9 @@ class Title extends Model
         'title',
     ];
 
-    public function titleCodes()
-    {
-        return $this->hasMany(TitleCode::class);
-    }
-
     public function codes()
     {
-        return $this->belongsToMany(Code::class, 'title_code');
+        return $this->belongsToMany(Code::class, 'title_codes');
     }
 
 }
