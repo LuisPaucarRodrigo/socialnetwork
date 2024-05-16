@@ -36,11 +36,22 @@ class FolderController extends Controller
 
 
     public function folder_store (FolderCreateRequest $request) {
-        dd('siuuu');
+        $data = $request->validated();
+        $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
+        Folder::create($data);
+        return redirect()->back();
     }
 
 
-
+    public function createFolder($path, $name) {
+        $publicPath = public_path($path. '/' . $name);
+        if (!file_exists($publicPath)) {
+            mkdir($publicPath, 0777, true);
+            return $path. '/' . $name;
+        } else {
+            return abort(403, 'Carpeta ya existente');
+        }
+    }
 
 
 
