@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Usuarios" />
+    <Head title="G. Documentaria" />
 
     <AuthenticatedLayout :redirectRoute="'users.index'">
         <template #header>
@@ -230,6 +230,7 @@ function handleFolderType () {
 
 
 function submit() {
+    createFolderForm.post(route('documment.management.folders.store'))
     console.log(createFolderForm.data())
 }
 
