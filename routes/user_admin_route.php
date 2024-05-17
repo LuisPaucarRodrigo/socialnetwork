@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentManagement\FolderController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
@@ -102,3 +103,6 @@ Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'de
         
 Route::post('/purchasing_request_product_store', [PurchaseRequestController::class, 'purchasing_request_product_store'])->name('purchasing_request_product.store');
 Route::delete('/purchasing_request_product_delete/{purchasing_request_product_id}', [PurchaseRequestController::class, 'purchasing_request_product_delete'])->name('purchasing_request_product.delete');
+
+//Folder Validation
+Route::get('/document_management/folder_validation', [FolderController::class, 'folder_validation'])->name('documment.management.folders.validation');

@@ -510,7 +510,7 @@
                     <Link class="w-full" :href="route('documment.management.folders')">CCIP</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showDocs">
-                    <Link class="w-full" :href="'#'">Aprobación</Link>
+                    <Link class="w-full" :href="route('documment.management.folders.validation')">Aprobación</Link>
                 </MyTransition>
             </template>
 

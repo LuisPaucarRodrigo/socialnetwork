@@ -51,6 +51,14 @@ class FolderController extends Controller
     }
 
 
+    public function folder_validation() {
+        $folder = Folder::with('user', 'areas')->where('state', false)->orderBy('created_at', 'desc')->paginate(15);
+        return Inertia::render('DocumentManagement/FolderValidation', [
+            'folders' => $folder
+        ]);
+    }
+
+
 
 
 
