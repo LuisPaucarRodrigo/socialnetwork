@@ -757,7 +757,6 @@ export default {
             this.fetchFinancePurchases();
         }
         setInterval(() => {
-            console.log('fetch alarms')
             if (this.hasPermission('HumanResourceManager') || this.hasPermission('HumanResource')) {
                 this.fetchAlarmPermissionsCount();
                 this.fetchAlarmVacationCount();

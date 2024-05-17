@@ -104,7 +104,9 @@ Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'de
 Route::post('/purchasing_request_product_store', [PurchaseRequestController::class, 'purchasing_request_product_store'])->name('purchasing_request_product.store');
 Route::delete('/purchasing_request_product_delete/{purchasing_request_product_id}', [PurchaseRequestController::class, 'purchasing_request_product_delete'])->name('purchasing_request_product.delete');
 
-//Folder Validation
+//Folders Validation
 Route::get('/document_management/folder_validation', [FolderController::class, 'folder_validation'])->name('documment.management.folders.validation');
 Route::post('/document_management/folder_validation/check/{folder_id}', [FolderController::class, 'folder_check'])->name('documment.management.folders.check');
 Route::delete('/document_management/folder_validation/invalidate/{folder_id}', [FolderController::class, 'folder_invalidate'])->name('documment.management.folders.invalidate');
+
+Route::post('/document_management/folder_permissions/{folder_area_id}', [FolderController::class, 'see_dowload_permission'])->name('documment.management.folders.permission.see_download');
