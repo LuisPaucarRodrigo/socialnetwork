@@ -55,7 +55,7 @@
                                     <div
                                         class="flex space-x-3 justify-center">
                                         <button 
-                                        @click="validateFolder"
+                                        @click="validateFolder(item.id)"
                                         class="rounded-xl text-center text-sm text-green-900 hover:bg-green-200">
                                             <svg 
                                                 xmlns="http://www.w3.org/2000/svg" 
@@ -69,7 +69,7 @@
                                             </svg>
                                         </button>
                                         <button 
-                                            
+                                            @click="openFolderDeletionModal(item.id)"
                                             type="button"
                                             class="rounded-xl text-center text-sm text-red-900 hover:bg-red-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -89,6 +89,27 @@
                 <pagination :links="folders.links" />
             </div>
         </div>
+
+        <Modal :show="showFolderDeletion" @close="closeFolderDeletionModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Eliminación de Carpeta
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600">
+                    Al realizar esta acción la carpeta será eliminada.
+                </p>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeFolderDeletionModal"> Cancelar </SecondaryButton>
+
+                    <DangerButton class="ml-3" 
+                        @click="deleteFolder">
+                        Eliminar Carpeta
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
        
     </AuthenticatedLayout>
 </template>
@@ -119,7 +140,27 @@ const add_users = () => {
 }
 
 
+function validateFolder (id) {
+    router.post(route('documment.management.folders.check', {folder_id: id}), null, {
+        onSuccess:() => {
 
+        }
+    })
+}
+
+
+const showFolderDeletion = ref(false);
+const idToDelete = ref(null)
+
+function openFolderDeletionModal (id) {
+    showFolderDeletion.value = true
+    idToDelete.value = id
+}
+function closeFolderDeletionModal () {showFolderDeletion.value = false}
+
+function deleteFolder() {
+    router.delete(route(''))
+}
 
 
 </script>

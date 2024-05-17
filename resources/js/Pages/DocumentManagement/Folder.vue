@@ -2,7 +2,8 @@
 
     <Head title="G. Documentaria" />
 
-    <AuthenticatedLayout :redirectRoute="{route: 'documment.management.folders', params: {folder_id: folder?.upper_folder_id}}">
+    <AuthenticatedLayout
+        :redirectRoute="{ route: 'documment.management.folders', params: { folder_id: folder?.upper_folder_id } }">
         <template #header>
             {{ currentPath }}
         </template>
@@ -18,6 +19,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre
+                            </th>
+                            <th 
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Estado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -40,7 +45,10 @@
                     <tbody>
                         <tr v-for="item in folders" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white  text-sm">
-                                <button @click="()=>router.visit(route('documment.management.folders', {folder_id: item.item_db.id}))" class="w-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
+                                
+                                <button v-if="item.item_db.state"
+                                    @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))"
+                                    class="w-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
                                     <div>
                                         <p>
                                             {{ item.name }}
@@ -48,12 +56,24 @@
                                     </div>
 
                                 </button>
+
+                                <div v-else
+                                    class="px-5 py-5 ">
+                                    <p class="text-gray-400 whitespace-nowrap font-bold tracking-widest text-base">
+                                        {{ item.name }} 
+                                    </p>
+                                </div>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p v-if="item.item_db.state" class="text-gray-700">Activo</p>
+                                <p v-else class="text-red-400">Por aprobar</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.item_db.user.name }}</p>
                             </td>
-                            <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <a :href="route('documment.management.folders.permissions', {folder_id: item.item_db.id})"
+                            <td v-if="auth.user.role_id === 1"
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <a :href="route('documment.management.folders.permissions', { folder_id: item.item_db.id })"
                                     class="text-indigo-500 hover:underline hover:text-indigo-400 hover:cursor-pointer">Administrar</a>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">

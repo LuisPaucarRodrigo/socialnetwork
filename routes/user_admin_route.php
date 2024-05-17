@@ -106,3 +106,4 @@ Route::delete('/purchasing_request_product_delete/{purchasing_request_product_id
 
 //Folder Validation
 Route::get('/document_management/folder_validation', [FolderController::class, 'folder_validation'])->name('documment.management.folders.validation');
+Route::post('/document_management/folder_validation/check/{folder_id}', [FolderController::class, 'folder_check'])->name('documment.management.folders.check');
