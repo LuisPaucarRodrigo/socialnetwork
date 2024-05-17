@@ -45,17 +45,18 @@
                     <tbody>
                         <tr v-for="item in folders" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white  text-sm">
-                                
-                                <button v-if="item.item_db.state"
-                                    @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))"
-                                    class="w-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
+                                <!-- for button instead of Link -->
+                                <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
+                                <Link v-if="item.item_db.state"
+                                    :href="route('documment.management.folders', { folder_id: item.item_db.id })"
+                                    class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
                                     <div>
                                         <p>
                                             {{ item.name }}
                                         </p>
                                     </div>
 
-                                </button>
+                                </Link>
 
                                 <div v-else
                                     class="px-5 py-5 ">
@@ -73,8 +74,9 @@
                             </td>
                             <td v-if="auth.user.role_id === 1"
                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <a :href="route('documment.management.folders.permissions', { folder_id: item.item_db.id })"
-                                    class="text-indigo-500 hover:underline hover:text-indigo-400 hover:cursor-pointer">Administrar</a>
+                                <Link :href="route('documment.management.folders.permissions', { folder_id: item.item_db.id })"
+                                
+                                    class="text-indigo-500 hover:underline hover:text-indigo-400 hover:cursor-pointer">Administrar</Link>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.item_db.type }}</p>
@@ -219,14 +221,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import DangerButton from '@/Components/DangerButton.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, Head, router, useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-
+import { ref } from 'vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 
