@@ -23,14 +23,12 @@ class FolderController extends Controller
 
 
     public function folder_index($folder_id = null) {
-        $path = Folder::find($folder_id) ? Folder::find($folder_id)->path
+        $folder =  Folder::find($folder_id);
+        $path = $folder ? Folder::find($folder_id)->path
             : $this->main_directory;
-        $areas = Folder::find($folder_id) ? Folder::with('areas')->find($folder_id)->areas
+        $areas = $folder ? Folder::with('areas')->find($folder_id)->areas
             : Area::all();
 
-        $previousPath = $this->getPreviusPath($path);
-        $previousId = $previousPath === $this->main_directory ? ''
-            : Folder::where('path', $previousPath)->first()?->id;
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
 
@@ -38,7 +36,8 @@ class FolderController extends Controller
             'folders' => $folderStructure,
             'currentPath' => $path,
             'areas' => $areas,
-            'previousId' => $previousId
+            'folder' => $folder
+            
         ]);
     }
 

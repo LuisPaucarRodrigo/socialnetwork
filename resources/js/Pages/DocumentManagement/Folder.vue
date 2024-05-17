@@ -2,7 +2,7 @@
 
     <Head title="G. Documentaria" />
 
-    <AuthenticatedLayout :redirectRoute="{route: 'documment.management.folders', params: {folder_id: previousId}}">
+    <AuthenticatedLayout :redirectRoute="{route: 'documment.management.folders', params: {folder_id: folder?.upper_folder_id}}">
         <template #header>
             {{ currentPath }}
         </template>
@@ -36,7 +36,7 @@
                     <tbody>
                         <tr v-for="item in folders" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <a :href="route('documment.management.folders', {folder_id: item.item_db.id})">
+                                <button @click="()=>router.visit(route('documment.management.folders', {folder_id: item.item_db.id}))">
                                     <div>
                                         <p
                                             class="text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
@@ -44,7 +44,7 @@
                                         </p>
                                     </div>
 
-                                </a>
+                                </button>
                             </td>
                             <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <a :href="route('documment.management.folders.permissions', {folder_id: item.item_db.id})"
@@ -204,10 +204,10 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 
-const { folders, currentPath, auth, areas, previousId } = defineProps({
+const { folders, folder, currentPath, auth, areas } = defineProps({
     folders: Object,
+    folder: Object,
     currentPath: String,
-    previousId: String,
     areas: Object,
     auth: Object
 })
@@ -221,7 +221,8 @@ const createFolderForm = useForm({
     archive_type: '',
     areas: [],
     currentPath,
-    user_id: auth.user.id
+    user_id: auth.user.id,
+    upper_folder_id: folder?.id
 })
 
 
