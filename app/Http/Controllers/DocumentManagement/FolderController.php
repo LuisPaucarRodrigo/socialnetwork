@@ -22,8 +22,9 @@ class FolderController extends Controller
 
 
 
-    public function folder_index($folder_id = null) {
-        $folder =  Folder::find($folder_id);
+    public function folder_index($folder_id = null)
+    {
+        $folder = Folder::find($folder_id);
         $path = $folder ? Folder::find($folder_id)->path
             : $this->main_directory;
         $areas = $folder ? Folder::with('areas')->find($folder_id)->areas
@@ -37,11 +38,20 @@ class FolderController extends Controller
             'currentPath' => $path,
             'areas' => $areas,
             'folder' => $folder
-            
+
         ]);
     }
+    public function folder_store(FolderCreateRequest $request)
+    {
+        $data = $request->validated();
+        $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
+        $folder = Folder::create($data);
+        $folder->areas()->sync($data['areas']);
+        return redirect()->back();
+    }
 
-    public function folder_permissions($folder_id) {
+    public function folder_permissions($folder_id)
+    {
         $permissions = FolderArea::with('area')->where('folder_id', $folder_id)->get();
         $folder = Folder::find($folder_id);
         return Inertia::render('DocumentManagement/FolderPermissions', [
@@ -51,21 +61,33 @@ class FolderController extends Controller
     }
 
 
-    public function folder_validation() {
+    public function folder_validation()
+    {
         $folder = Folder::with('user', 'areas')->where('state', false)->orderBy('created_at', 'desc')->paginate(15);
         return Inertia::render('DocumentManagement/FolderValidation', [
             'folders' => $folder
         ]);
     }
 
-    public function folder_check($folder_id) {
+    public function folder_check($folder_id)
+    {
         $folder = Folder::find($folder_id);
         if ($folder) {
-            $folder->update(['state'=>true]);
+            $folder->update(['state' => true]);
         } else {
             abort(403, 'Carpeta no encontrada');
         }
     }
+
+
+    public function folder_invalidate($folder_id)
+    {
+        $folder = Folder::find($folder_id);
+        $this->deleteFolder($folder->path);
+        $folder->delete();
+        return redirect()->back();
+    }
+
 
 
 
@@ -97,7 +119,8 @@ class FolderController extends Controller
 
     //Helpers
 
-    function getPreviusPath($path){
+    function getPreviusPath($path)
+    {
         $segments = explode('/', $path);
         if (count($segments) > 1) {
             array_pop($segments);
@@ -106,16 +129,10 @@ class FolderController extends Controller
     }
 
 
-    public function folder_store(FolderCreateRequest $request){
-        $data = $request->validated();
-        $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
-        $folder = Folder::create($data);
-        $folder->areas()->sync($data['areas']);
-        return redirect()->back();
-    }
 
 
-    public function createFolder($path, $name){
+    public function createFolder($path, $name)
+    {
         $publicPath = public_path($path . '/' . $name);
         if (!file_exists($publicPath)) {
             mkdir($publicPath, 0777, true);
@@ -126,7 +143,8 @@ class FolderController extends Controller
     }
 
 
-    private function scanFolder($folderPath){
+    private function scanFolder($folderPath)
+    {
         $folderStructure = [];
         $publicPosition = strpos($folderPath, 'public');
         if ($publicPosition === false) {
@@ -155,5 +173,26 @@ class FolderController extends Controller
             }
         }
         return $folderStructure;
+    }
+
+
+
+    //delete folder
+
+    public function deleteFolder($path){
+        $folderPath = public_path($path);
+        if (file_exists($folderPath) && is_dir($folderPath)) {
+            $this->deleteDirectoryRecursively($folderPath);
+        } else {
+            return abort(404, 'Carpeta no encontrada');
+        }
+    }
+
+    private function deleteDirectoryRecursively($dir){
+        $files = array_diff(scandir($dir), ['.', '..']);
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? $this->deleteDirectoryRecursively("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
     }
 }
