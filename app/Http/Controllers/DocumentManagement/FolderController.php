@@ -58,6 +58,15 @@ class FolderController extends Controller
         ]);
     }
 
+    public function folder_check($folder_id) {
+        $folder = Folder::find($folder_id);
+        if ($folder) {
+            $folder->update(['state'=>true]);
+        } else {
+            abort(403, 'Carpeta no encontrada');
+        }
+    }
+
 
 
 
