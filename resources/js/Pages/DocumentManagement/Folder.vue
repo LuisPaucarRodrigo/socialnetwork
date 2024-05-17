@@ -16,8 +16,12 @@
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold sm:w-2/3 uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Propietario
                             </th>
                             <th v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -35,16 +39,18 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in folders" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button @click="()=>router.visit(route('documment.management.folders', {folder_id: item.item_db.id}))">
+                            <td class="border-b border-gray-200 bg-white  text-sm">
+                                <button @click="()=>router.visit(route('documment.management.folders', {folder_id: item.item_db.id}))" class="w-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
                                     <div>
-                                        <p
-                                            class="text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
+                                        <p>
                                             {{ item.name }}
                                         </p>
                                     </div>
 
                                 </button>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.item_db.user.name }}</p>
                             </td>
                             <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <a :href="route('documment.management.folders.permissions', {folder_id: item.item_db.id})"
