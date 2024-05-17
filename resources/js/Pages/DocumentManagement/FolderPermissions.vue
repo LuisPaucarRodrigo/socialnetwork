@@ -37,13 +37,14 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center">
-                                    <input type="checkbox" :value="item.see_download"
+                                    <input type="checkbox" :checked="item.see_download"
+                                        @input="see_download_handler($event.target.checked, item.id)"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6" />
                                 </div>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center">
-                                    <input type="checkbox" :value="item.create"
+                                    <input type="checkbox" :checked="item.create"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6" />
                                 </div>
                             </td>
@@ -68,45 +69,24 @@ import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, Head, router, useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
+import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-const confirmingUserDeletion = ref(false);
-const usersToDelete = ref(null);
-const passwordInput = ref(null);
+
 
 const props = defineProps({
     permissions: Object,
     folder: Object,
 })
 
-const add_users = () => {
-    router.get(route('register'));
+function see_download_handler (state, id ) {
+    router.post(route('documment.management.folders.permission.see_download', {folder_area_id: id}), {state}, {
+        onSuccess: () => {
+            console.log('siuuuuuuuuuu')
+        }
+    })
 }
 
-const form = useForm({
-    password: '',
-});
 
-const confirmUserDeletion = (userId) => {
-    confirmingUserDeletion.value = true;
-    usersToDelete.value = userId;
 
-};
-
-const deleteUser = () => {
-    const userId = usersToDelete.value;
-    form.delete(route('users.destroy', { id: userId }), {
-        preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => passwordInput.value.focus(),
-        onFinish: () => form.reset(),
-    });
-};
-
-const closeModal = () => {
-    confirmingUserDeletion.value = false;
-
-    form.reset();
-};
 </script>

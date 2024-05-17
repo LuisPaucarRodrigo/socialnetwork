@@ -61,6 +61,58 @@ class FolderController extends Controller
     }
 
 
+    public function see_dowload_permission(Request $request, $folder_area_id) {
+        $data = $request->validate(['state'=>'required|boolean']);
+        $this->sd_recursive($folder_area_id, $data['state']);
+        return redirect()->back();
+    }
+
+    public function sd_recursive($folder_area_id, $state) {
+        $currentPermission = FolderArea::find($folder_area_id);
+        if ($state) {
+            $currentPermission->update(['state'=>$state]);
+        } else {
+            $currentPermission->update(['see_download'=>$state, 'create'=>$state]);
+        }
+        $underFolder = Folder::with('folder_areas')
+            ->whereHas('folder_areas', function($query) use ($currentPermission){
+                $query->where('area_id', $currentPermission->area_id);
+            })
+            ->where('upper_folder_id', $currentPermission->folder_id)
+            ->get();
+        foreach($underFolder as $currentFolder){
+            $underPermission = FolderArea::where('folder_id', $currentFolder->id)
+                ->where('area_id', $currentPermission->area_id)->first();
+            $this->sd_recursive($underPermission->id, $state);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function folder_validation()
     {
         $folder = Folder::with('user', 'areas')->where('state', false)->orderBy('created_at', 'desc')->paginate(15);
