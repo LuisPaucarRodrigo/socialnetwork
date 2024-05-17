@@ -20,8 +20,8 @@
                         </path>
                     </svg>
                 </template>
-            Usuarios
-            </nav-link> -->
+Usuarios
+</nav-link> -->
             <template v-if="hasPermission('UserManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingUsersAndRols = !showingUsersAndRols">
@@ -509,7 +509,7 @@
                 <MyTransition :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="route('documment.management.folders')">CCIP</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showDocs">
+                <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="route('documment.management.folders.validation')">Aprobación</Link>
                 </MyTransition>
             </template>
@@ -529,6 +529,9 @@ export default {
     props: {
         userPermissions: {
             type: Array,
+        },
+        auth: {
+            type: Object
         }
     },
 
@@ -559,6 +562,12 @@ export default {
             shoppingPurchases: [],
             shoppingPurchases7: [],
         };
+    },
+
+    computed: {
+        currentAuth() {
+            return this.$page.props.auth;
+        },
     },
 
     setup() {
