@@ -125,7 +125,7 @@ class FolderController extends Controller
                         'name' => $item,
                         'path' => $publicPath . '/' . $item,
                         'size' => null,
-                        'item_db' => Folder::where('name', $item)->where('path', $publicPath . '/' . $item)->first()
+                        'item_db' => Folder::with('user')->where('name', $item)->where('path', $publicPath . '/' . $item)->first()
                     ];
                 } else {
                     $folderStructure[] = [
