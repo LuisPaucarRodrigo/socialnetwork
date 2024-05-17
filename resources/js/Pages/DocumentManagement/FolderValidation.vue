@@ -5,12 +5,8 @@
         <template #header>
             Aprobación de Carpetas
         </template>
+        <br>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
-                <PrimaryButton @click="add_users" type="button">
-                    Desaprobados
-                </PrimaryButton>
-            </div>
             <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
@@ -104,12 +100,16 @@
                     <SecondaryButton @click="closeFolderDeletionModal"> Cancelar </SecondaryButton>
 
                     <DangerButton class="ml-3" 
-                        @click="deleteFolder">
+                        @click="folderInvalidate">
                         Eliminar Carpeta
                     </DangerButton>
                 </div>
             </div>
         </Modal>
+        <SuccessOperationModal :confirming="confirmFolderValidation" :title="'Carpeta Aprobada'"
+            :message="'La carpeta fue aprobada con éxito'" />
+        <SuccessOperationModal :confirming="confirmFolderDelete" :title="'Carpeta Eliminada'"
+            :message="'La carpeta fue eliminada con éxito'" />
        
     </AuthenticatedLayout>
 </template>
@@ -125,7 +125,7 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, Head, router, useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 const confirmingUserDeletion = ref(false);
 const usersToDelete = ref(null);
@@ -134,22 +134,22 @@ const passwordInput = ref(null);
 const props = defineProps({
     folders: Object
 })
-
-const add_users = () => {
-    router.get(route('register'));
-}
-
-
+const confirmFolderValidation = ref(false);
 function validateFolder (id) {
     router.post(route('documment.management.folders.check', {folder_id: id}), null, {
         onSuccess:() => {
-
+            confirmFolderValidation.value = true
+            setTimeout(()=>{
+                confirmFolderValidation.value = false
+            }, 2000)
         }
     })
 }
 
 
 const showFolderDeletion = ref(false);
+
+const confirmFolderDelete = ref(false);
 const idToDelete = ref(null)
 
 function openFolderDeletionModal (id) {
@@ -158,8 +158,16 @@ function openFolderDeletionModal (id) {
 }
 function closeFolderDeletionModal () {showFolderDeletion.value = false}
 
-function deleteFolder() {
-    router.delete(route(''))
+function folderInvalidate() {
+    router.delete(route('documment.management.folders.invalidate', {folder_id: idToDelete.value}), {
+        onSuccess:() => {
+            showFolderDeletion.value = false
+            confirmFolderDelete.value = true
+            setTimeout(()=>{
+                confirmFolderDelete.value = false
+            }, 2000)
+        }
+    })
 }
 
 
