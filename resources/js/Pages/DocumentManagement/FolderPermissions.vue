@@ -7,7 +7,9 @@
             Permisos de carpeta {{ folder.name }}
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <br>
+            <PrimaryButton @click="addFolderArea" type="button">
+                + Agregar
+            </PrimaryButton>
             <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
@@ -87,7 +89,7 @@
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closePermissionHandlerModal"> Cancelar </SecondaryButton>
 
-                    <PrimaryButton class="ml-3 bg-black" 
+                    <PrimaryButton class="ml-3 bg-black" customClass="tracking-widest"
                         @click="updatePermission">
                         Aceptar
                     </PrimaryButton>
