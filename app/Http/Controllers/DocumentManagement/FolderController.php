@@ -51,18 +51,27 @@ class FolderController extends Controller
         return redirect()->back();
     }
 
-    public function folder_permissions($folder_id)
-    {
+    public function folder_permissions($folder_id) {
         $permissions = FolderArea::with('area')->where('folder_id', $folder_id)->get();
         $folder = Folder::find($folder_id);
+        $upperFolder = Folder::with('areas')->find($folder->upper_folder_id);
+        Log::info('=== folder superior===');
+        Log::info($upperFolder);
+        $upperFoldreAreas =  $upperFolder ? $upperFolder->areas
+                                          : Area::all();
         return Inertia::render('DocumentManagement/FolderPermissions', [
             'permissions' => $permissions,
-            'folder' => $folder
+            'folder' => $folder,
+            'upper_folder_areas' => $upperFoldreAreas
         ]);
     }
 
+    public function folder_permission_add(Request $request) {
+        
+    }
 
-    public function folder_permission_remove_area()
+
+    public function folder_permission_remove()
     {
 
     }
