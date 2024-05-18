@@ -11,7 +11,13 @@ use App\Models\Folder;
 use App\Models\FolderArea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+use ZipArchive;
+
+use Illuminate\Support\Facades\Response;
 
 class FolderController extends Controller
 {
@@ -42,6 +48,7 @@ class FolderController extends Controller
 
         ]);
     }
+
     public function folder_store(FolderCreateRequest $request)
     {
         $data = $request->validated();
@@ -50,6 +57,64 @@ class FolderController extends Controller
         $folder->areas()->sync($data['areas']);
         return redirect()->back();
     }
+
+
+    //Folder Download
+
+    public function folder_download($folder_id) {
+        $user = Auth::user();
+        $folder = Folder::find($folder_id);
+        if ($user->role_id === 1) {
+            return $this->downloadZip($folder->path, $folder->name);
+        }
+        return response()->json(['error' => 'No autorizado'], 403);
+    }
+    
+    public function downloadZip($path, $folder_name)
+    {
+        $publicDir = public_path($path); 
+        $zipFileName = $folder_name . '.zip'; 
+        $zip = new ZipArchive;
+        $zipFilePath = public_path($zipFileName);
+    
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            // Añadir el directorio raíz
+            $zip->addEmptyDir($folder_name);
+    
+            // Llamar a la función recursiva para añadir contenido del directorio
+            $this->addFolderToZip($publicDir, $zip, strlen(public_path($path)) + 1, $folder_name);
+            $zip->close();
+        } else {
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP'], 500);
+        }
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    }
+    
+    private function addFolderToZip($folder, $zip, $baseLength, $rootFolderName) {
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($folder, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+        foreach ($files as $file) {
+            $file = realpath($file);
+            $relativePath = $rootFolderName . '/' . substr($file, $baseLength);
+    
+            if (is_dir($file)) {
+                $zip->addEmptyDir($relativePath);
+            } else if (is_file($file)) {
+                $zip->addFile($file, $relativePath);
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+    //Folder Permissions
 
     public function folder_permissions($folder_id)
     {
@@ -67,7 +132,8 @@ class FolderController extends Controller
         ]);
     }
 
-    public function folder_permission_add(Request $request){
+    public function folder_permission_add(Request $request)
+    {
         $data = $request->validate([
             'folder_id' => 'required',
             'area_id' => 'required',
@@ -77,12 +143,14 @@ class FolderController extends Controller
     }
 
 
-    public function folder_permission_remove($folder_area_id){
+    public function folder_permission_remove($folder_area_id)
+    {
         $this->under_delete_permission_recursive($folder_area_id);
         return redirect()->back();
     }
 
-    public function under_delete_permission_recursive ($folder_area_id) {
+    public function under_delete_permission_recursive($folder_area_id)
+    {
         $currentPermission = FolderArea::find($folder_area_id);
         $underFolders = Folder::with('folder_areas')
             ->whereHas('folder_areas', function ($query) use ($currentPermission) {
@@ -90,7 +158,7 @@ class FolderController extends Controller
             })
             ->where('upper_folder_id', $currentPermission->folder_id)
             ->get();
-        foreach($underFolders as $underItem) {
+        foreach ($underFolders as $underItem) {
             $underPermission = FolderArea::where('folder_id', $underItem->id)->where('area_id', $currentPermission->area_id)->first();
             if ($underPermission) {
                 $this->under_delete_permission_recursive($underPermission->id);
@@ -341,7 +409,7 @@ class FolderController extends Controller
 
 
 
-
+    //Folder Validation Functions
 
     public function folder_validation()
     {
@@ -360,7 +428,6 @@ class FolderController extends Controller
             abort(403, 'Carpeta no encontrada');
         }
     }
-
 
     public function folder_invalidate($folder_id)
     {
@@ -458,9 +525,7 @@ class FolderController extends Controller
     }
 
 
-
     //delete folder
-
     public function deleteFolder($path)
     {
         $folderPath = public_path($path);
