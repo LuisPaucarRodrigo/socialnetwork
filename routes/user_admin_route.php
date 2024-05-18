@@ -113,4 +113,4 @@ Route::post('/document_management/folder_permissions/{folder_area_id}', [FolderC
 Route::post('/document_management/folder_permissions_create/{folder_area_id}', [FolderController::class, 'create_permission'])->name('documment.management.folders.permission.create');
 
 Route::post('/document_management/folder_permissions_add', [FolderController::class, 'folder_permission_add'])->name('documment.management.folders.permission.add');
-Route::post('/document_management/folder_permissions_delete/{folder_area_id}', [FolderController::class, 'folder_permission_remove'])->name('documment.management.folders.permission.delete');
+Route::delete('/document_management/folder_permissions_delete/{folder_area_id}', [FolderController::class, 'folder_permission_remove'])->name('documment.management.folders.permission.delete');
