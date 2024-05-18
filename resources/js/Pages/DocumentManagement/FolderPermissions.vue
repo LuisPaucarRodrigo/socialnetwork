@@ -38,6 +38,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center">
                                     <input type="checkbox" :checked="item.see_download"
+                                        :id="'checkbox' + item.id"
                                         @input="openPermissionhandleModal($event.target.checked, item.id, modalOptions.see_download)"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6" />
                                 </div>
@@ -57,30 +58,37 @@
 
             <Modal :show="showPermissionHandler" @close="closePermissionHandlerModal">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    
+                <h2 class="text-lg font-medium text-gray-900 mb-2">
+                    {{ modalItem.title }}
                 </h2>
 
-                <p class="mt-1 text-sm text-gray-600">
-                    Una vez que se elimine la cuenta, todos sus recursos y datos se eliminarán permanentemente. Por favor
-                    ingrese su contraseña para confirmar que desea eliminar permanentemente la cuenta.
-                </p>
-
-                <div class="mt-6">
-                    <InputLabel for="password" value="Password" class="sr-only" />
-                    <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
-                        class="mt-1 block w-3/4" placeholder="Password" @keyup.enter="deleteUser" />
-
-                    <InputError :message="form.errors.password" class="mt-2" />
+                <InputLabel>
+                    {{ modalItem.message }}
+                </InputLabel>
+                <br>
+                <div v-if="modalItem.postItem.state">
+                    <InputLabel>¿Aplicar el permiso a todas las subcarpetas de esta carpeta?</InputLabel>
+                    <div class="flex gap-4 items-center mt-4">
+                        <label class="flex gap-2 items-center text-sm">
+                            Si
+                            <input type="radio" :value="true" v-model="modalItem.postItem.down_recursive" 
+                                class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                        </label>
+                        <label class="flex gap-2 items-center text-sm">
+                            No
+                            <input type="radio" :value="false" v-model="modalItem.postItem.down_recursive" 
+                                class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                        </label>
+                    </div>
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                    <SecondaryButton @click="closePermissionHandlerModal"> Cancelar </SecondaryButton>
 
-                    <DangerButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-                        @click="deleteUser">
-                        Delete Account
-                    </DangerButton>
+                    <PrimaryButton class="ml-3 bg-black" 
+                        @click="updatePermission">
+                        Aceptar
+                    </PrimaryButton>
                 </div>
             </div>
         </Modal>
@@ -129,6 +137,7 @@ const initialModalItem = {
     title:'',
     message: '',
     option: '',
+    currentItem: null,
     postItem: {
         folder_area_id:'',
         state:'',
@@ -143,7 +152,20 @@ function openPermissionhandleModal (state, id, option) {
     if(state && option === modalOptions.see_download){
         modalItem.value = {
             title: 'Activar permiso de ver y descargar',
-            message: 'Al realizar esta acción activará el permiso de ver y descargar de la actual carpeta y de las carpetas superiores a estas',
+            message: 'Al realizar esta acción activará el permiso de ver y descargar de la actual carpeta y de las carpetas superiores a esta.',
+            option: option,
+            postItem:{
+                folder_area_id:id,
+                state: state,
+                down_recursive:false
+            }
+        }
+        showPermissionHandler.value = true
+    }
+    if(!state && option === modalOptions.see_download){
+        modalItem.value = {
+            title: 'Desactivar permiso de ver y descargar',
+            message: 'Al realizar esta acción desactivará el permiso de ver, descargar y crear de la carpeta actual y subcarpetas que contenga .',
             option: option,
             postItem:{
                 folder_area_id:id,
@@ -155,6 +177,16 @@ function openPermissionhandleModal (state, id, option) {
     }
 }
 
+function closePermissionHandlerModal () {
+    showPermissionHandler.value = false
+    let id = modalItem.value.postItem.folder_area_id
+    const checkbox = document.getElementById('checkbox' + id)
+    checkbox.checked = !checkbox.checked
+    modalItem.value = JSON.parse(JSON.stringify(initialModalItem))
+}
 
+function updatePermission () {
+    showPermissionHandler.value = false
+}
 
 </script>
