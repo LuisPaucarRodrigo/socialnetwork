@@ -220,7 +220,19 @@ function closePermissionHandlerModal () {
 }
 
 function updatePermission () {
-    showPermissionHandler.value = false
+    let url
+    if (modalItem.value.option === modalOptions.see_download){
+        url = 'documment.management.folders.permission.see_download'
+    } else if (modalItem.value.option === modalOptions.create){
+        url = 'documment.management.folders.permission.create'
+    }
+    router.post(route( url, {folder_area_id: modalItem.value.postItem.folder_area_id}), {down_recursive: modalItem.value.postItem.down_recursive, state: modalItem.value.postItem.state}, {
+            onSuccess: ()=>{
+                console.log('siudddddd si se pudo')
+                showPermissionHandler.value = false
+                modalItem.value = JSON.parse(JSON.stringify(initialModalItem))
+            }
+    })
 }
 
 </script>
