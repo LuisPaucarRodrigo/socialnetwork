@@ -20,7 +20,10 @@ class Archive extends Model
 
     protected $appends= [
         'size',
-        'users_active'
+        'users_active',
+        'users_available',
+        'type',
+        'disponibility'
     ];
 
     public function users () {
@@ -64,8 +67,56 @@ class Archive extends Model
 
     public function getUsersActiveAttribute()
     {
+        // Obtener los user_ids de los usuarios activos
         $statusUsers = $this->archive_users()->where('status', true)->pluck('user_id');
+    
+        // Excluir el user_id del propietario
+        $statusUsers = $statusUsers->filter(function ($userId) {
+            return $userId != $this->user_id;
+        });
+    
+        // Obtener los usuarios que coinciden con los user_ids filtrados
         $users = User::whereIn('id', $statusUsers)->get();
+    
         return $users;
+    }
+    public function getUsersAvailableAttribute()
+    {
+        $areaIds = $this->folder->areas->pluck('id')->toArray();
+        $users = User::whereIn('area_id', $areaIds)->get();
+        $filteredUsers = $users->filter(function ($user) {
+            return $user->id != $this->user_id;
+        });
+    
+        return $filteredUsers;
+    }
+
+    public function getTypeAttribute()
+    {
+        if (fmod($this->version, 1) > 0) {
+            return 'beta';
+        }
+    
+        // Si la parte decimal de la versión es 0, es una versión estable
+        return 'stable';
+    }
+
+    public function getDisponibilityAttribute() {
+        // Obtener los archive_user con status true
+        $activeUsers = $this->archive_users()->where('status', true)->get();
+        
+        // Si no hay usuarios activos, retorna false
+        if ($activeUsers->isEmpty()) {
+            return false;
+        }
+
+        // Verificar que todos los usuarios activos tienen el state 'Aprobado'
+        foreach ($activeUsers as $user) {
+            if ($user->state !== 'Aprobado') {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

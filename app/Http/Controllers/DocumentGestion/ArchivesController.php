@@ -13,7 +13,8 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
-
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 class ArchivesController extends Controller
 {
     protected $main_directory;
@@ -25,16 +26,15 @@ class ArchivesController extends Controller
 
     public function show(Folder $folder) {
 
-        $folder->load('areas');
-        $archives = Archive::where('folder_id', $folder->id)->with('user')->paginate(10);
-    
-        $areaIds = $folder->areas->pluck('id')->toArray();
-        $users = User::whereIn('area_id', $areaIds)->get();
+        $folder->load('areas', 'folder_areas');
+        $archives = Archive::where('folder_id', $folder->id)->with('user')->orderByDesc('version')->paginate(10);
+        $user = Auth::user();
+        $userHasPermission = $folder->folder_areas->where('area_id', $user->area_id)->where('create', true)->isNotEmpty();
 
         return Inertia::render('DocumentGestion/ArchivesGestion/Archives', [
             'archives' => $archives,
             'folder' => $folder,
-            'users' => $users
+            'userHasPermission' => $userHasPermission
         ]);
     }
 
@@ -64,11 +64,6 @@ class ArchivesController extends Controller
             'version' => $newVersion,
         ]);
 
-        ArchiveUser::create([
-            'archive_id' => $archive->id,
-            'user_id' => $archive->user_id
-        ]);
-
         if ($request->hasFile('archive')) {
             $document = $request->file('archive');
             $extension = $document->getClientOriginalExtension();
@@ -88,6 +83,13 @@ class ArchivesController extends Controller
             $path = public_path($filePath);
             if (file_exists($path)) {
                 unlink($path);
+                $archiveUsers = ArchiveUser::where('archive_id', $archive)->get();
+                // Elimina los registros en la tabla `archive_user`
+                if($archiveUsers){
+                    foreach ($archiveUsers as $archiveUser) {
+                        $archiveUser->delete();
+                    }
+                }
                 $findArchive->delete();
             } else {
                 dd("El archivo no existe en la ruta: $filePath");
@@ -156,5 +158,76 @@ class ArchivesController extends Controller
             }
         });
     }    
+
+    public function observationsPerArchive($folder, Archive $archive)
+    {
+        $archiveUsers = ArchiveUser::where('archive_id', $archive->id)->whereNotNull('observation')->with('archive.user', 'user')->paginate(10);
+        $user = Auth::user();
+        $observation = ArchiveUser::where('archive_id', $archive->id)->where('user_id', $user->id)->first();
+        if ($observation){
+            if ($observation->observation){
+                $canObservate = false;
+            }else{
+                $canObservate = true;
+            }
+        }else{
+            $canObservate = false;
+        }
+
+        return Inertia::render('DocumentGestion/ArchivesGestion/Observations', [
+            'archive' => $archive,
+            'folder_id' => $folder,
+            'canObservate' => $canObservate,
+            'archiveUsers' => $archiveUsers,
+        ]);
+    }
+
+    public function saveObservation(Request $request, $archive)
+    {
+        $request->validate([
+            'state' => 'required',
+            'observations' => 'required',
+            'user_id' => 'required'
+        ]);
+
+        $observation = ArchiveUser::where('archive_id', $archive)->where('user_id', $request->user_id)->first();
+        if ($observation) {
+            $observation->update([
+                'observation' => $request->observations,
+                'state' => $request->state,
+                'evaluation_date' => Carbon::now()
+            ]);
+        }
+    }
+
+    public function upgradeArchive(Archive $archive)
+    {   
+        $archive->load('folder');
+
+        $archive->approve_status = false;
+        $archive->save();
+
+        //versionAndExtension
+        $newVersion = floor($archive->version) + 1.0;
+        $extension = pathinfo($archive->path, PATHINFO_EXTENSION);
+
+        //name
+        $nameParts = explode('-', $archive->name);
+        $tempName = $nameParts[0];
+
+        $newArchivePath = $archive->folder->path . '/' . $tempName . '-' . $newVersion . '.' . $extension;
+
+        $newArchive = Archive::create([
+            'name' => $tempName . '-' . $newVersion,
+            'folder_id' => $archive->folder_id,
+            'user_id' => $archive->user_id,
+            'path' => $newArchivePath,
+            'version' => $newVersion,
+        ]);
+
+        if (file_exists(public_path($archive->path))) {
+            copy(public_path($archive->path), public_path($newArchivePath));
+        }
+    }
 
 }

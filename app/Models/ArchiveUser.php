@@ -17,4 +17,16 @@ class ArchiveUser extends Model
         "observation",
         "evaluation_date",
     ];
+
+    public function archive()
+    {
+        return $this->belongsTo(Archive::class, 'archive_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+
 }
