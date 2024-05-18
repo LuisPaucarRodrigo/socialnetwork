@@ -61,55 +61,72 @@ class FolderController extends Controller
     }
 
 
-    public function folder_permission_remove_area() {
+    public function folder_permission_remove_area()
+    {
 
     }
 
 
 
-    public function see_dowload_permission(Request $request, $folder_area_id) {
+    public function see_dowload_permission(Request $request, $folder_area_id)
+    {
         $data = $request->validate(['state' => 'required|boolean']);
-        $permissionCallback = function($permission, $state) {
+        $permissionCallback = function ($permission, $state) {
             $this->down_update_sd_permission($permission, $state);
         };
         $this->under_permission_recursive(
-            $folder_area_id, 
-            $data['state'], 
-            $permissionCallback
+            $folder_area_id,
+            $data['state'],
+            $permissionCallback,
+            'see_download'
         );
-        
         return redirect()->back();
     }
-    
-    public function under_permission_recursive($folder_area_id, $state, callable $permissionCallback) {
+
+
+    public function under_permission_recursive(
+        $folder_area_id, 
+        $state, 
+        callable $permissionCallback, 
+        $permissionString
+    ){
         $currentPermission = FolderArea::find($folder_area_id);
+        if ($this->stop_down_recursion($currentPermission, $state, $permissionString)) {
+            return;
+        }
         $permissionCallback($currentPermission, $state);
         $underFolders = Folder::with('folder_areas')
-            ->whereHas('folder_areas', function($query) use ($currentPermission) {
+            ->whereHas('folder_areas', function ($query) use ($currentPermission) {
                 $query->where('area_id', $currentPermission->area_id);
             })
             ->where('upper_folder_id', $currentPermission->folder_id)
             ->get();
+
         foreach ($underFolders as $currentFolder) {
             $underPermission = FolderArea::where('folder_id', $currentFolder->id)
                 ->where('area_id', $currentPermission->area_id)
                 ->first();
-            
+
             if ($underPermission) {
-                $this->under_permission_recursive($underPermission->id, $state, $permissionCallback);
+                $this->under_permission_recursive($underPermission->id, $state, $permissionCallback, $permissionString);
             }
         }
     }
 
 
-    public function upper_permission_recursive($folder_area_id, $state, callable $permissionCallback) {
+
+
+
+    public function upper_permission_recursive($folder_area_id, $state, callable $permissionCallback)
+    {
         $currentPermission = FolderArea::find($folder_area_id);
         $permissionCallback($currentPermission, $state);
 
 
 
+
         $underFolders = Folder::with('folder_areas')
-            ->whereHas('folder_areas', function($query) use ($currentPermission) {
+            ->whereHas('folder_areas', function ($query) use ($currentPermission) {
                 $query->where('area_id', $currentPermission->area_id);
             })
             ->where('upper_folder_id', $currentPermission->folder_id)
@@ -118,27 +135,39 @@ class FolderController extends Controller
             $underPermission = FolderArea::where('folder_id', $currentFolder->id)
                 ->where('area_id', $currentPermission->area_id)
                 ->first();
-            
+
             if ($underPermission) {
                 $this->upper_permission_recursive($underPermission->id, $state, $permissionCallback);
             }
         }
     }
 
-    public function down_update_sd_permission ($permission, $state){
+    public function down_update_sd_permission($permission, $state)
+    {
         if ($state) {
-            $permission->update(['see_download'=>$state]);
+            $permission->update(['see_download' => $state]);
         } else {
-            $permission->update(['see_download'=>$state, 'create'=>$state]);
+            $permission->update(['see_download' => $state, 'create' => $state]);
         }
     }
 
-    public function down_update_create_permission ($permission, $state){
+    public function down_update_create_permission($permission, $state)
+    {
         if ($state) {
-            $permission->update(['see_download'=>$state, 'create'=>$state]);
+            $permission->update(['see_download' => $state, 'create' => $state]);
         } else {
-            $permission->update(['create'=>$state]);
+            $permission->update(['create' => $state]);
         }
+    }
+
+    public function stop_down_recursion($currentPermission, $state, $permissionString)
+    {
+        if ($permissionString === 'see_download') {
+            return !$state && !$currentPermission->see_download;
+        } elseif ($permissionString === 'create') {
+            return !$state && !$currentPermission->create;
+        }
+        return false;
     }
 
 
@@ -288,7 +317,8 @@ class FolderController extends Controller
 
     //delete folder
 
-    public function deleteFolder($path){
+    public function deleteFolder($path)
+    {
         $folderPath = public_path($path);
         if (file_exists($folderPath) && is_dir($folderPath)) {
             $this->deleteDirectoryRecursively($folderPath);
@@ -297,7 +327,8 @@ class FolderController extends Controller
         }
     }
 
-    private function deleteDirectoryRecursively($dir){
+    private function deleteDirectoryRecursively($dir)
+    {
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? $this->deleteDirectoryRecursively("$dir/$file") : unlink("$dir/$file");
