@@ -61,19 +61,29 @@ class FolderController extends Controller
     }
 
 
+    public function folder_permission_remove_area() {
+
+    }
+
+
+
     public function see_dowload_permission(Request $request, $folder_area_id) {
         $data = $request->validate(['state'=>'required|boolean']);
-        $this->sd_recursive($folder_area_id, $data['state']);
+        $permissionCallback = function($permission, $state) {
+            $this->update_sd_permission($permission, $state);
+        };
+        $this->permission_recursive(
+            $folder_area_id, 
+            $data['state'], 
+            $permissionCallback
+        );
         return redirect()->back();
     }
 
-    public function sd_recursive($folder_area_id, $state) {
+
+    public function permission_recursive($folder_area_id, $state, $permissionCallback) {
         $currentPermission = FolderArea::find($folder_area_id);
-        if ($state) {
-            $currentPermission->update(['state'=>$state]);
-        } else {
-            $currentPermission->update(['see_download'=>$state, 'create'=>$state]);
-        }
+        $permissionCallback($currentPermission, $state);
         $underFolder = Folder::with('folder_areas')
             ->whereHas('folder_areas', function($query) use ($currentPermission){
                 $query->where('area_id', $currentPermission->area_id);
@@ -83,9 +93,28 @@ class FolderController extends Controller
         foreach($underFolder as $currentFolder){
             $underPermission = FolderArea::where('folder_id', $currentFolder->id)
                 ->where('area_id', $currentPermission->area_id)->first();
-            $this->sd_recursive($underPermission->id, $state);
+            $this->permission_recursive($underPermission->id, $state, $permissionCallback($currentPermission, $state));
         }
     }
+
+    public function update_sd_permission ($permission, $state){
+        if ($state) {
+            $permission->update(['see_download'=>$state]);
+        } else {
+            $permission->update(['see_download'=>$state, 'create'=>$state]);
+        }
+    }
+
+    public function update_create_permission ($permission, $state){
+        if ($state) {
+            $permission->update(['see_download'=>$state, 'create'=>$state]);
+        } else {
+            $permission->update(['create'=>$state]);
+        }
+    }
+
+
+
 
 
 
