@@ -101,7 +101,7 @@
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton @click="closePermissionHandlerModal"> Cancelar </SecondaryButton>
 
-                        <PrimaryButton class="ml-3 bg-black" customClass="tracking-widest" @click="updatePermission">
+                        <PrimaryButton class="ml-3 bg-black" customClass="uppercase tracking-widest text-xs" @click="updatePermission">
                             Aceptar
                         </PrimaryButton>
                     </div>
@@ -136,7 +136,7 @@
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeAddFAModal"> Cancelar </SecondaryButton>
 
-                            <PrimaryButton type="submit" class="ml-3" customClass="tracking-widest">
+                            <PrimaryButton type="submit" class="ml-3" customClass="uppercase tracking-widest text-xs">
                                 Aceptar
                             </PrimaryButton>
                         </div>
@@ -156,7 +156,7 @@
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton @click="closeDeleteFAModal"> Cancelar </SecondaryButton>
 
-                        <DangerButton type="button" class="ml-3">
+                        <DangerButton type="button" class="ml-3" @click="deleteFolderArea">
                             Eliminar
                         </DangerButton>
                     </div>
@@ -351,6 +351,15 @@ function openDeleteFAModal (id) {
 function closeDeleteFAModal () {
     showDeleteFA.value = false
     folderAreaIdToDelete.value = null
+}
+
+function deleteFolderArea() {
+    router.delete(route('documment.management.folders.permission.delete', {folder_area_id: folderAreaIdToDelete.value}), {
+        onSuccess: () => {
+            closeDeleteFAModal()
+            'delete completed'
+        }
+    })
 }
 
 </script>
