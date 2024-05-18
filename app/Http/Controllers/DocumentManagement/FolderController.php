@@ -61,46 +61,56 @@ class FolderController extends Controller
 
     //Folder Download
 
-    public function folder_download($folder_id) {
+    public function folder_download($folder_id)
+    {
         $user = Auth::user();
         $folder = Folder::find($folder_id);
-        if ($user->role_id === 1) {
-            return $this->downloadZip($folder->path, $folder->name);
+        try{
+            return $this->downloadZip($folder->path, $folder->name, $user);
+        }catch (e){
+            return response()->json(['error' => 'No autorizado'], 403);
         }
-        return response()->json(['error' => 'No autorizado'], 403);
+        
     }
-    
-    public function downloadZip($path, $folder_name)
-    {
-        $publicDir = public_path($path); 
-        $zipFileName = $folder_name . '.zip'; 
+
+    public function downloadZip($path, $folder_name, $user){
+        $publicDir = public_path($path);
+        $zipFileName = $folder_name . '.zip';
         $zip = new ZipArchive;
         $zipFilePath = public_path($zipFileName);
-    
         if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-            // Añadir el directorio raíz
             $zip->addEmptyDir($folder_name);
-    
-            // Llamar a la función recursiva para añadir contenido del directorio
-            $this->addFolderToZip($publicDir, $zip, strlen(public_path($path)) + 1, $folder_name);
+            $this->addFolderToZip($publicDir, $zip, strlen(public_path($path)) + 1, $folder_name, $user);
             $zip->close();
         } else {
             return response()->json(['error' => 'No se pudo crear el archivo ZIP'], 500);
         }
         return response()->download($zipFilePath)->deleteFileAfterSend(true);
     }
-    
-    private function addFolderToZip($folder, $zip, $baseLength, $rootFolderName) {
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($folder, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST
+
+
+    private function addFolderToZip($folder, $zip, $baseLength, $rootFolderName, $user){
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
         );
         foreach ($files as $file) {
             $file = realpath($file);
             $relativePath = $rootFolderName . '/' . substr($file, $baseLength);
-    
             if (is_dir($file)) {
-                $zip->addEmptyDir($relativePath);
+                $fullFolderPath = realpath($file);
+                $publicPosition = strpos($fullFolderPath, 'public');
+                $dirName = basename($file);
+                $dirPath = substr($fullFolderPath, $publicPosition + strlen('public/'));
+
+                $currentFolder = Folder::where('name', $dirName )->where('path', $dirPath)->first();
+                $currentPermission = FolderArea::where('folder_id', $currentFolder->id)->where('area_id', $user->area_id);
+
+                if ($currentFolder->state && $currentPermission->see_download) {
+                    $zip->addEmptyDir($relativePath);
+                } else {
+                    continue;
+                }
             } else if (is_file($file)) {
                 $zip->addFile($file, $relativePath);
             }
