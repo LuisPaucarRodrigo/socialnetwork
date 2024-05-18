@@ -110,3 +110,4 @@ Route::post('/document_management/folder_validation/check/{folder_id}', [FolderC
 Route::delete('/document_management/folder_validation/invalidate/{folder_id}', [FolderController::class, 'folder_invalidate'])->name('documment.management.folders.invalidate');
 
 Route::post('/document_management/folder_permissions/{folder_area_id}', [FolderController::class, 'see_dowload_permission'])->name('documment.management.folders.permission.see_download');
+Route::post('/document_management/folder_permissions_create/{folder_area_id}', [FolderController::class, 'create_permission'])->name('documment.management.folders.permission.create');
