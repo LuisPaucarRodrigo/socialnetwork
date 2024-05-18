@@ -51,14 +51,15 @@ class FolderController extends Controller
         return redirect()->back();
     }
 
-    public function folder_permissions($folder_id) {
+    public function folder_permissions($folder_id)
+    {
         $permissions = FolderArea::with('area')->where('folder_id', $folder_id)->get();
         $folder = Folder::find($folder_id);
         $upperFolder = Folder::with('areas')->find($folder->upper_folder_id);
         Log::info('=== folder superior===');
         Log::info($upperFolder);
-        $upperFoldreAreas =  $upperFolder ? $upperFolder->areas
-                                          : Area::all();
+        $upperFoldreAreas = $upperFolder ? $upperFolder->areas
+            : Area::all();
         return Inertia::render('DocumentManagement/FolderPermissions', [
             'permissions' => $permissions,
             'folder' => $folder,
@@ -66,14 +67,36 @@ class FolderController extends Controller
         ]);
     }
 
-    public function folder_permission_add(Request $request) {
-        
+    public function folder_permission_add(Request $request){
+        $data = $request->validate([
+            'folder_id' => 'required',
+            'area_id' => 'required',
+        ]);
+        FolderArea::create($data);
+        return redirect()->back();
     }
 
 
-    public function folder_permission_remove()
-    {
+    public function folder_permission_remove($folder_area_id){
+        $this->under_delete_permission_recursive($folder_area_id);
+        return redirect()->back();
+    }
 
+    public function under_delete_permission_recursive ($folder_area_id) {
+        $currentPermission = FolderArea::find($folder_area_id);
+        $underFolders = Folder::with('folder_areas')
+            ->whereHas('folder_areas', function ($query) use ($currentPermission) {
+                $query->where('area_id', $currentPermission->area_id);
+            })
+            ->where('upper_folder_id', $currentPermission->folder_id)
+            ->get();
+        foreach($underFolders as $underItem) {
+            $underPermission = FolderArea::where('folder_id', $underItem->id)->where('area_id', $currentPermission->area_id)->first();
+            if ($underPermission) {
+                $this->under_delete_permission_recursive($underPermission->id);
+            }
+        }
+        $currentPermission->delete();
     }
 
 
@@ -88,18 +111,20 @@ class FolderController extends Controller
         if ($data['state']) {
             $actualFolder = Folder::find($currentPermission->folder_id);
             $upperFolder = Folder::find($actualFolder->upper_folder_id);
-            $upperPermission = FolderArea::where('folder_id', $upperFolder->id)
-                ->where('area_id', $currentPermission->area_id)
-                ->first();
-            $this->upper_permission_recursive(
-                $upperPermission->id,
-                $data['state'],
-                $permissionCallback,
-                'see_download'
-            );
+            if ($upperFolder) {
+                $upperPermission = FolderArea::where('folder_id', $upperFolder->id)
+                    ->where('area_id', $currentPermission->area_id)
+                    ->first();
+                $this->upper_permission_recursive(
+                    $upperPermission->id,
+                    $data['state'],
+                    $permissionCallback,
+                    'see_download'
+                );
+            }
             $currentPermission->update(['see_download' => $data['state']]);
             if ($data['down_recursive']) {
-               
+
                 $underFolders = Folder::with('folder_areas')
                     ->whereHas('folder_areas', function ($query) use ($currentPermission) {
                         $query->where('area_id', $currentPermission->area_id);
@@ -146,18 +171,20 @@ class FolderController extends Controller
             };
             $actualFolder = Folder::find($currentPermission->folder_id);
             $upperFolder = Folder::find($actualFolder->upper_folder_id);
-            $upperPermission = FolderArea::where('folder_id', $upperFolder->id)
-                ->where('area_id', $currentPermission->area_id)
-                ->first();
-            $this->upper_permission_recursive(
-                $upperPermission->id,
-                $data['state'],
-                $permissionCallback1,
-                'see_download'
-            );
+            if ($upperFolder) {
+                $upperPermission = FolderArea::where('folder_id', $upperFolder->id)
+                    ->where('area_id', $currentPermission->area_id)
+                    ->first();
+                $this->upper_permission_recursive(
+                    $upperPermission->id,
+                    $data['state'],
+                    $permissionCallback1,
+                    'see_download'
+                );
+            }
             $currentPermission->update(['see_download' => $data['state'], 'create' => $data['state']]);
             if ($data['down_recursive']) {
-               
+
                 $underFolders = Folder::with('folder_areas')
                     ->whereHas('folder_areas', function ($query) use ($currentPermission) {
                         $query->where('area_id', $currentPermission->area_id);
@@ -266,7 +293,8 @@ class FolderController extends Controller
         }
     }
 
-    public function stop_down_recursion($currentPermission, $state, $permissionString){
+    public function stop_down_recursion($currentPermission, $state, $permissionString)
+    {
         if ($permissionString === 'see_download') {
             return !$state && !$currentPermission->see_download;
         } elseif ($permissionString === 'create') {
@@ -276,7 +304,8 @@ class FolderController extends Controller
     }
 
 
-    public function stop_upp_recursion($currentPermission, $state, $permissionString){
+    public function stop_upp_recursion($currentPermission, $state, $permissionString)
+    {
         if ($permissionString === 'see_download') {
             return $state && $currentPermission->see_download;
         } elseif ($permissionString === 'create') {
