@@ -70,8 +70,6 @@ class FolderController extends Controller
 
     public function see_dowload_permission(Request $request, $folder_area_id)
     {
-
-        dd('hola');
         $data = $request->validate(['state' => 'required|boolean']);
         $permissionCallback = function ($permission, $state) {
             $this->down_update_sd_permission($permission, $state);
