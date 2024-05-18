@@ -38,14 +38,16 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center">
                                     <input type="checkbox" :checked="item.see_download"
-                                        :id="'checkbox' + item.id"
-                                        @input="openPermissionhandleModal($event.target.checked, item.id, modalOptions.see_download)"
+                                        :id="'sd_checkbox' + item.id"
+                                        @input="openPermissionhandleModal($event.target.checked, item.id, modalOptions.see_download, item.area.name)"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6" />
                                 </div>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center">
                                     <input type="checkbox" :checked="item.create"
+                                    :id="'create_checkbox' + item.id"
+                                        @input="openPermissionhandleModal($event.target.checked, item.id, modalOptions.create, item.area.name)"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6" />
                                 </div>
                             </td>
@@ -148,10 +150,10 @@ const initialModalItem = {
 const modalItem = ref(JSON.parse(JSON.stringify(initialModalItem))) 
 
 
-function openPermissionhandleModal (state, id, option) {
+function openPermissionhandleModal (state, id, option, area) {
     if(state && option === modalOptions.see_download){
         modalItem.value = {
-            title: 'Activar permiso de ver y descargar',
+            title: `Activar permiso de ver y descargar del área ${area}`,
             message: 'Al realizar esta acción activará el permiso de ver y descargar de la actual carpeta y de las carpetas superiores a esta.',
             option: option,
             postItem:{
@@ -164,8 +166,34 @@ function openPermissionhandleModal (state, id, option) {
     }
     if(!state && option === modalOptions.see_download){
         modalItem.value = {
-            title: 'Desactivar permiso de ver y descargar',
-            message: 'Al realizar esta acción desactivará el permiso de ver, descargar y crear de la carpeta actual y subcarpetas que contenga .',
+            title: `Desactivar permiso de ver y descargar del área ${area}`,
+            message: 'Al realizar esta acción desactivará el permiso de ver, descargar y crear de la carpeta actual y subcarpetas que contenga.',
+            option: option,
+            postItem:{
+                folder_area_id:id,
+                state: state,
+                down_recursive:false
+            }
+        }
+        showPermissionHandler.value = true
+    }
+    if(state && option === modalOptions.create){
+        modalItem.value = {
+            title: `Activar permiso de crear del área ${area}`,
+            message: 'Al realizar esta acción activará el permiso de ver, descargar y crear de la actual carpeta y de las carpetas superiores a esta solo los permisos de ver y descargar.',
+            option: option,
+            postItem:{
+                folder_area_id:id,
+                state: state,
+                down_recursive:false
+            }
+        }
+        showPermissionHandler.value = true
+    }
+    if(!state && option === modalOptions.create){
+        modalItem.value = {
+            title: `Desactivar permiso de crear del área ${area}`,
+            message: 'Al realizar esta acción desactivará el permiso crear de la carpeta actual y subcarpetas que contenga.',
             option: option,
             postItem:{
                 folder_area_id:id,
@@ -180,8 +208,14 @@ function openPermissionhandleModal (state, id, option) {
 function closePermissionHandlerModal () {
     showPermissionHandler.value = false
     let id = modalItem.value.postItem.folder_area_id
-    const checkbox = document.getElementById('checkbox' + id)
-    checkbox.checked = !checkbox.checked
+    if (modalItem.value.option === modalOptions.see_download){
+        const checkbox = document.getElementById('sd_checkbox' + id)
+        checkbox.checked = !checkbox.checked
+    }
+    if (modalItem.value.option === modalOptions.create){
+        const checkbox = document.getElementById('create_checkbox' + id)
+        checkbox.checked = !checkbox.checked
+    }
     modalItem.value = JSON.parse(JSON.stringify(initialModalItem))
 }
 
