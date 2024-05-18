@@ -56,7 +56,9 @@
             </thead>
             <tbody>
                 <tr v-for="archive in archives.data" :key="archive.id" class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm justify-center">
+                  <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm justify-center relative">
+                      <img v-if="archive.type == 'stable'" src="/image/projectimage/stable.png" alt="" class="absolute top-0 left-0 w-10 h-10">
+
                       <svg v-if="['doc', 'docx'].includes(props.folder.archive_type)" height="30px" width="30px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                           viewBox="0 0 512 512" xml:space="preserve">
                         <path style="fill:#E2E5E7;" d="M128,0c-17.6,0-32,14.4-32,32v448c0,17.6,14.4,32,32,32h320c17.6,0,32-14.4,32-32V128L352,0H128z"/>
@@ -100,7 +102,7 @@
                         </svg>
                     </td>  
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                        <p class="text-gray-900 whitespace-no-wrap">{{ getDocumentName(archive.name) }}</p>
+                      <p class="text-gray-900 whitespace-no-wrap">{{ getDocumentName(archive.name) }}</p>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <p class="text-gray-900 whitespace-no-wrap">{{ archive.user.name }}</p>
