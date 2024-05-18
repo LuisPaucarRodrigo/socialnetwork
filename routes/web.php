@@ -80,5 +80,8 @@ Route::post('/documentGestion/{folder}/archives/post', [ArchivesController::clas
 Route::get('/documentGestion/{folder}/archives/{archive}/download', [ArchivesController::class, 'downloadArchive'])->name('archives.download');
 Route::delete('/documentGestion/{folder}/archives/{archive}/destroy', [ArchivesController::class, 'destroy'])->name('archives.destroy');
 Route::post('/documentGestion/{folder}/archives/{archive}/assignUsers', [ArchivesController::class, 'assignUsers'])->name('archives.assign.users');
+Route::get('/documentGestion/{folder}/archives/{archive}/observations', [ArchivesController::class, 'observationsPerArchive'])->name('archives.observations');
+Route::post('/documentGestion/archives/{archive}/observate', [ArchivesController::class, 'saveObservation'])->name('archives.observations.save');
+Route::post('/documentGestion/archives/{archive}/upgrade', [ArchivesController::class, 'upgradeArchive'])->name('archives.upgrade');
 
 require __DIR__ . '/auth.php';
