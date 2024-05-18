@@ -4,7 +4,7 @@
 
     <AuthenticatedLayout>
         <template #header>
-            Permisos de carpeta {{ folder.name }}
+            Permisos de la carpeta {{ folder.name }}
         </template>
         <div class="min-w-full rounded-lg shadow">
             <PrimaryButton @click="openAddFAModal" type="button">
@@ -29,7 +29,7 @@
                             </th>
                             <th v-if="permissions.length !== 1"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                
+
                             </th>
 
                         </tr>
@@ -55,7 +55,8 @@
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6" />
                                 </div>
                             </td>
-                            <td v-if="permissions.length !== 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="permissions.length !== 1"
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <button>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -113,18 +114,30 @@
                         Agregar Nueva Área con Permisos
                     </h2>
                     <InputLabel>
-                        Se Agregará el siguiente Área con los permisos de ver, descargar y ver.
+                        Se Agregará el siguiente Área con los permisos de ver, descargar y ver. 
                     </InputLabel>
-                    <br>
-                    
-                    <form>
-
+                    <InputLabel class="mb-5">
+                        Las áreas disponibles para selección corresponden a las de la carpeta superior inmediata.
+                    </InputLabel>
+                    <form @submit.prevent="" class="mb-5">
+                        <div class="mt-2">
+                            <select required v-model="addFolderAreaform.area_id"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="" disabled>
+                                    Selecciona un area
+                                </option>
+                                <option v-for="item in makeAreasArray(permissions, upper_folder_areas)" :key="item.id" :value="item.id">
+                                    {{ `${item.name}` }}
+                                </option>
+                            </select>
+                            <InputError :message="addFolderAreaform.errors.employees" />
+                        </div>
                     </form>
 
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton @click="closeAddFAModal"> Cancelar </SecondaryButton>
 
-                        <PrimaryButton class="ml-3 bg-black" customClass="tracking-widest" >
+                        <PrimaryButton class="ml-3 bg-black" customClass="tracking-widest">
                             Aceptar
                         </PrimaryButton>
                     </div>
@@ -152,7 +165,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const props = defineProps({
     permissions: Object,
     folder: Object,
+    upper_folder_areas: Object
 })
+
+const makeAreasArray = (permissions, upper_folder_areas) => {
+   let permissionsAreasIds = permissions.map(item=>item.area_id);
+   return upper_folder_areas.filter(item=>!permissionsAreasIds.includes(item.id)) 
+}
 
 function see_download_handler(state, id) {
     router.post(route('documment.management.folders.permission.see_download', { folder_area_id: id }), { state }, {
@@ -274,13 +293,15 @@ function updatePermission() {
 //Add Folder Area
 
 const showAddFA = ref(false)
+const addFolderAreaform = useForm({
+    area_id: ''
+})
 
-
-function openAddFAModal () {
+function openAddFAModal() {
     showAddFA.value = true
 }
 
-function closeAddFAModal () {
+function closeAddFAModal() {
     showAddFA.value = false
 }
 
