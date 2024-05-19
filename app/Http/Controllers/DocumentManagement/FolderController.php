@@ -115,8 +115,30 @@ class FolderController extends Controller
 
 
     public function folder_delete ($folder_id){
+        $folder = Folder::findOrFail($folder_id);
+        $publicDir = public_path($folder->path);
+        if (!file_exists($publicDir)) {
+            return response()->json(['error' => 'La carpeta no existe'], 404);
+        }
+        $this->deleteDirectory($publicDir);
         Folder::findOrFail($folder_id)->delete();
         return redirect()->back();
+    }
+
+
+    private function deleteDirectory($dir) {
+        if (!file_exists($dir)) {return true;}
+        if (!is_dir($dir)) {return unlink($dir);}
+        $items = new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS);
+        foreach ($items as $item) {
+            $itemPath = $item->getRealPath();
+            if ($item->isDir()) {
+                $this->deleteDirectory($itemPath);
+            } else {
+                unlink($itemPath);
+            }
+        }
+        return rmdir($dir);
     }
 
 
