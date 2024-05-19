@@ -61,8 +61,7 @@ class FolderController extends Controller
 
     //Folder Download
 
-    public function folder_download($folder_id)
-    {
+    public function folder_download($folder_id){
         $user = Auth::user();
         $folder = Folder::find($folder_id);
         try{
@@ -97,16 +96,14 @@ class FolderController extends Controller
         foreach ($files as $file) {
             $file = realpath($file);
             $relativePath = $rootFolderName . '/' . substr($file, $baseLength);
+            $fullFolderPath = realpath($file);
+            $publicPosition = strpos($fullFolderPath, 'public');
+            $dirName = basename($file);
+            $dirPath = substr($fullFolderPath, $publicPosition + strlen('public/'));
             if (is_dir($file)) {
-                $fullFolderPath = realpath($file);
-                $publicPosition = strpos($fullFolderPath, 'public');
-                $dirName = basename($file);
-                $dirPath = substr($fullFolderPath, $publicPosition + strlen('public/'));
-
                 $currentFolder = Folder::where('name', $dirName )->where('path', $dirPath)->first();
                 $currentPermission = FolderArea::where('folder_id', $currentFolder->id)->where('area_id', $user->area_id);
-
-                if ($currentFolder->state && $currentPermission->see_download) {
+                if ($user->role_id === 1 ||($currentFolder->state && $currentPermission->see_download)) {
                     $zip->addEmptyDir($relativePath);
                 } else {
                     continue;
