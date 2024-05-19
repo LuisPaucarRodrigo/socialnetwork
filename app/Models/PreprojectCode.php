@@ -21,11 +21,9 @@ class PreprojectCode extends Model
     //CALCULATED
     public function getReplaceableStatusAttribute()
     {
-        // Verificar si hay al menos una imagen relacionada
         $hasImages = $this->imagecodepreprojet()->exists();
 
-        // Determinar el estado basado en la presencia de imágenes
-        return $this->status === "Aprobado" ? "Aprobado" : ($hasImages ? "En proceso" : "Sin Trabajar");
+        return $hasImages ? "En proceso" : "Sin Trabajar";
     }
 
 

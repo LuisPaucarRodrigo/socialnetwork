@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('preproject_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('status')->default('Sin Trabajar');
+            $table->string('status')->nullable();
             $table->foreignId('preproject_id')->onDelete('cascade');
             $table->foreignId('code_id')->onDelete('cascade');
             $table->timestamps();
