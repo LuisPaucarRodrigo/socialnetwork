@@ -254,6 +254,7 @@ import { Link, Head, router, useForm } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 
 
 const { folders, folder, currentPath, auth, areas } = defineProps({
@@ -264,9 +265,10 @@ const { folders, folder, currentPath, auth, areas } = defineProps({
     auth: Object
 })
 
+
+//------------ Add Folder ----------//
 const showAddFolderModal = ref(false)
 const confirmFolderCreate = ref(false)
-
 const createFolderForm = useForm({
     name: '',
     type: 'Carpeta',
@@ -276,22 +278,16 @@ const createFolderForm = useForm({
     user_id: auth.user.id,
     upper_folder_id: folder?.id
 })
-
-
 function openAddFoldermodal() {
     showAddFolderModal.value = true
 }
-
 function closeAddFolderModal() {
     showAddFolderModal.value = false
     createFolderForm.reset()
 }
-
 function handleFolderType() {
     createFolderForm.archive_type = ''
 }
-
-
 function submit() {
     createFolderForm.post(route('documment.management.folders.store'), {
         onSuccess: () => {
@@ -303,10 +299,11 @@ function submit() {
         }
     })
 }
+//---------------------------------//
 
 
 
-//--------- Delete Folder --------//
+//--------- Delete Folder ---------//
 const showDeleteFolderModal =  ref(false)
 const folderToDelete = ref(null)
 function openDeleteFolderModal (item) {
@@ -315,18 +312,18 @@ function openDeleteFolderModal (item) {
 }
 function closeDeleteFolderModal () {
     folderToDelete.value = null
-    showDeleteFolderModal.value = true
+    showDeleteFolderModal.value = false
 }
 function deleteFolder () {
     router.delete(route('document.management.folder.destroy', { folder_id: folderToDelete.value.item_db.id }), {
         onSuccess: () => {
             closeDeleteFolderModal()
+        }, onError: (e) => {
+            console.error(e)
         }
     })
 }
-//--------- End ----------------//
-
-
+//-------------------------------//
 
 
 
