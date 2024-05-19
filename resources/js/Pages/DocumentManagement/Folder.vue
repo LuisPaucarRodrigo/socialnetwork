@@ -48,7 +48,7 @@
                                 <!-- for button instead of Link -->
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
                                 <Link v-if="item.item_db.state"
-                                    :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }): (item.item_db.type === 'Archivos' ? '#': '#')"
+                                    :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? '#' : '#')"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
                                 <div>
                                     <p>
@@ -90,7 +90,8 @@
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
                                     </Link>
-                                    <a type="button" :href="route('folder.test.download', {folder_id: item.item_db.id})" >
+                                    <a type="button"
+                                        :href="route('folder.test.download', { folder_id: item.item_db.id })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="green" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -105,7 +106,7 @@
                                         </svg>
                                     </button>
                                     <button v-if="auth.user.role_id === 1" type="button"
-                                        @click="()=>router.delete(route('document.management.folder.destroy', {folder_id: item.item_db.id}))"
+                                        @click="openDeleteFolderModal(item)"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -216,6 +217,25 @@
             </div>
         </Modal>
 
+
+        <Modal :show="showDeleteFolderModal" @close="closeDeleteFolderModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900 mb-2">
+                    Eliminación de Carpeta
+                </h2>
+                <InputLabel class="mb-5">
+                    ¿Estás seguro de querer eliminar toda la carpeta?, esta acción eliminará también las subcarpetas y archivos de esta. La acción es irreversible.
+                </InputLabel>
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeDeleteFolderModal"> Cancelar </SecondaryButton>
+
+                    <DangerButton type="button" class="ml-3" @click="deleteFolder">
+                        Eliminar
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
+
         <SuccessOperationModal :confirming="confirmFolderCreate" :title="'Nueva Carpeta Creada'"
             :message="'Carpeta creada con éxito'" />
 
@@ -267,14 +287,9 @@ function closeAddFolderModal() {
     createFolderForm.reset()
 }
 
-
-
-
 function handleFolderType() {
     createFolderForm.archive_type = ''
 }
-
-
 
 
 function submit() {
@@ -286,12 +301,30 @@ function submit() {
                 confirmFolderCreate.value = false
             }, 1300)
         }
-
     })
 }
 
 
 
+//--------- Delete Folder --------//
+const showDeleteFolderModal =  ref(false)
+const folderToDelete = ref(null)
+function openDeleteFolderModal (item) {
+    folderToDelete.value = item
+    showDeleteFolderModal.value = true
+}
+function closeDeleteFolderModal () {
+    folderToDelete.value = null
+    showDeleteFolderModal.value = true
+}
+function deleteFolder () {
+    router.delete(route('document.management.folder.destroy', { folder_id: folderToDelete.value.item_db.id }), {
+        onSuccess: () => {
+            closeDeleteFolderModal()
+        }
+    })
+}
+//--------- End ----------------//
 
 
 
