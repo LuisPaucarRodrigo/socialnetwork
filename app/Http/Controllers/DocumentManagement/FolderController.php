@@ -102,8 +102,8 @@ class FolderController extends Controller
             $dirPath = substr($fullFolderPath, $publicPosition + strlen('public/'));
             if (is_dir($file)) {
                 $currentFolder = Folder::where('name', $dirName )->where('path', $dirPath)->first();
-                $currentPermission = FolderArea::where('folder_id', $currentFolder->id)->where('area_id', $user->area_id);
-                if ($user->role_id === 1 ||($currentFolder->state && $currentPermission->see_download)) {
+                $currentPermission = FolderArea::where('folder_id', $currentFolder->id)->where('area_id', $user->area_id)->first();
+                if ($user->role_id === 1 ||($currentFolder?->state && $currentPermission?->see_download)) {
                     $zip->addEmptyDir($relativePath);
                 } else {
                     continue;
