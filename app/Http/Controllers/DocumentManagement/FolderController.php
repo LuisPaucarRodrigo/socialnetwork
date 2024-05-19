@@ -17,7 +17,6 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use ZipArchive;
 
-use Illuminate\Support\Facades\Response;
 
 class FolderController extends Controller
 {
@@ -112,6 +111,12 @@ class FolderController extends Controller
                 $zip->addFile($file, $relativePath);
             }
         }
+    }
+
+
+    public function folder_delete ($folder_id){
+        Folder::findOrFail($folder_id)->delete();
+        return redirect()->back();
     }
 
 

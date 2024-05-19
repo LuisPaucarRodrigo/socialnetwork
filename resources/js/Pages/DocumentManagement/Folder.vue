@@ -105,6 +105,7 @@
                                         </svg>
                                     </button>
                                     <button v-if="auth.user.role_id === 1" type="button"
+                                        @click="()=>router.delete(route('document.management.folder.destroy', {folder_id: item.item_db.id}))"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
