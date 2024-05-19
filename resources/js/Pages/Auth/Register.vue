@@ -63,6 +63,18 @@
                                 <InputError class="mt-2" :message="form.errors.platform" />
                             </div>
                         </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel class="font-medium leading-6 text-gray-900" value="Área" />
+                            <div class="mt-2">
+                                <select 
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="form.area_id" required autocomplete="off">
+                                    <option value="" disabled>Seleccionar Area</option>
+                                    <option v-for="item in areas" :key="item.id" :value="item.id">{{ item.name }}</option>
+                                </select>
+                                <InputError class="mt-2" :message="form.errors.platform" />
+                            </div>
+                        </div>
                         <div class="sm:col-span-3">
                             <InputLabel for="rols" class="font-medium leading-6 text-gray-900">Roles</InputLabel>
                             <div class="mt-2">
@@ -126,7 +138,8 @@ import { ref } from 'vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const props = defineProps({
-    rols: Object
+    rols: Object,
+    areas: Object
 })
 
 const showModal = ref(false);
@@ -138,6 +151,7 @@ const form = useForm({
     dni: '',
     platform: 'Seleccionar Plataforma',
     rol: 'Seleccionar Rol',
+    area_id: '',
     password: '',
     phone: '',
     password_confirmation: '',

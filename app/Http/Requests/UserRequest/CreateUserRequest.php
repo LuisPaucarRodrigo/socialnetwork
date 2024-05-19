@@ -42,6 +42,7 @@ class CreateUserRequest extends FormRequest
                 Rule::unique('users', 'phone')
             ],
             'rol' => 'required|numeric',
+            'area_id' => 'required',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ];
     }
