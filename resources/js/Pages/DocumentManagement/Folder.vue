@@ -8,7 +8,10 @@
             {{ currentPath }}
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <PrimaryButton @click="openAddFoldermodal" type="button">
+            <PrimaryButton 
+                v-if="(currentPath !== 'CCIP' 
+                        && folder?.folder_areas.find(i=>i.area_id == auth.user.area_id)?.create )
+                        || (auth.user.role_id === 1)" @click="openAddFoldermodal" type="button">
                 + Agregar
             </PrimaryButton>
             <div class="overflow-x-auto">
@@ -264,7 +267,6 @@ const { folders, folder, currentPath, auth, areas } = defineProps({
     areas: Object,
     auth: Object
 })
-
 
 //------------ Add Folder ----------//
 const showAddFolderModal = ref(false)

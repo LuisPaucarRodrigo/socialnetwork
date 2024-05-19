@@ -28,28 +28,25 @@ class FolderController extends Controller
 
 
 
-    public function folder_index($folder_id = null)
-    {
-        $folder = Folder::find($folder_id);
+    public function folder_index($folder_id = null){
+        $folder = Folder::with('folder_areas')->find($folder_id);
         $path = $folder ? Folder::find($folder_id)->path
             : $this->main_directory;
         $areas = $folder ? Folder::with('areas')->find($folder_id)->areas
             : Area::all();
-
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
-
         return Inertia::render('DocumentManagement/Folder', [
             'folders' => $folderStructure,
             'currentPath' => $path,
             'areas' => $areas,
             'folder' => $folder
-
         ]);
     }
 
-    public function folder_store(FolderCreateRequest $request)
-    {
+
+
+    public function folder_store(FolderCreateRequest $request){
         $data = $request->validated();
         $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
         $folder = Folder::create($data);
@@ -58,8 +55,9 @@ class FolderController extends Controller
     }
 
 
-    //Folder Download
 
+
+    //Folder Download
     public function folder_download($folder_id){
         $user = Auth::user();
         $folder = Folder::find($folder_id);
@@ -543,7 +541,7 @@ class FolderController extends Controller
                         'name' => $item,
                         'path' => $publicPath . '/' . $item,
                         'size' => null,
-                        'item_db' => Folder::with('user')->where('name', $item)->where('path', $publicPath . '/' . $item)->first()
+                        'item_db' => Folder::with('user', 'folder_areas')->where('name', $item)->where('path', $publicPath . '/' . $item)->first()
                     ];
                 } else {
                     $folderStructure[] = [
