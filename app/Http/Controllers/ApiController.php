@@ -19,19 +19,15 @@ class ApiController extends Controller
     {
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
-            if($request->hasMobileAccess($user)){
+            if ($request->hasMobileAccess($user)) {
                 $token = $user->createToken('MobileAppToken')->plainTextToken;
                 return response()->json([
                     'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'dni' => $user->dni,
                     'token' => $token,
                 ]);
-            }else{
+            } else {
                 return response()->json(['error' => 'La cuenta no tiene permiso Movil'], 401);
             }
-            
         } else {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
@@ -51,7 +47,17 @@ class ApiController extends Controller
     public function preproject(Request $request)
     {
         $user = $request->user();
-        $data = $user->preprojects;
+        $preprojects = $user->preprojects;
+        $data = [];
+        foreach ($preprojects as $preproject) {
+            $data[] = [
+                'id' => $preproject->id,
+                'code' => $preproject->code,
+                'description' => $preproject->description,
+                'date' => $preproject->date,
+                'observation' => $preproject->observation,
+            ];
+        }
 
         return response()->json($data);
     }
@@ -101,23 +107,22 @@ class ApiController extends Controller
                 'preproject_code_id' => $data['id'],
             ]);
             DB::commit();
-            return response()->noContent();
+            return response()->json([], 201);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
-                'error' => 'Hubo un problema al procesar la solicitud.',
-                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
 
     public function registerPhoto($id)
     {
-        $data = Imagespreproject::where("preproject_code_id",$id)->get();
+        $data = Imagespreproject::where("preproject_code_id", $id)->get();
         $data->each(function ($url) {
             $url->image = url('/image/imagereportpreproject/' . $url->image);
         });
-        return response()->json(['images' => $data]);
+        return response()->json($data);
     }
 
     //Project

@@ -144,7 +144,7 @@ const submit = () => {
 
 const selectedProduct = ref({code:""});
 
-const handleAutocomplete = (e, model) => {
+const handleAutocomplete = (e) => {
     const code = e.target.value;
     let findedProduct = props.purchase_products.find(item => item.code === code)
     if (findedProduct) {
