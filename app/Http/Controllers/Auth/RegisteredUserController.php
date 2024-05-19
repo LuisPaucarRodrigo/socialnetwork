@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest\CreateUserRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Area;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -23,7 +24,10 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register',['rols' => Role::all()]);
+        return Inertia::render('Auth/Register',[
+            'rols' => Role::all(),
+            'areas' => Area::all()
+        ]);
     }
 
     /**
@@ -40,6 +44,7 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone,
             'platform' => $request->platform,
             'role_id' => $request->rol,
+            'area_id' => $request->area_id,
             'password' => Hash::make($request->password),
         ]);
 

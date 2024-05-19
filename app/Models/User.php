@@ -30,6 +30,7 @@ class User extends Authenticatable
         'platform',
         'password',
         'role_id',
+        'area_id',
         'phone'
     ];
 
