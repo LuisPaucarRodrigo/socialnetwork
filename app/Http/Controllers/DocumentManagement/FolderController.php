@@ -26,9 +26,26 @@ class FolderController extends Controller
         $this->main_directory = 'CCIP';
     }
 
+    public function checkUserPermission($folder_id, $permission){
+        $user = Auth::user();
+        if ($user->role_id === 1 || $folder_id === null) {
+            return false;
+        } else {
+            $folder_permission = FolderArea::where('folder_id', $folder_id)
+                ->where('area_id', $user->area_id)
+                ->first();
+            if ($folder_permission && $folder_permission->{$permission}) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-
+    
     public function folder_index($folder_id = null){
+        if ($this->checkUserPermission($folder_id, 'see_download')) {
+            abort(403, 'No esta autorizado');
+        }
         $folder = Folder::with('folder_areas')->find($folder_id);
         $path = $folder ? Folder::find($folder_id)->path
             : $this->main_directory;
@@ -46,7 +63,8 @@ class FolderController extends Controller
 
 
 
-    public function folder_store(FolderCreateRequest $request){
+    public function folder_store(FolderCreateRequest $request)
+    {
         $data = $request->validated();
         $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
         $folder = Folder::create($data);
@@ -58,18 +76,20 @@ class FolderController extends Controller
 
 
     //Folder Download
-    public function folder_download($folder_id){
+    public function folder_download($folder_id)
+    {
         $user = Auth::user();
         $folder = Folder::find($folder_id);
-        try{
+        try {
             return $this->downloadZip($folder->path, $folder->name, $user);
-        }catch (e){
+        } catch (e) {
             return response()->json(['error' => 'No autorizado'], 403);
         }
-        
+
     }
 
-    public function downloadZip($path, $folder_name, $user){
+    public function downloadZip($path, $folder_name, $user)
+    {
         $publicDir = public_path($path);
         $zipFileName = $folder_name . '.zip';
         $zip = new ZipArchive;
@@ -85,7 +105,8 @@ class FolderController extends Controller
     }
 
 
-    private function addFolderToZip($folder, $zip, $baseLength, $rootFolderName, $user){
+    private function addFolderToZip($folder, $zip, $baseLength, $rootFolderName, $user)
+    {
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::SELF_FIRST
@@ -98,7 +119,7 @@ class FolderController extends Controller
             $dirName = basename($file);
             $dirPath = substr($fullFolderPath, $publicPosition + strlen('public/'));
             if (is_dir($file)) {
-                $currentFolder = Folder::where('name', $dirName )->where('path', $dirPath)->first();
+                $currentFolder = Folder::where('name', $dirName)->where('path', $dirPath)->first();
                 $currentPermission = FolderArea::where('folder_id', $currentFolder->id)->where('area_id', $user->area_id)->first();
                 if ($currentFolder?->state && ($user->role_id === 1 || $currentPermission?->see_download)) {
                     $zip->addEmptyDir($relativePath);
@@ -112,7 +133,8 @@ class FolderController extends Controller
     }
 
 
-    public function folder_delete ($folder_id){
+    public function folder_delete($folder_id)
+    {
         $folder = Folder::findOrFail($folder_id);
         $publicDir = public_path($folder->path);
         if (!file_exists($publicDir)) {
@@ -124,9 +146,14 @@ class FolderController extends Controller
     }
 
 
-    private function deleteDirectory($dir) {
-        if (!file_exists($dir)) {return true;}
-        if (!is_dir($dir)) {return unlink($dir);}
+    private function deleteDirectory($dir)
+    {
+        if (!file_exists($dir)) {
+            return true;
+        }
+        if (!is_dir($dir)) {
+            return unlink($dir);
+        }
         $items = new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS);
         foreach ($items as $item) {
             $itemPath = $item->getRealPath();
