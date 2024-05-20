@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Documentos" />
-    <AuthenticatedLayout :redirectRoute="'documents.index'">
+    <AuthenticatedLayout  :redirectRoute="{ route: 'documment.management.folders', params: { folder_id: folder?.upper_folder_id } }">
       <template #header>
         {{ props.folder.path }}
       </template>

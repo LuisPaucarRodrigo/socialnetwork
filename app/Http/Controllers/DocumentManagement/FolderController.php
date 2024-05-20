@@ -20,6 +20,7 @@ use ZipArchive;
 class FolderController extends Controller
 {
     protected $main_directory;
+
     public function __construct()
     {
         $this->main_directory = 'CCIP';
@@ -27,13 +28,16 @@ class FolderController extends Controller
 
     
     public function folder_index($folder_id = null){
+        $folder = Folder::with('folder_areas')->find($folder_id);
+        if( $folder->type === 'Archivos' && $folder->type !== 'Carpeta') {
+            abort(404, 'Not found');
+        }
         if ($this->checkUserSeeDownload($folder_id)) {
             abort(403, 'No está autorizado');
         }
-        $folder = Folder::with('folder_areas')->find($folder_id);
-        $path = $folder ? Folder::find($folder_id)->path
+        $path = $folder ? $folder->path
             : $this->main_directory;
-        $areas = $folder ? Folder::with('areas')->find($folder_id)->areas
+        $areas = $folder ? $folder->areas
             : Area::all();
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
