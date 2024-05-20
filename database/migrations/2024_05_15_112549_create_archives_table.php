@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->double('version');
             $table->foreignId('folder_id')->constrained('folders')->onDelete('cascade');
-
+            $table->boolean('approve_status')->default(true);
             $table->timestamps();
         });
 

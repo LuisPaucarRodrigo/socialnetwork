@@ -180,6 +180,19 @@
                             </div>
 
                             <div>
+                                <InputLabel for="title" class="font-medium leading-6 text-gray-900">Títulos</InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.title_id" id="title_id"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="">Selecciona un título</option>
+                                        <option v-for="title in titles" :key="title.id" :value="title.id">{{ title.title }}</option>
+                                    </select>
+                                    <InputError :message="form.errors.title_id" />
+                                </div>
+                            </div>
+
+
+                            <div>
                                 <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
                                 </InputLabel>
                                 <div class="mt-2">
@@ -256,9 +269,10 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { preproject, customers } = defineProps({
+const { preproject, customers, titles } = defineProps({
     preproject: Object,
-    customers: Object
+    customers: Object,
+    titles: Object
 })
 
 const initial_state = {
@@ -268,6 +282,7 @@ const initial_state = {
     description: '',
     date: '',
     observation: '',
+    title_id: '',
     contacts: [],
     hasSubcustomer: false,
     cpe: ''

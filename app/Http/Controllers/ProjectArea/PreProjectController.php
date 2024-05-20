@@ -23,6 +23,10 @@ use App\Models\Purchasing_request;
 use App\Models\Purchasing_requests_product;
 use App\Models\ResourceEntry;
 use App\Models\Service;
+use App\Models\Code;
+use App\Models\Title;
+use App\Models\TitleCode;
+use App\Models\User;
 use App\Models\TypeProduct;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -40,7 +44,8 @@ class PreProjectController extends Controller
                                            ->where('status', $preprojects_status)
                                            ->orderBy('created_at')
                                            ->paginate(12),
-                'preprojects_status' => $preprojects_status
+                'preprojects_status' => $preprojects_status,
+                'users' => User::all()
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -52,7 +57,7 @@ class PreProjectController extends Controller
                                      ->paginate(12);
 
             return response()->json([
-                'preprojects' => $preprojects
+                'preprojects' => $preprojects,
             ]);
         }
     }
@@ -63,6 +68,7 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/CreatePreProject', [
             'preproject' => Preproject::with('project', 'contacts')->find($preproject_id),
             'customers' => Customer::with('customer_contacts')->get(),
+            'titles' => Title::all()
         ]);
     }
 
@@ -806,6 +812,102 @@ class PreProjectController extends Controller
             'unitary_price' => $unitary_price->unitary_price
         ]);
 
+        return redirect()->back();
+    }
+
+    public function preproject_users (Request $request)
+    {
+        $request->validate([
+            'preproject_id' => 'required',
+            'user_id_array' => 'required'
+        ]);
+
+        $preproject = Preproject::find($request->preproject_id);
+
+        $preproject->users()->sync($request->user_id_array, ['timestamps' => true]);
+    }
+
+    //codes
+
+    public function showCodes()
+    {
+        return Inertia::render('ProjectArea/PreProject/Codes', [
+            'codes' => Code::paginate(10)
+        ]);
+    }
+
+    public function postCode(Request $request)
+    {
+        $request->validate([
+            'code' => 'required'
+        ]);
+
+        Code::create([
+            'code'=> $request->code,
+            'description'=> $request->description
+        ]);
+    }
+
+    public function putCode(Request $request, Code $code)
+    {
+        $request->validate([
+            'code' => 'required'
+        ]);
+
+        $code->update([
+            'code'=> $request->code,
+            'description'=> $request->description
+        ]);
+    }
+
+    public function deleteCode(Code $code)
+    {
+        $code->delete();
+        return redirect()->back();
+    }
+
+
+    //titles
+    
+    public function showTitles()
+    {
+        return Inertia::render('ProjectArea/PreProject/Titles', [
+            'titles' => Title::with('codes')->paginate(10),
+            'codes' => Code::all()
+        ]);
+    }
+
+    public function postTitle(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'code_id_array' => 'required'
+        ]);
+
+        $title = Title::create([
+            'title'=> $request->title,
+        ]);
+
+        $title->codes()->sync($request->code_id_array, ['timestamps' => true]);
+    }
+
+    public function putTitle(Request $request, Title $title)
+    {
+        $request->validate([
+            'title' => 'required',
+            'code_id_array' => 'required'
+        ]);
+
+        $title->update([
+            'title'=> $request->title,
+        ]);
+
+        $title->codes()->sync($request->code_id_array, ['timestamps' => true]);
+    }
+
+    public function deleteTitle(Title $title)
+    {
+        $title->delete();
         return redirect()->back();
     }
 }
