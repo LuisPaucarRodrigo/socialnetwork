@@ -8,9 +8,8 @@
             {{ currentPath }}
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <PrimaryButton 
-                v-if="(currentPath !== 'CCIP' &&  checkCreatePermission())
-                        || (auth.user.role_id === 1)" @click="openAddFoldermodal" type="button">
+            <PrimaryButton v-if="(currentPath !== 'CCIP' && checkCreatePermission())
+            || (auth.user.role_id === 1)" @click="openAddFoldermodal" type="button">
                 + Agregar
             </PrimaryButton>
             <div class="overflow-x-auto">
@@ -39,7 +38,7 @@
                                 Tipo
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 pl-4 pr-10 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
                         </tr>
@@ -52,9 +51,11 @@
                                 <Link v-if="item.item_db.state && checkSeeDownloadPermission(item.item_db)"
                                     :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? '#' : '#')"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
-                                <div class="flex space-x-3 items-center">
-                                    <img v-if="item.item_db.type === 'Carpeta'" src="/image/FolderIcons/folder_5.png" class="h-10">
-                                    <img v-if="item.item_db.type === 'Archivos'" src="/image/FolderIcons/archive_5.png" class="h-10">
+                                <div class="flex space-x-3 items-center w-full pr-8 md:pr-0">
+                                    <img v-if="item.item_db.type === 'Archivos'" src="/image/FolderIcons/archive_5.png"
+                                        class="h-12 w-12">
+                                    <img v-if="item.item_db.type === 'Carpeta'" src="/image/FolderIcons/folder_5.png"
+                                        class="h-12 w-12">
                                     <p>
                                         {{ item.name }}
                                     </p>
@@ -63,14 +64,21 @@
                                 </Link>
 
                                 <div v-else class="px-5 py-5 ">
-                                    <p class="text-gray-400 whitespace-nowrap font-bold tracking-widest text-base">
-                                        {{ item.name }}
-                                    </p>
+                                    <div class="flex space-x-3 opacity-60 items-center pr-10 md:pr-0">
+                                        <img v-if="item.item_db.type === 'Archivos'"
+                                            src="/image/FolderIcons/archive_5.png" class="h-12 w-12">
+                                        <img v-if="item.item_db.type === 'Carpeta'"
+                                            src="/image/FolderIcons/folder_5.png" class="h-12 w-12">
+                                        <p class="text-gray-700 whitespace-nowrap font-bold tracking-widest text-base">
+                                            {{ item.name }}
+                                        </p>
+                                    </div>
                                 </div>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+
                                 <p v-if="item.item_db.state" class="text-gray-700">
-                                    {{ checkSeeDownloadPermission(item.item_db) 
+                                    {{ checkSeeDownloadPermission(item.item_db)
                                         ? 'Autorizado'
                                         : 'No Autorizado' }}
                                 </p>
@@ -91,29 +99,26 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.item_db.type }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex space-x-3 justify-center">
-                                    <Link class="text-blue-900 whitespace-no-wrap" :href="'#'">
+                            <td class="border-b border-gray-200 bg-white pl-5 py-5 pr-10 text-sm">
+                                <div class="flex space-x-3 justify-end">
+                                    <!-- <Link class="text-blue-900 whitespace-no-wrap" :href="'#'">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
-                                    </Link>
-                                    <a type="button"
-                                        :href="checkSeeDownloadPermission(item.item_db) 
-                                                    ? route('folder.test.download', { 
-                                                        folder_id: item.item_db.id 
-                                                    }) 
-                                                    : '#'"
-                                        :class="checkSeeDownloadPermission(item.item_db)
-                                                    ?''
-                                                    :'cursor-default'"
-                                    >
+                                    </Link> -->
+                                    <a type="button" :href="checkSeeDownloadPermission(item.item_db)
+                                        ? route('folder.test.download', {
+                                            folder_id: item.item_db.id
+                                        })
+                                        : '#'" :class="checkSeeDownloadPermission(item.item_db)
+                                        ? ''
+                                        : 'cursor-default'">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="green" :class="`w-6 h-6 ${checkSeeDownloadPermission(item.item_db)
-                                                    ?''
-                                                    :'opacity-50'}`">
+                                            ? ''
+                                            : 'opacity-50'}`">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                         </svg>
@@ -126,8 +131,7 @@
                                         </svg>
                                     </a>
                                     <button v-if="auth.user.role_id === 1" type="button"
-                                        @click="openDeleteFolderModal(item)"
-                                        class="text-blue-900 whitespace-no-wrap">
+                                        @click="openDeleteFolderModal(item)" class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -244,7 +248,9 @@
                     Eliminación de Carpeta
                 </h2>
                 <InputLabel class="mb-5">
-                    ¿Estás seguro de querer eliminar toda la carpeta?, esta acción eliminará también las subcarpetas y archivos de esta. La acción es irreversible.
+                    ¿Estás seguro de querer eliminar toda la carpeta?, esta acción eliminará también las subcarpetas y
+                    archivos
+                    de esta. La acción es irreversible.
                 </InputLabel>
                 <div class="mt-6 flex justify-end">
                     <SecondaryButton @click="closeDeleteFolderModal"> Cancelar </SecondaryButton>
@@ -286,14 +292,14 @@ const { folders, folder, currentPath, auth, areas } = defineProps({
 })
 
 //---------- Check Permission -------//
-function checkSeeDownloadPermission (item) {
-    if(auth.user.role_id === 1){
+function checkSeeDownloadPermission(item) {
+    if (auth.user.role_id === 1) {
         return true
     }
-    return item?.folder_areas?.find(i=>i.area_id == auth.user.area_id)?.see_download
+    return item?.folder_areas?.find(i => i.area_id == auth.user.area_id)?.see_download
 }
-function checkCreatePermission () {
-    return folder?.folder_areas.find(i=>i.area_id == auth.user.area_id)?.create
+function checkCreatePermission() {
+    return folder?.folder_areas.find(i => i.area_id == auth.user.area_id)?.create
 }
 //---------------------------------//
 
@@ -337,17 +343,17 @@ function submit() {
 
 
 //--------- Delete Folder ---------//
-const showDeleteFolderModal =  ref(false)
+const showDeleteFolderModal = ref(false)
 const folderToDelete = ref(null)
-function openDeleteFolderModal (item) {
+function openDeleteFolderModal(item) {
     folderToDelete.value = item
     showDeleteFolderModal.value = true
 }
-function closeDeleteFolderModal () {
+function closeDeleteFolderModal() {
     folderToDelete.value = null
     showDeleteFolderModal.value = false
 }
-function deleteFolder () {
+function deleteFolder() {
     router.delete(route('document.management.folder.destroy', { folder_id: folderToDelete.value.item_db.id }), {
         onSuccess: () => {
             closeDeleteFolderModal()

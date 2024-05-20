@@ -49,7 +49,7 @@ class FolderController extends Controller
 
     public function folder_store(FolderCreateRequest $request) {
         $data = $request->validated();
-        if($this->checkUserCreate($data['upper_folder_id'])){
+        if(isset($data['upper_folder_id']) && $this->checkUserCreate($data['upper_folder_id'])){
             abort(403, 'No está autorizado');
         }
         $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
