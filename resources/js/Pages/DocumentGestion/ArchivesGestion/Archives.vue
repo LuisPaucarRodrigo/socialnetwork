@@ -115,7 +115,7 @@
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div v-if="archive.type !== 'stable'" class="flex flex-col items-center space-y-2">
-                            <button v-if="props.auth.user.role_id === 1 || props.auth.user.role_id === archive.user_id" @click="openPermissionModal(archive.id, archive.users_active.map((item) => item.id), archive.users_available)" class="text-blue-600 underline">
+                            <button v-if="props.auth.user.role_id === 1 || props.auth.user.id === archive.user_id" @click="openPermissionModal(archive.id, archive.users_active.map((item) => item.id), archive.users_available)" class="text-blue-600 underline">
                                 Administrar
                             </button>
                               <Link v-if="props.auth.user.role_id === 1 || archive.users_active.some(user => user.id === props.auth.user.id)" :href="route('archives.observations', {folder: props.folder.id, archive: archive.id})" class="text-blue-600 underline">
@@ -132,8 +132,8 @@
                             <button @click="downloadDocument(archive.id)" class="flex items-center text-blue-600 hover:underline">
                                 <ArrowDownIcon class="h-4 w-4 ml-1" />
                             </button>
-                            <button v-if="archive.disponibility && hasPermission('UserManager') && archive.approve_status" @click="openUpgradeModal(archive.id)" class="flex items-center text-blue-600 hover:underline">
-                              <svg width="20px" height="20px" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path fill="green" d="M256 29.816l-231 154v106.368l231-154 231 154V183.816zm0 128.043L105 259.783v90.283l151-101.925 151 101.925v-90.283zm0 112l-87 58.725v67.6l87-58 87 58v-67.6zm0 89.957l-87 58v64.368l87-58 87 58v-64.368z"/></svg>
+                            <button v-if="archive.disponibility && hasPermission('UserManager') && archive.approve_status" @click="openUpgradeModal(archive.id)" class="flex items-center text-green-600 hover:underline">
+                              <BarsArrowUpIcon class="w-5" />
                             </button>
                             <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(archive.id)" class="flex items-center text-red-600 hover:underline">
                                 <TrashIcon class="h-4 w-4" />
@@ -252,7 +252,7 @@
   import Modal from '@/Components/Modal.vue';
   import { ref } from 'vue';
   import { Head, useForm, router, Link } from '@inertiajs/vue3';
-  import { TrashIcon, ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/24/outline';
+  import { TrashIcon, ArrowDownIcon, BarsArrowUpIcon } from '@heroicons/vue/24/outline';
   
   
   const props = defineProps({
