@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentManagement\FolderController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
@@ -102,3 +103,18 @@ Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'de
         
 Route::post('/purchasing_request_product_store', [PurchaseRequestController::class, 'purchasing_request_product_store'])->name('purchasing_request_product.store');
 Route::delete('/purchasing_request_product_delete/{purchasing_request_product_id}', [PurchaseRequestController::class, 'purchasing_request_product_delete'])->name('purchasing_request_product.delete');
+
+//Folders Validation
+Route::get('/document_management/folder_validation', [FolderController::class, 'folder_validation'])->name('documment.management.folders.validation');
+Route::post('/document_management/folder_validation/check/{folder_id}', [FolderController::class, 'folder_check'])->name('documment.management.folders.check');
+Route::delete('/document_management/folder_validation/invalidate/{folder_id}', [FolderController::class, 'folder_invalidate'])->name('documment.management.folders.invalidate');
+
+Route::post('/document_management/folder_permissions/{folder_area_id}', [FolderController::class, 'see_dowload_permission'])->name('documment.management.folders.permission.see_download');
+Route::post('/document_management/folder_permissions_create/{folder_area_id}', [FolderController::class, 'create_permission'])->name('documment.management.folders.permission.create');
+
+Route::post('/document_management/folder_permissions_add', [FolderController::class, 'folder_permission_add'])->name('documment.management.folders.permission.add');
+Route::delete('/document_management/folder_permissions_delete/{folder_area_id}', [FolderController::class, 'folder_permission_remove'])->name('documment.management.folders.permission.delete');
+
+Route::delete('document_management/folder_destroy/{folder_id}', [FolderController::class, 'folder_delete'])->name('document.management.folder.destroy');
+
+Route::get('/documment_management/folder_permission/{folder_id}', [FolderController::class, 'folder_permissions'])->name('documment.management.folders.permissions');

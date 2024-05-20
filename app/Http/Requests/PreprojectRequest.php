@@ -27,6 +27,7 @@ class PreprojectRequest extends FormRequest
             'description' => 'required',
             'date' => 'required',
             'observation' => 'nullable',
+            'title_id' => 'required',
             'cpe' => 'nullable',
             'contacts' => 'required|array',
         ];

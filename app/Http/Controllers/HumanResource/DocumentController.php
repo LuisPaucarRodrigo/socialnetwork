@@ -9,10 +9,16 @@ use App\Models\Subdivision;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class DocumentController extends Controller
 {
-    
+    protected $main_directory;
+
+    public function __construct()
+    {
+        $this->main_directory = 'nueva carpeta';
+    }
     public function showSections()
     {
         $sections = DocumentSection::all();
@@ -178,4 +184,28 @@ class DocumentController extends Controller
         }
         abort(404, 'Documento no encontrado');
     }
+
+    public function folder_tree_test() {
+        return Inertia::render('Test');
+    }
+
+
+
+    public function createFolder() {
+        $publicPath = public_path();
+
+        if (!file_exists($publicPath . '/' . 'nueva carpeta/hola')) {
+            mkdir($publicPath . '/' . 'nueva carpeta/hola', 0777, true);
+            return response()->json(['message' => 'Carpeta creada correctamente'], 200);
+        } else {
+            return response()->json(['message' => 'La carpeta ya existe'], 400);
+        }
+    }
+
+
+   
+
+   
+    
+
 }

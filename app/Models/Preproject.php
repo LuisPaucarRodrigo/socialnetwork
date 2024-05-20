@@ -16,7 +16,8 @@ class Preproject extends Model
         'date',
         'cpe',
         'observation',
-        'status'
+        'status',
+        'title_id'
     ];
 
     protected $appends = [
@@ -35,11 +36,6 @@ class Preproject extends Model
         return $this->hasOne(Project::class);
     }
 
-    public function imagepreproject()
-    {
-        return $this->HasMany(Imagespreproject::class);
-    }
-
     public function quote()
     {
         return $this->hasOne(PreProjectQuote::class, 'preproject_id');
@@ -48,6 +44,16 @@ class Preproject extends Model
     public function contacts()
     {
         return $this->belongsToMany(Customers_contact::class, 'preprojects_contacts', 'preproject_id', 'customer_contact_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'preproject_user')->withTimestamps();
+    }
+
+    public function title()
+    {
+        return $this->belongsTo(Title::class, 'title_id');
     }
 
     public function customer()
@@ -63,6 +69,16 @@ class Preproject extends Model
     public function preproject_entries()
     {
         return $this->hasMany(PreprojectEntry::class);
+    }
+
+    public function preprojectCodes()
+    {
+        return $this->hasMany(PreprojectCode::class);
+    }
+
+    public function codes()
+    {
+        return $this->belongsToMany(Code::class, 'preproject_codes')->withPivot('status');
     }
 
     

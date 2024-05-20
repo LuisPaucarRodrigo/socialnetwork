@@ -73,6 +73,8 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         // ...
         'permission' => \App\Http\Middleware\PermissionMiddleware::class,
+        'checkPlatformMovil' => \App\Http\Middleware\CheckPlatformMovil::class,
+        'checkPlatformWeb' => \App\Http\Middleware\CheckPlatformWeb::class,
     ];
     
 }

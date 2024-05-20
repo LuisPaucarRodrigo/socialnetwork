@@ -3,10 +3,10 @@
     <Head title="AnteProyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
-            Anteproyectos {{ preprojects_status !== null 
-                                                ? preprojects_status === '1' ?  'Aprobados'
-                                                                             :  'Anulados'
-                                                : '' }}
+            Anteproyectos {{ preprojects_status !== null
+        ? preprojects_status === '1' ? 'Aprobados'
+            : 'Anulados'
+        : '' }}
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
@@ -15,21 +15,14 @@
                 + Agregar
                 </Link>
                 <div class="flex gap-4">
-                    <PrimaryButton 
-                        v-if="preprojects_status === null"  
-                        @click="()=>{
-                            router.get(route('preprojects.index', {preprojects_status: '1'}))
-                        }"
-                        type="button"
-                    >
+                    <PrimaryButton v-if="preprojects_status === null" @click="() => {
+        router.get(route('preprojects.index', { preprojects_status: '1' }))
+    }" type="button">
                         Aprobados
                     </PrimaryButton>
-                    <PrimaryButton 
-                        v-if="preprojects_status === null"  
-                        @click="()=>{
-                            router.get(route('preprojects.index', {preprojects_status: '0'}))
-                        }"
-                        type="button">
+                    <PrimaryButton v-if="preprojects_status === null" @click="() => {
+        router.get(route('preprojects.index', { preprojects_status: '0' }))
+    }" type="button">
                         Anulados
                     </PrimaryButton>
 
@@ -39,7 +32,7 @@
 
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div v-for="(item,i) in preprojects.data" :key="item.id"
+                <div v-for="(item, i) in preprojects.data" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
                         <h2 class="text-sm font-semibold mb-3">
@@ -59,6 +52,12 @@
                         {{ item.customer }}
                     </h3>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
+                        <div>
+                            <button @click="assignUser(item.id)"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar
+                                Usuarios
+                            </button>
+                        </div>
                         <div>
                             <Link :href="route('preprojects.imagereport.index', { preproject_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Descargar
@@ -80,7 +79,8 @@
 
                         <div>
                             <Link :href="route('preprojects.products', { preproject: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos de Almacén
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos de
+                            Almacén
                             </Link>
                         </div>
                         <div v-if="item.project == null && item.status === null">
@@ -120,11 +120,37 @@
             </div>
         </div>
 
+        <Modal :show="assignUserModal">
+            <form class="p-6" @submit.prevent="submitAssignUser">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Agregar usuarios
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div class="sm:col-span-6">
+                        <InputLabel for="users" class="font-medium leading-6 text-gray-900">Usuarios</InputLabel>
+                        <div class="mt-2">
+                            <select multiple v-model="assignUserForm.user_id_array" id="users"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option v-for="user in props.users" :key="user.id" :value="user.id">
+                                    {{ user.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="closeAssignUser">Cerrar</SecondaryButton>
+                    <PrimaryButton type="submit">Asignar</PrimaryButton>
+                </div>
+            </form>
+        </Modal>
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingProjectDeletion" itemType="Anteproyecto"
             :deleteFunction="delete_project" @closeModal="closeModal" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
         <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Anteproyecto" />
+        <ConfirmCreateModal :confirmingcreation="successAssign" itemType="Asignación" />
+
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -134,17 +160,23 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Pagination from '@/Components/Pagination.vue'
-import { Head, router, Link } from '@inertiajs/vue3';
+import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
-
+import Modal from '@/Components/Modal.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     preprojects: Object,
     auth: Object,
-    preprojects_status: String
+    preprojects_status: String,
+    users: Object
 })
 
+
+const assignUserModal = ref(false);
+const successAssign = ref(false);
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
 const indexToSplice = ref('');
@@ -152,13 +184,44 @@ const showModal = ref(false);
 const showModalEdit = ref(false);
 const preprojects = ref(props.preprojects)
 
+const assignUser = (id) => {
+    assignUserModal.value = true;
+    assignUserForm.preproject_id = id;
+}
+
+const closeAssignUser = () => {
+    assignUserForm.reset();
+    assignUserModal.value = false;
+}
+
+const assignUserForm = useForm({
+    preproject_id: null,
+    user_id_array: []
+});
+
+const submitAssignUser = () => {
+    assignUserForm.post(route('preprojects.assign.users'), {
+        onSuccess: () => {
+            closeAssignUser();
+            successAssign.value = true
+            setTimeout(() => {
+                successAssign.value = false;
+                router.visit(route('preprojects.index'))
+            }, 2000);
+        },
+        onError: (e) => {
+            console.log(e)
+        }
+    })
+}
+
 const delete_project = () => {
     const projectId = projectToDelete.value;
     router.delete(route('preprojects.destroy', { preproject: projectId }), {
         onSuccess: () => {
             closeModal();
             preprojects.value.data.splice(indexToSplice, 1)
-            
+
         }
     });
 }
@@ -176,12 +239,14 @@ const closeModal = () => {
 
 const search = async ($search) => {
     //to avoid bug
-    if ($search === '') {router.visit(route('preprojects.index', {
-        preprojects_status: JSON.parse(props.preprojects_status)}))
+    if ($search === '') {
+        router.visit(route('preprojects.index', {
+            preprojects_status: JSON.parse(props.preprojects_status)
+        }))
         return
     }
     try {
-        const response = await axios.post(route('preprojects.index'), { searchQuery: $search, preprojects_status: props.preprojects});
+        const response = await axios.post(route('preprojects.index'), { searchQuery: $search, preprojects_status: props.preprojects });
         preprojects.value = response.data.preprojects;
     } catch (error) {
         console.error('Error searching:', error);

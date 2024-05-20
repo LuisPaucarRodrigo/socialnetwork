@@ -51,9 +51,22 @@ Route::get('/preprojects/load_resource_entries/{service_id}', [PreProjectControl
 Route::post('/preprojects/quote_store/{quote_id?}', [PreProjectController::class, 'quote_store'])->name('preprojects.quote.store');
 Route::post('/preprojects/quote/{quote_id}', [PreProjectController::class, 'acceptCotization'])->name('preprojects.accept');
 
+//codes
+Route::get('/preprojects/codes', [PreProjectController::class, 'showCodes'])->name('preprojects.codes');
+Route::post('/preprojects/codes/post', [PreProjectController::class, 'postCode'])->name('preprojects.codes.post');
+Route::put('/preprojects/codes/{code}/put', [PreProjectController::class, 'putCode'])->name('preprojects.codes.put');
+Route::delete('/preprojects/codes/{code}/delete', [PreProjectController::class, 'deleteCode'])->name('preprojects.codes.delete');
+
+//titles
+Route::get('/preprojects/titles', [PreProjectController::class, 'showTitles'])->name('preprojects.titles');
+Route::post('/preprojects/titles/post', [PreProjectController::class, 'postTitle'])->name('preprojects.titles.post');
+Route::put('/preprojects/titles/{title}/put', [PreProjectController::class, 'putTitle'])->name('preprojects.titles.put');
+Route::delete('/preprojects/titles/{title}/delete', [PreProjectController::class, 'deleteTitle'])->name('preprojects.titles.delete');
 
 
 Route::get('/preprojects/{preproject_id}/photoreport', [PreProjectController::class, 'photoreport_index'])->name('preprojects.photoreport.index');
+Route::post('/preprojects/assignUser', [PreProjectController::class, 'preproject_users'])->name('preprojects.assign.users');
+Route::post('/preprojects/assignTitle', [PreProjectController::class, 'preproject_titles'])->name('preprojects.assign.titles');
 Route::post('/preprojects/photoreport_store', [PreProjectController::class, 'photoreport_store'])->name('preprojects.photoreport.store');
 Route::get('/preprojects/photoreport_download/{report_name}', [PreProjectController::class, 'downloadPR'])->name('preprojects.photoreport.download');
 Route::get('/preprojects/photoreport_download_pdf/{pr_id}', [PreProjectController::class, 'download_pdf_PR'])->name('preprojects.photoreport_pdf.download');
@@ -92,6 +105,9 @@ Route::get('/sunat_ruc', [HttpController::class, 'sunat_ruc'])->name('sunat');
 
 
 Route::get('/preprojects/{preproject_id}/report/image', [PreProjectController::class, 'index_image'])->name('preprojects.imagereport.index');
+Route::get('/preprojects/{preproject_id}/report/code/image', [PreProjectController::class, 'registerCodePhoto'])->name('preprojects.report.images');
+Route::put('/preprojects/{preproject_image_id}/report/image', [PreProjectController::class, 'approve_reject_image'])->name('preprojects.imagereport.approveReject');
+Route::get('/preprojects/{preproject_code_id}/codereport', [PreProjectController::class, 'approve_code'])->name('preprojects.codereport.approveCode');
 Route::get('/preprojects/{preproject_id}/report/download_image', [PreProjectController::class, 'download_image'])->name('preprojects.imagereport.download');
 Route::get('/preprojects/{image}/report/showimage', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
 Route::delete('/preprojects/{preproject_id}/report/delete', [PreProjectController::class, 'delete_image'])->name('preprojects.imagereport.delete');

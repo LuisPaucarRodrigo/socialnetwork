@@ -264,7 +264,6 @@ const { warehouse, disToApToCom } = defineProps({
 //Expandible row
 const row = ref(0);
 const toggleDetails = (outputs) => {
-    console.log(outputs[0].project_entry_id)
     if (row.value === outputs[0].project_entry_id) {
         row.value = 0;
     } else {

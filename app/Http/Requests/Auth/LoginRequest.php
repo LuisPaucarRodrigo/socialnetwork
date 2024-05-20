@@ -48,7 +48,11 @@ class LoginRequest extends FormRequest
                 'email' => trans('auth.failed'),
             ]);
         }
-
+        // Verificar si el usuario tiene acceso a la plataforma web o web/móvil
+        $user = Auth::user();
+        if (!in_array($user->platform, ['Web', 'Web/Movil'])) {
+            Auth::logout(); // Cerrar la sesión si el usuario no tiene acceso permitido
+        }
         RateLimiter::clear($this->throttleKey());
     }
 
