@@ -14,13 +14,7 @@ class TitleCode extends Model
         'code_id'
     ];
 
-    public function title()
-    {
-        return $this->belongsTo(Title::class, 'title_id');
-    }
 
-    public function code()
-    {
-        return $this->belongsTo(Code::class, 'code_id');
-    }
+
+
 }

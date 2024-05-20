@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DocumentManagement\FolderController;
 use App\Http\Controllers\HumanResource\DocumentController;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DocumentGestion\ArchivesController;
 use Illuminate\Support\Facades\Route;
@@ -41,7 +42,7 @@ Route::get('/', function () {
 //     }
 // })->name('home');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth','checkPlatformWeb')->group(function () {
 
     Route::get('/folder-structure/{path?}', [DocumentController::class, 'getFolderStructure'])->name('document.scan.folder');
     Route::get('/test_new_folder', [DocumentController::class, 'createFolder'])->name('document.create_folder');
@@ -64,23 +65,23 @@ Route::middleware('auth', 'permission:UserManager')->group(function () {
     include_once 'user_admin_route.php';
 });
 
-Route::middleware('auth', 'permission:HumanResourceManager')->group(function () {
+Route::middleware('auth', 'permission:HumanResourceManager','checkPlatformWeb')->group(function () {
     include_once 'human_resource_route.php';
 });
 
-Route::middleware('auth', 'permission:InventoryManager')->group(function () {
+Route::middleware('auth', 'permission:InventoryManager','checkPlatformWeb')->group(function () {
     include_once 'inventory_route.php';
 });
 
-Route::middleware('auth', 'permission:ProjectManager')->group(function () {
+Route::middleware('auth', 'permission:ProjectManager','checkPlatformWeb')->group(function () {
     include_once 'project_route.php';
 });
 
-Route::middleware('auth', 'permission:PurchasingManager')->group(function () {
+Route::middleware('auth', 'permission:PurchasingManager','checkPlatformWeb')->group(function () {
     include_once 'shopping_area_route.php';
 });
 
-Route::middleware('auth', 'permission:FinanceManager')->group(function () {
+Route::middleware('auth', 'permission:FinanceManager','checkPlatformWeb')->group(function () {
     include_once 'finance_route.php';
 });
 

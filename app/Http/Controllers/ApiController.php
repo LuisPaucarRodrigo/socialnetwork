@@ -6,6 +6,7 @@ use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\Imagespreproject;
 use App\Models\Preproject;
+use App\Models\PreprojectCode;
 use App\Models\Project;
 use App\Models\Projectimage;
 use Illuminate\Http\Request;
@@ -18,14 +19,15 @@ class ApiController extends Controller
     {
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
-            $token = $user->createToken('MobileAppToken')->plainTextToken;
-            return response()->json([
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'dni' => $user->dni,
-                'token' => $token,
-            ]);
+            if ($request->hasMobileAccess($user)) {
+                $token = $user->createToken('MobileAppToken')->plainTextToken;
+                return response()->json([
+                    'id' => $user->id,
+                    'token' => $token,
+                ]);
+            } else {
+                return response()->json(['error' => 'La cuenta no tiene permiso Movil'], 401);
+            }
         } else {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
@@ -42,17 +44,50 @@ class ApiController extends Controller
     }
 
     //PreProject
-    public function preproject()
+    public function preproject(Request $request)
     {
-        $data = Preproject::all();
+        $user = $request->user();
+        $preprojects = $user->preprojects;
+        $data = [];
+        foreach ($preprojects as $preproject) {
+            $data[] = [
+                'id' => $preproject->id,
+                'code' => $preproject->code,
+                'description' => $preproject->description,
+                'date' => $preproject->date,
+                'observation' => $preproject->observation,
+            ];
+        }
 
         return response()->json($data);
     }
 
-    public function preprojectespecific($id)
+    public function preprojectcodephoto($id)
     {
-        $data = Preproject::find($id);
-        return response()->json($data);
+        $preproject = PreprojectCode::with('code')->where('preproject_id', $id)->get();
+        $codesWithStatus = [];
+        foreach ($preproject as $preprojectCode) {
+            $code = $preprojectCode->code;
+            $codesWithStatus[] = [
+                'id' => $preprojectCode->id,
+                'code' => $code->code,
+                'status' => $preprojectCode->status ?? $preprojectCode->replaceable_status
+            ];
+        }
+        return response()->json($codesWithStatus);
+    }
+
+    public function codephotospecific($id)
+    {
+        $data = PreprojectCode::with('code', 'preproject')->find($id);
+        $codesWith = [
+            'id' => $data->id,
+            'codePreproject' => $data->preproject->code,
+            'code' => $data->code->code,
+            'description' => $data->code->description,
+            'status' => $data->status ?? $data->replaceable_status
+        ];
+        return response()->json($codesWith);
     }
 
     public function preprojectimage(ImageRequest $request)
@@ -69,17 +104,25 @@ class ApiController extends Controller
             Imagespreproject::create([
                 'description' => $data['description'],
                 'image' => $imagename,
-                'preproject_id' => $data['id'],
+                'preproject_code_id' => $data['id'],
             ]);
             DB::commit();
-            return response()->noContent();
+            return response()->json([], 201);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
-                'error' => 'Hubo un problema al procesar la solicitud.',
-                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function registerPhoto($id)
+    {
+        $data = Imagespreproject::where("preproject_code_id", $id)->get();
+        $data->each(function ($url) {
+            $url->image = url('/image/imagereportpreproject/' . $url->image);
+        });
+        return response()->json($data);
     }
 
     //Project

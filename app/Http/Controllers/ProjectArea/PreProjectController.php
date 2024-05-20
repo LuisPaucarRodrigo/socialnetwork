@@ -24,6 +24,7 @@ use App\Models\Purchasing_requests_product;
 use App\Models\ResourceEntry;
 use App\Models\Service;
 use App\Models\Code;
+use App\Models\PreprojectCode;
 use App\Models\Title;
 use App\Models\TitleCode;
 use App\Models\User;
@@ -41,9 +42,9 @@ class PreProjectController extends Controller
             $preprojects_status = $request->input('preprojects_status');
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
                 'preprojects' => Preproject::with('project')
-                                           ->where('status', $preprojects_status)
-                                           ->orderBy('created_at')
-                                           ->paginate(12),
+                    ->where('status', $preprojects_status)
+                    ->orderBy('created_at')
+                    ->paginate(12),
                 'preprojects_status' => $preprojects_status,
                 'users' => User::all()
             ]);
@@ -51,10 +52,10 @@ class PreProjectController extends Controller
             $searchQuery = $request->input('searchQuery');
             $preprojects_status = $request->input('preprojects_status');
             $preprojects = Preproject::with('project')
-                                     ->where('code', 'like', "%$searchQuery%")
-                                     ->where('status', $preprojects_status)
-                                     ->orderBy('created_at')
-                                     ->paginate(12);
+                ->where('code', 'like', "%$searchQuery%")
+                ->where('status', $preprojects_status)
+                ->orderBy('created_at')
+                ->paginate(12);
 
             return response()->json([
                 'preprojects' => $preprojects,
@@ -87,6 +88,13 @@ class PreProjectController extends Controller
         $data = $request->validated();
         $data['code'] = $this->getCode($data['date'], $data['code']);
         $preproject = Preproject::create($data);
+        $dataCode = TitleCode::where('title_id', $data['title_id'])->get();
+        foreach ($dataCode as $codes) {
+            PreprojectCode::create([
+                'preproject_id' => $preproject->id,
+                'code_id' => $codes->code_id
+            ]);
+        }
         $preproject->contacts()->sync($data['contacts']);
     }
 
@@ -122,14 +130,14 @@ class PreProjectController extends Controller
     public function destroy(Preproject $preproject)
     {
         $preproject->load('quote');
-        if($preproject->quote){
+        if ($preproject->quote) {
             $preproject_quote_services = PreprojectQuoteService::whereHas('resource_entry')
-            ->where('state', null)
-            ->where('preproject_quote_id', $preproject->quote->id)->get();
+                ->where('state', null)
+                ->where('preproject_quote_id', $preproject->quote->id)->get();
             foreach ($preproject_quote_services as $item) {
                 ResourceEntry::find($item->resource_entry_id)->update(['condition' => 'Disponible']);
             }
-        }        
+        }
         $preproject->delete();
         return redirect()->back();
     }
@@ -330,7 +338,8 @@ class PreProjectController extends Controller
     }
 
 
-    public function preproject_quote_rejected(Request $request) {
+    public function preproject_quote_rejected(Request $request)
+    {
         $quote = PreProjectQuote::where('preproject_id', $request->preproject_id)->first();
         if (!$quote || $quote->state) {
             abort(403, 'Recarga la página');
@@ -345,7 +354,8 @@ class PreProjectController extends Controller
 
 
 
-    public function preproject_quote_canceled(Request $request) {
+    public function preproject_quote_canceled(Request $request)
+    {
         $quote = PreProjectQuote::where('preproject_id', $request->preproject_id)->first();
         $preproject = Preproject::with('project')->find($request->preproject_id);
         if ($preproject->project || !$quote || $quote->state) {
@@ -354,9 +364,9 @@ class PreProjectController extends Controller
         PreprojectEntry::where('preproject_id', $request->preproject_id)->delete();
         $preServEnt = PreprojectQuoteService::where('preproject_quote_id', $quote->id)->get();
         foreach ($preServEnt as $item) {
-            ResourceEntry::find($item->resource_entry_id)?->update(["condition"=>"Disponible"]);
+            ResourceEntry::find($item->resource_entry_id)?->update(["condition" => "Disponible"]);
         }
-        $preproject->update(['status'=>false]);
+        $preproject->update(['status' => false]);
         $quote->delete();
     }
 
@@ -697,8 +707,6 @@ class PreProjectController extends Controller
     //     abort(404, 'Documento no encontrado');
     // }
 
-
-
     public function generarPDF()
     {
         $data = [];
@@ -708,10 +716,74 @@ class PreProjectController extends Controller
 
     public function index_image($preproject_id)
     {
-        $images = Imagespreproject::where('preproject_id', $preproject_id)->get();
+        $preproject = PreprojectCode::with('code')->where('preproject_id', $preproject_id)->get();
+        $codesWithStatus = [];
+        foreach ($preproject as $preprojectCode) {
+            $code = $preprojectCode->code;
+            $codesWithStatus[] = [
+                'id' => $preprojectCode->id,
+                'code' => $code->code,
+            ];
+        }
+        $imagesCode = Imagespreproject::all();
+        $imagesCode->each(function ($url) {
+            $url->image = url('/image/imagereportpreproject/' . $url->image);
+        });
         return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
-            'images' => $images,
+            'codesWithStatus' => $codesWithStatus,
+            'imagesCode' => $imagesCode,
             'preproject' => Preproject::find($preproject_id),
+        ]);
+    }
+
+    public function registerCodePhoto($id)
+    {   
+        $code = PreprojectCode::with('code')->where("id",$id)->get();
+        $codesWithStatus = [];
+        foreach ($code as $preprojectCode) {
+            $code = $preprojectCode->code;
+            $codesWithStatus[] = [
+                'id' => $preprojectCode->id,
+                'code' => $code->code,
+            ];
+        }
+        $data = Imagespreproject::where("preproject_code_id", $id)->get();
+        $data->each(function ($url) {
+            $url->image = url('/image/imagereportpreproject/' . $url->image);
+        });
+        return response()->json(['images'=> $data,'codes' => $codesWithStatus]);
+    }
+
+    public function approve_reject_image(Request $request, $id)
+    {
+        $data = $request->validate([
+            'state' => 'required|boolean',
+            'observation' => 'nullable|string'
+        ]);
+        $image = Imagespreproject::find($id);
+        $image->update([
+            'observation' => $data['observation'],
+            'state' => $data['state']
+        ]);
+    }
+
+    public function approve_code($id)
+    {
+        $code = PreprojectCode::with('imagecodepreprojet')->find($id);
+        $code->imagecodepreprojet->each(function ($image) {
+            if ($image->state !== '1') {
+                $filePath = "/image/imagereportpreproject/{$image->image}";
+                $path = public_path($filePath);
+                if (file_exists($path)) {
+                    unlink($path);
+                } else {
+                    abort(404, 'Imagen no encontrada');
+                }
+                $image->delete();
+            }
+        });
+        $code->update([
+            'status' => 'Aprobado',
         ]);
     }
 
@@ -728,7 +800,7 @@ class PreProjectController extends Controller
     }
 
     public function delete_image($id)
-    {   
+    {
         $image = Imagespreproject::find($id);
         if ($image->image != null) {
             $filePath = "/image/imagereportpreproject/{$image->image}";
@@ -787,7 +859,7 @@ class PreProjectController extends Controller
         $inventory = Entry::with('normal_entry', 'purchase_entry', 'inventory.purchase_product', 'retrieval_entry')
             ->where('inventory_id', $inventory_id)
             ->get()
-            ->filter(function($item){
+            ->filter(function ($item) {
                 return $item->quantity_available > 0;
             })
             ->toArray();
@@ -815,7 +887,7 @@ class PreProjectController extends Controller
         return redirect()->back();
     }
 
-    public function preproject_users (Request $request)
+    public function preproject_users(Request $request)
     {
         $request->validate([
             'preproject_id' => 'required',
@@ -843,8 +915,8 @@ class PreProjectController extends Controller
         ]);
 
         Code::create([
-            'code'=> $request->code,
-            'description'=> $request->description
+            'code' => $request->code,
+            'description' => $request->description
         ]);
     }
 
@@ -855,8 +927,8 @@ class PreProjectController extends Controller
         ]);
 
         $code->update([
-            'code'=> $request->code,
-            'description'=> $request->description
+            'code' => $request->code,
+            'description' => $request->description
         ]);
     }
 
@@ -868,7 +940,7 @@ class PreProjectController extends Controller
 
 
     //titles
-    
+
     public function showTitles()
     {
         return Inertia::render('ProjectArea/PreProject/Titles', [
@@ -885,10 +957,11 @@ class PreProjectController extends Controller
         ]);
 
         $title = Title::create([
-            'title'=> $request->title,
+            'title' => $request->title,
         ]);
 
-        $title->codes()->sync($request->code_id_array, ['timestamps' => true]);
+        $title->codes()->attach($request->code_id_array);
+        // $title->codes()->sync($request->code_id_array, ['timestamps' => true]);
     }
 
     public function putTitle(Request $request, Title $title)
@@ -899,7 +972,7 @@ class PreProjectController extends Controller
         ]);
 
         $title->update([
-            'title'=> $request->title,
+            'title' => $request->title,
         ]);
 
         $title->codes()->sync($request->code_id_array, ['timestamps' => true]);
