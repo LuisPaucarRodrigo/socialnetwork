@@ -26,6 +26,13 @@ class FolderController extends Controller
         $this->main_directory = 'CCIP';
     }
 
+    public function checkAdminAccess() {
+        $user = Auth::user();
+        if ($user->role_id !== 1){
+            abort(403, "No está autorizado");
+        }
+    }
+
     public function checkUserSeeDownload($folder_id){
         $user = Auth::user();
         if ($user->role_id === 1 || $folder_id === null) { return false;} 
@@ -141,10 +148,7 @@ class FolderController extends Controller
 
 
     public function folder_delete($folder_id){
-        $user = Auth::user();
-        if ($user->role_id !== 1){
-            abort(403, "No está autorizado");
-        }
+        $this->checkAdminAccess();
         $folder = Folder::findOrFail($folder_id);
         $publicDir = public_path($folder->path);
         if (!file_exists($publicDir)) {
@@ -185,10 +189,7 @@ class FolderController extends Controller
     //Folder Permissions
 
     public function folder_permissions($folder_id) {
-        $user = Auth::user();
-        if ($user->role_id !== 1){
-            abort(403, "No está autorizado");
-        }
+        $this->checkAdminAccess();
         $permissions = FolderArea::with('area')->where('folder_id', $folder_id)->get();
         $folder = Folder::find($folder_id);
         $upperFolder = Folder::with('areas')->find($folder->upper_folder_id);
@@ -203,10 +204,7 @@ class FolderController extends Controller
 
     public function folder_permission_add(Request $request)
     {
-        $user = Auth::user();
-        if ($user->role_id !== 1){
-            abort(403, "No está autorizado");
-        }
+        $this->checkAdminAccess();
         $data = $request->validate([
             'folder_id' => 'required',
             'area_id' => 'required',
@@ -217,10 +215,7 @@ class FolderController extends Controller
 
 
     public function folder_permission_remove($folder_area_id){
-        $user = Auth::user();
-        if ($user->role_id !== 1){
-            abort(403, "No está autorizado");
-        }
+        $this->checkAdminAccess();
         $this->underDeletePermission($folder_area_id);
         return redirect()->back();
     }
@@ -248,6 +243,7 @@ class FolderController extends Controller
 
 
     public function see_dowload_permission(FolderPermissionsRequest $request, $folder_area_id){
+        $this->checkAdminAccess();
         $data = $request->validated();
         $currentPermission = FolderArea::find($folder_area_id);
         $permissionCallback = function ($permission, $state) {
@@ -260,7 +256,7 @@ class FolderController extends Controller
                 $upperPermission = FolderArea::where('folder_id', $upperFolder->id)
                     ->where('area_id', $currentPermission->area_id)
                     ->first();
-                $this->upper_permission_recursive(
+                $this->upperPermissionRecursive(
                     $upperPermission->id,
                     $data['state'],
                     $permissionCallback,
@@ -282,7 +278,7 @@ class FolderController extends Controller
                         ->where('area_id', $currentPermission->area_id)
                         ->first();
                     if ($underPermission) {
-                        $this->under_permission_recursive(
+                        $this->underPermissionRecursive(
                             $underPermission->id,
                             $data['state'],
                             $permissionCallback,
@@ -292,7 +288,7 @@ class FolderController extends Controller
                 }
             }
         } else {
-            $this->under_permission_recursive(
+            $this->underPermissionRecursive(
                 $folder_area_id,
                 $data['state'],
                 $permissionCallback,
@@ -303,8 +299,8 @@ class FolderController extends Controller
     }
 
 
-    public function create_permission(FolderPermissionsRequest $request, $folder_area_id)
-    {
+    public function create_permission(FolderPermissionsRequest $request, $folder_area_id) {
+        $this->checkAdminAccess();
         $data = $request->validated();
         $currentPermission = FolderArea::find($folder_area_id);
         $permissionCallback = function ($permission, $state) {
@@ -320,7 +316,7 @@ class FolderController extends Controller
                 $upperPermission = FolderArea::where('folder_id', $upperFolder->id)
                     ->where('area_id', $currentPermission->area_id)
                     ->first();
-                $this->upper_permission_recursive(
+                $this->upperPermissionRecursive(
                     $upperPermission->id,
                     $data['state'],
                     $permissionCallback1,
@@ -342,7 +338,7 @@ class FolderController extends Controller
                         ->where('area_id', $currentPermission->area_id)
                         ->first();
                     if ($underPermission) {
-                        $this->under_permission_recursive(
+                        $this->underPermissionRecursive(
                             $underPermission->id,
                             $data['state'],
                             $permissionCallback,
@@ -352,7 +348,7 @@ class FolderController extends Controller
                 }
             }
         } else {
-            $this->under_permission_recursive(
+            $this->underPermissionRecursive(
                 $folder_area_id,
                 $data['state'],
                 $permissionCallback,
@@ -372,7 +368,7 @@ class FolderController extends Controller
 
 
 
-    public function under_permission_recursive($folder_area_id, $state, callable $permissionCallback, $permissionString)
+    public function underPermissionRecursive($folder_area_id, $state, callable $permissionCallback, $permissionString)
     {
         $currentPermission = FolderArea::find($folder_area_id);
         if ($this->stopDownRecursion($currentPermission, $state, $permissionString)) {
@@ -392,7 +388,7 @@ class FolderController extends Controller
                 ->first();
 
             if ($underPermission) {
-                $this->under_permission_recursive($underPermission->id, $state, $permissionCallback, $permissionString);
+                $this->underPermissionRecursive($underPermission->id, $state, $permissionCallback, $permissionString);
             }
         }
     }
@@ -401,7 +397,7 @@ class FolderController extends Controller
 
 
 
-    public function upper_permission_recursive($folder_area_id, $state, callable $permissionCallback, $permissionString){
+    public function upperPermissionRecursive($folder_area_id, $state, callable $permissionCallback, $permissionString){
         $currentPermission = FolderArea::find($folder_area_id);
         if ($this->stopUpRecursion($currentPermission, $state, $permissionString)) {
             return;
@@ -413,7 +409,7 @@ class FolderController extends Controller
             $upperPermission = FolderArea::where('folder_id', $upperFolder->id)
                 ->where('area_id', $currentPermission->area_id)
                 ->first();
-            $this->upper_permission_recursive($upperPermission->id, $state, $permissionCallback, $permissionString);
+            $this->upperPermissionRecursive($upperPermission->id, $state, $permissionCallback, $permissionString);
         }
     }
 
@@ -464,36 +460,18 @@ class FolderController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //Folder Validation Functions
 
-    public function folder_validation()
-    {
+    public function folder_validation(){
+        $this->checkAdminAccess();
         $folder = Folder::with('user', 'areas')->where('state', false)->orderBy('created_at', 'desc')->paginate(15);
         return Inertia::render('DocumentManagement/FolderValidation', [
             'folders' => $folder
         ]);
     }
 
-    public function folder_check($folder_id)
-    {
+    public function folder_check($folder_id){
+        $this->checkAdminAccess();
         $folder = Folder::find($folder_id);
         if ($folder) {
             $folder->update(['state' => true]);
@@ -502,8 +480,8 @@ class FolderController extends Controller
         }
     }
 
-    public function folder_invalidate($folder_id)
-    {
+    public function folder_invalidate($folder_id){
+        $this->checkAdminAccess();
         $folder = Folder::find($folder_id);
         $this->deleteFolder($folder->path);
         $folder->delete();
@@ -541,8 +519,7 @@ class FolderController extends Controller
 
     //Helpers
 
-    function getPreviusPath($path)
-    {
+    function getPreviusPath($path){
         $segments = explode('/', $path);
         if (count($segments) > 1) {
             array_pop($segments);
@@ -551,10 +528,7 @@ class FolderController extends Controller
     }
 
 
-
-
-    public function createFolder($path, $name)
-    {
+    public function createFolder($path, $name){
         $publicPath = public_path($path . '/' . $name);
         if (!file_exists($publicPath)) {
             mkdir($publicPath, 0777, true);
@@ -565,8 +539,7 @@ class FolderController extends Controller
     }
 
 
-    private function scanFolder($folderPath)
-    {
+    private function scanFolder($folderPath){
         $folderStructure = [];
         $publicPosition = strpos($folderPath, 'public');
         if ($publicPosition === false) {
@@ -599,8 +572,7 @@ class FolderController extends Controller
 
 
     //delete folder
-    public function deleteFolder($path)
-    {
+    public function deleteFolder($path) {
         $folderPath = public_path($path);
         if (file_exists($folderPath) && is_dir($folderPath)) {
             $this->deleteDirectoryRecursively($folderPath);
@@ -609,8 +581,7 @@ class FolderController extends Controller
         }
     }
 
-    private function deleteDirectoryRecursively($dir)
-    {
+    private function deleteDirectoryRecursively($dir) {
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? $this->deleteDirectoryRecursively("$dir/$file") : unlink("$dir/$file");
