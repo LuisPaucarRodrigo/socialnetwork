@@ -127,7 +127,7 @@ class Folder extends Model
             ],
             'Excel' => [
                 'laravel' => 'xls,xlsx',
-                'js' => '.xls,xlsx'
+                'js' => '.xls,.xlsx'
             ],
             'Power Point' => [
                 'laravel' => 'ppt,pptx',
