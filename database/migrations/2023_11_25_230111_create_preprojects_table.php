@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('date');
             $table->text('observation')->nullable();
             $table->boolean('status')->nullable();
+            $table->foreignId('title_id')->nullable()->constrained('titles')->onDelete('set null');
             $table->timestamps();
         });
     }

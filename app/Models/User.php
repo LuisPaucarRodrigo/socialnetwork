@@ -70,6 +70,11 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');
     }
 
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area_id');
+    }
+
     public function hasPermission($permission)
     {
         $role = $this->role; // Obtener el único rol del usuario

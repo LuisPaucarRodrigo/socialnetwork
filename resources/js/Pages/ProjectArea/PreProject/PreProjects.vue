@@ -60,6 +60,11 @@
                     </h3>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
                         <div>
+                            <button @click="assignUser(item.id)"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar Usuarios
+                            </button>
+                        </div>
+                        <div>
                             <Link :href="route('preprojects.imagereport.index', { preproject_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Descargar
                             imagenes
@@ -120,11 +125,37 @@
             </div>
         </div>
 
+        <Modal :show="assignUserModal">
+            <form class="p-6" @submit.prevent="submitAssignUser">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Agregar usuarios
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div class="sm:col-span-6">
+                        <InputLabel for="users" class="font-medium leading-6 text-gray-900">Usuarios</InputLabel>
+                        <div class="mt-2">
+                            <select multiple v-model="assignUserForm.user_id_array" id="users"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option v-for="user in props.users" :key="user.id" :value="user.id">
+                                    {{ user.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="closeAssignUser">Cerrar</SecondaryButton>
+                    <PrimaryButton type="submit">Asignar</PrimaryButton>
+                </div>
+            </form>
+        </Modal>
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingProjectDeletion" itemType="Anteproyecto"
             :deleteFunction="delete_project" @closeModal="closeModal" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
         <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Anteproyecto" />
+        <ConfirmCreateModal :confirmingcreation="successAssign" itemType="Asignación" />
+
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -134,23 +165,60 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Pagination from '@/Components/Pagination.vue'
-import { Head, router, Link } from '@inertiajs/vue3';
+import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
-
+import Modal from '@/Components/Modal.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     preprojects: Object,
     auth: Object,
-    preprojects_status: String
+    preprojects_status: String,
+    users: Object
 })
 
+
+const assignUserModal = ref(false);
+const successAssign = ref(false);
 const confirmingProjectDeletion = ref(false);
 const projectToDelete = ref('');
 const indexToSplice = ref('');
 const showModal = ref(false);
 const showModalEdit = ref(false);
 const preprojects = ref(props.preprojects)
+
+const assignUser = (id) => {
+    assignUserModal.value = true;
+    assignUserForm.preproject_id = id;
+}
+
+const closeAssignUser = () => {
+    assignUserForm.reset();
+    assignUserModal.value = false;
+}
+
+const assignUserForm = useForm({
+    preproject_id: null,
+    user_id_array: []
+});
+
+const submitAssignUser = () => {
+    assignUserForm.post(route('preprojects.assign.users'), {
+        onSuccess: () => {
+                closeAssignUser();
+                successAssign.value = true
+                setTimeout(() => {
+                    successAssign.value = false;
+                    router.visit(route('preprojects.index'))
+                }, 2000);
+            },
+            onError: (e) => {
+                console.log(e)
+            }
+    })
+}
 
 const delete_project = () => {
     const projectId = projectToDelete.value;
