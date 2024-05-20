@@ -15,14 +15,20 @@ class Code extends Model
         'description',
     ];
 
-    public function titleCodes()
-    {
-        return $this->hasMany(TitleCode::class);
-    }
 
+    //RELATIONS
     public function titles()
     {
-        return $this->belongsToMany(Title::class, 'title_code');
+        return $this->belongsToMany(Title::class, 'title_codes');
     }
 
+    public function preprojectCodes()
+    {
+        return $this->hasMany(PreprojectCode::class);
+    }
+
+    public function preprojects()
+    {
+        return $this->belongsToMany(Preproject::class, 'preproject_codes')->withPivot('status');
+    }
 }

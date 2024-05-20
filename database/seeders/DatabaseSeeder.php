@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'luis@gmail.com',
             'password' => Hash::make('12345678'),
             'phone' => '923098157',
-            'platform' => 'web',
+            'platform' => 'Web/Movil',
             'role_id' => '1',
             'area_id'=> 1
         ]);

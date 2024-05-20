@@ -36,11 +36,6 @@ class Preproject extends Model
         return $this->hasOne(Project::class);
     }
 
-    public function imagepreproject()
-    {
-        return $this->HasMany(Imagespreproject::class);
-    }
-
     public function quote()
     {
         return $this->hasOne(PreProjectQuote::class, 'preproject_id');
@@ -74,6 +69,16 @@ class Preproject extends Model
     public function preproject_entries()
     {
         return $this->hasMany(PreprojectEntry::class);
+    }
+
+    public function preprojectCodes()
+    {
+        return $this->hasMany(PreprojectCode::class);
+    }
+
+    public function codes()
+    {
+        return $this->belongsToMany(Code::class, 'preproject_codes')->withPivot('status');
     }
 
     

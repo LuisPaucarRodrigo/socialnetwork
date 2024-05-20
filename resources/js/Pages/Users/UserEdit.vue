@@ -19,7 +19,7 @@
                             <option disabled> {{ props.users.platform }}</option>
                             <option>Web</option>
                             <option>Movil</option>
-                            <option>Ambos</option>
+                            <option>Web/Movil</option>
                         </select>
                         <InputError :message="form.errors.platform" />
                     </div>
@@ -92,7 +92,7 @@ const form = useForm({
     email: props.users.email,
     dni: props.users.dni,
     phone: props.users.phone,
-    role_id: props.users.role.id
+    role_id: props.users.role?.id
 });
 
 const submit = () => {

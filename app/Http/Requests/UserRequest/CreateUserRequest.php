@@ -35,7 +35,7 @@ class CreateUserRequest extends FormRequest
                         'max:255',
                         'email',
                         Rule::unique('users', 'email')],
-            'platform' => 'required|string|in:Movil,Web,Ambos',
+            'platform' => 'required|string|in:Movil,Web,Web/Movil',
             'phone' => [
                 'required',
                 'string',

@@ -98,19 +98,8 @@ class User extends Authenticatable
         return collect(); // o return null;
     }
 
-    // public function hasPermission($permission)
-    // {
-    //     foreach ($this->roles as $role) {
-    //         if ($role->permissions->contains('name', $permission)) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // public function hasRole($role)
-    // {
-    //     return $this->role()->where('name', $role)->exists();
-    // }
-
+    public function preprojects()
+    {
+        return $this->belongsToMany(Preproject::class, 'preproject_user')->withTimestamps();
+    }
 }
