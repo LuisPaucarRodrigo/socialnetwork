@@ -223,7 +223,6 @@ function submitRejectImage() {
 
 function requestPhotos($e) {
     if ($e === '0') {
-        console.log('dasdas')
         router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
     } else {
         axios.get(route('preprojects.report.images', $e))
@@ -242,7 +241,7 @@ function requestPhotos($e) {
 }
 
 function photoCodeFiltrado($preproject_code_id) {
-    return photoCode.value.filter(image => image.id === $preproject_code_id);
+    return photoCode.value.filter(image => image.preproject_code_id === $preproject_code_id);
 }
 
 function approveCode(preproject_code_id) {
