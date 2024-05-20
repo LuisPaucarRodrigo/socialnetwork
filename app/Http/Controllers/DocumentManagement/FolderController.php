@@ -221,14 +221,14 @@ class FolderController extends Controller
         if ($user->role_id !== 1){
             abort(403, "No está autorizado");
         }
-        $this->under_delete_permission_recursive($folder_area_id);
+        $this->underDeletePermission($folder_area_id);
         return redirect()->back();
     }
 
 
 
 
-    public function under_delete_permission_recursive($folder_area_id){
+    public function underDeletePermission($folder_area_id){
         $currentPermission = FolderArea::find($folder_area_id);
         $underFolders = Folder::with('folder_areas')
             ->whereHas('folder_areas', function ($query) use ($currentPermission) {
@@ -239,7 +239,7 @@ class FolderController extends Controller
         foreach ($underFolders as $underItem) {
             $underPermission = FolderArea::where('folder_id', $underItem->id)->where('area_id', $currentPermission->area_id)->first();
             if ($underPermission) {
-                $this->under_delete_permission_recursive($underPermission->id);
+                $this->underDeletePermission($underPermission->id);
             }
         }
         $currentPermission->delete();
@@ -247,12 +247,11 @@ class FolderController extends Controller
 
 
 
-    public function see_dowload_permission(FolderPermissionsRequest $request, $folder_area_id)
-    {
+    public function see_dowload_permission(FolderPermissionsRequest $request, $folder_area_id){
         $data = $request->validated();
         $currentPermission = FolderArea::find($folder_area_id);
         $permissionCallback = function ($permission, $state) {
-            $this->down_update_sd_permission($permission, $state);
+            $this->updateSdPermission($permission, $state);
         };
         if ($data['state']) {
             $actualFolder = Folder::find($currentPermission->folder_id);
@@ -309,11 +308,11 @@ class FolderController extends Controller
         $data = $request->validated();
         $currentPermission = FolderArea::find($folder_area_id);
         $permissionCallback = function ($permission, $state) {
-            $this->down_update_create_permission($permission, $state);
+            $this->updateCreatePermission($permission, $state);
         };
         if ($data['state']) {
             $permissionCallback1 = function ($permission, $state) {
-                $this->down_update_sd_permission($permission, $state);
+                $this->updateSdPermission($permission, $state);
             };
             $actualFolder = Folder::find($currentPermission->folder_id);
             $upperFolder = Folder::find($actualFolder->upper_folder_id);
@@ -376,7 +375,7 @@ class FolderController extends Controller
     public function under_permission_recursive($folder_area_id, $state, callable $permissionCallback, $permissionString)
     {
         $currentPermission = FolderArea::find($folder_area_id);
-        if ($this->stop_down_recursion($currentPermission, $state, $permissionString)) {
+        if ($this->stopDownRecursion($currentPermission, $state, $permissionString)) {
             return;
         }
         $permissionCallback($currentPermission, $state);
@@ -402,10 +401,9 @@ class FolderController extends Controller
 
 
 
-    public function upper_permission_recursive($folder_area_id, $state, callable $permissionCallback, $permissionString)
-    {
+    public function upper_permission_recursive($folder_area_id, $state, callable $permissionCallback, $permissionString){
         $currentPermission = FolderArea::find($folder_area_id);
-        if ($this->stop_upp_recursion($currentPermission, $state, $permissionString)) {
+        if ($this->stopUpRecursion($currentPermission, $state, $permissionString)) {
             return;
         }
         $permissionCallback($currentPermission, $state);
@@ -421,8 +419,7 @@ class FolderController extends Controller
 
 
 
-    public function down_update_sd_permission($permission, $state)
-    {
+    public function updateSdPermission($permission, $state){
         if ($state) {
             $permission->update(['see_download' => $state]);
         } else {
@@ -430,8 +427,8 @@ class FolderController extends Controller
         }
     }
 
-    public function down_update_create_permission($permission, $state)
-    {
+
+    public function updateCreatePermission($permission, $state){
         if ($state) {
             $permission->update(['see_download' => $state, 'create' => $state]);
         } else {
@@ -439,8 +436,7 @@ class FolderController extends Controller
         }
     }
 
-    public function stop_down_recursion($currentPermission, $state, $permissionString)
-    {
+    public function stopDownRecursion($currentPermission, $state, $permissionString){
         if ($permissionString === 'see_download') {
             return !$state && !$currentPermission->see_download;
         } elseif ($permissionString === 'create') {
@@ -450,8 +446,7 @@ class FolderController extends Controller
     }
 
 
-    public function stop_upp_recursion($currentPermission, $state, $permissionString)
-    {
+    public function stopUpRecursion($currentPermission, $state, $permissionString){
         if ($permissionString === 'see_download') {
             return $state && $currentPermission->see_download;
         } elseif ($permissionString === 'create') {
