@@ -26,25 +26,20 @@ class FolderController extends Controller
         $this->main_directory = 'CCIP';
     }
 
-    public function checkUserPermission($folder_id, $permission){
+    public function checkUserSeeDownload($folder_id){
         $user = Auth::user();
-        if ($user->role_id === 1 || $folder_id === null) {
-            return false;
-        } else {
-            $folder_permission = FolderArea::where('folder_id', $folder_id)
-                ->where('area_id', $user->area_id)
-                ->first();
-            if ($folder_permission && $folder_permission->{$permission}) {
-                return false;
-            }
-        }
+        if ($user->role_id === 1 || $folder_id === null) { return false;} 
+        $folder_permission = FolderArea::where('folder_id', $folder_id)
+            ->where('area_id', $user->area_id)
+            ->first();
+        if ($folder_permission?->see_download) {return false;}
         return true;
     }
 
-    
+
     public function folder_index($folder_id = null){
-        if ($this->checkUserPermission($folder_id, 'see_download')) {
-            abort(403, 'No esta autorizado');
+        if ($this->checkUserSeeDownload($folder_id)) {
+            abort(403, 'No está autorizado');
         }
         $folder = Folder::with('folder_areas')->find($folder_id);
         $path = $folder ? Folder::find($folder_id)->path
@@ -62,10 +57,23 @@ class FolderController extends Controller
     }
 
 
+    public function checkUserCreate($folder_id){
+        $user = Auth::user();
+        if ($user->role_id === 1) {return false;} 
+        if ($folder_id === null) {return true;}
+        $folder_permission = FolderArea::where('folder_id', $folder_id)
+            ->where('area_id', $user->area_id)
+            ->first();
+        if ($folder_permission?->create) {return false;}
+        return true;
+    }
 
-    public function folder_store(FolderCreateRequest $request)
-    {
+
+    public function folder_store(FolderCreateRequest $request) {
         $data = $request->validated();
+        if($this->checkUserCreate($data['upper_folder_id'])){
+            abort(403, 'No está autorizado');
+        }
         $data['path'] = $this->createFolder($data['currentPath'], $data['name']);
         $folder = Folder::create($data);
         $folder->areas()->sync($data['areas']);
