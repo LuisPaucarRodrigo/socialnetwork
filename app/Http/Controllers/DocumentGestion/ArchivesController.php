@@ -19,18 +19,11 @@ use Carbon\Carbon;
 class ArchivesController extends Controller
 {
     protected $main_directory;
-    protected $archive_types;
 
     public function __construct()
     {
         $this->main_directory = 'CCIP';
-        $this->archive_types = [
-            'Word' => 'doc,docx',
-            'PDF' => 'pdf',
-            'Excel' => 'xls,xlsx',
-            'Power Point' => 'ppt,pptx',
-            'Imágenes' => 'jpg,png,jpeg'
-        ];
+        
     }
 
     public function show(Folder $folder) {
@@ -63,7 +56,7 @@ class ArchivesController extends Controller
             $folder = Folder::find($request->folder_id);
 
             $request->validate([
-                'archive' => 'required|mimes:' . $this->archive_types[$folder->archive_type],
+                'archive' => 'required|mimes:' . $folder->format_type['laravel'],
                 'folder_id' => 'required',
                 'user_id' => 'required'
             ]);
@@ -145,7 +138,7 @@ class ArchivesController extends Controller
                 if (file_exists($path)) {
                     // Utiliza el nombre y el tipo de archivo para generar el nombre del archivo a descargar
                     $fileName = $findArchive->name . '.' . $findArchive->folder->archive_type;
-                    return response()->download($path, $fileName);
+                    return response()->download($path);
                 }
                 
                 abort(404, 'Documento no encontrado');

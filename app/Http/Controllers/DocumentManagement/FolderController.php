@@ -29,7 +29,7 @@ class FolderController extends Controller
     
     public function folder_index($folder_id = null){
         $folder = Folder::with('folder_areas')->find($folder_id);
-        if( $folder->type === 'Archivos' && $folder->type !== 'Carpeta') {
+        if( $folder?->type === 'Archivos' && $folder?->type !== 'Carpeta') {
             abort(404, 'Not found');
         }
         if ($this->checkUserSeeDownload($folder_id)) {
@@ -352,6 +352,9 @@ class FolderController extends Controller
                     continue;
                 }
             } else if (is_file($file)) {
+
+
+                
                 $zip->addFile($file, $relativePath);
             }
         }
