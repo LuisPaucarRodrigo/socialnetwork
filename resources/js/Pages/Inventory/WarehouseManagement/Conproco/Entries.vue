@@ -134,6 +134,4 @@ const props = defineProps({
     warehouseId: Number,
 });
 
-console.log(props.entries)
-
 </script>

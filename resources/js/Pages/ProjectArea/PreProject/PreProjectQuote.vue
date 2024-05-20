@@ -896,7 +896,6 @@
         { ...(preproject.quote ? updateState : initialState) }
     )
 
-    console.log(form.items)
 
     const subTotalProducts = (array1, array2) => {
         let sum1 = array1.reduce((total, product) => total + product.unitary_price * product.quantity * (product.profit_margin ? (1+product.profit_margin/100) : 1), 0)
