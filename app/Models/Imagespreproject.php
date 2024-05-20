@@ -10,11 +10,13 @@ class Imagespreproject extends Model
     use HasFactory;
     protected $fillable=[
         'description',
+        'observation',
+        'state',
         'image',
-        'preproject_id'
+        'preproject_code_id'
     ];
 
-    public function preproject() {
-        return $this->belongsTo(Preproject::class, 'preproject_id');
+    public function preproject_code() {
+        return $this->belongsTo(PreprojectCode::class, 'preproject_code_id');
     }
 }

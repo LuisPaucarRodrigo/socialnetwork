@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('imagespreprojects', function (Blueprint $table) {
             $table->id();
             $table->string('description');
+            $table->string('observation')->nullable();
+            $table->boolean('state')->nullable();
             $table->string('image')->unique();
-            $table->foreignId('preproject_id')->constrained()->onDelete('cascade');
+            $table->foreignId('preproject_code_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

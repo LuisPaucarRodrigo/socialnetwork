@@ -1,1187 +1,1186 @@
-    <template>
+<template>
 
-        <Head title="Cotización Anteproyecto" />
-        <AuthenticatedLayout :redirect-route="'preprojects.index'">
-            <template v-if="preproject.quote" #header>
-                Editando la cotización
-            </template>
-            <template v-else #header>
-                Creación de cotización
-            </template>
-            <div v-if="auth.user.role_id === 1 && preproject.quote?.state"
-                class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
-                role="alert">
-                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <span class="sr-only">Info</span>
-                <div>
-                    <span class="font-small">Esta cotización ya fue aceptada, cuidado al modificarla</span>
+    <Head title="Cotización Anteproyecto" />
+    <AuthenticatedLayout :redirect-route="'preprojects.index'">
+        <template v-if="preproject.quote" #header>
+            Editando la cotización
+        </template>
+        <template v-else #header>
+            Creación de cotización
+        </template>
+        <div v-if="auth.user.role_id === 1 && preproject.quote?.state"
+            class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+            role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+                <span class="font-small">Esta cotización ya fue aceptada, cuidado al modificarla</span>
+            </div>
+        </div>
+        <div class="min-w-full p-3 rounded-lg shadow">
+            <form @submit.prevent="submit">
+                <div class="pt-1">
+                    <div class="border-b border-gray-900 pb-12">
+
+                        <h2 class="text-base font-semibold leading-7 text-gray-900 border-b border-gray-900/10">
+                            Cotización
+                        </h2>
+                        <br>
+                        <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+
+                            <div class="sm:col-span-3">
+                                <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre del proyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.name" id="name"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.name" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="date" class="font-medium leading-6 text-gray-900">Fecha de Inicio
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="Date" v-model="form.date" id="date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.date" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="supervisor" class="font-medium leading-6 text-gray-900">Supervisor
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.supervisor" id="supervisor"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.supervisor" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="boss" class="font-medium leading-6 text-gray-900">Jefe
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.boss" id="boss"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.boss" />
+                                </div>
+                            </div>
+
+
+                            <div class="sm:col-span-3">
+                                <InputLabel for="deliverable_time" class="font-medium leading-6 text-gray-900">Tiempo de
+                                    entrega (días)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.deliverable_time" id="deliverable_time" min="1"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.deliverable_time" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="validity_time" class="font-medium leading-6 text-gray-900">Tiempo de
+                                    validez (días)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.validity_time" id="validity_time" min="1"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.validity_time" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <InputLabel for="rev" class="font-medium leading-6 text-gray-900">Rev.
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.rev" id="rev" min="1"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.rev" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="deliverable_place" class="font-medium leading-6 text-gray-900">Lugar de
+                                    entrega
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput v-model="form.deliverable_place" id="deliverable_place"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.deliverable_place" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="payment_type" class="font-medium leading-6 text-gray-900">Forma de pago
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput v-model="form.payment_type" id="payment_type"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.payment_type" />
+                                </div>
+                            </div>
+
+
+                            <div class="sm:col-span-3">
+                                <InputLabel for="observations" class="font-medium leading-6 text-gray-900">Observaciones
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <textarea type="text" v-model="form.observations" id="observations"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.observations" />
+                                </div>
+                            </div>
+
+                            <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-4">
+                                <div class="flex gap-2 items-center">
+                                    <h2 class="text-base font-bold leading-6 text-gray-900 ">Productos
+                                    </h2>
+
+                                    <!-- <button v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                        @click="openProductModal" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="text-blue-500 hover:text-purple-500 w-7 h-7">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                                        </svg>
+                                    </button> -->
+                                </div>
+                                <p class="text-sm mt-6">
+                                    Productos de las solicitudes de compra aceptadas
+                                    para el
+                                    anteproyecto</p>
+                                <div class="mt-2">
+                                    <div class="overflow-x-auto mt-8">
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr
+                                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Partida
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Código
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Nombre
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2  min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Cantidad
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Precio unitario
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2   min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Margen
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Valor total
+                                                    </th>
+                                                    <th v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Acciones
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(item, index) in (form.products)" :key="index"
+                                                    class="text-gray-700">
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p>
+                                                            {{ index + 1 }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p>
+                                                            {{ item.purchase_product?.code }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            {{ item.purchase_product?.name }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <!-- v-if="preproject.quote" -->
+                                                        <p class="text-gray-900">
+                                                            {{ item.quantity }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <!-- v-if="preproject.quote" -->
+                                                        <p class="text-gray-900">
+                                                            S/. {{ (item.unitary_price).toFixed(2) }}
+                                                        </p>
+
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p v-if="preproject.quote" class="text-gray-900">
+                                                            {{ item.profit_margin }} %
+                                                        </p>
+                                                        <div v-else class="flex space-x-2 items-center">
+                                                            <input required type="number" min="0" step="0.01"
+                                                                v-model="item.profit_margin"
+                                                                class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                            <span>%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            S/.{{ (item.unitary_price *
+        item.quantity *
+        (1 + (item.profit_margin) / 100))
+        .toFixed(2) }}</p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <div v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                                            class="flex justify-end">
+                                                            <button type="button" @click="deleteProduct(index, item.id)"
+                                                                class="col-span-1 flex justify-end">
+                                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <br>
+                                    <br>
+
+                                    <p class="text-sm my-2">
+                                        Productos de almacén reservados para el anteproyecto
+                                    </p>
+
+                                    <div class="overflow-x-auto mt-8">
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr
+                                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Partida
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Código
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Nombre
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2  min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Cantidad
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Precio unitario
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2   min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Margen
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Valor total
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(item, index) in (preproject_products)" :key="index"
+                                                    class="text-gray-700">
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p>
+                                                            {{ index + 1 }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p>
+                                                            {{ item.entry.inventory.purchase_product.code }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            {{ item.entry.inventory.purchase_product.name }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <!-- v-if="preproject.quote" -->
+                                                        <p class="text-gray-900">
+                                                            {{ item.quantity }}
+                                                        </p>
+
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <!-- v-if="preproject.quote" -->
+                                                        <p class="text-gray-900">
+                                                            S/. {{ (item.unitary_price) }}
+                                                        </p>
+
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900 text-center">
+                                                            {{ item.margin }} %
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            S/.{{ (item.unitary_price *
+        item.quantity *
+        (1 + (item.margin) / 100))
+        .toFixed(2) }}</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>           
+
+
+                            <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-10">
+                                <div class="flex gap-2 items-center">
+                                    <h2 class="text-base font-bold leading-6 text-gray-900 ">Servicios
+                                    </h2>
+                                    <button v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                        @click="showToAddItem" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="text-blue-500 hover:text-purple-500 w-7 h-7">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="overflow-x-auto mt-8">
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr
+                                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Partida
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Servicio
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Cantidad de Activos
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Días
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Precio Unitario de Renta
+                                                    </th>
+
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Margen
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Valor total
+                                                    </th>
+                                                    <th v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        Acciones
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr v-for="(item, index) in (form.items)" :key="index"
+                                                    class="text-gray-700">
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p>
+                                                            {{ index + 1 }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p>
+                                                            {{ item.service_info.name }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            {{ item.resource_entries.length === 0 ? '-' :
+        item.resource_entries.length }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">{{ item.days }}</p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900 whitespace-nowrap">
+                                                            S/. {{ item.service_info.rent_price }}
+                                                        </p>
+                                                    </td>
+
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            {{ (item.profit_margin) }}%
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                        <p class="text-gray-900">
+                                                            S/.{{ (item.service_info.rent_price *
+        (item.resource_entries.length === 0 ? 1 :
+            item.resource_entries.length)
+        * item.days * (1 + item.profit_margin / 100)).toFixed(2) }}
+                                                        </p>
+                                                    </td>
+                                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+
+
+
+                                                        <div class="flex justify-center space-x-3">
+
+                                                            <button v-if="item.resource_entries.length !== 0"
+                                                                type="button"
+                                                                @click="showServiceDetailsModal(item.resource_entries)"
+                                                                class="text-blue-600 hover:underline">
+                                                                <EyeIcon class="h-4 w-4" />
+                                                            </button>
+                                                            <button type="button"
+                                                                v-if="auth.user.role_id === 1 || preproject.quote === null"
+                                                                @click=" preproject.quote
+        ? deleteAlreadyItem(item.ids, index)
+        : deleteItem(index)" class="col-span-1 flex justify-end">
+                                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                                            </button>
+                                                        </div>
+
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <InputError :message="form.errors.items" />
+                            </div>
+                        </div>
+                        
+                        <div class="mt-7 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+                            <div class="col-span-1 sm:col-span-6 xl:col-span-4 text-end">
+                                <p class="mt-1 text-sm text-gray-600">
+                                    Subtotal de Productos: S/. {{ subTotalProducts(form.products, preproject_products).toFixed(2) }}
+                                </p>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    Subtotal de Servicios: S/. {{ subTotalServices(form.items).toFixed(2) }}
+                                </p>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    Subtotal General: S/. {{ (subTotalProducts(form.products, preproject_products) + subTotalServices(form.items)).toFixed(2) }}
+                                </p>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    IGV: S/. {{ ((subTotalProducts(form.products, preproject_products) + subTotalServices(form.items))*0.18).toFixed(2) }}
+                                </p>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    Total: S/. {{ ((subTotalProducts(form.products, preproject_products) + subTotalServices(form.items))*1.18).toFixed(2) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="min-w-full p-3 rounded-lg shadow">
-                <form @submit.prevent="submit">
-                    <div class="pt-1">
-                        <div class="border-b border-gray-900 pb-12">
 
-                            <h2 class="text-base font-semibold leading-7 text-gray-900 border-b border-gray-900/10">
-                                Cotización
-                            </h2>
-                            <br>
-                            <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+                
 
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre del proyecto
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <TextInput type="text" v-model="form.name" id="name"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.name" />
-                                    </div>
-                                </div>
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="date" class="font-medium leading-6 text-gray-900">Fecha de Inicio
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <TextInput type="Date" v-model="form.date" id="date"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.date" />
-                                    </div>
-                                </div>
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="supervisor" class="font-medium leading-6 text-gray-900">Supervisor
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <TextInput type="text" v-model="form.supervisor" id="supervisor"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.supervisor" />
-                                    </div>
-                                </div>
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="boss" class="font-medium leading-6 text-gray-900">Jefe
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <TextInput type="text" v-model="form.boss" id="boss"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.boss" />
-                                    </div>
-                                </div>
+                <div class="mt-3 flex flex-col sm:flex-row items-center justify-end gap-4">
+
+                    <button v-if="preproject.quote && !preproject.quote.state" 
+                        type="button"
+                        @click="openPQCanceledModal"
+                        class="w-full text-center sm:w-auto rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                        Anular
+                    </button>
+                    <button v-if="preproject.quote && !preproject.quote.state" @click="openPQRejecteModal" type='button'
+                        class="w-full text-center sm:w-auto rounded-md bg-yellow-500 px-6 py-2 text-sm font-semibold text-black shadow-sm hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                        Rechazar Cotización
+                    </button>
+                    <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
+                        target="_blank" rel="noopener noreferrer"
+                        class="w-full text-center sm:w-auto rounded-md bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                        Exportar a PDF
+                    </a>
+
+                    <button v-if="preproject.quote && !preproject.quote.state" type="button" @click="acceptCotization"
+                        :class="{ 'opacity-25': form.processing }"
+                        class="w-full text-center sm:w-auto rounded-md bg-yellow-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:green-indigo-600">
+                        Aceptar Cotización</button>
 
 
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="deliverable_time" class="font-medium leading-6 text-gray-900">Tiempo de
-                                        entrega (días)
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <input type="number" v-model="form.deliverable_time" id="deliverable_time" min="1"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.deliverable_time" />
-                                    </div>
-                                </div>
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="validity_time" class="font-medium leading-6 text-gray-900">Tiempo de
-                                        validez (días)
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <input type="number" v-model="form.validity_time" id="validity_time" min="1"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.validity_time" />
-                                    </div>
-                                </div>
+                    <button v-if="auth.user.role_id === 1 || preproject.quote === null" type="submit"
+                        :class="{ 'opacity-25': form.processing }"
+                        class="w-full sm:w-auto rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
 
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="rev" class="font-medium leading-6 text-gray-900">Rev.
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <input type="number" v-model="form.rev" id="rev" min="1"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.rev" />
-                                    </div>
-                                </div>
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="deliverable_place" class="font-medium leading-6 text-gray-900">Lugar de
-                                        entrega
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <TextInput v-model="form.deliverable_place" id="deliverable_place"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.deliverable_place" />
-                                    </div>
-                                </div>
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="payment_type" class="font-medium leading-6 text-gray-900">Forma de pago
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <TextInput v-model="form.payment_type" id="payment_type"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.payment_type" />
-                                    </div>
-                                </div>
+                </div>
+
+            </form>
 
 
-                                <div class="sm:col-span-3">
-                                    <InputLabel for="observations" class="font-medium leading-6 text-gray-900">Observaciones
-                                    </InputLabel>
-                                    <div class="mt-2">
-                                        <textarea type="text" v-model="form.observations" id="observations"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                        <InputError :message="form.errors.observations" />
-                                    </div>
-                                </div>
+            <Modal :show="showProductModal">
+                <form class="p-6" @submit.prevent="addProduct">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        Añadir producto
+                    </h2>
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
 
-                                <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-4">
-                                    <div class="flex gap-2 items-center">
-                                        <h2 class="text-base font-bold leading-6 text-gray-900 ">Productos
-                                        </h2>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="unit" class="font-medium leading-6 text-gray-900">
+                                Producto
+                            </InputLabel>
+                            <div class="mt-2">
+                                <input required id="unit" list="options" @input="handleAutocomplete" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
-                                        <!-- <button v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                            @click="openProductModal" type="button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor"
-                                                class="text-blue-500 hover:text-purple-500 w-7 h-7">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
-                                            </svg>
-                                        </button> -->
-                                    </div>
-                                    <p class="text-sm mt-6">
-                                        Productos de las solicitudes de compra aceptadas
-                                        para el
-                                        anteproyecto</p>
-                                    <div class="mt-2">
-                                        <div class="overflow-x-auto mt-8">
-                                            <table class="w-full">
-                                                <thead>
-                                                    <tr
-                                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Partida
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Código
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Nombre
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2  min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Cantidad
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Precio unitario
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2   min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Margen
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Valor total
-                                                        </th>
-                                                        <th v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Acciones
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="(item, index) in (form.products)" :key="index"
-                                                        class="text-gray-700">
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p>
-                                                                {{ index + 1 }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p>
-                                                                {{ item.purchase_product?.code }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900">
-                                                                {{ item.purchase_product?.name }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <!-- v-if="preproject.quote" -->
-                                                            <p class="text-gray-900">
-                                                                {{ item.quantity }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <!-- v-if="preproject.quote" -->
-                                                            <p class="text-gray-900">
-                                                                S/. {{ (item.unitary_price).toFixed(2) }}
-                                                            </p>
-
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p v-if="preproject.quote" class="text-gray-900">
-                                                                {{ item.profit_margin }} %
-                                                            </p>
-                                                            <div v-else class="flex space-x-2 items-center">
-                                                                <input required type="number" min="0" step="0.01"
-                                                                    v-model="item.profit_margin"
-                                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                                <span>%</span>
-                                                            </div>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900">
-                                                                S/.{{ (item.unitary_price *
-            item.quantity *
-            (1 + (item.profit_margin) / 100))
-            .toFixed(2) }}</p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <div v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                                                class="flex justify-end">
-                                                                <button type="button" @click="deleteProduct(index, item.id)"
-                                                                    class="col-span-1 flex justify-end">
-                                                                    <TrashIcon class=" text-red-500 h-4 w-4 " />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <br>
-                                        <br>
-
-                                        <p class="text-sm my-2">
-                                            Productos de almacén reservados para el anteproyecto
-                                        </p>
-
-                                        <div class="overflow-x-auto mt-8">
-                                            <table class="w-full">
-                                                <thead>
-                                                    <tr
-                                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Partida
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Código
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Nombre
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2  min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Cantidad
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Precio unitario
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2   min-w-[150px] border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Margen
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Valor total
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="(item, index) in (preproject_products)" :key="index"
-                                                        class="text-gray-700">
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p>
-                                                                {{ index + 1 }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p>
-                                                                {{ item.entry.inventory.purchase_product.code }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900">
-                                                                {{ item.entry.inventory.purchase_product.name }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <!-- v-if="preproject.quote" -->
-                                                            <p class="text-gray-900">
-                                                                {{ item.quantity }}
-                                                            </p>
-
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <!-- v-if="preproject.quote" -->
-                                                            <p class="text-gray-900">
-                                                                S/. {{ (item.unitary_price) }}
-                                                            </p>
-
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900 text-center">
-                                                                {{ item.margin }} %
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900">
-                                                                S/.{{ (item.unitary_price *
-            item.quantity *
-            (1 + (item.margin) / 100))
-            .toFixed(2) }}</p>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>           
-
-
-                                <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-10">
-                                    <div class="flex gap-2 items-center">
-                                        <h2 class="text-base font-bold leading-6 text-gray-900 ">Servicios
-                                        </h2>
-                                        <button v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                            @click="showToAddItem" type="button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor"
-                                                class="text-blue-500 hover:text-purple-500 w-7 h-7">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div class="mt-2">
-                                        <div class="overflow-x-auto mt-8">
-                                            <table class="w-full">
-                                                <thead>
-                                                    <tr
-                                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Partida
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Servicio
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Cantidad de Activos
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Días
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Precio Unitario de Renta
-                                                        </th>
-
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Margen
-                                                        </th>
-                                                        <th
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Valor total
-                                                        </th>
-                                                        <th v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                            Acciones
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody>
-                                                    <tr v-for="(item, index) in (form.items)" :key="index"
-                                                        class="text-gray-700">
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p>
-                                                                {{ index + 1 }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p>
-                                                                {{ item.service_info.name }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900">
-                                                                {{ item.resource_entries.length === 0 ? '-' :
-            item.resource_entries.length }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900">{{ item.days }}</p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900 whitespace-nowrap">
-                                                                S/. {{ item.service_info.rent_price }}
-                                                            </p>
-                                                        </td>
-
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900">
-                                                                {{ (item.profit_margin) }}%
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                            <p class="text-gray-900">
-                                                                S/.{{ (item.service_info.rent_price *
-            (item.resource_entries.length === 0 ? 1 :
-                item.resource_entries.length)
-            * item.days * (1 + item.profit_margin / 100)).toFixed(2) }}
-                                                            </p>
-                                                        </td>
-                                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-
-
-
-                                                            <div class="flex justify-center space-x-3">
-
-                                                                <button v-if="item.resource_entries.length !== 0"
-                                                                    type="button"
-                                                                    @click="showServiceDetailsModal(item.resource_entries)"
-                                                                    class="text-blue-600 hover:underline">
-                                                                    <EyeIcon class="h-4 w-4" />
-                                                                </button>
-                                                                <button type="button"
-                                                                    v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                                                    @click=" preproject.quote
-            ? deleteAlreadyItem(item.ids, index)
-            : deleteItem(index)" class="col-span-1 flex justify-end">
-                                                                    <TrashIcon class=" text-red-500 h-4 w-4 " />
-                                                                </button>
-                                                            </div>
-
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <InputError :message="form.errors.items" />
-                                </div>
-                            </div>
-                            
-                            <div class="mt-7 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-                                <div class="col-span-1 sm:col-span-6 xl:col-span-4 text-end">
-                                    <p class="mt-1 text-sm text-gray-600">
-                                        Subtotal de Productos: S/. {{ subTotalProducts(form.products, preproject_products).toFixed(2) }}
-                                    </p>
-                                    <p class="mt-1 text-sm text-gray-600">
-                                        Subtotal de Servicios: S/. {{ subTotalServices(form.items).toFixed(2) }}
-                                    </p>
-                                    <p class="mt-1 text-sm text-gray-600">
-                                        Subtotal General: S/. {{ (subTotalProducts(form.products, preproject_products) + subTotalServices(form.items)).toFixed(2) }}
-                                    </p>
-                                    <p class="mt-1 text-sm text-gray-600">
-                                        IGV: S/. {{ ((subTotalProducts(form.products, preproject_products) + subTotalServices(form.items))*0.18).toFixed(2) }}
-                                    </p>
-                                    <p class="mt-1 text-sm text-gray-600">
-                                        Total: S/. {{ ((subTotalProducts(form.products, preproject_products) + subTotalServices(form.items))*1.18).toFixed(2) }}
-                                    </p>
-                                </div>
+                                <datalist id="options">
+                                    <option v-for="item in products" :value="item.code" :data-value="item">
+                                        {{ item.name }}
+                                    </option>
+                                </datalist>
                             </div>
                         </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad
+                            </InputLabel>
+                            <div class="mt-2">
+                                <input required type="number" v-model="productToAdd.quantity" min="1" id="quantity"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel class="leading-6 text-gray-100">Nombre:
+                            </InputLabel>
+                            <div class="mt-2">
+                                <InputLabel class="leading-6 text-gray-100">{{ productToAdd.purchase_product.name }}
+                                </InputLabel>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel class="leading-6 text-gray-100">Unidad:
+                            </InputLabel>
+                            <div class="mt-2">
+                                <InputLabel class="leading-6 text-gray-100">{{ productToAdd.purchase_product.unit }}
+                                </InputLabel>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio Unitario
+                                (sin
+                                IGV)
+                            </InputLabel>
+                            <div class="mt-2">
+                                <input required type="number" v-model="productToAdd.unitary_price" min="0" step="0.01"
+                                    id="unitary_price"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen de
+                                Margen (%)
+                            </InputLabel>
+                            <div class="mt-2 flex gap-3 items-center">
+                                <input required type="number" v-model="productToAdd.profit_margin" min="0" step="0.01"
+                                    id="profit_margin"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            </div>
+                        </div>
+
                     </div>
-
-                    
-
-                    <div class="mt-3 flex flex-col sm:flex-row items-center justify-end gap-4">
-
-                        <button v-if="preproject.quote && !preproject.quote.state" 
-                            type="button"
-                            @click="openPQCanceledModal"
-                            class="w-full text-center sm:w-auto rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
-                            Anular
-                        </button>
-                        <button v-if="preproject.quote && !preproject.quote.state" @click="openPQRejecteModal" type='button'
-                            class="w-full text-center sm:w-auto rounded-md bg-yellow-500 px-6 py-2 text-sm font-semibold text-black shadow-sm hover:bg-yellow-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
-                            Rechazar Cotización
-                        </button>
-                        <a v-if="preproject.quote" :href="route('preprojects.pdf', { preproject: preproject.id })"
-                            target="_blank" rel="noopener noreferrer"
-                            class="w-full text-center sm:w-auto rounded-md bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
-                            Exportar a PDF
-                        </a>
-
-                        <button v-if="preproject.quote && !preproject.quote.state" type="button" @click="acceptCotization"
-                            :class="{ 'opacity-25': form.processing }"
-                            class="w-full text-center sm:w-auto rounded-md bg-yellow-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:green-indigo-600">
-                            Aceptar Cotización</button>
-
-
-                        <button v-if="auth.user.role_id === 1 || preproject.quote === null" type="submit"
-                            :class="{ 'opacity-25': form.processing }"
-                            class="w-full sm:w-auto rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
-
+                    <div class="mt-6 flex gap-3 justify-end">
+                        <SecondaryButton type="button" @click="closeProductModal"> Cerrar </SecondaryButton>
+                        <PrimaryButton type="submit"> Agregar </PrimaryButton>
                     </div>
-
                 </form>
+            </Modal>
 
+            <Modal :show="showModalMember">
+                <form class="p-6" @submit.prevent="addItem">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        Agregar servicio
+                    </h2>
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
 
-                <Modal :show="showProductModal">
-                    <form class="p-6" @submit.prevent="addProduct">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            Añadir producto
-                        </h2>
-                        <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-
-                            <div class="sm:col-span-3">
-                                <InputLabel for="unit" class="font-medium leading-6 text-gray-900">
-                                    Producto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input required id="unit" list="options" @input="handleAutocomplete" autocomplete="off"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-
-                                    <datalist id="options">
-                                        <option v-for="item in products" :value="item.code" :data-value="item">
-                                            {{ item.name }}
-                                        </option>
-                                    </datalist>
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input required type="number" v-model="productToAdd.quantity" min="1" id="quantity"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel class="leading-6 text-gray-100">Nombre:
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputLabel class="leading-6 text-gray-100">{{ productToAdd.purchase_product.name }}
-                                    </InputLabel>
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel class="leading-6 text-gray-100">Unidad:
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputLabel class="leading-6 text-gray-100">{{ productToAdd.purchase_product.unit }}
-                                    </InputLabel>
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio Unitario
-                                    (sin
-                                    IGV)
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input required type="number" v-model="productToAdd.unitary_price" min="0" step="0.01"
-                                        id="unitary_price"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                </div>
-                            </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen de
-                                    Margen (%)
-                                </InputLabel>
-                                <div class="mt-2 flex gap-3 items-center">
-                                    <input required type="number" v-model="productToAdd.profit_margin" min="0" step="0.01"
-                                        id="profit_margin"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="mt-6 flex gap-3 justify-end">
-                            <SecondaryButton type="button" @click="closeProductModal"> Cerrar </SecondaryButton>
-                            <PrimaryButton type="submit"> Agregar </PrimaryButton>
-                        </div>
-                    </form>
-                </Modal>
-
-                <Modal :show="showModalMember">
-                    <form class="p-6" @submit.prevent="addItem">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            Agregar servicio
-                        </h2>
-                        <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-
-                            <div class="sm:col-span-3">
-                                <InputLabel for="service" class="font-medium leading-6 text-gray-900">Servicios
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select required v-model="itemToAdd.service_info" @change="handleService" id="service"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option disabled value="">Seleccione uno</option>
-                                        <option v-for="item in services" :key="item.id" :value="item">
-                                            {{ item.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div v-if="itemToAdd.service_info?.purchase_product" class="sm:col-span-3">
-                                <InputLabel for="resource" class="font-medium leading-6 text-gray-900">Activos
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select required v-model="itemToAdd.resource_entries" id="service" multiple size="5"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option disabled value="">Seleccione uno o varios</option>
-                                        <option v-for="item in active_selected" :key="item.id" :value="item">
-                                            {{ item.purchase_product.name }} - {{ item.serial_number }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel for="days" class="font-medium leading-6 text-gray-900">Días
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input required type="number" v-model="itemToAdd.days" min="1"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen (%)
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input required type="number" v-model="itemToAdd.profit_margin" min="0" step="0.01"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                </div>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="service" class="font-medium leading-6 text-gray-900">Servicios
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select required v-model="itemToAdd.service_info" @change="handleService" id="service"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccione uno</option>
+                                    <option v-for="item in services" :key="item.id" :value="item">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
                             </div>
                         </div>
-                        <div class="mt-6 flex gap-3 justify-end">
-                            <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
-                            <PrimaryButton type="submit"> Agregar </PrimaryButton>
-                        </div>
-                    </form>
-                </Modal>
 
-
-                <Modal :show="showServiceDetails" @close="showServiceDetails = false" :maxWidth="'lg'">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-base font-medium leading-7">
-                                Activos Asignados a este servicio
-                            </h2>
-                            <button @click="closeServiceDetailsModal"
-                                class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
+                        <div v-if="itemToAdd.service_info?.purchase_product" class="sm:col-span-3">
+                            <InputLabel for="resource" class="font-medium leading-6 text-gray-900">Activos
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select required v-model="itemToAdd.resource_entries" id="service" multiple size="5"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccione uno o varios</option>
+                                    <option v-for="item in active_selected" :key="item.id" :value="item">
+                                        {{ item.purchase_product.name }} - {{ item.serial_number }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="overflow-x-auto mt-4">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Activo
-                                        </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Número de serie
-                                        </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Precio Unitario
-                                        </th>
-                                        <!-- Agrega más encabezados según sea necesario -->
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr v-for="(item, index) in service_resources" :key="index">
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ item.purchase_product.name }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ item.serial_number }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">S/. {{ item.current_price }}</div>
-                                        </td>
-                                        <!-- Agrega más celdas según sea necesario -->
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="days" class="font-medium leading-6 text-gray-900">Días
+                            </InputLabel>
+                            <div class="mt-2">
+                                <input required type="number" v-model="itemToAdd.days" min="1"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen (%)
+                            </InputLabel>
+                            <div class="mt-2">
+                                <input required type="number" v-model="itemToAdd.profit_margin" min="0" step="0.01"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            </div>
                         </div>
                     </div>
-                </Modal>
-
-
-                <Modal :show="showPQRejectedModal" @close="closePQRejecteModal" >
-                    <div class="p-6">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            ¿Estás seguro de rechazar la cotización actual?
-                        </h2>
-                        <p class="mt-1 text-sm text-gray-600">
-                            Se eliminará toda la informacion relacionada cotización, pero podrá volver a crear otra
-                        </p>
-                        <div class="mt-6 flex justify-end">
-                            <SecondaryButton @click="closePQRejecteModal"> Cancelar </SecondaryButton>
-
-                            <PrimaryButton class="ml-3" type="button" @click="rejedtPreprojectQuote()">
-                                Rechazar
-                            </PrimaryButton>
-                        </div>
+                    <div class="mt-6 flex gap-3 justify-end">
+                        <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                        <PrimaryButton type="submit"> Agregar </PrimaryButton>
                     </div>
-                </Modal>
+                </form>
+            </Modal>
 
-                <Modal :show="showPQCanceledModal" @close="closePQCanceledModal" >
-                    <div class="p-6">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            ¿Estás seguro de anular el Anteproyecto?
+
+            <Modal :show="showServiceDetails" @close="showServiceDetails = false" :maxWidth="'lg'">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-base font-medium leading-7">
+                            Activos Asignados a este servicio
                         </h2>
-                        <p class="mt-1 text-sm text-gray-600">
-                            Se eliminará toda la informacion relacionada cotización, y el proyecto pasará a la sección de anulados.
-                        </p>
-                        <div class="mt-6 flex justify-end">
-                            <SecondaryButton @click="closePQCanceledModal"> Cancelar </SecondaryButton>
-
-                            <DangerButton class="ml-3" type="button" @click="cancelPreproject()">
-                                Anular
-                            </DangerButton>
-                        </div>
+                        <button @click="closeServiceDetailsModal"
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
-                </Modal>
 
-            </div>
-            <ErrorOperationModal :showError="showErroModal" title="Error"
-                message="El producto ya fue añadido o es inválido" />
-            <ErrorOperationModal :showError="showErroModal2" title="Error"
-                message="El servicio ya fue añadido o es inválido" />
-
-            <SuccessOperationModal :confirming="showModal" :title="modalVariables.title"
-                :message="modalVariables.message" />
-
-            <!-- services's modal -->
-            <SuccessOperationModal :confirming="showItemAddModal" :title="`Servicio añadido.`"
-                :message="`El servicio fue añadido.`" />
-            <SuccessOperationModal :confirming="showItemRemoveModal" :title="`Servicio removido.`"
-                :message="`El servicio fue removido.`" />
-            <!-- products's modal -->
-            <SuccessOperationModal :confirming="showProductAddModal" :title="`Producto añadido.`"
-                :message="`El producto fue añadido.`" />
-            <SuccessOperationModal :confirming="showProductRemoveModal" :title="`Producto removido.`"
-                :message="`El producto fue removido.`" />
-            <AcceptModal :acceptFunction="approve" :confirmingAccept="showConfirmAccept" @closeModal="closeConfirmAccept"
-                :itemType="`Cotización`" />
-            <ConfirmAcceptModal :confirmingaccept="showFinishAccept" :itemType="`Cotización`" />
-
-        </AuthenticatedLayout>
-    </template>
-    <script setup>
-    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import ConfirmAcceptModal from '@/Components/ConfirmAcceptModal.vue';
-    import AcceptModal from '@/Components/AcceptModal.vue';
-    import InputLabel from '@/Components/InputLabel.vue';
-    import TextInput from '@/Components/TextInput.vue';
-    import InputError from '@/Components/InputError.vue';
-    import Modal from '@/Components/Modal.vue';
-    import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-    import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-    import { ref } from 'vue';
-    import { Head, router, useForm } from '@inertiajs/vue3';
-    import { TrashIcon } from '@heroicons/vue/24/outline';
-    import SecondaryButton from '@/Components/SecondaryButton.vue';
-    import PrimaryButton from '@/Components/PrimaryButton.vue';
-    import DangerButton from '@/Components/DangerButton.vue';
-    import { EyeIcon } from '@heroicons/vue/24/outline';
-    import axios from 'axios';
-
-    const showModal = ref(false)
-    const showErroModal = ref(false)
-    const showErroModal2 = ref(false)
-
-    const { preproject, auth, products, purchasing_requests, existingProducts, services, preproject_products } = defineProps({
-        products: Object,
-        preproject: Object,
-        purchasing_requests: Object,
-        existingProducts: Object,
-        auth: Object,
-        services: Object,
-        preproject_products: Object
-    })
+                    <div class="overflow-x-auto mt-4">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Activo
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Número de serie
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Precio Unitario
+                                    </th>
+                                    <!-- Agrega más encabezados según sea necesario -->
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr v-for="(item, index) in service_resources" :key="index">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ item.purchase_product.name }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ item.serial_number }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">S/. {{ item.current_price }}</div>
+                                    </td>
+                                    <!-- Agrega más celdas según sea necesario -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </Modal>
 
 
-    const modalVariables = ref({
-        title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
-        message: `La cotización para anteproyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
-    })
+            <Modal :show="showPQRejectedModal" @close="closePQRejecteModal" >
+                <div class="p-6">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        ¿Estás seguro de rechazar la cotización actual?
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-600">
+                        Se eliminará toda la informacion relacionada cotización, pero podrá volver a crear otra
+                    </p>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton @click="closePQRejecteModal"> Cancelar </SecondaryButton>
+
+                        <PrimaryButton class="ml-3" type="button" @click="rejedtPreprojectQuote()">
+                            Rechazar
+                        </PrimaryButton>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal :show="showPQCanceledModal" @close="closePQCanceledModal" >
+                <div class="p-6">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        ¿Estás seguro de anular el Anteproyecto?
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-600">
+                        Se eliminará toda la informacion relacionada cotización, y el proyecto pasará a la sección de anulados.
+                    </p>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton @click="closePQCanceledModal"> Cancelar </SecondaryButton>
+
+                        <DangerButton class="ml-3" type="button" @click="cancelPreproject()">
+                            Anular
+                        </DangerButton>
+                    </div>
+                </div>
+            </Modal>
+
+        </div>
+        <ErrorOperationModal :showError="showErroModal" title="Error"
+            message="El producto ya fue añadido o es inválido" />
+        <ErrorOperationModal :showError="showErroModal2" title="Error"
+            message="El servicio ya fue añadido o es inválido" />
+
+        <SuccessOperationModal :confirming="showModal" :title="modalVariables.title"
+            :message="modalVariables.message" />
+
+        <!-- services's modal -->
+        <SuccessOperationModal :confirming="showItemAddModal" :title="`Servicio añadido.`"
+            :message="`El servicio fue añadido.`" />
+        <SuccessOperationModal :confirming="showItemRemoveModal" :title="`Servicio removido.`"
+            :message="`El servicio fue removido.`" />
+        <!-- products's modal -->
+        <SuccessOperationModal :confirming="showProductAddModal" :title="`Producto añadido.`"
+            :message="`El producto fue añadido.`" />
+        <SuccessOperationModal :confirming="showProductRemoveModal" :title="`Producto removido.`"
+            :message="`El producto fue removido.`" />
+        <AcceptModal :acceptFunction="approve" :confirmingAccept="showConfirmAccept" @closeModal="closeConfirmAccept"
+            :itemType="`Cotización`" />
+        <ConfirmAcceptModal :confirmingaccept="showFinishAccept" :itemType="`Cotización`" />
+
+    </AuthenticatedLayout>
+</template>
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmAcceptModal from '@/Components/ConfirmAcceptModal.vue';
+import AcceptModal from '@/Components/AcceptModal.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
+import Modal from '@/Components/Modal.vue';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import { ref } from 'vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
+import { TrashIcon } from '@heroicons/vue/24/outline';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
+import axios from 'axios';
+
+const showModal = ref(false)
+const showErroModal = ref(false)
+const showErroModal2 = ref(false)
+
+const { preproject, auth, products, purchasing_requests, existingProducts, services, preproject_products } = defineProps({
+    products: Object,
+    preproject: Object,
+    purchasing_requests: Object,
+    existingProducts: Object,
+    auth: Object,
+    services: Object,
+    preproject_products: Object
+})
 
 
-    const initalProductState = {
-        purchase_product_id: '',
-        purchase_product: {
-            code: '',
-            name: '',
-            unit: '',
-        },
-        quantity: '',
-        unitary_price: '',
-        profit_margin: '',
-    }
+const modalVariables = ref({
+    title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
+    message: `La cotización para anteproyecto fue ${preproject.quote !== null ? 'actualizada' : 'creada'}`
+})
 
 
-    const initialState = {
+const initalProductState = {
+    purchase_product_id: '',
+    purchase_product: {
+        code: '',
         name: '',
-        date: '',
-        supervisor: '',
-        boss: '',
-        rev: '',
-        deliverable_time: '',
-        validity_time: '',
-        deliverable_place: '',
-        payment_type: '',
-        observations: '',
-        items: [],
-        preproject_products: preproject_products,
-        products: existingProducts,
-        preproject_id: preproject.id
-    }
-
-    function servicesArrayMaker(data) {
-
-        let result = []
-        data.forEach((item) => {
-            let fo = result.find((x) => x.service_id === item.service_id)
-            if (fo) {
-                fo.resource_entries.push(item.resource_entry)
-                fo.ids.push(item.id)
-            } else {
-                result.push({
-                    service_id: item.service_id,
-                    days: item.days,
-                    profit_margin: item.profit_margin,
-                    service_info: item.service,
-                    resource_entries: item.resource_entry_id
-                        ? [item.resource_entry]
-                        : [],
-                    rent_price: item.rent_price,
-                    ids: [item.id]
-                })
-            }
-        })
-        return result
-    }
+        unit: '',
+    },
+    quantity: '',
+    unitary_price: '',
+    profit_margin: '',
+}
 
 
-    const updateState = {
-        ...preproject.quote,
-        items: preproject?.quote?.preproject_quote_services
-            ? servicesArrayMaker(preproject.quote.preproject_quote_services)
-            : []
-    }
+const initialState = {
+    name: '',
+    date: '',
+    supervisor: '',
+    boss: '',
+    rev: '',
+    deliverable_time: '',
+    validity_time: '',
+    deliverable_place: '',
+    payment_type: '',
+    observations: '',
+    items: [],
+    preproject_products: preproject_products,
+    products: existingProducts,
+    preproject_id: preproject.id
+}
 
-    const form = useForm(
-        { ...(preproject.quote ? updateState : initialState) }
-    )
+function servicesArrayMaker(data) {
 
-    console.log(form.items)
-
-    const subTotalProducts = (array1, array2) => {
-        let sum1 = array1.reduce((total, product) => total + product.unitary_price * product.quantity * (product.profit_margin ? (1+product.profit_margin/100) : 1), 0)
-        let sum2 = array2.reduce((a,b)=> a+b.entry.unitary_price * b.quantity * (1+(b.margin/100)),0)
-        return sum1 + sum2;
-    }
-
-    const subTotalServices = (array1) => {
-
-        let sum1 = array1.reduce((a, b) => a + b.service_info.rent_price * b.days * (b.resource_entries.length ? b.resource_entries.length : 1) * (1+(b.profit_margin/100)), 0)
-        return sum1; 
-    }
-
-    const submit = () => {
-        let url = route('preprojects.quote.store')
-        if (preproject.quote) {
-            url = route('preprojects.quote.store', { quote_id: preproject.quote.id })
-        }
-        form.post(url, {
-            onSuccess: () => {
-                closeModal();
-                showModal.value = true
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(route('preprojects.index'))
-                }, 2000);
-            },
-            onError: (e) => {
-                console.log(e)
-            }
-        })
-    }
-
-    const showModalMember = ref(false);
-    const showConfirmAccept = ref(false);
-    const showFinishAccept = ref(false);
-    // const itemInitialState = {
-    //     description: '',
-    //     unit: '',
-    //     days: '',
-    //     quantity: '',
-    //     profit_margin: '',
-    //     unit_price: '',
-    // }
-    const itemInitialState = {
-        days: '',
-        profit_margin: '',
-        service_info: {},
-        resource_entries: [],
-        rent_price: ''
-    }
-    const itemToAdd = ref(JSON.parse(JSON.stringify(itemInitialState)))
-    const active_selected = ref([])
-
-    const showItemAddModal = ref(false);
-    const showItemRemoveModal = ref(false);
-
-    const acceptCotization = () => {
-        showConfirmAccept.value = true;
-    }
-
-    const closeConfirmAccept = () => {
-        showConfirmAccept.value = false;
-    }
-
-    const showToAddItem = () => {
-        showModalMember.value = true;
-    }
-    const closeModal = () => {
-        showModalMember.value = false;
-        itemToAdd.value = JSON.parse(JSON.stringify(itemInitialState))
-        active_selected.value = []
-    };
-
-
-    const addItem = () => {
-        if (itemToAdd.value.service_info.id && form.items.find(item => item.service_info?.id == itemToAdd.value.service_info.id) == undefined) {
-            if (preproject.quote) {
-                axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
-                    .then(response => {
-                        if (response.status = 200) {
-                            itemToAdd.value.ids = response.data.ids
-                            showItemAddModal.value = true
-
-                            setTimeout(() => {
-                                showItemAddModal.value = false;
-                            }, 1500);
-                            form.items.push({
-                                ...itemToAdd.value
-                            });
-                            closeModal();
-                        }
-                    })
-                    .catch(e => console.log(e))
-            } else {
-                form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
-                closeModal()
-            }
+    let result = []
+    data.forEach((item) => {
+        let fo = result.find((x) => x.service_id === item.service_id)
+        if (fo) {
+            fo.resource_entries.push(item.resource_entry)
+            fo.ids.push(item.id)
         } else {
-            showErroModal2.value = true
-            setTimeout(() => {
-                showErroModal2.value = false
-            }, 1000)
-        }
-    }
-
-
-    const deleteItem = (index) => {
-        form.items.splice(index, 1);
-    }
-
-    const deleteAlreadyItem = (ids, index) => {
-        router.post(route('preprojects.quote.item.delete'), { ids: ids }, {
-            onError: () => {
-                alert('SERVER ERROR')
-            },
-            onSuccess: () => {
-                showItemRemoveModal.value = true
-                setTimeout(() => {
-                    showItemRemoveModal.value = false;
-                }, 1500);
-                form.items.splice(index, 1);
-            }
-        })
-    }
-
-    const approve = () => {
-        let url = route('preprojects.accept', { quote_id: preproject.quote.id });
-
-        router.post(url, {
-            state: '1'
-        }, {
-            onSuccess: () => {
-                closeConfirmAccept();
-                showFinishAccept.value = true
-                setTimeout(() => {
-                    showFinishAccept.value = false;
-                    router.visit(route('preprojects.index'))
-                }, 2000);
-            },
-            onError: () => {
-                close();
-            }
-        })
-    }
-
-
-    //products valorization
-    const showProductAddModal = ref(false);
-    const showProductRemoveModal = ref(false);
-
-    const showProductModal = ref(false)
-
-
-    const productToAdd = ref(JSON.parse(JSON.stringify(initalProductState)))
-
-    const handleAutocomplete = (e) => {
-        const code = e.target.value;
-        let findedProduct = products.find(item => item.code === code)
-        if (findedProduct) {
-            productToAdd.value.purchase_product_id = findedProduct.id
-            productToAdd.value.purchase_product.name = findedProduct.name
-            productToAdd.value.purchase_product.code = findedProduct.code
-            productToAdd.value.purchase_product.unit = findedProduct.unit
-        } else {
-            productToAdd.value.purchase_product_id = ''
-            productToAdd.value.purchase_product.name = ''
-            productToAdd.value.purchase_product.unit = ''
-            productToAdd.value.purchase_product.code = ''
-        }
-    }
-
-    function openProductModal() {
-        showProductModal.value = true
-    }
-
-    function closeProductModal() {
-        showProductModal.value = false
-        productToAdd.value = { ...initalProductState }
-    }
-
-
-    function addProduct() {
-        if (productToAdd.value.purchase_product_id && form.products.find(item => item.purchase_product_id == productToAdd.value.purchase_product_id) == undefined) {
-            if (preproject.quote) {
-                axios.post(route('preprojects.quote.product.store'), { ...productToAdd.value, preproject_quote_id: preproject.quote.id })
-                    .then(response => {
-                        if (response.status === 200) {
-                            showProductAddModal.value = true
-                            productToAdd.value.id = response.data.id
-                            form.products.push(JSON.parse(JSON.stringify(productToAdd.value)))
-                            setTimeout(() => {
-                                showProductAddModal.value = false;
-                            }, 1500);
-                            productToAdd.value = JSON.parse(JSON.stringify(initalProductState))
-                            closeProductModal()
-                        }
-                    })
-                    .catch(e => console.log(e))
-            } else {
-                form.products.push(JSON.parse(JSON.stringify(productToAdd.value)))
-                closeProductModal()
-                productToAdd.value = JSON.parse(JSON.stringify(initalProductState))
-            }
-        } else {
-            showErroModal.value = true
-            setTimeout(() => {
-                showErroModal.value = false
-            }, 1000)
-        }
-    }
-
-
-    function deleteProduct(index, id) {
-        if (id) {
-            router.delete(route('preprojects.quote.product.delete', { quote_product_id: id }), {
-                onSuccess: () => {
-                    showProductRemoveModal.value = true
-                    setTimeout(() => {
-                        showProductRemoveModal.value = false
-                    }, 1000)
-                    form.products.splice(index, 1)
-                }
+            result.push({
+                service_id: item.service_id,
+                days: item.days,
+                profit_margin: item.profit_margin,
+                service_info: item.service,
+                resource_entries: item.resource_entry_id
+                    ? [item.resource_entry]
+                    : [],
+                rent_price: item.rent_price,
+                ids: [item.id]
             })
-        } else {
-            form.products.splice(index, 1)
         }
+    })
+    return result
+}
+
+
+const updateState = {
+    ...preproject.quote,
+    items: preproject?.quote?.preproject_quote_services
+        ? servicesArrayMaker(preproject.quote.preproject_quote_services)
+        : []
+}
+
+const form = useForm(
+    { ...(preproject.quote ? updateState : initialState) }
+)
+
+
+const subTotalProducts = (array1, array2) => {
+    let sum1 = array1.reduce((total, product) => total + product.unitary_price * product.quantity * (product.profit_margin ? (1+product.profit_margin/100) : 1), 0)
+    let sum2 = array2.reduce((a,b)=> a+b.entry.unitary_price * b.quantity * (1+(b.margin/100)),0)
+    return sum1 + sum2;
+}
+
+const subTotalServices = (array1) => {
+
+    let sum1 = array1.reduce((a, b) => a + b.service_info.rent_price * b.days * (b.resource_entries.length ? b.resource_entries.length : 1) * (1+(b.profit_margin/100)), 0)
+    return sum1; 
+}
+
+const submit = () => {
+    let url = route('preprojects.quote.store')
+    if (preproject.quote) {
+        url = route('preprojects.quote.store', { quote_id: preproject.quote.id })
     }
-
-
-    async function handleService(e) {
-        const res = await axios.get(route('load.resource_entries', { service_id: itemToAdd.value.service_info.id }))
-        active_selected.value = res.data
-    }
-
-    const showServiceDetails = ref(false)
-    const service_resources = ref([])
-
-    function showServiceDetailsModal(array) {
-
-        service_resources.value = [...array]
-        showServiceDetails.value = true
-    }
-
-    const closeServiceDetailsModal = () => {
-        showServiceDetails.value = false
-    }
-
-
-    //Reject and cancel
-    const showPQRejectedModal = ref(false)
-    const showPQCanceledModal = ref(false)
-
-    const closePQRejecteModal = () => {
-        showPQRejectedModal.value = false
-    }
-    const closePQCanceledModal = () => {
-        showPQCanceledModal.value = false
-    }
-
-
-    const openPQRejecteModal = () => {
-        showPQRejectedModal.value = true
-    }
-    const openPQCanceledModal = () => {
-        showPQCanceledModal.value = true
-    }
-
-    const rejedtPreprojectQuote = () => {
-        router.post(route('preproject_quote.rejected'), { preproject_id:  preproject?.id}, {
-            onSuccess: () => {
+    form.post(url, {
+        onSuccess: () => {
+            closeModal();
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
                 router.visit(route('preprojects.index'))
-            }, onError: (e)=>console.log(e)
-        } )
-    }
+            }, 2000);
+        },
+        onError: (e) => {
+            console.log(e)
+        }
+    })
+}
 
-    const cancelPreproject = () => {
-        router.post(route('preproject_quote.canceled'), { preproject_id:  preproject?.id }, {
-            onSuccess: () => {
+const showModalMember = ref(false);
+const showConfirmAccept = ref(false);
+const showFinishAccept = ref(false);
+// const itemInitialState = {
+//     description: '',
+//     unit: '',
+//     days: '',
+//     quantity: '',
+//     profit_margin: '',
+//     unit_price: '',
+// }
+const itemInitialState = {
+    days: '',
+    profit_margin: '',
+    service_info: {},
+    resource_entries: [],
+    rent_price: ''
+}
+const itemToAdd = ref(JSON.parse(JSON.stringify(itemInitialState)))
+const active_selected = ref([])
+
+const showItemAddModal = ref(false);
+const showItemRemoveModal = ref(false);
+
+const acceptCotization = () => {
+    showConfirmAccept.value = true;
+}
+
+const closeConfirmAccept = () => {
+    showConfirmAccept.value = false;
+}
+
+const showToAddItem = () => {
+    showModalMember.value = true;
+}
+const closeModal = () => {
+    showModalMember.value = false;
+    itemToAdd.value = JSON.parse(JSON.stringify(itemInitialState))
+    active_selected.value = []
+};
+
+
+const addItem = () => {
+    if (itemToAdd.value.service_info.id && form.items.find(item => item.service_info?.id == itemToAdd.value.service_info.id) == undefined) {
+        if (preproject.quote) {
+            axios.post(route('preprojects.quote.item.store'), { ...itemToAdd.value, preproject_quote_id: preproject.quote.id })
+                .then(response => {
+                    if (response.status = 200) {
+                        itemToAdd.value.ids = response.data.ids
+                        showItemAddModal.value = true
+
+                        setTimeout(() => {
+                            showItemAddModal.value = false;
+                        }, 1500);
+                        form.items.push({
+                            ...itemToAdd.value
+                        });
+                        closeModal();
+                    }
+                })
+                .catch(e => console.log(e))
+        } else {
+            form.items.push(JSON.parse(JSON.stringify(itemToAdd.value)))
+            closeModal()
+        }
+    } else {
+        showErroModal2.value = true
+        setTimeout(() => {
+            showErroModal2.value = false
+        }, 1000)
+    }
+}
+
+
+const deleteItem = (index) => {
+    form.items.splice(index, 1);
+}
+
+const deleteAlreadyItem = (ids, index) => {
+    router.post(route('preprojects.quote.item.delete'), { ids: ids }, {
+        onError: () => {
+            alert('SERVER ERROR')
+        },
+        onSuccess: () => {
+            showItemRemoveModal.value = true
+            setTimeout(() => {
+                showItemRemoveModal.value = false;
+            }, 1500);
+            form.items.splice(index, 1);
+        }
+    })
+}
+
+const approve = () => {
+    let url = route('preprojects.accept', { quote_id: preproject.quote.id });
+
+    router.post(url, {
+        state: '1'
+    }, {
+        onSuccess: () => {
+            closeConfirmAccept();
+            showFinishAccept.value = true
+            setTimeout(() => {
+                showFinishAccept.value = false;
                 router.visit(route('preprojects.index'))
-            }, onError: (e)=>console.log(e)
+            }, 2000);
+        },
+        onError: () => {
+            close();
+        }
+    })
+}
+
+
+//products valorization
+const showProductAddModal = ref(false);
+const showProductRemoveModal = ref(false);
+
+const showProductModal = ref(false)
+
+
+const productToAdd = ref(JSON.parse(JSON.stringify(initalProductState)))
+
+const handleAutocomplete = (e) => {
+    const code = e.target.value;
+    let findedProduct = products.find(item => item.code === code)
+    if (findedProduct) {
+        productToAdd.value.purchase_product_id = findedProduct.id
+        productToAdd.value.purchase_product.name = findedProduct.name
+        productToAdd.value.purchase_product.code = findedProduct.code
+        productToAdd.value.purchase_product.unit = findedProduct.unit
+    } else {
+        productToAdd.value.purchase_product_id = ''
+        productToAdd.value.purchase_product.name = ''
+        productToAdd.value.purchase_product.unit = ''
+        productToAdd.value.purchase_product.code = ''
+    }
+}
+
+function openProductModal() {
+    showProductModal.value = true
+}
+
+function closeProductModal() {
+    showProductModal.value = false
+    productToAdd.value = { ...initalProductState }
+}
+
+
+function addProduct() {
+    if (productToAdd.value.purchase_product_id && form.products.find(item => item.purchase_product_id == productToAdd.value.purchase_product_id) == undefined) {
+        if (preproject.quote) {
+            axios.post(route('preprojects.quote.product.store'), { ...productToAdd.value, preproject_quote_id: preproject.quote.id })
+                .then(response => {
+                    if (response.status === 200) {
+                        showProductAddModal.value = true
+                        productToAdd.value.id = response.data.id
+                        form.products.push(JSON.parse(JSON.stringify(productToAdd.value)))
+                        setTimeout(() => {
+                            showProductAddModal.value = false;
+                        }, 1500);
+                        productToAdd.value = JSON.parse(JSON.stringify(initalProductState))
+                        closeProductModal()
+                    }
+                })
+                .catch(e => console.log(e))
+        } else {
+            form.products.push(JSON.parse(JSON.stringify(productToAdd.value)))
+            closeProductModal()
+            productToAdd.value = JSON.parse(JSON.stringify(initalProductState))
+        }
+    } else {
+        showErroModal.value = true
+        setTimeout(() => {
+            showErroModal.value = false
+        }, 1000)
+    }
+}
+
+
+function deleteProduct(index, id) {
+    if (id) {
+        router.delete(route('preprojects.quote.product.delete', { quote_product_id: id }), {
+            onSuccess: () => {
+                showProductRemoveModal.value = true
+                setTimeout(() => {
+                    showProductRemoveModal.value = false
+                }, 1000)
+                form.products.splice(index, 1)
+            }
         })
+    } else {
+        form.products.splice(index, 1)
     }
+}
+
+
+async function handleService(e) {
+    const res = await axios.get(route('load.resource_entries', { service_id: itemToAdd.value.service_info.id }))
+    active_selected.value = res.data
+}
+
+const showServiceDetails = ref(false)
+const service_resources = ref([])
+
+function showServiceDetailsModal(array) {
+
+    service_resources.value = [...array]
+    showServiceDetails.value = true
+}
+
+const closeServiceDetailsModal = () => {
+    showServiceDetails.value = false
+}
+
+
+//Reject and cancel
+const showPQRejectedModal = ref(false)
+const showPQCanceledModal = ref(false)
+
+const closePQRejecteModal = () => {
+    showPQRejectedModal.value = false
+}
+const closePQCanceledModal = () => {
+    showPQCanceledModal.value = false
+}
+
+
+const openPQRejecteModal = () => {
+    showPQRejectedModal.value = true
+}
+const openPQCanceledModal = () => {
+    showPQCanceledModal.value = true
+}
+
+const rejedtPreprojectQuote = () => {
+    router.post(route('preproject_quote.rejected'), { preproject_id:  preproject?.id}, {
+        onSuccess: () => {
+            router.visit(route('preprojects.index'))
+        }, onError: (e)=>console.log(e)
+    } )
+}
+
+const cancelPreproject = () => {
+    router.post(route('preproject_quote.canceled'), { preproject_id:  preproject?.id }, {
+        onSuccess: () => {
+            router.visit(route('preprojects.index'))
+        }, onError: (e)=>console.log(e)
+    })
+}
 
 
 
 
-    </script>
+</script>
