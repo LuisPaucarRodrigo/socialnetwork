@@ -268,6 +268,7 @@ const { folders, folder, currentPath, auth, areas } = defineProps({
     auth: Object
 })
 
+
 //------------ Add Folder ----------//
 const showAddFolderModal = ref(false)
 const confirmFolderCreate = ref(false)
