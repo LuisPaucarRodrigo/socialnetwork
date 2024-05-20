@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Gestion de Documentos" />
     <AuthenticatedLayout  :redirectRoute="{ route: 'documment.management.folders', params: { folder_id: folder?.upper_folder_id } }">
       <template #header>
@@ -111,7 +110,7 @@
                         <p class="text-gray-900 whitespace-no-wrap">{{ archive.size }} kB</p>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                        <p class="text-gray-900 whitespace-no-wrap">{{ archive.version }}</p>
+                        <p class="text-gray-900 whitespace-no-wrap">{{ archive.version.toFixed(2) }}</p>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div v-if="archive.type !== 'stable'" class="flex flex-col items-center space-y-2">
