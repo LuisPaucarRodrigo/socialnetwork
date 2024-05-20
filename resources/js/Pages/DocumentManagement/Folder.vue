@@ -51,8 +51,10 @@
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
                                 <Link v-if="item.item_db.state && checkSeeDownloadPermission(item.item_db)"
                                     :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? '#' : '#')"
-                                    class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
-                                <div>
+                                    class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
+                                <div class="flex space-x-3 items-center">
+                                    <img v-if="item.item_db.type === 'Carpeta'" src="/image/FolderIcons/folder_5.png" class="h-10">
+                                    <img v-if="item.item_db.type === 'Archivos'" src="/image/FolderIcons/archive_5.png" class="h-10">
                                     <p>
                                         {{ item.name }}
                                     </p>
