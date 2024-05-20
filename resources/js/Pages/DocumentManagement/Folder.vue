@@ -9,8 +9,7 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <PrimaryButton 
-                v-if="(currentPath !== 'CCIP' 
-                        && folder?.folder_areas.find(i=>i.area_id == auth.user.area_id)?.create )
+                v-if="(currentPath !== 'CCIP' &&  checkCreatePermission())
                         || (auth.user.role_id === 1)" @click="openAddFoldermodal" type="button">
                 + Agregar
             </PrimaryButton>
@@ -50,7 +49,7 @@
                             <td class="border-b border-gray-200 bg-white  text-sm">
                                 <!-- for button instead of Link -->
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
-                                <Link v-if="item.item_db.state"
+                                <Link v-if="item.item_db.state && checkSeeDownloadPermission(item.item_db)"
                                     :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? '#' : '#')"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base">
                                 <div>
@@ -68,8 +67,14 @@
                                 </div>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p v-if="item.item_db.state" class="text-gray-700">Activo</p>
-                                <p v-else class="text-red-400">Por aprobar</p>
+                                <p v-if="item.item_db.state" class="text-gray-700">
+                                    {{ checkSeeDownloadPermission(item.item_db) 
+                                        ? 'Autorizado'
+                                        : 'No Autorizado' }}
+                                </p>
+                                <p v-else class="text-red-400">
+                                    Por aprobar
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.item_db.user.name }}</p>
@@ -94,20 +99,30 @@
                                     </svg>
                                     </Link>
                                     <a type="button"
-                                        :href="route('folder.test.download', { folder_id: item.item_db.id })">
+                                        :href="checkSeeDownloadPermission(item.item_db) 
+                                                    ? route('folder.test.download', { 
+                                                        folder_id: item.item_db.id 
+                                                    }) 
+                                                    : '#'"
+                                        :class="checkSeeDownloadPermission(item.item_db)
+                                                    ?''
+                                                    :'cursor-default'"
+                                    >
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="green" class="w-6 h-6">
+                                            stroke-width="1.5" stroke="green" :class="`w-6 h-6 ${checkSeeDownloadPermission(item.item_db)
+                                                    ?''
+                                                    :'opacity-50'}`">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                         </svg>
                                     </a>
-                                    <button type="button" v-if="item.item_db.type === 'Archivos'">
+                                    <a type="button" v-if="item.item_db.type === 'Archivos'">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="blue" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                         </svg>
-                                    </button>
+                                    </a>
                                     <button v-if="auth.user.role_id === 1" type="button"
                                         @click="openDeleteFolderModal(item)"
                                         class="text-blue-900 whitespace-no-wrap">
@@ -267,6 +282,19 @@ const { folders, folder, currentPath, auth, areas } = defineProps({
     areas: Object,
     auth: Object
 })
+
+//---------- Check Permission -------//
+function checkSeeDownloadPermission (item) {
+    if(auth.user.role_id === 1){
+        return true
+    }
+    return item?.folder_areas?.find(i=>i.area_id == auth.user.area_id)?.see_download
+}
+function checkCreatePermission () {
+    return folder?.folder_areas.find(i=>i.area_id == auth.user.area_id)?.create
+}
+//---------------------------------//
+
 
 
 //------------ Add Folder ----------//

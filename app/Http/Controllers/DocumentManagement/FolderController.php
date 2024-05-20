@@ -188,8 +188,6 @@ class FolderController extends Controller
         $permissions = FolderArea::with('area')->where('folder_id', $folder_id)->get();
         $folder = Folder::find($folder_id);
         $upperFolder = Folder::with('areas')->find($folder->upper_folder_id);
-        Log::info('=== folder superior===');
-        Log::info($upperFolder);
         $upperFoldreAreas = $upperFolder ? $upperFolder->areas
             : Area::all();
         return Inertia::render('DocumentManagement/FolderPermissions', [
