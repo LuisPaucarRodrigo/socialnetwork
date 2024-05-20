@@ -84,20 +84,19 @@ class FolderController extends Controller
 
 
     //Folder Download
-    public function folder_download($folder_id)
-    {
+    public function folder_download($folder_id){
         $user = Auth::user();
         $folder = Folder::find($folder_id);
         try {
             return $this->downloadZip($folder->path, $folder->name, $user);
         } catch (e) {
-            return response()->json(['error' => 'No autorizado'], 403);
+            return abort(403, 'No está autorizado');
         }
-
     }
 
-    public function downloadZip($path, $folder_name, $user)
-    {
+
+
+    public function downloadZip($path, $folder_name, $user){
         $publicDir = public_path($path);
         $zipFileName = $folder_name . '.zip';
         $zip = new ZipArchive;
@@ -113,8 +112,7 @@ class FolderController extends Controller
     }
 
 
-    private function addFolderToZip($folder, $zip, $baseLength, $rootFolderName, $user)
-    {
+    private function addFolderToZip($folder, $zip, $baseLength, $rootFolderName, $user){
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::SELF_FIRST
@@ -141,8 +139,12 @@ class FolderController extends Controller
     }
 
 
-    public function folder_delete($folder_id)
-    {
+
+    public function folder_delete($folder_id){
+        $user = Auth::user();
+        if ($user->role_id !== 1){
+            abort(403, "No está autorizado");
+        }
         $folder = Folder::findOrFail($folder_id);
         $publicDir = public_path($folder->path);
         if (!file_exists($publicDir)) {
@@ -154,8 +156,7 @@ class FolderController extends Controller
     }
 
 
-    private function deleteDirectory($dir)
-    {
+    private function deleteDirectory($dir){
         if (!file_exists($dir)) {
             return true;
         }
@@ -183,8 +184,11 @@ class FolderController extends Controller
 
     //Folder Permissions
 
-    public function folder_permissions($folder_id)
-    {
+    public function folder_permissions($folder_id) {
+        $user = Auth::user();
+        if ($user->role_id !== 1){
+            abort(403, "No está autorizado");
+        }
         $permissions = FolderArea::with('area')->where('folder_id', $folder_id)->get();
         $folder = Folder::find($folder_id);
         $upperFolder = Folder::with('areas')->find($folder->upper_folder_id);
@@ -199,6 +203,10 @@ class FolderController extends Controller
 
     public function folder_permission_add(Request $request)
     {
+        $user = Auth::user();
+        if ($user->role_id !== 1){
+            abort(403, "No está autorizado");
+        }
         $data = $request->validate([
             'folder_id' => 'required',
             'area_id' => 'required',
@@ -208,14 +216,19 @@ class FolderController extends Controller
     }
 
 
-    public function folder_permission_remove($folder_area_id)
-    {
+    public function folder_permission_remove($folder_area_id){
+        $user = Auth::user();
+        if ($user->role_id !== 1){
+            abort(403, "No está autorizado");
+        }
         $this->under_delete_permission_recursive($folder_area_id);
         return redirect()->back();
     }
 
-    public function under_delete_permission_recursive($folder_area_id)
-    {
+
+
+
+    public function under_delete_permission_recursive($folder_area_id){
         $currentPermission = FolderArea::find($folder_area_id);
         $underFolders = Folder::with('folder_areas')
             ->whereHas('folder_areas', function ($query) use ($currentPermission) {
