@@ -342,6 +342,9 @@ class FolderController extends Controller
             $fullFolderPath = realpath($file);
             $publicPosition = strpos($fullFolderPath, 'public');
             $dirName = basename($file);
+
+            // Log::info('== nombre de archivo que viene de scandir');
+            // Log::info($dirName);
             $dirPath = substr($fullFolderPath, $publicPosition + strlen('public/'));
             if (is_dir($file)) {
                 $currentFolder = Folder::where('name', $dirName)->where('path', $dirPath)->first();
@@ -352,9 +355,6 @@ class FolderController extends Controller
                     continue;
                 }
             } else if (is_file($file)) {
-
-
-                
                 $zip->addFile($file, $relativePath);
             }
         }
