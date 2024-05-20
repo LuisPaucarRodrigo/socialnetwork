@@ -1,5 +1,5 @@
 <template>
-    <Head title="Usuarios" />
+    <Head title="Aprobación" />
 
     <AuthenticatedLayout :redirectRoute="'documment.management.folders.validation'">
         <template #header>

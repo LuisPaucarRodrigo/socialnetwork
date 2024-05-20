@@ -21,7 +21,8 @@ class Folder extends Model
 
     protected $appends = [
         'availability',
-        'last_owner'
+        'last_owner',
+        'format_type'
     ];
 
     public function user() {
@@ -110,4 +111,36 @@ class Folder extends Model
         }
         
     }
+
+    public function getFormatTypeAttribute () {
+        if($this->type !== 'Archivos'){
+            return '';
+        }
+        $archive_types = [
+            'Word' => [
+                'laravel' => 'doc,docx',
+                'js' => '.doc,.docx'
+            ],
+            'PDF' => [
+                'laravel' => 'pdf',
+                'js' => '.pdf'
+            ],
+            'Excel' => [
+                'laravel' => 'xls,xlsx',
+                'js' => '.xls,xlsx'
+            ],
+            'Power Point' => [
+                'laravel' => 'ppt,pptx',
+                'js' => '.ppt,.pptx'
+            ],
+            'Imágenes' => [
+                'laravel' => 'jpg,png,jpeg',
+                'js' => '.jpg,.png,.jpeg'
+            ]
+        ];
+        return $archive_types[$this->archive_type];
+    } 
+
+
+
 }
