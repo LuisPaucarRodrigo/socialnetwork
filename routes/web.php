@@ -55,8 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/documment_management/{folder_id?}', [FolderController::class, 'folder_index'])->name('documment.management.folders');
     Route::post('/documment_management/store', [FolderController::class, 'folder_store'])->name('documment.management.folders.store');
 
-    Route::get('/documment_management/folder_permission/{folder_id?}', [FolderController::class, 'folder_permissions'])->name('documment.management.folders.permissions');
-
     Route::get('/test_folder_download/{folder_id}', [FolderController::class, 'folder_download'])->name('folder.test.download');
 
 

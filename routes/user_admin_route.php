@@ -116,3 +116,5 @@ Route::post('/document_management/folder_permissions_add', [FolderController::cl
 Route::delete('/document_management/folder_permissions_delete/{folder_area_id}', [FolderController::class, 'folder_permission_remove'])->name('documment.management.folders.permission.delete');
 
 Route::delete('document_management/folder_destroy/{folder_id}', [FolderController::class, 'folder_delete'])->name('document.management.folder.destroy');
+
+Route::get('/documment_management/folder_permission/{folder_id}', [FolderController::class, 'folder_permissions'])->name('documment.management.folders.permissions');
