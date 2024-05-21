@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Registro" />
 
     <AuthenticatedLayout :redirectRoute="'users.index'">
@@ -65,14 +66,32 @@
                                 <InputError class="mt-2" :message="form.errors.platform" />
                             </div>
                         </div>
+
+                        <div class="sm:col-span-6">
+                            <InputLabel>Empresa</InputLabel>
+                            <div class="flex gap-4 items-center mt-4">
+                                <label class="flex gap-2 items-center text-sm">
+                                    CCIP
+                                    <input type="radio" :value="'CCIP'" v-model="form.company" @input="handleCompany"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center text-sm">
+                                    Social Network
+                                    <input type="radio" :value="'Social Network'" v-model="form.company" @input="handleCompany"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="sm:col-span-2">
                             <InputLabel class="font-medium leading-6 text-gray-900" value="Área" />
                             <div class="mt-2">
-                                <select 
+                                <select :disabled="form.company === 'CCIP'? false : true"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     v-model="form.area_id" required autocomplete="off">
                                     <option value="" disabled>Seleccionar Area</option>
-                                    <option v-for="item in areas" :key="item.id" :value="item.id">{{ item.name }}</option>
+                                    <option v-for="item in areas" :key="item.id" :value="item.id">{{ item.name }}
+                                    </option>
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.platform" />
                             </div>
@@ -139,10 +158,12 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
-const props = defineProps({
+const { rols, areas } = defineProps({
     rols: Object,
     areas: Object
 })
+
+const currentRols = ref(rols.map(i=>i.company === 'CCIP'))
 
 const showModal = ref(false);
 const errorModal = ref(false);
@@ -158,6 +179,7 @@ const form = useForm({
     phone: '',
     password_confirmation: '',
     terms: false,
+    company: 'CCIP'
 });
 
 const submit = () => {
@@ -178,4 +200,16 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
+
+function handleCompany (e) {
+    form.area_id = '';
+    if (e.target.value === 'CCIP'){
+        currentRols.value = rols.map(i=>i.company === 'CCIP')
+    } 
+    if (e.target.value === 'Social Network'){
+        currentRols.value = rols.map(i=>i.company === 'Social Network')
+    }
+}
+
+
 </script>
