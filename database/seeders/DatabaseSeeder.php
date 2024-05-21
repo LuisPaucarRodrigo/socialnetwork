@@ -61,12 +61,13 @@ class DatabaseSeeder extends Seeder
 
         //Social Network Roles and Permissions
 
-        $snP = Permission::create(['SocialNetwork' => 'Permite acceso a usuarios de social network']);
-        $snPPr = Permission::create(['SocialNetworkProgramation' => 'Permite accesos al área de programación']);
-        $snPOp = Permission::create(['SocialNetworkOperation' => 'Permite accesos al área de operaciones']);
-        $snPLi = Permission::create(['SocialNetworkLiquidation' => 'Permite accesos al área de liquidaciones']);
-        $snPCh = Permission::create(['SocialNetworkCharge' => 'Permite accesos al área de cobranzas']);
-        $snPCo = Permission::create(['SocialNetworkControl' => 'Permite accesos al área de control']);
+        $snP = Permission::create(['name' => 'SocialNetwork', 'description' => 'Permite acceso a usuarios de social network']);
+        $snPPr = Permission::create(['name' => 'SocialNetworkProgramation', 'description' => 'Permite accesos al área de programación']);
+        $snPOp = Permission::create(['name' => 'SocialNetworkOperation', 'description' => 'Permite accesos al área de operaciones']);
+        $snPLi = Permission::create(['name' => 'SocialNetworkLiquidation', 'description' => 'Permite accesos al área de liquidaciones']);
+        $snPCh = Permission::create(['name' => 'SocialNetworkCharge', 'description' => 'Permite accesos al área de cobranzas']);
+        $snPCo = Permission::create(['name' => 'SocialNetworkControl', 'description' => 'Permite accesos al área de control']);
+
 
 
         $snRolesPermissions = [
@@ -74,36 +75,40 @@ class DatabaseSeeder extends Seeder
                 'name' => 'SocialNetwork Programacion',
                 'description' => 'Social Network área programación',
                 'company' => 'Social Network',
-                'permissions' => [ $snP->id, $snPPr->id]
+                'permissions' => [$snP->id, $snPPr->id]
             ],
             [
-                'name' =>'SocialNetwork Operaciones',
+                'name' => 'SocialNetwork Operaciones',
                 'description' => 'Social Network área operaciones',
                 'company' => 'Social Network',
-                'permissions' =>  [ $snP->id, $snPOp->id]
+                'permissions' => [$snP->id, $snPOp->id]
             ],
             [
-                'name' =>'SocialNetwork Liquidaciones',
+                'name' => 'SocialNetwork Liquidaciones',
                 'description' => 'Social Network área liquidación',
                 'company' => 'Social Network',
-                'permissions' =>  [ $snP->id, $snPLi->id]
+                'permissions' => [$snP->id, $snPLi->id]
             ],
             [
-                'name' =>'SocialNetwork Cobranzas',
+                'name' => 'SocialNetwork Cobranzas',
                 'description' => 'Social Network área cobranzas',
                 'company' => 'Social Network',
-                'permissions' =>  [ $snP->id, $snPCh->id]
+                'permissions' => [$snP->id, $snPCh->id]
             ],
             [
-                'name' =>'SocialNetwork Control',
+                'name' => 'SocialNetwork Control',
                 'description' => 'Social Network área control',
                 'company' => 'Social Network',
-                'permissions' =>  [ $snP->id, $snPCo->id]
+                'permissions' => [$snP->id, $snPCo->id]
             ],
         ];
 
         foreach ($snRolesPermissions as $item) {
-            $current = Role::create($item);
+            $current = Role::create([
+                'name' => $item['name'],
+                'description' => $item['description'],
+                'company' => $item['company'],
+            ]);
             $current->permissions()->sync($item['permissions']);
         }
 
