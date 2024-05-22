@@ -49,6 +49,8 @@ class PermissionMiddleware
             return redirect ('/shopping_area/purchasesrequest');
         } elseif ($user->hasPermission('Administration')) {
             return redirect ('/management_employees');
+        } elseif($user->hasPermission('SocialNetwork')){
+            abort(403, 'tamos progresando.');
         } else {
             abort(403, 'No tienes el rol requerido para acceder.');
         }
