@@ -48,6 +48,8 @@ class DatabaseSeeder extends Seeder
             'Purchasing' => 'Acceso limitado a funciones del Area de Compras',
         ];
 
+
+
         foreach ($permissions as $name => $description) {
             $permission = Permission::create([
                 'name' => $name,
@@ -55,9 +57,6 @@ class DatabaseSeeder extends Seeder
             ]);
             $adminRole->permissions()->attach($permission);
         }
-
-
-
 
         //Social Network Roles and Permissions
 
@@ -68,6 +67,12 @@ class DatabaseSeeder extends Seeder
         $snPCh = Permission::create(['name' => 'SocialNetworkCharge', 'description' => 'Permite accesos al área de cobranzas']);
         $snPCo = Permission::create(['name' => 'SocialNetworkControl', 'description' => 'Permite accesos al área de control']);
 
+        $adminRole->permissions()->attach($snP);
+        $adminRole->permissions()->attach($snPPr);
+        $adminRole->permissions()->attach($snPOp);
+        $adminRole->permissions()->attach($snPLi);
+        $adminRole->permissions()->attach($snPCh);
+        $adminRole->permissions()->attach($snPCo);
 
 
         $snRolesPermissions = [
