@@ -102,7 +102,7 @@
                                 <select v-model="form.rol" id="rols"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccionar Rol</option>
-                                    <option v-for="rol in currentRols" :key="rol.id" :value="rol.id">
+                                    <option v-for="rol in rols" :key="rol.id" :value="rol.id">
                                         {{ `${rol.name} | ${rol.description}` }}
                                     </option>
                                 </select>
@@ -162,8 +162,6 @@ const { rols, areas } = defineProps({
     rols: Object,
     areas: Object
 })
-
-const currentRols = ref(rols.filter(i=>i.company === 'CCIP'))
 
 const showModal = ref(false);
 const errorModal = ref(false);

@@ -497,7 +497,7 @@ Usuarios
             </template>
 
 
-            <template v-if="true">
+            <template  v-if="hasPermission('DocumentGestion')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showDocs = !showDocs">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6 text-white">
@@ -514,7 +514,7 @@ Usuarios
                 </MyTransition>
             </template>
             
-            <template v-if="true">
+            <!-- <template v-if="true">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showDocs = !showDocs">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6 text-white">
@@ -529,7 +529,7 @@ Usuarios
                 <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="route('documment.management.folders.validation')">Aprobación</Link>
                 </MyTransition>
-            </template>
+            </template> -->
 
         </nav>
     </div>
