@@ -108,7 +108,6 @@ class DatabaseSeeder extends Seeder
             $current = Role::create([
                 'name' => $item['name'],
                 'description' => $item['description'],
-                'company' => $item['company'],
             ]);
             $current->permissions()->sync($item['permissions']);
         }
