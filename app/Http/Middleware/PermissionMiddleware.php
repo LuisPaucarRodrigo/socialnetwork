@@ -50,7 +50,7 @@ class PermissionMiddleware
         } elseif ($user->hasPermission('Administration')) {
             return redirect ('/management_employees');
         } elseif($user->hasPermission('SocialNetwork')){
-            abort(403, 'tamos progresando.');
+            return redirect(route('socialnetwork.sot'));
         } else {
             abort(403, 'No tienes el rol requerido para acceder.');
         }

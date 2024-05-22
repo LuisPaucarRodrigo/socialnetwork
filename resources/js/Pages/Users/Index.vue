@@ -5,7 +5,7 @@
         <template #header>
             Usuarios
         </template>
-        <div class="min-w-full overflow-hidden rounded-lg shadow">
+        <div class="min-w-full rounded-lg shadow">
             <PrimaryButton @click="add_users" type="button">
                 + Agregar
             </PrimaryButton>

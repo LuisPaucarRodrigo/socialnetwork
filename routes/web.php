@@ -55,7 +55,6 @@ Route::middleware('auth','checkPlatformWeb')->group(function () {
 
     Route::get('/documment_management/{folder_id?}', [FolderController::class, 'folder_index'])->name('documment.management.folders');
     Route::post('/documment_management/store', [FolderController::class, 'folder_store'])->name('documment.management.folders.store');
-
     Route::get('/test_folder_download/{folder_id}', [FolderController::class, 'folder_download'])->name('folder.test.download');
 
 
@@ -84,6 +83,13 @@ Route::middleware('auth', 'permission:PurchasingManager','checkPlatformWeb')->gr
 Route::middleware('auth', 'permission:FinanceManager','checkPlatformWeb')->group(function () {
     include_once 'finance_route.php';
 });
+
+
+
+Route::middleware('auth', 'permission:SocialNetwork','checkPlatformWeb')->group(function () {
+    include_once 'snsot_route.php';
+});
+
 
 Route::get('/documentGestion/{folder}/archives', [ArchivesController::class, 'show'])->name('archives.show');
 Route::post('/documentGestion/{folder}/archives/post', [ArchivesController::class, 'create'])->name('archives.post');
