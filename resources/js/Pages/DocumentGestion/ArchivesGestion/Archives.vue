@@ -55,19 +55,29 @@
             </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Permisos
+              Comentarios
+            </th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Evaluación
             </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Acciones
             </th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="archive in archives.data" :key="archive.id" class="text-gray-700">
+          <template v-for="archive in archives.data" :key="archive.id">
+            <tr class="text-gray-700">
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm justify-center relative">
               <img v-if="archive.type == 'stable'" src="/image/projectimage/stable.png" alt=""
                 class="absolute top-0 left-0 w-10 h-10">
+              <img v-if="archive.observation_state == 1" src="/image/projectimage/rejected.png" alt=""
+              class="absolute top-0 left-0 w-10 h-10">
 
               <svg v-if="props.folder.archive_type === 'Word'" height="30px" width="30px" version="1.1" id="Layer_1"
                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"
@@ -196,12 +206,17 @@
               <p class="text-gray-900 whitespace-no-wrap">{{ archive.version.toFixed(2) }}</p>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-              <div v-if="archive.type !== 'stable'" class="flex flex-col items-center space-y-2">
-                <button v-if="props.auth.user.role_id === 1 || props.auth.user.id === archive.user_id"
+              <p class="text-gray-900 whitespace-no-wrap">{{ archive.comment }}</p>
+            </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+              <div v-if="archive.type !== 'stable' && archive.approve_status && ![1, 3, 5].includes(archive.observation_state)" class="flex flex-col items-center space-y-2">
+                <div v-if="archive.archive_users.length == 0">
+                  <button v-if="props.auth.user.role_id === 1 || props.auth.user.id === archive.user_id"
                   @click="openPermissionModal(archive.id, archive.users_active.map((item) => item.id), archive.users_available)"
                   class="text-blue-600 underline">
                   Administrar
                 </button>
+                </div>
                 <Link
                   v-if="props.auth.user.role_id === 1 || archive.users_active.some(user => user.id === props.auth.user.id)"
                   :href="route('archives.observations', { folder: props.folder.id, archive: archive.id })"
@@ -219,17 +234,102 @@
                 <button @click="downloadDocument(archive.id)" class="flex items-center text-blue-600 hover:underline">
                   <ArrowDownIcon class="h-4 w-4 ml-1" />
                 </button>
-                <button v-if="archive.disponibility && hasPermission('UserManager') && archive.approve_status"
-                  @click="openUpgradeModal(archive.id)" class="flex items-center text-green-600 hover:underline">
-                  <BarsArrowUpIcon class="w-5" />
-                </button>
                 <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(archive.id)"
                   class="flex items-center text-red-600 hover:underline">
                   <TrashIcon class="h-4 w-4" />
                 </button>
               </div>
             </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+              <button v-if="archive.type != 'stable'" type="button" @click="toggleDetails(archive)"
+                class="text-blue-900 whitespace-no-wrap">
+                <svg v-if="archiveRow[0]?.archive_id !== archive.id" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                </svg>
+              </button>
+            </td>
+            
           </tr>
+          <template v-if="archiveRow[0]?.archive_id === archive.id">
+            <tr class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    
+                </th>  
+                <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    
+                  </th> 
+                  <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    
+                  </th> 
+                  <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    
+                  </th> 
+                  <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    
+                  </th> 
+              <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Usuario
+                </th>
+                <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Resultado de Evaluación
+                </th>
+                <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    
+                  </th> 
+            </tr>
+            <tr v-for="archive_user in archiveRow" :key="archive_user.id" class="bg-gray-100"
+                    >
+            <td class="border-b border-gray-200 px-5 py-5 text-sm text-center">
+
+                </td>
+                <td class="border-b border-gray-200px-5 py-5 text-sm text-center">
+
+</td>
+<td class="border-b border-gray-200 px-5 py-5 text-sm text-center">
+
+</td>
+<td class="border-b border-gray-200 px-5 py-5 text-sm text-center">
+
+</td>
+<td class="border-b border-gray-200 px-5 py-5 text-sm text-center">
+
+</td>
+
+                <td :class="[
+                'text-gray-700',
+                {
+                    'border-l-8': true,
+                    'border-green-500': archive_user.state === 'Aprobado',
+                    'border-red-500': archive_user.state === 'Desestimado',
+                    'border-yellow-500': archive_user.state === 'Observado',
+                }
+            ]" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                        {{ archive_user.user.name }}
+                    </p>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                        {{ archive_user.state }}
+                    </p>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+
+</td>
+
+            </tr>
+        </template>
+          
+
+          </template>
         </tbody>
       </table>
     </div>
@@ -254,6 +354,13 @@
                 <InputError :message="form.errors.archive" />
               </div>
             </div>
+            <div class="mt-2">
+              <InputLabel for="comment">Comentario</InputLabel>
+              <div class="mt-2">
+                <TextInput type="text" v-model="form.comment" id="comment" />
+                <InputError :message="form.errors.comment" />
+              </div>
+            </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
               <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
               <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
@@ -268,7 +375,7 @@
     <Modal :show="permissionModal">
       <div class="p-6">
         <h2 class="text-base font-medium leading-7 text-gray-900">
-          Seleccione los usuarios
+          Seleccione los evaluadores
         </h2>
         <div
           class="inline-flex items-center p-2 mb-4  mt-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
@@ -287,13 +394,13 @@
         <form @submit.prevent="submitUsers">
           <div class="border-b border-gray-900/10 pb-12">
             <div class="mt-2">
-              <InputLabel for="userSelect">Usuarios</InputLabel>
+              <InputLabel for="userSelect">Elegir evaluadores</InputLabel>
               <div class="mt-2">
                 <select multiple v-model="formUsers.users" id="userSelect"
                   class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
-                  <option v-for="user in usersAvailable" :value="user.id">{{ user.name }}</option>
+                  <option v-for="user in usersAvailable" :value="user">{{ user.name }}</option>
                 </select>
-                <InputError :message="form.errors.users" />
+                <InputError :message="formUsers.errors.users" />
               </div>
             </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -307,30 +414,11 @@
       </div>
     </Modal>
 
-    <Modal :show="approvating">
-      <div class="p-6">
-        <h2 class="text-base font-medium leading-7 text-gray-900">
-          ¿Está seguro de mejorar este archivo?
-        </h2>
-        <p class="mt-1 text-sm text-gray-600">
-          Se creará una copia del archivo con la versión estable, y los futuros archivos se basarán en esta versión.
-        </p>
-        <div class="space-y-12">
-          <div class="border-gray-900/10">
-            <div class="mt-6 flex items-center justify-end gap-x-6">
-              <SecondaryButton @click="closeUpgradeModal"> Cancelar </SecondaryButton>
-              <button @click="confirmUpgrade(archive_id)"
-                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Confirmar</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Modal>
+
 
     <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Archivo" :deleteFunction="deleteDocument"
       @closeModal="closeModalDoc" />
     <ConfirmCreateModal :confirmingcreation="showModal" itemType="Archivo" />
-    <ConfirmApproveModal :confirmingapprove="showModalApprove" itemType="Archivo" />
     <ConfirmCreateModal :confirmingcreation="showAssignModal" itemType="Asignación" />
   </AuthenticatedLayout>
 </template>
@@ -342,6 +430,7 @@ import ConfirmApproveModal from '@/Components/ConfirmApproveModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
+import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputFile from '@/Components/InputFile.vue';
 import Pagination from '@/Components/Pagination.vue';
@@ -350,7 +439,6 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, BarsArrowUpIcon } from '@heroicons/vue/24/outline';
-
 
 const props = defineProps({
   archives: Object,
@@ -361,6 +449,17 @@ const props = defineProps({
 });
 
 const usersAvailable = ref([]);
+const archiveRow = ref(0);
+
+const toggleDetails = (archive) => {
+
+    if (archiveRow.value[0]?.archive_id === archive.archive_users[0]?.archive_id) {
+        archiveRow.value = 0;
+    } else {
+        archiveRow.value = archive.archive_users;
+        
+    }
+}
 
 
 const hasPermission = (permission) => {
@@ -369,6 +468,7 @@ const hasPermission = (permission) => {
 
 const form = useForm({
   archive: null,
+  comment: '',
   folder_id: props.folder.id,
   user_id: props.auth.user.id,
 });
@@ -379,41 +479,12 @@ const formUsers = useForm({
 });
 
 const create_document = ref(false);
-const approvating = ref(false);
 const archive_id = ref(null);
 const showModal = ref(false);
-const showModalApprove = ref(false);
 const showAssignModal = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const permissionModal = ref(false);
-import axios from 'axios';
-
-const openUpgradeModal = (id) => {
-  archive_id.value = id;
-  approvating.value = true;
-}
-
-const closeUpgradeModal = () => {
-  archive_id.value = null;
-  approvating.value = false;
-}
-
-const confirmUpgrade = () => {
-  axios.post(route('archives.upgrade', { archive: archive_id.value }))
-    .then(response => {
-      closeUpgradeModal();
-      showModalApprove.value = true;
-      setTimeout(() => {
-        showModalApprove.value = false;
-        router.visit(route('archives.show', { folder: props.folder.id }))
-      }, 2000);
-    })
-    .catch(error => {
-      // Manejo de errores si es necesario
-      console.error('Error al actualizar el archivo:', error);
-    });
-}
 
 const openCreateDocumentModal = () => {
   create_document.value = true;
@@ -467,11 +538,10 @@ const submitUsers = () => {
         router.visit(route('archives.show', { folder: props.folder.id }))
       }, 2000);
     },
-    onError: () => {
-      formUsers.reset();
+    onError: (e) => {
+
     },
     onFinish: () => {
-      formUsers.reset();
     }
   });
 };

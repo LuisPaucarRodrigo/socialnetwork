@@ -31,6 +31,9 @@
                         Usuario Evaluador
                     </th>
                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        Observación
+                    </th>
+                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Resultado de Evaluación
                     </th>
                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -48,6 +51,9 @@
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <p class="text-gray-900 whitespace-no-wrap">{{ archiveUser.user.name }}</p>
+                    </td>
+                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                        <p class="text-gray-900 whitespace-no-wrap">{{ archiveUser.observation }}</p>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <p class="text-gray-900 whitespace-no-wrap">{{ archiveUser.state }}</p>

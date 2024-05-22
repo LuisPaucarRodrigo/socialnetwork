@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Folder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Requests\AssignUsersRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -32,7 +33,7 @@ class ArchivesController extends Controller
             ->where('folder_id', $folder->id)->first();
         if ($findFolder?->see_download) {
             $folder->load('areas', 'folder_areas');
-            $archives = Archive::where('folder_id', $folder->id)->with('user')->orderByDesc('version')->paginate(10);
+            $archives = Archive::where('folder_id', $folder->id)->with('user', 'archive_users.user')->orderByDesc('version')->paginate(10);
             $user = Auth::user();
             $userHasPermission = $folder->folder_areas->where('area_id', $user->area_id)->where('create', true)->isNotEmpty();
     
@@ -58,6 +59,7 @@ class ArchivesController extends Controller
             $request->validate([
                 'archive' => 'required|mimes:' . $folder->format_type['laravel'],
                 'folder_id' => 'required',
+                'comment' => 'required',
                 'user_id' => 'required'
             ]);
     
@@ -68,14 +70,33 @@ class ArchivesController extends Controller
             } else {
                 $newVersion = 0.01;
             }
-    
-            $archive = Archive::create([
-                'name' => $folder->name . '-' . $newVersion,
-                'folder_id' => $request->folder_id,
-                'user_id' => $request->user_id,
-                'path' => $folder->path,
-                'version' => $newVersion,
-            ]);
+
+            if ($lastArchive?->observation_state == 3){
+                $archive = Archive::create([
+                    'name' => $folder->name . '-' . $newVersion,
+                    'folder_id' => $request->folder_id,
+                    'user_id' => $request->user_id,
+                    'path' => $folder->path,
+                    'comment' => $request->comment,
+                    'version' => $newVersion,
+                ]);
+                foreach($lastArchive->archive_users as $archive_user){
+                    ArchiveUser::create([
+                        'user_id' => $archive_user->user_id,
+                        'status' => true,
+                        'archive_id' => $archive->id,                      
+                    ]);
+                }
+            }else{
+                $archive = Archive::create([
+                    'name' => $folder->name . '-' . $newVersion,
+                    'folder_id' => $request->folder_id,
+                    'user_id' => $request->user_id,
+                    'path' => $folder->path,
+                    'comment' => $request->comment,
+                    'version' => $newVersion,
+                ]);
+            } 
     
             if ($request->hasFile('archive')) {
                 $document = $request->file('archive');
@@ -150,24 +171,24 @@ class ArchivesController extends Controller
         }       
     }
 
-
-    public function assignUsers(Folder $folder, Archive $archive, Request $request)
+    public function assignUsers(Folder $folder, Archive $archive, AssignUsersRequest $request)
     {
         $user = Auth::user();
-        
-        if($user->role_id == 1 || $archive->user_id == $user->id) {
-            $request->validate([
-                'archive_id' => 'required',
-            ]);
-        
-            $archiveId = $request->input('archive_id');
-            $selectedUsers = $request->input('users');
-        
+    
+        if ($user->role_id == 1 || $archive->user_id == $user->id) {
+            $validatedData = $request->validated(); // Accede a los datos validados
+    
+            $archiveId = $validatedData['archive_id'];
+            $selectedUsers = $validatedData['users'];
+    
+            // Convertir la lista de usuarios en un array de ids para la verificación
+            $selectedUserIds = array_column($selectedUsers, 'id');
+    
             // Obtener los registros existentes en la tabla 'archive_user' para este archivo
             $existingRecords = ArchiveUser::where('archive_id', $archiveId)->get();
-        
+    
             // Iterar sobre los usuarios seleccionados
-            foreach ($selectedUsers as $userId) {
+            foreach ($selectedUserIds as $userId) {
                 // Verificar si ya existe un registro para este usuario y archivo
                 $existingRecord = $existingRecords->firstWhere('user_id', $userId);
                 if ($existingRecord) {
@@ -182,10 +203,10 @@ class ArchivesController extends Controller
                     ]);
                 }
             }
-        
+    
             // Actualizar el estado de los registros existentes que no están en la solicitud a false
-            $existingRecords->each(function ($record) use ($selectedUsers) {
-                if (!in_array($record->user_id, $selectedUsers)) {
+            $existingRecords->each(function ($record) use ($selectedUserIds) {
+                if (!in_array($record->user_id, $selectedUserIds)) {
                     $record->status = false;
                     $record->save();
                 }
@@ -193,8 +214,10 @@ class ArchivesController extends Controller
         } else {
             abort(403, 'No autorizado');
         }
-        
-    }    
+    }
+    
+    
+   
 
     public function observationsPerArchive($folder, Archive $archive)
     {
@@ -225,7 +248,6 @@ class ArchivesController extends Controller
         }else{
             abort(403, 'No autorizado');
         }
-        
     }
 
     public function saveObservation(Request $request, $archive)
@@ -250,45 +272,40 @@ class ArchivesController extends Controller
                     'evaluation_date' => Carbon::now()
                 ]);
             }
-        }else{
-            abort(403, 'No autorizado');
-        }
+            $archiveFounded = Archive::find($archive);
+            if ($archiveFounded->observation_state == 5 && $observation->state == 'Aprobado') {
+                $archiveFounded->load('folder');
+
+                $archiveFounded->approve_status = false;
+                $archiveFounded->save();
         
-    }
-
-    public function upgradeArchive(Archive $archive)
-    {   
-        $user = Auth::user();
-        if($user->role_id == 1){
-            $archive->load('folder');
-
-            $archive->approve_status = false;
-            $archive->save();
-    
-            //versionAndExtension
-            $newVersion = floor($archive->version) + 1.0;
-            $extension = pathinfo($archive->path, PATHINFO_EXTENSION);
-    
-            //name
-            $nameParts = explode('-', $archive->name);
-            $tempName = $nameParts[0];
-    
-            $newArchivePath = $archive->folder->path . '/' . $tempName . '-' . $newVersion . '.' . $extension;
-    
-            $newArchive = Archive::create([
-                'name' => $tempName . '-' . $newVersion,
-                'folder_id' => $archive->folder_id,
-                'user_id' => $archive->user_id,
-                'path' => $newArchivePath,
-                'version' => $newVersion,
-            ]);
-    
-            if (file_exists(public_path($archive->path))) {
-                copy(public_path($archive->path), public_path($newArchivePath));
+                //versionAndExtension
+                $newVersion = floor($archiveFounded->version) + 1.0;
+                $extension = pathinfo($archiveFounded->path, PATHINFO_EXTENSION);
+        
+                //name
+                $nameParts = explode('-', $archiveFounded->name);
+                $tempName = $nameParts[0];
+        
+                $newArchivePath = $archiveFounded->folder->path . '/' . $tempName . '-' . $newVersion . '.' . $extension;
+        
+                $newArchive = Archive::create([
+                    'name' => $tempName . '-' . $newVersion,
+                    'folder_id' => $archiveFounded->folder_id,
+                    'user_id' => $archiveFounded->user_id,
+                    'comment' => $archiveFounded->comment,
+                    'path' => $newArchivePath,
+                    'version' => $newVersion,
+                ]);
+        
+                if (file_exists(public_path($archiveFounded->path))) {
+                    copy(public_path($archiveFounded->path), public_path($newArchivePath));
+                }
             }
         }else{
             abort(403, 'No autorizado');
         }
+        
     }
 
 }
