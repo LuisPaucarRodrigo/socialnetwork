@@ -16,6 +16,7 @@ class Archive extends Model
         "user_id",
         "version",
         "folder_id",
+        "comment"
     ];
 
     protected $appends= [
@@ -23,7 +24,8 @@ class Archive extends Model
         'users_active',
         'users_available',
         'type',
-        'disponibility'
+        'disponibility',
+        'observation_state'
     ];
 
     public function users () {
@@ -118,5 +120,54 @@ class Archive extends Model
         }
 
         return true;
+    }
+
+    public function getObservationStateAttribute()
+    {
+        // Obtener los archive_users del último archivo
+        $archiveUsers = $this->archive_users;
+
+        // Si el último archivo no tiene archive_users, devolver 4
+        if ($archiveUsers->isEmpty()) {
+            return 4;
+        }
+
+        // Inicializar variables de control
+        $hasDesestimado = false;
+        $hasPendiente = false;
+        $allObservado = true;
+        $allAprobado = true;
+        $noPendienteNoDesestimado = true;
+
+        foreach ($archiveUsers as $archiveUser) {
+            if ($archiveUser->state === 'Desestimado') {
+                $hasDesestimado = true;
+                $noPendienteNoDesestimado = false;
+            }
+            if ($archiveUser->state === 'Pendiente') {
+                $hasPendiente = true;
+                $noPendienteNoDesestimado = false;
+            }
+            if ($archiveUser->state !== 'Observado') {
+                $allObservado = false;
+            }
+            if ($archiveUser->state !== 'Aprobado') {
+                $allAprobado = false;
+            }
+        }
+
+        if ($hasDesestimado) {
+            return 1;
+        } elseif ($hasPendiente) {
+            return 2;
+        } elseif ($allObservado) {
+            return 3;
+        } elseif ($allAprobado) {
+            return 5;
+        } elseif ($noPendienteNoDesestimado) {
+            return 3;
+        }
+
+        return null;
     }
 }
