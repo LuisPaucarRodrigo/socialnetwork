@@ -1,7 +1,7 @@
 <template>
     <Head title="Clientes" />
 
-    <AuthenticatedLayout :redirectRoute="'preprojects.codes'">
+    <AuthenticatedLayout :redirectRoute="'preprojects.titles'">
         <template #header>
             Códigos
         </template>

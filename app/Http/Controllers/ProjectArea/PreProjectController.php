@@ -771,7 +771,7 @@ class PreProjectController extends Controller
     {
         $code = PreprojectCode::with('imagecodepreprojet')->find($id);
         $code->imagecodepreprojet->each(function ($image) {
-            if ($image->state !== '1') {
+            if ($image->state !== 1) {
                 $filePath = "/image/imagereportpreproject/{$image->image}";
                 $path = public_path($filePath);
                 if (file_exists($path)) {

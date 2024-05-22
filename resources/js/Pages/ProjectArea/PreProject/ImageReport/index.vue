@@ -22,11 +22,12 @@
                     <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ imageCode.code }}
                     </h1>
-                    <PrimaryButton v-if="imageCode.status !== 'Aprobado'" @click="approveCode(imageCode.id)"
+                    <span v-if="imageCode.status !== 'Aprobado'" class="text-green-600">Aprobado</span>
+                    <PrimaryButton v-else @click="approveCode(imageCode.id)"
                         type="button" class="bg-green-700 hover:bg-green-600">
                         Aprobar
                     </PrimaryButton>
-                    <span v-else class="text-green-600">Aprobado</span>
+                    
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-10 gap-4 mt-5">
                     <div v-for="image in photoCodeFiltrado(imageCode.id)" :key="image.id"
@@ -115,11 +116,11 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     codesWithStatus: Object,
