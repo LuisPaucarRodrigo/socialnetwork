@@ -28,17 +28,17 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-Route::get('/', function () {
-    return Inertia::render('Auth/Login');
-});
-
 // Route::get('/', function () {
-//     if (auth()->check()) {
-//         return Inertia::location(route('users.index'));
-//     } else {
-//         return Inertia::render('Auth/Login');
-//     }
-// })->name('home');
+//     return Inertia::render('Auth/Login');
+// });
+
+Route::get('/', function () {
+    if (auth()->check()) {
+        return Inertia::location(route('users.index'));
+    } else {
+        return Inertia::render('Auth/Login');
+    }
+})->name('home');
 
 Route::middleware('auth','checkPlatformWeb')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,7 +46,7 @@ Route::middleware('auth','checkPlatformWeb')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('auth', 'permission:UserManager')->group(function () {
+Route::middleware('auth', 'permission:UserManager','checkPlatformWeb')->group(function () {
     include_once 'user_admin_route.php';
 });
 
