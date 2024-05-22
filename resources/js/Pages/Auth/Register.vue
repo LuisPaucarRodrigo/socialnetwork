@@ -204,12 +204,6 @@ const submit = () => {
 function handleCompany (e) {
     form.area_id = '';
     form.rol = '';
-    if (e.target.value === 'CCIP'){
-        currentRols.value = rols.filter(i=>i.company === 'CCIP')
-    } 
-    if (e.target.value === 'Social Network'){
-        currentRols.value = rols.filter(i=>i.company === 'Social Network')
-    }
 }
 
 
