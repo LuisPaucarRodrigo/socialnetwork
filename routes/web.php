@@ -74,16 +74,14 @@ Route::middleware(['auth', 'permission:FinanceManager', 'checkPlatformWeb'])->gr
 });
 
 
-Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->group(function () {
-    include_once 'snsot_route.php';
-});
-
-
 Route::middleware(['auth', 'persmission:DocumentGestion', 'checkPlatformWeb'])->group(function () {
     include_once 'documentgestion_route.php';
 });
 
 
+Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->group(function () {
+    include_once 'snsot_route.php';
+});
 
 
 require __DIR__ . '/auth.php';

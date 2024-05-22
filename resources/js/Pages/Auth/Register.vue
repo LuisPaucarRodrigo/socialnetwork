@@ -206,5 +206,4 @@ function handleCompany (e) {
     form.rol = '';
 }
 
-
 </script>
