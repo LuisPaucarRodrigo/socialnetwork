@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
             'Project' => 'Acceso limitado a funciones del Area de Projectos',
             'PurchasingManager' => 'Permite acceso para todas las funciones del Area de Compras',
             'Purchasing' => 'Acceso limitado a funciones del Area de Compras',
+            'DocumentManagement' => 'Permite acceso al área de Gestión Documentaria'
         ];
 
 
@@ -79,31 +80,26 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'SocialNetwork Programacion',
                 'description' => 'Social Network área programación',
-                'company' => 'Social Network',
                 'permissions' => [$snP->id, $snPPr->id]
             ],
             [
                 'name' => 'SocialNetwork Operaciones',
                 'description' => 'Social Network área operaciones',
-                'company' => 'Social Network',
                 'permissions' => [$snP->id, $snPOp->id]
             ],
             [
                 'name' => 'SocialNetwork Liquidaciones',
                 'description' => 'Social Network área liquidación',
-                'company' => 'Social Network',
                 'permissions' => [$snP->id, $snPLi->id]
             ],
             [
                 'name' => 'SocialNetwork Cobranzas',
                 'description' => 'Social Network área cobranzas',
-                'company' => 'Social Network',
                 'permissions' => [$snP->id, $snPCh->id]
             ],
             [
                 'name' => 'SocialNetwork Control',
                 'description' => 'Social Network área control',
-                'company' => 'Social Network',
                 'permissions' => [$snP->id, $snPCo->id]
             ],
         ];
