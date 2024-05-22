@@ -112,8 +112,6 @@ class DatabaseSeeder extends Seeder
             $current->permissions()->sync($item['permissions']);
         }
 
-
-
         $areasData = [
             ['name' => 'Gerencia'],
             ['name' => 'Contabilidad'],
