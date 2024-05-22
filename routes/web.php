@@ -74,7 +74,7 @@ Route::middleware(['auth', 'permission:FinanceManager', 'checkPlatformWeb'])->gr
 });
 
 
-Route::middleware(['auth', 'persmission:DocumentGestion', 'checkPlatformWeb'])->group(function () {
+Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->group(function () {
     include_once 'documentgestion_route.php';
 });
 
