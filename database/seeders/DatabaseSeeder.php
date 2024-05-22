@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
             'Project' => 'Acceso limitado a funciones del Area de Projectos',
             'PurchasingManager' => 'Permite acceso para todas las funciones del Area de Compras',
             'Purchasing' => 'Acceso limitado a funciones del Area de Compras',
-            'DocumentManagement' => 'Permite acceso al área de Gestión Documentaria'
+            'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
         ];
 
 

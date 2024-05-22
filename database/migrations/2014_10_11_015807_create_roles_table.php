@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->text('description');
-            $table->string('company')->default('CCIP');
             $table->timestamps();
         });
     }
