@@ -88,7 +88,7 @@
                             <div class="mt-2">
                                 <select :disabled="form.company === 'CCIP'? false : true"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.area_id" required autocomplete="off">
+                                    v-model="form.area_id" autocomplete="off">
                                     <option value="" disabled>Seleccionar Area</option>
                                     <option v-for="item in areas" :key="item.id" :value="item.id">{{ item.name }}
                                     </option>
@@ -102,7 +102,7 @@
                                 <select v-model="form.rol" id="rols"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccionar Rol</option>
-                                    <option v-for="rol in rols" :key="rol.id" :value="rol.id">
+                                    <option v-for="rol in currentRols" :key="rol.id" :value="rol.id">
                                         {{ `${rol.name} | ${rol.description}` }}
                                     </option>
                                 </select>
@@ -163,7 +163,7 @@ const { rols, areas } = defineProps({
     areas: Object
 })
 
-const currentRols = ref(rols.map(i=>i.company === 'CCIP'))
+const currentRols = ref(rols.filter(i=>i.company === 'CCIP'))
 
 const showModal = ref(false);
 const errorModal = ref(false);
@@ -204,10 +204,10 @@ const submit = () => {
 function handleCompany (e) {
     form.area_id = '';
     if (e.target.value === 'CCIP'){
-        currentRols.value = rols.map(i=>i.company === 'CCIP')
+        currentRols.value = rols.filter(i=>i.company === 'CCIP')
     } 
     if (e.target.value === 'Social Network'){
-        currentRols.value = rols.map(i=>i.company === 'Social Network')
+        currentRols.value = rols.filter(i=>i.company === 'Social Network')
     }
 }
 
