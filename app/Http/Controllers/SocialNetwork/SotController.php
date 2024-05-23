@@ -43,10 +43,9 @@ class SotController extends Controller
         return redirect()->back();
     }
 
-    public function sot_programation_update () {
-        $sots = SNSot::paginate(15);
-        return Inertia::render('SocialNetworkSot/SotProgramation', [
-            'sots' => $sots
-        ]);
+    public function sot_programation_update (SotStoreRequest $request, $sot_id) {
+        $data = $request->validated();
+        SNSot::findOrFail($sot_id)->update($data);
+        return redirect()->back();
     }
 }
