@@ -9,10 +9,10 @@ use App\Models\Subdivision;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class DocumentController extends Controller
 {
-    
     public function showSections()
     {
         $sections = DocumentSection::all();
@@ -178,4 +178,5 @@ class DocumentController extends Controller
         }
         abort(404, 'Documento no encontrado');
     }
+
 }

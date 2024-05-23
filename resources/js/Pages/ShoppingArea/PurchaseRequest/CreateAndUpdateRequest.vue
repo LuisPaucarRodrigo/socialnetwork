@@ -427,8 +427,6 @@ function deleteProduct(index, id = null) {
 watch(form.products, (newProducts) => {
     // Obtener los IDs de todos los productos
     const productIds = newProducts.map(product => product.id);
-    console.log("Esto", form.products)
-    console.log("Estos son los id", productIds)
     axios.post('/shopping_area/existing/products', { product_ids: productIds })
         .then(response => {
             // Manejar la respuesta si es necesario

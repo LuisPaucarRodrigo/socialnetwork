@@ -30,6 +30,7 @@ class User extends Authenticatable
         'platform',
         'password',
         'role_id',
+        'area_id',
         'phone'
     ];
 
@@ -67,6 +68,11 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area_id');
     }
 
     public function hasPermission($permission)

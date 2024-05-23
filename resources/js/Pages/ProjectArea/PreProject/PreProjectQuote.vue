@@ -137,14 +137,14 @@
                                     </h2>
 
                                     <!-- <button v-if="auth.user.role_id === 1 || preproject.quote === null"
-                                            @click="openProductModal" type="button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor"
-                                                class="text-blue-500 hover:text-purple-500 w-7 h-7">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
-                                            </svg>
-                                        </button> -->
+                                        @click="openProductModal" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="text-blue-500 hover:text-purple-500 w-7 h-7">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m-6 3.75 3 3m0 0 3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                                        </svg>
+                                    </button> -->
                                 </div>
                                 <p class="text-sm mt-6">
                                     Productos de las solicitudes de compra aceptadas
@@ -343,7 +343,7 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
+                            </div>           
 
 
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-10">
@@ -474,38 +474,35 @@
                                 <InputError :message="form.errors.items" />
                             </div>
                         </div>
-
+                        
                         <div class="mt-7 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 text-end">
                                 <p class="mt-1 text-sm text-gray-600">
-                                    Subtotal de Productos: S/. {{ subTotalProducts(form.products,
-        preproject_products).toFixed(2) }}
+                                    Subtotal de Productos: S/. {{ subTotalProducts(form.products, preproject_products).toFixed(2) }}
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
                                     Subtotal de Servicios: S/. {{ subTotalServices(form.items).toFixed(2) }}
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
-                                    Subtotal General: S/. {{ (subTotalProducts(form.products, preproject_products) +
-        subTotalServices(form.items)).toFixed(2) }}
+                                    Subtotal General: S/. {{ (subTotalProducts(form.products, preproject_products) + subTotalServices(form.items)).toFixed(2) }}
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
-                                    IGV: S/. {{ ((subTotalProducts(form.products, preproject_products) +
-        subTotalServices(form.items)) * 0.18).toFixed(2) }}
+                                    IGV: S/. {{ ((subTotalProducts(form.products, preproject_products) + subTotalServices(form.items))*0.18).toFixed(2) }}
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
-                                    Total: S/. {{ ((subTotalProducts(form.products, preproject_products) +
-        subTotalServices(form.items)) * 1.18).toFixed(2) }}
+                                    Total: S/. {{ ((subTotalProducts(form.products, preproject_products) + subTotalServices(form.items))*1.18).toFixed(2) }}
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-
+                
 
                 <div class="mt-3 flex flex-col sm:flex-row items-center justify-end gap-4">
 
-                    <button v-if="preproject.quote && !preproject.quote.state" type="button"
+                    <button v-if="preproject.quote && !preproject.quote.state" 
+                        type="button"
                         @click="openPQCanceledModal"
                         class="w-full text-center sm:w-auto rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
                         Anular
@@ -731,7 +728,7 @@
             </Modal>
 
 
-            <Modal :show="showPQRejectedModal" @close="closePQRejecteModal">
+            <Modal :show="showPQRejectedModal" @close="closePQRejecteModal" >
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
                         ¿Estás seguro de rechazar la cotización actual?
@@ -749,14 +746,13 @@
                 </div>
             </Modal>
 
-            <Modal :show="showPQCanceledModal" @close="closePQCanceledModal">
+            <Modal :show="showPQCanceledModal" @close="closePQCanceledModal" >
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
                         ¿Estás seguro de anular el Anteproyecto?
                     </h2>
                     <p class="mt-1 text-sm text-gray-600">
-                        Se eliminará toda la informacion relacionada cotización, y el proyecto pasará a la sección de
-                        anulados.
+                        Se eliminará toda la informacion relacionada cotización, y el proyecto pasará a la sección de anulados.
                     </p>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton @click="closePQCanceledModal"> Cancelar </SecondaryButton>
@@ -900,18 +896,17 @@ const form = useForm(
     { ...(preproject.quote ? updateState : initialState) }
 )
 
-console.log(form.items)
 
 const subTotalProducts = (array1, array2) => {
-    let sum1 = array1.reduce((total, product) => total + product.unitary_price * product.quantity * (product.profit_margin ? (1 + product.profit_margin / 100) : 1), 0)
-    let sum2 = array2.reduce((a, b) => a + b.entry.unitary_price * b.quantity * (1 + (b.margin / 100)), 0)
+    let sum1 = array1.reduce((total, product) => total + product.unitary_price * product.quantity * (product.profit_margin ? (1+product.profit_margin/100) : 1), 0)
+    let sum2 = array2.reduce((a,b)=> a+b.entry.unitary_price * b.quantity * (1+(b.margin/100)),0)
     return sum1 + sum2;
 }
 
 const subTotalServices = (array1) => {
 
-    let sum1 = array1.reduce((a, b) => a + b.service_info.rent_price * b.days * (b.resource_entries.length ? b.resource_entries.length : 1) * (1 + (b.profit_margin / 100)), 0)
-    return sum1;
+    let sum1 = array1.reduce((a, b) => a + b.service_info.rent_price * b.days * (b.resource_entries.length ? b.resource_entries.length : 1) * (1+(b.profit_margin/100)), 0)
+    return sum1; 
 }
 
 const submit = () => {
@@ -1170,18 +1165,18 @@ const openPQCanceledModal = () => {
 }
 
 const rejedtPreprojectQuote = () => {
-    router.post(route('preproject_quote.rejected'), { preproject_id: preproject?.id }, {
+    router.post(route('preproject_quote.rejected'), { preproject_id:  preproject?.id}, {
         onSuccess: () => {
             router.visit(route('preprojects.index'))
-        }, onError: (e) => console.log(e)
-    })
+        }, onError: (e)=>console.log(e)
+    } )
 }
 
 const cancelPreproject = () => {
-    router.post(route('preproject_quote.canceled'), { preproject_id: preproject?.id }, {
+    router.post(route('preproject_quote.canceled'), { preproject_id:  preproject?.id }, {
         onSuccess: () => {
             router.visit(route('preprojects.index'))
-        }, onError: (e) => console.log(e)
+        }, onError: (e)=>console.log(e)
     })
 }
 

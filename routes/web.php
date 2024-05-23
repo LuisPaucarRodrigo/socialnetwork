@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\ApiController;
 use App\Http\Controllers\ProfileController;
-
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -40,7 +38,7 @@ Route::get('/', function () {
     }
 })->name('home');
 
-Route::middleware('auth','checkPlatformWeb')->group(function () {
+Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -50,26 +48,34 @@ Route::middleware('auth', 'permission:UserManager','checkPlatformWeb')->group(fu
     include_once 'user_admin_route.php';
 });
 
-Route::middleware('auth', 'permission:HumanResourceManager','checkPlatformWeb')->group(function () {
+Route::middleware(['auth', 'permission:HumanResourceManager', 'checkPlatformWeb'])->group(function () {
     include_once 'human_resource_route.php';
 });
 
-Route::middleware('auth', 'permission:InventoryManager','checkPlatformWeb')->group(function () {
+Route::middleware(['auth', 'permission:InventoryManager', 'checkPlatformWeb'])->group(function () {
     include_once 'inventory_route.php';
 });
 
-Route::middleware('auth', 'permission:ProjectManager','checkPlatformWeb')->group(function () {
+Route::middleware(['auth', 'permission:ProjectManager', 'checkPlatformWeb'])->group(function () {
     include_once 'project_route.php';
 });
 
-Route::middleware('auth', 'permission:PurchasingManager','checkPlatformWeb')->group(function () {
+Route::middleware(['auth', 'permission:PurchasingManager', 'checkPlatformWeb'])->group(function () {
     include_once 'shopping_area_route.php';
 });
 
-Route::middleware('auth', 'permission:FinanceManager','checkPlatformWeb')->group(function () {
+Route::middleware(['auth', 'permission:FinanceManager', 'checkPlatformWeb'])->group(function () {
     include_once 'finance_route.php';
 });
 
-// Route::get('/prueba/{id}', [ApiController::class, 'registerPhoto']);
+Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->group(function () {
+    include_once 'documentgestion_route.php';
+});
+
+
+Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->group(function () {
+    include_once 'snsot_route.php';
+});
+
 
 require __DIR__ . '/auth.php';

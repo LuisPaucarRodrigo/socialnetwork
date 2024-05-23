@@ -249,8 +249,6 @@ const props = defineProps({
     expense: Object
 })
 
-console.log(props.expense)
-
 function openPreviewDocumentModal(documentId) {
     const url = route('purchasesrequest.show', { id: documentId });
     window.open(url, '_blank');

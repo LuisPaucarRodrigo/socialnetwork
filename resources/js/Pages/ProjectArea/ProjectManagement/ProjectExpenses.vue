@@ -79,8 +79,6 @@ const { project, current_budget, additionalCosts } = defineProps({
   additionalCosts: Number
 })
 
-console.log(project)
-
 const expenses = { data: [], links: [] }
 
 const updateChart = () => {
