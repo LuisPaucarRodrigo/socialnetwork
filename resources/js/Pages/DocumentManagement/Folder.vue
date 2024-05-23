@@ -194,8 +194,6 @@
                                 <InputError :message="createFolderForm.errors.archive_type" />
                             </div>
                         </div>
-
-
                         <div>
                             <InputLabel>
                                 Areas
@@ -212,12 +210,6 @@
                                 <InputError :message="createFolderForm.errors.areas" />
                             </div>
                         </div>
-
-
-
-
-
-
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -230,8 +222,6 @@
                     </div>
 
                 </form>
-
-
             </div>
         </Modal>
 

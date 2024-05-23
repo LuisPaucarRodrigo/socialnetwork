@@ -8,7 +8,7 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <PrimaryButton @click="add_users" type="button">
+                <PrimaryButton @click="openAddSotModal" type="button">
                     + Agregar
                 </PrimaryButton>
                 <SelectSNSotComponent currentSelect="Área de Programación" />
@@ -76,34 +76,88 @@
                 <pagination :links="sots.links" />
             </div>
         </div>
-        <Modal :show="confirmingUserDeletion" @close="closeModal">
+        
+        <Modal :show="showAddSotModal" @close="closeShowAddSotModal">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    ¿Estás seguro de que quieres eliminar la cuenta?
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Nueva SOT
                 </h2>
+                <br>
+                <form @submit.prevent="addSot">
+                    <div class="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-2">
+                        <div class="">
+                            <InputLabel>SOT</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" v-model="formSot.name"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="createFolderForm.errors.name" />
+                            </div>
+                        </div>
 
-                <p class="mt-1 text-sm text-gray-600">
-                    Una vez que se elimine la cuenta, todos sus recursos y datos se eliminarán permanentemente. Por
-                    favor
-                    ingrese su contraseña para confirmar que desea eliminar permanentemente la cuenta.
-                </p>
+                        <div>
+                            <InputLabel for="resorceOrProduct">Tipo de Carpeta</InputLabel>
+                            <div class="flex gap-4 items-center mt-4">
+                                <label class="flex gap-2 items-center text-sm">
+                                    Carpeta
+                                    <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
+                                        id="resorceOrProduct" :value="'Carpeta'"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center text-sm">
+                                    Archivos
+                                    <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
+                                        id="resorceOrProduct" :value="'Archivos'"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                            </div>
+                        </div>
 
-                <div class="mt-6">
-                    <InputLabel for="password" value="Password" class="sr-only" />
-                    <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
-                        class="mt-1 block w-3/4" placeholder="Password" @keyup.enter="deleteUser" />
+                        <div v-if="createFolderForm.type === 'Archivos'">
+                            <InputLabel>
+                                Tipo de Archivos
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select v-model="createFolderForm.archive_type" id="payment_type"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccionar Tipo</option>
+                                    <option>PDF</option>
+                                    <option>Word</option>
+                                    <option>Excel</option>
+                                    <option>Power Point</option>
+                                    <option>Imágenes</option>
+                                </select>
+                                <InputError :message="createFolderForm.errors.archive_type" />
+                            </div>
+                        </div>
+                        <div>
+                            <InputLabel>
+                                Areas
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select multiple size="4" v-model="createFolderForm.areas" id="payment_type"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Uno o Varios ctrl+click</option>
+                                    <option v-for="item in areas" :key="item.id" :value="item.id">
+                                        {{ item.name }}
+                                    </option>
 
-                    <InputError :message="form.errors.password" class="mt-2" />
-                </div>
+                                </select>
+                                <InputError :message="createFolderForm.errors.areas" />
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeAddFolderModal"> Cancelar </SecondaryButton>
 
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                        <PrimaryButton class="ml-3" :class="{ 'opacity-25': createFolderForm.processing }"
+                            :disabled="createFolderForm.processing" type="submit">
+                            Guardar
+                        </PrimaryButton>
+                    </div>
 
-                    <DangerButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-                        @click="deleteUser">
-                        Delete Account
-                    </DangerButton>
-                </div>
+                </form>
             </div>
         </Modal>
     </AuthenticatedLayout>
