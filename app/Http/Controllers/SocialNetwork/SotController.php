@@ -29,7 +29,7 @@ class SotController extends Controller
                     $user->hasPermission('SocialNetwork') &&
                    $user->hasPermission('SocialNetworkOperation');
         });
-        $sots = SNSot::paginate(15);
+        $sots = SNSot::with('user_assignee')->paginate(15);
         return Inertia::render('SocialNetworkSot/SotProgramation', [
             'sots' => $sots,
             'snop_users' => $snop_users
