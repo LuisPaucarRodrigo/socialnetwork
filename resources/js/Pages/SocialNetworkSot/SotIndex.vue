@@ -49,7 +49,7 @@
                                 SOT
                             </th>
                             <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class=" border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 ">
                                 Descripción
                             </th>
                             <th
@@ -142,75 +142,75 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr  class="text-gray-700">
+                        <tr v-for="item in sots.data" :key="item.id" class="text-gray-700">
                             <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item.name }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
-                            </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
+                                <p class="text-gray-900 text-center w-[200px]">{{ item.description }}</p>
                             </td>
                             <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item.assigned_date) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.user_assignee.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.i_state }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.aditionals }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.photo_report }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.ic_date }}</p>
                             </td>
                             <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.bill_amount }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.up_minutes }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.liquidation }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.down_warehouse }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.liquidation_date }}</p>
                             </td>
                             <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.sot_status }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.sot_bill }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.sot_bill_date }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.bill }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.bill_date }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.charge }}</p>
                             </td>
                             <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ 'hola' }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.charge_date }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_bad_installation }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_no_rf }}</p>
+                            </td>
+                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_rejections }}</p>
                             </td>
                             
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -252,6 +252,7 @@ import { Link, Head, router, useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
+import { formattedDate } from '@/utils/utils';
 
 
 
