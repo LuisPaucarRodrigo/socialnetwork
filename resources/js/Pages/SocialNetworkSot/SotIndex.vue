@@ -38,7 +38,7 @@
                                 class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
                                 Área de Control
                             </th>
-                            <th
+                            <th  v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                             </th>
                         </tr>
@@ -136,7 +136,7 @@
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Penalidad Rechazos
                             </th>
-                            <th
+                            <th  v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -213,7 +213,7 @@
                                 <p class="text-gray-900 text-center">{{ item?.sot_control?.p_rejections }}</p>
                             </td>
                             
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
                                     <button type="button" @click="openSotDeleteModal(item.id)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -254,7 +254,8 @@
                 </div>
             </div>
         </Modal>
-
+        <SuccessOperationModal :confirming="confirmSotDelete" :title="'SOT Eliminada'"
+            :message="'La SOT fue eliminada y todos los registros de ella'" />
     </AuthenticatedLayout>
 </template>
 
@@ -272,15 +273,17 @@ import { nextTick, ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 import { formattedDate } from '@/utils/utils';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 
-
-const { sots } = defineProps({
-    sots: Object
+const { sots, auth } = defineProps({
+    sots: Object,
+    auth: Object
 })
 
 const showSotDeleteModal = ref(false);
 const sotToDelete = ref(null)
+const confirmSotDelete = ref(false)
 function openSotDeleteModal (id) {
     sotToDelete.value = id
     showSotDeleteModal.value = true
@@ -290,7 +293,15 @@ function closeSotDeleteModal () {
     showSotDeleteModal.value = false
 }
 function deleteSot () {
-    router.delete(route(''))
+    router.delete(route('socialnetwork.sot.delete', {sot_id: sotToDelete.value}),{
+        onSuccess: () => {
+            closeSotDeleteModal()
+            confirmSotDelete.value = true
+            setTimeout(()=>{
+                confirmSotDelete.value = false
+            }, 1500)
+        }
+    })
 }
 
 </script>
