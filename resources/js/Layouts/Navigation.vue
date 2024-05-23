@@ -523,7 +523,7 @@ Usuarios
                     </svg>
                     <span class="mx-3">Social Network</span>
                 </a>
-                <MyTransition :transitiondemonstration="showDocs">
+                <MyTransition :transitiondemonstration="showSocialNetworkSot">
                     <Link class="w-full" :href="route('socialnetwork.sot')">SOT</Link>
                 </MyTransition>
             </template>
@@ -627,7 +627,8 @@ export default {
             showFinancePurchaseQuoteAlarms,
             showShoppingPurchaseRequestAlarms,
             showFormationProgramsAlarms,
-            showDocs
+            showDocs,
+            showSocialNetworkSot,
         }
     },
 
