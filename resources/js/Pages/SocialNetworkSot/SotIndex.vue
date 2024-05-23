@@ -6,6 +6,7 @@
             Social Network SOT
         </template>
         esta es mi plnatilla de acceso
+        <SelectSNSotComponent currentSelect="Proceso"/>
            
     </AuthenticatedLayout>
 </template>
@@ -22,10 +23,13 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, Head, router, useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 
 const confirmingUserDeletion = ref(false);
 const usersToDelete = ref(null);
 const passwordInput = ref(null);
+
+
 
 const props = defineProps({
     users: Object
