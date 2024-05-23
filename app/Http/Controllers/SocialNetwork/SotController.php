@@ -19,4 +19,11 @@ class SotController extends Controller
             'sots' => $sots
         ]);
     }
+
+    public function sot_programation () {
+        $sots = SNSot::paginate(15);
+        return Inertia::render('SocialNetworkSot/SotProgramation', [
+            'sots' => $sots
+        ]);
+    }
 }
