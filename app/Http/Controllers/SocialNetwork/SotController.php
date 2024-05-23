@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SocialNetwork;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SocialNetwork\SotStoreRequest;
 use App\Models\SNSot;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,11 +36,10 @@ class SotController extends Controller
         ]);
     }
 
-    public function sot_programation_store () {
-        $sots = SNSot::paginate(15);
-        return Inertia::render('SocialNetworkSot/SotProgramation', [
-            'sots' => $sots
-        ]);
+    public function sot_programation_store (SotStoreRequest $request) {
+        $data = $request->validated();
+        SNSot::create($data);
+        return redirect()->back();
     }
 
     public function sot_programation_update () {
