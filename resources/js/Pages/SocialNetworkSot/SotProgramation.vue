@@ -166,10 +166,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 
 
-const { sots } = defineProps({
-    sots: Object
+const { sots, snop_users, auth } = defineProps({
+    sots: Object,
+    snop_users: Object,
+    auth: Object
 })
 
+console.log(snop_users)
 
 const initialState = {
     user_owner_id: '',
