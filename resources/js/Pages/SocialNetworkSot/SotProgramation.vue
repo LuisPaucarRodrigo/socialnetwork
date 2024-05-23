@@ -98,33 +98,28 @@
                         <div class="">
                             <InputLabel>Fecha de Asignación</InputLabel>
                             <div class="mt-2">
-                                <input v-model="formSot.assigned_date"
+                                <input type="date" v-model="formSot.assigned_date"
                                     autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="formSot.errors.assigned_date" />
                             </div>
-                        </div>
-
-
-
-
-                       
-                        <!-- <div>
+                        </div> 
+                        <div>
                             <InputLabel>
-                                Areas
+                                Persona Designada
                             </InputLabel>
                             <div class="mt-2">
-                                <select multiple size="4" v-model="createFolderForm.areas" id="payment_type"
+                                <select v-model="formSot.user_assignee_id" 
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="" disabled>Uno o Varios ctrl+click</option>
-                                    <option v-for="item in areas" :key="item.id" :value="item.id">
+                                    <option value="" disabled>Seleccionar</option>
+                                    <option v-for="item in snop_users" :key="item.id" :value="item.id">
                                         {{ item.name }}
                                     </option>
 
                                 </select>
-                                <InputError :message="createFolderForm.errors.areas" />
+                                <InputError :message="formSot.errors.areas" />
                             </div>
-                        </div> -->
+                        </div>
                         <div class="">
                             <InputLabel>Descripción</InputLabel>
                             <div class="mt-2">
@@ -148,6 +143,8 @@
                 </form>
             </div>
         </Modal>
+        <SuccessOperationModal :confirming="confirmSot" :title="'Nueva SOT creada'"
+            :message="'La SOT fue creada con éxito'" />
     </AuthenticatedLayout>
 </template>
 
@@ -164,7 +161,7 @@ import { Link, Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
-
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 const { sots, snop_users, auth } = defineProps({
     sots: Object,
@@ -172,10 +169,9 @@ const { sots, snop_users, auth } = defineProps({
     auth: Object
 })
 
-console.log(snop_users)
 
 const initialState = {
-    user_owner_id: '',
+    user_owner_id: auth.user.id,
     user_assignee_id: '',
     name: '',
     description: '',
@@ -184,7 +180,11 @@ const initialState = {
 const formSot = useForm(
     {...initialState}
 );
+
+
+//Add SOT
 const showAddSotModal = ref(false);
+const confirmSot = ref(false);
 function openAddSotModal () {
     showAddSotModal.value = true
 }
@@ -192,7 +192,23 @@ function closeAddSotModal () {
     showAddSotModal.value = false
     formSot.reset()
 }
+
 function submit() {
-    console.log('j')
+    submitStore()
+
+
+}
+
+function submitStore () {
+    let url = route('socialnetwork.sot.programation.store')
+    formSot.post(url, {
+        onSuccess: () => {
+            closeAddSotModal()
+            confirmSot.value = true
+            setTimeout(()=>{
+                confirmSot.value = false
+            }, 1500)
+        }
+    })
 }
 </script>
