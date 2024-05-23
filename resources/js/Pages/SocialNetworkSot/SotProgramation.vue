@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Sot" />
+    <Head title="Sot Programación" />
 
     <AuthenticatedLayout :redirectRoute="'socialnetwork.sot'">
         <template #header>
@@ -77,60 +77,39 @@
             </div>
         </div>
         
-        <Modal :show="showAddSotModal" @close="closeShowAddSotModal">
+        <Modal :show="showAddSotModal" @close="closeAddSotModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     Nueva SOT
                 </h2>
                 <br>
-                <form @submit.prevent="addSot">
-                    <div class="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-2">
+                <form @submit.prevent="submit">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="">
                             <InputLabel>SOT</InputLabel>
                             <div class="mt-2">
                                 <input type="number" v-model="formSot.name"
                                     autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="createFolderForm.errors.name" />
+                                <InputError :message="formSot.errors.name" />
                             </div>
                         </div>
-
-                        <div>
-                            <InputLabel for="resorceOrProduct">Tipo de Carpeta</InputLabel>
-                            <div class="flex gap-4 items-center mt-4">
-                                <label class="flex gap-2 items-center text-sm">
-                                    Carpeta
-                                    <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
-                                        id="resorceOrProduct" :value="'Carpeta'"
-                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                </label>
-                                <label class="flex gap-2 items-center text-sm">
-                                    Archivos
-                                    <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
-                                        id="resorceOrProduct" :value="'Archivos'"
-                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                </label>
-                            </div>
-                        </div>
-
-                        <div v-if="createFolderForm.type === 'Archivos'">
-                            <InputLabel>
-                                Tipo de Archivos
-                            </InputLabel>
+                        
+                        <div class="">
+                            <InputLabel>Fecha de Asignación</InputLabel>
                             <div class="mt-2">
-                                <select v-model="createFolderForm.archive_type" id="payment_type"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="" disabled>Seleccionar Tipo</option>
-                                    <option>PDF</option>
-                                    <option>Word</option>
-                                    <option>Excel</option>
-                                    <option>Power Point</option>
-                                    <option>Imágenes</option>
-                                </select>
-                                <InputError :message="createFolderForm.errors.archive_type" />
+                                <input v-model="formSot.assigned_date"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="formSot.errors.assigned_date" />
                             </div>
                         </div>
-                        <div>
+
+
+
+
+                       
+                        <!-- <div>
                             <InputLabel>
                                 Areas
                             </InputLabel>
@@ -145,14 +124,23 @@
                                 </select>
                                 <InputError :message="createFolderForm.errors.areas" />
                             </div>
+                        </div> -->
+                        <div class="">
+                            <InputLabel>Descripción</InputLabel>
+                            <div class="mt-2">
+                                <textarea v-model="formSot.description"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" ></textarea>
+                                <InputError :message="formSot.errors.description" />
+                            </div>
                         </div>
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddFolderModal"> Cancelar </SecondaryButton>
+                        <SecondaryButton type="button" @click="closeAddSotModal"> Cancelar </SecondaryButton>
 
-                        <PrimaryButton class="ml-3" :class="{ 'opacity-25': createFolderForm.processing }"
-                            :disabled="createFolderForm.processing" type="submit">
+                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs" :class="{ 'opacity-25': formSot.processing }"
+                            :disabled="formSot.processing" type="submit">
                             Guardar
                         </PrimaryButton>
                     </div>
@@ -173,42 +161,35 @@ import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, Head, router, useForm } from '@inertiajs/vue3';
-
+import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 
 
-const confirmingUserDeletion = ref(false);
-const usersToDelete = ref(null);
-const passwordInput = ref(null);
-
-const props = defineProps({
+const { sots } = defineProps({
     sots: Object
 })
 
-const add_users = () => {
-    router.get(route('register'));
+
+const initialState = {
+    user_owner_id: '',
+    user_assignee_id: '',
+    name: '',
+    description: '',
+    assigned_date: ''
 }
-
-const form = useForm({
-    password: '',
-});
-
-
-
-const deleteUser = () => {
-    const userId = usersToDelete.value;
-    form.delete(route('users.destroy', { id: userId }), {
-        preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => passwordInput.value.focus(),
-        onFinish: () => form.reset(),
-    });
-};
-
-const closeModal = () => {
-    confirmingUserDeletion.value = false;
-
-    form.reset();
-};
+const formSot = useForm(
+    {...initialState}
+);
+const showAddSotModal = ref(false);
+function openAddSotModal () {
+    showAddSotModal.value = true
+}
+function closeAddSotModal () {
+    showAddSotModal.value = false
+    formSot.reset()
+}
+function submit() {
+    console.log('j')
+}
 </script>
