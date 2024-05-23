@@ -262,15 +262,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Link, Head, router, useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Head, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
