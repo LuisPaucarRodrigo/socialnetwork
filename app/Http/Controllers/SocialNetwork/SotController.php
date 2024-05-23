@@ -12,7 +12,8 @@ use Inertia\Inertia;
 class SotController extends Controller
 {
     public function sot_index () {
-        $sots = SNSot::with('sot_operation',
+        $sots = SNSot::with('user_assignee',
+                            'sot_operation',
                             'sot_liquidation',
                             'sot_payment',
                             'sot_control')
