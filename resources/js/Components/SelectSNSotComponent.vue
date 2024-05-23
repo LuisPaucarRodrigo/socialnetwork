@@ -14,11 +14,11 @@ import { ref, watch } from 'vue';
 const SotOptions = [
     {
         optionName: 'Proceso',
-        route: '' //route('name.of.the.route')
+        route: route('socialnetwork.sot')
     },
     {
         optionName: 'Área de Programación',
-        route: '' //route('name.of.the.route')
+        route: route('socialnetwork.sot.programation')
     },
     {
         optionName: 'Área de Operaciones',
