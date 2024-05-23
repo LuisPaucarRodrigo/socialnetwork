@@ -85,6 +85,5 @@ import { Head, Link } from '@inertiajs/vue3';
 const props = defineProps({
     retrievalProductsShow: Object,
 })
-console.log(props.retrievalProductsShow);
 
 </script>

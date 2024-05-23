@@ -11,6 +11,7 @@ use App\Models\Project;
 use App\Models\Purchasing_request;
 use App\Models\Provider;
 use App\Models\Role;
+use App\Models\Area;
 use App\Models\User;
 use App\Models\Header;
 use App\Models\Warehouse;
@@ -45,7 +46,10 @@ class DatabaseSeeder extends Seeder
             'Project' => 'Acceso limitado a funciones del Area de Projectos',
             'PurchasingManager' => 'Permite acceso para todas las funciones del Area de Compras',
             'Purchasing' => 'Acceso limitado a funciones del Area de Compras',
+            'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
         ];
+
+
 
         foreach ($permissions as $name => $description) {
             $permission = Permission::create([
@@ -55,21 +59,86 @@ class DatabaseSeeder extends Seeder
             $adminRole->permissions()->attach($permission);
         }
 
+        //Social Network Roles and Permissions
 
-        \App\Models\User::factory()->create([
+        $snP = Permission::create(['name' => 'SocialNetwork', 'description' => 'Permite acceso a usuarios de social network']);
+        $snPPr = Permission::create(['name' => 'SocialNetworkProgramation', 'description' => 'Permite accesos al área de programación']);
+        $snPOp = Permission::create(['name' => 'SocialNetworkOperation', 'description' => 'Permite accesos al área de operaciones']);
+        $snPLi = Permission::create(['name' => 'SocialNetworkLiquidation', 'description' => 'Permite accesos al área de liquidaciones']);
+        $snPCh = Permission::create(['name' => 'SocialNetworkCharge', 'description' => 'Permite accesos al área de cobranzas']);
+        $snPCo = Permission::create(['name' => 'SocialNetworkControl', 'description' => 'Permite accesos al área de control']);
+
+        $adminRole->permissions()->attach($snP);
+        $adminRole->permissions()->attach($snPPr);
+        $adminRole->permissions()->attach($snPOp);
+        $adminRole->permissions()->attach($snPLi);
+        $adminRole->permissions()->attach($snPCh);
+        $adminRole->permissions()->attach($snPCo);
+
+
+        $snRolesPermissions = [
+            [
+                'name' => 'SocialNetwork Programacion',
+                'description' => 'Social Network área programación',
+                'permissions' => [$snP->id, $snPPr->id]
+            ],
+            [
+                'name' => 'SocialNetwork Operaciones',
+                'description' => 'Social Network área operaciones',
+                'permissions' => [$snP->id, $snPOp->id]
+            ],
+            [
+                'name' => 'SocialNetwork Liquidaciones',
+                'description' => 'Social Network área liquidación',
+                'permissions' => [$snP->id, $snPLi->id]
+            ],
+            [
+                'name' => 'SocialNetwork Cobranzas',
+                'description' => 'Social Network área cobranzas',
+                'permissions' => [$snP->id, $snPCh->id]
+            ],
+            [
+                'name' => 'SocialNetwork Control',
+                'description' => 'Social Network área control',
+                'permissions' => [$snP->id, $snPCo->id]
+            ],
+        ];
+
+        foreach ($snRolesPermissions as $item) {
+            $current = Role::create([
+                'name' => $item['name'],
+                'description' => $item['description'],
+            ]);
+            $current->permissions()->sync($item['permissions']);
+        }
+
+        $areasData = [
+            ['name' => 'Gerencia'],
+            ['name' => 'Contabilidad'],
+            ['name' => 'Administración'],
+            ['name' => 'Proyectos'],
+            ['name' => 'Logística'],
+            ['name' => 'I + D'],
+
+        ];
+        Area::insert($areasData);
+
+
+        User::factory()->create([
             'name' => 'luis',
             'dni' => '70969005',
             'email' => 'luis@gmail.com',
             'password' => Hash::make('12345678'),
             'phone' => '923098157',
             'platform' => 'Web/Movil',
-            'role_id' => '1'
+            'role_id' => '1',
+            'area_id' => 1
         ]);
         // User::factory()->count(20)->create();
         // Project::factory()->count(10)->create();
         // Purchasing_request::factory()->count(1)->create();
         // Provider::factory()->count(10)->create();
-        
+
         $data = [
             [
                 'type' => 'HABITAT',
