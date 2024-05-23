@@ -66,7 +66,7 @@
                                 <div class="flex space-x-3 justify-center">
 
 
-                                    <button class="text-blue-900">
+                                    <button class="text-blue-900" @click="openEditSotModal(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -85,10 +85,10 @@
             </div>
         </div>
 
-        <Modal :show="showAddSotModal" @close="closeAddSotModal">
+        <Modal :show="showAddEditModal" @close="closeAddSotModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Nueva SOT
+                    {{formSot.id ? 'Editar SOT' : 'Nueva SOT'}}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -150,6 +150,8 @@
         </Modal>
         <SuccessOperationModal :confirming="confirmSot" :title="'Nueva SOT creada'"
             :message="'La SOT fue creada con éxito'" />
+        <SuccessOperationModal :confirming="confirmUpdateSot" :title="'SOT Actualizada'"
+            :message="'La SOT fue actualizada'" />
     </AuthenticatedLayout>
 </template>
 
@@ -177,6 +179,7 @@ const { sots, snop_users, auth } = defineProps({
 
 
 const initialState = {
+    id: '',
     user_owner_id: auth.user.id,
     user_assignee_id: '',
     name: '',
@@ -189,22 +192,16 @@ const formSot = useForm(
 
 
 //Add SOT
-const showAddSotModal = ref(false);
+const showAddEditModal = ref(false);
 const confirmSot = ref(false);
 function openAddSotModal() {
-    showAddSotModal.value = true
+    showAddEditModal.value = true
 }
 function closeAddSotModal() {
-    showAddSotModal.value = false
+    showAddEditModal.value = false
+    formSot.defaults({...initialState})
     formSot.reset()
 }
-
-function submit() {
-    submitStore()
-
-
-}
-
 function submitStore() {
     let url = route('socialnetwork.sot.programation.store')
     formSot.post(url, {
@@ -216,5 +213,32 @@ function submitStore() {
             }, 1500)
         }
     })
+}
+
+//Edit SOT
+const confirmUpdateSot = ref(false);
+function openEditSotModal (item) {
+    formSot.defaults({...item})
+    formSot.reset()
+    showAddEditModal.value = true
+}
+function submitUpdate() {
+    let url = route('socialnetwork.sot.programation.update', {sot_id: formSot.id})
+    formSot.post(url, {
+        onSuccess: () => {
+            closeAddSotModal()
+            confirmUpdateSot.value = true
+            setTimeout(() => {
+                confirmUpdateSot.value = false
+            }, 1500)
+        }
+    })
+}
+
+
+
+//Submit
+function submit() {
+    formSot.id ? submitUpdate() : submitStore()
 }
 </script>

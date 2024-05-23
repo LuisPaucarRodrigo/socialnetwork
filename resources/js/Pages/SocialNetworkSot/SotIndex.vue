@@ -2,7 +2,7 @@
 
     <Head title="SocialNetwork SOT" />
 
-    <AuthenticatedLayout :redirectRoute="'users.index'">
+    <AuthenticatedLayout :redirectRoute="'socialnetwork.sot'">
         <template #header>
             Proceso de SOT
         </template>
