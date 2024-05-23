@@ -215,7 +215,7 @@
                             
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <button type="button">
+                                    <button type="button" @click="openSotDeleteModal(item.id)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -235,6 +235,25 @@
             </div>
         </div>
 
+        <Modal :show="showSotDeleteModal" @close="closeSotDeleteModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Estás seguro de que quieres eliminar la SOT?
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600">
+                    Una vez que se elimine el registro, todos sus recursos y datos se eliminarán permanentemente.
+                </p>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeSotDeleteModal"> Cancelar </SecondaryButton>
+
+                    <DangerButton class="ml-3" @click="deleteSot">
+                        Eliminar
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
 
     </AuthenticatedLayout>
 </template>
@@ -260,6 +279,18 @@ const { sots } = defineProps({
     sots: Object
 })
 
-
+const showSotDeleteModal = ref(false);
+const sotToDelete = ref(null)
+function openSotDeleteModal (id) {
+    sotToDelete.value = id
+    showSotDeleteModal.value = true
+}
+function closeSotDeleteModal () {
+    sotToDelete.value = null
+    showSotDeleteModal.value = false
+}
+function deleteSot () {
+    router.delete(route(''))
+}
 
 </script>
