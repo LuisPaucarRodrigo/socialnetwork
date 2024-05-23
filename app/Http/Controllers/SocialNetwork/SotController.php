@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SocialNetwork\SotStoreRequest;
 use App\Models\SNSot;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -21,6 +22,13 @@ class SotController extends Controller
         return Inertia::render('SocialNetworkSot/SotIndex', [
             'sots' => $sots
         ]);
+    }
+
+    public function sot_delete ($sot_id) {
+        $user = Auth::user();
+        if ($user->role_id !== 1) {return abort(404, "No autorizado");}
+        SNSot::findOrFail($sot_id)->delete();
+        return redirect()->back();
     }
 
     public function sot_programation () {
@@ -48,4 +56,6 @@ class SotController extends Controller
         SNSot::findOrFail($sot_id)->update($data);
         return redirect()->back();
     }
+
+    
 }
