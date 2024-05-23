@@ -2,18 +2,11 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Models\Employee;
 use App\Models\Pension;
 use App\Models\Permission;
-use App\Models\Project;
-use App\Models\Purchasing_request;
-use App\Models\Provider;
 use App\Models\Role;
 use App\Models\Area;
 use App\Models\User;
-use App\Models\Header;
 use App\Models\Warehouse;
 use App\Models\Customer;
 use App\Models\CustomerWarehouse;
