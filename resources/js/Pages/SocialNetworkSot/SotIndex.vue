@@ -159,7 +159,7 @@
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.i_state }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.aditionals }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.additionals }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.photo_report }}</p>
