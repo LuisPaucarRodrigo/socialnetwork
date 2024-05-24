@@ -44,6 +44,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center">
                                     <input type="checkbox" :checked="item.see_download" :id="'sd_checkbox' + item.id"
+                                    :disabled="['Gerencia','Calidad'].includes(item?.area.name)"
                                         @input="openPermissionhandleModal($event.target.checked, item.id, modalOptions.see_download, item.area.name)"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6" />
                                 </div>
@@ -51,6 +52,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center">
                                     <input type="checkbox" :checked="item.create" :id="'create_checkbox' + item.id"
+                                        
                                         @input="openPermissionhandleModal($event.target.checked, item.id, modalOptions.create, item.area.name)"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-5 w-5 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6" />
                                 </div>
