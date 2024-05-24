@@ -27,7 +27,7 @@ class PermissionMiddleware
     {
         if (!auth()->check()) {
             // Si el usuario no está autenticado, redirigirlo a la página de inicio de sesión
-            return redirect('/login');
+            return redirect('login');
         }
         $user = auth()->user();
         // Verificar si el usuario tiene el permiso necesario
@@ -37,15 +37,15 @@ class PermissionMiddleware
 
         if ($user->hasPermission('UserManager')) {
             return redirect('/users');
-        } elseif ($user->hasPermission('HumanResourceManager')) {
+        } elseif ($user->hasPermission('HumanResourceManager') || $user->hasPermission('HumanResource')) {
             return redirect('/management_employees/index');
-        } elseif ($user->hasPermission('FinanceManager')) {
+        } elseif ($user->hasPermission('FinanceManager') || $user->hasPermission('Finance')) {
             return redirect('/finance/expencemanagement');
-        } elseif ($user->hasPermission('InventoryManager')) {
+        } elseif ($user->hasPermission('InventoryManager') || $user->hasPermission('Inventory')) {
             return redirect('/finance/expencemanagement');
-        } elseif ($user->hasPermission('ProjectManager')) {
+        } elseif ($user->hasPermission('ProjectManager') || $user->hasPermission('Project')) {
             return redirect('/projectmanagement');
-        } elseif ($user->hasPermission('PurchasingManager')) {
+        } elseif ($user->hasPermission('PurchasingManager') || $user->hasPermission('Purchasing')) {
             return redirect('/shopping_area/purchasesrequest');
         } elseif ($user->hasPermission('Administration')) {
             return redirect('/management_employees');

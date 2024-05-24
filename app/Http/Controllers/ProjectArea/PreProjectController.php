@@ -98,19 +98,6 @@ class PreProjectController extends Controller
         $preproject->contacts()->sync($data['contacts']);
     }
 
-
-    // public function showPreprojectFacade(Preproject $preproject)
-    // {
-    //     $facadeName = $preproject->facade;
-    //     $facadePath = '/image/facades/' . $facadeName;
-    //     $path = public_path($facadePath);
-    //     if (file_exists($path)) {
-    //         return response()->file($path);
-    //     }
-    //     abort(404, 'Documento no encontrado');
-    // }
-
-
     public function update(PreprojectRequest $request, Preproject $preproject)
     {
         $data = $request->validated();
@@ -818,6 +805,7 @@ class PreProjectController extends Controller
     {
         $fileName = $image->image;
         $filePath = '/image/imagereportpreproject/' . $fileName;
+        // dd($filePath);
         $path = public_path($filePath);
         if (file_exists($path)) {
             return response()->file($path);

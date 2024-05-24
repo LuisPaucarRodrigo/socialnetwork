@@ -72,7 +72,6 @@ Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->g
     include_once 'documentgestion_route.php';
 });
 
-
 Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->group(function () {
     include_once 'snsot_route.php';
 });

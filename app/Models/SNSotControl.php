@@ -10,13 +10,13 @@ class SNSotControl extends Model
     use HasFactory;
     protected $table = 'sn_sot_control';
     protected $fillable = [
-        'sot_id',
+        's_n_sot_id',
         'p_bad_installation',
         'p_no_rf',
         'p_rejections',
     ];
 
     public function sot() {
-        return $this->belongsTo(SNSot::class, 'sot_id');
+        return $this->belongsTo(SNSot::class, 's_n_sot_id');
     }
 }
