@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\DocumentManagementRequest;
 
+use App\Models\Area;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -61,5 +62,16 @@ class FolderCreateRequest extends FormRequest
         return [
             'name.regex' => 'El nombre solo puede contener letras mayúsculas, minúsculas, números, guiones, subguiones y sin espacios.',
         ];
+    }
+
+    public function validated($key = null, $default = null){
+        $validated = parent::validated($key, $default);
+        $gerencia = Area::where('name', 'Gerencia')->first();
+        $calidad = Area::where('name', 'Calidad')->first();
+        $validated['areas'] = array_merge(
+            [$gerencia->id, $calidad->id],
+            $validated['areas']
+        );
+        return $validated;
     }
 }

@@ -39,6 +39,10 @@ class FolderController extends Controller
             : $this->main_directory;
         $areas = $folder ? $folder->areas
             : Area::all();
+        $areas = $areas->filter(function($item){
+            return $item->name !== 'Gerencia' && $item->name !== 'Calidad';
+        });
+
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
         return Inertia::render('DocumentManagement/Folder', [
