@@ -133,7 +133,11 @@ class FolderController extends Controller
     public function see_dowload_permission(FolderPermissionsRequest $request, $folder_area_id){
         $this->checkAdminAccess();
         $data = $request->validated();
-        $currentPermission = FolderArea::find($folder_area_id);
+        $currentPermission = FolderArea::with('area')->find($folder_area_id);
+        //gerencia calidad avoid
+        if (in_array($currentPermission?->area?->name, ['Gerencia', 'Calidad'])) {
+            return abort(403, 'Área no permitida para cambio de permisos de ver/descargar');
+        }
         $permissionCallback = function ($permission, $state) {
             $this->updateSdPermission($permission, $state);
         };
@@ -456,7 +460,11 @@ class FolderController extends Controller
     // Folder Permissions Helpers
 
     public function underDeletePermission($folder_area_id){
-        $currentPermission = FolderArea::find($folder_area_id);
+        $currentPermission = FolderArea::with('area')->find($folder_area_id);
+        //gerencia calidad avoid
+        if (in_array($currentPermission?->area?->name, ['Gerencia', 'Calidad'])) {
+            return abort(403, 'No es posible remover este área');
+        }
         $underFolders = Folder::with('folder_areas')
             ->whereHas('folder_areas', function ($query) use ($currentPermission) {
                 $query->where('area_id', $currentPermission->area_id);

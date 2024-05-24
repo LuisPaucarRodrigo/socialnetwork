@@ -56,7 +56,7 @@
                                 </div>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button>
+                                <button v-if="!['Gerencia','Calidad'].includes(item?.area.name)">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         @click="openDeleteFAModal(item.id)"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
