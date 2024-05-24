@@ -22,7 +22,11 @@ const SotOptions = [
     },
     {
         optionName: 'Área de Operaciones',
-        route: '' //route('name.of.the.route')
+        route: route('socialnetwork.sot.operation')
+    },
+    {
+        optionName: 'Área de Liquidación',
+        route: route('socialnetwork.sot.liquidation')
     },
     {
         optionName: 'Área de Cobranza',
