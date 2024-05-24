@@ -14,7 +14,7 @@ import { ref, watch } from 'vue';
 const SotOptions = [
     {
         optionName: 'Proceso',
-        route: '' //route('name.of.the.route')
+        route: route('socialnetwork.sot')
     },
     {
         optionName: 'Área de Programación',
@@ -26,11 +26,11 @@ const SotOptions = [
     },
     {
         optionName: 'Área de Cobranza',
-        route: '' //route('name.of.the.route')
+        route: route('sn.paymentArea.index')
     },
     {
         optionName: 'Área de Control',
-        route: '' //route('name.of.the.route')
+        route: route('sn.controlArea.index')
     },
 ]
 

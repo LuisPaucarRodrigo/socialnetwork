@@ -22,14 +22,13 @@
                     <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ imageCode.code }}
                     </h1>
-                    <span v-if="imageCode.status !== 'Aprobado'" class="text-green-600">Aprobado</span>
-                    <PrimaryButton v-else @click="approveCode(imageCode.id)"
-                        type="button" class="bg-green-700 hover:bg-green-600">
+                    <span v-if="imageCode.status === 'Aprobado'" class="text-green-600">Aprobado</span>
+                    <PrimaryButton v-else @click="approveCode(imageCode.id)" type="button"
+                        class="bg-green-700 hover:bg-green-600">
                         Aprobar
                     </PrimaryButton>
-                    
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-10 gap-4 mt-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mt-5">
                     <div v-for="image in photoCodeFiltrado(imageCode.id)" :key="image.id"
                         class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
                         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ image.description }}
@@ -165,7 +164,9 @@ const deleteImage = () => {
     const docId = imageToDelete.value;
     if (docId) {
         router.delete(route('preprojects.imagereport.delete', { preproject_id: docId }), {
-            onSuccess: () => closeModalImage()
+            onSuccess: () => {
+                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+            }
         });
     }
 };
@@ -176,10 +177,14 @@ function downloadImagen(imageId) {
 };
 
 function openPreviewImagenModal(imageId) {
-    imageToShow.value = imageId;
-    const url = route('preprojects.imagereport.show', { image: imageId });
-    window.open(url, '_blank');
+    if (imageId) {
+        const url = route('preprojects.imagereport.show', { image: imageId });
+        window.open(url, '_blank');
+    } else {
+        console.error('No se proporcionó un ID de imagen válido');
+    }
 }
+
 
 function closeRejectModal() {
     imageCodeId.value = ''
@@ -200,7 +205,7 @@ function approveImageModal(imageId) {
             approve_reject_Image.value = true
             setTimeout(() => {
                 approve_reject_Image.value = false
-                router.get(route('preprojects.imagereport.index', { preproject_id: preproject.preproject_id }))
+                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
             }, 2000)
         }
     })

@@ -10,7 +10,7 @@ class SNSotPayment extends Model
     use HasFactory;
     protected $table = 'sn_sot_payment';
     protected $fillable = [
-        'sot_id',
+        's_n_sot_id',
         'sot_bill',
         'sot_bill_date',
         'bill',
@@ -20,6 +20,6 @@ class SNSotPayment extends Model
     ];
 
     public function sot() {
-        return $this->belongsTo(SNSot::class, 'sot_id');
+        return $this->belongsTo(SNSot::class, 's_n_sot_id');
     }
 }

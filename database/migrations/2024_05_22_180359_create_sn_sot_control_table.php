@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sn_sot_control', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sot_id')->constrained('sn_sots')->onDelete('cascade');
+            $table->foreignId('s_n_sot_id')->constrained('sn_sots')->onDelete('cascade');
             $table->string('p_bad_installation')->nullable();
             $table->string('p_no_rf')->nullable();
             $table->string('p_rejections')->nullable();
