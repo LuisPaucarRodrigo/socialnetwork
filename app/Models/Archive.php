@@ -25,7 +25,8 @@ class Archive extends Model
         'users_available',
         'type',
         'disponibility',
-        'observation_state'
+        'observation_state',
+        'extension'
     ];
 
     public function users () {
@@ -170,4 +171,17 @@ class Archive extends Model
 
         return null;
     }
+
+    public function getExtensionAttribute()
+    {
+        // Obtiene el nombre del archivo completo
+        $fileName = $this->path;
+        
+        // Utiliza la función pathinfo para obtener la información del archivo
+        $fileInfo = pathinfo($fileName);
+        
+        // Retorna solo la extensión del archivo
+        return $fileInfo['extension'] ?? null;
+    }
+
 }

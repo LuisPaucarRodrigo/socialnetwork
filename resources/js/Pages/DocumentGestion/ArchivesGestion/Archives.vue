@@ -279,6 +279,9 @@
                     Usuario
                 </th>
                 <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Fecha Máxima de Evaluación
+                </th>
+                <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
                     Resultado de Evaluación
                 </th>
                 <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
@@ -307,13 +310,17 @@
                 'text-gray-700',
                 {
                     'border-l-8': true,
-                    'border-green-500': archive_user.state === 'Aprobado',
-                    'border-red-500': archive_user.state === 'Desestimado',
-                    'border-yellow-500': archive_user.state === 'Observado',
+                    'border-yellow-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(archive_user.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000), 
+                    'border-red-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000),
                 }
             ]" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                     <p class="text-gray-900 whitespace-no-wrap">
                         {{ archive_user.user.name }}
+                    </p>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                        {{ archive_user.due_date }}
                     </p>
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -403,6 +410,14 @@
                 <InputError :message="formUsers.errors.users" />
               </div>
             </div>
+            <div class="mt-2">
+              <InputLabel for="due_date">Elegir Fecha Máxima de Evaluación</InputLabel>
+              <div class="mt-2">
+                <input type="date" v-model="formUsers.due_date" id="due_date"
+                  class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+                <InputError :message="formUsers.errors.due_date" />
+              </div>
+            </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
               <SecondaryButton @click="closePermissionModal"> Cancelar </SecondaryButton>
               <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
@@ -475,6 +490,7 @@ const form = useForm({
 
 const formUsers = useForm({
   archive_id: null,
+  due_date: '',
   users: []
 });
 
@@ -539,7 +555,7 @@ const submitUsers = () => {
       }, 2000);
     },
     onError: (e) => {
-
+      console.error(e)
     },
     onFinish: () => {
     }

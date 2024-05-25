@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+
 class ArchivesController extends Controller
 {
     protected $main_directory;
@@ -180,6 +181,7 @@ class ArchivesController extends Controller
     
             $archiveId = $validatedData['archive_id'];
             $selectedUsers = $validatedData['users'];
+            $due_date = $validatedData['due_date'];
     
             // Convertir la lista de usuarios en un array de ids para la verificación
             $selectedUserIds = array_column($selectedUsers, 'id');
@@ -199,6 +201,7 @@ class ArchivesController extends Controller
                     // Si no existe un registro, crear uno nuevo con estado true
                     ArchiveUser::create([
                         'archive_id' => $archiveId,
+                        'due_date' => $due_date,
                         'user_id' => $userId,
                     ]);
                 }
@@ -306,6 +309,49 @@ class ArchivesController extends Controller
             abort(403, 'No autorizado');
         }
         
+    }
+
+    public function getAlarmPerUser()
+    {
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Obtener la fecha actual
+        $currentDate = Carbon::now()->subHours(5);
+
+        // Obtener los registros de ArchiveUser para el usuario actual con estado igual a "Pendiente"
+        $pendingAlarms = ArchiveUser::where('user_id', $user->id)
+            ->where('state', 'Pendiente')
+            ->with('archive.folder')
+            ->get();
+
+        // Inicializar arreglos para almacenar las alarmas según la diferencia de días
+        $alarmsLessThan3Days = [];
+        $alarmsBetween4And7Days = [];
+
+        // Iterar sobre los registros y separarlos según la diferencia de días
+        foreach ($pendingAlarms as $alarm) {
+            $dueDate = Carbon::createFromFormat('Y-m-d', $alarm->due_date);
+
+            // Calcular la diferencia de días entre la fecha de vencimiento y la fecha actual
+            $differenceInDays = $currentDate->diffInDays($dueDate, false);
+
+            // Separar las alarmas según la diferencia de días
+            if ($differenceInDays <= 3) {
+                $alarmsLessThan3Days[] = $alarm;
+            } elseif ($differenceInDays >= 4 && $differenceInDays <= 7) {
+                $alarmsBetween4And7Days[] = $alarm;
+            }
+        }
+
+        // Construir la respuesta JSON con las dos partes separadas
+        $responseData = [
+            'alarms3' => $alarmsLessThan3Days,
+            'alarms7' => $alarmsBetween4And7Days,
+        ];
+
+        // Retornar la respuesta JSON
+        return response()->json($responseData);
     }
 
 }
