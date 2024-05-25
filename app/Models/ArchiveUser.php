@@ -14,6 +14,7 @@ class ArchiveUser extends Model
         "user_id",
         "state",
         "status",
+        "due_date",
         "observation",
         "evaluation_date",
     ];
