@@ -31,9 +31,16 @@ Route::middleware('permission:SocialNetworkOperation')->group(function () {
 }); 
 
 
-Route::get('/social_network/paymentArea/index', [SotController::class,'sot_payment_index'])->name('sn.paymentArea.index');
-Route::put('/social_network/paymentArea/{sot_id}/update', [SotController::class,'sot_payment_udpate'])->name('sn.paymentArea.update');
-//SOT CONTROL AREA
-Route::get('/social_network/controlArea/index', [SotController::class,'sot_control_index'])->name('sn.controlArea.index');
-Route::put('/social_network/controlArea/{sot_id}/update', [SotController::class,'sot_control_udpate'])->name('sn.controlArea.update');
+Route::middleware('permission:SocialNetworkCharge')->group(function () {
+    //SOT PAYMENT AREA
+    Route::get('/social_network/paymentArea/index', [SotController::class, 'sot_payment_index'])->name('sn.paymentArea.index');
+    Route::put('/social_network/paymentArea/{sot_id}/update', [SotController::class, 'sot_payment_udpate'])->name('sn.paymentArea.update');
+});
+
+Route::middleware('permission:SocialNetworkControl')->group(function () {
+    //SOT CONTROL AREA
+    Route::get('/social_network/controlArea/index', [SotController::class, 'sot_control_index'])->name('sn.controlArea.index');
+    Route::put('/social_network/controlArea/{sot_id}/update', [SotController::class, 'sot_control_udpate'])->name('sn.controlArea.update');
+});
+
 
