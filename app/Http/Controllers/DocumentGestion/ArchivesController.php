@@ -220,9 +220,6 @@ class ArchivesController extends Controller
         }
     }
 
-
-
-
     public function observationsPerArchive($folder, Archive $archive)
     {
         $user = Auth::user();
@@ -231,7 +228,7 @@ class ArchivesController extends Controller
             ->first();
 
         if ($findArchiveUser || $user->role_id == 1) {
-            $archiveUsers = ArchiveUser::where('archive_id', $archive->id)->whereNotNull('observation')->with('archive.user', 'user')->paginate(10);
+            $archiveUsers = ArchiveUser::where('archive_id', $archive->id)->whereNotNull('evaluation_date')->with('archive.user', 'user')->paginate(10);
             $observation = ArchiveUser::where('archive_id', $archive->id)->where('user_id', $user->id)->first();
             if ($observation){
                 if ($observation->observation){
@@ -264,7 +261,6 @@ class ArchivesController extends Controller
         if ($findArchiveUser) {
             $request->validate([
                 'state' => 'required',
-                'observations' => 'required',
                 'user_id' => 'required'
             ]);
 
@@ -306,6 +302,7 @@ class ArchivesController extends Controller
                     copy(public_path($archiveFounded->path), public_path($newArchivePath));
                 }
             }
+            return redirect()->back();
         }else{
             abort(403, 'No autorizado');
         }
@@ -349,9 +346,18 @@ class ArchivesController extends Controller
     public function getPDF(Archive $archive)
     {
         $user = Auth::user();
+        $previousArchives = Archive::where('folder_id', $archive->folder_id)
+            ->where('id', '<', $archive->id)
+            ->get();
+
+        $previous = $previousArchives->filter(function ($archive) {
+            return $archive->type === 'stable';
+        })->sortByDesc('created_at');
+
         $archive->load('users', 'user');
-        $pdf = Pdf::loadView('pdf.ArchivePDF', compact('archive', 'user'));
+        $pdf = Pdf::loadView('pdf.ArchivePDF', compact('archive', 'user', 'previous'));
         return $pdf->stream();
     }
+
 
 }

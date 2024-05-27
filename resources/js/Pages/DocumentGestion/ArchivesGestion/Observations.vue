@@ -80,7 +80,7 @@
     <Modal :show="create_observation">
         <div class="p-6">
             <h2 class="text-base font-medium leading-7 text-gray-900">
-                Subir archivo
+                Añadir Observación
             </h2>
             <form @submit.prevent="submit">
                 <div class="border-b border-gray-900/10 pb-12">
@@ -96,7 +96,7 @@
                             <InputError :message="form.errors.state" />
                         </div>
                     </div>
-                    <div class="mt-4">
+                    <div v-if="form.state == 'Observado'" class="mt-4">
                         <InputLabel for="observations">Observaciones</InputLabel>
                         <div class="mt-2">
                             <textarea v-model="form.observations" id="observations" rows="4" class="block w-full mt-1 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm rounded-md"></textarea>
@@ -175,7 +175,7 @@
         showModal.value = true
         setTimeout(() => {
             showModal.value = false;
-          router.visit(route('archives.observations', {folder: props.folder_id, archive: props.archive.id}))
+            router.visit(route('archives.observations', {folder: props.folder_id, archive: props.archive.id}))
         }, 2000);
       },
       onError: () => {
