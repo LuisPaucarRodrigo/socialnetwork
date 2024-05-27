@@ -87,7 +87,7 @@ class Archive extends Model
     public function getUsersAvailableAttribute()
     {
         $areaIds = $this->folder->areas->pluck('id')->toArray();
-        $users = User::whereIn('area_id', $areaIds)->get();
+        $users = User::whereIn('area_id', $areaIds)->with('area')->get();
         $filteredUsers = $users->filter(function ($user) {
             return $user->id != $this->user_id;
         });

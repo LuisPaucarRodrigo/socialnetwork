@@ -225,7 +225,7 @@
                                     </a>
                                 </div>
               </div>
-              <div v-else>No disponible</div>
+              <div v-else><p class="text-gray-900 whitespace-no-wrap">No permitido</p></div>
 
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -332,6 +332,9 @@
                     'border-l-8': true,
                     'border-yellow-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(archive_user.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000),
                     'border-red-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000),
+                    'border-green-500': archive_user.state === 'Aprobado',
+                    'border-blue-500': archive_user.state === 'Observado',
+                    'border-orange-500': archive_user.state === 'Desestimado',
                 }
             ]" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                     <p class="text-gray-900 whitespace-no-wrap">
@@ -425,7 +428,7 @@
               <div class="mt-2">
                 <select multiple v-model="formUsers.users" id="userSelect"
                   class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
-                  <option v-for="user in usersAvailable" :value="user">{{ user.name }}</option>
+                  <option v-for="user in usersAvailable" :value="user">{{ user.name }} - {{ user.area.name }}</option>
                 </select>
                 <InputError :message="formUsers.errors.users" />
               </div>
@@ -483,7 +486,7 @@ const props = defineProps({
   userPermissions: Array,
   userHasPermission: Boolean
 });
-console.log(props.archives)
+
 const usersAvailable = ref([]);
 const archiveRow = ref(0);
 
