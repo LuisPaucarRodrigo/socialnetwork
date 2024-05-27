@@ -99,9 +99,8 @@ class Archive extends Model
     {
         if (fmod($this->version, 1) > 0) {
             return 'beta';
-        }else{
-            return 'stable';
         }
+            return 'stable';
     }
 
     public function getDisponibilityAttribute() {

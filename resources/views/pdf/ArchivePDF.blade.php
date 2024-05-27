@@ -5,63 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archive PDF</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Agrega cualquier estilo personalizado aquí -->
-    <style>
-        /* Estilos personalizados */
-        .table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        .table th, .table td {
-            border: 1.5px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-        .table th {
-            background-color: #f2f2f2;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
-        <h2 class="mb-4">Tabla de Archivo</h2>
-        <table class="table">
+        <div class="text-center">
+            <img src="image/projectimage/logo_ccip.jpeg" width="150px" alt="" class="img-fluid">
+        </div>
+        <div>
+            <h2 class="mt-5 text-center max-width small-header" style="font-size: 24px;">GUIA</h2>
+            <h2 class="text-center max-width small-header" style="font-size: 24px;">ELABORACIÓN DE INFORMACIÓN DOCUMENTADA</h2>
+        </div>
+        
+        <br>
+        <br>
+        <table class="table table-bordered">
             <tbody>
                 <tr>
-                    <td>Nombre:</td>
-                    <td colspan="2">{{ $archive->name . '.' . $archive->extension }}</td>
+                    <td style="font-weight: bold; font-size: 12px; padding: 4px; border: 1px solid #000;">Nombre:</td>
+                    <td colspan="2" style="border: 1px solid #000; font-size: 12px; padding: 4px;">{{ $archive->name . '.' . $archive->extension }}</td>
                 </tr>
                 <tr>
-                    <td>Versión N°:</td>
-                    <td colspan="2">{{ $archive->version }}</td>
+                    <td style="font-weight: bold; font-size: 12px; padding: 4px; border: 1px solid #000;">Versión N°:</td>
+                    <td colspan="2" style="border: 1px solid #000; font-size: 12px; padding: 4px;">{{ $archive->version }}</td>
                 </tr>
                 <tr>
-                    <td>Fecha de Elaboración:</td>
-                    <td colspan="2">{{ $archive->created_at->format('d/m/y') }}</td>
+                    <td style="font-weight: bold; font-size: 12px; padding: 4px; border: 1px solid #000;">Fecha de Elaboración:</td>
+                    <td colspan="2" style="border: 1px solid #000; font-size: 12px; padding: 4px;">{{ $archive->created_at->format('d/m/y') }}</td>
                 </tr>
                 <tr>
-                    <td>Elaborado por:</td>
-                    <td colspan="2">{{ $archive->user->name }}</td>
+                    <td style="font-weight: bold; font-size: 12px; padding: 4px; border: 1px solid #000;">Elaborado por:</td>
+                    <td colspan="2" style="border: 1px solid #000; font-size: 12px; padding: 4px;">{{ $archive->previous_archive->user->name }}</td>
                 </tr>
                 <tr>
-                    <td style="width: 150px;">ACTUALIZADO POR:</td>
-                    <td>OBSERVADO POR:</td>
-                    <td>APROBADO POR:</td>
+                    <td style="font-weight: bold; font-size: 14px; padding: 4px; border: 1px solid #000; text-align: center">ACTUALIZADO POR:</td>
+                    <td style="font-weight: bold; font-size: 14px; padding: 4px; border: 1px solid #000; text-align: center">OBSERVADO POR:</td>
+                    <td style="font-weight: bold; font-size: 14px; padding: 4px; border: 1px solid #000; text-align: center">APROBADO POR:</td>
                 </tr>
                 <tr>
-                    <td style="height: 200px;"></td>
-                    <td></td>
-                    <td></td>
+                    <td style="height: 200px; padding: 2px; border: 1px solid #000;;"><p style="margin-top: 15px">Firma:</p></td>
+                    <td style="border: 1px solid #000; padding: 2px;"></td>
+                    <td style="border: 1px solid #000; padding: 2px;">
+                        <ul style="margin: 0; padding-left: 0; list-style-type: none; text-align: left; margin-top: 15px"> <!-- Elimina las viñetas y centra el texto -->
+                            @foreach($archive->previous_archive->users as $index => $user) <!-- Itera sobre todos los usuarios -->
+                                <li style="padding: 0; margin-bottom: {{ $index === count($archive->previous_archive->users) - 1 ? '0' : '45px' }}">Firma:</li> <!-- Renderiza el nombre de cada usuario -->
+                            @endforeach
+                        </ul>
+                    </td>                               
                 </tr>
                 <tr>
-                    <td>Columna 1</td>
-                    <td>Columna 2</td>
-                    <td>Columna 3</td>
+                    <td style="border: 1px solid #000; padding: 2px; text-align: center;">{{ $archive->user->name }}</td>
+                    <td style="border: 1px solid #000; padding: 2px;">Columna 2</td>
+                    <td style="border: 1px solid #000; padding: 2px;">
+                        <ul style="margin: 0; padding-left: 0; list-style-type: none; text-align: center;"> <!-- Elimina las viñetas y centra el texto -->
+                            @foreach($archive->previous_archive->users as $user) <!-- Itera sobre todos los usuarios -->
+                                <li style="padding: 0;">{{ $user->name }}</li> <!-- Renderiza el nombre de cada usuario -->
+                            @endforeach
+                        </ul>
+                    </td>
+                    
                 </tr>
                 <tr>
-                    <td>Columna 1</td>
-                    <td>Columna 2</td>
-                    <td>Columna 3</td>
+                    <td style="border: 1px solid #000; font-size: 12px; padding: 4px;">Fecha:</td>
+                    <td style="border: 1px solid #000; font-size: 12px; padding: 4px;">Fecha:</td>
+                    <td style="border: 1px solid #000; font-size: 12px; padding: 4px;">Fecha:</td>
                 </tr>
             </tbody>
         </table>
