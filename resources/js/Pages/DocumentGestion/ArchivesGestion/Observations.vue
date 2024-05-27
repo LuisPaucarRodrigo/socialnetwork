@@ -13,14 +13,14 @@
                 + Agregar Observación
             </PrimaryButton>
             </div>
-        </div> 
+        </div>
       </div>
 
-  
+
       <div class="overflow-x-auto rounded-lg shadow mt-2">
         <table class="w-full whitespace-no-wrap">
             <thead>
-                <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"> 
+                <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                   <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Nombre del Archivo
                     </th>
@@ -56,7 +56,7 @@
                         <p class="text-gray-900 whitespace-no-wrap">{{ archiveUser.user.name }}</p>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                        <p class="text-gray-900 whitespace-no-wrap">{{ archiveUser.due_date }}</p>
+                        <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(archiveUser.due_date) }}</p>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <p class="text-gray-900 whitespace-no-wrap">{{ archiveUser.observation }}</p>
@@ -115,10 +115,10 @@
     </Modal>
 
 
-      <ConfirmCreateModal :confirmingcreation="showModal" itemType="Observación" />  
+      <ConfirmCreateModal :confirmingcreation="showModal" itemType="Observación" />
     </AuthenticatedLayout>
   </template>
-  
+
   <script setup>
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -135,7 +135,7 @@
   import { Head, useForm, router } from '@inertiajs/vue3';
   import { TrashIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
   import { formattedDate } from '@/utils/utils.js';
-  
+
   const props = defineProps({
     archive: Object,
     archiveUsers: Object,
@@ -148,7 +148,7 @@
   const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
   }
-  
+
   const form = useForm({
     state: '',
     observations: '',
@@ -161,12 +161,12 @@
   const openCreateObservationModal = () => {
     create_observation.value = true;
   };
-  
+
   const closeModal = () => {
     form.reset()
     create_observation.value = false;
   };
- 
+
   const submit = () => {
     form.post(route('archives.observations.save', {archive: props.archive.id}), {
       onSuccess: () => {

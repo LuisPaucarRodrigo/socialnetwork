@@ -21,3 +21,4 @@ Route::post('/documentGestion/archives/{archive}/observate', [ArchivesController
 Route::post('/documentGestion/archives/{archive}/upgrade', [ArchivesController::class, 'upgradeArchive'])->name('archives.upgrade');
 
 Route::get('/documentGestion/alarms', [ArchivesController::class, 'getAlarmPerUser'])->name('archives.alarms');
+Route::get('/documentGestion/archives/{archive}/pdf', [ArchivesController::class, 'getPDF'])->name('archives.get.pdf');
