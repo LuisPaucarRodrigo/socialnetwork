@@ -44,7 +44,8 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ control.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ control.sot_control?.p_bad_installation }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ control.sot_control?.p_bad_installation
+                                    }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ control.sot_control?.p_no_rf }}
@@ -85,7 +86,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="p_bad_installation" v-model="form.p_bad_installation"
-                                    :disabled="form.p_bad_installation"
+                                    :disabled="form.p_bad_installation && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -98,7 +99,7 @@
                             <InputLabel for="p_no_rf">Factura
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="p_no_rf" v-model="form.p_no_rf" :disabled="form.p_no_rf"
+                                <select id="p_no_rf" v-model="form.p_no_rf" :disabled="form.p_no_rf && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -111,7 +112,7 @@
                             <InputLabel for="p_rejections">Cobranza
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="p_rejections" v-model="form.p_rejections" :disabled="form.p_rejections"
+                                <select id="p_rejections" v-model="form.p_rejections" :disabled="form.p_rejections && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -152,7 +153,12 @@ const sotControlUpdate = ref(false);
 
 const props = defineProps({
     controls: Object,
+    userPermissions: Array
 })
+
+function hasPermission(permission) {
+    return props.userPermissions.includes(permission)
+}
 
 const form = useForm({
     s_n_sot_id: null,
@@ -181,7 +187,7 @@ function initializeForm(control) {
 }
 
 function actionShowStore(control) {
-    if (typeof control === "object"){
+    if (typeof control === "object") {
         initializeForm(control);
     } else {
         form.s_n_sot_id = control
