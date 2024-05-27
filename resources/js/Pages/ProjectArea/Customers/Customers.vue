@@ -235,7 +235,6 @@ const submit = () => {
     form.post(route('customers.store'), {
         onSuccess: () => {
             close_add_customer();
-            form.reset();
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
