@@ -76,5 +76,4 @@ Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->gro
     include_once 'snsot_route.php';
 });
 
-
 require __DIR__ . '/auth.php';
