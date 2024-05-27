@@ -128,7 +128,7 @@
                                             <div class="mt-2">
                                                 <input type="text" v-model="form.contact.name"
                                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                <InputError :message="form.contact.name" />
+                                                <InputError :message="form.errors['contact.name']" />
                                             </div>
                                         </div>
                                         <div>
@@ -138,7 +138,7 @@
                                             <div class="mt-2">
                                                 <input type="text" v-model="form.contact.phone"
                                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                <InputError :message="form.contact.phone" />
+                                                <InputError :message="form.errors['contact.phone']" />
                                             </div>
                                         </div>
                                         <div>
@@ -148,7 +148,7 @@
                                             <div class="mt-2">
                                                 <input type="text" v-model="form.contact.additional_information"
                                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                                <InputError :message="form.contact.additional_information" />
+                                                <InputError :message="form.errors['contact.additional_information']" />
                                             </div>
                                         </div>
                                     </div>

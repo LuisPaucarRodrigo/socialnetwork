@@ -36,7 +36,10 @@ class CustomersController extends Controller
         $request->validate([
             'ruc' => 'required',
             'business_name' => 'required',
-            'address' => 'required'
+            'address' => 'required',
+            'contact.name' => 'required',
+            'contact.phone' => 'required',
+            'contact.additional_information' => 'required'
         ]);
 
         Customer::create([
