@@ -110,7 +110,7 @@
                             <InputLabel for="sot_bill">SOT a Facturar
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="sot_bill" v-model="form.sot_bill" :disabled="form.sot_bill"
+                                <select id="sot_bill" v-model="form.sot_bill" :disabled="form.sot_bill && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -123,7 +123,7 @@
                             <InputLabel for="sot_bill_date">Fecha SOT a Facturar
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="Date" v-model="form.sot_bill_date" id="sot_bill_date" :disabled="form.sot_bill_date" />
+                                <TextInput type="Date" v-model="form.sot_bill_date" id="sot_bill_date" :disabled="form.sot_bill_date && !hasPermission('UserManager')" />
                                 <InputError :message="form.errors.sot_bill_date" />
                             </div>
                         </div>
@@ -131,7 +131,7 @@
                             <InputLabel for="bill">Factura
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="bill" v-model="form.bill" :disabled="form.bill"
+                                <select id="bill" v-model="form.bill" :disabled="form.bill && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -144,7 +144,7 @@
                             <InputLabel for="bill_date">Fecha Facturar
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="Date" v-model="form.bill_date" id="bill_date" :disabled="form.bill_date" />
+                                <TextInput type="Date" v-model="form.bill_date" id="bill_date" :disabled="form.bill_date && !hasPermission('UserManager')" />
                                 <InputError :message="form.errors.bill_date" />
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                             <InputLabel for="charge">Cobranza
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="charge" v-model="form.charge" :disabled="form.charge"
+                                <select id="charge" v-model="form.charge" :disabled="form.charge && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -165,7 +165,7 @@
                             <InputLabel for="charge_date">Fecha Cobranza
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="Date" v-model="form.charge_date" id="charge_date" :disabled="form.charge_date" />
+                                <TextInput type="Date" v-model="form.charge_date" id="charge_date" :disabled="form.charge_date && !hasPermission('UserManager')" />
                                 <InputError :message="form.errors.charge_date" />
                             </div>
                         </div>
