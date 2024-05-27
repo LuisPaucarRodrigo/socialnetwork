@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('state')->default('Pendiente');
             $table->boolean('status')->default(true);
             $table->text('observation')->nullable();
+            $table->date('due_date');
             $table->date('evaluation_date')->nullable();
             $table->timestamps();
         });

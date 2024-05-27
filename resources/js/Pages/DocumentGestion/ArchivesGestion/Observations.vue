@@ -13,14 +13,14 @@
                 + Agregar Observación
             </PrimaryButton>
             </div>
-        </div> 
+        </div>
       </div>
 
-  
+
       <div class="overflow-x-auto rounded-lg shadow mt-2">
         <table class="w-full whitespace-no-wrap">
             <thead>
-                <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"> 
+                <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                   <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Nombre del Archivo
                     </th>
@@ -29,6 +29,9 @@
                     </th>
                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Usuario Evaluador
+                    </th>
+                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        Fecha Máxima de Evaluación
                     </th>
                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Observación
@@ -53,6 +56,9 @@
                         <p class="text-gray-900 whitespace-no-wrap">{{ archiveUser.user.name }}</p>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                        <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(archiveUser.due_date) }}</p>
+                    </td>
+                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <p class="text-gray-900 whitespace-no-wrap">{{ archiveUser.observation }}</p>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -74,7 +80,7 @@
     <Modal :show="create_observation">
         <div class="p-6">
             <h2 class="text-base font-medium leading-7 text-gray-900">
-                Subir archivo
+                Añadir Observación
             </h2>
             <form @submit.prevent="submit">
                 <div class="border-b border-gray-900/10 pb-12">
@@ -90,7 +96,7 @@
                             <InputError :message="form.errors.state" />
                         </div>
                     </div>
-                    <div class="mt-4">
+                    <div v-if="form.state == 'Observado'" class="mt-4">
                         <InputLabel for="observations">Observaciones</InputLabel>
                         <div class="mt-2">
                             <textarea v-model="form.observations" id="observations" rows="4" class="block w-full mt-1 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm rounded-md"></textarea>
@@ -109,10 +115,10 @@
     </Modal>
 
 
-      <ConfirmCreateModal :confirmingcreation="showModal" itemType="Observación" />  
+      <ConfirmCreateModal :confirmingcreation="showModal" itemType="Observación" />
     </AuthenticatedLayout>
   </template>
-  
+
   <script setup>
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -129,7 +135,7 @@
   import { Head, useForm, router } from '@inertiajs/vue3';
   import { TrashIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
   import { formattedDate } from '@/utils/utils.js';
-  
+
   const props = defineProps({
     archive: Object,
     archiveUsers: Object,
@@ -142,7 +148,7 @@
   const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
   }
-  
+
   const form = useForm({
     state: '',
     observations: '',
@@ -155,12 +161,12 @@
   const openCreateObservationModal = () => {
     create_observation.value = true;
   };
-  
+
   const closeModal = () => {
     form.reset()
     create_observation.value = false;
   };
- 
+
   const submit = () => {
     form.post(route('archives.observations.save', {archive: props.archive.id}), {
       onSuccess: () => {
@@ -169,7 +175,7 @@
         showModal.value = true
         setTimeout(() => {
             showModal.value = false;
-          router.visit(route('archives.observations', {folder: props.folder_id, archive: props.archive.id}))
+            router.visit(route('archives.observations', {folder: props.folder_id, archive: props.archive.id}))
         }, 2000);
       },
       onError: () => {

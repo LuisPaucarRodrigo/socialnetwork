@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class ArchivesController extends Controller
 {
     protected $main_directory;
@@ -24,7 +26,7 @@ class ArchivesController extends Controller
     public function __construct()
     {
         $this->main_directory = 'CCIP';
-        
+
     }
 
     public function show(Folder $folder) {
@@ -36,7 +38,7 @@ class ArchivesController extends Controller
             $archives = Archive::where('folder_id', $folder->id)->with('user', 'archive_users.user')->orderByDesc('version')->paginate(10);
             $user = Auth::user();
             $userHasPermission = $folder->folder_areas->where('area_id', $user->area_id)->where('create', true)->isNotEmpty();
-    
+
             return Inertia::render('DocumentGestion/ArchivesGestion/Archives', [
                 'archives' => $archives,
                 'folder' => $folder,
@@ -45,7 +47,7 @@ class ArchivesController extends Controller
         }else{
             abort(403, 'No autorizado');
         }
-        
+
     }
 
     public function create($folder, Request $request)
@@ -62,9 +64,9 @@ class ArchivesController extends Controller
                 'comment' => 'required',
                 'user_id' => 'required'
             ]);
-    
+
             $lastArchive = Archive::where('folder_id', $request->folder_id)->orderBy('id', 'desc')->first();
-            
+
             if ($lastArchive) {
                 $newVersion = $lastArchive->version + 0.01;
             } else {
@@ -84,7 +86,7 @@ class ArchivesController extends Controller
                     ArchiveUser::create([
                         'user_id' => $archive_user->user_id,
                         'status' => true,
-                        'archive_id' => $archive->id,                      
+                        'archive_id' => $archive->id,
                     ]);
                 }
             }else{
@@ -96,21 +98,21 @@ class ArchivesController extends Controller
                     'comment' => $request->comment,
                     'version' => $newVersion,
                 ]);
-            } 
-    
+            }
+
             if ($request->hasFile('archive')) {
                 $document = $request->file('archive');
                 $extension = $document->getClientOriginalExtension();
                 $documentName = $archive->name . '.' . $extension;
                 $path = $document->move(public_path($folder->path), $documentName);
-     
+
                 $archive->path = $folder->path . '/' . $documentName;
                 $archive->save();
             }
         } else {
             abort(403, 'No autorizado');
         }
-        
+
     }
 
     public function destroy($folder, $archive)
@@ -140,7 +142,7 @@ class ArchivesController extends Controller
         }else{
             abort(403,'No autorizado');
         }
-        
+
     }
 
     public function downloadArchive($folder, $archive)
@@ -148,45 +150,46 @@ class ArchivesController extends Controller
         $user = Auth::user();
         $findFolder = FolderArea::where('area_id', $user->area_id)
             ->where('folder_id', $folder)->first();
-        
+
         if ($findFolder?->see_download) {
             $findArchive = Archive::where('id', $archive)->with('folder')->first();
             if ($findArchive) {
                 // Accede a la propiedad path en el modelo Archive específico
                 $filePath = $findArchive->path;
                 $path = public_path($filePath);
-                
+
                 if (file_exists($path)) {
                     // Utiliza el nombre y el tipo de archivo para generar el nombre del archivo a descargar
                     $fileName = $findArchive->name . '.' . $findArchive->folder->archive_type;
                     return response()->download($path);
                 }
-                
+
                 abort(404, 'Documento no encontrado');
             }
-            
+
             abort(404, 'Archivo no encontrado');
         } else {
             abort(403,'No autorizado');
-        }       
+        }
     }
 
     public function assignUsers(Folder $folder, Archive $archive, AssignUsersRequest $request)
     {
         $user = Auth::user();
-    
+
         if ($user->role_id == 1 || $archive->user_id == $user->id) {
             $validatedData = $request->validated(); // Accede a los datos validados
-    
+
             $archiveId = $validatedData['archive_id'];
             $selectedUsers = $validatedData['users'];
-    
+            $due_date = $validatedData['due_date'];
+
             // Convertir la lista de usuarios en un array de ids para la verificación
             $selectedUserIds = array_column($selectedUsers, 'id');
-    
+
             // Obtener los registros existentes en la tabla 'archive_user' para este archivo
             $existingRecords = ArchiveUser::where('archive_id', $archiveId)->get();
-    
+
             // Iterar sobre los usuarios seleccionados
             foreach ($selectedUserIds as $userId) {
                 // Verificar si ya existe un registro para este usuario y archivo
@@ -199,11 +202,12 @@ class ArchivesController extends Controller
                     // Si no existe un registro, crear uno nuevo con estado true
                     ArchiveUser::create([
                         'archive_id' => $archiveId,
+                        'due_date' => $due_date,
                         'user_id' => $userId,
                     ]);
                 }
             }
-    
+
             // Actualizar el estado de los registros existentes que no están en la solicitud a false
             $existingRecords->each(function ($record) use ($selectedUserIds) {
                 if (!in_array($record->user_id, $selectedUserIds)) {
@@ -215,9 +219,6 @@ class ArchivesController extends Controller
             abort(403, 'No autorizado');
         }
     }
-    
-    
-   
 
     public function observationsPerArchive($folder, Archive $archive)
     {
@@ -225,9 +226,9 @@ class ArchivesController extends Controller
         $findArchiveUser = ArchiveUser::where('archive_id', $archive->id)
             ->where('user_id', $user->id)
             ->first();
-        
+
         if ($findArchiveUser || $user->role_id == 1) {
-            $archiveUsers = ArchiveUser::where('archive_id', $archive->id)->whereNotNull('observation')->with('archive.user', 'user')->paginate(10);
+            $archiveUsers = ArchiveUser::where('archive_id', $archive->id)->whereNotNull('evaluation_date')->with('archive.user', 'user')->paginate(10);
             $observation = ArchiveUser::where('archive_id', $archive->id)->where('user_id', $user->id)->first();
             if ($observation){
                 if ($observation->observation){
@@ -238,7 +239,7 @@ class ArchivesController extends Controller
             }else{
                 $canObservate = false;
             }
-    
+
             return Inertia::render('DocumentGestion/ArchivesGestion/Observations', [
                 'archive' => $archive,
                 'folder_id' => $folder,
@@ -256,14 +257,13 @@ class ArchivesController extends Controller
         $findArchiveUser = ArchiveUser::where('archive_id', $archive)
             ->where('user_id', $user->id)
             ->first();
-        
+
         if ($findArchiveUser) {
             $request->validate([
                 'state' => 'required',
-                'observations' => 'required',
                 'user_id' => 'required'
             ]);
-    
+
             $observation = ArchiveUser::where('archive_id', $archive)->where('user_id', $request->user_id)->first();
             if ($observation) {
                 $observation->update([
@@ -278,17 +278,17 @@ class ArchivesController extends Controller
 
                 $archiveFounded->approve_status = false;
                 $archiveFounded->save();
-        
+
                 //versionAndExtension
                 $newVersion = floor($archiveFounded->version) + 1.0;
                 $extension = pathinfo($archiveFounded->path, PATHINFO_EXTENSION);
-        
+
                 //name
                 $nameParts = explode('-', $archiveFounded->name);
                 $tempName = $nameParts[0];
-        
+
                 $newArchivePath = $archiveFounded->folder->path . '/' . $tempName . '-' . $newVersion . '.' . $extension;
-        
+
                 $newArchive = Archive::create([
                     'name' => $tempName . '-' . $newVersion,
                     'folder_id' => $archiveFounded->folder_id,
@@ -297,15 +297,67 @@ class ArchivesController extends Controller
                     'path' => $newArchivePath,
                     'version' => $newVersion,
                 ]);
-        
+
                 if (file_exists(public_path($archiveFounded->path))) {
                     copy(public_path($archiveFounded->path), public_path($newArchivePath));
                 }
             }
+            return redirect()->back();
         }else{
             abort(403, 'No autorizado');
         }
-        
+
     }
+
+    public function getAlarmPerUser()
+    {
+        $user = Auth::user();
+
+        $currentDate = Carbon::now()->subHours(5);
+
+        $pendingAlarms = ArchiveUser::where('user_id', $user->id)
+            ->where('state', 'Pendiente')
+            ->with('archive.folder')
+            ->get();
+
+        $alarmsLessThan3Days = [];
+        $alarmsBetween4And7Days = [];
+
+        foreach ($pendingAlarms as $alarm) {
+            $dueDate = Carbon::createFromFormat('Y-m-d', $alarm->due_date);
+
+            $differenceInDays = $currentDate->diffInDays($dueDate, false);
+
+            if ($differenceInDays <= 3) {
+                $alarmsLessThan3Days[] = $alarm;
+            } elseif ($differenceInDays >= 4 && $differenceInDays <= 7) {
+                $alarmsBetween4And7Days[] = $alarm;
+            }
+        }
+
+        $responseData = [
+            'alarms3' => $alarmsLessThan3Days,
+            'alarms7' => $alarmsBetween4And7Days,
+        ];
+
+        return response()->json($responseData);
+    }
+
+    public function getPDF(Archive $archive)
+    {
+        $user = Auth::user();
+        $previousArchives = Archive::where('folder_id', $archive->folder_id)
+            ->where('id', '<', $archive->id)
+            ->get();
+
+        $previous = $previousArchives->filter(function ($archive) {
+            return $archive->type === 'stable';
+        })->sortByDesc('created_at');
+
+        $archive->load('users', 'user');
+        $pdf = Pdf::loadView('pdf.ArchivePDF', compact('archive', 'user', 'previous'));
+        return $pdf->stream();
+    }
+
 
 }

@@ -59,6 +59,10 @@
             </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Exportar
+            </th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Evaluación
             </th>
             <th
@@ -209,6 +213,22 @@
               <p class="text-gray-900 whitespace-no-wrap">{{ archive.comment }}</p>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+              <div v-if="archive.type=='stable'" class="flex flex-col items-center space-y-2">
+                <div class="flex items-center">
+                                    <a target="_blank" :href="route('archives.get.pdf', { archive: archive.id })"
+                                        class="text-green-600 hover:underline">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                        </svg>
+                                    </a>
+                                </div>
+              </div>
+              <div v-else><p class="text-gray-900 whitespace-no-wrap">No permitido</p></div>
+
+            </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
               <div v-if="archive.type !== 'stable' && archive.approve_status && ![1, 3, 5].includes(archive.observation_state)" class="flex flex-col items-center space-y-2">
                 <div v-if="archive.archive_users.length == 0">
                   <button v-if="props.auth.user.role_id === 1 || props.auth.user.id === archive.user_id"
@@ -241,7 +261,7 @@
               </div>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <button v-if="archive.type != 'stable'" type="button" @click="toggleDetails(archive)"
+              <button v-if="archive.type !== 'stable'" type="button" @click="toggleDetails(archive)"
                 class="text-blue-900 whitespace-no-wrap">
                 <svg v-if="archiveRow[0]?.archive_id !== archive.id" xmlns="http://www.w3.org/2000/svg"
                     fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -256,34 +276,37 @@
                 </svg>
               </button>
             </td>
-            
+
           </tr>
           <template v-if="archiveRow[0]?.archive_id === archive.id">
             <tr class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
               <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
-                    
-                </th>  
+
+                </th>
                 <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
-                    
-                  </th> 
+
+                  </th>
                   <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
-                    
-                  </th> 
+
+                  </th>
                   <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
-                    
-                  </th> 
+
+                  </th>
                   <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
-                    
-                  </th> 
+
+                  </th>
               <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
                     Usuario
+                </th>
+                <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Fecha Máxima de Evaluación
                 </th>
                 <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
                     Resultado de Evaluación
                 </th>
                 <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
-                    
-                  </th> 
+
+                  </th>
             </tr>
             <tr v-for="archive_user in archiveRow" :key="archive_user.id" class="bg-gray-100"
                     >
@@ -307,13 +330,20 @@
                 'text-gray-700',
                 {
                     'border-l-8': true,
+                    'border-yellow-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(archive_user.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000),
+                    'border-red-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000),
                     'border-green-500': archive_user.state === 'Aprobado',
-                    'border-red-500': archive_user.state === 'Desestimado',
-                    'border-yellow-500': archive_user.state === 'Observado',
+                    'border-blue-500': archive_user.state === 'Observado',
+                    'border-orange-500': archive_user.state === 'Desestimado',
                 }
             ]" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                     <p class="text-gray-900 whitespace-no-wrap">
                         {{ archive_user.user.name }}
+                    </p>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                        {{ formattedDate(archive_user.due_date) }}
                     </p>
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -327,7 +357,7 @@
 
             </tr>
         </template>
-          
+
 
           </template>
         </tbody>
@@ -398,9 +428,17 @@
               <div class="mt-2">
                 <select multiple v-model="formUsers.users" id="userSelect"
                   class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
-                  <option v-for="user in usersAvailable" :value="user">{{ user.name }}</option>
+                  <option v-for="user in usersAvailable" :value="user">{{ user.name }} - {{ user.area.name }}</option>
                 </select>
                 <InputError :message="formUsers.errors.users" />
+              </div>
+            </div>
+            <div class="mt-2">
+              <InputLabel for="due_date">Elegir Fecha Máxima de Evaluación</InputLabel>
+              <div class="mt-2">
+                <input type="date" v-model="formUsers.due_date" id="due_date"
+                  class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+                <InputError :message="formUsers.errors.due_date" />
               </div>
             </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -439,6 +477,7 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, BarsArrowUpIcon } from '@heroicons/vue/24/outline';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
   archives: Object,
@@ -457,7 +496,7 @@ const toggleDetails = (archive) => {
         archiveRow.value = 0;
     } else {
         archiveRow.value = archive.archive_users;
-        
+
     }
 }
 
@@ -475,6 +514,7 @@ const form = useForm({
 
 const formUsers = useForm({
   archive_id: null,
+  due_date: '',
   users: []
 });
 
@@ -539,7 +579,7 @@ const submitUsers = () => {
       }, 2000);
     },
     onError: (e) => {
-
+      console.error(e)
     },
     onFinish: () => {
     }
