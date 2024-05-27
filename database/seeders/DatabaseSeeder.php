@@ -113,7 +113,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Proyectos'],
             ['name' => 'Logística'],
             ['name' => 'I + D'],
-            ['name' => 'Calidad'],
+            ['name' => 'Calidad']
 
         ];
         Area::insert($areasData);

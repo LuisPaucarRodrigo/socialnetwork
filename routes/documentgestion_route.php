@@ -19,3 +19,6 @@ Route::post('/documentGestion/{folder}/archives/{archive}/assignUsers', [Archive
 Route::get('/documentGestion/{folder}/archives/{archive}/observations', [ArchivesController::class, 'observationsPerArchive'])->name('archives.observations');
 Route::post('/documentGestion/archives/{archive}/observate', [ArchivesController::class, 'saveObservation'])->name('archives.observations.save');
 Route::post('/documentGestion/archives/{archive}/upgrade', [ArchivesController::class, 'upgradeArchive'])->name('archives.upgrade');
+
+Route::get('/documentGestion/alarms', [ArchivesController::class, 'getAlarmPerUser'])->name('archives.alarms');
+Route::get('/documentGestion/archives/{archive}/pdf', [ArchivesController::class, 'getPDF'])->name('archives.get.pdf');

@@ -16,8 +16,9 @@ class AssignUsersRequest extends FormRequest
         return [
             'archive_id' => 'required|exists:archives,id',
             'users' => 'required|array|min:3',
+            'due_date' => 'required|date',
             'users.*.id' => 'required|exists:users,id',
-            'users.*.area_id' => 'required|in:1,7',
+            'users.*.area_id' => 'required|integer',
         ];
     }
 
@@ -32,7 +33,7 @@ class AssignUsersRequest extends FormRequest
             'users.*.id.required' => 'Cada usuario debe tener un ID.',
             'users.*.id.exists' => 'El usuario especificado no existe.',
             'users.*.area_id.required' => 'Cada usuario debe tener un área asignada.',
-            'users.*.area_id.in' => 'El área asignada debe ser 1 o 7.',
+            'users.*.area_id.integer' => 'El área asignada debe ser un número entero.',
         ];
     }
 
@@ -41,7 +42,7 @@ class AssignUsersRequest extends FormRequest
         $validator->after(function ($validator) {
             if ($validator->errors()->isEmpty()) { // Solo ejecutar si no hay errores previos
                 $users = $this->input('users', []);
-                
+
                 $area1Count = 0;
                 $area7Count = 0;
 
@@ -57,11 +58,11 @@ class AssignUsersRequest extends FormRequest
                 }
 
                 if ($area1Count < 1) {
-                    $validator->errors()->add('users', 'Debe seleccionar al menos un usuario con área de Gerencia.');
+                    $validator->errors()->add('users', 'Debe seleccionar al menos un usuario con área de Gerencia (area_id 1).');
                 }
 
                 if ($area7Count < 1) {
-                    $validator->errors()->add('users', 'Debe seleccionar al menos un usuario con área de Calidad.');
+                    $validator->errors()->add('users', 'Debe seleccionar al menos un usuario con área de Calidad (area_id 7).');
                 }
             }
         });
