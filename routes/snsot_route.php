@@ -30,3 +30,10 @@ Route::middleware('permission:SocialNetworkOperation')->group(function () {
     Route::put('/social-network/sot-programation-update/{sot_liquidation_id}', [SotController::class, 'sot_liquidation_update'])->name('socialnetwork.sot.liquidation.update');
 }); 
 
+
+Route::get('/social_network/paymentArea/index', [SotController::class,'sot_payment_index'])->name('sn.paymentArea.index');
+Route::put('/social_network/paymentArea/{sot_id}/update', [SotController::class,'sot_payment_udpate'])->name('sn.paymentArea.update');
+//SOT CONTROL AREA
+Route::get('/social_network/controlArea/index', [SotController::class,'sot_control_index'])->name('sn.controlArea.index');
+Route::put('/social_network/controlArea/{sot_id}/update', [SotController::class,'sot_control_udpate'])->name('sn.controlArea.update');
+

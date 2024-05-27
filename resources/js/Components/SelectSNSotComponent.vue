@@ -30,11 +30,11 @@ const SotOptions = [
     },
     {
         optionName: 'Área de Cobranza',
-        route: '' //route('name.of.the.route')
+        route: route('sn.paymentArea.index')
     },
     {
         optionName: 'Área de Control',
-        route: '' //route('name.of.the.route')
+        route: route('sn.controlArea.index')
     },
 ]
 
