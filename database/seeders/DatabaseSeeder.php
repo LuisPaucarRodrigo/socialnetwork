@@ -2,20 +2,14 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Models\Employee;
 use App\Models\Pension;
 use App\Models\Permission;
-use App\Models\Project;
-use App\Models\Purchasing_request;
-use App\Models\Provider;
 use App\Models\Role;
 use App\Models\Area;
 use App\Models\User;
-use App\Models\Header;
 use App\Models\Warehouse;
 use App\Models\Customer;
+use App\Models\Customers_contact;
 use App\Models\CustomerWarehouse;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -46,7 +40,10 @@ class DatabaseSeeder extends Seeder
             'Project' => 'Acceso limitado a funciones del Area de Projectos',
             'PurchasingManager' => 'Permite acceso para todas las funciones del Area de Compras',
             'Purchasing' => 'Acceso limitado a funciones del Area de Compras',
+            'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
         ];
+
+
 
         foreach ($permissions as $name => $description) {
             $permission = Permission::create([
@@ -56,6 +53,58 @@ class DatabaseSeeder extends Seeder
             $adminRole->permissions()->attach($permission);
         }
 
+        //Social Network Roles and Permissions
+
+        $snP = Permission::create(['name' => 'SocialNetwork', 'description' => 'Permite acceso a usuarios de social network']);
+        $snPPr = Permission::create(['name' => 'SocialNetworkProgramation', 'description' => 'Permite accesos al área de programación']);
+        $snPOp = Permission::create(['name' => 'SocialNetworkOperation', 'description' => 'Permite accesos al área de operaciones']);
+        $snPLi = Permission::create(['name' => 'SocialNetworkLiquidation', 'description' => 'Permite accesos al área de liquidaciones']);
+        $snPCh = Permission::create(['name' => 'SocialNetworkCharge', 'description' => 'Permite accesos al área de cobranzas']);
+        $snPCo = Permission::create(['name' => 'SocialNetworkControl', 'description' => 'Permite accesos al área de control']);
+
+        $adminRole->permissions()->attach($snP);
+        $adminRole->permissions()->attach($snPPr);
+        $adminRole->permissions()->attach($snPOp);
+        $adminRole->permissions()->attach($snPLi);
+        $adminRole->permissions()->attach($snPCh);
+        $adminRole->permissions()->attach($snPCo);
+
+
+        $snRolesPermissions = [
+            [
+                'name' => 'SocialNetwork Programacion',
+                'description' => 'Social Network área programación',
+                'permissions' => [$snP->id, $snPPr->id]
+            ],
+            [
+                'name' => 'SocialNetwork Operaciones',
+                'description' => 'Social Network área operaciones',
+                'permissions' => [$snP->id, $snPOp->id]
+            ],
+            [
+                'name' => 'SocialNetwork Liquidaciones',
+                'description' => 'Social Network área liquidación',
+                'permissions' => [$snP->id, $snPLi->id]
+            ],
+            [
+                'name' => 'SocialNetwork Cobranzas',
+                'description' => 'Social Network área cobranzas',
+                'permissions' => [$snP->id, $snPCh->id]
+            ],
+            [
+                'name' => 'SocialNetwork Control',
+                'description' => 'Social Network área control',
+                'permissions' => [$snP->id, $snPCo->id]
+            ],
+        ];
+
+        foreach ($snRolesPermissions as $item) {
+            $current = Role::create([
+                'name' => $item['name'],
+                'description' => $item['description'],
+            ]);
+            $current->permissions()->sync($item['permissions']);
+        }
 
         $areasData = [
             ['name' => 'Gerencia'],
@@ -64,13 +113,13 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Proyectos'],
             ['name' => 'Logística'],
             ['name' => 'I + D'],
+            ['name' => 'Calidad']
 
         ];
-
         Area::insert($areasData);
 
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'luis',
             'dni' => '70969005',
             'email' => 'luis@gmail.com',
@@ -78,13 +127,13 @@ class DatabaseSeeder extends Seeder
             'phone' => '923098157',
             'platform' => 'Web/Movil',
             'role_id' => '1',
-            'area_id'=> 1
+            'area_id' => 1
         ]);
         // User::factory()->count(20)->create();
         // Project::factory()->count(10)->create();
         // Purchasing_request::factory()->count(1)->create();
         // Provider::factory()->count(10)->create();
-        
+
         $data = [
             [
                 'type' => 'HABITAT',
@@ -139,6 +188,10 @@ class DatabaseSeeder extends Seeder
             ['id' => 1, 'ruc' => 1, 'business_name' => 'CLARO CICSA', 'category' => 'Especial', 'address' => '-'],
             ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],
         ];
+        $customersContactData = [
+            ['name' => 'Contacto claro cicsa', 'phone' => '999999999', 'additional_information' => '-', 'customer_id' => 1],
+            ['name' => 'Contacto gtd cicsa', 'phone' => '999999998', 'additional_information' => '-', 'customer_id' => 2],
+        ];
         $warehousesData = [
             ['id' => 1, 'name' => 'CLARO CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
             ['id' => 2, 'name' => 'GTD CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
@@ -157,6 +210,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         Customer::insert($customersData);
+        Customers_contact::insert($customersContactData);
         Warehouse::insert($warehousesData);
         CustomerWarehouse::insert($warehousesCustomerData);
     }

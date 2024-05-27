@@ -50,13 +50,15 @@ class ApiController extends Controller
         $preprojects = $user->preprojects;
         $data = [];
         foreach ($preprojects as $preproject) {
-            $data[] = [
-                'id' => $preproject->id,
-                'code' => $preproject->code,
-                'description' => $preproject->description,
-                'date' => $preproject->date,
-                'observation' => $preproject->observation,
-            ];
+            if (!$preproject->preproject_code_approve){
+                $data[] = [
+                    'id' => $preproject->id,
+                    'code' => $preproject->code,
+                    'description' => $preproject->description,
+                    'date' => $preproject->date,
+                    'observation' => $preproject->observation,
+                ];
+            }
         }
 
         return response()->json($data);
