@@ -213,7 +213,7 @@
               <p class="text-gray-900 whitespace-no-wrap">{{ archive.comment }}</p>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-              <div v-if="archive.type='stable'" class="flex flex-col items-center space-y-2">
+              <div v-if="archive.type=='stable'" class="flex flex-col items-center space-y-2">
                 <div class="flex items-center">
                                     <a target="_blank" :href="route('archives.get.pdf', { archive: archive.id })"
                                         class="text-green-600 hover:underline">
@@ -261,7 +261,7 @@
               </div>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <button v-if="archive.type != 'stable'" type="button" @click="toggleDetails(archive)"
+              <button v-if="archive.type !== 'stable'" type="button" @click="toggleDetails(archive)"
                 class="text-blue-900 whitespace-no-wrap">
                 <svg v-if="archiveRow[0]?.archive_id !== archive.id" xmlns="http://www.w3.org/2000/svg"
                     fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
