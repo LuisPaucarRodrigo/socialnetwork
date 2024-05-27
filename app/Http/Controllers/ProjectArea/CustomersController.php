@@ -33,7 +33,8 @@ class CustomersController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+
+        $data = $request->validate([
             'ruc' => 'required',
             'business_name' => 'required',
             'address' => 'required',
@@ -41,13 +42,12 @@ class CustomersController extends Controller
             'contact.phone' => 'required',
             'contact.additional_information' => 'required'
         ]);
-
-        Customer::create([
-            'ruc' => $request->ruc,
-            'business_name' => $request->business_name,
-            'category' => 'Normal',
-            'address' => $request->address
-        ]);
+        $data_contact = $data['contact'];
+        unset($data['contact']);
+        $data['category'] = 'Normal';
+        $customer = Customer::create($data);
+        $data_contact['customer_id'] = $customer->id;
+        Customers_contact::create($data_contact);
     }
 
     public function update(Request $request, Customer $customer)
@@ -60,8 +60,6 @@ class CustomersController extends Controller
         $customer->update([
             'ruc' => $request->ruc,
             'business_name' => $request->business_name,
-            'category' => $request->category,
-            'category' => 'Normal',
             'address' => $request->address
         ]);
     }
@@ -69,7 +67,7 @@ class CustomersController extends Controller
     public function destroy(Customer $customer)
     {
         $customer->delete();
-        return to_route('customers.index');
+        return redirect()->back();
     }
 
     //contacts
