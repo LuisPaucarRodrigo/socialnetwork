@@ -49,7 +49,7 @@
                                 <!-- for button instead of Link -->
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
                                 <Link v-if="item.item_db.state && checkSeeDownloadPermission(item.item_db)"
-                                    :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? route('archives.show', { folder: item.item_db.id}) : '#')"
+                                    :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? route('archives.show', { folder: item.item_db.id }) : '#')"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
                                 <div class="flex space-x-3 items-center w-full pr-8 md:pr-0">
                                     <img v-if="item.item_db.type === 'Archivos'" src="/image/FolderIcons/archive_5.png"
@@ -79,8 +79,8 @@
 
                                 <p v-if="item.item_db.state" class="text-gray-700">
                                     {{ checkSeeDownloadPermission(item.item_db)
-                                        ? 'Autorizado'
-                                        : 'No Autorizado' }}
+            ? 'Autorizado'
+            : 'No Autorizado' }}
                                 </p>
                                 <p v-else class="text-red-400">
                                     Por aprobar
@@ -109,16 +109,16 @@
                                     </svg>
                                     </Link> -->
                                     <a type="button" :href="checkSeeDownloadPermission(item.item_db)
-                                        ? route('folder.test.download', {
-                                            folder_id: item.item_db.id
-                                        })
-                                        : '#'" :class="checkSeeDownloadPermission(item.item_db)
-                                        ? ''
-                                        : 'cursor-default'">
+            ? route('folder.test.download', {
+                folder_id: item.item_db.id
+            })
+            : '#'" :class="checkSeeDownloadPermission(item.item_db)
+            ? ''
+            : 'cursor-default'">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="green" :class="`w-6 h-6 ${checkSeeDownloadPermission(item.item_db)
-                                            ? ''
-                                            : 'opacity-50'}`">
+            ? ''
+            : 'opacity-50'}`">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                         </svg>
@@ -194,12 +194,25 @@
                                 <InputError :message="createFolderForm.errors.archive_type" />
                             </div>
                         </div>
-
-
                         <div>
                             <InputLabel>
                                 Areas
                             </InputLabel>
+                            <div 
+                                class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+                                role="alert">
+                                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div>
+                                    <span class="font-small">
+                                        Se asigna por defecto las áreas de Gerencia y Calidad
+                                    </span>
+                                </div>
+                            </div>
                             <div class="mt-2">
                                 <select multiple size="4" v-model="createFolderForm.areas" id="payment_type"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -212,12 +225,6 @@
                                 <InputError :message="createFolderForm.errors.areas" />
                             </div>
                         </div>
-
-
-
-
-
-
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -230,8 +237,6 @@
                     </div>
 
                 </form>
-
-
             </div>
         </Modal>
 

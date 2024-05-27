@@ -24,7 +24,7 @@ class CreateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
             'dni' => ['required',
                       'string',
@@ -42,8 +42,13 @@ class CreateUserRequest extends FormRequest
                 Rule::unique('users', 'phone')
             ],
             'rol' => 'required|numeric',
-            'area_id' => 'required',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ];
+
+        if ($this->input('company') === 'CCIP') {
+            $rules['area_id'] = 'required';
+        }
+
+        return $rules;
     }
 }

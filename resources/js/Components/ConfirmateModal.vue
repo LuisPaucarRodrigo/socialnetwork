@@ -44,7 +44,7 @@ export default {
       required: true
     }
   },
-  emits: ['closeModal'],  // Declara explícitamente el evento closeModal que puede emitir el componente
+  emits: ['closeModal'],
   methods: {
     closeModal() {
       this.$emit('closeModal');

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('path');
+            $table->string('comment');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->double('version');
             $table->foreignId('folder_id')->constrained('folders')->onDelete('cascade');

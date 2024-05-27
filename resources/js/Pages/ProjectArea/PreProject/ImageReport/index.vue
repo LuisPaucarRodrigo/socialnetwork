@@ -5,7 +5,7 @@
         <template #header>
             Imagenes para Reporte
         </template>
-        <div class="min-w-full overflow-hidden rounded-lg shadow">
+        <div class="min-w-full overflow-hidden rounded-lg">
             <div class="mt-6 flex items-center justify-end gap-x-6">
                 <div class="mt-2">
                     <select required id="code" @change="requestPhotos($event.target.value)"
@@ -18,17 +18,17 @@
                 </div>
             </div>
             <div v-for="imageCode in codes" :key="imageCode.id">
-                <div class="mt-6 flex items-center justify-start gap-x-6">
+                <div class="mt-6 flex items-center justify-between gap-x-6">
                     <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
-                        {{ imageCode.code }}
+                        {{ imageCode.code }} / {{ imageCode.description }}
                     </h1>
-                    <PrimaryButton v-if="imageCode.status !== 'Aprobado'" @click="approveCode(imageCode.id)"
-                        type="button" class="bg-green-700 hover:bg-green-600">
+                    <span v-if="imageCode.status === 'Aprobado'" class="text-green-600">Aprobado</span>
+                    <PrimaryButton v-else @click="approveCode(imageCode.id)" type="button"
+                        class="bg-green-700 hover:bg-green-600">
                         Aprobar
                     </PrimaryButton>
-                    <span v-else class="text-green-600">Aprobado</span>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-10 gap-4 mt-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-5">
                     <div v-for="image in photoCodeFiltrado(imageCode.id)" :key="image.id"
                         class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
                         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ image.description }}
@@ -40,7 +40,7 @@
                             <span v-if="image.state != null"
                                 :class="image.state == '1' ? 'text-green-600' : 'text-red-600'">
                                 {{ image.state == '1' ? 'Aprobado' : 'Rechazado' }}</span>
-                            <div v-else>
+                            <div v-else class="flex space-x-3">
                                 <button @click="approveImageModal(image.id)"
                                     class="flex items-center text-green-600 hover:underline">
                                     <CheckCircleIcon class="h-4 w-4 ml-1" />
@@ -115,11 +115,11 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     codesWithStatus: Object,
@@ -137,7 +137,6 @@ const confirmingImageDeletion = ref(false);
 const approve_reject_Image = ref(false);
 const imageToDelete = ref(null);
 const photoCode = ref(props.imagesCode);
-const imageToShow = ref(null);
 const showRejectModal = ref(false)
 const imageCodeId = ref('');
 const codes = ref(props.codesWithStatus);
@@ -164,7 +163,9 @@ const deleteImage = () => {
     const docId = imageToDelete.value;
     if (docId) {
         router.delete(route('preprojects.imagereport.delete', { preproject_id: docId }), {
-            onSuccess: () => closeModalImage()
+            onSuccess: () => {
+                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+            }
         });
     }
 };
@@ -175,10 +176,14 @@ function downloadImagen(imageId) {
 };
 
 function openPreviewImagenModal(imageId) {
-    imageToShow.value = imageId;
-    const url = route('preprojects.imagereport.show', { image: imageId });
-    window.open(url, '_blank');
+    if (imageId) {
+        const url = route('preprojects.imagereport.show', { image: imageId });
+        window.open(url, '_blank');
+    } else {
+        console.error('No se proporcionó un ID de imagen válido');
+    }
 }
+
 
 function closeRejectModal() {
     imageCodeId.value = ''
@@ -199,7 +204,7 @@ function approveImageModal(imageId) {
             approve_reject_Image.value = true
             setTimeout(() => {
                 approve_reject_Image.value = false
-                router.get(route('preprojects.imagereport.index', { preproject_id: preproject.preproject_id }))
+                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
             }, 2000)
         }
     })
