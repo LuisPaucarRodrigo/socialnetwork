@@ -61,6 +61,8 @@ const props = defineProps({
     status: String,
 });
 
+console.log(props.canResetPassword)
+
 const form = useForm({
     email: '',
     password: '',

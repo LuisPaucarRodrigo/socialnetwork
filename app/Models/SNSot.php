@@ -31,10 +31,12 @@ class SNSot extends Model
     public function sot_liquidation () {
         return $this->hasOne(SNSotLiquidation::class, 'sot_id');
     }
-    public function sot_payment () {
-        return $this->hasOne(SNSotPayment::class, 'sot_id');
-    }
     public function sot_control () {
-        return $this->hasOne(SNSotControl::class, 'sot_id');
+        return $this->hasOne(SNSotControl::class);
+    }
+
+    public function sot_payment () {
+        return $this->hasOne(SNSotPayment::class);
+
     }
 }

@@ -27,7 +27,8 @@ class Preproject extends Model
         'state',
         'total_amount_entry',
         'total_amount_entry_not_margin',
-        'total_services_cost'
+        'total_services_cost',
+        'preproject_code_approve',
     ];
 
     //RELATIONS
@@ -81,7 +82,7 @@ class Preproject extends Model
         return $this->belongsToMany(Code::class, 'preproject_codes')->withPivot('status');
     }
 
-    
+
     // CALCULATED
     public function getStateAttribute()
     {
@@ -112,22 +113,33 @@ class Preproject extends Model
 
     public function getTotalAmountEntryAttribute()
     {
-        return $this->preproject_entries()->get()->sum(function($item){
-            return $item->quantity * $item->unitary_price * (1+ $item->margin/100);
+        return $this->preproject_entries()->get()->sum(function ($item) {
+            return $item->quantity * $item->unitary_price * (1 + $item->margin / 100);
         });
     }
 
     public function getTotalAmountEntryNotMarginAttribute()
     {
-        return $this->preproject_entries()->get()->sum(function($item){
+        return $this->preproject_entries()->get()->sum(function ($item) {
             return $item->quantity * $item->unitary_price;
         });
     }
 
-    public function getTotalServicesCostAttribute() 
+    public function getTotalServicesCostAttribute()
     {
-        return $this->quote()?->first()?->total_services_cost 
-                    ? $this->quote()?->first()?->total_services_cost 
-                    : 0 ;
+        return $this->quote()?->first()?->total_services_cost
+            ? $this->quote()?->first()?->total_services_cost
+            : 0;
+    }
+
+    public function getPreprojectCodeApproveAttribute()
+    {
+        $preprojectCodes = $this->preprojectCodes;
+
+        $allStatusFilled = $preprojectCodes->every(function ($preprojectCode) {
+            return !empty($preprojectCode->status);
+        });
+
+        return $allStatusFilled;
     }
 }

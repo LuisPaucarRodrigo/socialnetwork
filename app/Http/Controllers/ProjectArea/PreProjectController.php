@@ -98,19 +98,6 @@ class PreProjectController extends Controller
         $preproject->contacts()->sync($data['contacts']);
     }
 
-
-    // public function showPreprojectFacade(Preproject $preproject)
-    // {
-    //     $facadeName = $preproject->facade;
-    //     $facadePath = '/image/facades/' . $facadeName;
-    //     $path = public_path($facadePath);
-    //     if (file_exists($path)) {
-    //         return response()->file($path);
-    //     }
-    //     abort(404, 'Documento no encontrado');
-    // }
-
-
     public function update(PreprojectRequest $request, Preproject $preproject)
     {
         $data = $request->validated();
@@ -644,69 +631,6 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/Details', ['expense' => $expense]);
     }
 
-    // return Inertia::render('ProjectArea/PreProject/CreateAndUpdateRequest', [
-    //     'allProducts' => Purchase_product::all(),
-    //     'preproject' => Preproject::find($id),
-    // ]);
-
-
-    // ------------------------------- PROVIDER QUOTE -------------------------------
-
-    // public function preproject_providersquotes_index($preproject_id)
-    // {
-    //     return Inertia::render('ProjectArea/PreProject/PreprojectProvidersQuotes', [
-    //         'providersquotes' => PreprojectProvidersQuote::where('preproject_id', $preproject_id)->paginate(12),
-    //         'preproject' => Preproject::find($preproject_id),
-    //     ]);
-    // }
-
-
-    // public function preproject_providersquotes_store(Request $request)
-    // {
-    //     $data = $request->validate([
-    //         'provider_quote' => 'required|file|mimes:pdf,jpeg,png,jpg',
-    //         'preproject_id' => 'required',
-    //     ]);
-    //     if ($request->hasFile('provider_quote')) {
-    //         $filename = $this->file_store($request->file('provider_quote'), 'documents/providers_quote/');
-    //         $data['provider_quote'] = $filename;
-    //     }
-    //     PreprojectProvidersQuote::create($data);
-    //     return redirect()->back();
-    // }
-
-
-    // public function preproject_providersquotes_delete(PreprojectProvidersQuote $providerquote_id)
-    // {
-    //     $this->file_delete($providerquote_id->provider_quote, 'documents/providers_quote/');
-    //     $providerquote_id->delete();
-    //     return redirect()->back();
-    // }
-
-
-    // public function preproject_providersquotes_show(PreprojectProvidersQuote $providerquote_id)
-    // {
-    //     $name = $providerquote_id->provider_quote;
-    //     $path = 'documents/providers_quote/' . $name;
-    //     $path = public_path($path);
-    //     if (file_exists($path)) {
-    //         return response()->file($path);
-    //     }
-    //     abort(404, 'Documento no encontrado');
-    // }
-
-
-    // public function preproject_providersquotes_download(PreprojectProvidersQuote $providerquote_id)
-    // {
-    //     $fileName = $providerquote_id->provider_quote;
-    //     $filePath = "documents/providers_quote/$fileName";
-    //     $path = public_path($filePath);
-    //     if (file_exists($path)) {
-    //         return response()->download($filePath, $fileName);
-    //     }
-    //     abort(404, 'Documento no encontrado');
-    // }
-
     public function generarPDF()
     {
         $data = [];
@@ -716,13 +640,15 @@ class PreProjectController extends Controller
 
     public function index_image($preproject_id)
     {
-        $preproject = PreprojectCode::with('code')->where('preproject_id', $preproject_id)->get();
+        $preprojects = PreprojectCode::with('code')->where('preproject_id', $preproject_id)->get();
         $codesWithStatus = [];
-        foreach ($preproject as $preprojectCode) {
+        foreach ($preprojects as $preprojectCode) {
             $code = $preprojectCode->code;
             $codesWithStatus[] = [
                 'id' => $preprojectCode->id,
                 'code' => $code->code,
+                'status' => $preprojectCode->status,
+                'description' => $code->description,
             ];
         }
         $imagesCode = Imagespreproject::all();
@@ -745,6 +671,8 @@ class PreProjectController extends Controller
             $codesWithStatus[] = [
                 'id' => $preprojectCode->id,
                 'code' => $code->code,
+                'status' => $preprojectCode->status,
+                'description' => $code->description,
             ];
         }
         $data = Imagespreproject::where("preproject_code_id", $id)->get();
@@ -771,7 +699,7 @@ class PreProjectController extends Controller
     {
         $code = PreprojectCode::with('imagecodepreprojet')->find($id);
         $code->imagecodepreprojet->each(function ($image) {
-            if ($image->state !== '1') {
+            if ($image->state !== 1) {
                 $filePath = "/image/imagereportpreproject/{$image->image}";
                 $path = public_path($filePath);
                 if (file_exists($path)) {
@@ -818,6 +746,7 @@ class PreProjectController extends Controller
     {
         $fileName = $image->image;
         $filePath = '/image/imagereportpreproject/' . $fileName;
+        
         $path = public_path($filePath);
         if (file_exists($path)) {
             return response()->file($path);
