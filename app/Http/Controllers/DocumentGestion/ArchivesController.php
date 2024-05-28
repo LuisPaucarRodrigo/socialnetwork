@@ -228,11 +228,14 @@ class ArchivesController extends Controller
 
     public function observationsPerArchive($folder, Archive $archive)
     {
+
         $user = Auth::user();
         $findArchiveUser = ArchiveUser::where('archive_id', $archive->id)
             ->where('user_id', $user->id)
             ->first();
-
+        if ($findArchiveUser->state !== 'Pendiente'){
+            abort(403, 'Ya no está autorizado');
+        }
         if ($findArchiveUser || $user->role_id == 1) {
             $archiveUsers = ArchiveUser::where('archive_id', $archive->id)->whereNotNull('evaluation_date')->with('archive.user', 'user')->paginate(10);
             $observation = ArchiveUser::where('archive_id', $archive->id)->where('user_id', $user->id)->first();
@@ -245,7 +248,6 @@ class ArchivesController extends Controller
             }else{
                 $canObservate = false;
             }
-
             return Inertia::render('DocumentGestion/ArchivesGestion/Observations', [
                 'archive' => $archive,
                 'folder_id' => $folder,
@@ -263,7 +265,9 @@ class ArchivesController extends Controller
         $findArchiveUser = ArchiveUser::where('archive_id', $archive)
             ->where('user_id', $user->id)
             ->first();
-
+        if ($findArchiveUser->state !== 'Pendiente'){
+            abort(403, 'Ya no está autorizado');
+        }
         if ($findArchiveUser) {
             $request->validate([
                 'state' => 'required',
