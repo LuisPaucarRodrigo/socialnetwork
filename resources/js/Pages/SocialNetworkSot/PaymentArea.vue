@@ -119,7 +119,7 @@
                                 <InputError :message="form.errors.sot_bill" />
                             </div>
                         </div>
-                        <div class="mt-2">
+                        <div v-if="form.sot_bill === 'OK'" class="mt-2">
                             <InputLabel for="sot_bill_date">Fecha SOT a Facturar
                             </InputLabel>
                             <div class="mt-2">
@@ -140,7 +140,7 @@
                                 <InputError :message="form.errors.bill" />
                             </div>
                         </div>
-                        <div class="mt-2">
+                        <div v-if="form.bill === 'OK'" class="mt-2">
                             <InputLabel for="bill_date">Fecha Facturar
                             </InputLabel>
                             <div class="mt-2">
@@ -161,7 +161,7 @@
                                 <InputError :message="form.errors.charge" />
                             </div>
                         </div>
-                        <div class="mt-2">
+                        <div v-if="form.charge === 'OK'"  class="mt-2">
                             <InputLabel for="charge_date">Fecha Cobranza
                             </InputLabel>
                             <div class="mt-2">
@@ -244,10 +244,8 @@ function initializeForm(payment) {
 
 function actionShowStore(payment) {
     if (typeof payment === "object"){
-        console.log('dddd')
         initializeForm(payment)
     } else {
-        console.log('ssss')
         form.s_n_sot_id = payment
     }
     showStoreControl.value = !showStoreControl.value;
