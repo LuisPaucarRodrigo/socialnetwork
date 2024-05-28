@@ -42,8 +42,6 @@ class DatabaseSeeder extends Seeder
             'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
         ];
 
-
-
         foreach ($permissions as $name => $description) {
             $permission = Permission::create([
                 'name' => $name,
