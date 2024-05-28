@@ -40,7 +40,7 @@ class AssignUsersRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if ($validator->errors()->isEmpty()) { // Solo ejecutar si no hay errores previos
+             // Solo ejecutar si no hay errores previos
                 $users = $this->input('users', []);
 
                 $area1Count = 0;
@@ -58,13 +58,13 @@ class AssignUsersRequest extends FormRequest
                 }
 
                 if ($area1Count < 1) {
-                    $validator->errors()->add('users', 'Debe seleccionar al menos un usuario con área de Gerencia (area_id 1).');
+                    $validator->errors()->add('users', 'Debe seleccionar al menos un usuario con área de Gerencia.');
                 }
 
                 if ($area7Count < 1) {
-                    $validator->errors()->add('users', 'Debe seleccionar al menos un usuario con área de Calidad (area_id 7).');
+                    $validator->errors()->add('users', 'Debe seleccionar al menos un usuario con área de Calidad.');
                 }
-            }
+            
         });
     }
 }
