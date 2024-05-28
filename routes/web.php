@@ -44,7 +44,7 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('auth', 'permission:UserManager','checkPlatformWeb')->group(function () {
+Route::middleware(['auth', 'permission:UserManager','checkPlatformWeb'])->group(function () {
     include_once 'user_admin_route.php';
 });
 

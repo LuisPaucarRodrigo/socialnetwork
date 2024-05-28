@@ -51,7 +51,7 @@
                                 <Link v-if="item.item_db.state && checkSeeDownloadPermission(item.item_db)"
                                     :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? route('archives.show', { folder: item.item_db.id }) : '#')"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
-                                <div class="flex space-x-3 items-center w-full pr-8 md:pr-0">
+                                <div class="flex space-x-3 items-center w-full mr-8 xl:mr-0">
                                     <img v-if="item.item_db.type === 'Archivos'" src="/image/FolderIcons/archive_5.png"
                                         class="h-12 w-12">
                                     <img v-if="item.item_db.type === 'Carpeta'" src="/image/FolderIcons/folder_5.png"
@@ -64,7 +64,7 @@
                                 </Link>
 
                                 <div v-else class="px-5 py-5 ">
-                                    <div class="flex space-x-3 opacity-60 items-center pr-10 md:pr-0">
+                                    <div class="flex space-x-3 opacity-60 items-center  mr-8 xl:mr-0">
                                         <img v-if="item.item_db.type === 'Archivos'"
                                             src="/image/FolderIcons/archive_5.png" class="h-12 w-12">
                                         <img v-if="item.item_db.type === 'Carpeta'"
@@ -198,7 +198,7 @@
                             <InputLabel>
                                 Areas
                             </InputLabel>
-                            <div 
+                            <div
                                 class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
                                 role="alert">
                                 <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"

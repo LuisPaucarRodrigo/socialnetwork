@@ -13,7 +13,7 @@
 
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-2">
-                            <InputLabel for="name" value="Name" class="font-medium leading-6 text-gray-900" />
+                            <InputLabel for="name" value="Nombre" class="font-medium leading-6 text-gray-900" />
                             <div class="mt-2">
                                 <TextInput id="name" type="text"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -94,7 +94,7 @@
                                     <option v-for="item in areas" :key="item.id" :value="item.id">{{ item.name }}
                                     </option>
                                 </select>
-                                <InputError class="mt-2" :message="form.errors.platform" />
+                                <InputError class="mt-2" :message="form.errors.area_id" />
                             </div>
                         </div>
                         <div class="sm:col-span-3">
@@ -111,14 +111,14 @@
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <InputLabel for="password" value="Password" class="font-medium leading-6 text-gray-900" />
+                            <InputLabel for="password" value="Contraseña" class="font-medium leading-6 text-gray-900" />
                             <div class="mt-2 relative">
                                 <TextInput id="password" :type="passwordVisible ? 'text' : 'password'"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     v-model="form.password" required autocomplete="new-password" />
                                 <button type="button" @click="togglePasswordVisibility"
-                                    class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <span v-if="passwordVisible">
+                                    class="absolute inset-y-0 right-0 flex items-center p-3">
+                                    <span v-if="passwordVisible" class="">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -135,12 +135,12 @@
                                         </svg>
                                     </span>
                                 </button>
-                                <InputError class="mt-2" :message="form.errors.password" />
                             </div>
+                            <InputError class="mt-2" :message="form.errors.password" />
                         </div>
 
                         <div class="sm:col-span-2">
-                            <InputLabel for="password_confirmation" value="Confirm Password"
+                            <InputLabel for="password_confirmation" value="Confirmar Contraseña"
                                 class="font-medium leading-6 text-gray-900" />
                             <div class="mt-2 relative">
                                 <TextInput id="password_confirmation"
@@ -148,7 +148,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     v-model="form.password_confirmation" required autocomplete="new-password" />
                                 <button type="button" @click="togglePasswordConfirmationVisibility"
-                                    class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                    class="absolute inset-y-0 right-0 flex items-center p-3">
                                     <span v-if="passwordConfirmationVisible">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -166,8 +166,8 @@
                                         </svg>
                                     </span>
                                 </button>
-                                <InputError class="mt-2" :message="form.errors.password_confirmation" />
                             </div>
+                            <InputError class="mt-2" :message="form.errors.password_confirmation" />
                         </div>
 
                     </div>
