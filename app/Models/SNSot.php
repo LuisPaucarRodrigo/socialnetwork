@@ -25,11 +25,18 @@ class SNSot extends Model
         return $this->belongsTo(User::class, 'user_assignee_id');
     }
 
+    public function sot_operation () {
+        return $this->hasOne(SNSotOperation::class, 'sot_id');
+    }
+    public function sot_liquidation () {
+        return $this->hasOne(SNSotLiquidation::class, 'sot_id');
+    }
     public function sot_control () {
         return $this->hasOne(SNSotControl::class);
     }
 
     public function sot_payment () {
         return $this->hasOne(SNSotPayment::class);
+
     }
 }
