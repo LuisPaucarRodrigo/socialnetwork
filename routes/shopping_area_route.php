@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ShoppingArea\PaymentController;
 use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
 use App\Http\Controllers\ShoppingArea\PurchaseRequestController;
@@ -42,11 +41,5 @@ Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::clas
 
 Route::post('/shopping_area/providers/category', [ProviderController::class, 'category_provider'])->name('provider.category');
 Route::post('/shopping_area/providers/segment', [ProviderController::class, 'segment_provider'])->name('provider.segment');
-
-Route::get('/shopping_area/payment', [PaymentController::class, 'index'])->name('payment.index');
-Route::get('/shopping_area/payment/search/{request}', [PaymentController::class, 'search'])->name('payment.search');
-Route::post('/shopping_area/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
-
-Route::get('/shopping_area/alarm/payment', [PaymentController::class, 'alarm_payments'])->name('payment.alarm');
 
 // Route::post('/shopping_area/existing/products',[PurchaseRequestController::class,'existing_products'])->name('existing.products');

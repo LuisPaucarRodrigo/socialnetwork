@@ -23,15 +23,15 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad mala atencion
+                                Instalacion
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad falta de rf
+                                RF
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad rechazo
+                                Rechazos
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -82,7 +82,7 @@
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
-                            <InputLabel for="p_bad_installation">SOT a Facturar
+                            <InputLabel for="p_bad_installation">Instalacion
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="p_bad_installation" v-model="form.p_bad_installation"
@@ -96,10 +96,11 @@
                             </div>
                         </div>
                         <div class="mt-2">
-                            <InputLabel for="p_no_rf">Factura
+                            <InputLabel for="p_no_rf">RF
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="p_no_rf" v-model="form.p_no_rf" :disabled="form.p_no_rf && !hasPermission('UserManager')"
+                                <select id="p_no_rf" v-model="form.p_no_rf"
+                                    :disabled="form.p_no_rf && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -109,10 +110,11 @@
                             </div>
                         </div>
                         <div class="mt-2">
-                            <InputLabel for="p_rejections">Cobranza
+                            <InputLabel for="p_rejections">Rechazos
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="p_rejections" v-model="form.p_rejections" :disabled="form.p_rejections && !hasPermission('UserManager')"
+                                <select id="p_rejections" v-model="form.p_rejections"
+                                    :disabled="form.p_rejections && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>

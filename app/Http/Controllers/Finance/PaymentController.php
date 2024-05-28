@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\ShoppingArea;
+namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentRequest\UpdatePaymentRequest;
