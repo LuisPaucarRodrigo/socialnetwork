@@ -16,6 +16,7 @@ class Archive extends Model
         "user_id",
         "version",
         "folder_id",
+        "comment"
     ];
 
     protected $appends= [
@@ -23,7 +24,10 @@ class Archive extends Model
         'users_active',
         'users_available',
         'type',
-        'disponibility'
+        'disponibility',
+        'observation_state',
+        'extension',
+        'previous_archive'
     ];
 
     public function users () {
@@ -34,7 +38,7 @@ class Archive extends Model
         return $this->hasMany(ArchiveUser::class, 'archive_id');
     }
 
-    public function folder() 
+    public function folder()
     {
         return $this->belongsTo(Folder::class,'folder_id');
     }
@@ -53,10 +57,10 @@ class Archive extends Model
         if (file_exists($filePath)) {
             // Obtiene el tamaño del archivo en bytes
             $fileSizeInBytes = filesize($filePath);
-            
+
             // Convierte el tamaño del archivo a kilobytes y redondea el resultado a 2 decimales
             $fileSizeInKB = round($fileSizeInBytes / 1024, 2);
-            
+
             // Retorna el tamaño del archivo en kilobytes
             return $fileSizeInKB;
         }
@@ -69,25 +73,25 @@ class Archive extends Model
     {
         // Obtener los user_ids de los usuarios activos
         $statusUsers = $this->archive_users()->where('status', true)->pluck('user_id');
-    
+
         // Excluir el user_id del propietario
         $statusUsers = $statusUsers->filter(function ($userId) {
             return $userId != $this->user_id;
         });
-    
+
         // Obtener los usuarios que coinciden con los user_ids filtrados
         $users = User::whereIn('id', $statusUsers)->get();
-    
+
         return $users;
     }
     public function getUsersAvailableAttribute()
     {
         $areaIds = $this->folder->areas->pluck('id')->toArray();
-        $users = User::whereIn('area_id', $areaIds)->get();
+        $users = User::whereIn('area_id', $areaIds)->with('area')->get();
         $filteredUsers = $users->filter(function ($user) {
             return $user->id != $this->user_id;
         });
-    
+
         return $filteredUsers;
     }
 
@@ -96,15 +100,13 @@ class Archive extends Model
         if (fmod($this->version, 1) > 0) {
             return 'beta';
         }
-    
-        // Si la parte decimal de la versión es 0, es una versión estable
-        return 'stable';
+            return 'stable';
     }
 
     public function getDisponibilityAttribute() {
         // Obtener los archive_user con status true
         $activeUsers = $this->archive_users()->where('status', true)->get();
-        
+
         // Si no hay usuarios activos, retorna false
         if ($activeUsers->isEmpty()) {
             return false;
@@ -119,4 +121,78 @@ class Archive extends Model
 
         return true;
     }
+
+    public function getObservationStateAttribute()
+    {
+        // Obtener los archive_users del último archivo
+        $archiveUsers = $this->archive_users;
+
+        // Si el último archivo no tiene archive_users, devolver 4
+        if ($archiveUsers->isEmpty()) {
+            return 4;
+        }
+
+        // Inicializar variables de control
+        $hasDesestimado = false;
+        $hasPendiente = false;
+        $allObservado = true;
+        $allAprobado = true;
+        $noPendienteNoDesestimado = true;
+
+        foreach ($archiveUsers as $archiveUser) {
+            if ($archiveUser->state === 'Desestimado') {
+                $hasDesestimado = true;
+                $noPendienteNoDesestimado = false;
+            }
+            if ($archiveUser->state === 'Pendiente') {
+                $hasPendiente = true;
+                $noPendienteNoDesestimado = false;
+            }
+            if ($archiveUser->state !== 'Observado') {
+                $allObservado = false;
+            }
+            if ($archiveUser->state !== 'Aprobado') {
+                $allAprobado = false;
+            }
+        }
+
+        if ($hasDesestimado) {
+            return 1;
+        } elseif ($hasPendiente) {
+            return 2;
+        } elseif ($allObservado) {
+            return 3;
+        } elseif ($allAprobado) {
+            return 5;
+        } elseif ($noPendienteNoDesestimado) {
+            return 3;
+        }
+
+        return null;
+    }
+
+    public function getExtensionAttribute()
+    {
+        // Obtiene el nombre del archivo completo
+        $fileName = $this->path;
+
+        // Utiliza la función pathinfo para obtener la información del archivo
+        $fileInfo = pathinfo($fileName);
+
+        // Retorna solo la extensión del archivo
+        return $fileInfo['extension'] ?? null;
+    }
+
+    public function getPreviousArchiveAttribute()
+    {
+        if ($this->type === 'stable') {
+            $previousArchive = Archive::where('folder_id', $this->folder_id)
+                ->where('id', $this->id - 1)
+                ->first();
+
+            return $previousArchive;
+        }
+        return null;
+    }
+
 }

@@ -9,6 +9,7 @@ use App\Models\Area;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\Customer;
+use App\Models\Customers_contact;
 use App\Models\CustomerWarehouse;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -110,6 +111,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Proyectos'],
             ['name' => 'Logística'],
             ['name' => 'I + D'],
+            ['name' => 'Calidad']
 
         ];
         Area::insert($areasData);
@@ -184,6 +186,10 @@ class DatabaseSeeder extends Seeder
             ['id' => 1, 'ruc' => 1, 'business_name' => 'CLARO CICSA', 'category' => 'Especial', 'address' => '-'],
             ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],
         ];
+        $customersContactData = [
+            ['name' => 'Contacto claro cicsa', 'phone' => '999999999', 'additional_information' => '-', 'customer_id' => 1],
+            ['name' => 'Contacto gtd cicsa', 'phone' => '999999998', 'additional_information' => '-', 'customer_id' => 2],
+        ];
         $warehousesData = [
             ['id' => 1, 'name' => 'CLARO CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
             ['id' => 2, 'name' => 'GTD CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
@@ -202,6 +208,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         Customer::insert($customersData);
+        Customers_contact::insert($customersContactData);
         Warehouse::insert($warehousesData);
         CustomerWarehouse::insert($warehousesCustomerData);
     }

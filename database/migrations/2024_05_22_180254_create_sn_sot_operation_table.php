@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('sot_id')->constrained('sn_sots')->onDelete('cascade');
             $table->string('i_state')->nullable();
-            $table->text('aditionals')->nullable();
+            $table->text('additionals')->nullable();
             $table->string('photo_report')->nullable();
             $table->date('ic_date')->nullable();
             $table->double('bill_amount')->nullable();

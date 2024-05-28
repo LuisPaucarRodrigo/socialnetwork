@@ -12,7 +12,7 @@ class SNSotOperation extends Model
     protected $fillable = [
         'sot_id',
         'i_state',
-        'aditionals',
+        'additionals',
         'photo_report',
         'ic_date',
         'bill_amount', 
