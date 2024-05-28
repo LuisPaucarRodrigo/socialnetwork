@@ -22,11 +22,11 @@ class CreateAndpdatePayment extends FormRequest
     public function rules(): array
     {
         return [
-            'sot_bill' => 'nullable|string',
+            'sot_bill' => 'nullable|string|in:OK,No aparece',
             'sot_bill_date' => 'nullable|date',
-            'bill' => 'nullable|string',
+            'bill' => 'nullable|string|in:OK,Penalidad',
             'bill_date' => 'nullable|date',
-            'charge' => 'nullable|string',
+            'charge' => 'nullable|string|in:OK,Penalidad',
             'charge_date' => 'nullable|date',
         ];
     }
