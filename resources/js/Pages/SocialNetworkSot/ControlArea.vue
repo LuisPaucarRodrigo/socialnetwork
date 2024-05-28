@@ -86,7 +86,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="p_bad_installation" v-model="form.p_bad_installation"
-                                    :disabled="controlObject.p_bad_installation && !hasPermission('UserManager')"
+                                    :disabled="form.p_bad_installation && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -100,7 +100,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="p_no_rf" v-model="form.p_no_rf"
-                                    :disabled="controlObject.p_no_rf && !hasPermission('UserManager')"
+                                    :disabled="form.p_no_rf && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -114,7 +114,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="p_rejections" v-model="form.p_rejections"
-                                    :disabled="controlObject.p_rejections && !hasPermission('UserManager')"
+                                    :disabled="form.p_rejections && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -152,7 +152,6 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
 const showStoreControl = ref(false);
 const sotControlUpdate = ref(false);
-const controlObject = ref(null)
 
 const props = defineProps({
     controls: Object,
@@ -171,7 +170,7 @@ const form = useForm({
 })
 
 function submit() {
-    form.put(route('sn.controlArea.update', { sot_id: controlObject.s_n_sot_id }), {
+    form.put(route('sn.controlArea.update', { sot_id: form.s_n_sot_id }), {
         onSuccess: () => {
             sotControlUpdate.value = true
             setTimeout(() => {
@@ -183,15 +182,10 @@ function submit() {
 }
 
 function initializeForm(control) {
-    // form.s_n_sot_id = control.s_n_sot_id;
-    // form.p_bad_installation = control.p_bad_installation;
-    // form.p_no_rf = control.p_no_rf;
-    // form.p_rejections = control.p_rejections;
-
-    controlObject.s_n_sot_id = control.s_n_sot_id;
-    controlObject.p_bad_installation = control.p_bad_installation;
-    controlObject.p_no_rf = control.p_no_rf;
-    controlObject.p_rejections = control.p_rejections;
+    form.s_n_sot_id = control.s_n_sot_id;
+    form.p_bad_installation = control.p_bad_installation;
+    form.p_no_rf = control.p_no_rf;
+    form.p_rejections = control.p_rejections;
 }
 
 function actionShowStore(control) {
