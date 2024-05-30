@@ -200,7 +200,7 @@
                                 </button>
                             </div>
                             <br>
-                            <div class="overflow-auto">
+                            <div v-if="formSot.minute_materials.length > 0" class="overflow-auto">
                                 <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
                                     <thead>
                                         <tr
@@ -216,13 +216,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="item in sotsOperation.data" :key="item.id"
+                                        <tr v-for="(item, i) in formSot.minute_materials" :key="i"
                                             class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300  px-4 py-4">
-                                                {{ item.sot.name }}
+                                                {{ item?.material }}
                                             </td>
                                             <td class="border-b border-slate-300  px-4 py-4">
-                                                {{ item.i_state }}
+                                                {{ item?.quantity }}
                                             </td>
                                             <td class="border-b border-slate-300  px-4 py-4">
                                                 <TrashIcon class="text-red-500 w-5 h-5" />
@@ -283,8 +283,8 @@
                                     <option>Otro</option>
                                 </select>
                                 <div v-if="materialItem.material === 'Otro'" class="mt-4">
-                                    <input required autocomplete="off"
-                                        placeholder="Especifique" v-model="materialItem.other_material"
+                                    <input required autocomplete="off" placeholder="Especifique"
+                                        v-model="materialItem.other_material"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                                 </div>
@@ -293,7 +293,7 @@
                         <div class="">
                             <InputLabel>Cantidad</InputLabel>
                             <div class="mt-2">
-                                <input autocomplete="off" required
+                                <input autocomplete="off" required v-model="materialItem.quantity"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                             </div>
@@ -349,6 +349,7 @@ const initialState = {
     photo_report: '',
     ic_date: '',
     bill_amount: '',
+    minute_materials: []
 }
 
 const formSot = useForm(
@@ -416,6 +417,7 @@ const initialItemMaterial = {
 const materialItem = ref({ ...initialItemMaterial });
 const closeAddMaterialModal = () => {
     showAddMaterialModal.value = false
+    materialItem.value = { ...initialItemMaterial }
 }
 const oppenAddMaterialModal = () => {
     showAddMaterialModal.value = true
@@ -424,6 +426,13 @@ const handleMaterial = () => {
     materialItem.value.other_material = ''
 }
 function addMaterial() {
+    let material = materialItem.value.material === 'Otro' ? materialItem.value.other_material : materialItem.value.material
+    let quantity = materialItem.value.quantity
 
+
+    formSot.minute_materials.push({
+        material, quantity
+    })
+    closeAddMaterialModal()
 }
 </script>
