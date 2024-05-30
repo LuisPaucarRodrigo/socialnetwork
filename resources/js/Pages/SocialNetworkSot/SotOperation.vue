@@ -104,7 +104,7 @@
         <Modal :show="showAddEditModal" @close="closeAddSotOperationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{formSot.id ? 'Editar Operación' : 'Nueva Operación'}}
+                    {{ formSot.id ? 'Editar Operación' : 'Nueva Operación' }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -182,18 +182,126 @@
 
                     </div>
                     <br>
+
+
+                    <template v-if="!formSot.id">
+                        <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
+
+
+                            <div class="flex gap-2 items-center">
+                                <b>Materiales usados en Acta:</b>
+                                <button @click="oppenAddMaterialModal" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor"
+                                        class="text-blue-500 hover:text-purple-500 w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <br>
+                            <div class="overflow-auto">
+                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                    <thead>
+                                        <tr
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                                Material
+                                            </th>
+                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                                Cantidad
+                                            </th>
+                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in sotsOperation.data" :key="item.id"
+                                            class="text-gray-700 bg-white text-sm">
+                                            <td class="border-b border-slate-300  px-4 py-4">
+                                                {{ item.sot.name }}
+                                            </td>
+                                            <td class="border-b border-slate-300  px-4 py-4">
+                                                {{ item.i_state }}
+                                            </td>
+                                            <td class="border-b border-slate-300  px-4 py-4">
+                                                <TrashIcon class="text-red-500 w-5 h-5" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </template>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeAddSotOperationModal"> Cancelar </SecondaryButton>
 
                         <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
                             :class="{ 'opacity-25': formSot.processing }" :disabled="formSot.processing" type="submit">
-                            {{formSot.id ? 'Actualizar' : 'Guardar'}}
+                            {{ formSot.id ? 'Actualizar' : 'Guardar' }}
+                        </PrimaryButton>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
+
+        <Modal :show="showAddMaterialModal" @close="closeAddMaterialModal" max-width="md">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Añadir material
+                </h2>
+                <form @submit.prevent="submit" class="mt-2">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-4">
+                        
+                            <div>
+                                <InputLabel class="font-medium leading-6 text-gray-900 mt-3">
+                                    Nombre
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="" disabled>Seleccione</option>
+                                        <option>Coaxial c/mens RG6</option>
+                                        <option>Coaxial s/mens RG6</option>
+                                        <option>Cable telefónico</option>
+                                        <option>Cable UTP</option>
+                                        <option>Cable Fibra DROP</option>
+                                        <option>Conector RJ11</option>
+                                        <option>Conector RJ45</option>
+                                        <option>Conector RG6</option>
+                                        <option>Conector OPT</option>
+                                        <option>Cable SC/APC</option>
+                                        <option>Control Remoto</option>
+                                        <option>Cable HDMI</option>
+                                        <option>Roseta Telef.</option>
+                                        <option>Roseta Óptica</option>
+                                        <option>Roseta Óptica</option>
+                                        <option>Anclaje p</option>
+                                        <option>Teléfono</option>
+                                        <option>Chapa Q</option>
+                                        <option>Divisor</option>
+                                        <option>Otro</option>
+                                    </select>
+                                    <!-- <InputError :message="form.errors['contact.name']" /> -->
+                                </div>
+                            </div>
+                    </div>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeAddMaterialModal"> Cancelar </SecondaryButton>
+                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
+                            type="submit">
+                            Agregar
                         </PrimaryButton>
                     </div>
 
                 </form>
             </div>
         </Modal>
+
+
+
         <SuccessOperationModal :confirming="confirmSot" :title="'Nueva operación de SOT creada'"
             :message="'La operación de la SOT fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateSot" :title="'Operación de SOT Actualizada'"
@@ -213,7 +321,8 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import {formattedDate} from '@/utils/utils.js';
+import { TrashIcon } from '@heroicons/vue/24/outline';
+import { formattedDate } from '@/utils/utils.js';
 
 const { sotsLiquidation, sots, auth } = defineProps({
     sotsOperation: Object,
@@ -243,7 +352,7 @@ function openAddSotOperationModal() {
 }
 function closeAddSotOperationModal() {
     showAddEditModal.value = false
-    formSot.defaults({...initialState})
+    formSot.defaults({ ...initialState })
     formSot.reset()
 }
 function submitStore() {
@@ -261,13 +370,13 @@ function submitStore() {
 
 //Edit SOT
 const confirmUpdateSot = ref(false);
-function openEditSotOperationModal (item) {
-    formSot.defaults({...item})
+function openEditSotOperationModal(item) {
+    formSot.defaults({ ...item })
     formSot.reset()
     showAddEditModal.value = true
 }
 function submitUpdate() {
-    let url = route('socialnetwork.sot.operation.update', {sot_operation_id: formSot.id})
+    let url = route('socialnetwork.sot.operation.update', { sot_operation_id: formSot.id })
     formSot.put(url, {
         onSuccess: () => {
             closeAddSotOperationModal()
@@ -284,4 +393,14 @@ function submit() {
     formSot.id ? submitUpdate() : submitStore()
 }
 
+
+
+//Add Material
+const showAddMaterialModal = ref(false);
+const closeAddMaterialModal = () => {
+    showAddMaterialModal.value = false
+}
+const oppenAddMaterialModal = () => {
+    showAddMaterialModal.value = true
+}
 </script>
