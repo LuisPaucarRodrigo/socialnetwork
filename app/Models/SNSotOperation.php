@@ -21,4 +21,8 @@ class SNSotOperation extends Model
     public function sot() {
         return $this->belongsTo(SNSot::class, 'sot_id');
     }
+
+    public function minute_materials () {
+        return $this->hasMany(MinuteMaterial::class, 'snsotop_id');
+    }
 }

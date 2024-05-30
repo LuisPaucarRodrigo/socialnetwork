@@ -108,7 +108,7 @@ class SotController extends Controller
 
     public function sot_operation ()
     {
-        $sots = SNSot::with('user_assignee')->whereDoesntHave('sot_operation')
+        $sots = SNSot::with('user_assignee', 'minute_materials')->whereDoesntHave('sot_operation')
         ->get();
         $sotsOperation = SNSotOperation::with('sot')->paginate(15);
         return Inertia::render('SocialNetworkSot/SotOperation', [
@@ -120,7 +120,7 @@ class SotController extends Controller
     public function sot_operation_store (Request $request) {
         
         $sot = SNSot::with('sot_operation')->find($request->sot_id);
-        if($sot->sot_operation){
+        if($sot?->sot_operation){
             abort(500, 'Acción no permitida');
         }
         $data = $request->validate([
@@ -129,11 +129,12 @@ class SotController extends Controller
             'additionals' => 'required',
             'photo_report' => 'required',
             'ic_date' => 'required',
-            'bill_amount' => 'required'
+            'bill_amount' => 'required',
+            'minute_materials' => 'nullable'
         ]);
-        SNSotOperation::create($data);
+        $sotOp = SNSotOperation::create($data);
+        $sotOp->minute_materials()->createMany($data['minute_materials']);
         return redirect()->back();
-       
     }
 
     public function sot_operation_update (SotOperationUpdateRequest $request, $sot_operation_id) {

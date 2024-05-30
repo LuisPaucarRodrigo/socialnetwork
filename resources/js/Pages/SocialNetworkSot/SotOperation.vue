@@ -45,6 +45,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Materiales en Acta
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -79,6 +83,11 @@
                                 <p class="text-gray-900 text-center">
                                     S/. {{ item.bill_amount.toFixed(2) }}
                                 </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                <button type="button" @click="openMaterialsModal(item.minute_materials)">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
@@ -122,7 +131,7 @@
                                     </option>
 
                                 </select>
-                                <InputError :message="formSot.errors.areas" />
+                                <InputError :message="formSot.errors.sot_id" />
                             </div>
                         </div>
 
@@ -225,7 +234,9 @@
                                                 {{ item?.quantity }}
                                             </td>
                                             <td class="border-b border-slate-300  px-4 py-4">
-                                                <TrashIcon class="text-red-500 w-5 h-5" />
+                                                <button @click="deleteMaterial(i)" type="button">
+                                                    <TrashIcon class="text-red-500 w-5 h-5" />
+                                                </button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -313,6 +324,51 @@
 
 
 
+        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Materiales en Acta
+                </h2>
+                <div class="mt-2">
+                    <div v-if="materials.length > 0" class="overflow-auto">
+                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                            <thead>
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Material
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Cantidad
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.material }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.quantity }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p v-else>
+                        No hay materiales asignados
+                    </p>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
+
+                    </div>
+                </div>
+            </div>
+        </Modal>
+
+
+        <ErrorOperationModal :showError="errorModal" :title="'Error'" :message="'El material ya fue añadido'" />
         <SuccessOperationModal :confirming="confirmSot" :title="'Nueva operación de SOT creada'"
             :message="'La operación de la SOT fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateSot" :title="'Operación de SOT Actualizada'"
@@ -332,8 +388,9 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { TrashIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils.js';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const { sotsLiquidation, sots, auth } = defineProps({
     sotsOperation: Object,
@@ -409,6 +466,7 @@ function submit() {
 
 //Add Material
 const showAddMaterialModal = ref(false)
+const errorModal = ref(false)
 const initialItemMaterial = {
     material: '',
     other_material: '',
@@ -425,14 +483,42 @@ const oppenAddMaterialModal = () => {
 const handleMaterial = () => {
     materialItem.value.other_material = ''
 }
+const isInMaterialList = (name) => {
+    return formSot.minute_materials.some(i => i.material === name)
+}
+
 function addMaterial() {
     let material = materialItem.value.material === 'Otro' ? materialItem.value.other_material : materialItem.value.material
     let quantity = materialItem.value.quantity
-
-
+    if (isInMaterialList(material)) {
+        errorModal.value = true
+        setTimeout(() => {
+            errorModal.value = false
+        }, 2000)
+        return
+    }
     formSot.minute_materials.push({
         material, quantity
     })
     closeAddMaterialModal()
 }
+
+function deleteMaterial(i) {
+    formSot.minute_materials.splice(i, 1)
+}
+
+
+//Materials Modal
+const showMaterials = ref(false)
+const materials = ref([]);
+function openMaterialsModal (arrayMaterials) {
+    materials.value = arrayMaterials ? arrayMaterials : []
+    showMaterials.value = true
+}
+function closeMaterialsModal () {
+    showMaterials.value = false
+}
+
+
+
 </script>
