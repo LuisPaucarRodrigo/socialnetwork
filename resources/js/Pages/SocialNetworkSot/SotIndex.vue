@@ -23,7 +23,7 @@
                                 Área Programación
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
+                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Área de Operaciones
                             </th>
                             <th
@@ -77,8 +77,12 @@
                                 Fecha de Instalación Completada
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Monto a Facturar
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Materiales en Acta
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -167,8 +171,13 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.ic_date }}</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.bill_amount }}</p>
+                            </td>
+                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                <button type="button" @click="openMaterialsModal(item.sot_operation.minute_materials)">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.up_minutes }}</p>
@@ -254,6 +263,50 @@
                 </div>
             </div>
         </Modal>
+        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Materiales en Acta
+                </h2>
+                <br>
+                <div class="mt-2">
+                    <div v-if="materials.length > 0" class="overflow-auto">
+                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                            <thead>
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Material
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Cantidad
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.material }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.quantity }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p v-else>
+                        No hay materiales asignados
+                    </p>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
+
+                    </div>
+                </div>
+            </div>
+        </Modal>
+
         <SuccessOperationModal :confirming="confirmSotDelete" :title="'SOT Eliminada'"
             :message="'La SOT fue eliminada y todos los registros de ella'" />
     </AuthenticatedLayout>
@@ -270,7 +323,7 @@ import { ref } from 'vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 const { sots, auth } = defineProps({
     sots: Object,
@@ -298,6 +351,18 @@ function deleteSot () {
             }, 1500)
         }
     })
+}
+
+
+//materials
+const showMaterials = ref(false)
+const materials = ref([]);
+function openMaterialsModal(arrayMaterials) {
+    materials.value = arrayMaterials ? arrayMaterials : []
+    showMaterials.value = true
+}
+function closeMaterialsModal() {
+    showMaterials.value = false
 }
 
 </script>

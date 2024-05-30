@@ -23,7 +23,7 @@ class SotController extends Controller
 {
     public function sot_index () {
         $sots = SNSot::with('user_assignee',
-                            'sot_operation',
+                            'sot_operation.minute_materials',
                             'sot_liquidation',
                             'sot_payment',
                             'sot_control')
@@ -108,9 +108,9 @@ class SotController extends Controller
 
     public function sot_operation ()
     {
-        $sots = SNSot::with('user_assignee', 'minute_materials')->whereDoesntHave('sot_operation')
+        $sots = SNSot::with('user_assignee')->whereDoesntHave('sot_operation')
         ->get();
-        $sotsOperation = SNSotOperation::with('sot')->paginate(15);
+        $sotsOperation = SNSotOperation::with('sot', 'minute_materials')->paginate(15);
         return Inertia::render('SocialNetworkSot/SotOperation', [
             'sotsOperation' => $sotsOperation,
             'sots' => $sots

@@ -329,6 +329,7 @@
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     Materiales en Acta
                 </h2>
+                <br>
                 <div class="mt-2">
                     <div v-if="materials.length > 0" class="overflow-auto">
                         <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
@@ -511,11 +512,11 @@ function deleteMaterial(i) {
 //Materials Modal
 const showMaterials = ref(false)
 const materials = ref([]);
-function openMaterialsModal (arrayMaterials) {
+function openMaterialsModal(arrayMaterials) {
     materials.value = arrayMaterials ? arrayMaterials : []
     showMaterials.value = true
 }
-function closeMaterialsModal () {
+function closeMaterialsModal() {
     showMaterials.value = false
 }
 
