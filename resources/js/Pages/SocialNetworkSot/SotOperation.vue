@@ -251,47 +251,58 @@
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     Añadir material
                 </h2>
-                <form @submit.prevent="submit" class="mt-2">
+                <form @submit.prevent="addMaterial" class="mt-2">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4">
-                        
-                            <div>
-                                <InputLabel class="font-medium leading-6 text-gray-900 mt-3">
-                                    Nombre
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="" disabled>Seleccione</option>
-                                        <option>Coaxial c/mens RG6</option>
-                                        <option>Coaxial s/mens RG6</option>
-                                        <option>Cable telefónico</option>
-                                        <option>Cable UTP</option>
-                                        <option>Cable Fibra DROP</option>
-                                        <option>Conector RJ11</option>
-                                        <option>Conector RJ45</option>
-                                        <option>Conector RG6</option>
-                                        <option>Conector OPT</option>
-                                        <option>Cable SC/APC</option>
-                                        <option>Control Remoto</option>
-                                        <option>Cable HDMI</option>
-                                        <option>Roseta Telef.</option>
-                                        <option>Roseta Óptica</option>
-                                        <option>Roseta Óptica</option>
-                                        <option>Anclaje p</option>
-                                        <option>Teléfono</option>
-                                        <option>Chapa Q</option>
-                                        <option>Divisor</option>
-                                        <option>Otro</option>
-                                    </select>
-                                    <!-- <InputError :message="form.errors['contact.name']" /> -->
+                        <div>
+                            <InputLabel class="font-medium leading-6 text-gray-900">
+                                Nombre
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select v-model="materialItem.material" required @change="handleMaterial"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccione</option>
+                                    <option>Coaxial c/mens RG6</option>
+                                    <option>Coaxial s/mens RG6</option>
+                                    <option>Cable telefónico</option>
+                                    <option>Cable UTP</option>
+                                    <option>Cable Fibra DROP</option>
+                                    <option>Conector RJ11</option>
+                                    <option>Conector RJ45</option>
+                                    <option>Conector RG6</option>
+                                    <option>Conector OPT</option>
+                                    <option>Cable SC/APC</option>
+                                    <option>Control Remoto</option>
+                                    <option>Cable HDMI</option>
+                                    <option>Roseta Telef.</option>
+                                    <option>Roseta Óptica</option>
+                                    <option>Roseta Óptica</option>
+                                    <option>Anclaje p</option>
+                                    <option>Teléfono</option>
+                                    <option>Chapa Q</option>
+                                    <option>Divisor</option>
+                                    <option>Otro</option>
+                                </select>
+                                <div v-if="materialItem.material === 'Otro'" class="mt-4">
+                                    <input required autocomplete="off"
+                                        placeholder="Especifique" v-model="materialItem.other_material"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+
                                 </div>
                             </div>
+                        </div>
+                        <div class="">
+                            <InputLabel>Cantidad</InputLabel>
+                            <div class="mt-2">
+                                <input autocomplete="off" required
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+
+                            </div>
+                        </div>
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeAddMaterialModal"> Cancelar </SecondaryButton>
-                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
-                            type="submit">
+                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs" type="submit">
                             Agregar
                         </PrimaryButton>
                     </div>
@@ -396,11 +407,23 @@ function submit() {
 
 
 //Add Material
-const showAddMaterialModal = ref(false);
+const showAddMaterialModal = ref(false)
+const initialItemMaterial = {
+    material: '',
+    other_material: '',
+    quantity: ''
+}
+const materialItem = ref({ ...initialItemMaterial });
 const closeAddMaterialModal = () => {
     showAddMaterialModal.value = false
 }
 const oppenAddMaterialModal = () => {
     showAddMaterialModal.value = true
+}
+const handleMaterial = () => {
+    materialItem.value.other_material = ''
+}
+function addMaterial() {
+
 }
 </script>
