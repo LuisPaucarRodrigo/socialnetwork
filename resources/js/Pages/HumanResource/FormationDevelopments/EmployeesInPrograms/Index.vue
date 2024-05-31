@@ -158,7 +158,7 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue';
+import Pagination from '@/Components/Pagination.vue';   
 import { Head, useForm } from '@inertiajs/vue3';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
@@ -169,9 +169,14 @@ import { formattedDate } from '@/utils/utils.js';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-const { employees } = defineProps({
-    employees: Object
+const { employees,userPermissions } = defineProps({
+    employees: Object,
+    userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 const showNotCompletedModal = ref(false)
 const apNotCompleted = ref(null)

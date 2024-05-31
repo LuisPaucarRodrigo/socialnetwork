@@ -10,7 +10,7 @@
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-end">
                 <div class="flex items-center justify-end gap-x-6 w-full">
                     <PrimaryButton @click="boolean" type="button">
-                        {{ entry_boolean == false ? "Sin Aprobar" : "Aprobados" }}
+                        {{ entry_boolean == true ? "Sin Aprobar" : "Aprobados" }}
                     </PrimaryButton>
                 </div>
             </div>
@@ -31,8 +31,9 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cantidad
                             </th>
-                            <th v-if="!entry_boolean"
+                            <th v-if="!entry_boolean && hasPermission('InventoryManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Acciones
                             </th>
                         </tr>
                     </thead>
@@ -49,9 +50,9 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ retrieval.quantity }}</p>
                             </td>
-                            <td v-if="!entry_boolean" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="!entry_boolean && hasPermission('InventoryManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <button type="button" @click="approve_retrieval(retrieval.id)"
-                                    class="text-blue-900 whitespace-no-wrap">
+                                    class="text-green-500 whitespace-no-wrap">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -81,8 +82,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     retrievalEntry: Object,
-    boolean: Boolean
+    boolean: Boolean,
+    userPermissions:Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const entry_boolean = ref(props.boolean);
 const showModalApprove = ref(false);

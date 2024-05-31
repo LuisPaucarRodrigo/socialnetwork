@@ -62,9 +62,9 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Detalles
                             </th>
-                            <th
+                            <th v-if="hasPermission('FinanceManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-
+                                Acciones
                             </th>
                         </tr>
                     </thead>
@@ -130,7 +130,8 @@
                                     <EyeIcon class="h-4 w-4 ml-1" />
                                     </Link>
                                 </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <td v-if="hasPermission('FinanceManager')"
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div v-if="expense.purchasing_requests.state == 'En progreso' && expense.state == null"
                                         class="flex space-x-3 justify-center">
                                         <Link :href="route('managementexpense.payment', { id: expense.id })"
@@ -178,8 +179,13 @@ import { ref } from 'vue';
 
 const props = defineProps({
     expenses: Object,
-    boolean: Boolean
+    boolean: Boolean,
+    userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const expenses = ref(props.expenses);
 

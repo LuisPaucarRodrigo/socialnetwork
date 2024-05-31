@@ -9,7 +9,7 @@
                 <div class="flex items-center justify-between gap-x-6 w-full">
 
                     <div class="hidden sm:flex sm:space-x-3 sm:items-center">
-                        <PrimaryButton @click="management_pension" type="button"
+                        <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_pension" type="button"
                             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                             Gestion de Sistema de Pension
                         </PrimaryButton>
@@ -342,8 +342,13 @@ const props = defineProps({
     spreadsheets: Object,
     boolean: Boolean,
     total: Object,
-    search: String
+    search: String,
+    userPermissions:Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const reentrystate = ref(props.boolean);
 

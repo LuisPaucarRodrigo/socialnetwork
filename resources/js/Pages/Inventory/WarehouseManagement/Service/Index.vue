@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <div class="flex items-center flex-grow min-w-0">
+                <div v-if="hasPermission('InventoryManager')" class="flex items-center flex-grow min-w-0">
                     <PrimaryButton class="mb-2" @click="add_service">
                         +Agregar
                     </PrimaryButton>
@@ -35,7 +35,7 @@
                                 Descripcion
                             </th>
 
-                            <th
+                            <th v-if="hasPermission('InventoryManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -54,9 +54,10 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="hasPermission('InventoryManager')"
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center items-center space-x-3">
-                                    <button @click="deleteService(item.id)" class="text-red-600 hover:underline">
+                                    <button @click="ShowModaldeleteService(item.id)" class="text-red-600 hover:underline">
                                         <svg width="15px" height="15px" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="12" cy="12" r="9" stroke="red" stroke-width="2" />
@@ -91,9 +92,10 @@
                         </InputLabel>
                         <div class="mt-2">
                             <select id="purchase_product_id" v-model="form.purchase_product_id"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" >
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option value="" disabled>Seleccionar activo</option>
-                                <option v-for="item in resources" :key="item.id" :value="item.id">{{ item.name }} - {{ item.resource_type.name }}</option>
+                                <option v-for="item in resources" :key="item.id" :value="item.id">{{ item.name }} - {{
+        item.resource_type.name }}</option>
                             </select>
                         </div>
                     </div>
@@ -102,10 +104,7 @@
                         <InputLabel for="rent_price">Precio de Renta por Día
                         </InputLabel>
                         <div class="mt-2">
-                            <input id="rent_price" type="number"
-                                min="0"
-                                step="0.01"
-                                v-model="form.rent_price"
+                            <input id="rent_price" type="number" min="0" step="0.01" v-model="form.rent_price"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -126,6 +125,8 @@
                 </div>
             </form>
         </Modal>
+        <ConfirmDeleteModal :confirmingDeletion="confirmingServiceDeletion" itemType="servicio"
+            :deleteFunction="deleteService" @closeModal="closeDeleteService" />
     </AuthenticatedLayout>
 </template>
 
@@ -139,6 +140,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { ref } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 
 const props = defineProps({
     services: {
@@ -148,9 +150,16 @@ const props = defineProps({
     resources: {
         type: Object,
         required: true
-    }
+    },
+    userPermissions: Array
 });
 
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
+
+const confirmingServiceDeletion = ref(false);
+const serviceToDelete = ref(false)
 const showAdd = ref(false);
 
 const form = useForm({
@@ -161,7 +170,7 @@ const form = useForm({
 })
 
 function submit_add_service() {
-    form.post(route('warehouses.service.store'),{
+    form.post(route('warehouses.service.store'), {
         onSuccess: () => {
             router.get(route('inventory.warehouses.service'));
         }, onError: (e) => {
@@ -177,4 +186,21 @@ function add_service() {
 function close_service() {
     showAdd.value = false
 }
+
+function ShowModaldeleteService(serviceId) {
+    serviceToDelete.value = serviceId;
+    confirmingServiceDeletion.value = !confirmingServiceDeletion.value
+
+}
+
+const deleteService = () => {
+    router.delete(route('warehouses.service.delete', { id: serviceToDelete.value }), {
+        onSuccess: () => closeDeleteService()
+    });
+};
+
+const closeDeleteService = () => {
+    confirmingServiceDeletion.value = !confirmingServiceDeletion.value;
+};
+
 </script>

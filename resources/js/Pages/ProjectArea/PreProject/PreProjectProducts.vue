@@ -8,7 +8,8 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button v-if="preproject.status === null && preproject.project === null" type="button" @click="showToAddProduct"
+                <button v-if="preproject.status === null && preproject.project === null && hasPermission('ProjectManager')" type="button"
+                    @click="showToAddProduct"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
                 </button>
@@ -46,13 +47,13 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in assigned_products.data" :key="item.id" :class="[
-                                'text-gray-700',
-                                {
-                                    'border-l-8': true,
-                                    'border-green-500': item.state === 'Completo',
-                                    'border-red-500': item.state === 'Incompleto'
-                                }
-                            ]">
+        'text-gray-700',
+        {
+            'border-l-8': true,
+            'border-green-500': item.state === 'Completo',
+            'border-red-500': item.state === 'Incompleto'
+        }
+    ]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.entry.inventory.purchase_product.code }}
@@ -182,30 +183,16 @@
                     <div v-if="form.quantity && form.margin" class="sm:col-span-3">
                         <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto Esperado</InputLabel>
                         <div class="mt-2">
-                            <input id="amount" disabled type="text" step="0.01" min="0" :value="`S/ ${(form.quantity * (1+form.margin/100) * (warehouseInventory.find((item)=> item.id == form.entry_id) ? warehouseInventory.find((item)=> item.id == form.entry_id).unitary_price : 0)).toFixed(2)}`"
+                            <input id="amount" disabled type="text" step="0.01" min="0"
+                                :value="`S/ ${(form.quantity * (1 + form.margin / 100) * (warehouseInventory.find((item) => item.id == form.entry_id) ? warehouseInventory.find((item) => item.id == form.entry_id).unitary_price : 0)).toFixed(2)}`"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
 
-
-                    <!-- <div v-if="enableInput" class="sm:col-span-3">
-                        <InputLabel for="unitary_price" class="font-medium leading-6 text-gray-900">Precio unitario a
-                            descontar en
-                            Proyecto</InputLabel>
-                        <div class="mt-2">
-                            <TextInput id="unitary_price" type="number" min="1" step="0.01" v-model="form.unitary_price"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        </div>
-                    </div> -->
-
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                        type="button" @click="closeModal"> Cerrar </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="submit"> Agregar </button>
+                    <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
                 </div>
             </form>
         </Modal>
@@ -238,19 +225,26 @@ import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-const { assigned_products, warehouses, preproject } = defineProps({
+const { assigned_products, warehouses, preproject, userPermissions } = defineProps({
     assigned_products: Object,
     warehouses: Object,
     preproject: Object,
-    auth: Object
+    auth: Object,
+    userPermissions:Array
 })
 
-let backUrl = preproject.status === null 
-                ? 'preprojects.index' 
-                : preproject.status == true 
-                    ? {route: 'preprojects.index', params:{preprojects_status : 1}} 
-                    : {route: 'preprojects.index', params:{preprojects_status : 0}} 
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
+
+let backUrl = preproject.status === null
+    ? 'preprojects.index'
+    : preproject.status == true
+        ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { preprojects_status: 0 } }
 
 //Modal functions
 const showModal = ref(false);

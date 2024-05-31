@@ -76,4 +76,5 @@ Route::get('/inventory/retrieval_dispatch/warehouses/rejected', [WarehousesContr
 //SERVICES
 Route::get('/inventory/services/warehouses', [WarehousesController::class, 'service_index'])->name('inventory.warehouses.service');
 Route::post('/inventory/services/warehouses/store', [WarehousesController::class, 'service_store'])->name('warehouses.service.store');
+Route::delete('/inventory/services/delete/{id}', [WarehousesController::class, 'service_delete'])->name('warehouses.service.delete');
 

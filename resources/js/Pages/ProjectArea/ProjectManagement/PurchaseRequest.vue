@@ -8,7 +8,8 @@
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2">
-                <PrimaryButton v-if="project.status === null" @click="add_purchase_request" type="button">
+                <PrimaryButton v-if="project.status === null && hasPermission('ProjectManager')"
+                    @click="add_purchase_request" type="button">
                     + Agregar
                 </PrimaryButton>
                 <PrimaryButton @click="expenses" type="button" class="bg-teal-600 hover:bg-teal-500">
@@ -77,7 +78,6 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div v-if="purchase.due_date" class="flex space-x-3 justify-center">
-
                                     <Link class="text-blue-900 "
                                         :href="route('projectmanagement.purchases_request.details', { id: purchase.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -88,44 +88,51 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <div>
-                                        <Link v-if="purchase.state == 'Pendiente'" class="text-blue-900 "
-                                            :href="route('projectmanagement.purchases_request.edit', { id: purchase.id, project_id: project.id })">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
-                                        </Link>
-                                        <span v-else class="text-gray-400">
+                                    <template v-if="hasPermission('ProjectManager')">
+                                        <div>
+                                            <Link v-if="purchase.state == 'Pendiente'" class="text-blue-900 "
+                                                :href="route('projectmanagement.purchases_request.edit', { id: purchase.id, project_id: project.id })">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                             </svg>
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <button v-if="purchase.state === 'Pendiente'" type="button"
-                                            @click="confirmPurchasesDeletion(purchase.id)" class="text-blue-900 ">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                            </svg>
-                                        </button>
-                                        <span v-else class="text-gray-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                            </svg>
-                                        </span>
-                                    </div>
+                                            </Link>
+                                            <span v-else class="text-gray-400">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6 text-gray-400">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <button v-if="purchase.state === 'Pendiente'" type="button"
+                                                @click="confirmPurchasesDeletion(purchase.id)" class="text-blue-900 ">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6 text-red-500">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </button>
+                                            <span v-else class="text-gray-400">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6 text-gray-400">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </template>
+
                                 </div>
                                 <div v-else class="flex space-x-3 justify-center">
-                                    <button @click="due_date_show(purchase.id)" type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
+                                    <button v-if="hasPermission('ProjectManager')" @click="due_date_show(purchase.id)"
+                                        type="button"
+                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">ddd
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -204,13 +211,18 @@ const props = defineProps({
     purchases: Object,
     project: Object,
     auth: Object,
+    userPermissions: Array
 });
 
-let backUrl = props.project.status === null 
-                ? 'projectmanagement.index' 
-                : props.project.status == true 
-                    ? 'projectmanagement.historial'
-                    : 'projectmanagement.index' 
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
+
+let backUrl = props.project.status === null
+    ? 'projectmanagement.index'
+    : props.project.status == true
+        ? 'projectmanagement.historial'
+        : 'projectmanagement.index'
 
 const form = useForm({
     due_date: '',

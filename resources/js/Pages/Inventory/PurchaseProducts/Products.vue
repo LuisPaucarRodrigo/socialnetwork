@@ -7,11 +7,9 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <div class="flex items-center flex-grow min-w-0">
-                    <PrimaryButton @click="openCreateProduct" type="button">
-                        + Agregar
-                    </PrimaryButton>
-                </div>
+                <PrimaryButton v-if="hasPermission('InventoryManager')" @click="openCreateProduct" type="button">
+                    + Agregar
+                </PrimaryButton>
                 <div class="flex items-center">
                     <form @submit.prevent="search" class="flex items-center">
                         <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
@@ -55,7 +53,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Descripción
                             </th>
-                            <th
+                            <th v-if="hasPermission('InventoryManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -82,7 +80,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="hasPermission('InventoryManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="inline-flex justify-end gap-x-0">
                                     <button v-if="auth.user.role_id == 1" @click="openEditProductModal(item)"
                                         class="text-yellow-600 hover:underline mr-3">
@@ -159,7 +157,8 @@
                                     <InputLabel for="type_product">
                                         Tipo de Producto
                                     </InputLabel>
-                                    <button v-if="hasPermission('UserManager')" type="button" @click="add_product" class="item-center">
+                                    <button v-if="hasPermission('UserManager')" type="button" @click="add_product"
+                                        class="item-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -185,7 +184,8 @@
                                     <InputLabel for="resource_type">
                                         Tipo de Activo
                                     </InputLabel>
-                                    <button v-if="hasPermission('UserManager')" type="button" @click="add_resource" class="item-center">
+                                    <button v-if="hasPermission('UserManager')" type="button" @click="add_resource"
+                                        class="item-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -217,7 +217,7 @@
                                 </div>
                             </div>
 
-                            <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <div class="mt-6 flex items-center justify-end gap-x-3">
                                 <SecondaryButton @click="create_product ? closeModal() : closeEditModal()"> Cancelar
                                 </SecondaryButton>
                                 <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">

@@ -48,23 +48,23 @@ Route::middleware('auth', 'permission:UserManager','checkPlatformWeb')->group(fu
     include_once 'user_admin_route.php';
 });
 
-Route::middleware(['auth', 'permission:HumanResourceManager', 'checkPlatformWeb'])->group(function () {
+Route::middleware(['auth', 'permission:HumanResourceManager|HumanResource', 'checkPlatformWeb'])->group(function () {
     include_once 'human_resource_route.php';
 });
 
-Route::middleware(['auth', 'permission:InventoryManager', 'checkPlatformWeb'])->group(function () {
+Route::middleware(['auth', 'permission:InventoryManager|Inventory', 'checkPlatformWeb'])->group(function () {
     include_once 'inventory_route.php';
 });
 
-Route::middleware(['auth', 'permission:ProjectManager', 'checkPlatformWeb'])->group(function () {
+Route::middleware(['auth', 'permission:ProjectManager|Project', 'checkPlatformWeb'])->group(function () {
     include_once 'project_route.php';
 });
 
-Route::middleware(['auth', 'permission:PurchasingManager', 'checkPlatformWeb'])->group(function () {
+Route::middleware(['auth', 'permission:PurchasingManager|Purchasing', 'checkPlatformWeb'])->group(function () {
     include_once 'shopping_area_route.php';
 });
 
-Route::middleware(['auth', 'permission:FinanceManager', 'checkPlatformWeb'])->group(function () {
+Route::middleware(['auth', 'permission:FinanceManager|Finance', 'checkPlatformWeb'])->group(function () {
     include_once 'finance_route.php';
 });
 
