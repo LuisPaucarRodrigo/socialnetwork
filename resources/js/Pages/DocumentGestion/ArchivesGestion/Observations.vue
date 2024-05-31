@@ -96,7 +96,7 @@
                             <InputError :message="form.errors.state" />
                         </div>
                     </div>
-                    <div v-if="form.state == 'Observado'" class="mt-4">
+                    <div v-if="form.state == 'Observado' || form.state == 'Desestimado'" class="mt-4">
                         <InputLabel for="observations">Observaciones</InputLabel>
                         <div class="mt-2">
                             <textarea v-model="form.observations" id="observations" rows="4" class="block w-full mt-1 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm rounded-md"></textarea>
