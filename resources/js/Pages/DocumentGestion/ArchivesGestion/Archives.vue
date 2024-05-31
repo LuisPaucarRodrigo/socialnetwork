@@ -251,7 +251,7 @@
 
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
               <div class="flex justify-center items-center space-x-3">
-                <button @click="downloadDocument(archive.id)" class="flex items-center text-blue-600 hover:underline">
+                <button @click="downloadDocument(archive.id, archive.path)" class="flex items-center text-blue-600 hover:underline">
                   <ArrowDownIcon class="h-4 w-4 ml-1" />
                 </button>
                 <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(archive.id)"
@@ -302,6 +302,9 @@
                     Fecha Máxima de Evaluación
                 </th>
                 <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Observación
+                </th>
+                <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
                     Resultado de Evaluación
                 </th>
                 <th class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
@@ -348,6 +351,11 @@
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                     <p class="text-gray-900 whitespace-no-wrap">
+                        {{ archive_user.observation }}
+                    </p>
+                </td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                    <p class="text-gray-900 whitespace-no-wrap">
                         {{ archive_user.state }}
                     </p>
                 </td>
@@ -379,7 +387,7 @@
             <div class="mt-2">
               <InputLabel for="documentFile">Archivo</InputLabel>
               <div class="mt-2">
-                <InputFile type="file" v-model="form.archive" id="documentFile"
+                <InputFile enctype="multipart/form-data" type="file" v-model="form.archive" id="documentFile"
                   :accept="'.' + $props.folder.format_type.js" />
                 <InputError :message="form.errors.archive" />
               </div>
@@ -604,10 +612,28 @@ const deleteDocument = () => {
   }
 };
 
-function downloadDocument(documentId) {
-  const backendDocumentUrl = route('archives.download', { folder: props.folder.id, archive: documentId });
-  window.open(backendDocumentUrl, '_blank');
-};
+function downloadDocument(documentId, path) {
+  if (props.folder.archive_type === 'Imágenes') {
+    if (path) {
+      // Intentar descargar el documento desde la ruta completa
+      const link = document.createElement('a');
+      link.href = window.location.origin + '/' + path;
+      link.download = ''; // Nombre de archivo predeterminado
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      console.error('Ruta del documento no encontrada.');
+    }
+  } else {
+    // Si no es de tipo 'Imágenes', abrir la URL de descarga normal
+    const backendDocumentUrl = route('archives.download', { folder: props.folder.id, archive: documentId });
+    window.open(backendDocumentUrl);
+  }
+}
+
+
+
 
 
 const getDocumentName = (documentTitle) => {

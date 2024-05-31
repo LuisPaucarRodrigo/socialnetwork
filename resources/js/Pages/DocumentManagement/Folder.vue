@@ -198,7 +198,7 @@
                             <InputLabel>
                                 Areas
                             </InputLabel>
-                            <div 
+                            <div
                                 class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
                                 role="alert">
                                 <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
