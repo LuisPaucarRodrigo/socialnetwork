@@ -29,7 +29,7 @@ class FolderCreateRequest extends FormRequest
         $rules = [
             'name' => [
                 'required',
-                'regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚ\-_]+$/',
+                'regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚ\-_ ]+$/',
                 function ($attribute, $value, $fail){
                     $name = $this->input('name');
                     $currentPath = $this->input('currentPath');
@@ -60,7 +60,7 @@ class FolderCreateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.regex' => 'El nombre solo puede contener letras mayúsculas, minúsculas, números, guiones, subguiones y sin espacios.',
+            'name.regex' => 'El nombre solo puede contener letras mayúsculas, minúsculas, números, guiones, subguiones y espacios.',
         ];
     }
 

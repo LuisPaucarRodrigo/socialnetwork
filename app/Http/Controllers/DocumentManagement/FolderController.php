@@ -11,6 +11,8 @@ use App\Models\Folder;
 use App\Models\FolderArea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -559,5 +561,28 @@ class FolderController extends Controller
             return $state && $currentPermission->create;
         }
         return false;
+    }
+
+
+    public function search_in_folder(Request $request, $folder_id) {
+        $term = $request->input('search');
+        $currentFolder = Folder::findOrFail($folder_id);
+
+        $result = $this->recursiveFolderSearch($currentFolder->id);
+        return response()->json($result, 200);
+    }
+
+    public function recursiveFolderSearch($upper_folder_id){
+        $result = [];
+        $childFolders = Folder::where('upper_folder_id', $upper_folder_id)->get();
+        $childFoldersArray =  $childFolders->toArray();
+        $result = array_merge($result, $childFoldersArray);
+        Log::info(' infinito_');
+        Log::info(json_encode($result));
+        foreach($childFolders as $item){
+            $itemCollectionArray = $this->recursiveFolderSearch($item->id);
+            $result = array_merge($result, $itemCollectionArray);
+        }
+        return $result;
     }
 }
