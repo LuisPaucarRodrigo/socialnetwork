@@ -1,5 +1,5 @@
-
 <template>
+
     <Head title="Formación y Desarrollo" />
 
     <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
@@ -34,7 +34,7 @@
                     </div>
                 </button>
                 </Link>
-                <Link :href="route('management.employees.formation_development.assignation.create')">
+                <Link v-if="hasPermission('HumanResourceManager')" :href="route('management.employees.formation_development.assignation.create')">
                 <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
                     <div>
                         <h3 class="text-lg font-semibold">Asignación de programas</h3>
@@ -63,5 +63,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { BookmarkSquareIcon, ClipboardDocumentIcon, PaperAirplaneIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/solid'
+
+const props = defineProps({
+    userPermissions:Array
+})
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 </script>

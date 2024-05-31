@@ -23,38 +23,46 @@ class PermissionMiddleware
     //     abort(403, 'No tienes el rol requerido para acceder.');
     // }
 
-    public function handle($request, Closure $next, $permission)
+    public function handle($request, Closure $next, $permissions)
     {
         if (!auth()->check()) {
             // Si el usuario no está autenticado, redirigirlo a la página de inicio de sesión
             return redirect('login');
         }
+
         $user = auth()->user();
-        // Verificar si el usuario tiene el permiso necesario
-        if ($user->hasPermission($permission)) {
-            return $next($request);
+        $permissionsArray = explode('|', $permissions);
+
+        foreach ($permissionsArray as $permission) {
+            if ($user->hasPermission($permission)) {
+                return $next($request);
+            }
         }
 
-        if ($user->hasPermission('UserManager')) {
-            return redirect('/users');
-        } elseif ($user->hasPermission('HumanResourceManager') || $user->hasPermission('HumanResource')) {
-            return redirect('/management_employees/index');
-        } elseif ($user->hasPermission('FinanceManager') || $user->hasPermission('Finance')) {
-            return redirect('/finance/expencemanagement');
-        } elseif ($user->hasPermission('InventoryManager') || $user->hasPermission('Inventory')) {
-            return redirect('/finance/expencemanagement');
-        } elseif ($user->hasPermission('ProjectManager') || $user->hasPermission('Project')) {
-            return redirect('/projectmanagement');
-        } elseif ($user->hasPermission('PurchasingManager') || $user->hasPermission('Purchasing')) {
-            return redirect('/shopping_area/purchasesrequest');
-        } elseif ($user->hasPermission('Administration')) {
-            return redirect('/management_employees');
-        } elseif ($user->hasPermission('DocumentGestion')) {
-            return redirect(route('documment.management.folders'));
-        } elseif ($user->hasPermission('SocialNetwork')) {
-            return redirect(route('socialnetwork.sot'));
-        } else {
-            abort(403, 'No tienes el rol requerido para acceder.');
+        // Redirecciones basadas en permisos específicos
+        $redirectRoutes = [
+            'UserManager' => route('users.index'),
+            'HumanResourceManager' => route('management.employees'),
+            'HumanResource' => route('management.employees'),
+            'FinanceManager' => route('managementexpense.index'),
+            'Finance' => route('managementexpense.index'),
+            'InventoryManager' => route('warehouses.warehouses'),
+            'Inventory' => route('warehouses.warehouses'),
+            'ProjectManager' => route('projectmanagement.index'),
+            'Project' => route('projectmanagement.index'),
+            'PurchasingManager' => route('purchasesrequest.index'),
+            'Purchasing' => route('purchasesrequest.index'),
+            'Administration' => '/management_employees',
+            'DocumentGestion' => route('documment.management.folders'),
+            'SocialNetwork' => route('socialnetwork.sot'),
+        ];
+
+        foreach ($redirectRoutes as $permission => $route) {
+            if ($user->hasPermission($permission)) {
+                return redirect($route);
+            }
         }
+
+        abort(403, 'No tienes el rol requerido para acceder.');
     }
 }

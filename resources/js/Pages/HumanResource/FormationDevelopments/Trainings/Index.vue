@@ -1,5 +1,5 @@
-
 <template>
+
     <Head title="Capacitaciones" />
 
     <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
@@ -7,12 +7,12 @@
             Capacitaciones
         </template>
         <div class="min-w-full">
-            <div class="flex items-center">
+            <div v-if="hasPermission('HumanResourceManager')" class="flex items-center">
                 <PrimaryButton @click="add_information" type="button">
                     Agregar Informacion
                 </PrimaryButton>
             </div>
-        
+
             <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap rounded-lg shadow">
                     <thead>
@@ -30,7 +30,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Descripción
                             </th>
-                            <th
+                            <th v-if="hasPermission('HumanResourceManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                 Acciones
                             </th>
@@ -47,13 +47,14 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ training.description }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
-                                <div v-if="hasPermission('UserManager')" class="flex space-x-3 justify-center">
-                                    <Link
+                            <td 
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
+                                <div class="flex space-x-3 justify-center">
+                                    <Link v-if="hasPermission('HumanResourceManager')"
                                         :href="route('management.employees.formation_development.trainings.create', { id: training.id })">
                                     <PencilSquareIcon class="h-6 w-6 text-blue-500" />
                                     </Link>
-                                    <button @click="openModalDelete(training)">
+                                    <button v-if="hasPermission('UserManager')" @click="openModalDelete(training)">
                                         <TrashIcon class="h-6 w-6 text-red-500" />
                                     </button>
                                 </div>
@@ -83,7 +84,7 @@ import { ref } from 'vue';
 
 const props = defineProps({
     trainings: Object,
-    userPermissions:Array
+    userPermissions: Array
 })
 
 const hasPermission = (permission) => {

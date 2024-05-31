@@ -8,7 +8,7 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-4">
-                    <button @click="add_project" type="button"
+                    <button v-if="hasPermission('ProjectManager')" @click="add_project" type="button"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                         + Agregar
                     </button>
@@ -38,7 +38,7 @@
                         <template #content class="origin-left">
                             <div> <!-- Alineación a la derecha -->
                                 <div class="dropdown">
-                                    <div class="dropdown-menu">
+                                    <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
                                         <button @click="add_project"
                                             class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Agregar
@@ -68,7 +68,7 @@
                                 @click="()=>{router.post(route('projectmanagement.liquidation'),{project_id: item.id}, {
                                     onSuccess: () => router.visit(route('projectmanagement.index'))
                                 })}"
-                                v-if="item.status === null " 
+                                v-if="item.status === null" 
                                 :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.is_liquidable ? '': 'opacity-60'}`"
                                 :disabled="item.is_liquidable ? false: true"
                             >
@@ -152,8 +152,13 @@ import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     projects: Object,
-    auth: Object
+    auth: Object,
+    userPermissions:Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const projects = ref(props.projects);
 const confirmingProjectDeletion = ref(false);

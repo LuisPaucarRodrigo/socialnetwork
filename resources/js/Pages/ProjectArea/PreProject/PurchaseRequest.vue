@@ -7,7 +7,7 @@
         </template>
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2">
-                <PrimaryButton v-if="!preproject.has_quote" @click="add_purchase_request" type="button">
+                <PrimaryButton v-if="!preproject.has_quote && hasPermission('ProjectManager')" @click="add_purchase_request" type="button">
                     + Agregar
                 </PrimaryButton>
             </div>
@@ -56,7 +56,7 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <div>
+                                    <div v-if="hasPermission('ProjectManager')">
                                         <Link v-if="purchase.state == 'Pendiente'" class="text-blue-900 "
                                             :href="route('preprojects.request.edit', { id: purchase.id })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -73,7 +73,7 @@
                                             </svg>
                                         </span>
                                     </div>
-                                    <div>
+                                    <div v-if="hasPermission('ProjectManager')">
                                         <button v-if="purchase.state === 'Pendiente'" type="button"
                                             @click="confirmPurchasesDeletion(purchase.id)" class="text-blue-900 ">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -139,7 +139,12 @@ const purchaseToDelete = ref(null);
 const props = defineProps({
     purchases: Object,
     preproject: Object,
+    userPermissions:Array
 });
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;

@@ -167,7 +167,7 @@ Route::delete('/projectmanagement/warehouse_products/{assigned}', [ProjectManage
 Route::get('/tasks/{id?}', [TaskManagementController::class, 'index'])->name('tasks.index');
 Route::get('/newtask/{project_id?}', [TaskManagementController::class, 'new'])->name('tasks.new');
 Route::post('/createtask', [TaskManagementController::class, 'create'])->name('tasks.create');
-Route::get('/edittask/{taskId}', [TaskManagementController::class, 'edit'])->name('tasks.edit');
+Route::get('/edittask/{taskId}', [TaskManagementController::class, 'edit'])->name('tasks.show');
 Route::post('/edittask/comment', [TaskManagementController::class, 'comment'])->name('tasks.edit.comment');
 Route::post('/edittask/add', [TaskManagementController::class, 'add_employee'])->name('tasks.add.employee');
 Route::get('/statustask/{taskId}/{status}', [TaskManagementController::class, 'status_task'])->name('tasks.edit.status');

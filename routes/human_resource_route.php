@@ -47,7 +47,7 @@ Route::post('/management_employees/formation_development/assignation-store', [Fo
 
 Route::get('/management_employees/formation_development/alarms', [FormationDevelopment::class, "employees_in_programs_alarms"])->name("employees_in_programs.alarms");
 
-// Route::get('/management_employees/formation_development/view/{id}', [FormationDevelopment::class, 'formation_programs_view'])->name('management.employees.formation_development.view');
+Route::get('/management_employees/formation_development/view/{id}', [FormationDevelopment::class, 'formation_programs_view'])->name('management.employees.formation_development.view');
 // Route::delete('/management_employees/formation_development/delete/{id}', [FormationDevelopment::class, 'formation_programs_destroy'])->name('management.employees.formation_development.delete');
 // Route::post('/management_employees/formation_development/delete-employee/', [FormationDevelopment::class, 'formation_programs_destroy_employee'])->name('management.employees.formation_development.employee.delete');
 
@@ -73,8 +73,8 @@ Route::get('/management_employees/formation_development/employees_in_programs/de
 Route::get('/management_vacation/index/{review?}', [VacationController::class, 'index'])->name('management.vacation');
 Route::get('/management_vacation/information_additional', [VacationController::class, 'create'])->name('management.vacation.information.create');
 Route::post('/management_vacation/information_additional/store', [VacationController::class, 'store'])->name('management.vacation.information.store');
-// Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit'])->name('management.vacation.information.edit');
-// Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
+Route::get('/management_vacation/information_additional/{vacation}', [VacationController::class, 'edit'])->name('management.vacation.information.edit');
+Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
 // Route::get('/management_vacation/information_additional/{vacation}/review', [VacationController::class, 'review'])->name('management.vacation.information.review');
 // Route::get('/management_vacation/information_additional/{id}/reviewed', [VacationController::class, 'reviewed'])->name('management.vacation.information.reviewed');
 Route::get('/management_vacation/information_additional/{vacation}/details', [VacationController::class, 'details'])->name('management.vacation.information.details');

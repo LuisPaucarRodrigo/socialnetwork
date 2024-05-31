@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <PrimaryButton @click="add_request" type="button">
+                <PrimaryButton v-if="hasPermission('PurchasingManager')" @click="add_request" type="button">
                     + Agregar
                 </PrimaryButton>
                 <div class="flex items-center">
@@ -119,28 +119,13 @@
                                 </div>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p v-if="!purchase.products_state" class="text-red-500">Incompletos o Cotizaciones Pendientes </p>
+                                <p v-if="!purchase.products_state" class="text-red-500">Incompletos o Cotizaciones
+                                    Pendientes
+                                </p>
                                 <p v-else :class="`text-green-600`">Completados y Aceptados</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-left">
-                                    <button
-                                        v-if="!purchase.preproject?.has_quote && (purchase.state == 'Pendiente' || purchase.state == 'En progreso')"
-                                        type="button" @click="confirmPurchase(purchase)" class="text-blue-900 ">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                        </svg>
-                                    </button>
-                                    <span v-else class="text-gray-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                        </svg>
-                                    </span>
-
                                     <Link class="text-blue-900 "
                                         :href="route('purchasingrequest.details', { id: purchase.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -169,6 +154,23 @@
                                             </svg>
                                         </span>
                                     </div>
+                                    <button
+                                        v-if="!purchase.preproject?.has_quote && hasPermission('PurchasingManager') && (purchase.state == 'Pendiente' || purchase.state == 'En progreso')"
+                                        type="button" @click="confirmPurchase(purchase)" class="text-blue-900 ">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                        </svg>
+                                    </button>
+                                    <span v-if="purchase.preproject?.has_quote && hasPermission('PurchasingManager')"
+                                        class="text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                        </svg>
+                                    </span>
                                     <div v-if="auth.user.role_id == 1">
                                         <button v-if="purchase.state != 'Aceptado'" type="button"
                                             @click="confirmPurchasesDeletion(purchase.id)" class="text-blue-900 ">
@@ -238,9 +240,13 @@ const error = ref(false);
 const props = defineProps({
     purchases: Object,
     auth: Object,
-    search: String
+    search: String,
+    userPermissions: Array
 });
 
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;
@@ -285,6 +291,6 @@ function errorPurchase() {
     error.value = true
     setTimeout(() => {
         error.value = false
-    },2000)
+    }, 2000)
 }
 </script>

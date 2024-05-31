@@ -36,7 +36,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Ver Documento de Cotización
                             </th>
-                            <th
+                            <th v-if="hasPermission('InventoryManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -67,7 +67,7 @@
                                 </button>
                             </td>
                             
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="hasPermission('InventoryManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <button @click="approve(item.id)"
                                         class="flex items-center text-blue-500 hover:underline">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -197,8 +197,13 @@ const props = defineProps({
     purchase_orders_resource: {
         type: Object,
         required: false
-    }
+    },
+    userPermissions:Array
 });
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const approvating = ref(false);
 const showModal = ref(false);

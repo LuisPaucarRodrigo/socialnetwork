@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'admin',
             'description' => 'Rol de administrador con todos los permisos'
         ]);
+        
 
         // Crear todos los permisos
         $permissions = [
@@ -66,7 +67,6 @@ class DatabaseSeeder extends Seeder
         $adminRole->permissions()->attach($snPLi);
         $adminRole->permissions()->attach($snPCh);
         $adminRole->permissions()->attach($snPCo);
-
 
         $snRolesPermissions = [
             [

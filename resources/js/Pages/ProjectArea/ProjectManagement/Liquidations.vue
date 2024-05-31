@@ -33,8 +33,9 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Observaciones
                         </th>
-                        <th v-if="project.status === null"
+                        <th v-if="project.status === null && hasPermission('ProjectManager')"
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Acciones
                         </th>
                     </tr>
                 </thead>
@@ -52,7 +53,7 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
                         </td>
-                        <td v-if="project.status === null" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="project.status === null && hasPermission('ProjectManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex space-x-3 justify-center">
                                 <Link :href="route('projectmanagement.liquidate.form', {project_id: project_id, project_entry: item.id})"
                                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
@@ -77,11 +78,16 @@ import { Head, Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 
 
-const { project_entries, project_id, liquidations, project } = defineProps({
+const { project_entries, project_id, liquidations, project, userPermissions } = defineProps({
     project_entries: Object,
     project_id: String,
-    project: Object
+    project: Object,
+    userPermissions:Array
 })
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 let backUrl = project.status === null 
                 ? 'projectmanagement.index' 
