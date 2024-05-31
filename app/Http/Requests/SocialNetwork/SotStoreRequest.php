@@ -24,7 +24,7 @@ class SotStoreRequest extends FormRequest
     {
         return [
             'user_owner_id' => 'required',
-            'user_assignee_id' => 'required',
+            'customer_id' => 'required',
             'name' => 'required',
             'description' => 'required',
             'assigned_date' => 'required',

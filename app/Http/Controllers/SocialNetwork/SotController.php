@@ -7,10 +7,10 @@ use App\Http\Requests\SocialNetwork\SotStoreRequest;
 use App\Http\Requests\SocialNetwork\SotOperationUpdateRequest;
 use App\Http\Requests\SocialNetwork\SotLiquidationUpdateRequest;
 
+use App\Models\Customer;
 use App\Models\SNSot;
 use App\Models\SNSotLiquidation;
 use App\Models\SNSotOperation;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Requests\SocialNetwork\CreateAndpdateControl;
@@ -22,7 +22,7 @@ use Inertia\Inertia;
 class SotController extends Controller
 {
     public function sot_index () {
-        $sots = SNSot::with('user_assignee',
+        $sots = SNSot::with('customer',
                             'sot_operation',
                             'sot_liquidation',
                             'sot_payment',
@@ -41,16 +41,10 @@ class SotController extends Controller
     }
 
     public function sot_programation () {
-        $users = User::all();
-        $snop_users = $users->filter(function ($user) {
-            return $user->role_id !== 1 && 
-                    $user->hasPermission('SocialNetwork') &&
-                   $user->hasPermission('SocialNetworkOperation');
-        });
-        $sots = SNSot::with('user_assignee')->paginate(15);
+        $sots = SNSot::with('customer')->paginate(15);
         return Inertia::render('SocialNetworkSot/SotProgramation', [
             'sots' => $sots,
-            'snop_users' => $snop_users
+            'customers' => Customer::all()
         ]);
     }
 
@@ -70,11 +64,11 @@ class SotController extends Controller
     {
         $user = Auth::user();
         if($user->role_id == 1){
-            $sots = SNSot::with('user_assignee')
+            $sots = SNSot::with('customer')
             ->whereDoesntHave('sot_liquidation')
             ->get();
         }else{
-            $sots = SNSot::with('user_assignee')
+            $sots = SNSot::with('customer')
             ->whereDoesntHave('sot_liquidation')
             ->where('user_assignee_id', $user->id)
             ->get();
@@ -92,6 +86,8 @@ class SotController extends Controller
             'up_minutes' => 'required',
             'liquidation' => 'required',
             'down_warehouse' => 'required',
+            'bill_amount' => 'required',
+            'observations' => 'nullable',
             'liquidation_date' => 'required',
             'sot_status' => 'required'
         ]);
@@ -110,11 +106,11 @@ class SotController extends Controller
     {
         $user = Auth::user();
         if($user->role_id == 1){
-            $sots = SNSot::with('user_assignee')
+            $sots = SNSot::with('customer')
             ->whereDoesntHave('sot_operation')
             ->get();
         }else{
-            $sots = SNSot::with('user_assignee')
+            $sots = SNSot::with('customer')
             ->whereDoesntHave('sot_operation')
             ->where('user_assignee_id', $user->id)
             ->get();
@@ -140,7 +136,6 @@ class SotController extends Controller
                     'additionals' => 'required',
                     'photo_report' => 'required',
                     'ic_date' => 'required',
-                    'bill_amount' => 'required'
                 ]);
                 SNSotOperation::create($data);
                 return redirect()->back();

@@ -23,11 +23,11 @@
                                 Área Programación
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
+                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="5">
                                 Área de Operaciones
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="5">
+                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Área de Liquidación
                             </th>
                             <th
@@ -58,7 +58,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Persona Designada
+                                Cliente
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -73,13 +73,10 @@
                                 Reporte Fotográfico
                             </th>
                             <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-r border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Instalación Completada
                             </th>
-                            <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto a Facturar
-                            </th>
+
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Subir Actas
@@ -97,8 +94,16 @@
                                 Fecha de Liquidación
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Status de SOT
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Observaciones
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto a Facturar
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -153,7 +158,7 @@
                                 <p class="text-gray-900 text-center">{{ formattedDate(item.assigned_date) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.user_assignee.name }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.customer.business_name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.i_state }}</p>
@@ -164,12 +169,10 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.photo_report }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.ic_date }}</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.bill_amount }}</p>
-                            </td>
+
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.up_minutes }}</p>
                             </td>
@@ -182,8 +185,14 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.liquidation_date }}</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.sot_status }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.observations }}</p>
+                            </td>
+                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+                                <p class="text-gray-900 text-center">S/. {{ item?.sot_liquidation?.bill_amount.toFixed(2) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_payment?.sot_bill }}</p>

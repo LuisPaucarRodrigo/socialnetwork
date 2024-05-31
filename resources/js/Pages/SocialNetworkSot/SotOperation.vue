@@ -39,10 +39,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Instalación Completada
                             </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto a facturar
-                            </th>
+
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
@@ -73,11 +70,6 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.ic_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    S/. {{ item.bill_amount.toFixed(2) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -127,7 +119,7 @@
                         </div>
 
                         <div class="">
-                            <InputLabel>Estado</InputLabel>
+                            <InputLabel>Estado de Instalación</InputLabel>
                             <div class="mt-2">
                                 <select v-model="formSot.i_state" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -168,15 +160,6 @@
                                 <input type="date" v-model="formSot.ic_date" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="formSot.errors.ic_date" />
-                            </div>
-                        </div>
-
-                        <div class="">
-                            <InputLabel>Monto a Facturar</InputLabel>
-                            <div class="mt-2">
-                                <input type="number" step="0.01" v-model="formSot.bill_amount" autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="formSot.errors.bill_amount" />
                             </div>
                         </div>
 
@@ -228,7 +211,6 @@ const initialState = {
     additionals: '',
     photo_report: '',
     ic_date: '',
-    bill_amount: '',
 }
 
 const formSot = useForm(
