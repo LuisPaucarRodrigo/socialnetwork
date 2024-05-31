@@ -39,7 +39,6 @@ class SotOperationUpdateRequest extends FormRequest
                 }
             ],
             'ic_date' => 'required',
-            'bill_amount' => 'required'
         ];
     }
 }

@@ -33,7 +33,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Persona Designada
+                                Cliente
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -59,7 +59,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item?.user_assignee?.name }}
+                                    {{ item?.customer?.business_name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -112,18 +112,18 @@
                         </div>
                         <div>
                             <InputLabel>
-                                Persona Designada
+                                Cliente
                             </InputLabel>
                             <div class="mt-2">
-                                <select v-model="formSot.user_assignee_id"
+                                <select v-model="formSot.customer_id"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccionar</option>
-                                    <option v-for="item in snop_users" :key="item.id" :value="item.id">
-                                        {{ item.name }}
+                                    <option v-for="item in customers" :key="item.id" :value="item.id">
+                                        {{ item.business_name }}
                                     </option>
 
                                 </select>
-                                <InputError :message="formSot.errors.areas" />
+                                <InputError :message="formSot.errors.customer_id" />
                             </div>
                         </div>
                         <div class="">
@@ -169,9 +169,9 @@ import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import {formattedDate} from '@/utils/utils.js';
 
-const { sots, snop_users, auth } = defineProps({
+const { sots, customers, auth } = defineProps({
     sots: Object,
-    snop_users: Object,
+    customers: Object,
     auth: Object
 })
 
@@ -179,7 +179,7 @@ const { sots, snop_users, auth } = defineProps({
 const initialState = {
     id: '',
     user_owner_id: auth.user.id,
-    user_assignee_id: '',
+    customer_id: '',
     name: '',
     description: '',
     assigned_date: ''

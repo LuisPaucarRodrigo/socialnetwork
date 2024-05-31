@@ -15,7 +15,6 @@ class SNSotOperation extends Model
         'additionals',
         'photo_report',
         'ic_date',
-        'bill_amount', 
     ];
 
     public function sot() {

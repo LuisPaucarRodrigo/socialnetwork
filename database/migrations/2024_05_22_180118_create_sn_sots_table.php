@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sn_sots', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_owner_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('user_assignee_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->onDelete('set null');
             $table->string('name');
             $table->text('description');
             $table->date('assigned_date');
