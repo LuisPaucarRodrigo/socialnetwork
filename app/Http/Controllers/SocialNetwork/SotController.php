@@ -22,8 +22,7 @@ use Inertia\Inertia;
 class SotController extends Controller
 {
     public function sot_index () {
-        $sots = SNSot::with('customer',
-                            'sot_operation',
+        $sots = SNSot::with('sot_operation',
                             'sot_liquidation',
                             'sot_payment',
                             'sot_control')
@@ -41,10 +40,9 @@ class SotController extends Controller
     }
 
     public function sot_programation () {
-        $sots = SNSot::with('customer')->paginate(15);
+        $sots = SNSot::paginate(15);
         return Inertia::render('SocialNetworkSot/SotProgramation', [
             'sots' => $sots,
-            'customers' => Customer::all()
         ]);
     }
 
@@ -64,12 +62,10 @@ class SotController extends Controller
     {
         $user = Auth::user();
         if($user->role_id == 1){
-            $sots = SNSot::with('customer')
-            ->whereDoesntHave('sot_liquidation')
+            $sots = SNSot::whereDoesntHave('sot_liquidation')
             ->get();
         }else{
-            $sots = SNSot::with('customer')
-            ->whereDoesntHave('sot_liquidation')
+            $sots = SNSot::whereDoesntHave('sot_liquidation')
             ->where('user_assignee_id', $user->id)
             ->get();
         }
@@ -106,12 +102,10 @@ class SotController extends Controller
     {
         $user = Auth::user();
         if($user->role_id == 1){
-            $sots = SNSot::with('customer')
-            ->whereDoesntHave('sot_operation')
+            $sots = SNSot::whereDoesntHave('sot_operation')
             ->get();
         }else{
-            $sots = SNSot::with('customer')
-            ->whereDoesntHave('sot_operation')
+            $sots = SNSot::whereDoesntHave('sot_operation')
             ->where('user_assignee_id', $user->id)
             ->get();
         }

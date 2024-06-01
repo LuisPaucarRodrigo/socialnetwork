@@ -24,7 +24,12 @@ class SotStoreRequest extends FormRequest
     {
         return [
             'user_owner_id' => 'required',
-            'customer_id' => 'required',
+            'customer' => 'required',
+            'customer_flat' => 'required',
+            'customer_phone' => 'required',
+            'customer_address' => 'required',
+            'customer_district' => 'required',
+            'customer_ref' => 'required',
             'name' => 'required',
             'description' => 'required',
             'assigned_date' => 'required',

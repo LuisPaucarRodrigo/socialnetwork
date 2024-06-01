@@ -18,42 +18,42 @@
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Producto
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Cantidad
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Precio Unitario
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Observaciones
                         </th>
                         <th v-if="project.status === null && hasPermission('ProjectManager')"
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Acciones
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in project_entries.data" :key="item.id">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.special_inventory ? item.special_inventory.purchase_product.name : item.entry.inventory.purchase_product.name }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">S/. {{ item.unitary_price }}</p>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                            <p class="text-gray-900 whitespace-no-wrap">{{ item.unitary_price ? 'S/. ' + item.unitary_price : '-'}}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
                         </td>
-                        <td v-if="project.status === null && hasPermission('ProjectManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="project.status === null && hasPermission('ProjectManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <div class="flex space-x-3 justify-center">
                                 <Link :href="route('projectmanagement.liquidate.form', {project_id: project_id, project_entry: item.id})"
                                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">

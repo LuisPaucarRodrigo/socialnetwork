@@ -11,18 +11,19 @@ class SNSot extends Model
     protected $table = 'sn_sots';
     protected $fillable = [
         'user_owner_id',
-        'customer_id',
         'name',
         'description',
         'assigned_date',
+        'customer',
+        'customer_flat',
+        'customer_phone',
+        'customer_address',
+        'customer_district',
+        'customer_ref',
     ];
 
     public function user_owner () {
         return $this->belongsTo(User::class, 'user_owner_id');
-    }
-
-    public function customer () {
-        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function sot_operation () {
