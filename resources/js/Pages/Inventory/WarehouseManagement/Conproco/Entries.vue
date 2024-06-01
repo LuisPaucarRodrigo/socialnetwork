@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Productos" />
-    <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.products', params: { warehouse: props.warehouseId } }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.conproco.products', params: { warehouse: props.warehouseId } }">
         <template #header>
             Entradas
         </template>

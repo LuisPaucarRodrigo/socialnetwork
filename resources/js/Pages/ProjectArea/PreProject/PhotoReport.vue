@@ -4,11 +4,11 @@
     <template #header>
       Informe Fotográfico
     </template>
-    <div class="inline-block min-w-full border-b-2 border-gray-200">
+    <div v-if="!photoreport || auth.user.role_id === 1" class="inline-block min-w-full border-b-2 border-gray-200">
       <div v-if="preproject.status === null && !preproject.has_quote && hasPermission('ProjectManager')" class="flex gap-4 mb-2">
         <button @click="openCreateDocumentModal" type="button"
           class="rounded-md bg-indigo-500 px-4 py-2 text-center text-sm text-white hover:bg-indigo-300">
-          {{ photoreport && auth.user.role_id === 1 ? 'Editar' : '+ Agregar' }}
+          {{(photoreport && auth.user.role_id === 1) ? 'Editar' : '+ Agregar' }}
         </button>
         <button v-if="photoreport && auth.user.role_id === 1" @click="openDeleteModal" type="button"
           class="rounded-md bg-red-500 px-4 py-2 text-center text-sm text-white hover:bg-red-300">
