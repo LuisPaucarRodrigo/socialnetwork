@@ -7,8 +7,8 @@
 
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
-                <div class="flex items-center justify-between gap-x-6 w-full">
-                    <div class="hidden sm:flex sm:items-center sm:space-x-4">
+                <div class="flex items-center justify-between gap-x-3 w-full">
+                    <div v-if="hasPermission('HumanResourceManager')" class="hidden sm:flex sm:items-center space-x-4">
                         <PrimaryButton @click="add_information" type="button">
                             + Agregar
                         </PrimaryButton>
@@ -20,7 +20,7 @@
                     </div>
 
                     <!-- Dropdown para pantallas pequeñas -->
-                    <div class="sm:hidden">
+                    <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
                         <dropdown align='left'>
                             <template #trigger>
                                 <button @click="dropdownOpen = !dropdownOpen"
@@ -128,7 +128,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
                                     <Link class="text-blue-900 whitespace-no-wrap"
-                                        :href="route('management.employees.information.details', { id: employee.id })">
+                                        :href="route('management.employees.show', { id: employee.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -137,7 +137,7 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <Link v-if="hasPermission('UserManager')" class="text-blue-900 whitespace-no-wrap"
+                                    <Link v-if="hasPermission('HumanResourceManager')" class="text-blue-900 whitespace-no-wrap"
                                         :href="route('management.employees.edit', { id: employee.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -358,7 +358,7 @@ const closeModal = () => {
 };
 
 const add_information = () => {
-    router.get(route('management.employees.information'));
+    router.get(route('management.employees.create'));
 };
 
 const employee_fired_date = ($id) => {

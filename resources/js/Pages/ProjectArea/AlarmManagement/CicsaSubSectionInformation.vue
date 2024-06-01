@@ -1,6 +1,6 @@
 <template>
     <Head title="Gestion de Miembro" />
-    <AuthenticatedLayout :redirectRoute="'sections.cicsaSubSections'">
+    <AuthenticatedLayout :redirectRoute="'member.cicsa'">
       <template #header>
         Detalles del Miembro CICSA
       </template>
@@ -36,7 +36,7 @@
           <div class="inline-block text-center">
             <Link
               class="w-full rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              :href="route('sections.cicsaSubSections')">Ver todos los miembros</Link>
+              :href="route('member.cicsa')">Ver todos los miembros</Link>
           </div>
         </div>
       </div>

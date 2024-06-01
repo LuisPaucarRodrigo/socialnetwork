@@ -7,7 +7,7 @@
             Tìtulos
         </template>
         <div class="mt-6 flex items-center justify-start gap-x-3">
-            <PrimaryButton @click="add_title" type="button">
+            <PrimaryButton v-if="hasPermission('ProjectManager')" @click="add_title" type="button">
                 + Agregar
             </PrimaryButton>
             <PrimaryButton @click="management_codes" type="button">
@@ -28,7 +28,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Códigos
                         </th>
-                        <th
+                        <th v-if="hasPermission('ProjectManager')"
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         </th>
                     </tr>
@@ -41,7 +41,8 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900">{{ title.codes.map((item) => item.code).join(', ') }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="hasPermission('ProjectManager')"
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex justify-center space-x-3">
                                 <button type="button" @click="openEditTitleModal(title)"
                                     class="text-yellow-600 whitespace-no-wrap">
@@ -140,8 +141,13 @@ const docToDelete = ref(null);
 
 const props = defineProps({
     titles: Object,
-    codes: Object
+    codes: Object,
+    userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission)
+}
 
 const add_title = () => {
     create_title.value = true;

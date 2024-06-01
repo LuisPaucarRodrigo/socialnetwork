@@ -8,10 +8,10 @@
     <div class="min-w-full rounded-lg shadow">
       <div class="mt-6 flex items-center justify-between gap-x-6">
         <div class="hidden sm:flex sm:items-center sm:space-x-4">
-          <PrimaryButton @click="openCreateSubSectionModal" type="button">
+          <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="openCreateSubSectionModal" type="button">
             + Agregar miembro
           </PrimaryButton>
-          <PrimaryButton @click="management_section" type="button">
+          <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_section" type="button">
             Gestionar Apartados
           </PrimaryButton>
           <Link :href="route('sections.calendar')"

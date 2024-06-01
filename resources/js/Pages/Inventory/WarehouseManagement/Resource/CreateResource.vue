@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Activos" />
-    <AuthenticatedLayout :redirectRoute="'warehouses.index.resource'">
+    <AuthenticatedLayout :redirectRoute="'warehouses.resource.active.index'">
         <template #header>
             Registrar Activo
         </template>
@@ -133,7 +133,7 @@ function submit() {
             addSuccess.value = true
             setTimeout(() => {
                 addSuccess.value = false
-                router.get(route('warehouses.index.resource'))
+                router.get(route('warehouses.resource.active.index'))
             }, 2000)
         }
     })

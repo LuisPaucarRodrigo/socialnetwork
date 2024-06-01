@@ -3,7 +3,7 @@
     <Head title="Solicitudes del proyecto" />
     <AuthenticatedLayout :redirect-route="'warehouses.warehouses'">
         <template #header>
-            Devoluciones de {{ warehouse.name }}
+            Devoluciones de {{ warehouse.name }}d
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2 m-1 justify-end items-center">
@@ -69,7 +69,7 @@
                     </thead>
                     <tbody>
                         <template v-for="item in refunds.data" :key="item.id">
-                            
+                        
                             <tr  class="text-gray-700">
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 ">
@@ -150,7 +150,7 @@
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
-                                    <div v-if="item.state === null"
+                                    <div v-if="item.state === null && hasPermission('InventoryManager')"
                                         class="flex space-x-3 justify-center">
                                         <button 
                                             @click="()=>setRefundStatus(item.id, true)"

@@ -9,7 +9,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex items-center justify-between gap-4 mb-4">
-                <PrimaryButton type="button" @click="add_information">
+                <PrimaryButton v-if="hasPermission('HumanResourceManager')" type="button" @click="add_information">
                     + Agregar
                 </PrimaryButton>
                 <div class="flex items-center gap-x-3">
@@ -115,7 +115,8 @@
                                     </svg>
                                     </Link>
                                     <template v-if="boolean == false">
-                                        <Link v-if="item.status == 'Pendiente' && hasPermission('UserManager')"
+                                        <Link
+                                            v-if="item.status === 'Pendiente' && hasPermission('HumanResourceManager')"
                                             class="text-blue-900 whitespace-no-wrap"
                                             :href="route('management.vacation.information.edit', { id: item.id })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -124,14 +125,16 @@
                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                         </svg>
                                         </Link>
-                                        <span v-else class="text-gray-200">
+                                        <span
+                                            v-if="item.status !== 'Pendiente' && hasPermission('HumanResourceManager')"
+                                            class="text-gray-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                             </svg>
                                         </span>
-                                        <Link v-if="item.status == 'Pendiente' && hasPermission('UserManager')"
+                                        <Link v-if="item.status === 'Pendiente' && hasPermission('UserManager')"
                                             :href="route('management.vacation.information.review', { id: item.id })"
                                             class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -140,7 +143,9 @@
                                                 d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                         </svg>
                                         </Link>
-                                        <span v-else class="text-gray-200">
+                                        <span
+                                            v-if="item.status !== 'Pendiente' && hasPermission('HumanResourceManager')"
+                                            class="text-gray-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -149,7 +154,18 @@
                                         </span>
                                     </template>
                                     <template v-else>
-                                        <button v-if="item.status == 'Aceptado'"
+                                        <Link
+                                            v-if="hasPermission('UserManager')"
+                                            class="text-blue-900 whitespace-no-wrap"
+                                            :href="route('management.vacation.information.edit', { id: item.id })">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                        </svg>
+                                        </Link>
+                                        <button
+                                            v-if="item.status === 'Aceptado' && hasPermission('UserManager')"
                                             @click="sendStatus(item.id, 'Finalizado')" type="button"
                                             class="flex items-center text-blue-500 hover:underline">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -158,15 +174,16 @@
                                                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                         </button>
-                                        <span v-else class="text-gray-200">
+                                        <span v-if="item.status !== 'Aceptado' && hasPermission('UserManager')" class="text-gray-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                         </span>
-                                        <button v-if="item.status == 'Aceptado'" @click="sendModal(item.id, 'Ausente')"
-                                            type="button"
+                                        <button
+                                            v-if="item.status === 'Aceptado' && hasPermission('UserManager')"
+                                            @click="sendModal(item.id, 'Ausente')" type="button"
                                             class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -174,7 +191,7 @@
                                                     d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                         </button>
-                                        <span v-else class="text-gray-200">
+                                        <span v-if="item.status !== 'Aceptado' && hasPermission('UserManager')" class="text-gray-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"

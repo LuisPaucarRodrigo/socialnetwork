@@ -102,7 +102,7 @@
         <Modal :show="showStoreControl">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Area de Control
+                    Area de Cobranza
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
@@ -110,16 +110,16 @@
                             <InputLabel for="sot_bill">SOT a Facturar
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="sot_bill" v-model="form.sot_bill" :disabled="form.sot_bill && !hasPermission('UserManager')"
+                                <select id="sot_bill" v-model="form.sot_bill" :disabled="form.sot_bill === 'OK' && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
-                                    <option>Penalidad</option>
+                                    <option>No aparece</option>
                                 </select>
                                 <InputError :message="form.errors.sot_bill" />
                             </div>
                         </div>
-                        <div class="mt-2">
+                        <div v-if="form.sot_bill === 'OK'" class="mt-2">
                             <InputLabel for="sot_bill_date">Fecha SOT a Facturar
                             </InputLabel>
                             <div class="mt-2">
@@ -131,7 +131,7 @@
                             <InputLabel for="bill">Factura
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="bill" v-model="form.bill" :disabled="form.bill && !hasPermission('UserManager')"
+                                <select id="bill" v-model="form.bill" :disabled="form.bill === 'OK' && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -140,7 +140,7 @@
                                 <InputError :message="form.errors.bill" />
                             </div>
                         </div>
-                        <div class="mt-2">
+                        <div v-if="form.bill === 'OK'" class="mt-2">
                             <InputLabel for="bill_date">Fecha Facturar
                             </InputLabel>
                             <div class="mt-2">
@@ -152,7 +152,7 @@
                             <InputLabel for="charge">Cobranza
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="charge" v-model="form.charge" :disabled="form.charge && !hasPermission('UserManager')"
+                                <select id="charge" v-model="form.charge" :disabled="form.charge === 'OK' && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -161,7 +161,7 @@
                                 <InputError :message="form.errors.charge" />
                             </div>
                         </div>
-                        <div class="mt-2">
+                        <div v-if="form.charge === 'OK'"  class="mt-2">
                             <InputLabel for="charge_date">Fecha Cobranza
                             </InputLabel>
                             <div class="mt-2">
@@ -203,7 +203,12 @@ const sotPaymentUpdate = ref(false);
 
 const props = defineProps({
     payments: Object,
+    userPermissions: Array
 })
+
+function hasPermission(permission) {
+    return props.userPermissions.includes(permission)
+}
 
 const form = useForm({
     s_n_sot_id: null,
@@ -239,10 +244,8 @@ function initializeForm(payment) {
 
 function actionShowStore(payment) {
     if (typeof payment === "object"){
-        console.log('dddd')
         initializeForm(payment)
     } else {
-        console.log('ssss')
         form.s_n_sot_id = payment
     }
     showStoreControl.value = !showStoreControl.value;

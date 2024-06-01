@@ -81,6 +81,7 @@
                                         @input="handleCompany"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
+                                
                             </div>
                         </div>
 
@@ -94,7 +95,7 @@
                                     <option v-for="item in areas" :key="item.id" :value="item.id">{{ item.name }}
                                     </option>
                                 </select>
-                                <InputError class="mt-2" :message="form.errors.platform" />
+                                <InputError class="mt-2" :message="form.errors.area_id" />
                             </div>
                         </div>
                         <div class="sm:col-span-3">
