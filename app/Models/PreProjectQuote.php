@@ -27,7 +27,8 @@ class PreProjectQuote extends Model
     protected $appends = [
         'total_amount', 
         'total_amount_no_margin',
-        'total_services_cost'
+        'total_services_cost',
+        'code'
     ];
 
     //CALCULATED
@@ -58,15 +59,15 @@ class PreProjectQuote extends Model
         });
     }
 
-    // public function getCodeAttribute()
-    // {
-    //     if ($this->exists) {
-    //         $preprojectYear = date('Y', strtotime($this->preproject->date));
-    //         return 'C.T - ' . $preprojectYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
-    //     } else {
-    //         return 'TMP' . now()->format('ymdHis');
-    //     }
-    // }
+    public function getCodeAttribute()
+    {
+        if ($this->exists) {
+            $preprojectYear = date('Y', strtotime($this->preproject->date));
+            return 'C.T - ' . $preprojectYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        } else {
+            return 'TMP' . now()->format('ymdHis');
+        }
+    }
 
     //RELATIONS
     public function preproject () {

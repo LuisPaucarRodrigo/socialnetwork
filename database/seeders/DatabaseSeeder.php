@@ -187,10 +187,12 @@ class DatabaseSeeder extends Seeder
         $customersData = [
             ['id' => 1, 'ruc' => 1, 'business_name' => 'CLARO CICSA', 'category' => 'Especial', 'address' => '-'],
             ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],
+            ['id' => 3, 'ruc' => 3, 'business_name' => 'HUAWEI', 'category' => 'Especial', 'address' => '-'],
         ];
         $customersContactData = [
             ['name' => 'Contacto claro cicsa', 'phone' => '999999999', 'additional_information' => '-', 'customer_id' => 1],
             ['name' => 'Contacto gtd cicsa', 'phone' => '999999998', 'additional_information' => '-', 'customer_id' => 2],
+            ['name' => 'Contacto Huawei', 'phone' => '999999997', 'additional_information' => '-', 'customer_id' => 3],
         ];
         $warehousesData = [
             ['id' => 1, 'name' => 'CLARO CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
@@ -199,6 +201,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 4, 'name' => 'RECUPEROS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
             ['id' => 5, 'name' => 'ACTIVOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
             ['id' => 6, 'name' => 'SERVICIOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+            ['id' => 7, 'name' => 'HUAWEI', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
         ];
         $warehousesCustomerData = [
             ['id' => 1, 'customer_id' => 1, 'warehouse_id' => 1],
@@ -207,6 +210,9 @@ class DatabaseSeeder extends Seeder
             ['id' => 4, 'customer_id' => 2, 'warehouse_id' => 2],
             ['id' => 5, 'customer_id' => 2, 'warehouse_id' => 3],
             ['id' => 6, 'customer_id' => 2, 'warehouse_id' => 4],
+            ['id' => 7, 'customer_id' => 3, 'warehouse_id' => 7],
+            ['id' => 8, 'customer_id' => 3, 'warehouse_id' => 3],
+            ['id' => 9, 'customer_id' => 3, 'warehouse_id' => 4],
         ];
 
         Customer::insert($customersData);
