@@ -7,13 +7,10 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <div class="flex items-center flex-grow min-w-0">
-                    <Link :href="route('warehouses.createNormalProduct', { warehouse: props.warehouseId })"
-                        type="button"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                    + Agregar
-                    </Link>
-                </div>
+                <Link v-if="hasPermission('UserManager')" :href="route('warehouses.createNormalProduct', { warehouse: props.warehouseId })" type="button"
+                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                + Agregar
+                </Link>
             </div>
             <br>
             <div class="min-w-full overflow-x-auto rounded-lg shadow">
@@ -43,8 +40,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in products.data" :key="item.id"
-                            class="text-gray-700 border-b">
+                        <tr v-for="item in products.data" :key="item.id" class="text-gray-700 border-b">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.purchase_product.name }}</p>
                             </td>
@@ -105,7 +101,12 @@ const props = defineProps({
         type: Number,
         required: false
     },
+    userPermissions:Array
 });
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const docToDelete = ref(null);
 const confirmingDocDeletion = ref(false);

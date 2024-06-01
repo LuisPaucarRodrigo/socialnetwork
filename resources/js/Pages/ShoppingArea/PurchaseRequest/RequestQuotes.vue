@@ -307,12 +307,6 @@
                                                     : (0).toFixed(2) }}
                                                 </p>
                                             </td>
-                                            <!-- <td v-if="currency !== 'S/.'"
-                                                class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
-                                                <p class="text-gray-500 whitespace-nowrap">
-                                                    S/. {{ (form.products[item.id].amount ? : ).toFixed(2) }}
-                                                </p>
-                                            </td> -->
                                             <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                                 <div class="flex items-center justify-end gap-2">
                                                     {{ currency }}
@@ -364,7 +358,7 @@
                     <br>
                     <InputError :message="form.errors.products" />
                     <div v-if="purchases.state == 'Pendiente' || purchases.state == 'En progreso'"
-                        class="mt-6 sm:col-span-6 flex items-center justify-end gap-x-6">
+                        class="mt-6 sm:col-span-6 flex items-center justify-end gap-x-3">
                         <SecondaryButton v-if="purchases.state == 'Pendiente'" @click.prevent="purchaseRequestReject()"
                             :disabled="process">Rechazar</SecondaryButton>
                         <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
@@ -460,7 +454,7 @@ const submit = () => {
             showError.value = false;
         }, 2500);
     } else {
-        form.post(route('purchasesrequest.storequotes'),{
+        form.post(route('purchasesrequest.quotes.store'),{
             onSuccess:()=>{
                 successRegistration.value = true
                 setTimeout(()=> {

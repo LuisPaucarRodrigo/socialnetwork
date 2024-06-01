@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\ShoppingArea;
+namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentRequest\UpdatePaymentRequest;
@@ -13,7 +13,7 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/Payments/index', [
+        return Inertia::render('Finance/Payments/index', [
             'payments' => Purchase_quote::with('purchasing_requests', 'purchase_order', 'payment')
                 ->has('payment')
                 ->paginate()
@@ -59,7 +59,7 @@ class PaymentController extends Controller
 
         $combined_purchase_quotes = $payment_by_request_code->merge($payment_by_code)->merge($payment_by_request_title)->unique();
 
-        return Inertia::render('ShoppingArea/Payments/index', [
+        return Inertia::render('Finance/Payments/index', [
             'payments' => $combined_purchase_quotes,
             'search' => $request
         ]);

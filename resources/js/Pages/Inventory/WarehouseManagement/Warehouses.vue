@@ -75,11 +75,11 @@
           <div class="text-gray-500 text-sm">
             <div v-if="item.id === 3 || item.id === 4" class="grid grid-cols-1 gap-y-1">
               <Link
-                :href="item.id === 3 ? route('warehouses.purchaseorders.approve', { warehouse: item.id }) : route('inventory.retrieval_entry.index')"
+                :href="item.id === 3 ? route('warehouses.purchaseorders.approve', { warehouse: item.id }) : route('inventory.retrieval.entry.index')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
               {{ item.id === 3 ? 'Compras' : 'Ingresos' }}</Link>
               <Link
-                :href="item.id === 3 ? route('warehouses.products', { warehouse: item.id }) : route('inventory.retrievalProduct.index')"
+                :href="item.id === 3 ? route('warehouses.conproco.products', { warehouse: item.id }) : route('inventory.retrieval.product.index')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos</Link>
               <Link
                 :href="item.id === 3 ? route('warehouses.dispatches', { warehouse: item.id }) : route('inventory.retrievalDispatch.index')"
@@ -89,9 +89,9 @@
               <Link v-if="item.id === 5" :href="route('warehouses.resource')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
               Compras</Link>
-              <Link v-if="item.id === 5" :href="route('warehouses.index.resource')"
+              <Link v-if="item.id === 5" :href="route('warehouses.resource.active.index')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Activos</Link>
-              <Link v-if="item.id === 6" :href="route('inventory.warehouses.service')"
+              <Link v-if="item.id === 6" :href="route('warehouses.service.approve.index')"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
               Servicios</Link>
             </div>

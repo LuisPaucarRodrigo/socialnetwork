@@ -7,7 +7,7 @@
             Programas de Formación
         </template>
         <div class="min-w-full">
-            <div class="flex items-center">
+            <div v-if="hasPermission('HumanResourceManager')" class="flex items-center">
                 <PrimaryButton @click="add_information" type="button" >
                     Agregar Informacion
                 </PrimaryButton>
@@ -30,7 +30,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Descripción
                             </th>
-                            <th
+                            <th 
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
@@ -49,12 +49,12 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formationProgram.description }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div v-if="hasPermission('UserManager')" class="flex space-x-3 justify-center">
+                                <div class="flex space-x-3 justify-center">
                                     <Link
                                         :href="route('management.employees.formation_development.view', { id: formationProgram.id })">
                                     <EyeIcon class="h-6 w-6 text-teal-500" />
                                     </Link>
-                                    <button @click="openModalDelete(formationProgram)">
+                                    <button v-if="hasPermission('UserManager')" @click="openModalDelete(formationProgram)">
                                         <TrashIcon class="h-6 w-6 text-red-500" />
                                     </button>
                                 </div>

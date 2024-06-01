@@ -17,7 +17,7 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="first-name">Nombre</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.name" id="first-name" autocomplete="given-name"/>
+                                <TextInput type="text" v-model="form.name" id="first-name" autocomplete="given-name" />
                                 <InputError :message="form.errors.name" />
                             </div>
                         </div>
@@ -26,7 +26,8 @@
                             <InputLabel for="last_name">Apellido
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.lastname" id="last_name" autocomplete="family-name"/>
+                                <TextInput type="text" v-model="form.lastname" id="last_name"
+                                    autocomplete="family-name" />
                                 <InputError :message="form.errors.lastname" />
                             </div>
                         </div>
@@ -65,7 +66,7 @@
                             <InputLabel for="birthdate">Fecha de Nacimiento
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="Date" v-model="form.birthdate" id="birthdate"/>
+                                <TextInput type="Date" v-model="form.birthdate" id="birthdate" />
                                 <InputError :message="form.errors.birthdate" />
                             </div>
                         </div>
@@ -74,7 +75,7 @@
                             <InputLabel for="dni">Documento Nacional de
                                 Identidad</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.dni" id="dni" maxlength="8"/>
+                                <TextInput type="text" v-model="form.dni" id="dni" maxlength="8" />
                                 <InputError :message="form.errors.dni" />
                             </div>
                         </div>
@@ -83,7 +84,7 @@
                             <InputLabel for="email">Correo Electronico
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="email" id="email" v-model="form.email" autocomplete="email"/>
+                                <TextInput type="email" id="email" v-model="form.email" autocomplete="email" />
                                 <InputError :message="form.errors.email" />
                             </div>
                         </div>
@@ -95,7 +96,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="email" id="email_company" v-model="form.email_company"
-                                    autocomplete="email"/>
+                                    autocomplete="email" />
                                 <InputError :message="form.errors.email_company" />
                             </div>
                         </div>
@@ -104,7 +105,7 @@
                             <InputLabel for="phone1">Telefono 1</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.phone1" id="phone1" autocomplete="postal-code"
-                                    maxlength="9"/>
+                                    maxlength="9" />
                                 <InputError :message="form.errors.phone1" />
                             </div>
                         </div>
@@ -113,7 +114,7 @@
                             <InputLabel for="phone2">Telefono 2</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="phone2"
-                                    maxlength="9"/>
+                                    maxlength="9" />
                                 <InputError :message="form.errors.phone2" />
                             </div>
                         </div>
@@ -163,7 +164,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.basic_salary" id="basic_salary"
-                                    autocomplete="basic-salary"/>
+                                    autocomplete="basic-salary" />
                                 <InputError :message="form.errors.basic_salary" />
                             </div>
                         </div>
@@ -172,7 +173,8 @@
                             <InputLabel for="hire_date">Fecha de Inicio
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="Date" v-model="form.hire_date" id="hire_date" autocomplete="hire-date"/>
+                                <TextInput type="Date" v-model="form.hire_date" id="hire_date"
+                                    autocomplete="hire-date" />
                                 <InputError :message="form.errors.hire_date" />
                             </div>
                         </div>
@@ -226,7 +228,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.specialization" id="specialization"
-                                    autocomplete="specialization"/>
+                                    autocomplete="specialization" />
                                 <InputError :message="form.errors.specialization" />
                             </div>
                         </div>
@@ -244,7 +246,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.street_address" id="street_address"
-                                    autocomplete="street-address"/>
+                                    autocomplete="street-address" />
                                 <InputError :message="form.errors.street_address" />
                             </div>
                         </div>
@@ -252,7 +254,8 @@
                             <InputLabel for="address">Distrito
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.district" id="address" autocomplete="postal-code"/>
+                                <TextInput type="text" v-model="form.district" id="address"
+                                    autocomplete="postal-code" />
                                 <InputError :message="form.errors.district" />
                             </div>
                         </div>
@@ -261,7 +264,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.province" id="province"
-                                    autocomplete="address-level1"/>
+                                    autocomplete="address-level1" />
                                 <InputError :message="form.errors.province" />
                             </div>
                         </div>
@@ -270,7 +273,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.department" id="department"
-                                    autocomplete="address-level2"/>
+                                    autocomplete="address-level2" />
                                 <InputError :message="form.errors.department" />
                             </div>
                         </div>
@@ -297,8 +300,7 @@
                                 <InputLabel for="emergency_name">Nombre
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="emergency.emergency_name" id="emergency_name"
-/>
+                                    <TextInput type="text" v-model="emergency.emergency_name" id="emergency_name" />
                                     <InputError
                                         :message="form.errors['emergencyContacts.' + index + '.emergency_name']" />
                                 </div>
@@ -310,8 +312,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="emergency.emergency_lastname"
-                                        id="emergency_lastname"
-/>
+                                        id="emergency_lastname" />
                                     <InputError
                                         :message="form.errors['emergencyContacts.' + index + '.emergency_lastname']" />
                                 </div>
@@ -322,8 +323,8 @@
                                     Relacion:
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="emergency.emergency_relations" id="emergency_relations"
-/>
+                                    <TextInput type="text" v-model="emergency.emergency_relations"
+                                        id="emergency_relations" />
                                     <InputError
                                         :message="form.errors['emergencyContacts.' + index + '.emergency_relations']" />
                                 </div>
@@ -334,8 +335,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="emergency.emergency_phone" id="emergency_phone"
-                                        maxlength="9"
-/>
+                                        maxlength="9" />
                                     <InputError
                                         :message="form.errors['emergencyContacts.' + index + '.emergency_phone']" />
                                 </div>
@@ -364,8 +364,8 @@
                                     Nacional
                                     de Identidad</InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="dependent.family_dni" id="family_dni" maxlength="8"
-/>
+                                    <TextInput type="text" v-model="dependent.family_dni" id="family_dni"
+                                        maxlength="8" />
                                     <InputError :message="form.errors['familyDependents.' + index + '.family_dni']" />
                                 </div>
                             </div>
@@ -394,8 +394,7 @@
                                 <InputLabel for="family_relation">Relacion
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="dependent.family_relation" id="family_relation"
-/>
+                                    <TextInput type="text" v-model="dependent.family_relation" id="family_relation" />
                                     <InputError
                                         :message="form.errors['familyDependents.' + index + '.family_relation']" />
                                 </div>
@@ -405,8 +404,7 @@
                                 <InputLabel for="family_name">Nombre
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="dependent.family_name" id="family_name"
-/>
+                                    <TextInput type="text" v-model="dependent.family_name" id="family_name" />
                                     <InputError :message="form.errors['familyDependents.' + index + '.family_name']" />
                                 </div>
                             </div>
@@ -415,8 +413,7 @@
                                 <InputLabel for="family_lastname">Apellido
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="text" v-model="dependent.family_lastname" id="family_lastname"
-/>
+                                    <TextInput type="text" v-model="dependent.family_lastname" id="family_lastname" />
                                     <InputError
                                         :message="form.errors['familyDependents.' + index + '.family_lastname']" />
                                 </div>
@@ -452,7 +449,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="weight">Peso (kg)</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.weight" id="weight" autocomplete="weight"/>
+                                <TextInput type="text" v-model="form.weight" id="weight" autocomplete="weight" />
                                 <InputError :message="form.errors.weight" />
                             </div>
                         </div>
@@ -461,7 +458,7 @@
                             <InputLabel for="height">Altura (cm)
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.height" id="height" autocomplete="height"/>
+                                <TextInput type="text" v-model="form.height" id="height" autocomplete="height" />
                                 <InputError :message="form.errors.height" />
                             </div>
                         </div>
@@ -470,7 +467,8 @@
                             <InputLabel for="shoe_size">Talla de Zapato
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.shoe_size" id="shoe_size" autocomplete="shoe-size"/>
+                                <TextInput type="text" v-model="form.shoe_size" id="shoe_size"
+                                    autocomplete="shoe-size" />
                                 <InputError :message="form.errors.shoe_size" />
                             </div>
                         </div>
@@ -480,7 +478,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.shirt_size" id="shirt_size"
-                                    autocomplete="shirt-size"/>
+                                    autocomplete="shirt-size" />
                                 <InputError :message="form.errors.shirt_size" />
                             </div>
                         </div>
@@ -490,7 +488,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.pants_size" id="pants_size"
-                                    autocomplete="pants-size"/>
+                                    autocomplete="pants-size" />
                                 <InputError :message="form.errors.pants_size" />
                             </div>
                         </div>
@@ -501,7 +499,7 @@
                                 condición médica? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.medical_condition" id="medical_condition"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.medical_condition" />
                             </div>
                         </div>
@@ -512,7 +510,7 @@
                                 medicamento? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.allergies" id="allergies"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.allergies" />
                             </div>
                         </div>
@@ -522,7 +520,7 @@
                                 operación? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.operations" id="operations"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.operations" />
                             </div>
                         </div>
@@ -532,7 +530,7 @@
                                 accidente grave? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.accidents" id="accidents"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.accidents" />
                             </div>
                         </div>
@@ -543,7 +541,7 @@
                                 vacuna? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.vaccinations" id="vaccinations"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.vaccinations" />
                             </div>
                         </div>
@@ -553,7 +551,7 @@
 
             </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
-                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }" >
+                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                     {{ employees ? "Actualizar" : "Crear" }}
                 </PrimaryButton>
             </div>
@@ -636,7 +634,7 @@ if (props.employees) {
     form.email_company = props.employees.email_company;
     form.phone1 = props.employees.phone1;
     form.phone2 = props.employees.phone2;
-    form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false ;
+    form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false;
     form.pension_system = props.employees.contract.pension.id;
     form.basic_salary = props.employees.contract.basic_salary;
     form.hire_date = props.employees.contract.hire_date;
@@ -697,7 +695,7 @@ const submit = () => {
     if (props.employees) {
         form.post(route('management.employees.update', props.employees.id), form)
     } else {
-        form.post(route('management.employees.information.create'), {
+        form.post(route('management.employees.store'), {
             onSuccess: () => {
                 showModal.value = true
                 setTimeout(() => {

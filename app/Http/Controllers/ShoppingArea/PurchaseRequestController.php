@@ -154,7 +154,7 @@ class PurchaseRequestController extends Controller
         $id->update(['is_accepted' => false]);
     }
 
-    public function doTask()
+    public function alarm()
     {
         $currentDate = now();
         $purchasesLessThanThreeDays = Purchasing_request::where('due_date', '<=', $currentDate->copy()->addDays(3))
@@ -279,5 +279,18 @@ class PurchaseRequestController extends Controller
         }
 
         return $results;
+    }
+
+    public function project_purchases_request_update_quote_deadline(Request $request)
+    {
+        $request->validate([
+            'quote_deadline' => 'required|date|before_or_equal:due_date',
+            'due_date' => 'required|date',
+            'quote_id' => 'required|numeric'
+        ]);
+        $update_due_date = Purchase_quote::find($request->quote_id);
+        $update_due_date->update([
+            'quote_deadline' => $request->quote_deadline
+        ]);
     }
 }

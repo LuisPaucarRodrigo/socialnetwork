@@ -24,8 +24,9 @@ class DatabaseSeeder extends Seeder
         // Crear el rol "admin"
         $adminRole = Role::create([
             'name' => 'admin',
-            'description' => 'Rol de administrador con todos los permisos'
+            'description' => 'Rol de administrador con todos los permisos de gerente'
         ]);
+        
 
         // Crear todos los permisos
         $permissions = [
@@ -43,14 +44,25 @@ class DatabaseSeeder extends Seeder
             'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
         ];
 
-
+        // Permissions Admin
+        $managerPermissions = [
+            'UserManager',
+            'HumanResourceManager',
+            'FinanceManager',
+            'InventoryManager',
+            'ProjectManager',
+            'PurchasingManager',
+            'DocumentGestion'
+        ];
 
         foreach ($permissions as $name => $description) {
             $permission = Permission::create([
                 'name' => $name,
                 'description' => $description
             ]);
-            $adminRole->permissions()->attach($permission);
+            if (in_array($name, $managerPermissions)) {
+                $adminRole->permissions()->attach($permission);
+            }
         }
 
         //Social Network Roles and Permissions
@@ -68,7 +80,6 @@ class DatabaseSeeder extends Seeder
         $adminRole->permissions()->attach($snPLi);
         $adminRole->permissions()->attach($snPCh);
         $adminRole->permissions()->attach($snPCo);
-
 
         $snRolesPermissions = [
             [
@@ -129,10 +140,6 @@ class DatabaseSeeder extends Seeder
             'role_id' => '1',
             'area_id' => 1
         ]);
-        // User::factory()->count(20)->create();
-        // Project::factory()->count(10)->create();
-        // Purchasing_request::factory()->count(1)->create();
-        // Provider::factory()->count(10)->create();
 
         $data = [
             [

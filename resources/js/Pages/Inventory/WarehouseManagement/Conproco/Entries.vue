@@ -6,9 +6,6 @@
             Entradas
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
-
-            <br>
-
             <div class="min-w-full overflow-x-auto rounded-lg shadow">
                 <table class="w-full table-auto">
                     <thead>

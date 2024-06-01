@@ -270,13 +270,6 @@ const closeModal = () => {
 };
 
 const add_employee = () => {
-    // if (project.preproject.quote.deliverable_time * employeeToAdd.value.employee.salary_per_day > project.remaining_budget ) {
-    //     showEmployeeError.value = true
-    //     setTimeout(()=>{
-    //         showEmployeeError.value = false
-    //     }, 1500)
-    //     return
-    // }
     if (project) {
         router.post(route('projectmanagement.add.employee', { project_id: project.id }), { ...employeeToAdd.value },
             {
