@@ -25,16 +25,25 @@ class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => 'required|string|max:255',
-            'dni' => ['required',
-                      'string',
-                      'max:8',
-                      Rule::unique('users', 'dni')],
-            'email' => ['required',
-                        'string',
-                        'max:255',
-                        'email',
-                        Rule::unique('users', 'email')],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'name')
+            ],
+            'dni' => [
+                'required',
+                'string',
+                'max:8',
+                Rule::unique('users', 'dni')
+            ],
+            'email' => [
+                'required',
+                'string',
+                'max:255',
+                'email',
+                Rule::unique('users', 'email')
+            ],
             'platform' => 'required|string|in:Movil,Web,Web/Movil',
             'phone' => [
                 'required',

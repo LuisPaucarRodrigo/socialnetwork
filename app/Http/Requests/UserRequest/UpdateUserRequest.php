@@ -27,7 +27,12 @@ class UpdateUserRequest extends FormRequest
         $userId = $this->input('user_id');
 
         return [
-            'name' => 'required|string|max:255',
+            'name' =>  [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'name')->ignore($userId)
+            ],
             'dni' => [
                 'required',
                 'string',
