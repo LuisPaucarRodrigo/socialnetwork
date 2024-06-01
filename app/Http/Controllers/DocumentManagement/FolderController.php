@@ -31,11 +31,8 @@ class FolderController extends Controller
     
     public function folder_index(Request $request, $folder_id = null){
         $folder = Folder::with('folder_areas')->find($folder_id);
-        if( $folder?->type === 'Archivos' && $folder?->type !== 'Carpeta') {
-            abort(404, 'Not found');
-        }
         if ($this->checkUserSeeDownload($folder_id)) {
-            abort(403, 'No está autorizado');
+            abort(403, 'Not authorized or folder not activated');
         }
         $path = $folder ? $folder->path
             : $this->main_directory;
@@ -313,6 +310,10 @@ class FolderController extends Controller
 
     public function checkUserSeeDownload($folder_id){
         $user = Auth::user();
+        $folder = Folder::find($folder_id);
+        if( $folder?->type === 'Archivos' && 
+            $folder?->type !== 'Carpeta' ) {return true;}
+        if($folder && !$folder->state) {return true;}
         if ($user->role_id === 1 || $folder_id === null) { return false;} 
         $folder_permission = FolderArea::where('folder_id', $folder_id)
             ->where('area_id', $user->area_id)
@@ -324,6 +325,8 @@ class FolderController extends Controller
 
     public function checkUserCreate($folder_id){
         $user = Auth::user();
+        $folder = Folder::find($folder_id);
+        if($folder && !$folder->state) {return true;}
         if ($user->role_id === 1) {return false;} 
         if ($folder_id === null) {return true;}
         $folder_permission = FolderArea::where('folder_id', $folder_id)
