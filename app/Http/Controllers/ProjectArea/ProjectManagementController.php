@@ -268,6 +268,8 @@ class ProjectManagementController extends Controller
             $warehouses = Warehouse::whereIn('id', [1, 3, 4])->get();
         } else if ($project_id->preproject->customer_id == 2) {
             $warehouses = Warehouse::whereIn('id', [2, 3, 4])->get();
+        } else if ($project_id->preproject->customer_id == 3) {
+            $warehouses = Warehouse::whereIn('id', [7, 3, 4])->get();
         } else {
             $warehouses = Warehouse::whereIn('id', [3, 4])->get();
         }
