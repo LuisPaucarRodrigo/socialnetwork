@@ -70,7 +70,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in folders" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in folders" :key="item.item_db.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white  text-sm">
                                 <!-- for button instead of Link -->
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->

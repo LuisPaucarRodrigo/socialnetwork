@@ -39,6 +39,7 @@ class FolderController extends Controller
         
         //search functionality
         if($request->input('search')){
+            
             $FoundedFolders = $this->searchInFolder($request->input('search'), $folder_id);
             return Inertia::render('DocumentManagement/FolderSearch', [
                 'folders' => $FoundedFolders,
@@ -579,9 +580,10 @@ class FolderController extends Controller
 
 
     public function searchInFolder($search, $folder_id) {
+        Log::info('llegue....');
         $searchTerm = str_replace([' ', '-', '_'], '', $search);
-        $currentFolder = Folder::findOrFail($folder_id);
-        $result = $this->recursiveFolderSearch($currentFolder->id, $searchTerm);
+        $currentFolder = Folder::find($folder_id);
+        $result = $this->recursiveFolderSearch($currentFolder?->id, $searchTerm);
         return $result;
     }
 
@@ -590,7 +592,8 @@ class FolderController extends Controller
         $result = [];
         $originalChildFolders = Folder::where('upper_folder_id', $upper_folder_id)
             ->get();
-        $childFolders = Folder::where('upper_folder_id', $upper_folder_id)
+        
+        $childFolders = Folder::with('user', 'folder_areas')->where('upper_folder_id', $upper_folder_id)
             ->where(function ($query) use ($searchTerm) {
                 $query->whereRaw("REPLACE(REPLACE(REPLACE(name, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"])
                       ->orWhereRaw("REPLACE(REPLACE(REPLACE(path, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"]);
