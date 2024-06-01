@@ -10,12 +10,10 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
                 <div class="flex items-center mt-4 sm:mt-0">
-                    <!-- submit.prevent="search"  -->
                     <form 
                         @submit.prevent="search"
                         class="flex items-center w-full sm:w-auto"
                     >
-                    <!-- v-model="searchForm.searchTerm" -->
                         <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
                         <button type="submit"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -182,9 +180,9 @@ const searchForm = useForm({
     searchTerm: searchTerm ? searchTerm : '',
 })
 const search = () => {
-    if (searchForm.searchTerm !== '') {
-        router.visit(route('documment.management.folders', {folder_id:folder?.id})+`?search=${searchForm.searchTerm}`)
-    }
+    searchForm.searchTerm !== '' 
+        ? router.visit(route('documment.management.folders', {folder_id:folder?.id})+`?search=${searchForm.searchTerm}`)
+        : router.visit(route('documment.management.folders', {folder_id:folder?.id}))
 }
 
 
