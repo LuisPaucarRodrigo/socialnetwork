@@ -331,9 +331,7 @@ const submit = () => {
             closeModal();
             successAsignation.value = true
             warehouseProducts.value = []
-            // let almacen_select = document.getElementById('almacen_id')
-            // almacen_select.value = ""
-            // enableInput.value = false
+
             setTimeout(() => {
                 successAsignation.value = false
             }, 2000)

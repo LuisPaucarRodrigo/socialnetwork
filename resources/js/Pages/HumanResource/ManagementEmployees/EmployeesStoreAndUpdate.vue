@@ -695,7 +695,7 @@ const submit = () => {
     if (props.employees) {
         form.post(route('management.employees.update', props.employees.id), form)
     } else {
-        form.post(route('management.employees.information.create'), {
+        form.post(route('management.employees.store'), {
             onSuccess: () => {
                 showModal.value = true
                 setTimeout(() => {

@@ -357,7 +357,7 @@ Usuarios
                                 {{ cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length }}
                             </span>
                         </button>
-                        <Link class="w-full" :href="route('sections.cicsaSubSections')">Alarmas Cicsa</Link>
+                        <Link class="w-full" :href="route('member.cicsa')">Alarmas Cicsa</Link>
                     </div>
                 </MyTransition>
 
@@ -366,7 +366,7 @@ Usuarios
                         <MyTransition v-for="item in cicsasubSectionsPorVencer" :key="item.id" class="ml-4"
                             :transitiondemonstration="cicsashowingMembers">
                             <Link class="w-full flex items-center"
-                                :href="route('sections.cicsaSubSection', { subSection: item.id })">
+                                :href="route('member.cicsa.show', { subSection: item.id })">
                             <div class="flex items-center">
                                 <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -380,7 +380,7 @@ Usuarios
                         <MyTransition v-for="item in cicsasubSectionsPorVencer7" :key="item.id" class="ml-4"
                             :transitiondemonstration="cicsashowingMembers7">
                             <Link class="w-full flex items-center"
-                                :href="route('sections.cicsaSubSection', { subSection: item.id })">
+                                :href="route('member.cicsa.show', { subSection: item.id })">
                             <div class="flex items-center">
                                 <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -717,7 +717,7 @@ export default {
 
         async fetchSubSectionsCount() {
             try {
-                const response = await axios.get(route('sections.task'));
+                const response = await axios.get(route('sections.alarm'));
                 this.subSectionsPorVencer = response.data.subSections;
                 this.subSectionsPorVencer7 = response.data.subSections7;
             } catch (error) {
@@ -727,7 +727,7 @@ export default {
 
         async fetchCicsaSubSectionsCount() {
             try {
-                const response = await axios.get(route('sections.cicsaTask'));
+                const response = await axios.get(route('member.cicsa.alarm'));
                 this.cicsasubSectionsPorVencer = response.data.subSections;
                 this.cicsasubSectionsPorVencer7 = response.data.subSections7;
             } catch (error) {
@@ -781,7 +781,7 @@ export default {
 
         async fetchPurchasesRequest() {
             try {
-                const response = await axios.get(route('purchasesrequest.task'));
+                const response = await axios.get(route('purchasesrequest.alarm'));
                 this.shoppingPurchases = Object.values(response.data.purchasesLessThanThreeDays);
                 this.shoppingPurchases7 = Object.values(response.data.purchasesBetweenFourAndSevenDays);
             } catch (error) {

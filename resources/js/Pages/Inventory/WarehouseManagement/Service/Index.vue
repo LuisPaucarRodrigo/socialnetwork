@@ -172,7 +172,7 @@ const form = useForm({
 function submit_add_service() {
     form.post(route('warehouses.service.store'), {
         onSuccess: () => {
-            router.get(route('inventory.warehouses.service'));
+            router.get(route('warehouses.service.approve.index'));
         }, onError: (e) => {
             console.log(e)
         }

@@ -150,7 +150,7 @@ const newcomment = useForm({
 });
 
 const addComment = () => {
-    newcomment.post(route('tasks.edit.comment'), {
+    newcomment.post(route('tasks.add.comment'), {
         onError: (errors) => {
             console.log('Errores de validación:', errors);
         }

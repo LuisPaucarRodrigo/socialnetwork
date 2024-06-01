@@ -317,7 +317,7 @@ let backUrl = project.status === null
 const taskIdDelete = ref(null);
 
 const addTask = () => {
-    router.get(route('tasks.new', { project_id: project.id }));
+    router.get(route('tasks.create', { project_id: project.id }));
 };
 
 const statustask = (taskId, status) => {

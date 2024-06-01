@@ -224,14 +224,7 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_update(UpdatePurchaseRequest $request, $id)
-    {
-        $validateData = $request->validated();
-        $purchases = Purchasing_request::with('project')->findOrFail($id);
-        $purchases->update($validateData);
 
-        return redirect()->back();
-    }
 
     public function project_expenses(Project $project_id)
     {
@@ -293,18 +286,7 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_update_quote_deadline(Request $request)
-    {
-        $request->validate([
-            'quote_deadline' => 'required|date|before_or_equal:due_date',
-            'due_date' => 'required|date',
-            'quote_id' => 'required|numeric'
-        ]);
-        $update_due_date = Purchase_quote::find($request->quote_id);
-        $update_due_date->update([
-            'quote_deadline' => $request->quote_deadline
-        ]);
-    }
+
 
     public function warehouse_products(Project $project, Warehouse $warehouse)
     {

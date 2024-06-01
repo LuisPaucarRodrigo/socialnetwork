@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         // Crear el rol "admin"
         $adminRole = Role::create([
             'name' => 'admin',
-            'description' => 'Rol de administrador con todos los permisos'
+            'description' => 'Rol de administrador con todos los permisos de gerente'
         ]);
         
 
@@ -44,12 +44,27 @@ class DatabaseSeeder extends Seeder
             'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
         ];
 
+        // Permissions Admin
+        $managerPermissions = [
+            'UserManager' => 'Permite acceso para todas las funciones de Usuarios y roles',
+            'HumanResourceManager' => 'Permite acceso para todas las funciones de RRHH',
+            'FinanceManager' => 'Permite acceso para todas las funciones de Finanzas',
+            'InventoryManager' => 'Permite acceso para todas las funciones de Inventario',
+            'ProjectManager' => 'Permite acceso para todas las funciones de Area de Projectos',
+            'PurchasingManager' => 'Permite acceso para todas las funciones del Area de Compras',
+            'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
+        ];
+
         foreach ($permissions as $name => $description) {
             $permission = Permission::create([
                 'name' => $name,
                 'description' => $description
             ]);
-            $adminRole->permissions()->attach($permission);
+        
+            // Si el permiso es uno de los permisos de manager, asociarlo al rol admin
+            if (in_array($name, $managerPermissions)) {
+                $adminRole->permissions()->attach($permission);
+            }
         }
 
         //Social Network Roles and Permissions
@@ -127,10 +142,6 @@ class DatabaseSeeder extends Seeder
             'role_id' => '1',
             'area_id' => 1
         ]);
-        // User::factory()->count(20)->create();
-        // Project::factory()->count(10)->create();
-        // Purchasing_request::factory()->count(1)->create();
-        // Provider::factory()->count(10)->create();
 
         $data = [
             [
