@@ -10,7 +10,7 @@
             <div class="flex justify-end">
                 <div class="flex items-center mt-4 sm:mt-0">
                     <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
+                        <TextInput type="text" placeholder="Buscar..."  pattern="[a-zA-Z0-9áéíóúüÁÉÍÓÚÜ\s\-_]*" v-model="searchForm.searchTerm" />
                         <button type="submit"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -24,7 +24,7 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <div v-if="folders.length > 0" class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
@@ -113,6 +113,13 @@
                 </table>
             </div>
 
+            <div v-else>
+                <br>
+                <h2 class="text-lg text-center">
+                    No se encontraron coincidencias
+                </h2>
+                <br>
+            </div>
         </div>
 
 
@@ -157,7 +164,13 @@ function checkSeeDownloadPermission(item) {
 const highlightText = (originalText) => {
     const escapedHighlight = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const searchTermRegex = escapedHighlight.replace(/[\s-_]/g, '[\\s-_]*');
-    const regex = new RegExp(`(${searchTermRegex})`, 'gi');
+    const searchTermWithTilde = searchTermRegex.replace(/[áÁ]/g, '[aAáÁ]')
+                                                .replace(/[éÉ]/g, '[eEéÉ]')
+                                                .replace(/[íÍ]/g, '[iIíÍ]')
+                                                .replace(/[óÓ]/g, '[oOóÓ]')
+                                                .replace(/[úÚ]/g, '[uUúÚ]')
+                                                .replace(/[üÜ]/g, '[uUüÜ]');
+    const regex = new RegExp(`(${searchTermWithTilde})`, 'gi');
     return originalText.replace(regex, '<span class="bg-yellow-200 text-bold">$1</span>');
 };
 

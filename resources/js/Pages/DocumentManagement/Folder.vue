@@ -17,13 +17,11 @@
                 </PrimaryButton>
 
                 <div class="flex items-center mt-4 sm:mt-0">
-                    <!-- submit.prevent="search"  -->
                     <form 
                         @submit.prevent="search"
                         class="flex items-center w-full sm:w-auto"
                     >
-                    <!-- v-model="searchForm.searchTerm" -->
-                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
+                        <TextInput type="text" placeholder="Buscar..." pattern="[a-zA-Z0-9áéíóúüÁÉÍÓÚÜ\s\-_]*" v-model="searchForm.searchTerm" />
                         <button type="submit"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
