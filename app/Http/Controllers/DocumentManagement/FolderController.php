@@ -36,25 +36,25 @@ class FolderController extends Controller
         }
         $path = $folder ? $folder->path
             : $this->main_directory;
-        $areas = $folder ? $folder->areas
-            : Area::all();
+        
+        //search functionality
+        if($request->input('search')){
+            $FoundedFolders = $this->searchInFolder($request->input('search'), $folder_id);
+            return Inertia::render('DocumentManagement/FolderSearch', [
+                'folders' => $FoundedFolders,
+                'currentPath' => $path,
+                'folder' => $folder,
+                'searchTerm' => $request->input('search')
+            ]);
+        }
+        ///////////////////////
+
+        $areas = $folder ? $folder->areas: Area::all();
         $areas = $areas->filter(function($item){
             return $item->name !== 'Gerencia' && $item->name !== 'Calidad';
         });
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
-
-        if($request->input('search')){
-            return Inertia::render('DocumentManagement/FolderSearch', [
-                'folders' => $folderStructure,
-                'currentPath' => $path,
-                'areas' => $areas,
-                'folder' => $folder,
-                'searchTerm' => $request->input('search')
-            ]);
-        }
-
-
         return Inertia::render('DocumentManagement/Folder', [
             'folders' => $folderStructure,
             'currentPath' => $path,
@@ -578,11 +578,11 @@ class FolderController extends Controller
     }
 
 
-    public function search_in_folder(Request $request, $folder_id) {
-        $searchTerm = str_replace([' ', '-', '_'], '', $request->input('search'));
+    public function searchInFolder($search, $folder_id) {
+        $searchTerm = str_replace([' ', '-', '_'], '', $search);
         $currentFolder = Folder::findOrFail($folder_id);
         $result = $this->recursiveFolderSearch($currentFolder->id, $searchTerm);
-        return response()->json($result, 200);
+        return $result;
     }
 
 
