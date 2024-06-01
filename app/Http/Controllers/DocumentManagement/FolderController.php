@@ -29,7 +29,7 @@ class FolderController extends Controller
     }
 
     
-    public function folder_index($folder_id = null){
+    public function folder_index(Request $request, $folder_id = null){
         $folder = Folder::with('folder_areas')->find($folder_id);
         if( $folder?->type === 'Archivos' && $folder?->type !== 'Carpeta') {
             abort(404, 'Not found');
@@ -44,9 +44,20 @@ class FolderController extends Controller
         $areas = $areas->filter(function($item){
             return $item->name !== 'Gerencia' && $item->name !== 'Calidad';
         });
-
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
+
+        if($request->input('search')){
+            return Inertia::render('DocumentManagement/FolderSearch', [
+                'folders' => $folderStructure,
+                'currentPath' => $path,
+                'areas' => $areas,
+                'folder' => $folder,
+                'searchTerm' => $request->input('search')
+            ]);
+        }
+
+
         return Inertia::render('DocumentManagement/Folder', [
             'folders' => $folderStructure,
             'currentPath' => $path,
@@ -571,13 +582,16 @@ class FolderController extends Controller
         return response()->json($result, 200);
     }
 
-    
+
     public function recursiveFolderSearch($upper_folder_id, $searchTerm){
         $result = [];
         $originalChildFolders = Folder::where('upper_folder_id', $upper_folder_id)
             ->get();
         $childFolders = Folder::where('upper_folder_id', $upper_folder_id)
-            ->whereRaw("REPLACE(REPLACE(REPLACE(name, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"])
+            ->where(function ($query) use ($searchTerm) {
+                $query->whereRaw("REPLACE(REPLACE(REPLACE(name, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"])
+                      ->orWhereRaw("REPLACE(REPLACE(REPLACE(path, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"]);
+            })
             ->get();
         $childFoldersArray =  $childFolders->toArray();
         $result = array_merge($result, $childFoldersArray);
