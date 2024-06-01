@@ -565,22 +565,24 @@ class FolderController extends Controller
 
 
     public function search_in_folder(Request $request, $folder_id) {
-        $term = $request->input('search');
+        $searchTerm = str_replace([' ', '-', '_'], '', $request->input('search'));
         $currentFolder = Folder::findOrFail($folder_id);
-
-        $result = $this->recursiveFolderSearch($currentFolder->id);
+        $result = $this->recursiveFolderSearch($currentFolder->id, $searchTerm);
         return response()->json($result, 200);
     }
 
-    public function recursiveFolderSearch($upper_folder_id){
+    
+    public function recursiveFolderSearch($upper_folder_id, $searchTerm){
         $result = [];
-        $childFolders = Folder::where('upper_folder_id', $upper_folder_id)->get();
+        $originalChildFolders = Folder::where('upper_folder_id', $upper_folder_id)
+            ->get();
+        $childFolders = Folder::where('upper_folder_id', $upper_folder_id)
+            ->whereRaw("REPLACE(REPLACE(REPLACE(name, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"])
+            ->get();
         $childFoldersArray =  $childFolders->toArray();
         $result = array_merge($result, $childFoldersArray);
-        Log::info(' infinito_');
-        Log::info(json_encode($result));
-        foreach($childFolders as $item){
-            $itemCollectionArray = $this->recursiveFolderSearch($item->id);
+        foreach($originalChildFolders as $item){
+            $itemCollectionArray = $this->recursiveFolderSearch($item->id, $searchTerm);
             $result = array_merge($result, $itemCollectionArray);
         }
         return $result;
