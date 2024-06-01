@@ -37,6 +37,26 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Plano del Cliente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Teléfono del Cliente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Dirección del Cliente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Distrito del Cliente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Referencia del Cliente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -59,7 +79,32 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item?.customer?.business_name }}
+                                    {{ item.customer }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.customer_flat }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.customer_phone }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.customer_address }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.customer_district }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.customer_ref }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -110,20 +155,52 @@
                                 <InputError :message="formSot.errors.assigned_date" />
                             </div>
                         </div>
-                        <div>
-                            <InputLabel>
-                                Cliente
-                            </InputLabel>
+                        <div class="">
+                            <InputLabel>Cliente</InputLabel>
                             <div class="mt-2">
-                                <select v-model="formSot.customer_id"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="" disabled>Seleccionar</option>
-                                    <option v-for="item in customers" :key="item.id" :value="item.id">
-                                        {{ item.business_name }}
-                                    </option>
-
-                                </select>
-                                <InputError :message="formSot.errors.customer_id" />
+                                <input type="text" v-model="formSot.customer" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <InputError :message="formSot.errors.customer" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel>Plano de Cliente</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="formSot.customer_flat" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <InputError :message="formSot.errors.customer_flat" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel>Teléfono del Cliente</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="formSot.customer_phone" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <InputError :message="formSot.errors.customer_phone" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel>Dirección del Cliente</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="formSot.customer_address" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <InputError :message="formSot.errors.customer_address" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel>Distrito del Cliente</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="formSot.customer_district" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <InputError :message="formSot.errors.customer_district" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel>Referencia del Cliente</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="formSot.customer_ref" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <InputError :message="formSot.errors.customer_ref" />
                             </div>
                         </div>
                         <div class="">
@@ -171,7 +248,6 @@ import {formattedDate} from '@/utils/utils.js';
 
 const { sots, customers, auth } = defineProps({
     sots: Object,
-    customers: Object,
     auth: Object
 })
 
@@ -179,7 +255,12 @@ const { sots, customers, auth } = defineProps({
 const initialState = {
     id: '',
     user_owner_id: auth.user.id,
-    customer_id: '',
+    customer: '',
+    customer_flat: '',
+    customer_phone: '',
+    customer_address: '',
+    customer_district: '',
+    customer_ref: '',
     name: '',
     description: '',
     assigned_date: ''
@@ -209,6 +290,9 @@ function submitStore() {
             setTimeout(() => {
                 confirmSot.value = false
             }, 1500)
+        },
+        onError: (e) => {
+            console.error(e)
         }
     })
 }
