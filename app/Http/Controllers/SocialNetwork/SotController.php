@@ -22,7 +22,7 @@ use Inertia\Inertia;
 class SotController extends Controller
 {
     public function sot_index () {
-        $sots = SNSot::with('sot_operation',
+        $sots = SNSot::with('sot_operation.minute_materials',
                             'sot_liquidation',
                             'sot_payment',
                             'sot_control')
@@ -100,17 +100,10 @@ class SotController extends Controller
 
     public function sot_operation ()
     {
-        $user = Auth::user();
-        if($user->role_id == 1){
-            $sots = SNSot::whereDoesntHave('sot_operation')
-            ->get();
-        }else{
-            $sots = SNSot::whereDoesntHave('sot_operation')
-            ->where('user_assignee_id', $user->id)
-            ->get();
-        }
- 
-        $sotsOperation = SNSotOperation::with('sot')->paginate(15);
+
+        $sots = SNSot::whereDoesntHave('sot_operation')
+        ->get();
+        $sotsOperation = SNSotOperation::with('sot', 'minute_materials')->paginate(15);
         return Inertia::render('SocialNetworkSot/SotOperation', [
             'sotsOperation' => $sotsOperation,
             'sots' => $sots
@@ -118,37 +111,30 @@ class SotController extends Controller
     }  
 
     public function sot_operation_store (Request $request) {
-        $user = Auth::user();
+        
         $sot = SNSot::with('sot_operation')->find($request->sot_id);
-        if ($user->id == $sot->user_assignee_id || $user->role_id == 1) {
-            if($sot->sot_operation){
-                abort(500, 'Acción no permitida');
-            }else{
-                $data = $request->validate([
-                    'sot_id' => 'required',
-                    'i_state' => 'required',
-                    'additionals' => 'required',
-                    'photo_report' => 'required',
-                    'ic_date' => 'required',
-                ]);
-                SNSotOperation::create($data);
-                return redirect()->back();
-            }
-        }else{
-            abort(403, 'No está autorizado');
-        }  
+
+        if($sot?->sot_operation){
+            abort(500, 'Acción no permitida');
+        }
+        $data = $request->validate([
+            'sot_id' => 'required',
+            'i_state' => 'required',
+            'additionals' => 'required',
+            'photo_report' => 'required',
+            'ic_date' => 'required',
+            'minute_materials' => 'nullable'
+        ]);
+        $sotOp = SNSotOperation::create($data);
+        $sotOp->minute_materials()->createMany($data['minute_materials']);
+        return redirect()->back();
     }
 
     public function sot_operation_update (SotOperationUpdateRequest $request, $sot_operation_id) {
-        $user = Auth::user();
-        $sot = SNSot::find($request->sot_id);
-        if ($user->id == $sot->user_assignee_id || $user->role_id == 1) {
-            $data = $request->validated();
-            SNSotOperation::findOrFail($sot_operation_id)->update($data);
-            return redirect()->back();
-        }else{
-            abort(403, 'No está autorizado');
-        }
+        $data = $request->validated();
+        SNSotOperation::findOrFail($sot_operation_id)->update($data);
+        return redirect()->back();
+        
     }
 
     public function sot_payment_index()

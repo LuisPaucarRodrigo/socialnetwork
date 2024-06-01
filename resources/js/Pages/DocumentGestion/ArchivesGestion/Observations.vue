@@ -87,7 +87,7 @@
                     <div class="mt-4">
                         <InputLabel for="state">Resultado de Evaluación</InputLabel>
                         <div class="mt-2">
-                            <select v-model="form.state" id="state" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <select v-model="form.state" id="state" @change="handleResult" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option disabled value=''>Seleccione una opción</option>
                                 <option value="Observado">Observado</option>
                                 <option value="Desestimado">Desestimado</option>
@@ -192,5 +192,9 @@
     return parts.length > 1 ? parts.slice(0, -1).join('-') : documentTitle;
   };
 
+
+const handleResult = () => {
+    form.observations = ''
+}
 
   </script>
