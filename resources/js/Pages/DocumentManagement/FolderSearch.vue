@@ -8,11 +8,29 @@
             {{ currentPath }}
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <PrimaryButton v-if="(currentPath !== 'CCIP' && checkCreatePermission())
-            || (auth.user.role_id === 1)" @click="openAddFoldermodal" type="button">
-                + Agregar
-            </PrimaryButton>
-            <div class="overflow-x-auto">
+            <div class="flex justify-end">
+                <div class="flex items-center mt-4 sm:mt-0">
+                    <!-- submit.prevent="search"  -->
+                    <form 
+                        @submit.prevent="search"
+                        class="flex items-center w-full sm:w-auto"
+                    >
+                    <!-- v-model="searchForm.searchTerm" -->
+                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
+                        <button type="submit"
+                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            halo
+            <!-- <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
@@ -46,8 +64,6 @@
                     <tbody>
                         <tr v-for="item in folders" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white  text-sm">
-                                <!-- for button instead of Link -->
-                                <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
                                 <Link v-if="item.item_db.state && checkSeeDownloadPermission(item.item_db)"
                                     :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? route('archives.show', { folder: item.item_db.id }) : '#')"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
@@ -101,13 +117,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white pl-5 py-5 pr-10 text-sm">
                                 <div class="flex space-x-3 justify-end">
-                                    <!-- <Link class="text-blue-900 whitespace-no-wrap" :href="'#'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                    </svg>
-                                    </Link> -->
+                                    
                                     <a type="button" :href="checkSeeDownloadPermission(item.item_db)
             ? route('folder.test.download', {
                 folder_id: item.item_db.id
@@ -136,133 +146,10 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </div> -->
 
         </div>
 
-
-        <Modal :show="showAddFolderModal" @close="closeAddFolderModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Nueva Carpeta
-                </h2>
-                <br>
-                <form @submit.prevent="submit">
-                    <div class="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-2">
-                        <div class="">
-                            <InputLabel>Nombre</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="createFolderForm.name" id="first-name"
-                                    autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="createFolderForm.errors.name" />
-                            </div>
-                        </div>
-
-                        <div>
-                            <InputLabel for="resorceOrProduct">Tipo de Carpeta</InputLabel>
-                            <div class="flex gap-4 items-center mt-4">
-                                <label class="flex gap-2 items-center text-sm">
-                                    Carpeta
-                                    <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
-                                        id="resorceOrProduct" :value="'Carpeta'"
-                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                </label>
-                                <label class="flex gap-2 items-center text-sm">
-                                    Archivos
-                                    <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
-                                        id="resorceOrProduct" :value="'Archivos'"
-                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                </label>
-                            </div>
-                        </div>
-
-                        <div v-if="createFolderForm.type === 'Archivos'">
-                            <InputLabel>
-                                Tipo de Archivos
-                            </InputLabel>
-                            <div class="mt-2">
-                                <select v-model="createFolderForm.archive_type" id="payment_type"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="" disabled>Seleccionar Tipo</option>
-                                    <option>PDF</option>
-                                    <option>Word</option>
-                                    <option>Excel</option>
-                                    <option>Power Point</option>
-                                    <option>Imágenes</option>
-                                </select>
-                                <InputError :message="createFolderForm.errors.archive_type" />
-                            </div>
-                        </div>
-                        <div>
-                            <InputLabel>
-                                Areas
-                            </InputLabel>
-                            <div
-                                class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
-                                role="alert">
-                                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                                </svg>
-                                <span class="sr-only">Info</span>
-                                <div>
-                                    <span class="font-small">
-                                        Se asigna por defecto las áreas de Gerencia y Calidad
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <select multiple size="4" v-model="createFolderForm.areas" id="payment_type"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="" disabled>Uno o Varios ctrl+click</option>
-                                    <option v-for="item in areas" :key="item.id" :value="item.id">
-                                        {{ item.name }}
-                                    </option>
-
-                                </select>
-                                <InputError :message="createFolderForm.errors.areas" />
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddFolderModal"> Cancelar </SecondaryButton>
-
-                        <PrimaryButton class="ml-3" :class="{ 'opacity-25': createFolderForm.processing }"
-                            :disabled="createFolderForm.processing" type="submit">
-                            Guardar
-                        </PrimaryButton>
-                    </div>
-
-                </form>
-            </div>
-        </Modal>
-
-
-        <Modal :show="showDeleteFolderModal" @close="closeDeleteFolderModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900 mb-2">
-                    Eliminación de Carpeta
-                </h2>
-                <InputLabel class="mb-5">
-                    ¿Estás seguro de querer eliminar toda la carpeta?, esta acción eliminará también las subcarpetas y
-                    archivos
-                    de esta. La acción es irreversible.
-                </InputLabel>
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeDeleteFolderModal"> Cancelar </SecondaryButton>
-
-                    <DangerButton type="button" class="ml-3" @click="deleteFolder">
-                        Eliminar
-                    </DangerButton>
-                </div>
-            </div>
-        </Modal>
-
-        <SuccessOperationModal :confirming="confirmFolderCreate" :title="'Nueva Carpeta Creada'"
-            :message="'Carpeta creada con éxito'" />
 
 
     </AuthenticatedLayout>
@@ -282,87 +169,23 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
 
-const { folders, folder, currentPath, auth, areas } = defineProps({
+const { folders, folder, currentPath, auth, areas, searchTerm } = defineProps({
     folders: Object,
     folder: Object,
     currentPath: String,
+    searchTerm: String,
     areas: Object,
     auth: Object
 })
 
-//---------- Check Permission -------//
-function checkSeeDownloadPermission(item) {
-    if (auth.user.role_id === 1) {
-        return true
-    }
-    return item?.folder_areas?.find(i => i.area_id == auth.user.area_id)?.see_download
-}
-function checkCreatePermission() {
-    return folder?.folder_areas.find(i => i.area_id == auth.user.area_id)?.create
-}
-//---------------------------------//
-
-
-
-//------------ Add Folder ----------//
-const showAddFolderModal = ref(false)
-const confirmFolderCreate = ref(false)
-const createFolderForm = useForm({
-    name: '',
-    type: 'Carpeta',
-    archive_type: '',
-    areas: [],
-    currentPath,
-    user_id: auth.user.id,
-    upper_folder_id: folder?.id
+const searchForm = useForm({
+    searchTerm: searchTerm ? searchTerm : '',
 })
-function openAddFoldermodal() {
-    showAddFolderModal.value = true
+const search = () => {
+    if (searchForm.searchTerm !== '') {
+        router.visit(route('documment.management.folders', {folder_id:folder?.id})+`?search=${searchForm.searchTerm}`)
+    }
 }
-function closeAddFolderModal() {
-    showAddFolderModal.value = false
-    createFolderForm.reset()
-}
-function handleFolderType() {
-    createFolderForm.archive_type = ''
-}
-function submit() {
-    createFolderForm.post(route('documment.management.folders.store'), {
-        onSuccess: () => {
-            closeAddFolderModal()
-            confirmFolderCreate.value = true
-            setTimeout(() => {
-                confirmFolderCreate.value = false
-            }, 1300)
-        }
-    })
-}
-//---------------------------------//
-
-
-
-//--------- Delete Folder ---------//
-const showDeleteFolderModal = ref(false)
-const folderToDelete = ref(null)
-function openDeleteFolderModal(item) {
-    folderToDelete.value = item
-    showDeleteFolderModal.value = true
-}
-function closeDeleteFolderModal() {
-    folderToDelete.value = null
-    showDeleteFolderModal.value = false
-}
-function deleteFolder() {
-    router.delete(route('document.management.folder.destroy', { folder_id: folderToDelete.value.item_db.id }), {
-        onSuccess: () => {
-            closeDeleteFolderModal()
-        }, onError: (e) => {
-            console.error(e)
-        }
-    })
-}
-//-------------------------------//
-
 
 
 </script>
