@@ -27,7 +27,9 @@
                     </form>
                 </div>
             </div>
-            halo
+            <p v-for="item in folders" :key="item.id">
+                {{ item.name }}
+            </p>
             <!-- <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
@@ -167,13 +169,11 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
 
-const { folders, folder, currentPath, auth, areas, searchTerm } = defineProps({
+const { folders, folder, currentPath, areas, searchTerm } = defineProps({
     folders: Object,
     folder: Object,
     currentPath: String,
     searchTerm: String,
-    areas: Object,
-    auth: Object
 })
 
 const searchForm = useForm({
