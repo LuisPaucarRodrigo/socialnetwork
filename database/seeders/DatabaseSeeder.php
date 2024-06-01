@@ -46,13 +46,13 @@ class DatabaseSeeder extends Seeder
 
         // Permissions Admin
         $managerPermissions = [
-            'UserManager' => 'Permite acceso para todas las funciones de Usuarios y roles',
-            'HumanResourceManager' => 'Permite acceso para todas las funciones de RRHH',
-            'FinanceManager' => 'Permite acceso para todas las funciones de Finanzas',
-            'InventoryManager' => 'Permite acceso para todas las funciones de Inventario',
-            'ProjectManager' => 'Permite acceso para todas las funciones de Area de Projectos',
-            'PurchasingManager' => 'Permite acceso para todas las funciones del Area de Compras',
-            'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
+            'UserManager',
+            'HumanResourceManager',
+            'FinanceManager',
+            'InventoryManager',
+            'ProjectManager',
+            'PurchasingManager',
+            'DocumentGestion'
         ];
 
         foreach ($permissions as $name => $description) {
@@ -60,8 +60,6 @@ class DatabaseSeeder extends Seeder
                 'name' => $name,
                 'description' => $description
             ]);
-        
-            // Si el permiso es uno de los permisos de manager, asociarlo al rol admin
             if (in_array($name, $managerPermissions)) {
                 $adminRole->permissions()->attach($permission);
             }
