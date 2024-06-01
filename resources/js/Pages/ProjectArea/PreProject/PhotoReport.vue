@@ -196,7 +196,7 @@ const closeModalDoc = () => {
 };
 const deleteDocument = (id) => {
   router.delete(route('preprojects.photoreport.delete', { photoreport: id }), {
-    onSuccess: () => closeModalDoc()
+    onSuccess: () => closeModalDoc()  
   });
 
 };

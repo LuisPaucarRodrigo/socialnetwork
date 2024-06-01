@@ -132,7 +132,7 @@
                                 <div v-else class="flex space-x-3 justify-center">
                                     <button v-if="hasPermission('ProjectManager')" @click="due_date_show(purchase.id)"
                                         type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">ddd
+                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"

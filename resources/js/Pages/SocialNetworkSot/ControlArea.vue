@@ -86,7 +86,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="p_bad_installation" v-model="form.p_bad_installation"
-                                    :disabled="form.p_bad_installation && !hasPermission('UserManager')"
+                                    :disabled="form.p_bad_installation === 'OK' && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -100,7 +100,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="p_no_rf" v-model="form.p_no_rf"
-                                    :disabled="form.p_no_rf && !hasPermission('UserManager')"
+                                    :disabled="form.p_no_rf === 'OK' && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>
@@ -114,7 +114,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="p_rejections" v-model="form.p_rejections"
-                                    :disabled="form.p_rejections && !hasPermission('UserManager')"
+                                    :disabled="form.p_rejections === 'OK' && !hasPermission('UserManager')"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado</option>
                                     <option>OK</option>

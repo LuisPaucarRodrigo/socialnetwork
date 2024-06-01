@@ -78,9 +78,6 @@
                                 class="flex items-start">
                             <PencilIcon class="h-4 w-4 text-teal-600" />
                             </Link>
-                            <!-- <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
-                                <TrashIcon class="h-4 w-4 text-red-500" />
-                            </button> -->
                         </div>
                     </div>
                     <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
