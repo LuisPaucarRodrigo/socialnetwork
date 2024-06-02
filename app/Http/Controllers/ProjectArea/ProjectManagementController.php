@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProjectManagementController extends Controller
 {
@@ -90,6 +91,10 @@ class ProjectManagementController extends Controller
 
         $data = $request->validated();
         if ($request->id) {
+            $user = Auth::user();
+            if($user->role_id !== 1) {
+                abort(403, "Solo admin puede editar");
+            }
             $project = Project::find($request->id);
             $project->update($data);
         } else {
@@ -214,7 +219,7 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_edit($id, $project_id = null)
+    public function project_purchases_request_edit($project_id = null, $id)
     {
         $purchase = Purchasing_request::with('products')->find($id);
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [

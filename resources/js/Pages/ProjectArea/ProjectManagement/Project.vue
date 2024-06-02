@@ -63,7 +63,7 @@
                         <h2 class="text-sm font-semibold mb-3">
                             N° {{ item.code }}
                         </h2>
-                        <div v-if="auth.user.role_id === 1" class="inline-flex justify-end items-start gap-x-2">
+                        <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager') " class="inline-flex justify-end items-start gap-x-2">
                             <button 
                                 @click="()=>{router.post(route('projectmanagement.liquidation'),{project_id: item.id}, {
                                     onSuccess: () => router.visit(route('projectmanagement.index'))
