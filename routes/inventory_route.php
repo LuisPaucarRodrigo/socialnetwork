@@ -38,7 +38,6 @@ Route::middleware('permission:InventoryManager')->group(function () {
     //Services
     Route::post('/inventory/warehouses/services/store', [WarehousesController::class, 'service_store'])->name('warehouses.service.store');
     Route::delete('/inventory/warehouses/services/delete/{id}', [WarehousesController::class, 'service_delete'])->name('warehouses.service.delete');
-
     Route::post('/inventory/resource/serial_number/purchase_orders', [WarehousesController::class, 'serialNumberResourcePurchaseOrders'])->name('warehouses.resource.add.serial_number');
 });
 
