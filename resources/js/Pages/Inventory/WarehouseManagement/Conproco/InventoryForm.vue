@@ -1,7 +1,7 @@
 <template>
 
   <Head title="Detalles del Almacén" />
-  <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.products', params: { warehouse: props.warehouseId } }">
+  <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.conproco.products', params: { warehouse: props.warehouseId } }">
     <template #header>
       Registrar Producto
     </template>
@@ -130,7 +130,7 @@ const submit = () => {
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('warehouses.products', { warehouse: props.warehouseId }))
+        router.visit(route('warehouses.conproco.products', { warehouse: props.warehouseId }))
       }, 2000);
     },
     onError: () => {
