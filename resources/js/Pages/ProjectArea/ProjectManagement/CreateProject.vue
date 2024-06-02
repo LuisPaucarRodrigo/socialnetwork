@@ -81,7 +81,7 @@
                                 <InputLabel for="priority" class="font-medium leading-6 text-gray-900">Prioridad
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select required id="priority" v-model="form.priority"
+                                    <select :disabled="auth.user.role_id === 1 ? false: true" required id="priority" v-model="form.priority"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccione uno</option>
                                         <option value="Alta">Alta</option>
@@ -97,7 +97,7 @@
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <textarea required v-model="form.description" id="description"
+                                    <textarea :disabled="auth.user.role_id === 1 ? false: true" required v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                     <InputError :message="form.errors.description" />
                                 </div>
@@ -119,7 +119,7 @@
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
                                             member.lastname }}: {{ member.pivot.charge }} </p>
-                                        <button type="button" @click="delete_already_employee(member.pivot.id, index)"
+                                        <button v-if="hasPermission('UserManager')"  type="button" @click="delete_already_employee(member.pivot.id, index)"
                                             class="col-span-1 flex justify-end">
                                             <TrashIcon class=" text-red-500 h-4 w-4 " />
                                         </button>
@@ -132,7 +132,7 @@
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
                                             member.employee.lastname }}: {{ member.charge }} </p>
-                                        <button type="button" @click="delete_employee(index)"
+                                        <button v-if="hasPermission('UserManager')" type="button" @click="delete_employee(index)"
                                             class="col-span-1 flex justify-end">
                                             <TrashIcon class=" text-red-500 h-4 w-4 " />
                                         </button>
@@ -144,7 +144,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-3 flex items-center justify-end gap-x-6">
+                <div v-if="auth.user.role_id === 1" class="mt-3 flex items-center justify-end gap-x-6">
                     <button type="submit" :class="{ 'opacity-25': form.processing }"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                 </div>
@@ -219,11 +219,17 @@ const showModal = ref(false)
 const showUpdateModal = ref(false)
 const showEmployeeError = ref(false)
 
-const { employees, start_date, numberOfProjects, project, preprojects } = defineProps({
+const { userPermissions, auth, employees, start_date, numberOfProjects, project, preprojects } = defineProps({
     employees: Object,
     project: Object,
-    preprojects: Object
+    preprojects: Object,
+    auth: Object,
+    userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 const initialState = {
     preproject_id: '',
@@ -270,13 +276,6 @@ const closeModal = () => {
 };
 
 const add_employee = () => {
-    // if (project.preproject.quote.deliverable_time * employeeToAdd.value.employee.salary_per_day > project.remaining_budget ) {
-    //     showEmployeeError.value = true
-    //     setTimeout(()=>{
-    //         showEmployeeError.value = false
-    //     }, 1500)
-    //     return
-    // }
     if (project) {
         router.post(route('projectmanagement.add.employee', { project_id: project.id }), { ...employeeToAdd.value },
             {

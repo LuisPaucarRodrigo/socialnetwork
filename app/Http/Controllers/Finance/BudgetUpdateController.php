@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 class BudgetUpdateController extends Controller
 {
 
-    public function create(Request $request, Project $project)
+    public function store(Request $request, Project $project)
     {
         $user_id = Auth::id();
         $request->validate([

@@ -22,9 +22,9 @@ class CreateAndpdateControl extends FormRequest
     public function rules(): array
     {
         return [
-            'p_bad_installation' => 'nullable|string',
-            'p_no_rf' => 'nullable|string',
-            'p_rejections' => 'nullable|string',
+            'p_bad_installation' => 'nullable|string|in:OK,Penalidad',
+            'p_no_rf' => 'nullable|string|in:OK,Penalidad',
+            'p_rejections' => 'nullable|string|in:OK,Penalidad',
         ];
     }
 }

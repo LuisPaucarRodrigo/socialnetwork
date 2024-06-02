@@ -281,7 +281,7 @@ class WarehousesController extends Controller
             ->orderBy('created_at', 'desc')
             ->with('entry.inventory.warehouse', 'entry.inventory.purchase_product', 'project', 'project_entry_outputs')->paginate(10);
 
-        return Inertia::render('Inventory/WarehouseManagement/DispatchesApproved', [
+        return Inertia::render('Inventory/WarehouseManagement/Conproco/DispatchesApproved', [
             'project_entries' => $project_entries,
             'warehouseId' => $warehouse->id
         ]);

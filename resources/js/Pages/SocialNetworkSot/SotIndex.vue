@@ -19,15 +19,15 @@
                         <tr
                             class="border-b bg-gray-700 text-xs font-semibold uppercase tracking-wide text-gray-100">
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Área Programación
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
+                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="5">
                                 Área de Operaciones
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="5">
+                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Área de Liquidación
                             </th>
                             <th
@@ -53,12 +53,12 @@
                                 Descripción
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Asignación
                             </th>
                             <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Persona Designada
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Cliente
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -78,7 +78,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto a Facturar
+                                Materiales en Acta
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -97,8 +97,16 @@
                                 Fecha de Liquidación
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Status de SOT
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Observaciones
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto a Facturar
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -149,12 +157,18 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
                                 <p class="text-gray-900 text-center w-[200px]">{{ item.description }}</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item.assigned_date) }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.user_assignee.name }}</p>
+                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex items-center justify-center">
+                                    <p class="text-gray-900">{{ item?.customer }}</p>
+                                    <button @click="openCustomerDetails(item)" class="text-green-600">
+                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                    </button>
+                                </div>
                             </td>
+
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.i_state }}</p>
                             </td>
@@ -165,10 +179,12 @@
                                 <p class="text-gray-900 text-center">{{ item?.sot_operation?.photo_report }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.ic_date }}</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.sot_operation?.ic_date) }}</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.bill_amount }}</p>
+                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                <button type="button" @click="openMaterialsModal(item.sot_operation.minute_materials)">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.up_minutes }}</p>
@@ -182,8 +198,14 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.liquidation_date }}</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.sot_status }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.observations }}</p>
+                            </td>
+                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+                                <p class="text-gray-900 text-center">{{ item.sot_liquidation ? 'S/. '+item.sot_liquidation.bill_amount.toFixed(2) : '' }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.sot_payment?.sot_bill }}</p>
@@ -254,6 +276,88 @@
                 </div>
             </div>
         </Modal>
+        <Modal :show="showCustomerDetails" @close="showCustomerDetails = false" :maxWidth="'xl'">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-base font-medium leading-7">
+                        Detalles del Cliente
+                    </h2>
+                    <button @click="closeCustomerDetails"
+                        class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <!-- Puedes usar un símbolo de cierre, como una X -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="mb-4">
+                    <p class="font-medium text-gray-900">Cliente:
+                        <span class="text-gray-600">{{ customer.customer }}</span>
+                    </p>
+                    <p class="font-medium text-gray-900">Plano del Cliente:
+                        <span class="text-gray-600">{{ customer.customer_flat }}</span>
+                    </p>
+                    <p class="font-medium text-gray-900">Teléfono del Cliente:
+                        <span class="text-gray-600">{{ customer.customer_phone }}</span>
+                    </p>
+                    <p class="font-medium text-gray-900">Dirección del Cliente:
+                        <span class="text-gray-600">{{ customer.customer_address }}</span>
+                    </p>
+                    <p class="font-medium text-gray-900">Distrito del Cliente:
+                        <span class="text-gray-600">{{ customer.customer_district }}</span>
+                    </p>
+                    <p class="font-medium text-gray-900">Referencia del Cliente:
+                        <span class="text-gray-600">{{ customer.customer_ref }}</span>
+                    </p>
+                </div>
+            </div>
+        </Modal>
+        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Materiales en Acta
+                </h2>
+                <br>
+                <div class="mt-2">
+                    <div v-if="materials.length > 0" class="overflow-auto">
+                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                            <thead>
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Material
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Cantidad
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.material }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.quantity }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p v-else>
+                        No hay materiales asignados
+                    </p>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
+
+                    </div>
+                </div>
+            </div>
+        </Modal>
+
         <SuccessOperationModal :confirming="confirmSotDelete" :title="'SOT Eliminada'"
             :message="'La SOT fue eliminada y todos los registros de ella'" />
     </AuthenticatedLayout>
@@ -270,7 +374,7 @@ import { ref } from 'vue';
 import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
 import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 const { sots, auth } = defineProps({
     sots: Object,
@@ -280,6 +384,19 @@ const { sots, auth } = defineProps({
 const showSotDeleteModal = ref(false);
 const sotToDelete = ref(null)
 const confirmSotDelete = ref(false)
+const showCustomerDetails = ref(false);
+const customer = ref([]);
+
+const openCustomerDetails = (item) => {
+    showCustomerDetails.value = true
+    customer.value = item 
+}
+
+const closeCustomerDetails = () => {
+    customer.value = [];
+    showCustomerDetails.value = false;
+}
+
 function openSotDeleteModal (id) {
     sotToDelete.value = id
     showSotDeleteModal.value = true
@@ -298,6 +415,18 @@ function deleteSot () {
             }, 1500)
         }
     })
+}
+
+
+//materials
+const showMaterials = ref(false)
+const materials = ref([]);
+function openMaterialsModal(arrayMaterials) {
+    materials.value = arrayMaterials ? arrayMaterials : []
+    showMaterials.value = true
+}
+function closeMaterialsModal() {
+    showMaterials.value = false
 }
 
 </script>

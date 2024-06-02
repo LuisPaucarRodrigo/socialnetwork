@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <Link :href="route('warehouses.resource.create')"
+                <Link v-if="hasPermission('UserManager')" :href="route('warehouses.resource.create')"
                     class="inline-flex items-center px-4 py-2 min-w-[115px] border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 + Agregar
                 </Link>
@@ -57,7 +57,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Condición
                             </th>
-                            <th v-if="boolean"
+                            <th v-if="boolean && hasPermission('InventoryManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -97,7 +97,7 @@
                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.condition }}</p>
                             </td>
-                            <td v-if="boolean" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="boolean && hasPermission('InventoryManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center items-center space-x-3">
                                     <button @click="add_serial_number(item.id)" class="text-gray-600 hover:underline">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -161,8 +161,13 @@ const props = defineProps({
     boolean: {
         type: Boolean,
         required: false
-    }
+    },
+    userPermissions:Array
 });
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const resource_id = ref(null);
 const showModalAddSerialNumber = ref(false);
@@ -174,9 +179,9 @@ const form = useForm({
 
 const reentry = () => {
     if (props.boolean == true) {
-        router.get(route('warehouses.index.resource'))
+        router.get(route('warehouses.resource.active.index'))
     } else {
-        router.get(route('warehouses.index.resource', { boolean: false }))
+        router.get(route('warehouses.resource.active.index', { boolean: false }))
     }
 };
 
@@ -191,7 +196,7 @@ function close_add_serial_number() {
 
 function submit_add_serial_number() {
     form.resource_id = resource_id.value
-    form.post(route('warehouses.resource.add_serial_number'), {
+    form.post(route('warehouses.resource.add.serial_number'), {
         onSuccess: () => {
             form.reset()
             close_add_serial_number()

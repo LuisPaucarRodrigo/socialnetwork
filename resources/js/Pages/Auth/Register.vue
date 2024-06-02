@@ -81,6 +81,7 @@
                                         @input="handleCompany"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
+                                
                             </div>
                         </div>
 

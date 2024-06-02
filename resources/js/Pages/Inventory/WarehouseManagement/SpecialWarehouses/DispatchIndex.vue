@@ -51,7 +51,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Solicitud
                             </th>
-                            <th
+                            <th v-if="hasPermission('InventoryManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -91,7 +91,7 @@
                                         {{ formattedDate(item.created_at) }}
                                     </p>
                                 </td>
-                                <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
+                                <td v-if="hasPermission('InventoryManager')" class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <div v-if="item.state === null"
                                         class="flex space-x-3 justify-center">
                                         <button 
@@ -139,11 +139,16 @@ import { formattedDate } from '@/utils/utils';
 import { Head, router } from '@inertiajs/vue3';
 
 
-const { warehouse, disToApToCom } = defineProps({
+const { warehouse, disToApToCom, userPermissions } = defineProps({
     warehouse: Object,
     disToApToCom: Object,
     auth: Object,
+    userPermissions:Array
 });
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 //Activate Deactivate
 const setDispatchStatus = (id, state) => {
@@ -161,9 +166,5 @@ const optionChange = (e) => {
         router.get(route('inventory.special_dispatch.approved', {warehouse_id: warehouse.id}))
     }
 }
-
-
-
-
 
 </script>

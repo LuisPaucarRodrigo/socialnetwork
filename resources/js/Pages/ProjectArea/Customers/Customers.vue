@@ -7,7 +7,7 @@
             Clientes
         </template>
         <div class="mt-6 flex items-center justify-between gap-x-6">
-            <button @click="add_customer" type="button"
+            <button v-if="hasPermission('ProjectManager')" @click="add_customer" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
@@ -35,7 +35,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Dirección
                         </th>
-                        <th
+                        <th v-if="hasPermission('ProjectManager')"
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         </th>
                     </tr>
@@ -54,7 +54,8 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ customer.address }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="hasPermission('ProjectManager')"
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex justify-center space-x-3">
                                 <button type="button" @click="openEditCustomerModal(customer)"
                                     class="text-yellow-600 whitespace-no-wrap">
@@ -200,8 +201,13 @@ const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 
 const props = defineProps({
-    customers: Object
+    customers: Object,
+    userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const customers = ref(props.customers);
 

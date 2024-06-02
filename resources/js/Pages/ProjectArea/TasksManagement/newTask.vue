@@ -100,7 +100,7 @@ const form = useForm({
 
 
 const submitForm = () => {
-    form.post(route('tasks.create'), {
+    form.post(route('tasks.store'), {
         onError: (errors) => {
             console.log('Errores de validación:', errors);
         }

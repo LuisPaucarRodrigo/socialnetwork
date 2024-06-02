@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProjectManagementController extends Controller
 {
@@ -90,6 +91,10 @@ class ProjectManagementController extends Controller
 
         $data = $request->validated();
         if ($request->id) {
+            $user = Auth::user();
+            if($user->role_id !== 1) {
+                abort(403, "Solo admin puede editar");
+            }
             $project = Project::find($request->id);
             $project->update($data);
         } else {
@@ -214,7 +219,7 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_edit($id, $project_id = null)
+    public function project_purchases_request_edit($project_id = null, $id)
     {
         $purchase = Purchasing_request::with('products')->find($id);
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
@@ -224,14 +229,7 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_update(UpdatePurchaseRequest $request, $id)
-    {
-        $validateData = $request->validated();
-        $purchases = Purchasing_request::with('project')->findOrFail($id);
-        $purchases->update($validateData);
 
-        return redirect()->back();
-    }
 
     public function project_expenses(Project $project_id)
     {
@@ -268,6 +266,8 @@ class ProjectManagementController extends Controller
             $warehouses = Warehouse::whereIn('id', [1, 3, 4])->get();
         } else if ($project_id->preproject->customer_id == 2) {
             $warehouses = Warehouse::whereIn('id', [2, 3, 4])->get();
+        } else if ($project_id->preproject->customer_id == 3) {
+            $warehouses = Warehouse::whereIn('id', [7, 3, 4])->get();
         } else {
             $warehouses = Warehouse::whereIn('id', [3, 4])->get();
         }
@@ -293,18 +293,7 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_update_quote_deadline(Request $request)
-    {
-        $request->validate([
-            'quote_deadline' => 'required|date|before_or_equal:due_date',
-            'due_date' => 'required|date',
-            'quote_id' => 'required|numeric'
-        ]);
-        $update_due_date = Purchase_quote::find($request->quote_id);
-        $update_due_date->update([
-            'quote_deadline' => $request->quote_deadline
-        ]);
-    }
+
 
     public function warehouse_products(Project $project, Warehouse $warehouse)
     {

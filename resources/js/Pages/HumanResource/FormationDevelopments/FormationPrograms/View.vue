@@ -41,7 +41,8 @@
                             :key="employee.id"
                             class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0 border-b-2 border-gray-200">
                             <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
-                            <button @click="openModalDelete(employee)" class="ml-2 flex-shrink-0">
+                            <button v-if="hasPermission('UserManager')" @click="openModalDelete(employee)"
+                                class="ml-2 flex-shrink-0">
                                 <TrashIcon class="h-5 w-5 text-red-500" />
                             </button>
                         </div>
@@ -98,7 +99,14 @@ import { ref } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
-const { formation_program } = defineProps(['formation_program']);
+const { formation_program, userPermissions } = defineProps({
+    formation_program: Object,
+    userPermissions:Array
+});
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 const delete_employee = (id) => {
     router.delete(route('management.employees.formation_development.employee.delete',

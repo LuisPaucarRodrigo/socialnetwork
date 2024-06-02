@@ -4,11 +4,11 @@
     <template #header>
       Informe Fotográfico
     </template>
-    <div class="inline-block min-w-full border-b-2 border-gray-200">
-      <div v-if="preproject.status === null && !preproject.has_quote" class="flex gap-4 mb-2">
+    <div v-if="!photoreport || auth.user.role_id === 1" class="inline-block min-w-full border-b-2 border-gray-200">
+      <div v-if="preproject.status === null && !preproject.has_quote && hasPermission('ProjectManager')" class="flex gap-4 mb-2">
         <button @click="openCreateDocumentModal" type="button"
           class="rounded-md bg-indigo-500 px-4 py-2 text-center text-sm text-white hover:bg-indigo-300">
-          {{ photoreport && auth.user.role_id === 1 ? 'Editar' : '+ Agregar' }}
+          {{(photoreport && auth.user.role_id === 1) ? 'Editar' : '+ Agregar' }}
         </button>
         <button v-if="photoreport && auth.user.role_id === 1" @click="openDeleteModal" type="button"
           class="rounded-md bg-red-500 px-4 py-2 text-center text-sm text-white hover:bg-red-300">
@@ -128,11 +128,16 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { ArrowDownIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
-const { documents, preproject, photoreport, auth } = defineProps({
+const { documents, preproject, photoreport, auth, userPermissions } = defineProps({
   photoreport: Object,
   preproject: Object,
-  auth: Object
+  auth: Object,
+  userPermissions:Array
 });
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 const initial_state = {
   excel_report: null,
@@ -191,7 +196,7 @@ const closeModalDoc = () => {
 };
 const deleteDocument = (id) => {
   router.delete(route('preprojects.photoreport.delete', { photoreport: id }), {
-    onSuccess: () => closeModalDoc()
+    onSuccess: () => closeModalDoc()  
   });
 
 };

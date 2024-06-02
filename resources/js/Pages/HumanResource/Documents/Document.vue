@@ -5,14 +5,14 @@
     <template #header>
       Documentos
     </template>
-    <div class="flex gap-4 justify-between rounded-lg shadow">
+    <div class="flex gap-4 justify-between rounded-lg">
       <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
         <div class="flex gap-4 items-center">
-          <PrimaryButton @click="openCreateDocumentModal" type="button"
+          <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="openCreateDocumentModal" type="button"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             + Agregar Documento
           </PrimaryButton>
-          <PrimaryButton @click="management_section" type="button"
+          <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_section" type="button"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             Gestionar Secciones
           </PrimaryButton>
@@ -117,7 +117,7 @@
           <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
-          <button @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
+          <button v-if="hasPermission('HumanResourceManager')" @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
             <PencilIcon class="h-4 w-4 ml-1" />
           </button>
           <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(document.id)"
