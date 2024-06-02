@@ -101,7 +101,7 @@
                                 </td>
                             </tr>
                             <template v-if="paymentRow == payment.id">
-                                <tr 
+                                <tr
                                     class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                     <th colspan="1"
                                         class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
@@ -129,8 +129,7 @@
                                         class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
                                 </tr>
-                                <tr v-for="paymentDetail in payment.payment" :key="paymentDetail.id"
-                                    class="bg-gray-100"
+                                <tr v-for="paymentDetail in payment.payment" :key="paymentDetail.id" class="bg-gray-100"
                                     :class="[
         'text-gray-700',
         {
@@ -165,16 +164,24 @@
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-2 py-5 text-sm text-center">
                                         <div>
-                                            <button v-if="!paymentDetail.state" type="button"
-                                                @click="pay_payment(paymentDetail, payment.currency)"
-                                                class="text-green-500 whitespace-no-wrap">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                </svg>
-                                            </button>
-                                            <p v-else class="text-green-500 whitespace-no-wrap">Pagado</p>
+                                            <template v-if="hasPermission('FinanceManager')">
+                                                <button v-if="!paymentDetail.state" type="button"
+                                                    @click="pay_payment(paymentDetail, payment.currency)"
+                                                    class="text-green-500 whitespace-no-wrap">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                    </svg>
+                                                </button>
+                                                <p v-else class="text-green-500 whitespace-no-wrap">Pagado</p>
+                                            </template>
+                                            <template v-if="hasPermission('Finance')">
+                                                <p v-if="!paymentDetail.state" class="text-red-500 whitespace-no-wrap">
+                                                    Pendiente</p>
+                                                <p v-else class="text-green-500 whitespace-no-wrap">Pagado</p>
+                                            </template>
                                         </div>
                                     </td>
                                     <td colspan="1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -280,8 +287,13 @@ import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
     payments: Object,
-    search: String
+    search: String,
+    userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const showModalSuccess = ref(false);
 const showModalPay = ref(false);

@@ -10,7 +10,7 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
-                <Link v-if="preprojects_status === null" :href="route('preprojects.create')"
+                <Link v-if="preprojects_status === null && hasPermission('ProjectManager')" :href="route('preprojects.create')"
                     class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 + Agregar
                 </Link>
@@ -52,7 +52,7 @@
                         {{ item.customer }}
                     </h3>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
-                        <div>
+                        <div v-if="hasPermission('ProjectManager')">
                             <button @click="assignUser(item.id)"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar
                                 Usuarios
@@ -70,13 +70,6 @@
                             fotográfico
                             </Link>
                         </div>
-                        <!-- <div>
-                            <Link :href="route('preprojects.providersquotes.index', { preproject_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización de
-                            proveedores
-                            </Link>
-                        </div> -->
-
                         <div>
                             <Link :href="route('preprojects.products', { preproject: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos de
@@ -100,12 +93,7 @@
                             Compras
                             </Link>
                         </div>
-                        <!-- <div>
-                            <Link :href="route('preprojects.request_quote.index', { id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de Solicitudes
-                            </Link>
-                        </div> -->
-                        <div v-if="item.has_photo_report && (item.status === null || item.status == true)">
+                        <div v-if="item.has_photo_report && (item.status === null || item.status == true) && hasPermission('ProjectManager')">
                             <Link :href="route('preprojects.quote', { preproject_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización para
                             proyecto
@@ -171,9 +159,13 @@ const props = defineProps({
     preprojects: Object,
     auth: Object,
     preprojects_status: String,
-    users: Object
+    users: Object,
+    userPermissions:Array
 })
 
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const assignUserModal = ref(false);
 const successAssign = ref(false);

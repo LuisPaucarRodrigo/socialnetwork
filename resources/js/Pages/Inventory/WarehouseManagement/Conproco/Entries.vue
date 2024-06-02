@@ -1,14 +1,11 @@
 <template>
 
     <Head title="Productos" />
-    <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.products', params: { warehouse: props.warehouseId } }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'warehouses.conproco.products', params: { warehouse: props.warehouseId } }">
         <template #header>
             Entradas
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
-
-            <br>
-
             <div class="min-w-full overflow-x-auto rounded-lg shadow">
                 <table class="w-full table-auto">
                     <thead>

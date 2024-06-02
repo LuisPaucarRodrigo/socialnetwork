@@ -89,17 +89,17 @@
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">
                                     {{ customers.find(item => item.id == (form.hasSubcustomer
-                                        ? form.subcustomer_id : form.customer_id)
-                                    )?.business_name }}
+        ? form.subcustomer_id : form.customer_id)
+    )?.business_name }}
                                 </InputLabel>
 
                                 <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">{{ customers.find(item =>
-                                    item.id == (form.hasSubcustomer
-                                        ? form.subcustomer_id
-                                        : form.customer_id)
-                                )?.address }}
+        item.id == (form.hasSubcustomer
+            ? form.subcustomer_id
+            : form.customer_id)
+    )?.address }}
                                 </InputLabel>
 
                             </div>
@@ -168,7 +168,7 @@
                                 <InputError :message="form.errors.code" />
                             </div>
 
-                            <div v-if="[1,2].includes(form.customer_id)">
+                            <div v-if="[1,2,3].includes(form.customer_id)">
                                 <label for="cpe" class="font-medium leading-6 text-gray-900">CPE</label>
                                 <div class="mt-2 flex justify-center items-center gap-2">
                                     <input requirede="text" pattern="[A-Z0-9]+" v-model="form.cpe" id="cpe"
@@ -183,9 +183,11 @@
                                 <InputLabel for="title" class="font-medium leading-6 text-gray-900">Títulos</InputLabel>
                                 <div class="mt-2">
                                     <select v-model="form.title_id" id="title_id"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option value="">Selecciona un título</option>
-                                        <option v-for="title in titles" :key="title.id" :value="title.id">{{ title.title }}</option>
+                                        <option v-for="title in titles" :key="title.id" :value="title.id">{{ title.title
+                                            }}
+                                        </option>
                                     </select>
                                     <InputError :message="form.errors.title_id" />
                                 </div>
@@ -220,7 +222,6 @@
                         <div class="mt-2">
                             <select v-model="contactItem" required
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
                                 <option disabled value="">Seleccione</option>
                                 <option v-for=" item  in contactsList" :value="item.id">
                                     {{ item.name }}
@@ -228,22 +229,16 @@
                             </select>
                         </div>
 
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="closeContactModal">
-                                Cerrar </SecondaryButton>
-                            <button type="submit" :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Agregar</button>
-
+                        <div class="mt-6 flex items-center justify-end gap-x-3">
+                            <SecondaryButton @click="closeContactModal">Cerrar</SecondaryButton>
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Agregar
+                            </PrimaryButton>
                         </div>
-
                     </form>
-
-
                 </div>
             </Modal>
             <ErrorOperationModal :showError="showErrorContact" title="Error"
                 message="El contacto ya fue añadido o es inválido" />
-
 
         </div>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
@@ -264,6 +259,7 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)

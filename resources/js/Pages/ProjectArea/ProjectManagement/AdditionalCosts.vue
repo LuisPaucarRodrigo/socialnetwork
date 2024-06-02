@@ -6,69 +6,68 @@
     <template #header>
       Costos adicionales del Proyecto {{ props.project_id.name }}
     </template>
-    <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+    <div class="inline-block min-w-full overflow-hidden rounded-lg">
       <div class="flex gap-4">
-        <button v-if="project_id.status === null" @click="openCreateAdditionalModal" type="button" 
-          class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+        <PrimaryButton v-if="project_id.status === null && hasPermission('ProjectManager')" @click="openCreateAdditionalModal"
+          type="button" class="mb-5">
           + Agregar
-        </button>
+        </PrimaryButton>
       </div>
     </div>
-    <div class="mt-5">
-      <div class="overflow-x-auto mt-3">
-        <table class="w-full whitespace-no-wrap">
-          <thead>
-            <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Tipo de Gasto</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                RUC</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Tipo de Documento</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Numero de Doc</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Fecha de Documento</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-8 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Monto</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Descripción</th>
-              <th v-if="auth.user.role_id === 1 && project_id.status === null" 
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in additional_costs" :key="item.id" class="text-gray-700">
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.expense_type }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.ruc }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}
-              </td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">S/. {{ (item.amount).toFixed(2) }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
-              <td v-if="auth.user.role_id === 1 && project_id.status === null" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                <div class="flex items-center">
-                  <button @click="openEditAdditionalModal(item)" class="text-orange-200 hover:underline mr-2">
-                    <PencilIcon class="h-4 w-4 ml-1" />
-                  </button>
-                  <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
-                    <TrashIcon class="h-4 w-4" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="overflow-x-auto">
+      <table class="w-full whitespace-no-wrap">
+        <thead>
+          <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Tipo de Gasto</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              RUC</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Tipo de Documento</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Numero de Doc</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Fecha de Documento</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-8 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Monto</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Descripción</th>
+            <th v-if="auth.user.role_id === 1 && project_id.status === null"
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in additional_costs" :key="item.id" class="text-gray-700">
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.expense_type }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.ruc }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}
+            </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">S/. {{ (item.amount).toFixed(2) }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
+            <td v-if="auth.user.role_id === 1 && project_id.status === null"
+              class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+              <div class="flex items-center">
+                <button @click="openEditAdditionalModal(item)" class="text-orange-200 hover:underline mr-2">
+                  <PencilIcon class="h-4 w-4 ml-1" />
+                </button>
+                <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
+                  <TrashIcon class="h-4 w-4" />
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <Modal :show="create_additional">
       <div class="p-6">
@@ -277,13 +276,18 @@ import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
   additional_costs: Object,
   project_id: Object,
-  auth: Object
+  auth: Object,
+  userPermissions: Array
 });
 
+const hasPermission = (permission) => {
+  return props.userPermissions.includes(permission);
+}
 
 const form = useForm({
   id: '',

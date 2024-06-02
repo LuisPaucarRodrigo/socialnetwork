@@ -8,7 +8,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <PrimaryButton v-if="project.status === null" type="button" @click="showToAddProduct">+ Agregar</PrimaryButton>
+                <PrimaryButton v-if="project.status === null && hasPermission('ProjectManager')" type="button" @click="showToAddProduct">+ Agregar</PrimaryButton>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -63,8 +63,8 @@
                                 'text-gray-700',
                                 {
                                     'border-l-8': true,
-                                    'border-green-500': item.state === 'Completo',
-                                    'border-red-500': item.state === 'Incompleto'
+                                    'border-green-500': item.remaining_quantity == 0,
+                                    'border-red-500': item.remaining_quantity > 0
                                 }
                             ]"
                         >
@@ -259,14 +259,18 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
 
-const { assigned_products, warehouses, project_id, project } = defineProps({
+const { assigned_products, warehouses, project_id, project, userPermissions } = defineProps({
     assigned_products: Object,
     warehouses: Object,
     project_id: Number,
     project: Object,
-    auth: Object
+    auth: Object,
+    userPermissions:Array
 })
 
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 let backUrl = project.status === null 
                 ? 'projectmanagement.index' 
@@ -327,9 +331,7 @@ const submit = () => {
             closeModal();
             successAsignation.value = true
             warehouseProducts.value = []
-            // let almacen_select = document.getElementById('almacen_id')
-            // almacen_select.value = ""
-            // enableInput.value = false
+
             setTimeout(() => {
                 successAsignation.value = false
             }, 2000)

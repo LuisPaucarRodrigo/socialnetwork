@@ -25,7 +25,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Actas
+                                Subir Actas
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -33,7 +33,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Descarga de almacén
+                                Descargo de almacén
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -41,7 +41,15 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Estado
+                                Estado de SOT
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Observaciones
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto a Facturar
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -78,6 +86,16 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.sot_status }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.observations }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+                                <p class="text-gray-900 text-center">
+                                    S/. {{ item.bill_amount.toFixed(2) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -127,7 +145,7 @@
                         </div>
 
                         <div class="">
-                            <InputLabel>Actas</InputLabel>
+                            <InputLabel>Subir Actas</InputLabel>
                             <div class="mt-2">
                                 <select v-model="formSot.up_minutes"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -153,7 +171,7 @@
                         </div>
 
                         <div class="">
-                            <InputLabel>Descarga de Almacén</InputLabel>
+                            <InputLabel>Descargo de Almacén</InputLabel>
                             <div class="mt-2">
                                 <select v-model="formSot.down_warehouse"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -175,11 +193,12 @@
                         </div>
 
                         <div class="">
-                            <InputLabel>Estado</InputLabel>
+                            <InputLabel>Estado de SOT</InputLabel>
                             <div class="mt-2">
                                 <select v-model="formSot.sot_status"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccione una opción</option>
+                                    <option value="Pendiente">Pendiente</option>
                                     <option value="Aceptado">Aceptado</option>
                                     <option value="Rechazado">Rechazado</option>
                                 </select>
@@ -187,7 +206,23 @@
                             </div>
                         </div>
 
+                        <div v-if="formSot.sot_status=='Rechazado'" class="">
+                            <InputLabel>Observaciones</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="formSot.observations" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="formSot.errors.observations" />
+                            </div>
+                        </div>
 
+                        <div class="">
+                            <InputLabel>Monto a Facturar</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" step="0.01" v-model="formSot.bill_amount" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="formSot.errors.bill_amount" />
+                            </div>
+                        </div>
 
                     </div>
                     <br>
@@ -237,6 +272,8 @@ const initialState = {
     liquidation: '',
     down_warehouse: '',
     liquidation_date: '',
+    observations: '',
+    bill_amount: '',
     sot_status: '',
 }
 

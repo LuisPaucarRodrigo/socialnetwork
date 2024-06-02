@@ -113,21 +113,17 @@
                                     </button>
                                 </div>
                             </td>
-                            <!-- @change="updateState(order.id, $event.target.value, order.is_payments_completed)" -->
-
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <select id="selectState"
-                                    @change="updateState(order.id, $event.target.value, order.is_payments_completed)"
-                                    :disabled="order.state === 'Completada'">
+                                <select v-if="hasPermission('PurchasingManager')" id="selectState"
+                                    @change="updateState(order.id, $event.target.value, order.is_payments_completed)">
                                     <option selected disabled>{{ order.state }}</option>
                                     <option v-for="option in availableOptions(order.state)" :key="option"
                                         :value="option">
                                         {{ option }}
                                     </option>
-                                    <!-- <option>Pendiente</option>
-                                    <option>OC Enviada</option>
-                                    <option>Completada</option> -->
                                 </select>
+                                <p v-else class="text-gray-900 whitespace-no-wrap">
+                                    {{ order.state }}</p>
                             </td>
                         </tr>
                     </tbody>
@@ -236,7 +232,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                        <div class="mt-6 flex items-center justify-end gap-x-3">
                             <SecondaryButton @click="closeModal()"> Cancelar </SecondaryButton>
                             <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                                 Guardar
@@ -324,13 +320,16 @@ const message = ref('');
 const title_order = ref('');
 const message_order = ref('');
 const data = ref(null);
-const state_order = ref(null);
 
 const props = defineProps({
     orders: Object,
     search: String,
     userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const form = useForm({
     id: '',

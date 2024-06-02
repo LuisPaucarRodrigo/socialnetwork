@@ -1,12 +1,12 @@
 <template>
   <div>
     <Head title="Gestion de Apartados" />
-    <AuthenticatedLayout :redirectRoute="'sections.cicsaSubSections'">
+    <AuthenticatedLayout :redirectRoute="'member.cicsa'">
       <template #header>
         Gestión de Apartados
       </template>
       <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-        <button @click="openCreateSectionModal"
+        <button v-if="hasPermission('ProjectManager')" @click="openCreateSectionModal"
           class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
           Crear Nuevo Apartado
         </button>
@@ -18,7 +18,7 @@
                   class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nombre
                 </th>
-                <th scope="col" v-if="auth.user.role_id === 1"
+                <th scope="col" v-if="auth.user.role_id === 1 && hasPermission('ProjectManager')"
                   class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Acciones
                 </th>
@@ -29,7 +29,7 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm font-medium text-gray-900">{{ section.name }}</div>
                 </td>
-                <td v-if="auth.user.role_id === 1" class="px-6 py-4 whitespace-nowrap text-left">
+                <td v-if="auth.user.role_id === 1 && hasPermission('ProjectManager')" class="px-6 py-4 whitespace-nowrap text-left">
                   <div class="flex items-center space-x-2">
                     <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
                       <TrashIcon class="h-4 w-4" />
@@ -93,8 +93,13 @@ const showModal = ref(false);
 
 const props = defineProps({
   sections: Object,
-  auth: Object
+  auth: Object,
+  userPermissions: Array
 });
+
+const hasPermission = (permission) => {
+  return props.userPermissions.includes(permission)
+}
 
 const form = useForm({
   name: '',
@@ -113,14 +118,14 @@ const closeCreateSectionModal = () => {
 };
 
 const submit = () => {
-  form.post(route('sections.cicsaStoreSection'), {
+  form.post(route('sections.cicsa.section.store'), {
     onSuccess: () => {
       closeCreateSectionModal();
       form.reset();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('sections.cicsaSections'))
+        router.visit(route('cicsa.sections'))
       }, 2000);
     },
     onError: () => {

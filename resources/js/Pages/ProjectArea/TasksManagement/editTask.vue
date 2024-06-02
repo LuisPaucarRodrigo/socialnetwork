@@ -7,36 +7,24 @@
         </template>
 
         <div class="mt-6  border-t border-gray-100">
-            <div class="max-h-40 overflow-y-auto">
-                <h1>Observaciones</h1>
-                <dd v-for="(comment, index) in comments.slice().reverse()" :key="comment.id"
-                    class="mt-1 text-md leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    - {{ comment.comment }}
-                </dd>
+            <div v-if="hasPermission('ProjectManager')" class="relative flex-grow flex mb-8">
+                <textarea id="description" rows="2" v-model="newcomment.comment" placeholder="Agregar Observaciones"
+                    @keyup.enter="addComment"
+                    class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 resize-none"></textarea>
+                <button @click="addComment" type="button"
+                    class="ml-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring focus:border-indigo-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                    </svg>
+                </button>
             </div>
-            <div class="flex flex-col sm:flex-row items-center mt-5">
-                <div class="relative flex-grow flex">
-                    <textarea id="description" rows="2" v-model="newcomment.comment" placeholder="Agregar Observaciones"
-                        @keyup.enter="addComment"
-                        class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 resize-none"></textarea>
-                    <button @click="addComment" type="button"
-                        class="ml-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring focus:border-indigo-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 mt-8 mb-10">
-                <!-- Columna 1 - Fecha de Inicio -->
+            <div class="grid grid-cols-2 gap-4 mb-10">
                 <div>
                     <label for="startDate" class="block text-md font-medium text-gray-700">Fecha de Inicio</label>
                     <p id="startDate" class="text-md text-gray-500">{{ formattedDate(tasks.start_date) }}</p>
                 </div>
-
-                <!-- Columna 2 - Fecha de Fin -->
                 <div>
                     <label for="endDate" class="block text-md font-medium text-gray-700">Fecha de Fin</label>
                     <p id="endDate" class="text-md text-gray-500">{{ formattedDate(tasks.end_date) }}</p>
@@ -47,7 +35,7 @@
                     <div class="mb-4 flex items-center">
                         <label for="description" class="block text-sm font-medium text-gray-700 mr-2">Personal
                             Encargado</label>
-                        <button @click="showToAddEmployee" type="button">
+                        <button v-if="hasPermission('ProjectManager')" @click="showToAddEmployee" type="button">
                             <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
                         </button>
                     </div>
@@ -68,6 +56,14 @@
                         </div>
                     </div>
                 </div>
+
+            </div>
+            <div class="max-h-40 overflow-y-auto pt-5">
+                <h1>Observaciones</h1>
+                <dd v-for="(comment, index) in comments.slice().reverse()" :key="comment.id"
+                    class="mt-1 text-md leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    - {{ comment.comment }}
+                </dd>
             </div>
         </div>
 
@@ -94,12 +90,8 @@
                 </div>
 
                 <div class="mt-6 flex gap-3 justify-end">
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-red-500 text-white hover:bg-red-400"
-                        type="button" @click="closeModal"> Cerrar </button>
-                    <button
-                        class="inline-flex items-center p-2 rounded-md font-semibold bg-indigo-500 text-white hover:bg-indigo-400"
-                        type="submit" @click="submitForm"> Agregar </button>
+                    <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit" @click="submitForm"> Agregar </PrimaryButton>
 
 
                 </div>
@@ -134,6 +126,8 @@ import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils'
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     projects: Object,
@@ -141,8 +135,13 @@ const props = defineProps({
     comments: Object,
     employeesToAssign: Object,
     added_employees: Object,
-    auth: Object
+    auth: Object,
+    userPermissions:Array
 })
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 const { tasks } = props;
 const newcomment = useForm({
@@ -151,7 +150,7 @@ const newcomment = useForm({
 });
 
 const addComment = () => {
-    newcomment.post(route('tasks.edit.comment'), {
+    newcomment.post(route('tasks.add.comment'), {
         onError: (errors) => {
             console.log('Errores de validación:', errors);
         }

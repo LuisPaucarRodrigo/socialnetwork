@@ -86,13 +86,13 @@ class ManagementEmployees extends Controller
 
 
 
-    public function index_info_additional()
+    public function create()
     {
         $pension = Pension::all();
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension]);
     }
 
-    public function create(CreateManagementEmployees $request)
+    public function store(CreateManagementEmployees $request)
     {
         DB::beginTransaction();
         try {

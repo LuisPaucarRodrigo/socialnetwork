@@ -34,7 +34,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="lg:w-full w-[600px] grid grid-cols-3 gap-3">
+                                <div class="w-[600px] grid grid-cols-3 gap-3">
                                     <p class="text-left">Programa</p>
                                     <p class="text-center">Inicio-Fin</p>
                                     <p class="text-center">Detalles</p>
@@ -62,7 +62,7 @@
                             </td>
                             <td class="border-b border-gray-200 text-sm">
                                 <div v-for="ap in item.assignated_programs"
-                                    class="lg:w-full w-[600px] grid grid-cols-3 gap-3 items-center hover:bg-gray-300 py-2 px-5"
+                                    class=" grid grid-cols-3 gap-3 items-center hover:bg-gray-300 py-2 px-5"
                                     :class="[
         {
             'border-l-8': true,
@@ -74,7 +74,7 @@
                                     <p class="text-center whitespace-nowrap">{{ formattedDate(ap.start_date) }} -
                                         {{ formattedDate(ap.end_date) }}
                                     </p>
-                                    <div v-if="ap.state === null" class="text-center flex gap-3 justify-center ">
+                                    <div v-if="ap.state === null" class="text-center flex gap-3 justify-center items-center ">
                                         <button @click="UpdateToCompleted(ap.id)"
                                             class="flex items-center text-blue-500 rounded-xl hover:bg-green-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -158,7 +158,7 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue';
+import Pagination from '@/Components/Pagination.vue';   
 import { Head, useForm } from '@inertiajs/vue3';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
@@ -169,9 +169,14 @@ import { formattedDate } from '@/utils/utils.js';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-const { employees } = defineProps({
-    employees: Object
+const { employees,userPermissions } = defineProps({
+    employees: Object,
+    userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 const showNotCompletedModal = ref(false)
 const apNotCompleted = ref(null)

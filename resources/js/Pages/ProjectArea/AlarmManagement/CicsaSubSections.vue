@@ -1,14 +1,14 @@
 <template>
 
   <Head title="Gestion de Miembros" />
-  <AuthenticatedLayout :redirectRoute="'sections.cicsaSubSections'">
+  <AuthenticatedLayout :redirectRoute="'member.cicsa'">
     <template #header>
       Miembros de los apartados Cicsa
     </template>
     <div class="min-w-full rounded-lg shadow">
       <div class="mt-6 flex items-center justify-between gap-x-6">
         <div class="hidden sm:flex sm:items-center sm:space-x-4">
-          <button @click="openCreateSubSectionModal" type="button"
+          <button v-if="hasPermission('ProjectManager')" @click="openCreateSubSectionModal" type="button"
             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             + Agregar miembro
           </button>
@@ -31,7 +31,7 @@
 
             <template #content class="origin-left">
               <div> <!-- Alineación a la derecha -->
-                <div class="dropdown">
+                <div v-if="hasPermission('ProjectManager')" class="dropdown">
                   <div class="dropdown-menu">
                     <button @click="openCreateSubSectionModal" type="button"
                       class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
@@ -105,7 +105,7 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.cicsa_section.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
-                  <Link :href="route('sections.cicsaSubSection', { subSection: subSection.id })"
+                  <Link :href="route('member.cicsa.show', { subSection: subSection.id })"
                     class="text-green-600 hover:underline mr-2">
                   <EyeIcon class="h-4 w-4 ml-1" />
                   </Link>
@@ -299,8 +299,13 @@ import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 const props = defineProps({
   sections: Object,
   subSections: Object,
-  auth: Object
+  auth: Object,
+  userPermissions:Array
 });
+
+const hasPermission = (permission) => {
+  return props.userPermissions.includes(permission)
+}
 
 const form = useForm({
   id: '',
@@ -322,7 +327,7 @@ const editSubSectionModal = ref(false);
 const editingSubSection = ref(null);
 
 const management_section = () => {
-  router.get(route('sections.cicsaSections'));
+  router.get(route('cicsa.sections'));
 };
 
 const openCreateSubSectionModal = () => {
@@ -357,14 +362,14 @@ const closeEditModal = () => {
 
 
 const submit = () => {
-  form.post(route('sections.cicsaStoreSubSection'), {
+  form.post(route('sections.cicsa.member.store'), {
     onSuccess: () => {
       closeModal();
       form.reset();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('sections.cicsaSubSections'))
+        router.visit(route('member.cicsa'))
       }, 2000);
     },
     onError: () => {
@@ -384,7 +389,7 @@ const submitEdit = () => {
       showModalEdit.value = true
       setTimeout(() => {
         showModalEdit.value = false;
-        router.visit(route('sections.cicsaSubSections'))
+        router.visit(route('member.cicsa'))
       }, 2000);
     },
     onError: () => {

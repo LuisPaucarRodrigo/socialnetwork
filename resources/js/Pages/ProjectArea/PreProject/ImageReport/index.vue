@@ -22,11 +22,13 @@
                     <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ imageCode.code }} / {{ imageCode.description }}
                     </h1>
-                    <span v-if="imageCode.status === 'Aprobado'" class="text-green-600">Aprobado</span>
-                    <PrimaryButton v-else @click="approveCode(imageCode.id)" type="button"
-                        class="bg-green-700 hover:bg-green-600">
-                        Aprobar
-                    </PrimaryButton>
+                    <template v-if="hasPermission('ProjectManager')">
+                        <PrimaryButton v-if="!imageCode.status" @click="approveCode(imageCode.id)" type="button"
+                            class="bg-green-700 hover:bg-green-600">
+                            Aprobar
+                        </PrimaryButton>
+                        <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
+                    </template>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-5">
                     <div v-for="image in photoCodeFiltrado(imageCode.id)" :key="image.id"
@@ -50,7 +52,6 @@
                                     <XCircleIcon class="h-4 w-4 ml-1" />
                                 </button>
                             </div>
-
                             <button @click="openPreviewImagenModal(image.id)"
                                 class="flex items-center text-green-600 hover:underline">
                                 <EyeIcon class="h-4 w-4 ml-1" />
@@ -125,7 +126,12 @@ const props = defineProps({
     codesWithStatus: Object,
     imagesCode: Object,
     preproject: Object,
+    userPermissions: Array
 });
+
+const hasPermission = (permission) => {
+    return props.userPermissions.includes(permission);
+}
 
 let backUrl = props.preproject.status === null
     ? 'preprojects.index'
