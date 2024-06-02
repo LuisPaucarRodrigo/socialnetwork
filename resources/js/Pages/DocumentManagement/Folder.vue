@@ -313,6 +313,8 @@ const { folders, folder, currentPath, auth, areas } = defineProps({
     auth: Object
 })
 
+console.log(folders)
+
 //---------- Check Permission -------//
 function checkSeeDownloadPermission(item) {
     if (auth.user.role_id === 1) {
