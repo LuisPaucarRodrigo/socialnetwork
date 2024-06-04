@@ -432,7 +432,7 @@ class FolderController extends Controller
         $publicPath = substr($folderPath, $publicPosition + strlen('public/'));
         $contents = scandir($folderPath);
         foreach ($contents as $item) {
-            if ($item != '.' && $item != '..') {
+            if ($item[0] !== '.') {
                 $itemPath = $folderPath . '/' . $item;
                 if (is_dir($itemPath)) {
                     $folderStructure[] = [
