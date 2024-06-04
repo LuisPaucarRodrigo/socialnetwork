@@ -45,7 +45,7 @@ class ProjectManagementController extends Controller
                 'projects' => $projects
             ]);
         }
-    } 
+    }
 
     public function historial(Request $request)
     {
@@ -63,7 +63,7 @@ class ProjectManagementController extends Controller
                 'projects' => $projects
             ]);
         }
-    } 
+    }
 
 
     public function project_create($project_id = null)
@@ -92,14 +92,14 @@ class ProjectManagementController extends Controller
         $data = $request->validated();
         if ($request->id) {
             $user = Auth::user();
-            if($user->role_id !== 1) {
+            if ($user->role_id !== 1) {
                 abort(403, "Solo admin puede editar");
             }
             $project = Project::find($request->id);
             $project->update($data);
         } else {
             $project = Project::create($data);
-            Preproject::find($request->preproject_id)->update(['status'=>true]);
+            Preproject::find($request->preproject_id)->update(['status' => true]);
             Purchasing_request::where('preproject_id', $request->preproject_id)
                 ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
@@ -115,21 +115,21 @@ class ProjectManagementController extends Controller
                     'unitary_price' => $item->unitary_price
                 ]);
             }
-            
+
             foreach ($employees as $employee) {
                 $empId = $employee['employee'];
                 $project->employees()->attach($empId['id'], ['charge' => $employee['charge']]);
             }
-            
+
             $project->load('preproject.quote');
             $preproject_quote_services = PreprojectQuoteService::where('preproject_quote_id', $project->preproject->quote->id)->get();
             foreach ($preproject_quote_services as $item) {
-                if($item->resource_entry_id){
+                if ($item->resource_entry_id) {
                     ResourceEntry::find($item->resource_entry_id)->update([
                         'condition' => 'No disponible'
                     ]);
                 }
-            }   
+            }
         }
     }
 
@@ -151,10 +151,10 @@ class ProjectManagementController extends Controller
     {
         $project = Project::find($project_id);
         Purchasing_request::where('project_id', $project->id)
-                ->update(['preproject_id' => $project->preproject_id]);
-        Preproject::find($project->preproject_id)?->update(['status'=>null]);
+            ->update(['preproject_id' => $project->preproject_id]);
+        Preproject::find($project->preproject_id)?->update(['status' => null]);
         $project->delete();
-        
+
         return redirect()->back();
     }
 
@@ -228,8 +228,6 @@ class ProjectManagementController extends Controller
             'project' => Project::find($project_id),
         ]);
     }
-
-
 
     public function project_expenses(Project $project_id)
     {
@@ -379,8 +377,9 @@ class ProjectManagementController extends Controller
     }
 
 
-    public function liquidate_project (Request $request) {
-        Project::find($request->project_id)?->update(['status'=>true]);
+    public function liquidate_project(Request $request)
+    {
+        Project::find($request->project_id)?->update(['status' => true]);
         return redirect()->back();
     }
 }

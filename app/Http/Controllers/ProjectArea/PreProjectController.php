@@ -32,7 +32,6 @@ use App\Models\TypeProduct;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Log;
 
 class PreProjectController extends Controller
 {
@@ -663,8 +662,8 @@ class PreProjectController extends Controller
     }
 
     public function registerCodePhoto($id)
-    {   
-        $code = PreprojectCode::with('code')->where("id",$id)->get();
+    {
+        $code = PreprojectCode::with('code')->where("id", $id)->get();
         $codesWithStatus = [];
         foreach ($code as $preprojectCode) {
             $code = $preprojectCode->code;
@@ -679,7 +678,7 @@ class PreProjectController extends Controller
         $data->each(function ($url) {
             $url->image = url('/image/imagereportpreproject/' . $url->image);
         });
-        return response()->json(['images'=> $data,'codes' => $codesWithStatus]);
+        return response()->json(['images' => $data, 'codes' => $codesWithStatus]);
     }
 
     public function approve_reject_image(Request $request, $id)
@@ -700,7 +699,7 @@ class PreProjectController extends Controller
         $code = PreprojectCode::with('imagecodepreprojet')->find($id);
         $code->imagecodepreprojet->each(function ($image) {
             if ($image->state !== 1) {
-                $filePath = "/image/imagereportpreproject/{$image->image}";
+                $filePath = "image/imagereportpreproject/{$image->image}";
                 $path = public_path($filePath);
                 if (file_exists($path)) {
                     unlink($path);
@@ -722,7 +721,8 @@ class PreProjectController extends Controller
         $filePath = "image/imagereportpreproject/{$fileName}";
         $path = public_path($filePath);
         if (file_exists($path)) {
-            return response()->download($path, $fileName);
+            $url = url($filePath);
+            return response()->json(['url' => $url]);
         }
         abort(404, 'Imagen no encontrado');
     }
@@ -731,7 +731,7 @@ class PreProjectController extends Controller
     {
         $image = Imagespreproject::find($id);
         if ($image->image != null) {
-            $filePath = "/image/imagereportpreproject/{$image->image}";
+            $filePath = "image/imagereportpreproject/{$image->image}";
             $path = public_path($filePath);
             if (file_exists($path)) {
                 unlink($path);
@@ -744,12 +744,13 @@ class PreProjectController extends Controller
 
     public function show_image(Imagespreproject $image)
     {
+
         $fileName = $image->image;
-        $filePath = '/image/imagereportpreproject/' . $fileName;
-        
+        $filePath = 'image/imagereportpreproject/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
-            return response()->file($path);
+            $url = url($filePath);
+            return response()->json(['url' => $url]);
         }
         abort(404, 'Imagen no encontrada');
     }
