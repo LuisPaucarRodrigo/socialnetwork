@@ -399,7 +399,7 @@
               <InputLabel for="documentFile">Archivo</InputLabel>
               <div class="mt-2">
                 <InputFile enctype="multipart/form-data" type="file" v-model="form.archive" id="documentFile"
-                  :accept="'.' + $props.folder.format_type.js" />
+                  :accept="$props.folder.format_type.js" />
                 <InputError :message="form.errors.archive" />
               </div>
             </div>
@@ -408,6 +408,13 @@
               <div class="mt-2">
                 <TextInput type="text" v-model="form.comment" id="comment" />
                 <InputError :message="form.errors.comment" />
+              </div>
+            </div>
+            <div v-if="props.folder.availability == 3" class="mt-2">
+              <InputLabel for="comment">Nueva Fecha Máxima de Evaluación</InputLabel>
+              <div class="mt-2">
+                <TextInput type="date" v-model="form.new_date" id="comment" />
+                <InputError :message="form.errors.new_date" />
               </div>
             </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -527,6 +534,7 @@ const hasPermission = (permission) => {
 const form = useForm({
   archive: null,
   comment: '',
+  new_date: '',
   folder_id: props.folder.id,
   user_id: props.auth.user.id,
 });
@@ -578,10 +586,10 @@ const submit = () => {
       }, 2000);
     },
     onError: () => {
-      form.reset();
+
     },
     onFinish: () => {
-      form.reset();
+
     }
   });
 };
