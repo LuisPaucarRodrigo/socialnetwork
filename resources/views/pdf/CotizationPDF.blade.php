@@ -49,7 +49,7 @@
     <tbody>
       <tr>
         <td class="td-custom" colspan="1" style="height: 70px;"><img src="image/projectimage/logo_ccip.jpeg" width="80px" alt=""></td>
-        <td class="td-custom" colspan="3" style="text-align: center; font-weight: bold; font-size: 18px">{{ $preproject->quote->name }}</td>
+        <td class="td-custom" colspan="3" style="text-align: center; font-weight: bold; font-size: 18px">{{ strtoupper($preproject->quote->name) }}</td>
         <td class="td-custom" colspan="2" style="text-align: center">{{ $preproject->quote->code }}</td>
       </tr>
       <tr>

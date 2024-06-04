@@ -85,6 +85,7 @@ class ArchivesController extends Controller
                 foreach($lastArchive->archive_users as $archive_user){
                     ArchiveUser::create([
                         'user_id' => $archive_user->user_id,
+                        'due_date' => $archive_user->due_date,
                         'status' => true,
                         'archive_id' => $archive->id,
                     ]);
@@ -104,8 +105,11 @@ class ArchivesController extends Controller
                 $document = $request->file('archive');
                 $extension = $document->getClientOriginalExtension();
                 $documentName = $archive->name . '.' . $extension;
-                $path = $document->move(public_path($folder->path), $documentName);
-
+                if(isset($findFolder->archive_type) && $findFolder->archive_type == 'Imágenes'){
+                    $path = Storage::putFileAs('public/' . $folder->path, $document, $documentName);
+                }else{
+                    $path = $document->move(public_path($folder->path), $documentName);
+                }
                 $archive->path = $folder->path . '/' . $documentName;
                 $archive->save();
             }
@@ -159,9 +163,11 @@ class ArchivesController extends Controller
                 $path = public_path($filePath);
 
                 if (file_exists($path)) {
-                    // Utiliza el nombre y el tipo de archivo para generar el nombre del archivo a descargar
-                    $fileName = $findArchive->name . '.' . $findArchive->folder->archive_type;
-                    return response()->download($path);
+                    if($findArchive->archive_type == 'Imágenes'){
+                        return Storage::response($path);
+                    }else{
+                        return response()->download($path);
+                    }
                 }
 
                 abort(404, 'Documento no encontrado');
@@ -222,11 +228,14 @@ class ArchivesController extends Controller
 
     public function observationsPerArchive($folder, Archive $archive)
     {
+
         $user = Auth::user();
         $findArchiveUser = ArchiveUser::where('archive_id', $archive->id)
             ->where('user_id', $user->id)
             ->first();
-
+        if ($findArchiveUser->state !== 'Pendiente'){
+            abort(403, 'Ya no está autorizado');
+        }
         if ($findArchiveUser || $user->role_id == 1) {
             $archiveUsers = ArchiveUser::where('archive_id', $archive->id)->whereNotNull('evaluation_date')->with('archive.user', 'user')->paginate(10);
             $observation = ArchiveUser::where('archive_id', $archive->id)->where('user_id', $user->id)->first();
@@ -239,7 +248,6 @@ class ArchivesController extends Controller
             }else{
                 $canObservate = false;
             }
-
             return Inertia::render('DocumentGestion/ArchivesGestion/Observations', [
                 'archive' => $archive,
                 'folder_id' => $folder,
@@ -257,7 +265,9 @@ class ArchivesController extends Controller
         $findArchiveUser = ArchiveUser::where('archive_id', $archive)
             ->where('user_id', $user->id)
             ->first();
-
+        if ($findArchiveUser->state !== 'Pendiente'){
+            abort(403, 'Ya no está autorizado');
+        }
         if ($findArchiveUser) {
             $request->validate([
                 'state' => 'required',
@@ -315,10 +325,15 @@ class ArchivesController extends Controller
 
         $currentDate = Carbon::now()->subHours(5);
 
-        $pendingAlarms = ArchiveUser::where('user_id', $user->id)
+        $pending = ArchiveUser::where('user_id', $user->id)
             ->where('state', 'Pendiente')
             ->with('archive.folder')
             ->get();
+
+        $pendingAlarms = $pending->filter(function ($archiveUser) {
+            return $archiveUser->archive->observation_state == 2;
+        })->sortByDesc('created_at');
+
 
         $alarmsLessThan3Days = [];
         $alarmsBetween4And7Days = [];

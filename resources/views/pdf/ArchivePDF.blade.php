@@ -21,6 +21,10 @@
         <table class="table table-bordered">
             <tbody>
                 <tr>
+                    <td style="font-weight: bold; font-size: 12px; padding: 4px; border: 1px solid #000;">Código:</td>
+                    <td colspan="2" style="border: 1px solid #000; font-size: 12px; padding: 4px;">{{ $archive->code_archive }}</td>
+                </tr>
+                <tr>
                     <td style="font-weight: bold; font-size: 12px; padding: 4px; border: 1px solid #000;">Nombre:</td>
                     <td colspan="2" style="border: 1px solid #000; font-size: 12px; padding: 4px;">{{ $archive->name . '.' . $archive->extension }}</td>
                 </tr>

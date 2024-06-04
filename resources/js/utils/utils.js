@@ -1,4 +1,7 @@
 export function formattedDate(fecha) {
+  if (fecha === undefined || fecha === null) {
+    return ''
+  }
   const tieneHora = fecha.includes(':');
   const fechaObjeto = tieneHora ? new Date(fecha) : new Date(fecha + 'T00:00:00Z');
   if (isNaN(fechaObjeto.valueOf())) {

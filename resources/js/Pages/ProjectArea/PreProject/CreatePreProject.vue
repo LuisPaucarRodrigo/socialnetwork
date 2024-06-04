@@ -168,7 +168,7 @@
                                 <InputError :message="form.errors.code" />
                             </div>
 
-                            <div v-if="[1, 2].includes(form.customer_id)">
+                            <div v-if="[1,2,3].includes(form.customer_id)">
                                 <label for="cpe" class="font-medium leading-6 text-gray-900">CPE</label>
                                 <div class="mt-2 flex justify-center items-center gap-2">
                                     <input requirede="text" pattern="[A-Z0-9]+" v-model="form.cpe" id="cpe"

@@ -27,7 +27,8 @@ class Archive extends Model
         'disponibility',
         'observation_state',
         'extension',
-        'previous_archive'
+        'previous_archive',
+        'code_archive'
     ];
 
     public function users () {
@@ -193,6 +194,15 @@ class Archive extends Model
             return $previousArchive;
         }
         return null;
+    }
+
+    public function getCodeArchiveAttribute()
+    {
+        if($this->type == 'stable'){
+            return 'code-' . $this->version;
+        }else{
+            return null;
+        }
     }
 
 }
