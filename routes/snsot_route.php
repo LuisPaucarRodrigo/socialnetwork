@@ -22,7 +22,8 @@ Route::middleware('permission:SocialNetworkLiquidation')->group(function () {
     Route::get('/social-network/sot-liquidation', [SotController::class, 'sot_liquidation'])->name('socialnetwork.sot.liquidation');
     Route::post('/social-network/sot-liquidation-store', [SotController::class, 'sot_liquidation_store'])->name('socialnetwork.sot.liquidation.store');
     Route::put('/social-network/sot-programation-update/{sot_liquidation_id}', [SotController::class, 'sot_liquidation_update'])->name('socialnetwork.sot.liquidation.update');
-});
+}); 
+
 
 Route::middleware('permission:SocialNetworkCharge')->group(function () {
     Route::get('/social_network/paymentArea/index', [SotController::class, 'sot_payment_index'])->name('sn.paymentArea.index');

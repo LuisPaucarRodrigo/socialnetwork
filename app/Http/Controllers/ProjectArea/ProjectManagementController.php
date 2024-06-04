@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProjectManagementController extends Controller
 {
@@ -44,7 +45,7 @@ class ProjectManagementController extends Controller
                 'projects' => $projects
             ]);
         }
-    } 
+    }
 
     public function historial(Request $request)
     {
@@ -62,7 +63,7 @@ class ProjectManagementController extends Controller
                 'projects' => $projects
             ]);
         }
-    } 
+    }
 
 
     public function project_create($project_id = null)
@@ -90,11 +91,15 @@ class ProjectManagementController extends Controller
 
         $data = $request->validated();
         if ($request->id) {
+            $user = Auth::user();
+            if ($user->role_id !== 1) {
+                abort(403, "Solo admin puede editar");
+            }
             $project = Project::find($request->id);
             $project->update($data);
         } else {
             $project = Project::create($data);
-            Preproject::find($request->preproject_id)->update(['status'=>true]);
+            Preproject::find($request->preproject_id)->update(['status' => true]);
             Purchasing_request::where('preproject_id', $request->preproject_id)
                 ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
@@ -110,21 +115,21 @@ class ProjectManagementController extends Controller
                     'unitary_price' => $item->unitary_price
                 ]);
             }
-            
+
             foreach ($employees as $employee) {
                 $empId = $employee['employee'];
                 $project->employees()->attach($empId['id'], ['charge' => $employee['charge']]);
             }
-            
+
             $project->load('preproject.quote');
             $preproject_quote_services = PreprojectQuoteService::where('preproject_quote_id', $project->preproject->quote->id)->get();
             foreach ($preproject_quote_services as $item) {
-                if($item->resource_entry_id){
+                if ($item->resource_entry_id) {
                     ResourceEntry::find($item->resource_entry_id)->update([
                         'condition' => 'No disponible'
                     ]);
                 }
-            }   
+            }
         }
     }
 
@@ -146,10 +151,10 @@ class ProjectManagementController extends Controller
     {
         $project = Project::find($project_id);
         Purchasing_request::where('project_id', $project->id)
-                ->update(['preproject_id' => $project->preproject_id]);
-        Preproject::find($project->preproject_id)?->update(['status'=>null]);
+            ->update(['preproject_id' => $project->preproject_id]);
+        Preproject::find($project->preproject_id)?->update(['status' => null]);
         $project->delete();
-        
+
         return redirect()->back();
     }
 
@@ -214,7 +219,7 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-    public function project_purchases_request_edit($project_id = null,$id)
+    public function project_purchases_request_edit($project_id = null, $id)
     {
         $purchase = Purchasing_request::with('products')->find($id);
         return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
@@ -259,6 +264,8 @@ class ProjectManagementController extends Controller
             $warehouses = Warehouse::whereIn('id', [1, 3, 4])->get();
         } else if ($project_id->preproject->customer_id == 2) {
             $warehouses = Warehouse::whereIn('id', [2, 3, 4])->get();
+        } else if ($project_id->preproject->customer_id == 3) {
+            $warehouses = Warehouse::whereIn('id', [7, 3, 4])->get();
         } else {
             $warehouses = Warehouse::whereIn('id', [3, 4])->get();
         }
@@ -370,8 +377,9 @@ class ProjectManagementController extends Controller
     }
 
 
-    public function liquidate_project (Request $request) {
-        Project::find($request->project_id)?->update(['status'=>true]);
+    public function liquidate_project(Request $request)
+    {
+        Project::find($request->project_id)?->update(['status' => true]);
         return redirect()->back();
     }
 }

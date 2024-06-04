@@ -66,6 +66,10 @@ Route::middleware('permission:ProjectManager')->group(function () {
     //Project
     Route::get('/project/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
     Route::post('/project/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
+    Route::get('/projectmanagement/update/{project_id}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
+    Route::post('/project/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
+    Route::post('/project/liquidation', [ProjectManagementController::class, 'liquidate_project'])->name('projectmanagement.liquidation');
+
 
     //Project tasks
     Route::get('/project/task/create/{project_id?}', [TaskManagementController::class, 'create'])->name('tasks.create');
@@ -133,7 +137,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     //Preproject image
     Route::get('/preprojects/{preproject_id}/report/image', [PreProjectController::class, 'index_image'])->name('preprojects.imagereport.index');
     Route::get('/preprojects/{preproject_id}/report/code/image', [PreProjectController::class, 'registerCodePhoto'])->name('preprojects.report.images');
-    Route::get('/preprojects/{image}/report/showimage', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
+    Route::get('/preprojects/report/showimage/{image}', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
     Route::get('/preprojects/{preproject_id}/report/download_image', [PreProjectController::class, 'download_image'])->name('preprojects.imagereport.download');
 
     //Photographic report
@@ -190,14 +194,9 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/member/cicsa/sections', [CicsaSectionController::class, 'showSections'])->name('cicsa.sections');
 
     Route::get('/sections/cicsa/alarm', [CicsaSectionController::class, 'alarm'])->name('member.cicsa.alarm');
+
 });
 
 
 
 
-//Al aprecer user
-Route::post('/project/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
-Route::delete('/project/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
-
-//Projects liquidation
-Route::post('/project/liquidation', [ProjectManagementController::class, 'liquidate_project'])->name('projectmanagement.liquidation');

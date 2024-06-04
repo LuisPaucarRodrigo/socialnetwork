@@ -55,6 +55,8 @@ class SotLiquidationUpdateRequest extends FormRequest
                 }
             ],
             'liquidation_date' => 'required',
+            'bill_amount' => 'required',
+            'observations' => 'nullable',
             'sot_status' => [
                 'required',
                 function ($attribute, $value, $fail) {

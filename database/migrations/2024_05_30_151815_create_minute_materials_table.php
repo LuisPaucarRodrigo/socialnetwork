@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sn_sot_operation', function (Blueprint $table) {
+        Schema::create('minute_materials', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sot_id')->constrained('sn_sots')->onDelete('cascade');
-            $table->string('i_state')->nullable();
-            $table->text('additionals')->nullable();
-            $table->string('photo_report')->nullable();
-            $table->date('ic_date')->nullable();
+            $table->foreignId('snsotop_id')
+                  ->constrained('sn_sot_operation')
+                  ->onDelete('cascade');
+            $table->string('material');
+            $table->string('quantity');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sn_sot_operation');
+        Schema::dropIfExists('minute_materials');
     }
 };
