@@ -132,7 +132,7 @@
                                 SOTS
                             </InputLabel>
                             <div class="mt-2">
-                                <select v-model="formSot.sot_id"
+                                <select v-model="formSot.sot_id" 
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccionar</option>
                                     <option v-for="item in sots" :key="item.id" :value="item.id">
@@ -140,7 +140,7 @@
                                     </option>
 
                                 </select>
-                                <InputError :message="formSot.errors.areas" />
+                                <InputError :message="formSot.errors.sot_id" />
                             </div>
                         </div>
 
@@ -209,7 +209,7 @@
                         <div v-if="formSot.sot_status=='Rechazado'" class="">
                             <InputLabel>Observaciones</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="formSot.observations" autocomplete="off"
+                                <input required v-model="formSot.observations" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="formSot.errors.observations" />
                             </div>
@@ -312,6 +312,7 @@ function openEditSotLiquidationModal (item) {
     formSot.reset()
     showAddEditModal.value = true
 }
+
 function submitUpdate() {
     let url = route('socialnetwork.sot.liquidation.update', {sot_liquidation_id: formSot.id})
     formSot.put(url, {
