@@ -182,7 +182,7 @@
                                 <p class="text-gray-900 text-center">{{ formattedDate(item?.sot_operation?.ic_date) }}</p>
                             </td>
                             <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button type="button" @click="openMaterialsModal(item.sot_operation.minute_materials)">
+                                <button v-if="item?.sot_operation?.minute_materials" type="button" @click="openMaterialsModal(item.sot_operation.minute_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
                             </td>
