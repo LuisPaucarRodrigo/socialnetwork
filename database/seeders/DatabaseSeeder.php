@@ -129,7 +129,7 @@ class DatabaseSeeder extends Seeder
             'dni' => '43196970',
             'email' => 'gflores@ccip.com.pe',
             'password' => Hash::make('12345678'),
-            'phone' => '923098157',
+            'phone' => '992275316',
             'platform' => 'Web/Movil',
             'role_id' => '1',
             'area_id' => 1
