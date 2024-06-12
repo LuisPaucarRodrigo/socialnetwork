@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ScraperController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -11,6 +12,9 @@ Route::get('/', function () {
         return Inertia::render('Auth/Login');
     }
 })->name('home');
+
+
+Route::get('/scrape', [ScraperController::class, 'scrape']);
 
 Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
 
