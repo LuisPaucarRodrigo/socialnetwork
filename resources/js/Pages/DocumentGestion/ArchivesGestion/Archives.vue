@@ -490,7 +490,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import ConfirmApproveModal from '@/Components/ConfirmApproveModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
@@ -546,7 +545,6 @@ const formUsers = useForm({
 });
 
 const create_document = ref(false);
-const archive_id = ref(null);
 const showModal = ref(false);
 const showAssignModal = ref(false);
 const confirmingDocDeletion = ref(false);

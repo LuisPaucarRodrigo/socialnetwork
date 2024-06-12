@@ -45,13 +45,14 @@ class AdditionalCostsController extends Controller
             'description' => $request->description,
             'amount' => $request->amount,
             'project_id' => $project_id->id
-        ]);       
+        ]); 
+              
     }
 
-    public function update(Project $project_id, AdditionalCost $additional_cost, Request $request)
+    public function update(AdditionalCost $additional_cost, Request $request)
     {
         $request->validate([
-            'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GPE',
+            'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GEP',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => 'required|string',

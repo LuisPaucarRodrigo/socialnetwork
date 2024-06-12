@@ -16,8 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->string('task');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->string('status');
             $table->string('percentage');
         });
