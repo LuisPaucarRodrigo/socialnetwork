@@ -145,6 +145,8 @@ class TaskManagementController extends Controller
             $duplicatedTask = $task->replicate();
             $duplicatedTask->project_id = $request->project_id_duplicated;
             $duplicatedTask->status = "pendiente";
+            $duplicatedTask->start_date = null;
+            $duplicatedTask->end_date = null;
             $duplicatedTask->save();
         }
     }

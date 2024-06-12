@@ -35,7 +35,7 @@
                     <div class="mb-4 flex items-center">
                         <label for="description" class="block text-sm font-medium text-gray-700 mr-2">Personal
                             Encargado</label>
-                        <button v-if="hasPermission('ProjectManager')" @click="showToAddEmployee" type="button">
+                        <button v-if="hasPermission('ProjectManager') && tasks.status !== 'completado'" @click="showToAddEmployee" type="button">
                             <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
                         </button>
                     </div>
