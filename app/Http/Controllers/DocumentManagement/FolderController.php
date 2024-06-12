@@ -12,7 +12,6 @@ use App\Models\FolderArea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;

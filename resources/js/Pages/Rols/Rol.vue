@@ -1,6 +1,7 @@
 <template>
+
     <Head title="Roles" />
-    <AuthenticatedLayout :redirectRoute="'rols.index'">        
+    <AuthenticatedLayout :redirectRoute="'rols.index'">
         <template #header>
             Roles
         </template>
@@ -72,6 +73,25 @@
                 <form @submit.prevent="submit">
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
+                            <div class="shadow border-gray-300/10">
+                                <InputLabel for="name">Aviso</InputLabel>
+                                <div class="mt-4 p-4 border border-red-300 rounded-md bg-red-50">
+                                    <p class="text-red-600">
+                                        Aviso Importante:<br>
+                                        Si no se siguen las indicaciones mencionadas, podrían surgir fallos en el
+                                        aplicativo.
+                                    </p>
+                                </div>
+                                <div class="mt-2 p-4 border border-gray-300 rounded-md bg-gray-50">
+                                    <p>
+                                        Los roles administradores tienen únicamente permisos de gerente.<br>
+                                        Un rol gerente posee solo permisos de gerente.<br>
+                                        Un rol que solo puede visualizar tendrá permisos normales, pero no de gerente.
+                                    </p>
+                                </div>
+
+                            </div>
+
                             <div>
                                 <InputLabel for="name">Nombre</InputLabel>
                                 <div class="mt-2">
@@ -93,7 +113,8 @@
                                     <option disabled>
                                         Selecciona uno o varios
                                     </option>
-                                    <option v-for="permission in permissions" :key="permission.id" :value="permission.id">
+                                    <option v-for="permission in permissions" :key="permission.id"
+                                        :value="permission.id">
                                         {{ permission.name }}| {{ permission.description }}
                                     </option>
                                 </select>
@@ -101,7 +122,8 @@
                             </div>
                             <div class="mt-6 flex items-center justify-end gap-x-6">
                                 <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
-                                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
+                                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar
+                                </PrimaryButton>
                             </div>
                         </div>
                     </div>

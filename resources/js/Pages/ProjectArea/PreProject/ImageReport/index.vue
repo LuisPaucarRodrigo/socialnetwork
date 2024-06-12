@@ -178,13 +178,33 @@ const deleteImage = () => {
 
 function downloadImagen(imageId) {
     const backendImageUrl = route('preprojects.imagereport.download', { preproject_id: imageId });
-    window.open(backendImageUrl, '_blank');
+    axios.get(backendImageUrl)
+        .then(response => {
+            const imageUrl = response.data.url;
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = imageUrl.split('/').pop();
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(error => {
+            console.error('Error fetching the image URL:', error);
+        });
 };
 
 function openPreviewImagenModal(imageId) {
     if (imageId) {
         const url = route('preprojects.imagereport.show', { image: imageId });
-        window.open(url, '_blank');
+        axios.get(url)
+            .then(response => {
+                const imageUrl = response.data.url;
+                window.open(imageUrl, '_blank');
+            })
+            .catch(error => {
+                console.error('Error fetching image URL:', error);
+            });
     } else {
         console.error('No se proporcionó un ID de imagen válido');
     }
@@ -267,4 +287,5 @@ function approveCode(preproject_code_id) {
         }
     })
 }
+
 </script>
