@@ -185,7 +185,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     //Project liquidate
     Route::get('/project/{project_id}/products/liquidate', [LiquidationController::class, 'index'])->name('projectmanagement.liquidate');
-    Route::get('/project/products/{project_id}/liquidateHistory', [LiquidationController::class, 'history'])->name('projectmanagement.liquidate.history');
+    Route::get('/project/{project_id}/product/liquidateHistory', [LiquidationController::class, 'history'])->name('projectmanagement.liquidate.history');
 
     //Member Cicsa Sections 
     Route::get('/member/cicsa', [CicsaSectionController::class, 'showSubSections'])->name('member.cicsa');
