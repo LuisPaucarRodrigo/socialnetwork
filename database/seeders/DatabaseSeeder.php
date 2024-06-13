@@ -186,7 +186,7 @@ class DatabaseSeeder extends Seeder
         
 
         $customersData = [
-            ['id' => 1, 'ruc' => 1, 'business_name' => 'CLARO CICSA', 'category' => 'Especial', 'address' => '-'],
+            ['id' => 1, 'ruc' => 20512780114, 'business_name' => 'CICSA PERU SAC', 'category' => 'Especial', 'address' => 'CALLE AMADOR MERINO REINA 267 OFC 501 LIMA LIMA SAN ISIDRO'],
             ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],
             ['id' => 3, 'ruc' => 3, 'business_name' => 'HUAWEI', 'category' => 'Especial', 'address' => '-'],
         ];
