@@ -37,6 +37,7 @@ Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->gro
 });
 
 Route::get('/huawei/{project}', [FileDataController::class, 'render'])->name('huawei.show');
-Route::post('/huawei/post', [FileDataController::class, 'uploadExcel'])->name('huawei.post');
-
+Route::post('/huawei/{project}/post', [FileDataController::class, 'uploadExcel'])->name('huawei.post');
+Route::post('/huawei/{project}/filter', [FileDataController::class, 'filter'])->name('huawei.filter');
+Route::put('/huawei/{project}/{itemToEdit}/update', [FileDataController::class, 'updateRegister'])->name('huawei.put');
 require __DIR__ . '/auth.php';

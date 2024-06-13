@@ -13,14 +13,80 @@ class FileDataController extends Controller
 {
     public function render($project)
     {
-        $huaweiData = HuaweiProject::where('project_id', $project)->paginate(10);
+        $huaweiData = HuaweiProject::where('project_id', $project)->paginate(30);
         return Inertia::render('Huawei/FileData',[
             'huaweiData' => $huaweiData,
             'project_id' => $project
         ]);
     }
 
-    public function uploadExcel(Request $request)
+    public function filter($project, Request $request)
+    {
+        // Obtener los parámetros de filtro del request
+        $filters = $request->all();
+
+        // Construir la consulta base
+        $query = HuaweiProject::where('project_id', $project);
+
+        // Aplicar filtros condicionalmente
+        if (!empty($filters['startDate'])) {
+            $query->whereDate('date', '>=', $filters['startDate']);
+        }
+
+        if (!empty($filters['endDate'])) {
+            $query->whereDate('date', '<=', $filters['endDate']);
+        }
+
+        if (!empty($filters['minValue'])) {
+            $query->where('monetary_value', '>=', $filters['minValue']);
+        }
+
+        if (!empty($filters['maxValue'])) {
+            $query->where('monetary_value', '<=', $filters['maxValue']);
+        }
+
+        if (!empty($filters['generalStatus'])) {
+            $query->where('general_status', $filters['generalStatus']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['codsap'])) {
+            $query->whereRaw('LOWER(codsap) LIKE ?', ['%' . strtolower($filters['codsap']) . '%']);
+        }
+
+        if (!empty($filters['serie'])) {
+            $query->whereRaw('LOWER(serie) LIKE ?', ['%' . strtolower($filters['serie']) . '%']);
+        }
+
+        if (!empty($filters['period'])) {
+            $query->whereRaw('LOWER(period) LIKE ?', ['%' . strtolower($filters['period']) . '%']);
+        }
+
+        if (!empty($filters['hire'])) {
+            $query->whereRaw('LOWER(hire) LIKE ?', ['%' . strtolower($filters['hire']) . '%']);
+        }
+
+        if (!empty($filters['ocPap'])) {
+            $query->whereRaw('LOWER(oc_pap) LIKE ?', ['%' . strtolower($filters['ocPap']) . '%']);
+        }
+
+        if (!empty($filters['sites'])) {
+            $query->whereRaw('LOWER(sites) LIKE ?', ['%' . strtolower($filters['sites']) . '%']);
+        }
+
+        $filteredResults = $query->paginate(30);
+
+        // Devolver los resultados usando Inertia
+        return Inertia::render('Huawei/FileData', [
+            'huaweiData' => $filteredResults,
+            'project_id' => $project
+        ]);
+    }
+
+    public function uploadExcel($project, Request $request)
     {
         $excelData = $request->input('statusData');
         // Definir el rango de filas y columnas que queremos extraer
@@ -47,12 +113,12 @@ class FileDataController extends Controller
             }
         }
 
-        // Iniciar una transacción de base de datos
         DB::beginTransaction();
 
         try {
+            HuaweiProject::where('project_id', $project)->delete();
             foreach ($selectedData as $row) {
-                // Crear un registro HuaweiProject utilizando el método create
+
                 HuaweiProject::create([
                     'date' => $row[0],               // Segunda columna en $selectedRow
                     'codsap' => $row[1],             // Tercera columna en $selectedRow
@@ -65,20 +131,39 @@ class FileDataController extends Controller
                     'general_status' => $row[8],
                     'status' => $row[9],
                     'monetary_value' => $row[10],
-                    'observation' => $row[11] ?? null  // Asegurar que siempre haya 12 columnas en $row
+                    'observation' => $row[11] ?? null,
+                    'project_id' => $project  // Asegurar que siempre haya 12 columnas en $row
                 ]);
             }
 
             // Commit de la transacción si todo ha ido bien
             DB::commit();
 
-            return response()->json(['message' => 'Datos insertados correctamente'], 200);
         } catch (\Exception $e) {
             // Rollback de la transacción en caso de error
             DB::rollBack();
 
-            return response()->json(['message' => 'Error al insertar los datos: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function updateRegister ($project, HuaweiProject $itemToEdit, Request $request)
+    {
+        $data = $request->validate([
+            'date' => 'nullable',
+            'codsap' => 'nullable',
+            'description' => 'nullable',
+            'serie' => 'nullable',
+            'period' => 'nullable',
+            'hire' => 'nullable',
+            'oc_pap' => 'nullable',
+            'sites' => 'nullable',
+            'general_status' => 'nullable',
+            'status' => 'nullable',
+            'monetary_value' => 'nullable',
+            'observation' => 'nullable',
+        ]);
+
+        $itemToEdit->update($data);
     }
 
     // Rellenar con valores nulos si el tamaño del array es menor al número de columnas esperado
