@@ -64,11 +64,11 @@
                             N° {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager') " class="inline-flex justify-end items-start gap-x-2">
-                            <button 
+                            <button
                                 @click="()=>{router.post(route('projectmanagement.liquidation'),{project_id: item.id}, {
                                     onSuccess: () => router.visit(route('projectmanagement.index'))
                                 })}"
-                                v-if="item.status === null" 
+                                v-if="item.status === null"
                                 :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.is_liquidable ? '': 'opacity-60'}`"
                                 :disabled="item.is_liquidable ? false: true"
                             >
@@ -108,7 +108,7 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
-                            
+
                             <Link v-if="item.initial_budget > 0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -116,13 +116,20 @@
                             </Link>
                             <span v-else class="text-gray-400">Asignar Productos</span>
 
-                            
+
                             <Link v-if="item.initial_budget > 0"
                                 :href="route('projectmanagement.liquidate', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Liquidaciones
                             </Link>
                             <span v-else class="text-gray-400">Liquidaciones</span>
+                            <div>
+                                <Link v-if="item.initial_budget > 0 && item.preproject.customer_id == 3"
+                                :href="route('huawei.show', { project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Huawei
+                            </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -152,6 +159,7 @@ const props = defineProps({
     auth: Object,
     userPermissions:Array
 })
+
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);

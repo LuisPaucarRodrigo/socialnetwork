@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Huawei\FileDataController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -34,5 +35,8 @@ Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->g
 Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->group(function () {
     include_once 'snsot_route.php';
 });
+
+Route::get('/huawei/{project}', [FileDataController::class, 'render'])->name('huawei.show');
+Route::post('/huawei/post', [FileDataController::class, 'uploadExcel'])->name('huawei.post');
 
 require __DIR__ . '/auth.php';
