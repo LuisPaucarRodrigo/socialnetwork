@@ -554,7 +554,6 @@ const submitEdit = () => {
       showModalConfirmEdit.value = true
       setTimeout(() => {
         showModalConfirmEdit.value = false;
-        router.visit(route('huawei.show', {project: props.project_id}))
       }, 2000);
     },
   });
