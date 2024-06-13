@@ -164,6 +164,8 @@ class FileDataController extends Controller
         ]);
 
         $itemToEdit->update($data);
+
+        return redirect()->back();
     }
 
     // Rellenar con valores nulos si el tamaño del array es menor al número de columnas esperado
