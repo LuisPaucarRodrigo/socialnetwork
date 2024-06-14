@@ -37,7 +37,7 @@ class ProjectConstants
                     'state' => true
                 ],
                 'quote_services' => [
-                    //to specify
+                    
                 ],
                 //warehouse products
 

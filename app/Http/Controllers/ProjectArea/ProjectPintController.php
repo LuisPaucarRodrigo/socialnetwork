@@ -8,7 +8,9 @@ use Inertia\Inertia;
 
 class ProjectPintController extends Controller
 {
+
     public function pint_create_project() {
+        
         return Inertia::render('ProjectArea/Preproject/CreateProjectPint');
     }
 }
