@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Models\Preproject;
+use App\Models\Service;
 
 class ProjectConstants
 {
@@ -36,10 +37,12 @@ class ProjectConstants
                     'observations' => 'A 30 días después de entregada la factura',
                     'state' => true
                 ],
-                'quote_services' => [
-                    
-                ],
-                //warehouse products
+                
+                'quote_services' => $this->getQuoteServicesStructured($data['serivces']),
+                'project' => [
+                    'priority'=> 'Alta',
+                    'description'=> $name,
+                ]
 
 
             ];
@@ -91,6 +94,21 @@ class ProjectConstants
             return $daysInMonth;
         } else {
             return 'Fecha no válida';
+        }
+    }
+
+
+    function getQuoteServicesStructured ($services) {
+        $result = [];
+        foreach($services as $service_id){
+            $item = Service::find($service_id);
+            array_push($result, [
+                'service_id' => $item->id,
+                'resource_entry_id' => null,
+                'days' => '1',
+                'profit_margin'=> 20,
+                'rent_price'=> $item->rent_price,
+            ]);
         }
     }
 

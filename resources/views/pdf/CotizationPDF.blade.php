@@ -198,7 +198,8 @@
         <td class="td-custom" style="width: 140px; border-right: none">Lugar de entrega</td>
         <td class="td-custom" style="width: 562.5px; border-left: none">
           : {{$preproject->quote->deliverable_place}}
-         </td>      </tr>
+        </td>
+      </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Forma de Pago</td>
         <td class="td-custom" style="width: 562.5px; border-left: none">: {{ $preproject->quote->payment_type }}</td>
