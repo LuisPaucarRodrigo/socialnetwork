@@ -101,9 +101,9 @@
         </td>
         <td class="td-custom" style="text-align: right">S/. {{ number_format($item['quantity'] * number_format($item['unitary_price'],4), 2) }}</td>
       </tr>
-		@php
-        $subtotalProd +=  floatval($item['quantity'] * number_format($item['unitary_price'],4));      
- @endphp
+      @php
+      $subtotalProd += floatval($item['quantity'] * number_format($item['unitary_price'],4));
+      @endphp
       @endforeach
       @php
       @endphp
@@ -141,7 +141,7 @@
         </td>
       </tr>
       @php
-      $subtotal += floatval($item['days']*$item['resources_quantity']* number_format($item['rent_price'],2))      @endphp
+      $subtotal += floatval($item['days']*$item['resources_quantity']* number_format($item['rent_price'],2)) @endphp
       @endforeach
       @php
       @endphp
@@ -191,7 +191,8 @@
         <td class="td-custom" style="width: 140px; border-right: none">Lugar de entrega</td>
         <td class="td-custom" style="width: 562.5px; border-left: none">
           : {{$preproject->quote->deliverable_place}}
-         </td>      </tr>
+        </td>
+      </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Forma de Pago</td>
         <td class="td-custom" style="width: 562.5px; border-left: none">: {{ $preproject->quote->payment_type }}</td>
