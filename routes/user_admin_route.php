@@ -29,6 +29,7 @@ Route::middleware('permission:UserManager')->group(function () {
 
     Route::get('rols', [ManagementRolsController::class, 'rols_index'])->name('rols.index');
     Route::post('rols/store', [ManagementRolsController::class, 'store'])->name('rols.store');
+    Route::post('rols/update/{id}', [ManagementRolsController::class, 'update'])->name('rols.update');
     Route::delete('rols/delete/{id}', [ManagementRolsController::class, 'delete'])->name('rols.delete');
     Route::get('rols/details/{id}', [ManagementRolsController::class, 'details'])->name('rols.details');
 
