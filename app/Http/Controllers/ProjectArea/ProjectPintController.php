@@ -11,6 +11,6 @@ class ProjectPintController extends Controller
 
     public function pint_create_project() {
         
-        return Inertia::render('ProjectArea/Preproject/CreateProjectPint');
+        return Inertia::render('ProjectArea/PreProject/CreateProjectPint');
     }
 }
