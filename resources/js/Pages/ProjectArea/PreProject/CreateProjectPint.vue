@@ -3,7 +3,7 @@
     <Head title="Anteproyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
-            Proyecto y Anteproyecto Claro CICSA
+            Anteproyecto y Proyecto Claro CICSA
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
@@ -11,10 +11,8 @@
                     <div class="border-b border-gray-900/10 mb-2">
                     </div>
 
-                    <div class="border-b border-gray-900 pb-12">
-                        <h2 class="text-base font-semibold leading-7 text-gray-900">
-                            Registro de Anteproyecto-Proyecto CLARO CICSA
-                        </h2>
+                    <div class="pb-12">
+                        
                         <br>
                         <div class="border-b grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4  border-gray-900/10 pb-12">
 
@@ -61,30 +59,7 @@
                            
                             
 
-                            <div>
-                                <InputLabel for="title" class="font-medium leading-6 text-gray-900">Títulos</InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.title_id" id="title_id"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="">Selecciona un título</option>
-                                        <option v-for="title in titles" :key="title.id" :value="title.id">{{ title.title
-                                            }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.title_id" />
-                                </div>
-                            </div>
 
-
-                            <div>
-                                <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <textarea type="text" v-model="form.observation" id="observation"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.observation" />
-                                </div>
-                            </div>
                         </div>
 
                     </div>
@@ -94,7 +69,7 @@
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                 </div>
             </form>
-            <Modal :show="showContactModal">
+            <!-- <Modal :show="showContactModal">
                 <div class="p-6">
                     <h2 class="text-base font-medium leading-7 text-gray-900">
                         Agregando Productos de Almacen
@@ -118,7 +93,7 @@
                         </div>
                     </form>
                 </div>
-            </Modal>
+            </Modal> -->
             <ErrorOperationModal :showError="showErrorContact" title="Error"
                 message="El contacto ya fue añadido o es inválido" />
 
@@ -147,10 +122,8 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { preproject, customers, titles } = defineProps({
-    preproject: Object,
-    customers: Object,
-    titles: Object
+const {  } = defineProps({
+
 })
 
 const templates = [
@@ -166,45 +139,13 @@ const initial_state = {
 
 }
 
-const update_state = {
-    ...preproject,
-    code: preproject?.code?.substring(9),
-    contacts: preproject?.contacts?.map(item => item.id),
-    hasSubcustomer: preproject?.subcustomer_id ? true : false
-}
-
 
 const form = useForm({
-    ...(preproject ? update_state : initial_state)
+    ...initial_state
 });
 
-const customerBusinnes = ref('')
 
-const contactsList = ref([])
-const contactItem = ref("")
-const helperContactList = (customer_id, subcustomer_id, hasSC) => {
-    const matchCustomer = customers.find(item => item.id == customer_id)
-    const matchSubCustomer = customers.find(item => item.id == subcustomer_id)
-    if (matchSubCustomer) {
-        contactsList.value = matchSubCustomer.customer_contacts
-    } else if (matchCustomer && !hasSC) {
-        contactsList.value = matchCustomer.customer_contacts
-    } else {
-        contactsList.value = []
-    }
-}
 
-const customerRuc = ref('')
-const subCustomerRuc = ref('')
-if (preproject) {
-    helperContactList(form.customer_id, form.subcustomer_id, form.hasSubcustomer)
-    if (form.customer_id) {
-        customerRuc.value = customers?.find(item => item.id == form.customer_id)?.ruc
-    }
-    if (form.subcustomer_id) {
-        subCustomerRuc.value = customers?.find(item => item.id == form.subcustomer_id)?.ruc
-    }
-}
 
 
 const submit = () => {
@@ -233,63 +174,9 @@ const submit = () => {
 }
 
 
-const handleAutocomplete = (e, model) => {
-    form.cpe = '';
-    const ruc = e.target.value;
-    let matchedClient = customers.find(item => item.ruc == ruc)
-    if (matchedClient) {
-        customerBusinnes.value = matchedClient.business_name
-        form[model] = matchedClient.id
-    } else {
-        form[model] = ''
-    }
-    helperContactList(form.customer_id, form.subcustomer_id, form.hasSubcustomer)
-}
-
-const showContactModal = ref(false)
-function openContactModal() {
-    showContactModal.value = true
-}
-function closeContactModal() {
-    showContactModal.value = false
-}
 
 
-function submitContact() {
-    if (form.contacts.includes(contactItem.value)) {
-        showErrorContact.value = true
-        setTimeout(() => {
-            showErrorContact.value = false
-            closeContactModal()
-        }, 1500)
-    } else {
-        form.contacts.push(contactItem.value)
-        closeContactModal()
-    }
-    contactItem.value = ''
-}
-
-function deleteContactItem(id) {
-    const index = form.contacts.indexOf(id);
-    form.contacts.splice(index, 1)
-}
 
 
-const handleSubClient = (e) => {
-    form.subcustomer_id = ''
-    subCustomerRuc.value = ''
-    contactItem.value = ''
-    form.contacts = []
-    helperContactList(form.customer_id, form.subcustomer_id, JSON.parse(e.target.value))
-}
-
-const updateProjectCode = () => {
-    const customerName = customerBusinnes.value.replace(' ', '').substring(0, 5);
-    const description = form.description.replace(' ', '').substring(0, 5);
-
-    form.code = `${customerName}-${description}`;
-};
-
-watch(() => [customerBusinnes.value, form.description], updateProjectCode);
 
 </script>

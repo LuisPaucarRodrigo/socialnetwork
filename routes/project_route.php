@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
+use App\Http\Controllers\ProjectArea\ProjectPintController;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use Illuminate\Support\Facades\Route;
@@ -194,6 +195,11 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/member/cicsa/sections', [CicsaSectionController::class, 'showSections'])->name('cicsa.sections');
 
     Route::get('/sections/cicsa/alarm', [CicsaSectionController::class, 'alarm'])->name('member.cicsa.alarm');
+
+
+
+    //pint auto
+    Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
 
 });
 
