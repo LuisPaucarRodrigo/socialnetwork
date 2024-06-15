@@ -200,6 +200,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     //pint auto
     Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
+    Route::post('/preproject/auto-store/pint', [ProjectPintController::class, 'pint_store_project'])->name('project.auto_store.pint');
 
 });
 

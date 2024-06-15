@@ -15,20 +15,22 @@ class ProjectConstants
             $name = 'OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR' . $this->formatDate($data['date']);
             $template = [
                 'preproject' => [
+                    'date'=>$data['date'],
                     'customer_id' => 1,
                     'subcustomer_id' => null,
                     'description' => $name,
                     'title' => null,
                     'code' => $this->getCode($data['date'], 'CICSA-OBRAM'),
                     'cpe' => $data['cpe'],
-                    'status' => null,
+                    'status' => 1,
 
                 ],
+                'preproject_contacts' => $data['contacts'],
                 'preproject_quote' => [
                     'name' => $name,
                     'date' => $data['date'],
                     'supervisor' => 'Alexander Azabache',
-                    'jefe' => 'Hosmer Castillo',
+                    'boss' => 'Hosmer Castillo',
                     'deliverable_time' => $this->getDaysInMonth($data['date']),
                     'validity_time' => 5,
                     'rev' => 1,
@@ -38,7 +40,7 @@ class ProjectConstants
                     'state' => true
                 ],
                 
-                'quote_services' => $this->getQuoteServicesStructured($data['serivces']),
+                'quote_services' => $this->getQuoteServicesStructured($data['services']),
                 'project' => [
                     'priority'=> 'Alta',
                     'description'=> $name,
@@ -100,16 +102,16 @@ class ProjectConstants
 
     function getQuoteServicesStructured ($services) {
         $result = [];
-        foreach($services as $service_id){
-            $item = Service::find($service_id);
+        foreach($services as $item){
             array_push($result, [
-                'service_id' => $item->id,
+                'service_id' => $item['id'],
                 'resource_entry_id' => null,
                 'days' => '1',
                 'profit_margin'=> 20,
-                'rent_price'=> $item->rent_price,
+                'rent_price'=> $item['rent_price'],
             ]);
         }
+        return $result;
     }
 
 }
