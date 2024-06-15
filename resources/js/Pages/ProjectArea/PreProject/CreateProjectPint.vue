@@ -12,9 +12,10 @@
                     </div>
 
                     <div class="pb-12">
-                        
+
                         <br>
-                        <div class="border-b grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4  border-gray-900/10 pb-12">
+                        <div
+                            class="border-b grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4  border-gray-900/10 pb-12">
 
                             <div>
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
@@ -54,10 +55,52 @@
                                 </div>
                             </div>
 
+                            <div class="col-start-1">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Contactos de CICSA
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div v-for="( item, i ) in  form.contacts " :key="i" class="">
+                                        <div
+                                            class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2">
+                                                {{ item.name }}: {{ item.phone }} </p>
+                                            <!-- @click="delete_already_employee(member.pivot.id, index)" -->
+                                            <button type="button" class="col-span-1 flex justify-end"
+                                                @click="deleteContactItem(i)">
+                                                <TrashIcon class=" text-red-500 h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <InputError :message="form.errors.contacts" />
+                                </div>
+                            </div>
+                            <div class="">
+                                <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
+                                    Servicios
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div v-for="( item, i ) in  form.services " :key="i" class="">
+                                        <div
+                                            class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2">
+                                                {{ item.name }} </p>
+                                            <button type="button" class="col-span-1 flex justify-end"
+                                                @click="deleteServiceItem(i)">
+                                                <TrashIcon class=" text-red-500 h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <InputError :message="form.errors.services" />
+                                </div>
+                            </div>
 
 
-                           
-                            
+
+
+
+
+
 
 
                         </div>
@@ -122,8 +165,9 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const {  } = defineProps({
-
+const { contacts_cicsa, services } = defineProps({
+    contacts_cicsa: Object,
+    services: Object,
 })
 
 const templates = [
@@ -135,8 +179,8 @@ const initial_state = {
     template: '',
     date: '',
     cpe: '',
-
-
+    contacts: contacts_cicsa,
+    services: services
 }
 
 
@@ -149,22 +193,13 @@ const form = useForm({
 
 
 const submit = () => {
-    let url = preproject ? route('preprojects.update', { preproject: preproject.id })
-        : route('preprojects.store')
+    let url = route('project.auto_store.pint')
     form.post(url, {
         onSuccess: () => {
-            if (preproject) {
-                showModalUpdate.value = true
-            } else {
-                showModal.value = true
-            }
+            showModal.value = true
             setTimeout(() => {
-                if (preproject) {
-                    showModalUpdate.value = false
-                } else {
-                    showModal.value = false
-                }
-                router.visit(route('preprojects.index'))
+                showModal.value = false
+                router.visit(route('preprojects.index', { preprojects_status: '1' }))
             }, 2000);
         },
         onError: (e) => {
@@ -175,8 +210,13 @@ const submit = () => {
 
 
 
+const deleteContactItem = (i) => {
+    form.contacts.splice(i, 1)
+}
 
-
+const deleteServiceItem = (i) => {
+    form.services.splice(i, 1)
+}
 
 
 </script>
