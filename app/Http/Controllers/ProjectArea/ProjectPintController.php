@@ -8,6 +8,7 @@ use App\Models\Customers_contact;
 use App\Models\Preproject;
 use App\Models\PreProjectQuote;
 use App\Models\PreprojectQuoteService;
+use App\Models\SpecialInventory;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -52,4 +53,11 @@ class ProjectPintController extends Controller
 
         return redirect()->back();
     }
+
+
+    public function sameCPEProducts (Request $request) {
+        $specialProducts = SpecialInventory::where('cpe',$request->cpe )->get();
+        return response()->json($specialProducts,200);
+    }
+
 }

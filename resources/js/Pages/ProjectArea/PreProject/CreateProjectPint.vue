@@ -94,6 +94,25 @@
                                     <InputError :message="form.errors.services" />
                                 </div>
                             </div>
+                            <div class="">
+                                <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
+                                    Servicios
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div v-for="( item, i ) in  form.services " :key="i" class="">
+                                        <div
+                                            class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2">
+                                                {{ item.name }} </p>
+                                            <button type="button" class="col-span-1 flex justify-end"
+                                                @click="deleteServiceItem(i)">
+                                                <TrashIcon class=" text-red-500 h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <InputError :message="form.errors.services" />
+                                </div>
+                            </div>
 
 
 
@@ -165,7 +184,7 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { contacts_cicsa, services } = defineProps({
+const { contacts_cicsa, services, currentProducts } = defineProps({
     contacts_cicsa: Object,
     services: Object,
 })
