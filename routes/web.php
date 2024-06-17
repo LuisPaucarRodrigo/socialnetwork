@@ -45,7 +45,7 @@ Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->gro
 });
 
 Route::get('/huawei/{project}', [FileDataController::class, 'render'])->name('huawei.show');
-Route::post('/huawei/{project}/post', [FileDataController::class, 'uploadExcel'])->name('huawei.post');
+Route::post('/huawei_prices', [HuaweiController::class, 'store'])->name('huawei.post');
 Route::post('/huawei/{project}/filter', [FileDataController::class, 'filter'])->name('huawei.filter');
 Route::put('/huawei/{project}/{itemToEdit}/update', [FileDataController::class, 'updateRegister'])->name('huawei.put');
 Route::get('/huawei/export/excel', [ExportController::class, 'export'])->name('huawei.export');
