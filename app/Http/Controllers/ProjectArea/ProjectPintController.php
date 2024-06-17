@@ -56,7 +56,7 @@ class ProjectPintController extends Controller
 
 
     public function sameCPEProducts (Request $request) {
-        $specialProducts = SpecialInventory::where('cpe',$request->cpe )->get();
+        $specialProducts = SpecialInventory::with('purchase_product')->where('cpe',$request->cpe )->where('warehouse_id', 1)->get();
         return response()->json($specialProducts,200);
     }
 
