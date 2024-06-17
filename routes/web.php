@@ -5,8 +5,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Huawei\FileDataController;
 use App\Http\Controllers\Huawei\ExportController;
+use App\Http\Controllers\Inventory\HuaweiController;
 use Inertia\Inertia;
 use App\Http\Controllers\ScraperController;
+use Illuminate\Routing\Route as RoutingRoute;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -47,5 +49,5 @@ Route::post('/huawei/{project}/post', [FileDataController::class, 'uploadExcel']
 Route::post('/huawei/{project}/filter', [FileDataController::class, 'filter'])->name('huawei.filter');
 Route::put('/huawei/{project}/{itemToEdit}/update', [FileDataController::class, 'updateRegister'])->name('huawei.put');
 Route::get('/huawei/export/excel', [ExportController::class, 'export'])->name('huawei.export');
-
+Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
 require __DIR__ . '/auth.php';
