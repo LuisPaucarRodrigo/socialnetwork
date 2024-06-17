@@ -6,33 +6,36 @@
         Datos de Cargas
       </template>
       <div class="min-w-full rounded-lg shadow">
+        <div class="mt-6 flex items-center">
         <PrimaryButton v-if="hasPermission('UserManager')" @click="openImportModal" type="button" class="flex-shrink-0">
             Importar Excel
         </PrimaryButton>
+    </div>
+
+
         <div class="overflow-x-auto mt-3">
           <table class="w-full whitespace-no-wrap">
             <thead>
               <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                 <th
                   class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                  N°</th>
-                <th
-                  class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                   Nombre de Carga</th>
                 <th
                   class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                   Fecha de Carga</th>
+                  <th
+                  class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                  </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in huaweiData.data" :key="item.id" class="text-gray-700">
-                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.id }}</td>
+              <tr v-for="(item, index) in loads.data" :key="index" class="text-gray-700">
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.name }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.created_at) }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                   <div class="flex items-center">
-                    <button v-if="hasPermission('UserManager')" @click=""
-                      class="text-orange-400 hover:underline mr-2">
+                    <button v-if="hasPermission('UserManager')" @click="openEditModal(item)"
+                      class="text-green-600 hover:underline mr-2">
                       <EyeIcon class="h-5 w-5" />
                     </button>
                   </div>
@@ -46,21 +49,11 @@
               <pagination :links="props.loads.links" />
           </div>
       </div>
-
       <Modal :show="importExcelModal">
         <div class="p-6">
             <h2 class="text-base font-medium leading-7 text-gray-900">
                 Subir Archivo
             </h2>
-            <div v-if="props.huaweiData.data.length > 0" class="inline-flex items-center p-2 mb-4  mt-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
-                    <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                    </svg>
-                    <span class="sr-only">Info</span>
-                        <div>
-                    <span class="font-small">Al subir un nuevo excel para este proyecto se reemplazarán los datos actuales, para no perder información puede editar un registro en específico.</span>
-                </div>
-            </div>
             <form @submit.prevent="submit">
                 <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
@@ -68,12 +61,16 @@
                     <div class="mt-2">
                         <InputLabel for="file">Archivo Excel</InputLabel>
                         <div class="mt-2">
-                            <input
+                            <TextInput
                                 type="file"
                                 class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
-                                @change="handleFileUpload"
+                                v-model="formUpload.file"
                                 accept=".xls, .xlsx"
-                            />                   </div>
+                            />
+                            <InputError :message="formUpload.errors.file" />
+
+
+                        </div>
                     </div>
 
                     <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -88,28 +85,65 @@
             </div>
         </Modal>
 
+      <ConfirmCreateModal :confirmingcreation="showModal" itemType="Archivo" />
     </AuthenticatedLayout>
   </template>
 
   <script setup>
   import { ref } from 'vue';
+  import * as XLSX from 'xlsx';
   import { useForm, router, Link, Head } from '@inertiajs/vue3';
   import Pagination from '@/Components/Pagination.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
   import { formattedDate } from '@/utils/utils'
-  import { EyeIcon } from '@heroicons/vue/24/outline';
-  import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+  import { PencilSquareIcon, EyeIcon } from '@heroicons/vue/24/outline';
   import Modal from '@/Components/Modal.vue';
-  import PrimaryButton from '@/Components/PrimaryButton.vue';
+  import InputLabel from '@/Components/InputLabel.vue';
+  import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+  import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
+  import InputFile from '@/Components/InputFile.vue';
+  import TextInput from '@/Components/TextInput.vue';
+  import InputError from '@/Components/InputError.vue';
 
   const props = defineProps({
     loads: Object,
     userPermissions: Array,
   });
 
+  const importExcelModal = ref(false);
+  const showModal = ref(false);
+
+  const formUpload = useForm({
+    file: null,
+  });
+
   const hasPermission = (permission) => {
-  return props.userPermissions.includes(permission);
+    return props.userPermissions.includes(permission);
+  }
+
+const openImportModal = () => {
+    importExcelModal.value = true;
 }
+
+const closeModal = () => {
+  form.reset();
+  importExcelModal.value = false;
+};
+
+
+
+const submit = () => {
+    form.post(route('huawei.post', {project: props.project_id}), {
+    onSuccess: () => {
+      closeModal();
+      showModal.value = true
+      setTimeout(() => {
+        showModal.value = false;
+        router.visit(route('huawei.show', {project: props.project_id}))
+      }, 2000);
+    },
+  });
+};
 
   </script>
