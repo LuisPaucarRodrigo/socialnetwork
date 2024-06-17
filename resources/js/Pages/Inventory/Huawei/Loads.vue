@@ -75,7 +75,7 @@
 
                     <div class="mt-6 flex items-center justify-end gap-x-6">
                     <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-                    <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                    <PrimaryButton type="submit" :class="{ 'opacity-25': formUpload.processing }">
                         Guardar
                     </PrimaryButton>
                     </div>
