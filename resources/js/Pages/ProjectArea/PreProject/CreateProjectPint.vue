@@ -49,7 +49,7 @@
                                     CPE
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="number" v-model="form.cpe" id="cpe"
+                                    <input @input="handleProductCPE($event.target.value)" type="number" v-model="form.cpe" id="cpe"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.cpe" />
                                 </div>
@@ -94,23 +94,25 @@
                                     <InputError :message="form.errors.services" />
                                 </div>
                             </div>
-                            <div class="">
+                            <div class="sm:col-span-1" >
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
-                                    Servicios
+                                    Productos
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <div v-for="( item, i ) in  form.services " :key="i" class="">
+                                    <div v-if="form.cpe !== '' && productsCPE.length>0"  v-for="( item, i ) in  productsCPE " :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
-                                            <p class=" text-sm col-span-7 line-clamp-2">
-                                                {{ item.name }} </p>
-                                            <button type="button" class="col-span-1 flex justify-end"
-                                                @click="deleteServiceItem(i)">
-                                                <TrashIcon class=" text-red-500 h-4 w-4" />
-                                            </button>
+                                            <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
+                                                {{ item.purchase_product?.name }}  -   {{ item.product_serial_number }}  -  {{ item.quantity }} </p>
+                                            
                                         </div>
                                     </div>
-                                    <InputError :message="form.errors.services" />
+                                    <div v-else class="">
+                                        <div
+                                            class="text-sm items-center my-2">
+                                           No hay productos asociados a este CPE
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -179,6 +181,7 @@ import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import axios from 'axios';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)
@@ -188,6 +191,16 @@ const { contacts_cicsa, services, currentProducts } = defineProps({
     contacts_cicsa: Object,
     services: Object,
 })
+
+
+const productsCPE = ref([])
+
+const handleProductCPE = async (cpe) => {
+    let res = await axios.post(route('pint_project.products.cpe'),{cpe})
+    productsCPE.value = res.data
+}
+
+
 
 const templates = [
     'Mantenimiento',
