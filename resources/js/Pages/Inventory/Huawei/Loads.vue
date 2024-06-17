@@ -127,20 +127,20 @@ const openImportModal = () => {
 }
 
 const closeModal = () => {
-  form.reset();
+  formUpload.reset();
   importExcelModal.value = false;
 };
 
 
 
 const submit = () => {
-    form.post(route('huawei.post', {project: props.project_id}), {
+    formUpload.post(route('huawei.loads.import'), {
     onSuccess: () => {
       closeModal();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('huawei.show', {project: props.project_id}))
+        router.visit(route('huawei.loads'))
       }, 2000);
     },
   });
