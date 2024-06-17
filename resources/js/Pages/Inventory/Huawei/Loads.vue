@@ -140,7 +140,6 @@ const submit = () => {
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('huawei.show', {project: props.project_id}))
       }, 2000);
     },
   });
