@@ -1,7 +1,10 @@
 <?php
 
+use App\Exports\HuaweiExport;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Huawei\FileDataController;
+use App\Http\Controllers\Huawei\ExportController;
 use Inertia\Inertia;
 use App\Http\Controllers\ScraperController;
 
@@ -38,5 +41,11 @@ Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->g
 Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->group(function () {
     include_once 'snsot_route.php';
 });
+
+Route::get('/huawei/{project}', [FileDataController::class, 'render'])->name('huawei.show');
+Route::post('/huawei/{project}/post', [FileDataController::class, 'uploadExcel'])->name('huawei.post');
+Route::post('/huawei/{project}/filter', [FileDataController::class, 'filter'])->name('huawei.filter');
+Route::put('/huawei/{project}/{itemToEdit}/update', [FileDataController::class, 'updateRegister'])->name('huawei.put');
+Route::get('/huawei/export/excel', [ExportController::class, 'export'])->name('huawei.export');
 
 require __DIR__ . '/auth.php';
