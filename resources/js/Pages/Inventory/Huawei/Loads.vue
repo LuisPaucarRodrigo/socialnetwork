@@ -50,38 +50,25 @@
           </div>
       </div>
       <Modal :show="importExcelModal">
-        <div class="p-6">
-            <h2 class="text-base font-medium leading-7 text-gray-900">
-                Subir Archivo
-            </h2>
-            <form @submit.prevent="submit">
-                <div class="space-y-12">
-                <div class="border-b border-gray-900/10 pb-12">
-
-                    <div class="mt-2">
-                        <InputLabel for="file">Archivo Excel</InputLabel>
-                        <div class="mt-2">
-                            <TextInput
-                                type="file"
-                                class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
-                                v-model="formUpload.file"
-                                accept=".xls, .xlsx"
-                            />
-                            <InputError :message="formUpload.errors.file" />
-
-
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">Subir Archivo</h2>
+                <form @submit.prevent="submit">
+                    <div class="space-y-12">
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <div class="mt-2">
+                                <InputLabel for="file">Archivo Excel</InputLabel>
+                                <div class="mt-2">
+                                    <input type="file" @change="handleFileUpload" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" accept=".xls, .xlsx" />
+                                    <InputError :message="formUpload.errors.file" />
+                                </div>
+                            </div>
+                            <div class="mt-6 flex items-center justify-end gap-x-6">
+                                <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
+                                <PrimaryButton type="submit" :class="{ 'opacity-25': formUpload.processing }">Guardar</PrimaryButton>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="mt-6 flex items-center justify-end gap-x-6">
-                    <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-                    <PrimaryButton type="submit" :class="{ 'opacity-25': formUpload.processing }">
-                        Guardar
-                    </PrimaryButton>
-                    </div>
-                </div>
-                </div>
-            </form>
+                </form>
             </div>
         </Modal>
 
@@ -133,17 +120,27 @@ const closeModal = () => {
 
 
 
-const submit = () => {
-    formUpload.post(route('huawei.loads.import'), {
-    onSuccess: () => {
-      closeModal();
-      showModal.value = true
-      setTimeout(() => {
-        showModal.value = false;
-        router.visit(route('huawei.loads'))
-      }, 2000);
-    },
-  });
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    formUpload.file = file;
 };
+
+const submit = async () => {
+    const formData = new FormData();
+    formData.append('file', formUpload.file);
+
+    await formUpload.post(route('huawei.loads.import'), {
+        data: formData,
+        onSuccess: () => {
+            closeModal();
+            showModal.value = true;
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('huawei.loads'));
+            }, 2000);
+        },
+    });
+};
+
 
   </script>

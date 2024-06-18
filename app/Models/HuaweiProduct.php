@@ -19,5 +19,10 @@ class HuaweiProduct extends Model
         'pg2_id',
     ];
 
-    
+    public function huawei_product_load ()
+    {
+        return $this->belongsTo(HuaweiProductLoad::class, 'hpl_id');
+    }
+
+
 }
