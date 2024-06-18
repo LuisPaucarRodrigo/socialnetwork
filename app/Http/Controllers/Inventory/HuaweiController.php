@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
-use App\Models\HuaweiProduct;
-use App\Models\HuaweiProductLoad;
 use App\Models\HuaweiAnexe1;
 use App\Models\HuaweiAnexe2;
+use App\Models\HuaweiProduct;
+use App\Models\HuaweiProductLoad;
 use App\Models\PriceGuide1;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -24,34 +24,38 @@ class HuaweiController extends Controller
         ]);
     }
 
-    public function store (Request $request) {
-        $request->validate([
-            'file' => 'required|mimes:xls,xlsx',
-        ]);
-        $file = $request->file('file');
-        $importData = Excel::toArray([], $file);
-
-        foreach ($importData[0] as $row) {
-
-            $an_sanitize = $this->sanitize_text($row[0]);
-
-            // $annex1 =
-            // if ($an_sanitize === '') {
-
-            // } else {
-
-            // }
-
-            HuaweiProduct::create([
-                'nombre' => $row[0],
-                'apellido' => $row[1],
-            ]);
-        }
-
-        return back()->with('success', 'Empleados importados con éxito.');
 
 
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'file' => 'required',
+    //     ]);
+
+    //     $file = $request->file('file');
+
+    //     $huawei_pl = HuaweiProductLoad::create([
+    //         'name' => 'carga nice',
+    //         'path' => 'un path',
+    //     ]);
+
+    //     // Usa la clase de importación
+    //     Excel::import(new HuaweiProductsImport($huawei_pl), $file);
+
+    //     return redirect()->back();
+    // }
     public function import(Request $request)
     {
         try {
