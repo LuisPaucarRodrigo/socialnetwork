@@ -50,4 +50,7 @@ Route::post('/huawei/{project}/filter', [FileDataController::class, 'filter'])->
 Route::put('/huawei/{project}/{itemToEdit}/update', [FileDataController::class, 'updateRegister'])->name('huawei.put');
 Route::get('/huawei/export/excel', [ExportController::class, 'export'])->name('huawei.export');
 Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
+Route::post('/huaweiLoads/import', [HuaweiController::class, 'store'])->name('huawei.loads.import');
+
+
 require __DIR__ . '/auth.php';
