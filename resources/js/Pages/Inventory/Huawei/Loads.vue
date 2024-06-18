@@ -61,12 +61,9 @@
                     <div class="mt-2">
                         <InputLabel for="file">Archivo Excel</InputLabel>
                         <div class="mt-2">
-                            <TextInput
-                                type="file"
-                                class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
-                                v-model="formUpload.file"
-                                accept=".xls, .xlsx"
-                            />
+                          <InputFile type="file" v-model="formUpload.file" 
+                          accept=".xls, .xlsx"
+                          class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             <InputError :message="formUpload.errors.file" />
 
 
@@ -75,7 +72,7 @@
 
                     <div class="mt-6 flex items-center justify-end gap-x-6">
                     <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-                    <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                    <PrimaryButton type="submit" :class="{ 'opacity-25': formUpload.processing }">
                         Guardar
                     </PrimaryButton>
                     </div>
@@ -127,14 +124,14 @@ const openImportModal = () => {
 }
 
 const closeModal = () => {
-  form.reset();
+  formUpload.reset();
   importExcelModal.value = false;
 };
 
 
 
 const submit = () => {
-    form.post(route('huawei.post', {project: props.project_id}), {
+    formUpload.post(route('huawei.loads.import'), {
     onSuccess: () => {
       closeModal();
       showModal.value = true
