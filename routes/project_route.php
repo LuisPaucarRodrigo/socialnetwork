@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
+use App\Http\Controllers\ProjectArea\ProjectPintController;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use Illuminate\Support\Facades\Route;
@@ -137,7 +138,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     //Preproject image
     Route::get('/preprojects/{preproject_id}/report/image', [PreProjectController::class, 'index_image'])->name('preprojects.imagereport.index');
     Route::get('/preprojects/{preproject_id}/report/code/image', [PreProjectController::class, 'registerCodePhoto'])->name('preprojects.report.images');
-    Route::get('/preprojects/{image}/report/showimage', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
+    Route::get('/preprojects/report/showimage/{image}', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
     Route::get('/preprojects/{preproject_id}/report/download_image', [PreProjectController::class, 'download_image'])->name('preprojects.imagereport.download');
 
     //Photographic report
@@ -185,7 +186,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     //Project liquidate
     Route::get('/project/{project_id}/products/liquidate', [LiquidationController::class, 'index'])->name('projectmanagement.liquidate');
-    Route::get('/project/products/{project_id}/liquidateHistory', [LiquidationController::class, 'history'])->name('projectmanagement.liquidate.history');
+    Route::get('/project/{project_id}/product/liquidateHistory', [LiquidationController::class, 'history'])->name('projectmanagement.liquidate.history');
 
     //Member Cicsa Sections 
     Route::get('/member/cicsa', [CicsaSectionController::class, 'showSubSections'])->name('member.cicsa');
@@ -194,6 +195,13 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/member/cicsa/sections', [CicsaSectionController::class, 'showSections'])->name('cicsa.sections');
 
     Route::get('/sections/cicsa/alarm', [CicsaSectionController::class, 'alarm'])->name('member.cicsa.alarm');
+
+
+
+    //pint auto
+    Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
+    Route::post('/preproject/auto-store/pint', [ProjectPintController::class, 'pint_store_project'])->name('project.auto_store.pint');
+    Route::post('/product-CPE/', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
 
 });
 

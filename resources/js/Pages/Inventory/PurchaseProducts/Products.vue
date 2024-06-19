@@ -428,7 +428,7 @@ const closeModalDoc = () => {
 const deleteProduct = () => {
     const docId = docToDelete.value;
     if (docId) {
-        router.put(route('inventory.purchaseproducts.disable', { purchase_product: docId }), {
+        router.put(route('inventory.purchaseproducts.disable', { purchase_product: docId }),null, {
             onSuccess: () => closeModalDoc()
         });
     }

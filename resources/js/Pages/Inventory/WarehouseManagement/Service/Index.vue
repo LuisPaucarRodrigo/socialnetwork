@@ -104,7 +104,7 @@
                         <InputLabel for="rent_price">Precio de Renta por Día
                         </InputLabel>
                         <div class="mt-2">
-                            <input id="rent_price" type="number" min="0" step="0.01" v-model="form.rent_price"
+                            <input id="rent_price" type="number" min="0" step="0.00001" v-model="form.rent_price"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>

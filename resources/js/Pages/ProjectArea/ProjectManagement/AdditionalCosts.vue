@@ -362,21 +362,15 @@ const submit = () => {
 };
 
 const submitEdit = () => {
-  form.put(route('projectmanagement.updateAdditionalCost', { project_id: props.project_id.id, additional_cost: form.id }), {
+  form.put(route('projectmanagement.updateAdditionalCost', { additional_cost: form.id }), {
     onSuccess: () => {
       closeModal();
       form.reset();
       showModalEdit.value = true;
       setTimeout(() => {
-        showModalEdit.value = false;  // <-- Cambio aquí
+        showModalEdit.value = false;
         router.visit(route('projectmanagement.additionalCosts', { project_id: props.project_id.id }));
       }, 2000);
-    },
-    onError: () => {
-      form.reset();
-    },
-    onFinish: () => {
-      form.reset();
     }
   });
 };

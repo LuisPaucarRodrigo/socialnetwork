@@ -57,13 +57,9 @@ class ArchivesController extends Controller
             ->where('folder_id', $folder)->first();
         if ($findFolder?->create) {
             $folder = Folder::find($request->folder_id);
-
-            // Obtener el valor de availability
             $availability = $folder->availability;
 
-            // Obtener el último archivo
             $lastArchive = Archive::where('folder_id', $request->folder_id)->orderBy('id', 'desc')->first();
-
             $firstDueDate = null;
             if ($lastArchive) {
                 // Obtener el primer archive_user y su due_date

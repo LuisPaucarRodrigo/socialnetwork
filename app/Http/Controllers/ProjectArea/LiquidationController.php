@@ -62,6 +62,7 @@ class LiquidationController extends Controller
 
 
     public function history($project_id){
+        dd('hal0000');
         $liquidations = ProjectEntryLiquidation::whereHas('project_entry.project', function ($query) use ($project_id) {
             $query->where('project_id', $project_id);
         })->with('project_entry.entry.inventory.purchase_product', 'project_entry.special_inventory.purchase_product')->paginate(5);
