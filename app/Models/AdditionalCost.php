@@ -26,17 +26,4 @@ class AdditionalCost extends Model
 
 
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
 }

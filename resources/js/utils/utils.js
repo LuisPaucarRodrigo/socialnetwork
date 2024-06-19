@@ -1,5 +1,5 @@
 export function formattedDate(fecha) {
-  if (fecha === undefined || fecha === null){
+  if (fecha === undefined || fecha === null) {
     return ''
   }
   const tieneHora = fecha.includes(':');

@@ -64,7 +64,7 @@
           <div v-else>
             Horario no Disponible
           </div>
-          <div class="mt-8 flex items-center justify-end gap-x-6">
+          <div class="mt-8 flex items-center justify-end gap-x-3">
             <button @click="closeScheduleModal"> Cerrar </button>
           </div>
         </div>

@@ -417,7 +417,7 @@
                 <InputError :message="form.errors.new_date" />
               </div>
             </div>
-            <div class="mt-6 flex items-center justify-end gap-x-6">
+            <div class="mt-6 flex items-center justify-end gap-x-3">
               <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
               <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                 Guardar
@@ -467,7 +467,7 @@
                 <InputError :message="formUsers.errors.due_date" />
               </div>
             </div>
-            <div class="mt-6 flex items-center justify-end gap-x-6">
+            <div class="mt-6 flex items-center justify-end gap-x-3">
               <SecondaryButton @click="closePermissionModal"> Cancelar </SecondaryButton>
               <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                 Guardar
@@ -490,7 +490,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import ConfirmApproveModal from '@/Components/ConfirmApproveModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
@@ -546,7 +545,6 @@ const formUsers = useForm({
 });
 
 const create_document = ref(false);
-const archive_id = ref(null);
 const showModal = ref(false);
 const showAssignModal = ref(false);
 const confirmingDocDeletion = ref(false);

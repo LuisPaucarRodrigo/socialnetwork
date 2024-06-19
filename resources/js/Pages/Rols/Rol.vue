@@ -1,6 +1,7 @@
 <template>
+
     <Head title="Roles" />
-    <AuthenticatedLayout :redirectRoute="'rols.index'">        
+    <AuthenticatedLayout :redirectRoute="'rols.index'">
         <template #header>
             Roles
         </template>
@@ -46,6 +47,14 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
+                                    <button type="button" @click="editModalRol(rol)"
+                                        class="text-blue-900 whitespace-no-wrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                        </svg>
+                                    </button>
                                     <button type="button" @click="confirmRolsDeletion(rol.id)"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -67,11 +76,30 @@
         <Modal :show="create_rol">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Crear Rol
+                    {{ stateCreateUpdate == true ? 'Crear' : 'Actualizar' }} Rol
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
+                            <div class="shadow border-gray-300/10">
+                                <InputLabel for="name">Aviso</InputLabel>
+                                <div class="mt-4 p-4 border border-red-300 rounded-md bg-red-50">
+                                    <p class="text-red-600">
+                                        Aviso Importante:<br>
+                                        Si no se siguen las indicaciones mencionadas, podrían surgir fallos en el
+                                        aplicativo.
+                                    </p>
+                                </div>
+                                <div class="mt-2 p-4 border border-gray-300 rounded-md bg-gray-50">
+                                    <p>
+                                        Los roles administradores tienen únicamente permisos de gerente.<br>
+                                        Un rol gerente posee solo permisos de gerente.<br>
+                                        Un rol que solo puede visualizar tendrá permisos normales, pero no de gerente.
+                                    </p>
+                                </div>
+
+                            </div>
+
                             <div>
                                 <InputLabel for="name">Nombre</InputLabel>
                                 <div class="mt-2">
@@ -93,15 +121,18 @@
                                     <option disabled>
                                         Selecciona uno o varios
                                     </option>
-                                    <option v-for="permission in permissions" :key="permission.id" :value="permission.id">
+                                    <option v-for="permission in permissions" :key="permission.id"
+                                        :value="permission.id" :selected="form.permission.includes(permission.id)">
                                         {{ permission.name }}| {{ permission.description }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.permission" />
                             </div>
-                            <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <div class="mt-6 flex items-center justify-end gap-x-3">
                                 <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
-                                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
+                                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                                    {{ stateCreateUpdate === true ? 'Crear' : 'Actualizar' }}
+                                </PrimaryButton>
                             </div>
                         </div>
                     </div>
@@ -131,6 +162,8 @@ const create_rol = ref(false);
 const confirmingRolDeletion = ref(false);
 const rolToDelete = ref(null);
 const showModal = ref(false);
+const stateCreateUpdate = ref(true);
+const rol_id_update = ref(null);
 
 const form = useForm({
     name: '',
@@ -149,15 +182,17 @@ const add_rol = () => {
 
 const closeModal = () => {
     create_rol.value = false;
+    stateCreateUpdate.value = true
 };
 
 const submit = () => {
-    form.post(route('rols.store'), {
+    let url = stateCreateUpdate.value ? route('rols.store') : route('rols.update', { id: rol_id_update.value })
+    form.post(url, {
         onSuccess: () => {
             closeModal();
             showModal.value = true
             setTimeout(() => {
-                showModal.value = false;
+                showModal.value = false
                 router.visit(route('rols.index'))
             }, 2000);
         },
@@ -185,4 +220,12 @@ const closeModalRol = () => {
     confirmingRolDeletion.value = false;
 };
 
+function editModalRol(rol) {
+    rol_id_update.value = rol.id
+    stateCreateUpdate.value = false
+    form.name = rol.name
+    form.description = rol.description
+    form.permission = rol.permissions.map(permission => permission.id);
+    create_rol.value = true
+};
 </script>

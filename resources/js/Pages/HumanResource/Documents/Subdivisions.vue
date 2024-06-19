@@ -30,7 +30,10 @@
                   <div class="text-sm font-medium text-gray-900">{{ subdivision.name }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-left">
-                  <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
+                    <button @click="openUpdateSubdivisionModal(subdivision)" class="text-orange-400 hover:underline">
+                      <PencilSquareIcon class="h-5 w-5" />
+                    </button>
+                    <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline ml-1">
                     <TrashIcon class="h-5 w-5" />
                   </button>
                 </td>
@@ -40,52 +43,55 @@
         </div>
 
       </div>
-      <Modal :show="isCreateSubdivisionModalOpen">
+      <Modal :show="isCreateSubdivisionModalOpen || isUpdateSubdivisionModalOpen">
         <div class="p-6">
           <h2 class="text-base font-medium leading-7 text-gray-900">
-            Agregar Subdivisión
+            {{ isCreateSubdivisionModalOpen ? 'Agregar Subdivisión' : 'Actualizar Subdivisión'}}
           </h2>
-          <form @submit.prevent="submit">
+          <form @submit.prevent="isCreateSubdivisionModalOpen ? submit(false) : submit(true)">
             <div class="space-y-12">
               <div class="border-b border-gray-900/10 pb-12">
                 <div>
-                  <InputLabel for="name">Agregar nueva subdivisión:</InputLabel>
+                  <InputLabel for="name">{{ isCreateSubdivisionModalOpen ? 'Agregar nueva Subdivisión:' : 'Actualizar Subdivisión' }}</InputLabel>
                   <div class="mt-2">
                     <TextInput type="text" v-model="form.name" id="name" autocomplete="address-level1" />
                     <InputError :message="form.errors.name" />
                   </div>
                 </div>
                 <div class="mt-6 flex items-center justify-end gap-x-6">
-                  <SecondaryButton @click="closeCreateSubdivisionModal"> Cancelar </SecondaryButton>
-                  <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
+                  <SecondaryButton @click="isCreateSubdivisionModalOpen ? closeCreateSubdivisionModal() : closeUpdateSubdivisionModal()"> Cancelar </SecondaryButton>
+                  <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">{{ isCreateSubdivisionModalOpen ? 'Guardar' : 'Actualizar' }}</PrimaryButton>
                 </div>
               </div>
             </div>
           </form>
         </div>
       </Modal>
-      <ConfirmCreateModal :confirmingcreation="showModal" itemType="subdivisión de documentos" />
-      <ConfirmDeleteModal :confirmingDeletion="create_subdivision" itemType="subdivisión"
+      <ConfirmCreateModal :confirmingcreation="showModal" itemType="Subdivisión de documentos" />
+      <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Subdivisión de documentos" />
+      <ConfirmDeleteModal :confirmingDeletion="create_subdivision" itemType="Subdivisión"
         :deleteFunction="deleteSubdivision" @closeModal="closeModalSubdivision" />
     </AuthenticatedLayout>
   </div>
 </template>
-    
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { TrashIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModal = ref(false);
+const showModalEdit = ref(false);
 
 const props = defineProps({
   subdivisions: Object,
@@ -93,10 +99,13 @@ const props = defineProps({
 });
 
 const form = useForm({
+  id: '',
   name: '',
 });
 
 const isCreateSubdivisionModalOpen = ref(false);
+const isUpdateSubdivisionModalOpen = ref(false);
+const editingSubdivision = ref(null);
 const create_subdivision = ref(false);
 const subdivisionToDelete = ref(null);
 
@@ -104,25 +113,51 @@ const openCreateSubdivisionModal = () => {
   isCreateSubdivisionModalOpen.value = true;
 };
 
+const openUpdateSubdivisionModal = (item) => {
+    editingSubdivision.value = JSON.parse(JSON.stringify(item));
+    form.id = editingSubdivision.value.id;
+    form.name = editingSubdivision.value.name;
+    isUpdateSubdivisionModalOpen.value = true;
+};
+
+
 const closeCreateSubdivisionModal = () => {
+  form.reset();
   isCreateSubdivisionModalOpen.value = false;
 };
 
-const submit = () => {
-  form.post(route('documents.storeSubdivision', { section: props.section.id }), {
-    onSuccess: () => {
-      closeCreateSubdivisionModal();
-      form.reset();
-      showModal.value = true
-      setTimeout(() => {
-        showModal.value = false;
-        router.visit(route('documents.subdivisions', { section: props.section.id }))
-      }, 2000);
-    },
-    onError: () => {
-      closeModal();
+const closeUpdateSubdivisionModal = () => {
+  form.reset();
+  isUpdateSubdivisionModalOpen.value = false;
+};
+
+
+const submit = (update) => {
+    if (update) {
+        form.put(route('documents.updateSubdivision', { section: props.section.id, subdivision: form.id }), {
+        onSuccess: () => {
+        closeUpdateSubdivisionModal();
+        form.reset();
+        showModalEdit.value = true
+        setTimeout(() => {
+            showModalEdit.value = false;
+            router.visit(route('documents.subdivisions', { section: props.section.id }))
+        }, 2000);
+        }
+    });
+    } else {
+        form.post(route('documents.storeSubdivision', { section: props.section.id }), {
+        onSuccess: () => {
+        closeCreateSubdivisionModal();
+        form.reset();
+        showModal.value = true
+        setTimeout(() => {
+            showModal.value = false;
+            router.visit(route('documents.subdivisions', { section: props.section.id }))
+        }, 2000);
+        }
+    });
     }
-  });
 };
 
 const confirmDeleteSubdivision = (subdivisionId) => {
@@ -145,4 +180,3 @@ const deleteSubdivision = async () => {
 };
 
 </script>
-    

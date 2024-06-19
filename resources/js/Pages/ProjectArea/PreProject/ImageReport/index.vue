@@ -6,7 +6,12 @@
             Imagenes para Reporte
         </template>
         <div class="min-w-full overflow-hidden rounded-lg">
-            <div class="mt-6 flex items-center justify-end gap-x-6">
+            <div class="mt-6 flex items-center justify-between gap-x-6">
+                <div class="mt-2">
+                    <PrimaryButton @click="exportReport()">
+                        Exportar
+                    </PrimaryButton>
+                </div>
                 <div class="mt-2">
                     <select required id="code" @change="requestPhotos($event.target.value)"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -178,13 +183,33 @@ const deleteImage = () => {
 
 function downloadImagen(imageId) {
     const backendImageUrl = route('preprojects.imagereport.download', { preproject_id: imageId });
-    window.open(backendImageUrl, '_blank');
+    axios.get(backendImageUrl)
+        .then(response => {
+            const imageUrl = response.data.url;
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = imageUrl.split('/').pop();
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(error => {
+            console.error('Error fetching the image URL:', error);
+        });
 };
 
 function openPreviewImagenModal(imageId) {
     if (imageId) {
         const url = route('preprojects.imagereport.show', { image: imageId });
-        window.open(url, '_blank');
+        axios.get(url)
+            .then(response => {
+                const imageUrl = response.data.url;
+                window.open(imageUrl, '_blank');
+            })
+            .catch(error => {
+                console.error('Error fetching image URL:', error);
+            });
     } else {
         console.error('No se proporcionó un ID de imagen válido');
     }
@@ -266,5 +291,9 @@ function approveCode(preproject_code_id) {
             }, 2000)
         }
     })
+}
+
+function exportReport(){
+
 }
 </script>
