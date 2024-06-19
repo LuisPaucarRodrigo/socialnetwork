@@ -95,7 +95,6 @@
   import { ref } from 'vue';
   import { useForm, router, Link, Head } from '@inertiajs/vue3';
   import Pagination from '@/Components/Pagination.vue';
-  import PrimaryButton from '@/Components/PrimaryButton.vue';
   import { formattedDate } from '@/utils/utils'
   import { EyeIcon } from '@heroicons/vue/24/outline';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';

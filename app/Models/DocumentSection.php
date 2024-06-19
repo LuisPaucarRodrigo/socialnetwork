@@ -11,10 +11,6 @@ class DocumentSection extends Model
 
     protected $fillable = ['name'];
 
-    public function documents()
-    {
-        return $this->hasMany(Document::class);
-    }
     public function subdivisions()
     {
         return $this->hasMany(Subdivision::class);
