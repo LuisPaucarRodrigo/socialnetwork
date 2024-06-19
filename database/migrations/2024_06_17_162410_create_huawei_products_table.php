@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->foreignId('pg1_id')->nullable()->constrained('price_guide1')->onDelete('cascade');
             $table->foreignId('pg2_id')->nullable()->constrained('price_guide2')->onDelete('cascade');
+            $table->string('zone');
             $table->timestamps();
         });
     }

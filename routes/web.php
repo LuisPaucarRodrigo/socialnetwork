@@ -50,7 +50,9 @@ Route::post('/huawei/{project}/filter', [FileDataController::class, 'filter'])->
 Route::put('/huawei/{project}/{itemToEdit}/update', [FileDataController::class, 'updateRegister'])->name('huawei.put');
 Route::get('/huawei/export/excel', [ExportController::class, 'export'])->name('huawei.export');
 Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
-Route::post('/huaweiLoads/import', [HuaweiController::class, 'store'])->name('huawei.loads.import');
-
-
+Route::post('/huaweiLoads/import', [HuaweiController::class, 'import'])->name('huawei.loads.import');
+Route::get('/huaweiLoads/{loadId}/products/{noPg?}', [HuaweiController::class, 'renderByLoad'])->name('huawei.loads.products');
+Route::get('/huaweiLoads/products/{huawei_product}/similarity', [HuaweiController::class, 'searchSimilarities'])->name('huawei.loads.products.similarities');
+Route::put('/huaweiLoads/{loadId}/products/associate/{huawei_product}', [HuaweiController::class, 'associate'])->name('huawei.loads.products.associate');
+Route::get('/huaweiLoads/{loadId}/exportpdf', [HuaweiController::class, 'exportHuaweiProducts'])->name('huawei.loads.exportpdf');
 require __DIR__ . '/auth.php';
