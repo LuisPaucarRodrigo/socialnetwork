@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Datos de Cargas" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'huawei.loads'">
       <template #header>
         Datos de Cargas
       </template>
@@ -29,15 +29,15 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in loads.data" :key="index" class="text-gray-700">
+              <tr v-for="item in loads.data" :key="item.id" class="text-gray-700">
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.name }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.created_at) }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                   <div class="flex items-center">
-                    <button v-if="hasPermission('UserManager')" @click="openEditModal(item)"
+                    <Link v-if="hasPermission('UserManager')" :href="route('huawei.loads.products', {loadId: item.id})"
                       class="text-green-600 hover:underline mr-2">
                       <EyeIcon class="h-5 w-5" />
-                    </button>
+                    </Link>
                   </div>
                 </td>
               </tr>
@@ -61,6 +61,17 @@
                                     <input type="file" @change="handleFileUpload" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" accept=".xls, .xlsx" />
                                     <InputError :message="formUpload.errors.file" />
                                 </div>
+                            </div>
+                            <div>
+                                <InputLabel for="anexe2" class="text-gray-700 mt-3">Zonas</InputLabel>
+                                <select v-model="formUpload.zone" id="anexe2" class="border rounded-md px-3 py-2 mb-3 w-full mt-3">
+                                    <option value="">Seleccionar Zona</option>
+                                    <option value="B1">B1</option>
+                                    <option value="B2">B2</option>
+                                    <option value="B3">B3</option>
+                                    <option value="B4">B4</option>
+                                </select>
+                                <InputError :message="formUpload.errors.zone" />
                             </div>
                             <div class="mt-6 flex items-center justify-end gap-x-6">
                                 <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
@@ -103,6 +114,7 @@
 
   const formUpload = useForm({
     file: null,
+    zone: ''
   });
 
   const hasPermission = (permission) => {
