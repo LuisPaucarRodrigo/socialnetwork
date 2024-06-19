@@ -52,13 +52,10 @@ class HuaweiController extends Controller
             'path' => 'un path',
         ]);
 
-        // Usa la clase de importación
         Excel::import(new HuaweiProductsImport($huawei_pl), $file);
 
         return redirect()->back();
     }
-
-
 
     function sanitize_text($text) {
         $text = strtolower($text);
