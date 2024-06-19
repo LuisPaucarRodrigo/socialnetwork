@@ -8,35 +8,26 @@ use App\Models\HuaweiAnexe2;
 use App\Models\HuaweiProduct;
 use App\Models\HuaweiProductLoad;
 use App\Models\PriceGuide1;
+use App\Models\PriceGuide2;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Response;
 
 class HuaweiController extends Controller
 {
     public function show ()
     {
+        $loads = HuaweiProductLoad::orderByDesc('created_at')->paginate(10);
+
         return Inertia::render('Inventory/Huawei/Loads', [
-            'loads' => HuaweiProductLoad::paginate(10)
+            'loads' => $loads,
         ]);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // public function store(Request $request)
     // {
@@ -58,10 +49,10 @@ class HuaweiController extends Controller
     // }
     public function import(Request $request)
     {
-        try {
             // Validar que el archivo es un Excel
             $data = $request->validate([
-                'file' => 'required|mimes:xls,xlsx'
+                'file' => 'required|mimes:xls,xlsx',
+                'zone' => 'required'
             ]);
 
             // Manejar la carga del archivo
@@ -81,7 +72,7 @@ class HuaweiController extends Controller
 
             // Definir el rango de lectura: A1:D hasta la última fila
             $startCell = 'A1';
-            $endCell = 'E' . $sheet->getHighestRow();
+            $endCell = 'D' . $sheet->getHighestRow();
             $range = "$startCell:$endCell";
 
             // Leer el rango especificado
@@ -100,7 +91,6 @@ class HuaweiController extends Controller
                     'B' => $row['B'],
                     'C' => $row['C'],
                     'D' => $row['D'],
-                    'E' => $row['E'],
                 ];
 
                 $rowsAsObjects[] = $rowObject;
@@ -116,38 +106,78 @@ class HuaweiController extends Controller
                     $sanitizedB = $this->sanitize_text($item->B);
                     $huaweiAnexe1 = HuaweiAnexe1::where('name', $sanitizedB)->first();
                     if ($huaweiAnexe1){
-                        $price_guide1 = PriceGuide1::where('ha1_id', $huaweiAnexe1->id)->where('bidding_area', $item->E);
+                        $price_guide1 = PriceGuide1::where('ha1_id', $huaweiAnexe1->id)->where('bidding_area', $request->zone)->first();
                         HuaweiProduct::create([
                             'hpl_id' => $hpl->id,
                             'name' => $item->A,
                             'anexe_name' => $item->B,
                             'anexe_unit' => $item->C,
                             'quantity' => $item->D,
-                            'pg1_id' => $price_guide1->id
+                            'pg1_id' => $price_guide1 ? $price_guide1->id : null,
+                            'zone' => $request->zone
                         ]);
                     }else{
                         $huaweiAnexe2 = HuaweiAnexe2::where('name', $sanitizedB)->first();
                         if ($huaweiAnexe2){
-                            $price_guide2 = PriceGuide1::where('ha1_id', $huaweiAnexe1->id)->where('bidding_area', $item->E);
+                            $price_guide2 = PriceGuide2::where('ha2_id', $huaweiAnexe2->id)->where('bidding_area', $request->zone)->first();
                             HuaweiProduct::create([
                                 'hpl_id' => $hpl->id,
                                 'name' => $item->A,
                                 'anexe_name' => $item->B,
                                 'anexe_unit' => $item->C,
                                 'quantity' => $item->D,
-                                'pg2_id' => $price_guide2->id
+                                'pg2_id' => $price_guide2 ? $price_guide2->id : null,
+                                'zone' => $request->zone
                             ]);
                         }else{
-                            abort(403, 'error');
+                            HuaweiProduct::create([
+                                'hpl_id' => $hpl->id,
+                                'name' => $item->A,
+                                'anexe_name' => $item->B,
+                                'anexe_unit' => $item->C,
+                                'quantity' => $item->D,
+                                'zone' => $request->zone
+                            ]);
                         }
                     }
                 }
             }
+    }
 
-        } catch (\Exception $e) {
-            // Manejo de excepciones para capturar errores
-            dd('Error al procesar el archivo: ' . $e->getMessage());
+    public function renderByLoad($loadId, $noPg = null)
+    {
+        $huawei_products = HuaweiProduct::where('hpl_id', $loadId)
+                            ->with('price_guide1', 'price_guide2')
+                            ->paginate(5);
+        $allHuaweiProducts = HuaweiProduct::where('hpl_id', $loadId)
+                            ->with('price_guide1', 'price_guide2')
+                            ->get();
+        $total = 0;
+
+        foreach ($allHuaweiProducts as $product) {
+            if ($product->price_guide1) {
+                $total += $product->price_guide1->unit_price * $product->quantity;
+            } elseif ($product->price_guide2) {
+                $total += $product->price_guide2->unit_price * $product->quantity;
+            }
         }
+
+        if ($noPg) {
+            $huawei_products = HuaweiProduct::where('hpl_id', $loadId)
+                                ->where(function ($query) {
+                                    $query->whereNull('pg1_id')
+                                        ->whereNull('pg2_id');
+                                })
+                                ->orderBy('created_at', 'desc') // Opcional: Ordenar por fecha de creación descendente
+                                ->paginate(5);
+        }
+
+        return Inertia::render('Inventory/Huawei/HuaweiProducts', [
+            'huawei_products' => $huawei_products,
+            'loadId' => $loadId,
+            'noPg' => $noPg,
+            'total' => $total
+        ]);
     }
 
     // Función para limpiar texto
@@ -165,6 +195,122 @@ class HuaweiController extends Controller
         }
 
         return $text;
+    }
+
+    public function searchSimilarities(HuaweiProduct $huawei_product)
+    {
+        // Obtener el nombre del anexo del HuaweiProduct
+        $anexeName = $huawei_product->anexe_name;
+
+        // Definir el umbral de similitud
+        $similarityThreshold = 70; // Por ejemplo, 70%
+
+        // Inicializar variables para almacenar los resultados
+        $result1 = null;
+        $result2 = null;
+
+        // Buscar en HuaweiAnexe1
+        $huaweiAnexe1Records = HuaweiAnexe1::all();
+        foreach ($huaweiAnexe1Records as $record) {
+            similar_text($record->original_name, $anexeName, $percent);
+            if ($percent >= $similarityThreshold) {
+                $result1 = $record;
+                break;
+            }
+        }
+
+        // Buscar en HuaweiAnexe2
+        $huaweiAnexe2Records = HuaweiAnexe2::all();
+        foreach ($huaweiAnexe2Records as $record) {
+            similar_text($record->original_name, $anexeName, $percent);
+            if ($percent >= $similarityThreshold) {
+                $result2 = $record;
+                break;
+            }
+        }
+
+        // Preparar la respuesta JSON
+        $response = [
+            'result1' => $result1,
+            'result2' => $result2,
+        ];
+
+        return response()->json($response);
+    }
+
+    public function associate($loadId, HuaweiProduct $huawei_product, Request $request)
+    {
+        if ($request->anexe1) {
+            // Buscar el HuaweiAnexe1 por su ID y cargar la relación price_guide_1
+            $anexe1 = HuaweiAnexe1::where('id', $request->anexe1)->first();
+
+            if ($anexe1) {
+                // Verificar si el HuaweiAnexe1 tiene asociado un price_guide_1
+                $priceGuide1 = PriceGuide1::where('ha1_id', $anexe1->id)->where('bidding_area', $huawei_product->zone)->first();
+
+                if ($priceGuide1) {
+                    // Asociar el HuaweiProduct con el price_guide_1 encontrado
+                    $huawei_product->pg1_id = $priceGuide1->id;
+                    $huawei_product->save();
+                }
+            }
+        } elseif ($request->anexe2) {
+            // Buscar el HuaweiAnexe2 por su ID y cargar la relación price_guide_2
+            $anexe2 = HuaweiAnexe2::where('id', $request->anexe2)->first();
+
+            if ($anexe2) {
+                // Verificar si el HuaweiAnexe2 tiene asociado un price_guide_2
+                $priceGuide2 = PriceGuide2::where('ha2_id', $anexe2->id)->where('bidding_area', $huawei_product->zone)->first();
+
+                if ($priceGuide2) {
+                    // Asociar el HuaweiProduct con el price_guide_2 encontrado
+                    $huawei_product->pg2_id = $priceGuide2->id;
+                    $huawei_product->save();
+                }
+            }
+        }
+    }
+
+    public function exportHuaweiProducts($loadId, Request $request)
+    {
+        // Obtener los datos a exportar
+        $products = HuaweiProduct::where('hpl_id', $loadId)->with('price_guide1', 'price_guide2')->get();
+        $total = 0;
+
+        foreach ($products as $product) {
+            if ($product->price_guide1) {
+                $total += $product->price_guide1->unit_price * $product->quantity;
+            } elseif ($product->price_guide2) {
+                $total += $product->price_guide2->unit_price * $product->quantity;
+            }
+        }
+        // Verificar si los datos no están vacíos
+        if ($products->isEmpty()) {
+            return response()->json(['error' => 'No hay datos para exportar'], 404);
+        }
+
+        // Nombre del archivo
+        $fileName = 'huawei_products.xlsx';
+
+        // Descargar usando una clase de exportación anónima
+        return Excel::download(new class($products, $total) implements \Maatwebsite\Excel\Concerns\FromView {
+            private $products;
+            private $total;
+
+            public function __construct($products, $total)
+            {
+                $this->products = $products;
+                $this->total = $total;
+            }
+
+            public function view(): \Illuminate\Contracts\View\View
+            {
+                return view('pdf.HuaweiCost', [
+                    'products' => $this->products,
+                    'total' => $this->total
+                ]);
+            }
+        }, $fileName);
     }
 
 }
