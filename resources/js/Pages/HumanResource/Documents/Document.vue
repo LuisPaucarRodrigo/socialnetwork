@@ -65,7 +65,7 @@
             </form>
           </div>
         </div>
-          
+
         <div class="flex sm:space-x-3  sm:flex-row flex-col sm:items-center">
           <InputLabel for="selectElement">Sección:</InputLabel>
           <select v-model="selectedSection" id="selectElement"
@@ -114,7 +114,7 @@
             class="flex items-center text-green-600 hover:underline">
             <EyeIcon class="h-4 w-4 ml-1" />
           </button>
-          <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
+          <button @click="downloadDocument(document.id, document.extension)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
           <button v-if="hasPermission('HumanResourceManager')" @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
@@ -213,6 +213,7 @@ const props = defineProps({
   search: String
 });
 
+console.log(props.documents)
 
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);
@@ -319,9 +320,19 @@ const deleteDocument = () => {
   }
 };
 
-function downloadDocument(documentId) {
-  const backendDocumentUrl = route('documents.download', { document: documentId });
-  window.open(backendDocumentUrl, '_blank');
+function downloadDocument(documentId, extension) {
+    const documentTitle = props.documents.find(item => item.id === documentId)?.title;
+    if (['png', 'jpg', 'jpeg'].includes(extension)){
+        const link = document.createElement('a');
+        link.href = window.location.origin + '/documents/documents/' + documentTitle;
+        link.download = documentTitle; // Nombre de archivo predeterminado
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }else {
+        const backendDocumentUrl = route('documents.download', { document: documentId });
+        window.open(backendDocumentUrl, '_blank');
+    }
 };
 
 function openPreviewDocumentModal(documentId) {
