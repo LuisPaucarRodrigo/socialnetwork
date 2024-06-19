@@ -42,7 +42,7 @@ class CreateManagementEmployees extends FormRequest
             'basic_salary' => 'required|numeric',
             'hire_date' => 'required|date',
             'education_level' => 'required|string|in:Universidad,Instituto,Otros',
-            'education_status' => 'required|string|in:Culminado,En Progreso',
+            'education_status' => 'required|string|in:Incompleto,Completo,En Progreso',
 
             'specialization' => 'required|string|max:255',
             'street_address' => 'required|string|max:255',
@@ -55,7 +55,7 @@ class CreateManagementEmployees extends FormRequest
             'emergencyContacts.*.emergency_relations' => 'required|string|max:255',
             'emergencyContacts.*.emergency_phone' => 'required|numeric|digits:9',
 
-            'familyDependents.*.family_dni' => 'required|numeric|digits:8',
+            'familyDependents.*.family_dni' => 'nullable|numeric|digits:8',
             'familyDependents.*.family_education' => 'required|string|in:Universidad,Instituto,Secundaria,Primaria,Inicial,Otros',
             'familyDependents.*.family_relation' => 'required|string|max:255',
             'familyDependents.*.family_name' => 'required|string|max:255',
