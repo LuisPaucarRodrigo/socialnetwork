@@ -8,6 +8,8 @@ use App\Models\DocumentSection;
 use App\Models\Subdivision;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
+use ZipArchive;
 
 class DocumentController extends Controller
 {
@@ -87,14 +89,14 @@ class DocumentController extends Controller
 
     public function index(Request $request) {
 
-        $documents = Document::with('section');
+        $documents = Document::all();
         $searchTerm = strtolower($request->query('searchTerm'));
         if ($searchTerm !== '') {
             $documents = $documents->where(function ($query) use ($searchTerm) {
                 $query->where('title', 'like', '%' . $searchTerm . '%');
-            })->get();
+            });
         }else {
-            $documents = $documents->get();
+            $documents = $documents;
         }
 
 
@@ -112,7 +114,6 @@ class DocumentController extends Controller
     {
         $request->validate([
             'document' => 'required|mimes:pdf,doc,docx,ppt,pptx,xlsx,png,jpg,jpeg|max:2048',
-            'section_id' => 'required|numeric',
             'subdivision_id' => 'required|numeric',
         ]);
         $documentName = null;
@@ -123,7 +124,6 @@ class DocumentController extends Controller
         }
 
         Document::create([
-            'section_id' => $request->section_id,
             'title' => $documentName,
             'subdivision_id' => $request->subdivision_id,
         ]);
@@ -133,7 +133,6 @@ class DocumentController extends Controller
     {
         $request->validate([
             'document' => 'required|mimes:pdf,doc,docx,ppt,pptx,xlsx|max:2048',
-            'section_id' => 'required|numeric',
             'subdivision_id' => 'required|numeric',
         ]);
 
@@ -150,7 +149,6 @@ class DocumentController extends Controller
             }
 
             $id->update([
-                'section_id' => $request->section_id,
                 'title' => $documentName,
                 'subdivision_id' => $request->subdivision_id,
             ]);
@@ -194,5 +192,55 @@ class DocumentController extends Controller
         }
         abort(404, 'Documento no encontrado');
     }
+    public function downloadSubdivisionDocumentsZip($subdivisionId)
+    {
+        try {
+            // Buscar la subdivisión por su ID con los documentos relacionados cargados
+            $subdivision = Subdivision::with('documents')->findOrFail($subdivisionId);
+
+            // Nombre del archivo ZIP temporal
+            $zipFileName = "subdivision_{$subdivisionId}_documents.zip";
+
+            // Ruta completa para el archivo ZIP temporal
+            $zipFilePath = storage_path("app/{$zipFileName}");
+
+            // Crear una instancia de ZipArchive
+            $zip = new ZipArchive;
+
+            // Intentar abrir el archivo ZIP para escritura
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+                // Iterar sobre los documentos de la subdivisión y agregarlos al ZIP
+                foreach ($subdivision->documents as $document) {
+                    // Ruta completa del archivo de documento
+                    $documentPath = public_path('/documents/documents/' . $document->title);
+
+                    // Verificar si el archivo existe antes de agregarlo al ZIP
+                    if (file_exists($documentPath)) {
+                        // Agregar archivo al ZIP con un nombre relativo dentro del ZIP
+                        $zip->addFile($documentPath, $document->title);
+                    } else {
+                        // Registrar un mensaje de advertencia si el archivo no existe
+                        Log::warning("El archivo '{$document->title}' no existe en la ubicación especificada.");
+                    }
+                }
+
+                // Cerrar el archivo ZIP
+                $zip->close();
+
+                // Descargar el archivo ZIP utilizando Laravel Response
+                return response()->download($zipFilePath, $zipFileName)->deleteFileAfterSend(true);
+
+            } else {
+                // Si no se puede abrir el archivo ZIP para escritura
+                Log::error('No se pudo abrir el archivo ZIP para escritura.');
+                return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);
+            }
+        } catch (\Exception $e) {
+            // Capturar cualquier excepción que pueda ocurrir durante el proceso
+            Log::error('Error al crear el archivo ZIP: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
+        }
+    }
+
 
 }

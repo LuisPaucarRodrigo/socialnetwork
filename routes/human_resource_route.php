@@ -63,7 +63,7 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::post('/document_sections/{section}/subdivisions', [DocumentController::class, 'storeSubdivision'])->name('documents.storeSubdivision');
     Route::put('/document_sections/{section}/subdivisions/{subdivision}/update', [DocumentController::class, 'updateSubdivision'])->name('documents.updateSubdivision');
     Route::delete('/document_sections/{section}/subdivisions/{subdivision}/delete', [DocumentController::class, 'destroySubdivision'])->name('documents.destroySubdivision');
-
+    Route::get('/document_sections/{section}/subdivisions/{subdivisionId}/zipdownload', [DocumentController::class, 'downloadSubdivisionDocumentsZip'])->name('documents.zipSubdivision');
     //SubSections
     Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
 
