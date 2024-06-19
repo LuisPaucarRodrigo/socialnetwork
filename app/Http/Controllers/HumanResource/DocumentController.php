@@ -8,8 +8,6 @@ use App\Models\DocumentSection;
 use App\Models\Subdivision;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
 
 class DocumentController extends Controller
 {
@@ -30,6 +28,15 @@ class DocumentController extends Controller
         DocumentSection::create([
             'name' => $request->name,
         ]);
+    }
+
+    public function updateSection (DocumentSection $section, Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $section->update($data);
     }
 
     public function destroySection(DocumentSection $section)
@@ -61,13 +68,22 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function destroySubdivision(DocumentSection $section, Subdivision $subdivision)
+    public function updateSubdivision ($section, Subdivision $subdivision, Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $subdivision->update($data);
+    }
+
+    public function destroySubdivision($section, Subdivision $subdivision)
     {
         $subdivision->delete();
         return to_route('documents.sections');
     }
 
-    //Documents 
+    //Documents
 
     public function index(Request $request) {
 

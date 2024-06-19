@@ -55,12 +55,14 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     //DocumentSections
     Route::get('/document_sections', [DocumentController::class, 'showSections'])->name('documents.sections');
     Route::post('/document_sections', [DocumentController::class, 'storeSection'])->name('documents.storeSection');
-    Route::delete('/document_sections/{section}', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
+    Route::put('/document_sections/{section}/update', [DocumentController::class, 'updateSection'])->name('documents.updateSection');
+    Route::delete('/document_sections/{section}/delete', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
 
     //Subdivisions
     Route::get('/document_sections/{section}/subdivisions', [DocumentController::class, 'showSubdivisions'])->name('documents.subdivisions');
     Route::post('/document_sections/{section}/subdivisions', [DocumentController::class, 'storeSubdivision'])->name('documents.storeSubdivision');
-    Route::delete('/document_sections/{section}/subdivisions/{subdivision}', [DocumentController::class, 'destroySubdivision'])->name('documents.destroySubdivision');
+    Route::put('/document_sections/{section}/subdivisions/{subdivision}/update', [DocumentController::class, 'updateSubdivision'])->name('documents.updateSubdivision');
+    Route::delete('/document_sections/{section}/subdivisions/{subdivision}/delete', [DocumentController::class, 'destroySubdivision'])->name('documents.destroySubdivision');
 
     //SubSections
     Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
