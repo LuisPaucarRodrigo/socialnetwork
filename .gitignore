@@ -15,6 +15,7 @@
 /public/image/profile
 /public/documentGestion
 /public/image/imagereportpreproject
+/public/uploads/huawei
 /storage/*.key
 /vendor
 .env
