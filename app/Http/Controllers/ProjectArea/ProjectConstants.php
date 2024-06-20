@@ -114,4 +114,18 @@ class ProjectConstants
         return $result;
     }
 
+    function geEmployeesStructured ($services) {
+        $result = [];
+        foreach($services as $item){
+            array_push($result, [
+                'service_id' => $item['id'],
+                'resource_entry_id' => null,
+                'days' => '1',
+                'profit_margin'=> 20,
+                'rent_price'=> $item['rent_price'],
+            ]);
+        }
+        return $result;
+    }
+
 }
