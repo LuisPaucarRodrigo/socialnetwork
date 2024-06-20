@@ -99,7 +99,8 @@ class ProjectManagementController extends Controller
             $project->update($data);
         } else {
             $project = Project::create($data);
-            Preproject::find($request->preproject_id)->update(['status' => true]);
+            $preproject = Preproject::find($request->preproject_id);
+            $preproject->update(['status' => true]);
             Purchasing_request::where('preproject_id', $request->preproject_id)
                 ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
@@ -115,6 +116,19 @@ class ProjectManagementController extends Controller
                     'unitary_price' => $item->unitary_price
                 ]);
             }
+
+            //Assignation with CPE
+            if($preproject->cpe){
+                $specialProducts = SpecialInventory::where('cpe',$preproject->cpe )->get();
+                foreach ($specialProducts as $sPro) {
+                    ProjectEntry::create([
+                        'project_id' => $project->id,
+                        'special_inventory_id' => $sPro->id,
+                        'quantity' => $sPro->quantity,
+                    ]); 
+                }
+            }
+
 
             foreach ($employees as $employee) {
                 $empId = $employee['employee'];

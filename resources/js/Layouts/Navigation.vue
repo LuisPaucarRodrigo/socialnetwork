@@ -222,6 +222,9 @@ Usuarios
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('warehouses.warehouses')">Almacenes</Link>
                 </MyTransition>
+                <MyTransition :transitiondemonstration="showingInventory">
+                    <Link class="w-full" :href="route('huawei.loads')">Huawei</Link>
+                </MyTransition>
             </template>
 
             <template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
