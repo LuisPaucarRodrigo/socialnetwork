@@ -89,21 +89,25 @@ class DocumentController extends Controller
 
     public function index(Request $request) {
 
-        $documents = Document::all();
-        $searchTerm = strtolower($request->query('searchTerm'));
-        if ($searchTerm !== '') {
-            $documents = $documents->where(function ($query) use ($searchTerm) {
-                $query->where('title', 'like', '%' . $searchTerm . '%');
-            });
-        }else {
-            $documents = $documents;
-        }
+    // Obtén el término de búsqueda de la consulta y conviértelo a minúsculas
+    $searchTerm = strtolower($request->query('searchTerm', '')); // Agregamos un valor por defecto de cadena vacía
 
+    // Inicia una consulta de Eloquent para los documentos
+    $documentsQuery = Document::query();
 
-        $sections = DocumentSection::all();
-        $subdivisions = Subdivision::all();
+    // Si hay un término de búsqueda, agrega una condición WHERE
+    if ($searchTerm !== '') {
+        $documentsQuery->where('title', 'like', '%' . $searchTerm . '%');
+    }
+
+    // Ejecuta la consulta y obtiene los resultados
+    $documents = $documentsQuery->get();
+
+    // Obtiene todas las secciones y subdivisiones
+    $sections = DocumentSection::all();
+    $subdivisions = Subdivision::all();
         return Inertia::render('HumanResource/Documents/Document', [
-            'documents' => $documents,
+            'documents' => $documents->load('subdivision.section'),
             'sections' => $sections,
             'subdivisions' => $subdivisions,
             'search' => $searchTerm,
