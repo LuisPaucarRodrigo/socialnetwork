@@ -358,7 +358,7 @@ const filteredDocuments = computed(() => {
 
   // Filtrar por sección
   if (selectedSection.value) {
-    filtered = filtered.filter(document => document.section_id === selectedSection.value);
+    filtered = filtered.filter(document => document.subdivision.section_id === selectedSection.value);
   }
 
   // Filtrar por subdivisión
@@ -385,8 +385,6 @@ watch(() => form.section_id, (newSectionId, oldSectionId) => {
     filteredSubdivisions.value = props.subdivisions.filter(subdivision => subdivision.section_id === newSectionId);
   }
 });
-
-
 
 const searchForm = useForm({
   searchTerm: props.search,
