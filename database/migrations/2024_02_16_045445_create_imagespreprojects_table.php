@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('observation')->nullable();
             $table->boolean('state')->nullable();
             $table->string('image')->unique();
+            $table->string('lat');
+            $table->string('lon');
             $table->foreignId('preproject_code_id')->onDelete('cascade');
             $table->timestamps();
         });
