@@ -33,7 +33,8 @@ class  Project extends Model
         'total_services_cost',
         'current_budget',
         'total_sum_task',
-        'is_liquidable'
+        'is_liquidable',
+        'total_products_cost_claro_cicsa'
     ];
 
     // CALCULATED
@@ -53,8 +54,7 @@ class  Project extends Model
         return $this->preproject->quote->total_amount_no_margin;
     }
 
-    public function getNameAttribute()
-    {
+    public function getNameAttribute() {
         return $this->preproject()->first()?->quote?->name;
     }
 
@@ -120,6 +120,16 @@ class  Project extends Model
         return $this->project_entries()->where('state', true)->get()->sum(function ($item) {
             return $item->total_price;
         });
+    }
+
+    public function getTotalProductsCostClaroCicsaAttribute()
+    {
+        $preproject = $this->preproject()->first();
+        if ($preproject?->customer_id !== 1) {
+            return 0;
+        } else {
+            return null;
+        }
     }
 
 
