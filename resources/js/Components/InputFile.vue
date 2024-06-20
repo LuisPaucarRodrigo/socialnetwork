@@ -1,18 +1,24 @@
 <template>
-  <input
-    type="file"
-    class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
-    @change="handleChange"
-    ref="input"
-    accept=".pdf, .png, .jpeg, .jpg"
-  />
-</template>
+    <input
+      type="file"
+      class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
+      @change="handleChange"
+      ref="input"
+      :accept="accept"
+    />
+  </template>
 
 <script>
 import { ref } from 'vue';
 
 export default {
-  setup(_, { emit }) {
+  props: {
+    accept: {
+      type: String,
+      default: '.pdf, .png, .jpeg, .jpg, .doc, .docx, .xls, .xlsx, .ppt, .pptx' // Valor por defecto si no se proporciona
+    }
+  },
+  setup(props, { emit }) {
     const inputRef = ref(null);
 
     const handleChange = (event) => {
@@ -23,6 +29,7 @@ export default {
     return {
       handleChange,
       inputRef,
+      accept: props.accept // Usar la propiedad aceptada
     };
   },
   emits: ['update:modelValue'],

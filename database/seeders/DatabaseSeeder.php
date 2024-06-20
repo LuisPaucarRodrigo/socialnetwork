@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'admin',
             'description' => 'Rol de administrador con todos los permisos de gerente'
         ]);
-        
+
         // Crear todos los permisos
         $permissions = [
             'UserManager' => 'Permite acceso a la mayoria de funciones de Usuarios y roles',
@@ -125,7 +125,7 @@ class DatabaseSeeder extends Seeder
         Area::insert($areasData);
 
         User::factory()->create([
-            'name' => 'Gustavo Flores Llenera',
+            'name' => 'Gustavo Flores Llerena',
             'dni' => '43196970',
             'email' => 'gflores@ccip.com.pe',
             'password' => Hash::make('12345678'),
@@ -183,10 +183,10 @@ class DatabaseSeeder extends Seeder
             ],
         ];
         Pension::insert($data);
-        
+
 
         $customersData = [
-            ['id' => 1, 'ruc' => 1, 'business_name' => 'CLARO CICSA', 'category' => 'Especial', 'address' => '-'],
+            ['id' => 1, 'ruc' => 20512780114, 'business_name' => 'CICSA PERU SAC', 'category' => 'Especial', 'address' => 'CALLE AMADOR MERINO REINA 267 OFC 501 LIMA LIMA SAN ISIDRO'],
             ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],
             ['id' => 3, 'ruc' => 3, 'business_name' => 'HUAWEI', 'category' => 'Especial', 'address' => '-'],
         ];
