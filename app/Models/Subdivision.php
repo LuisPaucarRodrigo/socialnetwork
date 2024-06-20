@@ -13,10 +13,10 @@ class Subdivision extends Model
 
     public function documents()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class, 'subdivision_id');
     }
     public function section()
     {
-        return $this->belongsTo(DocumentSection::class);
+        return $this->belongsTo(DocumentSection::class, 'section_id');
     }
 }

@@ -17,7 +17,7 @@ class Document extends Model
 
     public function subdivision()
     {
-        return $this->belongsTo(Subdivision::class);
+        return $this->belongsTo(Subdivision::class, 'subdivision_id');
     }
 
     public function getExtensionAttribute()

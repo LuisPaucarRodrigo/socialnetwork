@@ -192,7 +192,8 @@ class DocumentController extends Controller
         }
         abort(404, 'Documento no encontrado');
     }
-    public function downloadSubdivisionDocumentsZip($subdivisionId)
+
+    public function downloadSubdivisionDocumentsZip($section, $subdivisionId)
     {
         try {
             // Buscar la subdivisión por su ID con los documentos relacionados cargados
@@ -202,7 +203,7 @@ class DocumentController extends Controller
             $zipFileName = "subdivision_{$subdivisionId}_documents.zip";
 
             // Ruta completa para el archivo ZIP temporal
-            $zipFilePath = storage_path("app/{$zipFileName}");
+            $zipFilePath = public_path("/documents/documents/{$zipFileName}");
 
             // Crear una instancia de ZipArchive
             $zip = new ZipArchive;
@@ -228,7 +229,7 @@ class DocumentController extends Controller
                 $zip->close();
 
                 // Descargar el archivo ZIP utilizando Laravel Response
-                return response()->download($zipFilePath, $zipFileName)->deleteFileAfterSend(true);
+                return response()->json('success');
 
             } else {
                 // Si no se puede abrir el archivo ZIP para escritura
@@ -242,5 +243,100 @@ class DocumentController extends Controller
         }
     }
 
+    public function deleteZip($section, $subdivisionId)
+    {
+        // Construir la ruta completa al archivo ZIP
+        $path = public_path('/documents/documents/subdivision_' . $subdivisionId . '_documents.zip');
 
+        try {
+            // Verificar si el archivo existe
+            if (file_exists($path)) {
+                // Intentar eliminar el archivo
+                unlink($path);
+            } else {
+                // Si el archivo no existe, registrar un mensaje de advertencia
+                Log::warning("El archivo ZIP no existe: {$path}");
+                return response()->json(['status' => 'error', 'message' => 'El archivo ZIP no existe.'], 404);
+            }
+        } catch (\Exception $e) {
+            // Capturar cualquier excepción y registrar un mensaje de error
+            Log::error("Error al intentar eliminar el archivo ZIP: " . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Ocurrió un error al intentar eliminar el archivo ZIP.'], 500);
+        }
+    }
+
+    public function downloadSectionDocumentsZip($sectionId)
+    {
+        try {
+            // Buscar la sección por su ID con todas las subdivisiones y documentos relacionados cargados
+            $section = DocumentSection::with('subdivisions.documents')->findOrFail($sectionId);
+
+            // Nombre del archivo ZIP temporal
+            $zipFileName = "section_{$sectionId}_documents.zip";
+
+            // Ruta completa para el archivo ZIP temporal
+            $zipFilePath = public_path("/documents/documents/{$zipFileName}");
+
+            // Crear una instancia de ZipArchive
+            $zip = new ZipArchive;
+
+            // Intentar abrir el archivo ZIP para escritura
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+                foreach ($section->subdivisions as $subdivision) {
+                    // Crear carpeta vacía para la subdivisión dentro del ZIP
+                    $zip->addEmptyDir($subdivision->name);
+
+                    foreach ($subdivision->documents as $document) {
+                        // Ruta completa del archivo de documento
+                        $documentPath = public_path('/documents/documents/' . $document->title);
+
+                        // Verificar si el archivo existe antes de agregarlo al ZIP
+                        if (file_exists($documentPath)) {
+                            // Agregar archivo al ZIP con un nombre relativo dentro de la carpeta de la subdivisión
+                            $zip->addFile($documentPath, "/{$subdivision->name}/{$document->title}");
+                        } else {
+                            // Registrar un mensaje de advertencia si el archivo no existe
+                            Log::warning("El archivo '{$document->title}' no existe en la ubicación especificada.");
+                        }
+                    }
+                }
+
+                // Cerrar el archivo ZIP
+                $zip->close();
+
+            } else {
+                // Si no se puede abrir el archivo ZIP para escritura
+                Log::error('No se pudo abrir el archivo ZIP para escritura.');
+                return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);
+            }
+        } catch (\Exception $e) {
+            // Capturar cualquier excepción que pueda ocurrir durante el proceso
+            Log::error('Error al crear el archivo ZIP: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
+        }
+    }
+
+    public function deleteSectionZip($sectionId)
+    {
+        // Construir la ruta completa al archivo ZIP
+        $zipFilePath = public_path("/documents/documents/section_{$sectionId}_documents.zip");
+
+        try {
+            // Verificar si el archivo existe
+            if (file_exists($zipFilePath)) {
+                // Intentar eliminar el archivo
+                unlink($zipFilePath);
+                return response()->json(['status' => 'success', 'message' => 'Archivo ZIP eliminado correctamente.']);
+            } else {
+                // Si el archivo no existe, registrar un mensaje de advertencia
+                Log::warning("El archivo ZIP no existe: {$zipFilePath}");
+                return response()->json(['status' => 'error', 'message' => 'El archivo ZIP no existe.'], 404);
+            }
+        } catch (\Exception $e) {
+            // Capturar cualquier excepción y registrar un mensaje de error
+            Log::error("Error al intentar eliminar el archivo ZIP: " . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Ocurrió un error al intentar eliminar el archivo ZIP.'], 500);
+        }
+    }
 }
+

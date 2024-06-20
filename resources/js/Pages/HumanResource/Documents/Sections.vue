@@ -34,6 +34,9 @@
                       class="text-blue-600 hover:underline">
                     <DocumentArrowUpIcon class="h-5 w-5" />
                     </Link>
+                    <button @click="downloadZip(section.id)" class="text-blue-600 hover:underline">
+                      <ArrowDownIcon class="h-5 w-5" />
+                    </button>
                     <button @click="openUpdateSectionModal(section)" class="text-orange-400 hover:underline">
                       <PencilSquareIcon class="h-5 w-5" />
                     </button>
@@ -93,7 +96,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { TrashIcon, DocumentArrowUpIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, DocumentArrowUpIcon, PencilSquareIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -183,6 +186,47 @@ const deleteSection = async () => {
 
   })
 
+};
+
+const downloadZip = async (sectionId) => {
+    try {
+        // URL para descargar el ZIP
+        const downloadUrl = route('documents.zipSection', { sectionId: sectionId });
+
+        // Realizar la petición GET para descargar el archivo ZIP
+        const response = await axios.post(downloadUrl, { responseType: 'blob' });
+
+        if (response.status === 200) {
+            // Crear un objeto URL para el archivo descargado
+            const link = document.createElement('a');
+            link.href = window.location.origin + '/documents/documents/section_' + sectionId + '_documents.zip';
+            link.download = 'Section ' + sectionId + '.zip'; // Nombre de archivo predeterminado
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Esperar un tiempo breve para asegurar la descarga completa
+            setTimeout(async () => {
+                try {
+                    // URL para eliminar el ZIP
+                    const deleteUrl = route('documents.deleteZipSection', { sectionId: sectionId });
+
+                    // Realizar la petición GET para eliminar el archivo ZIP
+                    const deleteResponse = await axios.delete(deleteUrl);
+
+                    if (deleteResponse.data.status === 'success') {
+                    } else {
+                    }
+                } catch (deleteError) {
+                    console.error('Error en la petición para eliminar el archivo:', deleteError);
+                }
+            }, 1000); // Espera de 1 segundo (puede ajustarse según sea necesario)
+        } else {
+            console.error('Error al descargar el archivo:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error en la petición:', error);
+    }
 };
 
 </script>
