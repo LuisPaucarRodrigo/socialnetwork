@@ -8,10 +8,13 @@
         <div class="min-w-full overflow-hidden rounded-lg">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="mt-2">
-                    <PrimaryButton @click="exportReport()">
+                    <a :href="route('preprojects.report.download', { preproject_id: 1 })"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Exportar
-                    </PrimaryButton>
+                    </a>
                 </div>
+                <h1>Google Maps Route Example</h1>
+                <GoogleMaps :origin="origin" :destination="destination" :waypoints="waypoints" />
                 <div class="mt-2">
                     <select required id="code" @change="requestPhotos($event.target.value)"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -40,8 +43,9 @@
                         class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
                         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ image.description }}
                         </h2>
-                        <div class="grid grid-cols-1 gap-y-1 text-sm">
+                        <div class="grid grid-cols-1 gap-y-1 text-sm text-center">
                             <img :src="image.image">
+                            <p>Lat:{{ image.lat }} Lon:{{ image.lon }}</p>
                         </div>
                         <div class="pt-3 flex space-x-3 justify-center item-center">
                             <span v-if="image.state != null"
@@ -126,6 +130,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import GoogleMaps from '@/Components/GoogleMaps.vue';
+
 
 const props = defineProps({
     codesWithStatus: Object,
@@ -137,6 +143,13 @@ const props = defineProps({
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
+
+const origin = { lat: 34.052235, lng: -118.243683 }; // Los Ángeles
+const destination = { lat: 36.169941, lng: -115.139830 }; // Las Vegas
+const waypoints = [
+  { lat: 34.136719, lng: -116.313067 }, // Joshua Tree
+  { lat: 35.373292, lng: -119.018712 }  // Bakersfield
+];
 
 let backUrl = props.preproject.status === null
     ? 'preprojects.index'
@@ -291,9 +304,5 @@ function approveCode(preproject_code_id) {
             }, 2000)
         }
     })
-}
-
-function exportReport(){
-
 }
 </script>

@@ -27,7 +27,9 @@ class ImageRequest extends FormRequest
         return [
             'photo' => 'required',
             'description' => 'required|string',
-            'id' => 'required|numeric'
+            'id' => 'required|numeric',
+            'latitude' => 'required|string',
+            'longitude' => 'required|string',
         ];
     }
 
