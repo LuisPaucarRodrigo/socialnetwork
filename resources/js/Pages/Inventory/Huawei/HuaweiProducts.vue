@@ -10,21 +10,21 @@
         <!-- Botones alineados horizontalmente -->
         <div class="flex space-x-4 ml-4">
           <div v-if="props.noPg == null">
-            <Link v-if="hasPermission('UserManager')"
+            <Link
               :href="route('huawei.loads.products', { loadId: props.loadId, noPg: 1 })"
               class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               No asociados
             </Link>
           </div>
           <div v-else>
-            <Link v-if="hasPermission('UserManager')"
+            <Link
               :href="route('huawei.loads.products', { loadId: props.loadId })"
               class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               Asociados
             </Link>
           </div>
           <div>
-            <button v-if="hasPermission('UserManager')"
+            <button
               @click.prevent="exportProducts"
               class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               Exportar
@@ -77,7 +77,7 @@
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ (!item.price_guide1 && !item.price_guide2 ? '' : (item.price_guide1 ? "S/. " + (item.price_guide1.unit_price * item.quantity).toFixed(2) : "S/. " + (item.price_guide2.unit_price * item.quantity).toFixed(2))) }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                   <div class="flex items-center">
-                    <button v-if="hasPermission('UserManager') && !item.price_guide1 && !item.price_guide2" @click="openAssociateModal(item.id)"
+                    <button v-if="!item.price_guide1 && !item.price_guide2" @click="openAssociateModal(item.id)"
                       class="text-blue-600 hover:underline mr-2">
                       Asociar
                     </button>

@@ -30,15 +30,17 @@
                   <div class="text-sm font-medium text-gray-900">{{ subdivision.name }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-left">
-                    <button @click="downloadZip(subdivision.id)" class="text-blue-600 hover:underline">
-                      <ArrowDownIcon class="h-5 w-5" />
-                    </button>
-                    <button @click="openUpdateSubdivisionModal(subdivision)" class="text-orange-400 hover:underline ml-1">
-                      <PencilSquareIcon class="h-5 w-5" />
-                    </button>
-                    <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline ml-1">
-                    <TrashIcon class="h-5 w-5" />
-                  </button>
+                    <div class="flex space-x-2">
+                        <a :href="route('documents.zipSubdivision', { section: subdivision.section_id, subdivisionId: subdivision.id })" class="text-blue-600 hover:underline">
+                            <ArrowDownIcon class="h-5 w-5" />
+                        </a>
+                        <button @click="openUpdateSubdivisionModal(subdivision)" class="text-orange-400 hover:underline">
+                            <PencilSquareIcon class="h-5 w-5" />
+                        </button>
+                        <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
+                            <TrashIcon class="h-5 w-5" />
+                        </button>
+                    </div>
                 </td>
               </tr>
             </tbody>
@@ -181,48 +183,5 @@ const deleteSubdivision = async () => {
   })
 
 };
-
-const downloadZip = async (subdivisionId) => {
-    try {
-        // URL para descargar el ZIP
-        const downloadUrl = route('documents.zipSubdivision', { section: props.section.id, subdivisionId: subdivisionId });
-
-        // Realizar la petición GET para descargar el archivo ZIP
-        const response = await axios.post(downloadUrl, { responseType: 'blob' });
-
-        if (response.status === 200) {
-            // Crear un objeto URL para el archivo descargado
-            const link = document.createElement('a');
-            link.href = window.location.origin + '/documents/documents/subdivision_' + subdivisionId + '_documents.zip';
-            link.download = 'Subdivision ' + subdivisionId + '.zip'; // Nombre de archivo predeterminado
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // Esperar un tiempo breve para asegurar la descarga completa
-            setTimeout(async () => {
-                try {
-                    // URL para eliminar el ZIP
-                    const deleteUrl = route('documents.deleteZipSubdivision', { section: props.section.id, subdivisionId: subdivisionId });
-
-                    // Realizar la petición GET para eliminar el archivo ZIP
-                    const deleteResponse = await axios.delete(deleteUrl);
-
-                    if (deleteResponse.data.status === 'success') {
-                        console.log('Archivo ZIP eliminado exitosamente.');
-                    } else {
-                    }
-                } catch (deleteError) {
-                    console.error('Error en la petición para eliminar el archivo:', deleteError);
-                }
-            }, 1000); // Espera de 1 segundo (puede ajustarse según sea necesario)
-        } else {
-            console.error('Error al descargar el archivo:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error en la petición:', error);
-    }
-};
-
 
 </script>
