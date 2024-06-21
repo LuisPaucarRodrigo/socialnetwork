@@ -137,19 +137,13 @@
 
   <script setup>
   import { ref } from 'vue';
-  import * as XLSX from 'xlsx';
   import { useForm, router, Link, Head } from '@inertiajs/vue3';
   import Pagination from '@/Components/Pagination.vue';
-  import PrimaryButton from '@/Components/PrimaryButton.vue';
-  import { formattedDate } from '@/utils/utils'
-  import { PencilSquareIcon, EyeIcon } from '@heroicons/vue/24/outline';
   import Modal from '@/Components/Modal.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
-  import InputFile from '@/Components/InputFile.vue';
-  import TextInput from '@/Components/TextInput.vue';
   import InputError from '@/Components/InputError.vue';
 
   const props = defineProps({
