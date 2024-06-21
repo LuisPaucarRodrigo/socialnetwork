@@ -27,7 +27,7 @@ class FolderController extends Controller
         $this->main_directory = 'CCIP';
     }
 
-    
+
     public function folder_index(Request $request, $folder_id = null){
         $folder = Folder::with('folder_areas')->find($folder_id);
         if ($this->checkUserSeeDownload($folder_id)) {
@@ -35,10 +35,10 @@ class FolderController extends Controller
         }
         $path = $folder ? $folder->path
             : $this->main_directory;
-        
+
         //search functionality
         if($request->input('search')){
-            
+
             $FoundedFolders = $this->searchInFolder($request->input('search'), $folder_id);
             return Inertia::render('DocumentManagement/FolderSearch', [
                 'folders' => $FoundedFolders,
@@ -263,7 +263,7 @@ class FolderController extends Controller
 
 
 
-    
+
 
 
 
@@ -311,10 +311,10 @@ class FolderController extends Controller
     public function checkUserSeeDownload($folder_id){
         $user = Auth::user();
         $folder = Folder::find($folder_id);
-        if( $folder?->type === 'Archivos' && 
+        if( $folder?->type === 'Archivos' &&
             $folder?->type !== 'Carpeta' ) {return true;}
         if($folder && !$folder->state) {return true;}
-        if ($user->role_id === 1 || $folder_id === null) { return false;} 
+        if ($user->role_id === 1 || $folder_id === null) { return false;}
         $folder_permission = FolderArea::where('folder_id', $folder_id)
             ->where('area_id', $user->area_id)
             ->first();
@@ -327,7 +327,7 @@ class FolderController extends Controller
         $user = Auth::user();
         $folder = Folder::find($folder_id);
         if($folder && !$folder->state) {return true;}
-        if ($user->role_id === 1) {return false;} 
+        if ($user->role_id === 1) {return false;}
         if ($folder_id === null) {return true;}
         $folder_permission = FolderArea::where('folder_id', $folder_id)
             ->where('area_id', $user->area_id)
@@ -351,6 +351,7 @@ class FolderController extends Controller
         } else {
             return response()->json(['error' => 'No se pudo crear el archivo ZIP'], 500);
         }
+        ob_end_clean();
         return response()->download($zipFilePath)->deleteFileAfterSend(true);
     }
 
@@ -591,7 +592,7 @@ class FolderController extends Controller
         $result = [];
         $originalChildFolders = Folder::where('upper_folder_id', $upper_folder_id)
             ->get();
-        
+
         $childFolders = Folder::with('user', 'folder_areas')->where('upper_folder_id', $upper_folder_id)
             ->where(function ($query) use ($searchTerm) {
                 $query->whereRaw("REPLACE(REPLACE(REPLACE(name, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"])

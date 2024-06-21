@@ -114,7 +114,7 @@
             class="flex items-center text-green-600 hover:underline">
             <EyeIcon class="h-4 w-4 ml-1" />
           </button>
-          <button @click="downloadDocument(document.id, document.extension)" class="flex items-center text-blue-600 hover:underline">
+          <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
           <button v-if="hasPermission('HumanResourceManager')" @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
@@ -245,6 +245,7 @@ const openCreateDocumentModal = () => {
 };
 
 const closeModal = () => {
+  form.reset();
   create_document.value = false;
 };
 
@@ -253,12 +254,13 @@ const openEditDocumentModal = (document) => {
   editingDocument.value = JSON.parse(JSON.stringify(document));
   form.id = editingDocument.value.id;
   form.document = editingDocument.value.name;
-  form.section_id = editingDocument.value.section_id;
+  form.section_id = editingDocument.value.subdivision.section_id;
   form.subdivision_id = editingDocument.value.subdivision_id;
   update_document.value = true;
 };
 
 const closeEditModal = () => {
+  form.reset();
   update_document.value = false;
 };
 
@@ -320,19 +322,9 @@ const deleteDocument = () => {
   }
 };
 
-function downloadDocument(documentId, extension) {
-    const documentTitle = props.documents.find(item => item.id === documentId)?.title;
-    if (['png', 'jpg', 'jpeg'].includes(extension)){
-        const link = document.createElement('a');
-        link.href = window.location.origin + '/documents/documents/' + documentTitle;
-        link.download = documentTitle; // Nombre de archivo predeterminado
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }else {
-        const backendDocumentUrl = route('documents.download', { document: documentId });
-        window.open(backendDocumentUrl, '_blank');
-    }
+function downloadDocument(documentId) {
+    const backendDocumentUrl = route('documents.download', { document: documentId });
+    window.open(backendDocumentUrl, '_blank');
 };
 
 function openPreviewDocumentModal(documentId) {
