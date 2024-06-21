@@ -44,7 +44,8 @@ class ProjectConstants
                 'project' => [
                     'priority'=> 'Alta',
                     'description'=> $name,
-                ]
+                ],
+                'project_employees' => $this->getEmployeesStructured($data['employees']) 
 
 
             ];
@@ -107,23 +108,17 @@ class ProjectConstants
                 'service_id' => $item['id'],
                 'resource_entry_id' => null,
                 'days' => '1',
-                'profit_margin'=> 20,
+                'profit_margin'=> 0, //variable
                 'rent_price'=> $item['rent_price'],
             ]);
         }
         return $result;
     }
 
-    function geEmployeesStructured ($services) {
+    function getEmployeesStructured ($employees) {
         $result = [];
-        foreach($services as $item){
-            array_push($result, [
-                'service_id' => $item['id'],
-                'resource_entry_id' => null,
-                'days' => '1',
-                'profit_margin'=> 20,
-                'rent_price'=> $item['rent_price'],
-            ]);
+        foreach($employees as $item){
+            $result[$item['id']] = ['charge' => 'trabajador'];
         }
         return $result;
     }

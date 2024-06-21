@@ -3,7 +3,7 @@
     <Head title="Anteproyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
-            Anteproyecto y Proyecto Claro CICSA
+            Anteproyecto y Proyecto CLARO CICSA
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
@@ -96,6 +96,25 @@
                             </div>
                             <div class="sm:col-span-1" >
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
+                                    Empleados
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div  v-for="( item, i ) in  form.employees " :key="i" class="">
+                                        <div
+                                            class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
+                                                {{ item?.name }}  -   {{ item?.lastname }} 
+                                            </p>
+                                            <button type="button" class="col-span-1 flex justify-end"
+                                                @click="deleteEmployee(i)">
+                                                <TrashIcon class=" text-red-500 h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-1" >
+                                <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
                                     Productos
                                 </InputLabel>
                                 <div class="mt-2">
@@ -182,14 +201,16 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import axios from 'axios';
+import Employees from '@/Pages/HumanResource/ManagementEmployees/Employees.vue';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { contacts_cicsa, services, currentProducts } = defineProps({
+const { contacts_cicsa, employees, services, currentProducts } = defineProps({
     contacts_cicsa: Object,
     services: Object,
+    employees: Object,
 })
 
 
@@ -212,7 +233,8 @@ const initial_state = {
     date: '',
     cpe: '',
     contacts: contacts_cicsa,
-    services: services
+    services: services,
+    employees: employees
 }
 
 
@@ -248,6 +270,10 @@ const deleteContactItem = (i) => {
 
 const deleteServiceItem = (i) => {
     form.services.splice(i, 1)
+}
+
+const deleteEmployee = (i) => {
+    form.employees.splice(i, 1)
 }
 
 
