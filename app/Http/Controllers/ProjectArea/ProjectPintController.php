@@ -5,9 +5,11 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest\ProjectPintCreateRequest;
 use App\Models\Customers_contact;
+use App\Models\Employee;
 use App\Models\Preproject;
 use App\Models\PreProjectQuote;
 use App\Models\PreprojectQuoteService;
+use App\Models\Project;
 use App\Models\SpecialInventory;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -18,13 +20,16 @@ class ProjectPintController extends Controller
 
     public function pint_create_project()
     {
-        $ids = [3, 4];
+        $ids = [1,2, 3, 4, 5, 6];
+        $pintEmployees = [15, 10, 8, 25];
         $contacts_cicsa = Customers_contact::where('customer_id', 1)->get();
+        $employees = Employee::whereIn('id', $pintEmployees)->get();
         $services = Service::whereIn('id', $ids)->get();
         return Inertia::render(
             'ProjectArea/PreProject/CreateProjectPint', [
                 'contacts_cicsa' => $contacts_cicsa,
-                'services' => $services
+                'services' => $services,
+                'employees' => $employees
             ]
         );
     }
@@ -33,6 +38,8 @@ class ProjectPintController extends Controller
         $data = $request->validated();
         $projectConstants = new ProjectConstants();
         $template = $projectConstants->generateTemplate($data);
+
+        // dd($template);
         
         //Preproject 
         $preproject = Preproject::create($template['preproject']);
@@ -44,13 +51,15 @@ class ProjectPintController extends Controller
         //quote
         $quote = new PreProjectQuote($template['preproject_quote']);
         $preproject->quote()->save($quote);
-
-
         foreach ($template['quote_services'] as $serviceData) {
             $serviceData['preproject_quote_id'] = $quote->id;
             PreprojectQuoteService::create($serviceData);
         }
 
+        //Project
+        $template['project']['preproject_id'] = $preproject->id;
+        $project = Project::create($template['project']);
+        $project->employees()->sync($template['project_employees']);
         return redirect()->back();
     }
 

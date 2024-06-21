@@ -28,6 +28,7 @@ class ProjectPintCreateRequest extends FormRequest
             'cpe' => 'required',
             'contacts' => 'required',
             'services' => 'required',
+            'employees' => 'required',
         ];
     }
 }
