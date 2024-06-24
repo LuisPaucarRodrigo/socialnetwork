@@ -46,7 +46,7 @@ class ApiController extends Controller
     public function preproject(Request $request)
     {
         $user = $request->user();
-        $preprojects = $user->preprojects;
+        $preprojects = $user->preprojects()->where('status', true)->get();
         $data = [];
         foreach ($preprojects as $preproject) {
             if (!$preproject->preproject_code_approve){
@@ -105,8 +105,8 @@ class ApiController extends Controller
             Imagespreproject::create([
                 'description' => $data['description'],
                 'image' => $imagename,
-                'lot' => $data['latitude'],
-                'lat' => $data['longitude'],
+                'lat' => $data['latitude'],
+                'lon' => $data['longitude'],
                 'preproject_code_id' => $data['id'],
             ]);
             DB::commit();
