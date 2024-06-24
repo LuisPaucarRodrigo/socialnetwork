@@ -30,12 +30,17 @@
                   <div class="text-sm font-medium text-gray-900">{{ subdivision.name }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-left">
-                    <button @click="openUpdateSubdivisionModal(subdivision)" class="text-orange-400 hover:underline">
-                      <PencilSquareIcon class="h-5 w-5" />
-                    </button>
-                    <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline ml-1">
-                    <TrashIcon class="h-5 w-5" />
-                  </button>
+                    <div class="flex space-x-2">
+                        <a :href="route('documents.zipSubdivision', { section: subdivision.section_id, subdivisionId: subdivision.id })" class="text-blue-600 hover:underline">
+                            <ArrowDownIcon class="h-5 w-5" />
+                        </a>
+                        <button @click="openUpdateSubdivisionModal(subdivision)" class="text-orange-400 hover:underline">
+                            <PencilSquareIcon class="h-5 w-5" />
+                        </button>
+                        <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
+                            <TrashIcon class="h-5 w-5" />
+                        </button>
+                    </div>
                 </td>
               </tr>
             </tbody>
@@ -85,7 +90,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, PencilSquareIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';

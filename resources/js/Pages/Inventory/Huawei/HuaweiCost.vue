@@ -6,7 +6,7 @@
         Datos de Cargas
       </template>
       <div class="min-w-full rounded-lg shadow">
-        <PrimaryButton v-if="hasPermission('UserManager')" @click="openImportModal" type="button" class="flex-shrink-0">
+        <PrimaryButton @click="openImportModal" type="button" class="flex-shrink-0">
             Importar Excel
         </PrimaryButton>
         <div class="overflow-x-auto mt-3">
@@ -31,7 +31,7 @@
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.created_at) }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                   <div class="flex items-center">
-                    <button v-if="hasPermission('UserManager')" @click=""
+                    <button @click=""
                       class="text-orange-400 hover:underline mr-2">
                       <EyeIcon class="h-5 w-5" />
                     </button>
@@ -92,10 +92,9 @@
   </template>
 
   <script setup>
-  import { ref } from 'vue';
-  import { useForm, router, Link, Head } from '@inertiajs/vue3';
+
+  import { Head } from '@inertiajs/vue3';
   import Pagination from '@/Components/Pagination.vue';
-  import PrimaryButton from '@/Components/PrimaryButton.vue';
   import { formattedDate } from '@/utils/utils'
   import { EyeIcon } from '@heroicons/vue/24/outline';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
