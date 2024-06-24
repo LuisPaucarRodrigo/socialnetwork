@@ -45,9 +45,10 @@ class AdditionalCostsController extends Controller
             'description' => $request->description,
             'amount' => $request->amount,
             'project_id' => $project_id->id
-        ]); 
-              
+        ]);
+        return redirect()->back(); 
     }
+    
 
     public function update(AdditionalCost $additional_cost, Request $request)
     {
@@ -70,6 +71,7 @@ class AdditionalCostsController extends Controller
             'description' => $request->description,
             'amount' => $request->amount,
         ]);     
+        return redirect()->back();
     }
 
     public function destroy(Project $project_id, AdditionalCost $additional_cost)

@@ -103,8 +103,8 @@ class  Project extends Model
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts->sum('amount');
         return $currentBudget
-            - $this->getTotalProductsCostAttribute()
-            - $this->getTotalServicesCostAttribute()
+            //- $this->getTotalProductsCostAttribute()
+            //- $this->getTotalServicesCostAttribute() //cause is all services we are giving to them
             - $additionalCosts;
     }
 

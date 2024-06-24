@@ -51,10 +51,8 @@ class ProjectPintController extends Controller
         //quote
         $quote = new PreProjectQuote($template['preproject_quote']);
         $preproject->quote()->save($quote);
-        foreach ($template['quote_services'] as $serviceData) {
-            $serviceData['preproject_quote_id'] = $quote->id;
-            PreprojectQuoteService::create($serviceData);
-        }
+
+        $quote ->services()->sync($template['quote_services']);
 
         //Project
         $template['project']['preproject_id'] = $preproject->id;

@@ -213,6 +213,7 @@ class PreProjectController extends Controller
         $data = $request->validated();
         if ($quote_id) {
             $quote = PreProjectQuote::find($quote_id);
+            // dd($data['observations']);
             $quote->update($data);
         } else {
             $preproject_quote = PreProjectQuote::create($data);
