@@ -1,12 +1,9 @@
 <template>
-  <div>
-    <button @click="loadMap">Show Map</button>
-    <div v-if="mapVisible" id="map" style="height: 500px;"></div>
-  </div>
+  <div v-if="mapVisible" id="map" style="height: 500px;"></div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { watch, onUnmounted } from 'vue';
 
 const props = defineProps({
   origin: {
@@ -15,62 +12,80 @@ const props = defineProps({
   },
   destination: {
     type: Object,
-    required: true
+    required: false
   },
   waypoints: {
     type: Array,
     required: true
+  },
+  mapVisible: {
+    type: Boolean,
+    required: true
   }
 });
 
-const mapVisible = ref(false);
+let map;
 
-const loadMap = () => {
-  mapVisible.value = true;
-  const initMap = () => {
-    const map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 6,
-      center: props.origin
-    });
+const initMap = () => {
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 15,
+    center: props.origin,
+    mapId: "9633a9a2b0cd074b"
+  });
 
-    const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer();
-    directionsRenderer.setMap(map);
+  new google.maps.marker.AdvancedMarkerElement({
+    map: map,
+    title: 'Uluru',
+  });
 
-    directionsService.route(
-      {
-        origin: props.origin,
-        destination: props.destination,
-        waypoints: props.waypoints.map(waypoint => ({ location: waypoint, stopover: true })),
-        optimizeWaypoints: true,
-        travelMode: 'DRIVING'
-      },
-      (response, status) => {
-        if (status === 'OK') {
-          directionsRenderer.setDirections(response);
-        } else {
-          console.error('Directions request failed due to ' + status);
-        }
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer();
+  directionsRenderer.setMap(map);
+
+  directionsService.route(
+    {
+      origin: props.origin,
+      destination: props.destination,
+      waypoints: props.waypoints,
+      optimizeWaypoints: true,
+      travelMode: 'WALKING'
+    },
+    (response, status) => {
+      if (status === 'OK') {
+        directionsRenderer.setDirections(response);
+      } else {
+        console.error('Directions request failed due to ' + status);
       }
-    );
-  };
-
-  if (window.google && window.google.maps) {
-    initMap();
-  } else {
-    const googleMapsScript = document.createElement('script');
-    googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=TU_API_KEY&callback=initMap`;
-    googleMapsScript.defer = true;
-    googleMapsScript.async = true;
-    googleMapsScript.onload = initMap;
-    document.head.appendChild(googleMapsScript);
-  }
+    }
+  );
 };
+
+watch(() => props.mapVisible, (newVal) => {
+  if (newVal) {
+    if (window.google && window.google.maps) {
+      initMap();
+    } else {
+      const googleMapsScript = document.createElement('script');
+      googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCGdFiWfnd_SLlV4KRR1sgCfBRO17Gaxvs&libraries=marker&callback=initMap`;
+      googleMapsScript.defer = true;
+      googleMapsScript.async = true;
+      window.initMap = initMap;
+      document.head.appendChild(googleMapsScript);
+    }
+  }
+});
+
+
+onUnmounted(() => {
+  if (map) {
+    map = null;
+  }
+});
 </script>
 
 <style scoped>
 #map {
-  height: 100%; /* Ajusta la altura del mapa según necesites */
+  height: 100%;
   width: 100%;
 }
 </style>
