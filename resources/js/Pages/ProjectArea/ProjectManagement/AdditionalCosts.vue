@@ -57,11 +57,11 @@
             <td v-if="auth.user.role_id === 1 && project_id.status === null"
               class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <div class="flex items-center">
-                <button @click="openEditAdditionalModal(item)" class="text-orange-200 hover:underline mr-2">
-                  <PencilIcon class="h-4 w-4 ml-1" />
+                <button @click="openEditAdditionalModal(item)" class="text-amber-600 hover:underline mr-2">
+                  <PencilSquareIcon class="h-5 w-5 ml-1" />
                 </button>
                 <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
-                  <TrashIcon class="h-4 w-4" />
+                  <TrashIcon class="h-5 w-5" />
                 </button>
               </div>
             </td>
@@ -274,7 +274,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
@@ -329,14 +329,12 @@ const openEditAdditionalModal = (additional) => {
 };
 
 const closeModal = () => {
+  form.reset();
   create_additional.value = false;
 };
 
 const closeEditModal = () => {
-  // Restablecer los valores del formulario
   form.reset();
-
-  // Cerrar el modal de edición
   editAdditionalModal.value = false;
 };
 
@@ -345,31 +343,23 @@ const submit = () => {
   form.post(route('projectmanagement.storeAdditionalCost', { project_id: props.project_id.id }), {
     onSuccess: () => {
       closeModal();
-      form.reset();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('projectmanagement.additionalCosts', { project_id: props.project_id.id }))
       }, 2000);
-    },
-    onError: () => {
-      form.reset();
-    },
-    onFinish: () => {
-      form.reset();
     }
   });
 };
 
+
+
 const submitEdit = () => {
-  form.put(route('projectmanagement.updateAdditionalCost', { additional_cost: form.id }), {
+  form.post(route('projectmanagement.updateAdditionalCost', { additional_cost: form.id }), {
     onSuccess: () => {
-      closeModal();
-      form.reset();
+      closeEditModal();
       showModalEdit.value = true;
       setTimeout(() => {
         showModalEdit.value = false;
-        router.visit(route('projectmanagement.additionalCosts', { project_id: props.project_id.id }));
       }, 2000);
     }
   });

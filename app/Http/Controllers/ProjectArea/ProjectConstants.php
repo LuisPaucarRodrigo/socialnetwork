@@ -104,13 +104,13 @@ class ProjectConstants
     function getQuoteServicesStructured ($services) {
         $result = [];
         foreach($services as $item){
-            array_push($result, [
+            $result[$item['id']] = [
                 'service_id' => $item['id'],
                 'resource_entry_id' => null,
                 'days' => '1',
-                'profit_margin'=> 0, //variable
-                'rent_price'=> $item['rent_price'],
-            ]);
+                'profit_margin'=> $item['profit_margin'], //variable
+                'rent_price'=> $item['original_price'],
+            ];
         }
         return $result;
     }
