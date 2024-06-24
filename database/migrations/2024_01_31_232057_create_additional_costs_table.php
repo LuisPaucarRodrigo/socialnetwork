@@ -15,11 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('expense_type');
             $table->string('ruc');
+            $table->string('zone');
             $table->string('type_doc');
-            $table->string('doc_number');
+            $table->string('doc_number')->nullable();
             $table->date('doc_date');
             $table->double('amount');
             $table->string('description')->nullable();
+            $table->foreignId('provider_id')
+                ->nullable()
+                ->constrained('providers')
+                ->onDelete('set null');
             $table->foreignId('project_id')
                 ->nullable()
                 ->constrained('projects')
