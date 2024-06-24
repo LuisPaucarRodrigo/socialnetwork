@@ -7,7 +7,7 @@
       </template>
       <div class="min-w-full rounded-lg shadow">
         <div class="mt-6 flex items-center">
-        <PrimaryButton v-if="hasPermission('UserManager')" @click="openImportModal" type="button" class="flex-shrink-0">
+        <PrimaryButton @click="openImportModal" type="button" class="flex-shrink-0">
             Importar Excel
         </PrimaryButton>
     </div>
@@ -34,7 +34,7 @@
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.created_at) }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                   <div class="flex items-center">
-                    <Link v-if="hasPermission('UserManager')" :href="route('huawei.loads.products', {loadId: item.id})"
+                    <Link :href="route('huawei.loads.products', {loadId: item.id})"
                       class="text-green-600 hover:underline mr-2">
                       <EyeIcon class="h-5 w-5" />
                     </Link>
@@ -89,19 +89,16 @@
 
   <script setup>
   import { ref } from 'vue';
-  import * as XLSX from 'xlsx';
   import { useForm, router, Link, Head } from '@inertiajs/vue3';
   import Pagination from '@/Components/Pagination.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
   import { formattedDate } from '@/utils/utils'
-  import { PencilSquareIcon, EyeIcon } from '@heroicons/vue/24/outline';
+  import { EyeIcon } from '@heroicons/vue/24/outline';
   import Modal from '@/Components/Modal.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
-  import InputFile from '@/Components/InputFile.vue';
-  import TextInput from '@/Components/TextInput.vue';
   import InputError from '@/Components/InputError.vue';
 
   const props = defineProps({

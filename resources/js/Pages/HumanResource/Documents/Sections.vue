@@ -34,6 +34,9 @@
                       class="text-blue-600 hover:underline">
                     <DocumentArrowUpIcon class="h-5 w-5" />
                     </Link>
+                    <a :href="route('documents.zipSection', {sectionId: section.id})" class="text-blue-600 hover:underline">
+                      <ArrowDownIcon class="h-5 w-5" />
+                    </a>
                     <button @click="openUpdateSectionModal(section)" class="text-orange-400 hover:underline">
                       <PencilSquareIcon class="h-5 w-5" />
                     </button>
@@ -93,7 +96,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { TrashIcon, DocumentArrowUpIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, DocumentArrowUpIcon, PencilSquareIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';

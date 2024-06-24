@@ -13,6 +13,6 @@ class DocumentSection extends Model
 
     public function subdivisions()
     {
-        return $this->hasMany(Subdivision::class);
+        return $this->hasMany(Subdivision::class, 'section_id');
     }
 }

@@ -256,7 +256,7 @@
 
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <div class="flex justify-center items-center space-x-3">
-                  <button @click="downloadDocument(archive.id, archive.path)"
+                  <button @click="downloadDocument(archive.id)"
                     class="flex items-center text-blue-600 hover:underline">
                     <ArrowDownIcon class="h-4 w-4 ml-1" />
                   </button>
@@ -353,7 +353,7 @@
                     ]" class="  bg-white  text-sm text-center">
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                 
+
                     <p class="text-gray-900">
                       {{ archive_user.user.name }}
                     </p>
@@ -629,24 +629,9 @@ const deleteDocument = () => {
   }
 };
 
-function downloadDocument(documentId, path) {
-  if (props.folder.archive_type === 'Imágenes') {
-    if (path) {
-      // Intentar descargar el documento desde la ruta completa
-      const link = document.createElement('a');
-      link.href = window.location.origin + '/' + path;
-      link.download = ''; // Nombre de archivo predeterminado
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      console.error('Ruta del documento no encontrada.');
-    }
-  } else {
-    // Si no es de tipo 'Imágenes', abrir la URL de descarga normal
+function downloadDocument(documentId) {
     const backendDocumentUrl = route('archives.download', { folder: props.folder.id, archive: documentId });
     window.open(backendDocumentUrl);
-  }
 }
 
 
