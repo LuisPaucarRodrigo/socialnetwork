@@ -9,7 +9,8 @@
     <div class="inline-block min-w-full overflow-hidden rounded-lg">
       <div class="flex gap-4">
         <PrimaryButton v-if="project_id.status === null && hasPermission('ProjectManager')" @click="openCreateAdditionalModal"
-          type="button" class="mb-5">
+          type="button" class="mb-5"
+        >
           + Agregar
         </PrimaryButton>
       </div>
@@ -75,20 +76,37 @@
           Agregar Costo adicional
         </h2>
         <form @submit.prevent="submit">
-          <div class="space-y-12">
-            <div class="border-b border-gray-900/10 pb-12">
+          <div class="space-y-12 mt-4">
+            <div class="border-b grid sm:grid-cols-2 gap-6 border-gray-900/10 pb-12">
               <div>
                 <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto</InputLabel>
                 <div class="mt-2">
                   <select v-model="form.expense_type" id="expense_type"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    <option disabled value="">Seleccionar Gasto</option>
-                    <option>Combustible GEP</option>
+                    <option disabled value="">Seleccionar</option>
+                    <option>Alquiler de Camionetas</option>
+                    <option>Alquiler Habitaciones</option>
                     <option>Combustible</option>
-                    <option>Peaje</option>
+                    <option>Combustible GEP</option>
+                    <option>Viáticos</option>
                     <option>Otros</option>
                   </select>
                   <InputError :message="form.errors.expense_type" />
+                </div>
+              </div>
+              <div>
+                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
+                <div class="mt-2">
+                  <select v-model="form.zone" id="zone"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option disabled value="">Seleccionar</option>
+                    <option>Arequipa</option>
+                    <option>Chala</option>
+                    <option>Moquegua</option>
+                    <option>Tacna</option>
+                    <option>MDD</option>
+                  </select>
+                  <InputError :message="form.errors.zone" />
                 </div>
               </div>
               <div>
@@ -117,8 +135,7 @@
                 <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.doc_number" id="doc_number"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <input type="text" v-model="form.doc_number" id="doc_number"  pattern="[0-9]+(-[0-9]+)*" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.doc_number" />
                 </div>
               </div>
@@ -151,11 +168,11 @@
                 </div>
               </div>
 
-              <div class="mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
-                <button type="submit" :class="{ 'opacity-25': form.processing }"
-                  class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
-              </div>
+            </div>
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+              <SecondaryButton @click="closeModal"> Cancelar </SecondaryButton>
+              <button type="submit" :class="{ 'opacity-25': form.processing }"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
             </div>
           </div>
         </form>
@@ -293,6 +310,7 @@ const form = useForm({
   id: '',
   expense_type: '',
   ruc: '',
+  zone: '',
   type_doc: '',
   doc_number: '',
   doc_date: '',

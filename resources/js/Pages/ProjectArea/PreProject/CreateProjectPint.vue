@@ -267,18 +267,22 @@ const initial_state = {
     cpe: '',
     contacts: contacts_cicsa,
     services: services.map(item=>{
-        if([1,2,3,4].includes(item.id)){
+        item.original_price = item.rent_price
+        if([3,4,5,6].includes(item.id)){
             item.profit_margin = (((21300 / item.rent_price)-1)*100).toFixed(5)
             item.rent_price = 21300
-        } else if ([5, 6].includes(item.id)) {
+            item.days = 1
+        } else if ([7].includes(item.id)) {
             item.profit_margin = (((22300 / item.rent_price)-1)*100).toFixed(5)
-            item.rent_price = 22300
+            item.rent_price = 44600
+            item.days = 2
         }
-        item.original_price = 15000
         return item
     }),
     employees: employees,
 }
+
+console.log(initial_state)
 
 
 const form = useForm({
@@ -324,14 +328,14 @@ const deleteEmployee = (i) => {
 const serviceReferencePrices = [
     {
         groupName: 'group1',
-        ids: [1, 2, 3, 4],
+        ids: [3,4,5,6,7],
         expectedPrice: 21300,
         originalPrice: 15000
     },
     {
         groupName: 'group2',
-        ids: [5, 6],
-        expectedPrice: 22300,
+        ids: [7],
+        expectedPrice: 44600,
         originalPrice: 15000
     }
 ];

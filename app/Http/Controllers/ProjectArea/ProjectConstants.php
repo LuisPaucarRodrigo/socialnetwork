@@ -107,7 +107,7 @@ class ProjectConstants
             $result[$item['id']] = [
                 'service_id' => $item['id'],
                 'resource_entry_id' => null,
-                'days' => '1',
+                'days' => $item['days'],
                 'profit_margin'=> $item['profit_margin'], //variable
                 'rent_price'=> $item['original_price'],
             ];

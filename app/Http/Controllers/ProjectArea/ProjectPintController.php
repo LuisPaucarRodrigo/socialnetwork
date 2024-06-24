@@ -20,7 +20,7 @@ class ProjectPintController extends Controller
 
     public function pint_create_project()
     {
-        $ids = [1,2, 3, 4, 5, 6];
+        $ids = [3,4,5,6,7];
         $pintEmployees = [15, 10, 8, 25];
         $contacts_cicsa = Customers_contact::where('customer_id', 1)->get();
         $employees = Employee::whereIn('id', $pintEmployees)->get();

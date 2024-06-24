@@ -2,7 +2,7 @@
   <Head title="Gestion de Gastos" />
   <AuthenticatedLayout :redirectRoute="{ route: 'projectmanagement.purchases_request.index', params: { id: project.id  } }">
     <template #header>
-      Gastos
+      Resumen  de Gastos
     </template>
     Presupuesto actual: S/. {{ current_budget.toFixed(2) }} <br>
     Presupuesto restante: S/. {{ project.remaining_budget.toFixed(2) }}
