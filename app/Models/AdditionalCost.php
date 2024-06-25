@@ -26,6 +26,10 @@ class AdditionalCost extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
+    public function provider () {
+        return $this->belongsTo(Provider::class, 'provider_id');
+    }
+
 
 
 }

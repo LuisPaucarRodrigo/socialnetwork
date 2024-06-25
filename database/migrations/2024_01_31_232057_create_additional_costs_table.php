@@ -30,7 +30,7 @@ return new class extends Migration
                 ->constrained('projects')
                 ->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['ruc', 'doc_number']);
+            // $table->unique(['ruc', 'doc_number']);
         });
     }
 
