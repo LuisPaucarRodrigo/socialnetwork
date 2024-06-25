@@ -74,7 +74,7 @@ class  Project extends Model
     {
         $startDate = Carbon::parse($this->preproject()->first()?->quote->date);
         $daysFromQuote = optional($this->preproject()->first()->quote)->deliverable_time;
-        return $startDate->addDays($daysFromQuote)->format('d/m/Y');
+        return $startDate->addDays($daysFromQuote-1)->format('d/m/Y');
     }
 
     public function getTotalPercentageTasksAttribute()

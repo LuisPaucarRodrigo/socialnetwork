@@ -21,10 +21,16 @@
           <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Zona</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               Tipo de Gasto</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               RUC</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Proveedor</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               Tipo de Documento</th>
@@ -47,13 +53,15 @@
         </thead>
         <tbody>
           <tr v-for="item in additional_costs" :key="item.id" class="text-gray-700">
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.zone }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.expense_type }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.ruc }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item?.provider?.company_name }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}
             </td>
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">S/. {{ (item.amount).toFixed(2) }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">S/. {{ (item.amount).toFixed(2) }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
             <td v-if="auth.user.role_id === 1 && project_id.status === null"
               class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -151,7 +159,9 @@
                 <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.doc_number" id="doc_number"  pattern="[0-9]+(-[0-9]+)*" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <input type="text" v-model="form.doc_number" id="doc_number"  pattern="^([a-zA-Z0-9]+([-|\/][a-zA-Z0-9]+)*)|([0-9]+)$"
+
+                  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.doc_number" />
                 </div>
               </div>
@@ -169,7 +179,7 @@
               <div>
                 <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
                 <div class="mt-2">
-                  <input type="number" step="0.01" v-model="form.amount" id="amount"
+                  <input type="number" step="0.0001" v-model="form.amount" id="amount"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.amount" />
                 </div>
@@ -202,7 +212,7 @@
         </h2>
         <form @submit.prevent="submitEdit">
           <div class="space-y-12">
-            <div class="border-b border-gray-900/10 pb-12">
+            <div class="border-b grid sm:grid-cols-2 gap-6 border-gray-900/10 pb-12">
               <div>
                 <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto</InputLabel>
                 <div class="mt-2">
@@ -229,19 +239,21 @@
                 </div>
               </div>
               <div>
-                <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
+                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
                 <div class="mt-2">
-                  <select v-model="form.type_doc" id="type_doc"
+                  <select v-model="form.zone" id="zone"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    <option disabled value="">Seleccionar Documento</option>
-                    <option>Deposito</option>
-                    <option>Factura</option>
-                    <option>Boleta</option>
-                    <option>Voucher de Pago</option>
+                    <option disabled value="">Seleccionar</option>
+                    <option>Arequipa</option>
+                    <option>Chala</option>
+                    <option>Moquegua</option>
+                    <option>Tacna</option>
+                    <option>MDD</option>
                   </select>
-                  <InputError :message="form.errors.type_doc" />
+                  <InputError :message="form.errors.zone" />
                 </div>
               </div>
+              
               <div>
                 <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI </InputLabel>
                 <div class="mt-2">
@@ -256,6 +268,7 @@
                   <InputError :message="form.errors.ruc" />
                 </div>
               </div>
+              
               <div>
                 <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
                 <div class="mt-2">
@@ -294,7 +307,7 @@
               <div>
                 <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
                 <div class="mt-2">
-                  <input type="number" step="0.01" v-model="form.amount" id="amount"
+                  <input type="number" step="0.0001" v-model="form.amount" id="amount"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.amount" />
                 </div>
@@ -310,11 +323,11 @@
               </div>
 
 
-              <div class="mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeEditModal"> Cancelar </SecondaryButton>
-                <button type="submit" :class="{ 'opacity-25': form.processing }"
-                  class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Actualizar</button>
-              </div>
+            </div>
+            <div class="mt-6 flex items-center justify-end gap-x-6">
+              <SecondaryButton @click="closeEditModal"> Cancelar </SecondaryButton>
+              <button type="submit" :class="{ 'opacity-25': form.processing }"
+                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Actualizar</button>
             </div>
           </div>
         </form>
@@ -351,6 +364,8 @@ const props = defineProps({
   userPermissions: Array
 });
 
+console.log(props.additional_costs)
+
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);
 }
@@ -361,6 +376,7 @@ const form = useForm({
   ruc: '',
   zone: '',
   provider_id: '',
+  project_id: props.project_id.id,
   type_doc: '',
   doc_number: '',
   doc_date: '',
@@ -392,6 +408,8 @@ const openEditAdditionalModal = (additional) => {
   form.doc_date = editingAdditional.value.doc_date;
   form.amount = editingAdditional.value.amount;
   form.description = editingAdditional.value.description;
+  form.zone = editingAdditional.value.zone;
+  form.provider_id = editAdditionalModal.value.provider_id
 
   editAdditionalModal.value = true;
 };
@@ -429,6 +447,8 @@ const submitEdit = () => {
       setTimeout(() => {
         showModalEdit.value = false;
       }, 2000);
+    }, onError: (e) => {
+      console.log(e)
     }
   });
 };

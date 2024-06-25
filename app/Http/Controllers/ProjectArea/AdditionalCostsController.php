@@ -13,7 +13,7 @@ class AdditionalCostsController extends Controller
 {
     public function index(Project $project_id)
     {
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project')->get();
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->get();
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
@@ -29,7 +29,7 @@ class AdditionalCostsController extends Controller
         $data = $request->validate([
             'expense_type' => 'required|string',
             'ruc' =>'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',
             'amount' => ['required', 'numeric', function($attribute, $value, $fail) use ($request, $remaining_budget){
@@ -39,18 +39,19 @@ class AdditionalCostsController extends Controller
             'zone'=>'required',
             'provider_id'=> 'nullable',
             'description' => 'required|string',
+            'project_id'=> 'required'
         ]);
         AdditionalCost::create($data);
         return redirect()->back(); 
     }
     
 
-    public function update(AdditionalCost $additional_cost, Request $request)
+    public function update( Request $request, AdditionalCost $additional_cost)
     {
         $data = $request->validate([
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',
             'amount' => 'required|numeric',
