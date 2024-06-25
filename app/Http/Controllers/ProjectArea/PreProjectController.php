@@ -66,7 +66,7 @@ class PreProjectController extends Controller
     public function create($preproject_id = null)
     {
         return Inertia::render('ProjectArea/PreProject/CreatePreProject', [
-            'preproject' => Preproject::with('project', 'contacts')->find($preproject_id),
+            'preproject' => Preproject::with('project','customer', 'contacts')->find($preproject_id),
             'customers' => Customer::with('customer_contacts')->get(),
             'titles' => Title::all()
         ]);

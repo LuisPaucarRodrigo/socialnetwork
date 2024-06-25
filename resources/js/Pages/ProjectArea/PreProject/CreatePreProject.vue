@@ -139,7 +139,7 @@
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.description" id="description"
+                                    <TextInput  type="text" v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.description" />
                                 </div>
@@ -168,7 +168,7 @@
                                 <InputError :message="form.errors.code" />
                             </div>
 
-                            <div v-if="[1,2,3].includes(form.customer_id)">
+                            <div v-if="[1, 2, 3].includes(form.customer_id)">
                                 <label for="cpe" class="font-medium leading-6 text-gray-900">CPE</label>
                                 <div class="mt-2 flex justify-center items-center gap-2">
                                     <input requirede="text" pattern="[A-Z0-9]+" v-model="form.cpe" id="cpe"
@@ -260,6 +260,7 @@ import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)
@@ -270,6 +271,8 @@ const { preproject, customers, titles } = defineProps({
     customers: Object,
     titles: Object
 })
+
+console.log(preproject)
 
 let backUrls = preproject?.status === undefined
     ? 'preprojects.index'
@@ -303,7 +306,7 @@ const form = useForm({
     ...(preproject ? update_state : initial_state)
 });
 
-const customerBusinnes = ref('')
+const customerBusinnes = ref(preproject ? preproject.customer?.business_name: '')
 
 const contactsList = ref([])
 const contactItem = ref("")
@@ -348,7 +351,12 @@ const submit = () => {
                 } else {
                     showModal.value = false
                 }
-                router.visit(route('preprojects.index'))
+                route('', {})
+                router.visit(preproject?.status === undefined
+                    ? route('preprojects.index')
+                    : preproject?.status == true
+                        ? route('preprojects.index', { preprojects_status: 1 })
+                        : route('preprojects.index', { preprojects_status: 0 }))
             }, 2000);
         },
         onError: (e) => {
@@ -367,6 +375,7 @@ const handleAutocomplete = (e, model) => {
         form[model] = matchedClient.id
     } else {
         form[model] = ''
+        customerBusinnes.value = ''
     }
     helperContactList(form.customer_id, form.subcustomer_id, form.hasSubcustomer)
 }
@@ -409,8 +418,8 @@ const handleSubClient = (e) => {
 }
 
 const updateProjectCode = () => {
-    const customerName = customerBusinnes.value.replace(' ', '').substring(0, 5);
-    const description = form.description.replace(' ', '').substring(0, 5);
+    const customerName = customerBusinnes.value.replaceAll(' ', '').substring(0, 5);
+    const description = form.description.replaceAll(' ', '').substring(0, 9);
 
     form.code = `${customerName}-${description}`;
 };
