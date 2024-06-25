@@ -27,12 +27,8 @@ class AdditionalCostsController extends Controller
         $remaining_budget = $project_id->remaining_budget;
         
         $data = $request->validate([
-            'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GEP',
-            'ruc' => ['required', 'numeric', function ($attribute, $value, $fail) {
-                if (!(strlen($value) == 11 || strlen($value) == 8)) {
-                    $fail('Se debe tener exactamente 8 o 11 dígitos.');
-                }
-            }],
+            'expense_type' => 'required|string',
+            'ruc' =>'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',
@@ -52,12 +48,8 @@ class AdditionalCostsController extends Controller
     public function update(AdditionalCost $additional_cost, Request $request)
     {
         $data = $request->validate([
-            'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GEP',
-            'ruc' => ['required', 'numeric', function ($attribute, $value, $fail) {
-                if (!(strlen($value) == 11 || strlen($value) == 8)) {
-                    $fail('Se debe tener exactamente 8 o 11 dígitos.');
-                }
-            }],
+            'expense_type' => 'required|string',
+            'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',

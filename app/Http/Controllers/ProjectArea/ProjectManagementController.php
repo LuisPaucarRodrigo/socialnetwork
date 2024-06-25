@@ -157,7 +157,11 @@ class ProjectManagementController extends Controller
     public function project_add_employee(Request $request, $project_id)
     {
         $project = Project::find($project_id);
-        $project->employees()->attach($request->input('employee.id'), ['charge' => $request->input('charge')]);
+        $employee = Employee::find($request->input('employee.id'));
+        $project->employees()->attach($request->input('employee.id'), [
+            'charge' => $request->input('charge'), 
+            'salary_per_day' => $employee->salaryPerDay($project->days), 
+        ]);
         return redirect()->back();
     }
 

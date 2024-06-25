@@ -110,10 +110,16 @@
                 </div>
               </div>
               <div>
-                <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">Ruc</InputLabel>
+                <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11"
+                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete" autocomplete="off"
+                    list="options"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <datalist id="options">
+                                    <option v-for="item in providers" :value="item.ruc">
+                                        {{ item.company_name }}
+                                    </option>
+                                </datalist>
                   <InputError :message="form.errors.ruc" />
                 </div>
               </div>
@@ -193,19 +199,36 @@
                   <select v-model="form.expense_type" id="expense_type"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option disabled value="">Seleccionar Gasto</option>
-                    <option>Combustible GEP</option>
+                    <option>Camionetas</option>
                     <option>Combustible</option>
+                    <option>Hospedaje</option>
+                    <option>Movilidad</option>
                     <option>Peaje</option>
+                    <option>Seguros y Pólizas</option>
+                    <option>Herramientas</option>
+                    <option>Fletes</option>
+                    <option>EPPS</option>
+                    <option>Gastos de Representación</option>
+                    <option>Compbustible GEP</option>
+                    <option>Otros</option>
+                    <option>Consumibles</option>
+                    <option>Equipos</option>
                     <option>Otros</option>
                   </select>
                   <InputError :message="form.errors.expense_type" />
                 </div>
               </div>
               <div>
-                <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">Ruc</InputLabel>
+                <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11"
+                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete" autocomplete="off"
+                    list="options"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    <datalist id="options">
+                                    <option v-for="item in providers" :value="item.ruc">
+                                        {{ item.company_name }}
+                                    </option>
+                                </datalist>
                   <InputError :message="form.errors.ruc" />
                 </div>
               </div>
@@ -298,6 +321,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const props = defineProps({
   additional_costs: Object,
   project_id: Object,
+  providers: Object,
   auth: Object,
   userPermissions: Array
 });
@@ -311,6 +335,7 @@ const form = useForm({
   expense_type: '',
   ruc: '',
   zone: '',
+  provider_id: '',
   type_doc: '',
   doc_number: '',
   doc_date: '',
@@ -401,5 +426,16 @@ const deleteAdditional = () => {
     });
   }
 };
+
+
+const handleRucDniAutocomplete = (e) => {
+  let ruc = e.target.value
+  let findProv = props.providers.find(item => item.ruc == ruc)
+  if (findProv) {
+    form.provider_id = findProv.id
+  } else {
+    form.provider_id = ''
+  }
+}
 
 </script>
