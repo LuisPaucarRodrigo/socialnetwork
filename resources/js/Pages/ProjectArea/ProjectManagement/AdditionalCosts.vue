@@ -83,12 +83,21 @@
                 <div class="mt-2">
                   <select v-model="form.expense_type" id="expense_type"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    <option disabled value="">Seleccionar</option>
-                    <option>Alquiler de Camionetas</option>
-                    <option>Alquiler Habitaciones</option>
+                    <option disabled value="">Seleccionar Gasto</option>
+                    <option>Camionetas</option>
                     <option>Combustible</option>
-                    <option>Combustible GEP</option>
-                    <option>Viáticos</option>
+                    <option>Hospedaje</option>
+                    <option>Movilidad</option>
+                    <option>Peaje</option>
+                    <option>Seguros y Pólizas</option>
+                    <option>Herramientas</option>
+                    <option>Fletes</option>
+                    <option>EPPS</option>
+                    <option>Gastos de Representación</option>
+                    <option>Compbustible GEP</option>
+                    <option>Otros</option>
+                    <option>Consumibles</option>
+                    <option>Equipos</option>
                     <option>Otros</option>
                   </select>
                   <InputError :message="form.errors.expense_type" />
@@ -129,6 +138,7 @@
                   <select v-model="form.type_doc" id="type_doc"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option disabled value="">Seleccionar Documento</option>
+                    <option>Efectivo</option>
                     <option>Deposito</option>
                     <option>Factura</option>
                     <option>Boleta</option>
@@ -219,6 +229,20 @@
                 </div>
               </div>
               <div>
+                <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
+                <div class="mt-2">
+                  <select v-model="form.type_doc" id="type_doc"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option disabled value="">Seleccionar Documento</option>
+                    <option>Deposito</option>
+                    <option>Factura</option>
+                    <option>Boleta</option>
+                    <option>Voucher de Pago</option>
+                  </select>
+                  <InputError :message="form.errors.type_doc" />
+                </div>
+              </div>
+              <div>
                 <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI </InputLabel>
                 <div class="mt-2">
                   <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete" autocomplete="off"
@@ -238,6 +262,7 @@
                   <select v-model="form.type_doc" id="type_doc"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option disabled value="">Seleccionar Documento</option>
+                    <option>Efectivo</option>
                     <option>Deposito</option>
                     <option>Factura</option>
                     <option>Boleta</option>
