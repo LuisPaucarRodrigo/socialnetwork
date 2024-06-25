@@ -27,6 +27,7 @@ class  Project extends Model
         'total_employee_costs',
         'name',
         'code',
+        'days',
         'start_date',
         'end_date',
         'total_products_cost',
@@ -157,7 +158,8 @@ class  Project extends Model
 
     public function getTotalServicesCostAttribute()
     {
-        return $this->preproject()->first()->total_services_cost;
+        return 0;
+        // return $this->preproject()->first()->total_services_cost;
     }
 
     // --------------------------------  Employee Costs ---------------------------------//
@@ -167,9 +169,13 @@ class  Project extends Model
     {
 
         $days = optional($this->preproject()->first()->quote)->deliverable_time;
-        return $this->employees()->get()->sum(function ($item) use ($days) {
-            return $item->getSalaryPerDayAttribute() * $days;
-        });
+        // return $this->employees()->get()->sum(function ($item) use ($days) {
+        //     return $item->salaryPerDay($days) * $days;
+        // });
+    }
+
+    public function getDaysAttribute () {
+       return optional($this->preproject()->first()->quote)->deliverable_time;
     }
 
     //RELATIONS

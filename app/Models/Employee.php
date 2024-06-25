@@ -23,9 +23,7 @@ class Employee extends Model
         'phone2'
     ];
 
-    protected $appends = [
-        'salary_per_day'
-    ];
+
 
     public function contract()
     {
@@ -75,9 +73,9 @@ class Employee extends Model
         return $this->hasOne(ProjectEmployee::class);
     }
 
-    public function getSalaryPerDayAttribute()
+    public function salaryPerDay($days)
     {
-        return $this->contract()->first()->basic_salary / 30;
+        return $this->contract()->first()->basic_salary / $days;
     }
     
 }

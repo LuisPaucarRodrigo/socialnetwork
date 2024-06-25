@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Anteproyectos" />
-    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
+    <AuthenticatedLayout :redirectRoute="backUrls">
         <template v-if="preproject" #header>
             Edición de Anteproyecto
         </template>
@@ -270,6 +270,13 @@ const { preproject, customers, titles } = defineProps({
     customers: Object,
     titles: Object
 })
+
+let backUrls = preproject?.status === undefined
+    ? 'preprojects.index'
+    : preproject?.status == true
+        ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { preprojects_status: 0 } }
+
 
 const initial_state = {
     customer_id: '',

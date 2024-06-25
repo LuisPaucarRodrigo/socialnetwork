@@ -76,7 +76,7 @@
                             </button>
                             <Link :href="route('projectmanagement.update', { project_id: item.id })"
                                 class="flex items-start">
-                            <PencilIcon class="h-4 w-4 text-teal-600" />
+                            <QueueListIcon class="h-6 w-6 text-teal-700" />
                             </Link>
                         </div>
                     </div>
@@ -152,7 +152,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { QueueListIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     projects: Object,
