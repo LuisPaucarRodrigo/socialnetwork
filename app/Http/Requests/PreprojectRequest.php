@@ -27,7 +27,7 @@ class PreprojectRequest extends FormRequest
             'description' => 'required',
             'date' => 'required',
             'observation' => 'nullable',
-            'title_id' => 'required',
+            
             'cpe' => 'nullable',
             'contacts' => 'required|array',
         ];
@@ -35,6 +35,9 @@ class PreprojectRequest extends FormRequest
             $rules['subcustomer_id'] = 'required';
         } else {
             $rules['subcustomer_id'] = 'nullable';
+        }
+        if ($this->input('customer_id') !== 1){
+            $rules['title_id'] = 'required';
         }
         return $rules;
     }
