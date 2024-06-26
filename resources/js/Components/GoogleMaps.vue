@@ -10,10 +10,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  destination: {
-    type: Object,
-    required: false
-  },
   waypoints: {
     type: Array,
     required: true
@@ -33,31 +29,21 @@ const initMap = () => {
     mapId: "9633a9a2b0cd074b"
   });
 
-  new google.maps.marker.AdvancedMarkerElement({
+  // Add a marker for the origin
+  new google.maps.Marker({
+    position: props.origin,
     map: map,
-    title: 'Uluru',
+    title: 'Origin'
   });
 
-  const directionsService = new google.maps.DirectionsService();
-  const directionsRenderer = new google.maps.DirectionsRenderer();
-  directionsRenderer.setMap(map);
-
-  directionsService.route(
-    {
-      origin: props.origin,
-      destination: props.destination,
-      waypoints: props.waypoints,
-      optimizeWaypoints: true,
-      travelMode: 'WALKING'
-    },
-    (response, status) => {
-      if (status === 'OK') {
-        directionsRenderer.setDirections(response);
-      } else {
-        console.error('Directions request failed due to ' + status);
-      }
-    }
-  );
+  // Add markers for the waypoints
+  props.waypoints.forEach((point, index) => {
+    new google.maps.Marker({
+      position: point.location,
+      map: map,
+      title: `Waypoint ${index + 1}`
+    });
+  });
 };
 
 watch(() => props.mapVisible, (newVal) => {
@@ -74,7 +60,6 @@ watch(() => props.mapVisible, (newVal) => {
     }
   }
 });
-
 
 onUnmounted(() => {
   if (map) {
