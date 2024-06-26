@@ -12,7 +12,7 @@ class ProjectConstants
     {
         $template = null;
         if ($data['template'] === 'Mantenimiento') {
-            $name = 'OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
+            $name = 'PINT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
             $template = [
                 'preproject' => [
                     'date'=>$data['date'],
