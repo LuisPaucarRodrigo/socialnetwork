@@ -732,24 +732,24 @@ class PreProjectController extends Controller
                 'id' => $preprojectCode->id,
                 'code' => $code->code,
                 'description' => $code->description,
-                'images' => []  // Inicializar con una lista vacía de imágenes
+                'images' => []
             ];
         });
-
-        // Obtener todas las imágenes relacionadas con el preproject_id
+        
         $imagesCode = Imagespreproject::where('preproject_code_id', $preproject_id)->get();
         $imagesCode->each(function ($url) {
             $url->image = 'image/imagereportpreproject/' . $url->image;
         });
-
+        
         $codesWithStatus = $codesWithStatus->map(function ($code) use ($imagesCode) {
             $code['images'] = $imagesCode->filter(function ($image) use ($code) {
                 return $image->preproject_code_id == $code['id'];
             })->values();
             return $code;
         });
-        // dd($codesWithStatus);
-        // Cargar la vista en el PDF con los datos estructurados
+        
+        
+
         $pdf = Pdf::loadView('pdf.ReportPreProject', compact('codesWithStatus'));
         return $pdf->stream();
     }

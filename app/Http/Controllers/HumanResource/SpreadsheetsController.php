@@ -5,9 +5,7 @@ namespace App\Http\Controllers\HumanResource;
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
-use App\Models\Employee;
 use App\Models\Pension;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -33,7 +31,7 @@ class SpreadsheetsController extends Controller
                     });
             })->get();
         } else {
-            $spreadsheet = $spreadsheet->paginate(50);
+            $spreadsheet = $spreadsheet->get();
         }
 
         $total = [

@@ -8,7 +8,7 @@
         <div class="min-w-full overflow-hidden rounded-lg">
             <div class="mt-6 flex items-center justify-between gap-x-3">
                 <div class="mt-2 hidden sm:flex sm:items-center space-x-4">
-                    <a :href="route('preprojects.report.download', { preproject_id: 1 })"
+                    <a :href="route('preprojects.report.download', { preproject_id: preproject.id })"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Exportar
                     </a>
@@ -44,7 +44,7 @@
                         </h2>
                         <div class="grid grid-cols-1 gap-y-1 text-sm text-center">
                             <img :src="image.image">
-                            <p>Lat:{{ image.lat }} Lon:{{ image.lon }}</p>
+                            <p>Lat:{{ image?.lat }} Lon:{{ image?.lon }}</p>
                         </div>
                         <div class="pt-3 flex space-x-3 justify-center item-center">
                             <span v-if="image.state != null"
@@ -158,21 +158,21 @@ const imageCodeId = ref('');
 const codes = ref(props.codesWithStatus);
 const mapVisible = ref(false);
 
-const filteredImages = ref(Object.values(photoCode.value).filter(image => image.state == true));
+const filteredImages = ref(Object.values(props.imagesCode).filter(image => image.state == true));
 
 const origin = {
-    lat: Number(filteredImages.value[0].lat),
-    lng: Number(filteredImages.value[0].lon)
+    lat: Number(filteredImages.value[0]?.lat),
+    lng: Number(filteredImages.value[0]?.lon)
 };
 
 const destination = {
-    lat: Number(filteredImages.value[filteredImages.value.length - 1].lat),
-    lng: Number(filteredImages.value[filteredImages.value.length - 1].lon)
+    lat: Number(filteredImages.value[filteredImages.value.length - 1]?.lat),
+    lng: Number(filteredImages.value[filteredImages.value.length - 1]?.lon)
 };
 const waypoints = filteredImages.value.slice(1, -1).map(item => ({
     location: {
-        lat: Number(item.lat),
-        lng: Number(item.lon)
+        lat: Number(item?.lat),
+        lng: Number(item?.lon)
     },
     stopover: true
 }));
