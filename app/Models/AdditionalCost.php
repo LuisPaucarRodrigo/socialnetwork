@@ -13,15 +13,21 @@ class AdditionalCost extends Model
         'expense_type',
         'ruc',
         'type_doc',
+        'zone',
         'doc_number',
         'doc_date',
         'description',
         'amount',
-        'project_id'
+        'project_id',
+        'provider_id'
     ];
 
     public function project(){
         return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function provider () {
+        return $this->belongsTo(Provider::class, 'provider_id');
     }
 
 

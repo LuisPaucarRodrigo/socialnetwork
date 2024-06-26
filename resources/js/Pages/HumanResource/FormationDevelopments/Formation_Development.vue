@@ -14,7 +14,7 @@
                 <!-- :href=""route('tu.ruta') -->
                 <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
                     <div>
-                        <h3 class="text-lg font-semibold">Gestion de capacitaciones</h3>
+                        <h3 class="text-lg font-semibold">Gestión de Capacitaciones</h3>
                         <div class="mb-2">
                             <!-- Icono de Heroicons para Vue -->
                             <ClipboardDocumentIcon class="h-6 w-6 text-blue-500" />
@@ -37,7 +37,7 @@
                 <Link v-if="hasPermission('HumanResourceManager')" :href="route('management.employees.formation_development.assignation.create')">
                 <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
                     <div>
-                        <h3 class="text-lg font-semibold">Asignación de programas</h3>
+                        <h3 class="text-lg font-semibold">Asignación de Programas</h3>
                         <div class="mb-2">
                             <PaperAirplaneIcon class="h-6 w-6 text-blue-500" />
                         </div>
@@ -47,7 +47,7 @@
                 <Link :href="route('management.employees.formation_development.employees_in_programs')">
                 <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
                     <div>
-                        <h3 class="text-lg font-semibold">Personal asignado</h3>
+                        <h3 class="text-lg font-semibold">Personal Asignado</h3>
                         <div class="mb-2">
                             <ClipboardDocumentCheckIcon class="h-6 w-6 text-blue-500" />
                         </div>

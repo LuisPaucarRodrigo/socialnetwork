@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('company_name');
             $table->string('contact_name');
             $table->string('address');
-            $table->string('phone1')->unique();
+            $table->string('phone1')->nullable();
             $table->string('phone2')->unique()->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->string('category');
             $table->string('zone');
-            $table->string('ruc');
+            $table->string('ruc')->unique();
             $table->string('segment');
             $table->timestamps();
 

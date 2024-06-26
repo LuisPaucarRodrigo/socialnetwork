@@ -12,7 +12,7 @@ class ProjectConstants
     {
         $template = null;
         if ($data['template'] === 'Mantenimiento') {
-            $name = 'OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR' . $this->formatDate($data['date']);
+            $name = 'PINT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
             $template = [
                 'preproject' => [
                     'date'=>$data['date'],
@@ -44,7 +44,8 @@ class ProjectConstants
                 'project' => [
                     'priority'=> 'Alta',
                     'description'=> $name,
-                ]
+                ],
+                'project_employees' => $this->getEmployeesStructured($data['employees']) 
 
 
             ];
@@ -103,13 +104,21 @@ class ProjectConstants
     function getQuoteServicesStructured ($services) {
         $result = [];
         foreach($services as $item){
-            array_push($result, [
+            $result[$item['id']] = [
                 'service_id' => $item['id'],
                 'resource_entry_id' => null,
-                'days' => '1',
-                'profit_margin'=> 20,
-                'rent_price'=> $item['rent_price'],
-            ]);
+                'days' => $item['days'],
+                'profit_margin'=> $item['profit_margin'], //variable
+                'rent_price'=> $item['original_price'],
+            ];
+        }
+        return $result;
+    }
+
+    function getEmployeesStructured ($employees) {
+        $result = [];
+        foreach($employees as $item){
+            $result[$item['id']] = ['charge' => 'trabajador'];
         }
         return $result;
     }

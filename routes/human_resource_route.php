@@ -57,12 +57,16 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::post('/document_sections', [DocumentController::class, 'storeSection'])->name('documents.storeSection');
     Route::put('/document_sections/{section}/update', [DocumentController::class, 'updateSection'])->name('documents.updateSection');
     Route::delete('/document_sections/{section}/delete', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
+    Route::get('/document_sections/{sectionId}/zipdownload', [DocumentController::class, 'downloadSectionDocumentsZip'])->name('documents.zipSection');
+    //Route::delete('/document_sections/{sectionId}/zipdelete', [DocumentController::class, 'deleteSectionZip'])->name('documents.deleteZipSection');
 
     //Subdivisions
     Route::get('/document_sections/{section}/subdivisions', [DocumentController::class, 'showSubdivisions'])->name('documents.subdivisions');
-    Route::post('/document_sections/{section}/subdivisions', [DocumentController::class, 'storeSubdivision'])->name('documents.storeSubdivision');
+    Route::post('/document_sections/{section}/subdivisions/post', [DocumentController::class, 'storeSubdivision'])->name('documents.storeSubdivision');
     Route::put('/document_sections/{section}/subdivisions/{subdivision}/update', [DocumentController::class, 'updateSubdivision'])->name('documents.updateSubdivision');
     Route::delete('/document_sections/{section}/subdivisions/{subdivision}/delete', [DocumentController::class, 'destroySubdivision'])->name('documents.destroySubdivision');
+    Route::get('/document_sections/{section}/subdivisions/{subdivisionId}/zipdownload', [DocumentController::class, 'downloadSubdivisionDocumentsZip'])->name('documents.zipSubdivision');
+    //Route::delete('/document_sections/{section}/subdivisions/{subdivisionId}/zipdelete', [DocumentController::class, 'deleteZip'])->name('documents.deleteZipSubdivision');
 
     //SubSections
     Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');

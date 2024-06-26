@@ -8,15 +8,27 @@ use Illuminate\Database\Eloquent\Model;
 class Document extends Model
 {
     use HasFactory;
-    
-    protected $fillable = ['title', 'section_id', 'subdivision_id'];
 
-    public function section()
-    {
-        return $this->belongsTo(DocumentSection::class);
-    }
+    protected $fillable = ['title', 'subdivision_id'];
+
+    protected $appends = [
+        'extension'
+    ];
+
     public function subdivision()
     {
-        return $this->belongsTo(Subdivision::class);
+        return $this->belongsTo(Subdivision::class, 'subdivision_id');
+    }
+
+    public function getExtensionAttribute()
+    {
+        // Obtiene el nombre del archivo completo
+        $fileName = $this->title;
+
+        // Utiliza la función pathinfo para obtener la información del archivo
+        $fileInfo = pathinfo($fileName);
+
+        // Retorna solo la extensión del archivo
+        return $fileInfo['extension'] ?? null;
     }
 }

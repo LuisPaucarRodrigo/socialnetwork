@@ -66,7 +66,7 @@ class PreProjectController extends Controller
     public function create($preproject_id = null)
     {
         return Inertia::render('ProjectArea/PreProject/CreatePreProject', [
-            'preproject' => Preproject::with('project', 'contacts')->find($preproject_id),
+            'preproject' => Preproject::with('project','customer', 'contacts')->find($preproject_id),
             'customers' => Customer::with('customer_contacts')->get(),
             'titles' => Title::all()
         ]);
@@ -213,6 +213,7 @@ class PreProjectController extends Controller
         $data = $request->validated();
         if ($quote_id) {
             $quote = PreProjectQuote::find($quote_id);
+            // dd($data['observations']);
             $quote->update($data);
         } else {
             $preproject_quote = PreProjectQuote::create($data);
@@ -425,7 +426,6 @@ class PreProjectController extends Controller
 
         $pdf = Pdf::loadView('pdf.CotizationPDF', compact('preproject', 'finalProducts', 'finalServices'));
         return $pdf->stream();
-        //return view('pdf.CotizationPDF', compact('preproject'));
     }
 
     // ------------------------------- PHOTO REPORT -------------------------------
@@ -630,13 +630,6 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/Details', ['expense' => $expense]);
     }
 
-    public function generarPDF()
-    {
-        $data = [];
-        $pdf = PDF::loadView('pdf_export', $data);
-        return $pdf->download('archivo-pdf.pdf');
-    }
-
     public function index_image($preproject_id)
     {
         $preprojects = PreprojectCode::with('code')->where('preproject_id', $preproject_id)->get();
@@ -650,7 +643,7 @@ class PreProjectController extends Controller
                 'description' => $code->description,
             ];
         }
-        $imagesCode = Imagespreproject::all();
+        $imagesCode = Imagespreproject::where("preproject_code_id", $preproject_id)->get();
         $imagesCode->each(function ($url) {
             $url->image = url('/image/imagereportpreproject/' . $url->image);
         });
@@ -661,7 +654,7 @@ class PreProjectController extends Controller
         ]);
     }
 
-    public function registerCodePhoto($id)
+    public function filterCodePhoto($id)
     {
         $code = PreprojectCode::with('code')->where("id", $id)->get();
         $codesWithStatus = [];
@@ -725,6 +718,40 @@ class PreProjectController extends Controller
             return response()->json(['url' => $url]);
         }
         abort(404, 'Imagen no encontrado');
+    }
+
+    public function download_report($preproject_id)
+    {
+        // Obtener todos los códigos de preproyecto con el código correspondiente
+        $preprojects = PreprojectCode::with('code')->where('preproject_id', $preproject_id)->get();
+
+        // Estructurar los códigos con su estado
+        $codesWithStatus = $preprojects->map(function ($preprojectCode) {
+            $code = $preprojectCode->code;
+            return [
+                'id' => $preprojectCode->id,
+                'code' => $code->code,
+                'description' => $code->description,
+                'images' => []
+            ];
+        });
+        
+        $imagesCode = Imagespreproject::where('preproject_code_id', $preproject_id)->get();
+        $imagesCode->each(function ($url) {
+            $url->image = 'image/imagereportpreproject/' . $url->image;
+        });
+        
+        $codesWithStatus = $codesWithStatus->map(function ($code) use ($imagesCode) {
+            $code['images'] = $imagesCode->filter(function ($image) use ($code) {
+                return $image->preproject_code_id == $code['id'];
+            })->values();
+            return $code;
+        });
+        
+        
+
+        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('codesWithStatus'));
+        return $pdf->stream();
     }
 
     public function delete_image($id)
@@ -868,7 +895,6 @@ class PreProjectController extends Controller
         return redirect()->back();
     }
 
-
     //titles
 
     public function showTitles()
@@ -891,7 +917,6 @@ class PreProjectController extends Controller
         ]);
 
         $title->codes()->attach($request->code_id_array);
-        // $title->codes()->sync($request->code_id_array, ['timestamps' => true]);
     }
 
     public function putTitle(Request $request, Title $title)

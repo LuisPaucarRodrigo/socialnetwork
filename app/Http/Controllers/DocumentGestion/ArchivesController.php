@@ -76,7 +76,7 @@ class ArchivesController extends Controller
                 'comment' => 'required',
                 'user_id' => 'required',
             ];
-            
+
             if ($availability == 3) {
                 $validationRules['new_date'] = ['required', 'date', function ($attribute, $value, $fail) use ($firstDueDate) {
                     if ($firstDueDate && $value < $firstDueDate) {
@@ -86,7 +86,7 @@ class ArchivesController extends Controller
             } else {
                 $validationRules['new_date'] = 'nullable|date';
             }
-            
+
             $request->validate($validationRules);
 
             $lastArchive = Archive::where('folder_id', $request->folder_id)->orderBy('id', 'desc')->first();
@@ -187,11 +187,8 @@ class ArchivesController extends Controller
                 $path = public_path($filePath);
 
                 if (file_exists($path)) {
-                    if($findArchive->archive_type == 'Imágenes'){
-                        return Storage::response($path);
-                    }else{
-                        return response()->download($path);
-                    }
+                    ob_end_clean();
+                    return response()->download($path);
                 }
 
                 abort(404, 'Documento no encontrado');
@@ -286,7 +283,7 @@ class ArchivesController extends Controller
         $findArchiveUser = ArchiveUser::where('archive_id', $archive)
             ->where('user_id', $user->id)
             ->first();
-            
+
         if ($findArchiveUser && $findArchiveUser->state !== 'Pendiente'){
             abort(403, 'Ya no está autorizado');
         }
