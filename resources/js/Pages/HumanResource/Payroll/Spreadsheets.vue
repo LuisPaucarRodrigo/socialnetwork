@@ -1,15 +1,17 @@
 <template>
+
     <Head title="Nomina" />
     <AuthenticatedLayout :redirectRoute="'spreadsheets.index'">
         <template #header>
             Nomina
         </template>
-        <div class="min-w-full overflow-hidden rounded-lg shadow">
+        <div class="min-w-full min-h-full overflow-hidden rounded-lg shadow">
             <div class="mt-6 flex flex-col sm:flex-row sm:items-center justify-between sm:gap-x-3 gap-y-4">
                 <div class="flex items-center justify-between gap-x-6 w-full">
 
                     <div class="hidden sm:flex sm:space-x-3 sm:items-center">
-                        <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_pension" type="button"
+                        <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_pension"
+                            type="button"
                             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                             Gestion de Sistema de Pension
                         </PrimaryButton>
@@ -73,109 +75,111 @@
                     </form>
                 </div>
             </div>
-            <div class="overflow-x-auto">
+
+            <div class="overflow-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                             <th
-                                class="w-100 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="w-100 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Estado
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 DNI
                             </th>
                             <th
-                                class="sticky left-0 z-10 bg-amber-200 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="sticky left-0 z-10 bg-amber-200 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Nombre
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 REG. PEN
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Fecha Ingreso
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 mx-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-9 mx-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Sueldo
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Vac. Truncas
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Ingreso
                                 Total
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Tot.B.G.Sis. Pensionario
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 %.SNP
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 SNP/ONP
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 %.COM
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 %.Com. Sobre R.A.
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 % SEG
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 PRIMA SEGURO
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 % APORT. OBLIG.
                             </th>
 
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 MONT0 OBLIGA.
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 DESCUENTO TOTAL
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-green-200 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-green-200 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 NETO PAGAR
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 TOT. BASE GRAV. ESSAL.
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 SALUD 9%
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 VIDA LEY
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 APORTE TOTAL
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="spreadsheet in (props.search === '' ? spreadsheets.data : spreadsheets)" :key="spreadsheet.id" class="text-gray-700">
+                        <tr v-for="spreadsheet in (props.search === '' ? spreadsheets : spreadsheets)"
+                            :key="spreadsheet.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.state }}</p>
                             </td>
@@ -183,7 +187,8 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.employee.dni }}</p>
                             </td>
                             <td class="sticky left-0 border-b bg-amber-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.employee.name }} {{ spreadsheet.employee.lastname }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.employee.name }} {{
+        spreadsheet.employee.lastname }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ spreadsheet.pension.type }}</p>
@@ -204,8 +209,9 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.total_income.toFixed(2)
-                                    }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">S/ {{
+        spreadsheet.total_income.toFixed(2)
+    }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
@@ -216,10 +222,12 @@
                                 <p class="text-gray-900 whitespace-no-wrap">% {{ spreadsheet.snp.toFixed(2) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.snp_onp.toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.snp_onp.toFixed(2) }}
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">% {{ spreadsheet.commission.toFixed(2) }}
+                                <p class="text-gray-900 whitespace-no-wrap">% {{ spreadsheet.commission.toFixed(2)
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -245,8 +253,9 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.total_discount.toFixed(2)
-                                    }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">S/ {{
+        spreadsheet.total_discount.toFixed(2)
+    }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-green-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
@@ -259,10 +268,12 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.healths.toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.healths.toFixed(2) }}
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.life_ley.toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">S/ {{ spreadsheet.life_ley.toFixed(2) }}
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
@@ -270,8 +281,9 @@
                                 </p>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="5">Totales:</td>
+                        <tr class="sticky bottom-0 z-5">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="5">Totales:
+                            </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 S/ {{ total.sum_salary.toFixed(2) }}
                             </td>
@@ -319,10 +331,6 @@
                     </tbody>
                 </table>
             </div>
-            <div v-if="spreadsheets.links"
-                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <Pagination :links="spreadsheets.links" />
-            </div>
         </div>
 
     </AuthenticatedLayout>
@@ -343,7 +351,7 @@ const props = defineProps({
     boolean: Boolean,
     total: Object,
     search: String,
-    userPermissions:Array
+    userPermissions: Array
 })
 
 const hasPermission = (permission) => {
@@ -372,15 +380,15 @@ const searchForm = useForm({
 })
 
 const search = () => {
-    let data = {searchTerm: searchForm.searchTerm}
+    let data = { searchTerm: searchForm.searchTerm }
     if (!props.boolean == true) {
         reentrystate.value = false
         router.get(route('spreadsheets.index'), data)
     } else {
         reentrystate.value = true
-        router.get(route('spreadsheets.index', { reentry: reentrystate.value }),data)
+        router.get(route('spreadsheets.index', { reentry: reentrystate.value }), data)
     }
-    
+
 }
 
 </script>
