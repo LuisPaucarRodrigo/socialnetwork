@@ -13,11 +13,11 @@
                     + Agregar
                 </PrimaryButton>
                 <PrimaryButton @click="expenses" type="button" class="bg-teal-600 hover:bg-teal-500">
-                    Gastos
+                    Resumen de Gastos
                 </PrimaryButton>
                 <Link :href="route('projectmanagement.additionalCosts', { project_id: props.project.id })"
                     class="rounded-md bg-gray-600 px-4 py-2 text-center text-sm text-white hover:bg-gray-500">
-                Gastos Adicionales
+                    Gastos
                 </Link>
             </div>
             <div class="overflow-x-auto">

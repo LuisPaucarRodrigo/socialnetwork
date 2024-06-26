@@ -30,22 +30,22 @@ class UpdateProviderRequest extends FormRequest
             'contact_name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone1' => [
-                'required',
+                'nullable',
                 'numeric',
                 'digits:9',
-                Rule::unique('providers', 'phone1')->ignore($providerId)
+                //Rule::unique('providers', 'phone1')->ignore($providerId)
             ],
             'phone2' => [
                 'nullable',
                 'numeric',
                 'digits:9',
-                Rule::unique('providers', 'phone2')->ignore($providerId)
+                //Rule::unique('providers', 'phone2')->ignore($providerId)
             ],
             'email' => [
-                'required',
+                'nullable',
                 'email',
                 'max:255',
-                Rule::unique('providers', 'email')->ignore($providerId)
+                //Rule::unique('providers', 'email')->ignore($providerId)
             ],
             'category' => 'required|string|max:255',
             'segment' => 'required|string|max:255',

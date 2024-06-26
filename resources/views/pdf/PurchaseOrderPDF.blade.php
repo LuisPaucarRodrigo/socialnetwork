@@ -94,7 +94,7 @@
         </tr>
     </table>
     
-    <table class="mt-3" style="">
+    <table class="mt-3">
         <thead>
           <tr>
             <th class="td-custom2"  scope="col" colspan="6" style="text-align: center; font-weight: normal;">Productos</th>
@@ -150,7 +150,7 @@
           @endif
         </tbody>
       </table>
-      <table class="mt-3" style="">
+      <table class="mt-3">
         <thead>
             <tr>
                 <th class="td-custom2" scope="col" colspan="5" style="text-align: center; font-weight: normal;">Pagos</th>
