@@ -35,7 +35,8 @@ class  Project extends Model
         'current_budget',
         'total_sum_task',
         'is_liquidable',
-        'total_products_cost_claro_cicsa'
+        'total_products_cost_claro_cicsa',
+        'total_employee_essalud_costs'
     ];
 
     // CALCULATED
@@ -168,11 +169,19 @@ class  Project extends Model
     public function getTotalEmployeeCostsAttribute()
     {
 
-        $days = optional($this->preproject()->first()->quote)->deliverable_time;
-        // return $this->employees()->get()->sum(function ($item) use ($days) {
-        //     return $item->salaryPerDay($days) * $days;
-        // });
+        $days = $this->getDaysAttribute();
+        return $this->project_employee()->get()->sum(function ($item) use ($days) {
+             return $item->salary_per_day * $days;
+        });
     }
+
+    public function employeeChargeCosts($type) {
+        $days = $this->getDaysAttribute();
+        $totalMonthSalary = $this->project_employee()->where('charge', $type)->get()->sum(function ($item) use ($days) {
+             return $item->salary_per_day * $days;
+        });
+    }
+    
 
     public function getDaysAttribute () {
        return optional($this->preproject()->first()->quote)->deliverable_time;
@@ -187,6 +196,11 @@ class  Project extends Model
     public function employees()
     {
         return $this->belongsToMany(Employee::class, 'project_employee')->withPivot('charge', 'id');
+    }
+
+    public function project_employee()
+    {
+        return $this->hasMany(ProjectEmployee::class, 'project_id');
     }
 
     public function tasks()

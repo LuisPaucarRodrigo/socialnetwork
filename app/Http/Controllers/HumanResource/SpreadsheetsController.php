@@ -33,7 +33,7 @@ class SpreadsheetsController extends Controller
                     });
             })->get();
         } else {
-            $spreadsheet = $spreadsheet->paginate();
+            $spreadsheet = $spreadsheet->paginate(50);
         }
 
         $total = [
