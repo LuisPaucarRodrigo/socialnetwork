@@ -46,7 +46,7 @@ class ApiController extends Controller
     public function preproject(Request $request)
     {
         $user = $request->user();
-        $preprojects = $user->preprojects()->where('status', true)->get();
+        $preprojects = $user->preprojects()->where('status', null)->get();
         $data = [];
         foreach ($preprojects as $preproject) {
             if (!$preproject->preproject_code_approve){
