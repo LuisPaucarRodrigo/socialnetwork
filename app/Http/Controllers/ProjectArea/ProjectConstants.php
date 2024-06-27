@@ -20,7 +20,7 @@ class ProjectConstants
                     'subcustomer_id' => null,
                     'description' => $name,
                     'title' => null,
-                    'code' => $this->getCode($data['date'], 'CICSA-OBRAM'),
+                    'code' => $this->getCode($data['date'], 'CICSA-PINTOBRAM'),
                     'cpe' => $data['cpe'],
                     'status' => 1,
 

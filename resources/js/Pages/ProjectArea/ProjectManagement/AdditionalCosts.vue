@@ -364,8 +364,6 @@ const props = defineProps({
   userPermissions: Array
 });
 
-console.log(props.additional_costs)
-
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);
 }

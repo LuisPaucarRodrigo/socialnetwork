@@ -143,6 +143,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <InputError :message="form.errors.employees" />
                             </div>
                             <div class="sm:col-span-1">
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
@@ -282,20 +283,13 @@ const initial_state = {
     employees: employees,
 }
 
-console.log(initial_state)
-
 
 const form = useForm({
     ...initial_state
 });
 
-console.log(form.data())
-
-
 
 const submit = () => {
-    console.log(form.data())
-
     let url = route('project.auto_store.pint')
     form.post(url, {
         onSuccess: () => {

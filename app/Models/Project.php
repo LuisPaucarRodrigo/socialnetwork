@@ -36,7 +36,7 @@ class  Project extends Model
         'total_sum_task',
         'is_liquidable',
         'total_products_cost_claro_cicsa',
-        'total_employee_essalud_costs'
+        // 'total_employee_essalud_costs'
     ];
 
     // CALCULATED
