@@ -134,7 +134,7 @@
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                             <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
-                                                {{ item?.name }} - {{ item?.lastname }}
+                                                {{ item?.name }} {{ item?.lastname }} - {{ item.charge }}
                                             </p>
                                             <button type="button" class="col-span-1 flex justify-end"
                                                 @click="deleteEmployee(i)">
