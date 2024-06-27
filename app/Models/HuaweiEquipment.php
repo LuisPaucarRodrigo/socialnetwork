@@ -17,6 +17,10 @@ class HuaweiEquipment extends Model
         'model_id'
     ];
 
+    protected $appends = [
+        'quantity'
+    ];
+
     public function brand_model ()
     {
         return $this->belongsTo(BrandModel::class, 'model_id');
@@ -25,5 +29,10 @@ class HuaweiEquipment extends Model
     public function huawei_equipment_series ()
     {
         return $this->hasMany(HuaweiEquipmentSerie::class, 'huawei_equipment_id');
+    }
+
+    public function getQuantityAttribute()
+    {
+        return $this->huawei_equipment_series()->count();
     }
 }

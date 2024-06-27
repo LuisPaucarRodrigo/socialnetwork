@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('huawei_materials', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('claro_code');
             $table->foreignId('model_id')->constrained('brand_models')->onDelete('cascade');
             $table->timestamps();
