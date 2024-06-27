@@ -14,6 +14,7 @@ use App\Models\HuaweiMaterial;
 use App\Models\Brand;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Validation\Rule;
 
 class HuaweiManagementController extends Controller
 {
@@ -44,5 +45,28 @@ class HuaweiManagementController extends Controller
             'materials' => HuaweiMaterial::all(),
             'brands' => Brand::all(),
         ]);
+    }
+
+    public function storeBrand (Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', Rule::unique('brands')],
+        ]);
+
+        $new = Brand::create($data);
+
+        return response()->json(['new'=> $new],200);
+    }
+
+    public function storeBrandModel (Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required',
+            'brand_id' => 'required'
+        ]);
+
+        $new = BrandModel::create($data);
+
+        return response()->json(['new'=> $new],200);
     }
 }
