@@ -36,7 +36,6 @@ class  Project extends Model
         'total_sum_task',
         'is_liquidable',
         'total_products_cost_claro_cicsa',
-        // 'total_employee_essalud_costs'
     ];
 
     // CALCULATED
@@ -168,11 +167,20 @@ class  Project extends Model
 
     public function getTotalEmployeeCostsAttribute()
     {
-
-        $days = $this->getDaysAttribute();
-        return $this->project_employee()->get()->sum(function ($item) use ($days) {
-             return $item->salary_per_day * $days;
-        });
+        return [
+            'Administrativo' => [
+                'total_payroll' => $this->employeeChargeCosts('Administrativo'),
+                'essalud' => $this->employeeChargeCosts('Administrativo')*0.09
+            ],
+            'MOD - Mano de Obra Directa' => [
+                'total_payroll' => $this->employeeChargeCosts('MOD - Mano de Obra Directa'),
+                'essalud' => $this->employeeChargeCosts('MOD - Mano de Obra Directa')*0.09
+            ],
+            'MOI - Mano de Obra Indirecta' => [
+                'total_payroll' => $this->employeeChargeCosts('MOI - Mano de Obra Indirecta'),
+                'essalud' => $this->employeeChargeCosts('MOI - Mano de Obra Indirecta')*0.09
+            ],
+        ];
     }
 
     public function employeeChargeCosts($type) {
@@ -180,6 +188,7 @@ class  Project extends Model
         $totalMonthSalary = $this->project_employee()->where('charge', $type)->get()->sum(function ($item) use ($days) {
              return $item->salary_per_day * $days;
         });
+        return $totalMonthSalary;
     }
     
 
