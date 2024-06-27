@@ -39,8 +39,6 @@ class ProjectPintController extends Controller
         $projectConstants = new ProjectConstants();
         $template = $projectConstants->generateTemplate($data);
 
-        // dd($template);
-        
         //Preproject 
         $preproject = Preproject::create($template['preproject']);
 
