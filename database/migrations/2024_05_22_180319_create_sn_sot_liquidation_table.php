@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('up_minutes')->nullable();
             $table->string('liquidation')->nullable();
             $table->string('down_warehouse')->nullable();
+            $table->double('bill_amount')->nullable();
+            $table->text('observations')->nullable();
             $table->string('liquidation_date')->nullable();
             $table->string('sot_status')->nullable();
             $table->timestamps();

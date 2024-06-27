@@ -2,7 +2,7 @@
     <Head title="Proyecto" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template v-if="project" #header>
-            Edición de proyecto
+            Proyecto
         </template>
         <template v-else #header>
             Creación de proyecto
@@ -81,7 +81,7 @@
                                 <InputLabel for="priority" class="font-medium leading-6 text-gray-900">Prioridad
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select required id="priority" v-model="form.priority"
+                                    <select :disabled="auth.user.role_id === 1 ? false: true" required id="priority" v-model="form.priority"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccione uno</option>
                                         <option value="Alta">Alta</option>
@@ -97,14 +97,14 @@
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <textarea required v-model="form.description" id="description"
+                                    <textarea :disabled="auth.user.role_id === 1 ? false: true" required v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                     <InputError :message="form.errors.description" />
                                 </div>
                             </div>
 
 
-                            <div class="sm:col-span-3" v-if="project && project?.remaining_budget  !== 0 ">
+                            <div class="sm:col-span-6" v-if="project && project?.remaining_budget  !== 0 ">
                                 <div class="flex gap-2">
                                     <InputLabel for="trainings" class="font-medium leading-6 text-gray-900">Miembros del
                                         equipo al proyecto
@@ -113,38 +113,74 @@
                                         <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
                                     </button>
                                 </div>
+                                <br>
 
-                                <div class="mt-2" v-if="project">
-                                    <div v-for="(member, index) in form.employees" :key="index"
+                                <div class="grid sm:grid-cols-2 gap-8">
+                                    <div class="mt-2" >
+                                        <p class="text-sm">Administrativos</p>
+                                        <div v-for="(member, index) in form.employees.filter(item=>
+                                        item.pivot.charge === 'Administrativo' )" :key="index"
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
                                             member.lastname }}: {{ member.pivot.charge }} </p>
-                                        <button type="button" @click="delete_already_employee(member.pivot.id, index)"
+                                            <button v-if="hasPermission('UserManager')"  type="button" @click="delete_already_employee(member.pivot.id, index)"
                                             class="col-span-1 flex justify-end">
                                             <TrashIcon class=" text-red-500 h-4 w-4 " />
                                         </button>
-                                        <div class="border-b col-span-8 border-gray-900/10">
+                                            <div class="border-b col-span-8 border-gray-900/10">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2" >
+                                        <p class="text-sm">MOI - Mano de Obra Indirecta</p>
+                                        <div v-for="(member, index) in form.employees.filter(item=>
+                                        item.pivot.charge === 'MOI - Mano de Obra Indirecta')" :key="index"
+                                            class="grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
+                                                member.lastname }}: {{ member.pivot.charge }} </p>
+                                            <button v-if="hasPermission('UserManager')"  type="button" @click="delete_already_employee(member.pivot.id, index)"
+                                                class="col-span-1 flex justify-end">
+                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                            </button>
+                                            <div class="border-b col-span-8 border-gray-900/10">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2" >
+                                        <p class="text-sm">MOD - Mano de Obra Directa</p>
+                                        <div v-for="(member, index) in form.employees.filter(item=>
+                                        item.pivot.charge === 'MOD - Mano de Obra Directa')" :key="index"
+                                            class="grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
+                                                member.lastname }}: {{ member.pivot.charge }} </p>
+                                            <button v-if="hasPermission('UserManager')"  type="button" @click="delete_already_employee(member.pivot.id, index)"
+                                                class="col-span-1 flex justify-end">
+                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                            </button>
+                                            <div class="border-b col-span-8 border-gray-900/10">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mt-2" v-else>
+
+                                <!-- <div class="mt-2" v-else>
                                     <div v-for="(member, index) in form.employees" :key="index"
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
                                             member.employee.lastname }}: {{ member.charge }} </p>
-                                        <button type="button" @click="delete_employee(index)"
+                                        <button v-if="hasPermission('UserManager')" type="button" @click="delete_employee(index)"
                                             class="col-span-1 flex justify-end">
                                             <TrashIcon class=" text-red-500 h-4 w-4 " />
                                         </button>
                                         <div class="border-b col-span-8 border-gray-900/10">
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="mt-3 flex items-center justify-end gap-x-6">
+                <div v-if="auth.user.role_id === 1" class="mt-3 flex items-center justify-end gap-x-6">
                     <button type="submit" :class="{ 'opacity-25': form.processing }"
                         class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
                 </div>
@@ -174,10 +210,9 @@
                                 <select required id="type" v-model="employeeToAdd.charge"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
-                                    <option value="lider">lider</option>
-                                    <option value="sublider">sublider</option>
-                                    <option value="supervisor">supervisor</option>
-                                    <option value="trabajador">trabajador</option>
+                                    <option>Administrativo</option>
+                                    <option>MOD - Mano de Obra Directa</option>
+                                    <option>MOI - Mano de Obra Indirecta</option>
                                 </select>
                             </div>
                         </div>
@@ -219,11 +254,17 @@ const showModal = ref(false)
 const showUpdateModal = ref(false)
 const showEmployeeError = ref(false)
 
-const { employees, start_date, numberOfProjects, project, preprojects } = defineProps({
+const { userPermissions, auth, employees, start_date, numberOfProjects, project, preprojects } = defineProps({
     employees: Object,
     project: Object,
-    preprojects: Object
+    preprojects: Object,
+    auth: Object,
+    userPermissions: Array
 })
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
 
 const initialState = {
     preproject_id: '',
@@ -270,13 +311,6 @@ const closeModal = () => {
 };
 
 const add_employee = () => {
-    // if (project.preproject.quote.deliverable_time * employeeToAdd.value.employee.salary_per_day > project.remaining_budget ) {
-    //     showEmployeeError.value = true
-    //     setTimeout(()=>{
-    //         showEmployeeError.value = false
-    //     }, 1500)
-    //     return
-    // }
     if (project) {
         router.post(route('projectmanagement.add.employee', { project_id: project.id }), { ...employeeToAdd.value },
             {
@@ -284,11 +318,12 @@ const add_employee = () => {
                     alert('SERVER ERROR')
                 },
                 onSuccess: () => {
+                    closeModal()
                     showPersonalAddModal.value = true
                     setTimeout(() => {
                         showPersonalAddModal.value = false;
+                        router.visit(route('projectmanagement.update', {project_id: project.id}))
                     }, 1500);
-                    router.visit(route('projectmanagement.update', {project_id: project.id}))
                 }
             }
         )
@@ -310,8 +345,9 @@ const delete_already_employee = (pivot_id, index) => {
             showPersonalRemoveModal.value = true
             setTimeout(() => {
                 showPersonalRemoveModal.value = false;
+                router.visit(route('projectmanagement.update', {project_id: project.id}))
             }, 1500);
-            form.employees.splice(index, 1);
+            
         }
     })
 }

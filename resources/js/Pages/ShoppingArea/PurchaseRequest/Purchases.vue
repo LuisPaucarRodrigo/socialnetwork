@@ -284,7 +284,7 @@ const search = () => {
 }
 
 function confirmPurchase(purchase) {
-    purchase.due_date === null && purchase.project ? errorPurchase() : purchase.state_quote == false && purchase.project_id != null ? router.get(route('purchasesrequest.quote_deadline.complete', { id: purchase.project_id })) : router.get(route('purchasesrequest.quotes', { id: purchase.id }))
+    purchase.due_date === null && purchase.project ? errorPurchase() : purchase.state_quote == false && purchase.project_id != null ? router.get(route('purchasesrequest.quote_deadline.complete', { id: purchase.project_id })) : router.get(route('purchasesrequest.quotes.create', { id: purchase.id }))
 }
 
 function errorPurchase() {

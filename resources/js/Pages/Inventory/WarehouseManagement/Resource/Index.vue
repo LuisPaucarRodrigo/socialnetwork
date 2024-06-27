@@ -179,9 +179,9 @@ const form = useForm({
 
 const reentry = () => {
     if (props.boolean == true) {
-        router.get(route('warehouses.index.resource'))
+        router.get(route('warehouses.resource.active.index'))
     } else {
-        router.get(route('warehouses.index.resource', { boolean: false }))
+        router.get(route('warehouses.resource.active.index', { boolean: false }))
     }
 };
 
@@ -196,7 +196,7 @@ function close_add_serial_number() {
 
 function submit_add_serial_number() {
     form.resource_id = resource_id.value
-    form.post(route('warehouses.resource.add_serial_number'), {
+    form.post(route('warehouses.resource.add.serial_number'), {
         onSuccess: () => {
             form.reset()
             close_add_serial_number()

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Head title="Gestion de Apartados" />
-    <AuthenticatedLayout :redirectRoute="'sections.cicsaSubSections'">
+    <AuthenticatedLayout :redirectRoute="'member.cicsa'">
       <template #header>
         Gestión de Apartados
       </template>
@@ -118,14 +118,14 @@ const closeCreateSectionModal = () => {
 };
 
 const submit = () => {
-  form.post(route('sections.cicsaStoreSection'), {
+  form.post(route('sections.cicsa.section.store'), {
     onSuccess: () => {
       closeCreateSectionModal();
       form.reset();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
-        router.visit(route('sections.cicsaSections'))
+        router.visit(route('cicsa.sections'))
       }, 2000);
     },
     onError: () => {

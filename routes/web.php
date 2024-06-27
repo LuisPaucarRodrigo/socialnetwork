@@ -1,34 +1,14 @@
 <?php
 
+use App\Exports\HuaweiExport;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Huawei\FileDataController;
+use App\Http\Controllers\Huawei\ExportController;
+use App\Http\Controllers\Inventory\HuaweiController;
 use Inertia\Inertia;
-
-// use App\Http\Controllers\VacationController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
-// Route::get('/', function () {
-//     return Inertia::render('Auth/Login');
-// });
+use App\Http\Controllers\ScraperController;
+use Illuminate\Routing\Route as RoutingRoute;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -38,35 +18,23 @@ Route::get('/', function () {
     }
 })->name('home');
 
+
+Route::get('/scrape', [ScraperController::class, 'scrape']);
+
 Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-Route::middleware('auth', 'permission:UserManager','checkPlatformWeb')->group(function () {
     include_once 'user_admin_route.php';
-});
-
-Route::middleware(['auth', 'permission:HumanResourceManager|HumanResource', 'checkPlatformWeb'])->group(function () {
     include_once 'human_resource_route.php';
-});
-
-Route::middleware(['auth', 'permission:InventoryManager|Inventory', 'checkPlatformWeb'])->group(function () {
     include_once 'inventory_route.php';
-});
-
-Route::middleware(['auth', 'permission:ProjectManager|Project', 'checkPlatformWeb'])->group(function () {
     include_once 'project_route.php';
-});
-
-Route::middleware(['auth', 'permission:PurchasingManager|Purchasing', 'checkPlatformWeb'])->group(function () {
     include_once 'shopping_area_route.php';
-});
-
-Route::middleware(['auth', 'permission:FinanceManager|Finance', 'checkPlatformWeb'])->group(function () {
     include_once 'finance_route.php';
 });
+
 
 Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->group(function () {
     include_once 'documentgestion_route.php';
@@ -76,4 +44,16 @@ Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->gro
     include_once 'snsot_route.php';
 });
 
+Route::get('/huawei/{project}', [FileDataController::class, 'render'])->name('huawei.show');
+Route::post('/huawei_prices', [HuaweiController::class, 'store'])->name('huawei.post');
+Route::post('/huawei/{project}/filter', [FileDataController::class, 'filter'])->name('huawei.filter');
+Route::put('/huawei/{project}/{itemToEdit}/update', [FileDataController::class, 'updateRegister'])->name('huawei.put');
+Route::get('/huawei/export/excel', [ExportController::class, 'export'])->name('huawei.export');
+
+Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
+Route::post('/huaweiLoads/import', [HuaweiController::class, 'import'])->name('huawei.loads.import');
+Route::get('/huaweiLoads/{loadId}/products/{noPg?}', [HuaweiController::class, 'renderByLoad'])->name('huawei.loads.products');
+Route::get('/huaweiLoads/products/{huawei_product}/similarity', [HuaweiController::class, 'searchSimilarities'])->name('huawei.loads.products.similarities');
+Route::put('/huaweiLoads/{loadId}/products/associate/{huawei_product}', [HuaweiController::class, 'associate'])->name('huawei.loads.products.associate');
+Route::get('/huaweiLoads/{loadId}/exportpdf', [HuaweiController::class, 'exportHuaweiProducts'])->name('huawei.loads.exportpdf');
 require __DIR__ . '/auth.php';

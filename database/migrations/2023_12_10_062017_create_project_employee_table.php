@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('project_employee', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->float('salary_per_day');
             $table->foreignId('project_id')
                 ->nullable()
                 ->constrained('projects')

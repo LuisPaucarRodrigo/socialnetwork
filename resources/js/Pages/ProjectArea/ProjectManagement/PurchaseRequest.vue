@@ -13,11 +13,11 @@
                     + Agregar
                 </PrimaryButton>
                 <PrimaryButton @click="expenses" type="button" class="bg-teal-600 hover:bg-teal-500">
-                    Gastos
+                    Resumen de Gastos
                 </PrimaryButton>
                 <Link :href="route('projectmanagement.additionalCosts', { project_id: props.project.id })"
                     class="rounded-md bg-gray-600 px-4 py-2 text-center text-sm text-white hover:bg-gray-500">
-                Gastos Adicionales
+                    Gastos
                 </Link>
             </div>
             <div class="overflow-x-auto">
@@ -132,7 +132,7 @@
                                 <div v-else class="flex space-x-3 justify-center">
                                     <button v-if="hasPermission('ProjectManager')" @click="due_date_show(purchase.id)"
                                         type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">ddd
+                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"

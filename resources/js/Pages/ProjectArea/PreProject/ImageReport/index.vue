@@ -6,7 +6,14 @@
             Imagenes para Reporte
         </template>
         <div class="min-w-full overflow-hidden rounded-lg">
-            <div class="mt-6 flex items-center justify-end gap-x-6">
+            <div class="mt-6 flex items-center justify-between gap-x-3">
+                <div class="mt-2 hidden sm:flex sm:items-center space-x-4">
+                    <a :href="route('preprojects.report.download', { preproject_id: preproject.id })"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        Exportar
+                    </a>
+                    <PrimaryButton v-if="filteredImages.length >= 3" @click="showMap">Mostrar Mapa</PrimaryButton>
+                </div>
                 <div class="mt-2">
                     <select required id="code" @change="requestPhotos($event.target.value)"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -17,14 +24,14 @@
                     </select>
                 </div>
             </div>
-            <div v-for="imageCode in codes" :key="imageCode.id">
-                <div class="mt-6 flex items-center justify-between gap-x-6">
+            <GoogleMaps :mapVisible="mapVisible" :origin="origin" :destination="destination" :waypoints="waypoints" />
+            <div v-for="imageCode in codes" :key="imageCode.id" class="border">
+                <div class="flex items-center justify-between gap-x-6">
                     <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ imageCode.code }} / {{ imageCode.description }}
                     </h1>
                     <template v-if="hasPermission('ProjectManager')">
-                        <PrimaryButton v-if="!imageCode.status" @click="approveCode(imageCode.id)" type="button"
-                            class="bg-green-700 hover:bg-green-600">
+                        <PrimaryButton v-if="!imageCode.status" @click="approveCode(imageCode.id)" type="button">
                             Aprobar
                         </PrimaryButton>
                         <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
@@ -35,8 +42,9 @@
                         class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
                         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ image.description }}
                         </h2>
-                        <div class="grid grid-cols-1 gap-y-1 text-sm">
+                        <div class="grid grid-cols-1 gap-y-1 text-sm text-center">
                             <img :src="image.image">
+                            <p>Lat:{{ image?.lat }} Lon:{{ image?.lon }}</p>
                         </div>
                         <div class="pt-3 flex space-x-3 justify-center item-center">
                             <span v-if="image.state != null"
@@ -121,6 +129,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import GoogleMaps from '@/Components/GoogleMaps.vue';
+
 
 const props = defineProps({
     codesWithStatus: Object,
@@ -146,7 +156,26 @@ const photoCode = ref(props.imagesCode);
 const showRejectModal = ref(false)
 const imageCodeId = ref('');
 const codes = ref(props.codesWithStatus);
+const mapVisible = ref(false);
 
+const filteredImages = ref(Object.values(props.imagesCode).filter(image => image.state == true));
+
+const origin = {
+    lat: Number(filteredImages.value[0]?.lat),
+    lng: Number(filteredImages.value[0]?.lon)
+};
+
+const destination = {
+    lat: Number(filteredImages.value[filteredImages.value.length - 1]?.lat),
+    lng: Number(filteredImages.value[filteredImages.value.length - 1]?.lon)
+};
+const waypoints = filteredImages.value.slice(1, -1).map(item => ({
+    location: {
+        lat: Number(item?.lat),
+        lng: Number(item?.lon)
+    },
+    stopover: true
+}));
 const titleSuccessImage = ref('')
 const messageSuccessImage = ref('')
 
@@ -178,13 +207,33 @@ const deleteImage = () => {
 
 function downloadImagen(imageId) {
     const backendImageUrl = route('preprojects.imagereport.download', { preproject_id: imageId });
-    window.open(backendImageUrl, '_blank');
+    axios.get(backendImageUrl)
+        .then(response => {
+            const imageUrl = response.data.url;
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = imageUrl.split('/').pop();
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(error => {
+            console.error('Error fetching the image URL:', error);
+        });
 };
 
 function openPreviewImagenModal(imageId) {
     if (imageId) {
         const url = route('preprojects.imagereport.show', { image: imageId });
-        window.open(url, '_blank');
+        axios.get(url)
+            .then(response => {
+                const imageUrl = response.data.url;
+                window.open(imageUrl, '_blank');
+            })
+            .catch(error => {
+                console.error('Error fetching image URL:', error);
+            });
     } else {
         console.error('No se proporcionó un ID de imagen válido');
     }
@@ -267,4 +316,8 @@ function approveCode(preproject_code_id) {
         }
     })
 }
+
+const showMap = () => {
+    mapVisible.value = true;
+};
 </script>

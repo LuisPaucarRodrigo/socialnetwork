@@ -14,6 +14,8 @@ class SNSotLiquidation extends Model
         'up_minutes',
         'liquidation',
         'down_warehouse',
+        'bill_amount',
+        'observations',
         'liquidation_date',
         'sot_status',
     ];

@@ -252,7 +252,7 @@ const submit2 = () => {
   } else {
     form2.project_id = props.project.id;
     form2.user_id = props.auth.user.id;
-    form2.post(route('budgetupdates.create', { project: props.project.id }, form2));
+    form2.post(route('budgetupdates.store', { project: props.project.id }, form2));
     closeModal2();
   }
 };
@@ -271,7 +271,7 @@ const confirm = (val = false, form) => {
     if (form) {
       form2.project_id = props.project.id;
       form2.user_id = props.auth.user.id;
-      form2.post(route('budgetupdates.create', { project: props.project.id }, form2));
+      form2.post(route('budgetupdates.store', { project: props.project.id }, form2));
       closeApprove();
       closeModal2();
     } else {

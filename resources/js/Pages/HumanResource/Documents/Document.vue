@@ -65,7 +65,7 @@
             </form>
           </div>
         </div>
-          
+
         <div class="flex sm:space-x-3  sm:flex-row flex-col sm:items-center">
           <InputLabel for="selectElement">Sección:</InputLabel>
           <select v-model="selectedSection" id="selectElement"
@@ -213,6 +213,7 @@ const props = defineProps({
   search: String
 });
 
+console.log(props.documents)
 
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);
@@ -244,6 +245,7 @@ const openCreateDocumentModal = () => {
 };
 
 const closeModal = () => {
+  form.reset();
   create_document.value = false;
 };
 
@@ -252,12 +254,13 @@ const openEditDocumentModal = (document) => {
   editingDocument.value = JSON.parse(JSON.stringify(document));
   form.id = editingDocument.value.id;
   form.document = editingDocument.value.name;
-  form.section_id = editingDocument.value.section_id;
+  form.section_id = editingDocument.value.subdivision.section_id;
   form.subdivision_id = editingDocument.value.subdivision_id;
   update_document.value = true;
 };
 
 const closeEditModal = () => {
+  form.reset();
   update_document.value = false;
 };
 
@@ -320,8 +323,8 @@ const deleteDocument = () => {
 };
 
 function downloadDocument(documentId) {
-  const backendDocumentUrl = route('documents.download', { document: documentId });
-  window.open(backendDocumentUrl, '_blank');
+    const backendDocumentUrl = route('documents.download', { document: documentId });
+    window.open(backendDocumentUrl, '_blank');
 };
 
 function openPreviewDocumentModal(documentId) {
@@ -347,7 +350,7 @@ const filteredDocuments = computed(() => {
 
   // Filtrar por sección
   if (selectedSection.value) {
-    filtered = filtered.filter(document => document.section_id === selectedSection.value);
+    filtered = filtered.filter(document => document.subdivision.section_id === selectedSection.value);
   }
 
   // Filtrar por subdivisión
@@ -374,8 +377,6 @@ watch(() => form.section_id, (newSectionId, oldSectionId) => {
     filteredSubdivisions.value = props.subdivisions.filter(subdivision => subdivision.section_id === newSectionId);
   }
 });
-
-
 
 const searchForm = useForm({
   searchTerm: props.search,

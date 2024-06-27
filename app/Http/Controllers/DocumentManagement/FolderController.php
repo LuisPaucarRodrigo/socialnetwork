@@ -11,6 +11,7 @@ use App\Models\Folder;
 use App\Models\FolderArea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -26,23 +27,32 @@ class FolderController extends Controller
         $this->main_directory = 'CCIP';
     }
 
-    
-    public function folder_index($folder_id = null){
+
+    public function folder_index(Request $request, $folder_id = null){
         $folder = Folder::with('folder_areas')->find($folder_id);
-        if( $folder?->type === 'Archivos' && $folder?->type !== 'Carpeta') {
-            abort(404, 'Not found');
-        }
         if ($this->checkUserSeeDownload($folder_id)) {
-            abort(403, 'No está autorizado');
+            abort(403, 'Not authorized or folder not activated');
         }
         $path = $folder ? $folder->path
             : $this->main_directory;
-        $areas = $folder ? $folder->areas
-            : Area::all();
+
+        //search functionality
+        if($request->input('search')){
+
+            $FoundedFolders = $this->searchInFolder($request->input('search'), $folder_id);
+            return Inertia::render('DocumentManagement/FolderSearch', [
+                'folders' => $FoundedFolders,
+                'currentPath' => $path,
+                'folder' => $folder,
+                'searchTerm' => $request->input('search')
+            ]);
+        }
+        ///////////////////////
+
+        $areas = $folder ? $folder->areas: Area::all();
         $areas = $areas->filter(function($item){
             return $item->name !== 'Gerencia' && $item->name !== 'Calidad';
         });
-
         $publicPath = public_path($path);
         $folderStructure = $this->scanFolder($publicPath);
         return Inertia::render('DocumentManagement/Folder', [
@@ -253,7 +263,7 @@ class FolderController extends Controller
 
 
 
-    
+
 
 
 
@@ -300,7 +310,11 @@ class FolderController extends Controller
 
     public function checkUserSeeDownload($folder_id){
         $user = Auth::user();
-        if ($user->role_id === 1 || $folder_id === null) { return false;} 
+        $folder = Folder::find($folder_id);
+        if( $folder?->type === 'Archivos' &&
+            $folder?->type !== 'Carpeta' ) {return true;}
+        if($folder && !$folder->state) {return true;}
+        if ($user->role_id === 1 || $folder_id === null) { return false;}
         $folder_permission = FolderArea::where('folder_id', $folder_id)
             ->where('area_id', $user->area_id)
             ->first();
@@ -311,7 +325,9 @@ class FolderController extends Controller
 
     public function checkUserCreate($folder_id){
         $user = Auth::user();
-        if ($user->role_id === 1) {return false;} 
+        $folder = Folder::find($folder_id);
+        if($folder && !$folder->state) {return true;}
+        if ($user->role_id === 1) {return false;}
         if ($folder_id === null) {return true;}
         $folder_permission = FolderArea::where('folder_id', $folder_id)
             ->where('area_id', $user->area_id)
@@ -335,6 +351,7 @@ class FolderController extends Controller
         } else {
             return response()->json(['error' => 'No se pudo crear el archivo ZIP'], 500);
         }
+        ob_end_clean();
         return response()->download($zipFilePath)->deleteFileAfterSend(true);
     }
 
@@ -415,7 +432,7 @@ class FolderController extends Controller
         $publicPath = substr($folderPath, $publicPosition + strlen('public/'));
         $contents = scandir($folderPath);
         foreach ($contents as $item) {
-            if ($item != '.' && $item != '..') {
+            if ($item[0] !== '.') {
                 $itemPath = $folderPath . '/' . $item;
                 if (is_dir($itemPath)) {
                     $folderStructure[] = [
@@ -559,5 +576,35 @@ class FolderController extends Controller
             return $state && $currentPermission->create;
         }
         return false;
+    }
+
+
+    public function searchInFolder($search, $folder_id) {
+        Log::info('llegue....');
+        $searchTerm = str_replace([' ', '-', '_'], '', $search);
+        $currentFolder = Folder::find($folder_id);
+        $result = $this->recursiveFolderSearch($currentFolder?->id, $searchTerm);
+        return $result;
+    }
+
+
+    public function recursiveFolderSearch($upper_folder_id, $searchTerm){
+        $result = [];
+        $originalChildFolders = Folder::where('upper_folder_id', $upper_folder_id)
+            ->get();
+
+        $childFolders = Folder::with('user', 'folder_areas')->where('upper_folder_id', $upper_folder_id)
+            ->where(function ($query) use ($searchTerm) {
+                $query->whereRaw("REPLACE(REPLACE(REPLACE(name, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"])
+                      ->orWhereRaw("REPLACE(REPLACE(REPLACE(path, ' ', ''), '-', ''), '_', '') LIKE ?", ["%$searchTerm%"]);
+            })
+            ->get();
+        $childFoldersArray =  $childFolders->toArray();
+        $result = array_merge($result, $childFoldersArray);
+        foreach($originalChildFolders as $item){
+            $itemCollectionArray = $this->recursiveFolderSearch($item->id, $searchTerm);
+            $result = array_merge($result, $itemCollectionArray);
+        }
+        return $result;
     }
 }

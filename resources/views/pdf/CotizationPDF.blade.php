@@ -24,6 +24,13 @@
 </head>
 
 <body>
+    @php
+      function numberTwoDecimal($number, $decimal = 2){
+        $stringNumber = number_format($number, $decimal);
+        $formattedNumber = str_replace(',', '', $stringNumber);
+        return floatval($formattedNumber);
+      }; 
+    @endphp
   <div style="width: 100%; height: 1000px; border: 2px solid #000; margin-top: 0px; text-align: center;">
     <img src="image/projectimage/caratula-ccip.jpg" alt="" style="max-width: 600px; height: auto; margin-top: 75px">
     <p class="mt-4" style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Propuesta Económica</p>
@@ -49,7 +56,7 @@
     <tbody>
       <tr>
         <td class="td-custom" colspan="1" style="height: 70px;"><img src="image/projectimage/logo_ccip.jpeg" width="80px" alt=""></td>
-        <td class="td-custom" colspan="3" style="text-align: center; font-weight: bold; font-size: 18px">{{ $preproject->quote->name }}</td>
+        <td class="td-custom" colspan="3" style="text-align: center; font-weight: bold; font-size: 18px">{{ strtoupper($preproject->quote->name) }}</td>
         <td class="td-custom" colspan="2" style="text-align: center">{{ $preproject->quote->code }}</td>
       </tr>
       <tr>
@@ -99,10 +106,10 @@
         <td class="td-custom" style="text-align: right">
           S/. {{ number_format($item['unitary_price'], 4) }}
         </td>
-        <td class="td-custom" style="text-align: right">S/. {{ number_format($item['quantity'] * number_format($item['unitary_price'],4), 2) }}</td>
+        <td class="td-custom" style="text-align: right">S/. {{ number_format($item['quantity'] * numberTwoDecimal($item['unitary_price'],4), 2) }}</td>
       </tr>
 		@php
-        $subtotalProd +=  floatval($item['quantity'] * number_format($item['unitary_price'],4));      
+        $subtotalProd +=  floatval($item['quantity'] * numberTwoDecimal($item['unitary_price'],4));      
  @endphp
       @endforeach
       @php
@@ -137,11 +144,11 @@
         <td class="td-custom" style="text-align: center">{{ $item['resources_quantity']}}</td>
         <td class="td-custom" style="text-align: right">S/. {{ number_format($item['rent_price'], 2) }}</td>
         <td class="td-custom" style="text-align: right">
-          S/. {{ number_format($item['resources_quantity'] * number_format($item['rent_price'],2) * $item['days'], 2) }}
+          S/. {{ number_format($item['resources_quantity'] * numberTwoDecimal($item['rent_price']) * $item['days'], 2) }}
         </td>
       </tr>
       @php
-      $subtotal += floatval($item['days']*$item['resources_quantity']* number_format($item['rent_price'],2))      @endphp
+      $subtotal += floatval($item['days']*$item['resources_quantity']* numberTwoDecimal($item['rent_price']))      @endphp
       @endforeach
       @php
       @endphp
@@ -191,7 +198,8 @@
         <td class="td-custom" style="width: 140px; border-right: none">Lugar de entrega</td>
         <td class="td-custom" style="width: 562.5px; border-left: none">
           : {{$preproject->quote->deliverable_place}}
-         </td>      </tr>
+        </td>
+      </tr>
       <tr>
         <td class="td-custom" style="width: 140px; border-right: none">Forma de Pago</td>
         <td class="td-custom" style="width: 562.5px; border-left: none">: {{ $preproject->quote->payment_type }}</td>

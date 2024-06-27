@@ -15,10 +15,13 @@ class SNSotOperation extends Model
         'additionals',
         'photo_report',
         'ic_date',
-        'bill_amount', 
     ];
 
     public function sot() {
         return $this->belongsTo(SNSot::class, 'sot_id');
+    }
+
+    public function minute_materials () {
+        return $this->hasMany(MinuteMaterial::class, 'snsotop_id');
     }
 }

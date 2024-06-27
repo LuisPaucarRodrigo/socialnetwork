@@ -4,7 +4,7 @@
     <AuthenticatedLayout
         :redirectRoute="expense.purchasing_requests.due_date ? { route: 'purchasesrequest.quote_deadline.complete', params: { id: props.expense.purchasing_requests.project_id } } : { route: 'preprojects.purchase_quote', params: { id: props.expense.purchasing_requests.preproject_id } }">
         <template #header>
-            {{ expense.code }}
+            {{ expense.code }} ffff
         </template>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
@@ -328,7 +328,7 @@ function closeModalQuoteDeadLine() {
 
 function submit() {
     form.quote_id = props.expense.id
-    form.post(route('projectmanagement.update_quotedeadline'), {
+    form.post(route('purchase.update_quotedeadline'), {
         onSuccess: () => {
             router.get(route('purchasesrequest.quote_deadline.complete', { id: props.expense.purchasing_requests.project_id }))
         }

@@ -15,11 +15,12 @@
 /public/image/profile
 /public/documentGestion
 /public/image/imagereportpreproject
+/public/uploads/huawei
 /storage/*.key
 /vendor
 .env
 .env.backup
-.env.production
+.env.production 
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -29,3 +30,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+*.zip
+*.rar
+/public/*.zip
