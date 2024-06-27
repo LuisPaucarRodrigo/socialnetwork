@@ -35,9 +35,9 @@
                                 Descripcion
                             </th>
 
-                            <th v-if="hasPermission('InventoryManager')"
+                            <!-- <th v-if="hasPermission('InventoryManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
+                            </th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +54,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
                             </td>
-                            <td v-if="hasPermission('InventoryManager')"
+                            <!-- <td v-if="hasPermission('InventoryManager')"
                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center items-center space-x-3">
                                     <button @click="ShowModaldeleteService(item.id)" class="text-red-600 hover:underline">
@@ -65,7 +65,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                            </td>
+                            </td> -->
                         </tr>
                     </tbody>
                 </table>
@@ -104,7 +104,7 @@
                         <InputLabel for="rent_price">Precio de Renta por Día
                         </InputLabel>
                         <div class="mt-2">
-                            <input id="rent_price" type="number" min="0" step="0.01" v-model="form.rent_price"
+                            <input id="rent_price" type="number" min="0" step="0.00001" v-model="form.rent_price"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>
@@ -172,7 +172,7 @@ const form = useForm({
 function submit_add_service() {
     form.post(route('warehouses.service.store'), {
         onSuccess: () => {
-            router.get(route('inventory.warehouses.service'));
+            router.get(route('warehouses.service.approve.index'));
         }, onError: (e) => {
             console.log(e)
         }

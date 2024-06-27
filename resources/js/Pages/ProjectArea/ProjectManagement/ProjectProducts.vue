@@ -63,8 +63,8 @@
                                 'text-gray-700',
                                 {
                                     'border-l-8': true,
-                                    'border-green-500': item.state === 'Completo',
-                                    'border-red-500': item.state === 'Incompleto'
+                                    'border-green-500': item.remaining_quantity == 0,
+                                    'border-red-500': item.remaining_quantity > 0
                                 }
                             ]"
                         >
@@ -331,9 +331,7 @@ const submit = () => {
             closeModal();
             successAsignation.value = true
             warehouseProducts.value = []
-            // let almacen_select = document.getElementById('almacen_id')
-            // almacen_select.value = ""
-            // enableInput.value = false
+
             setTimeout(() => {
                 successAsignation.value = false
             }, 2000)

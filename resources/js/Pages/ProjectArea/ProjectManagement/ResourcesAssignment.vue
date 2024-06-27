@@ -122,7 +122,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';

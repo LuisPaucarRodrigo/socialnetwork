@@ -80,7 +80,6 @@ class ProjectEntry extends Model
         return $this->quantity * ($this->unitary_price ? $this->unitary_price : 0);
     }
 
-
     public function getLiquidationStateAttribute () {
         return $this->project_entry_liquidation()->exists();
     }

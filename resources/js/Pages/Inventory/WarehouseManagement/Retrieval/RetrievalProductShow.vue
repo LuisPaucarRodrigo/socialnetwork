@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Empleados" />
-    <AuthenticatedLayout :redirectRoute="'inventory.retrievalProduct.index'">
+    <AuthenticatedLayout :redirectRoute="'inventory.retrieval.product.index'">
         <template #header>
             Entradas de Producto
         </template>

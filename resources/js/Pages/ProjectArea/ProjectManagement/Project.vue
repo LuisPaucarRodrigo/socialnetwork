@@ -63,12 +63,12 @@
                         <h2 class="text-sm font-semibold mb-3">
                             N° {{ item.code }}
                         </h2>
-                        <div v-if="auth.user.role_id === 1" class="inline-flex justify-end items-start gap-x-2">
-                            <button 
+                        <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager') " class="inline-flex justify-end items-start gap-x-2">
+                            <button
                                 @click="()=>{router.post(route('projectmanagement.liquidation'),{project_id: item.id}, {
                                     onSuccess: () => router.visit(route('projectmanagement.index'))
                                 })}"
-                                v-if="item.status === null" 
+                                v-if="item.status === null"
                                 :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.is_liquidable ? '': 'opacity-60'}`"
                                 :disabled="item.is_liquidable ? false: true"
                             >
@@ -76,11 +76,8 @@
                             </button>
                             <Link :href="route('projectmanagement.update', { project_id: item.id })"
                                 class="flex items-start">
-                            <PencilIcon class="h-4 w-4 text-teal-600" />
+                            <QueueListIcon class="h-6 w-6 text-teal-700" />
                             </Link>
-                            <!-- <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
-                                <TrashIcon class="h-4 w-4 text-red-500" />
-                            </button> -->
                         </div>
                     </div>
                     <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
@@ -111,7 +108,7 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
-                            
+
                             <Link v-if="item.initial_budget > 0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -119,13 +116,20 @@
                             </Link>
                             <span v-else class="text-gray-400">Asignar Productos</span>
 
-                            
+
                             <Link v-if="item.initial_budget > 0"
                                 :href="route('projectmanagement.liquidate', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Liquidaciones
                             </Link>
                             <span v-else class="text-gray-400">Liquidaciones</span>
+                            <div>
+                                <Link v-if="item.initial_budget > 0 && item.preproject.customer_id == 3"
+                                :href="route('huawei.show', { project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Huawei
+                            </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -148,13 +152,14 @@ import Dropdown from '@/Components/Dropdown.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { QueueListIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     projects: Object,
     auth: Object,
     userPermissions:Array
 })
+
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);

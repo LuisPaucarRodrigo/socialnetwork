@@ -94,7 +94,7 @@ const entry_boolean = ref(props.boolean);
 const showModalApprove = ref(false);
 
 function approve_retrieval(retrieval) {
-    router.post(route('retrievalentry.approbe', { retrieval: retrieval }), {
+    router.post(route('retrieval.entry.approbe', { retrieval: retrieval }), {
         onSuccess: () => {
             showModalApprove.value = true
             setTimeout(() => {
@@ -108,10 +108,10 @@ function approve_retrieval(retrieval) {
 function boolean() {
     if (props.boolean == true) {
         entry_boolean.value = false
-        router.get(route('inventory.retrieval_entry.index'))
+        router.get(route('inventory.retrieval.entry.index'))
     } else {
         entry_boolean.value = true
-        router.get(route('inventory.retrieval_entry.index', { boolean: entry_boolean.value }))
+        router.get(route('inventory.retrieval.entry.index', { boolean: entry_boolean.value }))
     }
 }
 

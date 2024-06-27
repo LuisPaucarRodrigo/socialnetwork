@@ -128,7 +128,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
                                     <Link class="text-blue-900 whitespace-no-wrap"
-                                        :href="route('management.employees.information.details', { id: employee.id })">
+                                        :href="route('management.employees.show', { id: employee.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -358,7 +358,7 @@ const closeModal = () => {
 };
 
 const add_information = () => {
-    router.get(route('management.employees.information'));
+    router.get(route('management.employees.create'));
 };
 
 const employee_fired_date = ($id) => {

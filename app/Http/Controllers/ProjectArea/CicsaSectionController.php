@@ -35,7 +35,7 @@ class CicsaSectionController extends Controller
     public function destroySection(CicsaSection $section)
     {
         $section->delete();
-        return to_route('sections.cicsaSections');
+        return to_route('cicsa.sections');
     }
 
     //SubSections
@@ -99,10 +99,10 @@ class CicsaSectionController extends Controller
     public function destroySubSection(CicsaSubSection $subSection)
     {
         $subSection->delete();
-        return to_route('sections.cicsaSubSections');
+        return to_route('member.cicsa');
     }
 
-    public function doTask()
+    public function alarm()
     {
         // Obtener la fecha actual ajustada por el desfase
         $currentDate = Carbon::now();

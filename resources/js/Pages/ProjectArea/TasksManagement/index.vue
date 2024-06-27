@@ -101,10 +101,15 @@
                                     <div class="flex items-center gap-x-2 justify-end">
                                         <!-- Botones -->
                                         <template v-if="hasPermission('ProjectManager')">
-                                            <button @click="openModalStart(task)" v-if="task.status === 'pendiente'"
-                                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                                <PlayIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
-                                            </button>
+                                            <div v-if="task.status === 'pendiente'">
+                                                <button @click="openModalStart(task)"
+                                                    v-if="task.start_date && task.end_date"
+                                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2
+                                                    px-4 rounded">
+                                                    <PlayIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
+                                                </button>
+                                            </div>
+
                                             <div v-else-if="task.status === 'proceso' || task.status === 'detenido'">
                                                 <!-- Botones en proceso o detenido -->
                                                 <button @click="statustask(task.id, 'stop')"
@@ -317,7 +322,7 @@ let backUrl = project.status === null
 const taskIdDelete = ref(null);
 
 const addTask = () => {
-    router.get(route('tasks.new', { project_id: project.id }));
+    router.get(route('tasks.create', { project_id: project.id }));
 };
 
 const statustask = (taskId, status) => {
@@ -381,7 +386,7 @@ function closeModalDate() {
 
 function submitDuplicated() {
     const task = projects.find(item => item.id === form.project_id_duplicated)
-    if (task.total_sum_task + project.total_sum_task > 100) {
+    if (task.total_sum_task + project.total_sum_task < 100) {
         form.post(route('tasks.duplicated'), {
             onSuccess: () => {
                 showConfirmDuplicated.value = true

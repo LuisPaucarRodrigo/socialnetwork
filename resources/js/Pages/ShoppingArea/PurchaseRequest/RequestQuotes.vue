@@ -454,7 +454,7 @@ const submit = () => {
             showError.value = false;
         }, 2500);
     } else {
-        form.post(route('purchasesrequest.storequotes'),{
+        form.post(route('purchasesrequest.quotes.store'),{
             onSuccess:()=>{
                 successRegistration.value = true
                 setTimeout(()=> {

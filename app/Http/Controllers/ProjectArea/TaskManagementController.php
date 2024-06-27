@@ -27,7 +27,7 @@ class TaskManagementController extends Controller
         ]);
     }
 
-    public function new($project_id)
+    public function create($project_id)
     {
         return Inertia::render('ProjectArea/TasksManagement/newTask', [
             'project' => Project::find($project_id),
@@ -50,7 +50,7 @@ class TaskManagementController extends Controller
         ]);
     }
 
-    public function create(CreateTaskRequest $request)
+    public function store(CreateTaskRequest $request)
     {
         $task = Tasks::create($request->validated());
         $projectId = $task->project_id;
@@ -145,6 +145,8 @@ class TaskManagementController extends Controller
             $duplicatedTask = $task->replicate();
             $duplicatedTask->project_id = $request->project_id_duplicated;
             $duplicatedTask->status = "pendiente";
+            $duplicatedTask->start_date = null;
+            $duplicatedTask->end_date = null;
             $duplicatedTask->save();
         }
     }
