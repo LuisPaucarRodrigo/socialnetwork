@@ -160,7 +160,7 @@
                         @input="(e) => handleAutocomplete(e, true)"
                         autocomplete="off"
                         list="material-list" />
-                        
+
                   <datalist id="material-list">
                     <option v-for="material in props.materials" :key="material.id" :value="material.name" :data-value="material"></option>
                   </datalist>
@@ -201,8 +201,8 @@
                           <path stroke-linecap="round" stroke-linejoin="round"
                           d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                       </svg>
-                    </button>  
-                  </div>              
+                    </button>
+                  </div>
                     <select :disabled="autoCompletement" v-model="materialForm.brand_model" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
                     <option value="" disabled>Seleccionar Modelo</option>
                     <option v-for="model in filteredModels" :key="model.id" :value="model.id">{{ model.name }}</option>
@@ -239,7 +239,7 @@
                         @input="(e) => handleAutocomplete(e, false)"
                         autocomplete="off"
                         list="material-list" />
-                        
+
                   <datalist id="material-list">
                     <option v-for="equipment in props.equipments" :key="equipment.id" :value="equipment.name" :data-value="equipment"></option>
                   </datalist>
@@ -280,8 +280,8 @@
                           <path stroke-linecap="round" stroke-linejoin="round"
                           d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                       </svg>
-                    </button>  
-                  </div>              
+                    </button>
+                  </div>
                     <select :disabled="autoCompletement" v-model="equipmentForm.brand_model" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
                     <option value="" disabled>Seleccionar Modelo</option>
                     <option v-for="model in filteredModels" :key="model.id" :value="model.id">{{ model.name }}</option>
@@ -300,7 +300,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round"
                         d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
-                  </button>  
+                  </button>
                 </div>
               </div>
 
@@ -497,23 +497,28 @@
     });
 
     const addSerie = () => {
-      if (newSerie.value.trim() === '') {
-        return; // No se permite serie vacía
-      }
-
-      if (autoCompletement){
-        const foundSerie = foundEquipment.value.huawei_equipment_series.find(seriesItem => seriesItem.serie_number === newSerie.value);
-        if(foundSerie){
-          existingSerie.value = true;
-          setTimeout(() => {
-            existingSerie.value = false;
-          }, 2000);
-        }else{
-          equipmentForm.series.push(newSerie.value);
-          newSerie.value = '';
+        if (newSerie.value.trim() === '') {
+            return; // No se permite serie vacía
         }
-      }
-    }
+
+        if (autoCompletement.value && foundEquipment.value) {
+            const foundSerie = foundEquipment.value.huawei_equipment_series.find(seriesItem => seriesItem.serie_number === newSerie.value);
+            if (foundSerie) {
+            existingSerie.value = true;
+            setTimeout(() => {
+                existingSerie.value = false;
+            }, 2000);
+            } else {
+            equipmentForm.series.push(newSerie.value);
+            newSerie.value = '';
+            }
+        } else {
+            // Manejar el caso cuando no hay autoCompletement o no se encuentra el equipo
+            equipmentForm.series.push(newSerie.value);
+            newSerie.value = '';
+        }
+    };
+
 
     const removeSerie = (index) => {
       equipmentForm.series.splice(index, 1);
@@ -548,10 +553,10 @@
           emptyModal.value = false;
         }, 2000);
       }else{
-        newMaterials.value.push({ 
-          name: materialForm.name, 
+        newMaterials.value.push({
+          name: materialForm.name,
           claro_code: materialForm.claro_code,
-          brand: materialForm.brand, 
+          brand: materialForm.brand,
           brand_model: materialForm.brand_model,
           quantity: materialForm.quantity,
           material_id: materialForm.material_id
@@ -573,10 +578,10 @@
           emptyModal.value = false;
         }, 2000);
       }else{
-          newEquipments.value.push({ 
-            name: equipmentForm.name, 
+          newEquipments.value.push({
+            name: equipmentForm.name,
             claro_code: equipmentForm.claro_code,
-            brand: equipmentForm.brand, 
+            brand: equipmentForm.brand,
             brand_model: equipmentForm.brand_model,
             series: equipmentForm.series ,
             equipment_id: equipmentForm.equipment_id
@@ -627,7 +632,7 @@
                   new_brand_modal.value
                       ? props.brands.push({ ...newItem })
                       : props.brand_models.push({ ...newItem })
-                  new_brand_modal.value 
+                  new_brand_modal.value
                       ? close_new_brand()
                       : close_new_brand_model()
                   addSuccess.value = true
@@ -670,43 +675,45 @@
             }
         })
     }
-
     const handleAutocomplete = (e, material) => {
-      if (material){
-          foundMaterial.value = props.materials.find(material =>
-          material.name === e.target.value
+    if (material) {
+        foundMaterial.value = props.materials.find(material =>
+        material.name === e.target.value
         );
-        if (foundMaterial){
-          autoCompletement.value = true;
-          materialForm.claro_code = foundMaterial.value.claro_code;
-          materialForm.brand = foundMaterial.value.brand_model.brand_id;
-          materialForm.brand_model = foundMaterial.value.model_id;
-          materialForm.material_id = foundMaterial.value.id;
-        }else{
-          autoCompletement.value = false;
-          materialForm.claro_code = '';
-          materialForm.brand = '';
-          materialForm.brand_model = '';
-          materialForm.material_id = '';
+
+        if (foundMaterial.value) {
+        autoCompletement.value = true;
+        materialForm.claro_code = foundMaterial.value.claro_code;
+        materialForm.brand = foundMaterial.value.brand_model.brand_id;
+        materialForm.brand_model = foundMaterial.value.model_id;
+        materialForm.material_id = foundMaterial.value.id;
+        } else {
+        autoCompletement.value = false;
+        materialForm.claro_code = '';
+        materialForm.brand = '';
+        materialForm.brand_model = '';
+        materialForm.material_id = '';
         }
-      }else{
-          foundEquipment.value = props.equipments.find(equipment =>
-            equipment.name === e.target.value
-          );
-        if (foundEquipment){
-          autoCompletement.value = true;
-          equipmentForm.claro_code = foundEquipment.value.claro_code;
-          equipmentForm.brand = foundEquipment.value.brand_model.brand_id;
-          equipmentForm.brand_model = foundEquipment.value.model_id;
-          equipmentForm.equipment_id = foundEquipment.value.id;
-        }else{
-          autoCompletement.value = false;
-          equipmentForm.claro_code = '';
-          equipmentForm.brand = '';
-          equipmentForm.brand_model = '';
-          equipmentForm.equipment_id = '';
+    } else {
+        foundEquipment.value = props.equipments.find(equipment =>
+        equipment.name === e.target.value
+        );
+
+        if (foundEquipment.value) {
+        autoCompletement.value = true;
+        equipmentForm.claro_code = foundEquipment.value.claro_code;
+        equipmentForm.brand = foundEquipment.value.brand_model.brand_id;
+        equipmentForm.brand_model = foundEquipment.value.model_id;
+        equipmentForm.equipment_id = foundEquipment.value.id;
+        } else {
+        autoCompletement.value = false;
+        equipmentForm.claro_code = '';
+        equipmentForm.brand = '';
+        equipmentForm.brand_model = '';
+        equipmentForm.equipment_id = '';
         }
-      }
+    }
     };
+
 
     </script>
