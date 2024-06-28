@@ -37,9 +37,12 @@ class ProjectManagementController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $projects = Project::where('status', null)->whereHas('preproject', function ($query) use ($searchQuery) {
-                $query->where('code', 'like', "%$searchQuery%");
-            })->paginate();
+            $projects = Project::whereNull('status')
+                ->where('description', 'like', "%$searchQuery%")
+                ->orWhereHas('preproject', function ($query) use ($searchQuery) {
+                    $query->where('code', 'like', "%$searchQuery%");
+                })
+                ->paginate();
 
             return response()->json([
                 'projects' => $projects
@@ -55,9 +58,11 @@ class ProjectManagementController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $projects = Project::where('status', true)->whereHas('preproject', function ($query) use ($searchQuery) {
-                $query->where('code', 'like', "%$searchQuery%");
-            })->paginate();
+            $projects = Project::where('status', true)->where('description', 'like', "%$searchQuery%")
+                ->orWhereHas('preproject', function ($query) use ($searchQuery) {
+                    $query->where('code', 'like', "%$searchQuery%");
+                })
+                ->paginate();
 
             return response()->json([
                 'projects' => $projects
@@ -118,14 +123,14 @@ class ProjectManagementController extends Controller
             }
 
             //Assignation with CPE
-            if($preproject->cpe){
-                $specialProducts = SpecialInventory::where('cpe',$preproject->cpe )->get();
+            if ($preproject->cpe) {
+                $specialProducts = SpecialInventory::where('cpe', $preproject->cpe)->get();
                 foreach ($specialProducts as $sPro) {
                     ProjectEntry::create([
                         'project_id' => $project->id,
                         'special_inventory_id' => $sPro->id,
                         'quantity' => $sPro->quantity,
-                    ]); 
+                    ]);
                 }
             }
 
@@ -159,8 +164,8 @@ class ProjectManagementController extends Controller
         $project = Project::find($project_id);
         $employee = Employee::find($request->input('employee.id'));
         $project->employees()->attach($request->input('employee.id'), [
-            'charge' => $request->input('charge'), 
-            'salary_per_day' => $employee->salaryPerDay($project->days), 
+            'charge' => $request->input('charge'),
+            'salary_per_day' => $employee->salaryPerDay($project->days),
         ]);
         return redirect()->back();
     }
