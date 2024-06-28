@@ -37,6 +37,67 @@ class HuaweiManagementController extends Controller
         }
     }
 
+    public function searchIndex($request, $equipment = null)
+    {
+        $searchTerm = strtolower($request);
+
+        if ($equipment) {
+            // Consulta para equipos
+            $equipmentsQuery = HuaweiEquipment::query();
+
+            // Aplicar filtros de búsqueda para equipos
+            $equipmentsQuery->where(function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereHas('brand_model.brand', function ($query) use ($searchTerm) {
+                        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                    })
+                    ->orWhereHas('brand_model', function ($query) use ($searchTerm) {
+                        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                    });
+            });
+
+            // Obtener los resultados de equipos
+            $equipments = $equipmentsQuery->with('huawei_equipment_series', 'brand_model.brand')->get();
+
+            // Retornar la vista para equipos
+            return Inertia::render('Huawei/Materials', [
+                'equipments' => $equipments,
+                'brand_models' => BrandModel::all(),
+                'brands' => Brand::all(),
+                'equipment' => $equipment,
+                'search' => $request,
+            ]);
+        } else {
+            $materialsQuery = HuaweiMaterial::query();
+
+            // Aplicar filtros de búsqueda para materiales
+            $materialsQuery->where(function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereHas('brand_model.brand', function ($query) use ($searchTerm) {
+                        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                    })
+                    ->orWhereHas('brand_model', function ($query) use ($searchTerm) {
+                        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                    });
+            });
+
+            // Obtener los resultados de materiales
+            $materials = $materialsQuery->with('brand_model.brand')->get();
+
+            // Retornar la vista para materiales
+            return Inertia::render('Huawei/Materials', [
+                'materials' => $materials,
+                'brand_models' => BrandModel::all(),
+                'brands' => Brand::all(),
+                'equipment' => $equipment,
+                'search' => $request,
+            ]);
+        }
+    }
+
+
     public function create ()
     {
         return Inertia::render('Huawei/InventoryStore', [
@@ -177,32 +238,47 @@ class HuaweiManagementController extends Controller
 
         return Inertia::render('Huawei/Details', [
             'entries' => $entries,
-            'equipment' => $equipment
+            'equipment' => $equipment,
+            'id' => $id
         ]);
     }
 
-    public function search($id, $equipment = null, Request $request)
+    public function search($id, $request, $equipment = null)
     {
-        $searchTerm = strtolower($request->input('query'));
+        $searchTerm = strtolower($request);
+
+        $query = HuaweiEntryDetail::query();
 
         if ($equipment) {
-            $entries = HuaweiEntryDetail::whereHas('huawei_equipment_serie', function ($query) use ($searchTerm) {
-                $query->whereHas('huawei_equipment', function ($query) use ($searchTerm) {
-                    $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
-                })->orWhereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
-            })
-            ->orWhereHas('huawei_entry', function ($query) use ($searchTerm) {
-                $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
-            })
-            ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment')
-            ->paginate(10);
+            // Búsqueda por número de serie en equipos
+            $query->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
+                $query->where('huawei_equipment_id', $id)
+                      ->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
+            });
+
+            // Búsqueda por nombre del equipo
+            $query->orWhereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($searchTerm, $id) {
+                $query->where('id', $id)
+                      ->whereHas('huawei_equipment_series', function ($query) use ($searchTerm) {
+                          $query->whereHas('huawei_equipment', function ($query) use ($searchTerm) {
+                              $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                          });
+                      });
+            });
         } else {
-            // Aquí puedes agregar la lógica de búsqueda para materiales si lo necesitas
-        }
+            $query->whereHas('huawei_material', function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+            });
+       }
+
+       $entries = $query->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'huawei_material')
+       ->get();
 
         return Inertia::render('Huawei/Details', [
             'entries' => $entries,
-            'equipment' => $equipment
+            'equipment' => $equipment,
+            'id' => $id,
+            'search' => $request
         ]);
     }
 
