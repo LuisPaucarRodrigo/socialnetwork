@@ -29,6 +29,16 @@
                 <InputError :message="form.errors.entry_date" />
               </div>
 
+              <div class="col-span-2">
+                <label for="entry_date" class="block text-sm font-medium text-gray-700">Observaciones</label>
+                <textarea
+                  id="observation"
+                  v-model="form.observation"
+                  class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+                <InputError :message="form.errors.observation" />
+              </div>
+
             </div>
 
           </form>
@@ -63,6 +73,9 @@
                         Modelo
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                        Precio Unitario
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Cantidad
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -75,6 +88,7 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.claro_code }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brands.find(brand => brand.id == item.brand)?.name }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brand_models.find(model => model.id == item.brand_model)?.name }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit_price ? item.unit_price : '-' }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
@@ -115,6 +129,9 @@
                         Modelo
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                        Precio Unitario
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Series
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -127,6 +144,7 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.claro_code }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brands.find(brand => brand.id == item.brand)?.name }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brand_models.find(model => model.id == item.brand_model)?.name }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit_price ? item.unit_price : '-' }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openSerieModal(item)" class="text-green-600 hover:underline mr-2"><EyeIcon class="h-5 w-5" /></button></td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
@@ -211,9 +229,16 @@
               </div>
 
               <!-- Tercera Fila -->
-              <div class="col-span-1">
-                <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
-                <input type="number" min="0" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+              <div class="col-span-2 grid grid-cols-2 gap-6">
+                <div class="col-span-1">
+                    <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
+                    <input type="number" step="0.01" min="0" v-model="materialForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                </div>
+
+                <div class="col-span-1">
+                    <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
+                    <input type="number" min="0" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                </div>
               </div>
 
               <!-- Botones de Acción -->
@@ -290,19 +315,28 @@
               </div>
 
               <!-- Tercera Fila -->
-              <div class="col-span-2">
-                <InputLabel class="mb-1" for="quantity">Agregar Serie</InputLabel>
-                <div class="flex items-center">
-                  <input type="text" v-model="newSerie" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                  <button type="button" @click="addSerie" class="ml-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                      stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                  </button>
+              <div class="col-span-2 grid grid-cols-2 gap-6">
+                <div class="col-span-1">
+                    <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
+                    <input type="number" step="0.01" min="0" v-model="equipmentForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                </div>
+                <div class="col-span-1">
+                    <InputLabel class="mb-1" for="quantity">Agregar Serie</InputLabel>
+                    <div class="flex items-center">
+                    <input type="text" v-model="newSerie" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                    <button type="button" @click="addSerie" class="ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </button>
+                    </div>
                 </div>
               </div>
+
+
+
 
 
               <div class="overflow-x-auto mt-3 col-span-2">
@@ -408,7 +442,7 @@
           <SuccessOperationModal :confirming="addSuccess" title="" message="" />
           <SuccessOperationModal :confirming="showModal" title="Éxito" message="La entrada se registró correctamente." />
           <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'Debe proporcionar al menos un equipo o material'" />
-          <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos.'" />
+          <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos, excepto el precio unitario.'" />
           <ErrorOperationModal :showError="existingSerie" :title="'Error'" :message="'El número de serie ya está registrado para este equipo.'" />
       </AuthenticatedLayout>
     </template>
@@ -474,6 +508,7 @@
     const form = useForm({
       guide_number: '',
       entry_date: '',
+      observation: '',
       materials: [],
       equipments: [],
     });
@@ -484,6 +519,7 @@
       brand: '',
       brand_model: '',
       quantity: '',
+      unit_price: '',
       material_id: ''
     });
 
@@ -492,6 +528,7 @@
       claro_code: '',
       brand: '',
       brand_model: '',
+      unit_price: '',
       series: [],
       equipment_id: ''
     });
@@ -559,6 +596,7 @@
           brand: materialForm.brand,
           brand_model: materialForm.brand_model,
           quantity: materialForm.quantity,
+          unit_price: materialForm.unit_price,
           material_id: materialForm.material_id
         });
 
@@ -583,6 +621,7 @@
             claro_code: equipmentForm.claro_code,
             brand: equipmentForm.brand,
             brand_model: equipmentForm.brand_model,
+            unit_price: equipmentForm.unit_price,
             series: equipmentForm.series ,
             equipment_id: equipmentForm.equipment_id
           });

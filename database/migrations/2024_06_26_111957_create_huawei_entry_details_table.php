@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('huawei_material_id')->nullable()->constrained('huawei_materials')->onDelete('cascade');
             $table->foreignId('huawei_equipment_serie_id')->nullable()->constrained('huawei_equipment_series')->onDelete('cascade');
             $table->integer('quantity');
+            $table->double('unit_price')->nullable();
             $table->timestamps();
         });
     }

@@ -13,7 +13,8 @@ class HuaweiEntry extends Model
 
     protected $fillable = [
         'guide_number',
-        'entry_date'
+        'entry_date',
+        'observation',
     ];
 
     public function huawei_entry_details ()
