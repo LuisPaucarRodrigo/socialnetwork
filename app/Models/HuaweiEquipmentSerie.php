@@ -14,7 +14,6 @@ class HuaweiEquipmentSerie extends Model
     protected $fillable = [
         'huawei_equipment_id',
         'serie_number',
-        'refund'
     ];
 
     public function huawei_equipment ()

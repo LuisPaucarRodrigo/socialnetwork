@@ -15,7 +15,8 @@ class HuaweiEntryDetail extends Model
         'huawei_entry_id',
         'huawei_material_id',
         'huawei_equipment_serie_id',
-        'quantity'
+        'quantity',
+        'unit_price'
     ];
 
     public function huawei_entry()

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('guide_number');
             $table->date('entry_date');
+            $table->text('observation')->nullable();
             $table->timestamps();
         });
     }
