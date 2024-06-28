@@ -45,6 +45,7 @@ class ProjectConstants
                 'project' => [
                     'priority'=> 'Alta',
                     'description'=> $name,
+                    'status'=>null
                 ],
                 'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date']) 
 
