@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('doc_number')->nullable();
             $table->date('doc_date');
             $table->double('amount');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->foreignId('provider_id')
                 ->nullable()
                 ->constrained('providers')
