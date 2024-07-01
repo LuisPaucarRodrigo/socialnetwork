@@ -103,7 +103,7 @@
                     <option>Fletes</option>
                     <option>EPPS</option>
                     <option>Gastos de Representación</option>
-                    <option>Compbustible GEP</option>
+                    <option>Combustible GEP</option>
                     <option>Otros</option>
                     <option>Consumibles</option>
                     <option>Equipos</option>
@@ -231,7 +231,7 @@
                     <option>Fletes</option>
                     <option>EPPS</option>
                     <option>Gastos de Representación</option>
-                    <option>Compbustible GEP</option>
+                    <option>Combustible GEP</option>
                     <option>Otros</option>
                     <option>Consumibles</option>
                     <option>Equipos</option>
