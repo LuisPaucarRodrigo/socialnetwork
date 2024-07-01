@@ -34,7 +34,8 @@ class ProjectManagementController extends Controller
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/ProjectManagement/Project', [
                 'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
-                    ->orderBy('preprojects.date', 'desc')->where('projects.status', null)->paginate(),
+                    ->select('projects.*', 'preprojects.date as preproject_date')
+                    ->orderBy('preproject_date', 'desc')->where('projects.status', null)->paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -51,6 +52,7 @@ class ProjectManagementController extends Controller
                     }
                 })
                 ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                ->select('projects.*', 'preprojects.date as preproject_date')
                 ->whereNull('projects.status')
                 ->orderBy('preprojects.date', 'desc')
                 ->paginate();
@@ -66,6 +68,7 @@ class ProjectManagementController extends Controller
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/ProjectManagement/ProjectHistorial', [
                 'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                    ->select('projects.*', 'preprojects.date as preproject_date')
                     ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
@@ -83,6 +86,7 @@ class ProjectManagementController extends Controller
                     }
                 })
                 ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                ->select('projects.*', 'preprojects.date as preproject_date')
                 ->where('projects.status', true)
                 ->orderBy('preprojects.date', 'desc')
                 ->paginate();

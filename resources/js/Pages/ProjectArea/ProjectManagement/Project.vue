@@ -160,6 +160,7 @@ const props = defineProps({
     userPermissions:Array
 })
 
+console.log(props.projects.data)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
