@@ -33,15 +33,26 @@ class ProjectManagementController extends Controller
     {
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/ProjectManagement/Project', [
-                'projects' => Project::where('status', null)->paginate(),
+                'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                    ->orderBy('preprojects.date', 'desc')->where('projects.status', null)->paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $projects = Project::whereNull('status')
-                ->where('description', 'like', "%$searchQuery%")
-                ->orWhereHas('preproject', function ($query) use ($searchQuery) {
-                    $query->where('code', 'like', "%$searchQuery%");
+            $searchTerms = explode(' ', $searchQuery);
+
+            $projects = Project::where(function ($query) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $query->where('projects.description', 'like', "%$term%");
+                }
+            })
+                ->orWhereHas('preproject', function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term) {
+                        $query->where('description', 'like', "%$term%");
+                    }
                 })
+                ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                ->whereNull('projects.status')
+                ->orderBy('preprojects.date', 'desc')
                 ->paginate();
 
             return response()->json([
@@ -54,14 +65,26 @@ class ProjectManagementController extends Controller
     {
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/ProjectManagement/ProjectHistorial', [
-                'projects' => Project::where('status', true)->paginate(),
+                'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                    ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $projects = Project::where('status', true)->where('description', 'like', "%$searchQuery%")
-                ->orWhereHas('preproject', function ($query) use ($searchQuery) {
-                    $query->where('code', 'like', "%$searchQuery%");
+            $searchTerms = explode(' ', $searchQuery);
+
+            $projects = Project::where(function ($query) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $query->where('projects.description', 'like', "%$term%");
+                }
+            })
+                ->orWhereHas('preproject', function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term) {
+                        $query->where('description', 'like', "%$term%");
+                    }
                 })
+                ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                ->where('projects.status', true)
+                ->orderBy('preprojects.date', 'desc')
                 ->paginate();
 
             return response()->json([
