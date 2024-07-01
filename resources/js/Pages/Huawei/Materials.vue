@@ -65,8 +65,8 @@
                         <tr v-for="item in (props.search ? props.equipments : equipments.data)" :key="item.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.name }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.claro_code }}</td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.brand_model.name }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.brand_model.brand.name }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.brand_model.name }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <div class="flex items-center">
@@ -113,8 +113,8 @@
                             <tr v-for="item in (props.search ? props.materials : materials.data)" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.name }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.claro_code }}</td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.brand_model.name }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.brand_model.brand.name }}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.brand_model.name }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                 <div class="flex items-center text-center">

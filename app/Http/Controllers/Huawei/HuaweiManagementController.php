@@ -12,6 +12,7 @@ use App\Models\HuaweiEntryDetail;
 use App\Models\HuaweiEquipmentSerie;
 use App\Models\HuaweiMaterial;
 use App\Models\Brand;
+use App\Models\HuaweiRefund;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Validation\Rule;
@@ -256,19 +257,16 @@ class HuaweiManagementController extends Controller
                       ->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
             });
 
-            // Búsqueda por nombre del equipo
-            $query->orWhereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($searchTerm, $id) {
-                $query->where('id', $id)
-                      ->whereHas('huawei_equipment_series', function ($query) use ($searchTerm) {
-                          $query->whereHas('huawei_equipment', function ($query) use ($searchTerm) {
-                              $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
-                          });
-                      });
-            });
         } else {
-            $query->whereHas('huawei_material', function ($query) use ($searchTerm) {
-                $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+            $query->whereHas('huawei_material', function ($query) use ($id) {
+                $query->where('id', $id);
             });
+
+            // Búsqueda por número de guía en materiales
+            $query->whereHas('huawei_entry', function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
+            });
+
        }
 
        $entries = $query->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'huawei_material')
@@ -280,6 +278,30 @@ class HuaweiManagementController extends Controller
             'id' => $id,
             'search' => $request
         ]);
+    }
+
+    public function refund (Request $request, $equipment = null)
+    {
+        $request->validate([
+            'huawei_entry_detail_id' => 'required',
+            'quantity' => 'nullable',
+            'observation' => 'nullable'
+        ]);
+
+        if ($equipment){
+            HuaweiRefund::create([
+                'huawei_entry_detail_id' => $request->huawei_entry_detail_id,
+                'quantity' => 1,
+                'observation' => $request->observation
+            ]);
+        }else {
+            HuaweiRefund::create([
+                'huawei_entry_detail_id' => $request->huawei_entry_detail_id,
+                'quantity' => $request->quantity,
+                'observation' => $request->observation
+            ]);
+        }
+        return redirect()->back();
     }
 
 }

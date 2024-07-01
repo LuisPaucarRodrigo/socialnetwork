@@ -19,6 +19,12 @@ class HuaweiEntryDetail extends Model
         'unit_price'
     ];
 
+    protected $appends = [
+        'state',
+        'refund_quantity',
+        'available_quantity'
+    ];
+
     public function huawei_entry()
     {
         return $this->belongsTo(HuaweiEntry::class, 'huawei_entry_id');
@@ -33,4 +39,38 @@ class HuaweiEntryDetail extends Model
     {
         return $this->belongsTo(HuaweiEquipmentSerie::class, 'huawei_equipment_serie_id');
     }
+
+    public function huawei_refunds ()
+    {
+        return $this->hasMany(HuaweiRefund::class, 'huawei_entry_detail_id');
+    }
+
+    public function getStateAttribute()
+    {
+        if ($this->huawei_material_id) {
+            return true;
+        }
+
+        if ($this->huawei_equipment_serie_id) {
+            if ($this->huawei_refunds()->count() === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getRefundQuantityAttribute ()
+    {
+        return $this->huawei_refunds()->sum('quantity');
+    }
+
+    public function getAvailableQuantityAttribute()
+    {
+        // Verificar si hay reembolsos asociados
+        $refundQuantity = $this->huawei_refunds()->sum('quantity');
+
+        // Calcular la cantidad disponible
+        return $this->quantity - $refundQuantity;
+    }
+
 }
