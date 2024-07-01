@@ -630,8 +630,8 @@ class PreProjectController extends Controller
     }
 
     public function index_image($preproject_id)
-    {
-        $preprojects = PreprojectCode::with('code')->where('preproject_id', $preproject_id)->get();
+    {   
+        $preprojects = PreprojectCode::with('code','imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
         $codesWithStatus = [];
         foreach ($preprojects as $preprojectCode) {
             $code = $preprojectCode->code;
@@ -642,7 +642,7 @@ class PreProjectController extends Controller
                 'description' => $code->description,
             ];
         }
-        $imagesCode = Imagespreproject::where("preproject_code_id", $preproject_id)->get();
+        $imagesCode = Imagespreproject::all();
         $imagesCode->each(function ($url) {
             $url->image = url('/image/imagereportpreproject/' . $url->image);
         });
@@ -721,34 +721,21 @@ class PreProjectController extends Controller
 
     public function download_report($preproject_id)
     {
-        // Obtener todos los códigos de preproyecto con el código correspondiente
-        $preprojects = PreprojectCode::with('code')->where('preproject_id', $preproject_id)->get();
-
-        // Estructurar los códigos con su estado
-        $codesWithStatus = $preprojects->map(function ($preprojectCode) {
-            $code = $preprojectCode->code;
-            return [
-                'id' => $preprojectCode->id,
-                'code' => $code->code,
-                'description' => $code->description,
-                'images' => []
-            ];
-        });
+        $codesWithStatus = PreprojectCode::with('code','imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
+        // dd($codesWithStatus);
+        // $codesWithStatus = $preprojects->map(function ($preprojectCode) {
+        //     $code = $preprojectCode->code;
+        //     $image = $preprojectCode->imagecodepreprojet;
+        //     $imagepreprojet = $image->each(function ($url) {
+        //         $url->image = 'image/imagereportpreproject/' . $url->image;
+        //     });
+        //     return [
+        //         'code' => $code->code,
+        //         'description' => $code->description,
+        //         'images' => $imagepreprojet
+        //     ];
+        // });
         
-        $imagesCode = Imagespreproject::where('preproject_code_id', $preproject_id)->get();
-        $imagesCode->each(function ($url) {
-            $url->image = 'image/imagereportpreproject/' . $url->image;
-        });
-        
-        $codesWithStatus = $codesWithStatus->map(function ($code) use ($imagesCode) {
-            $code['images'] = $imagesCode->filter(function ($image) use ($code) {
-                return $image->preproject_code_id == $code['id'];
-            })->values();
-            return $code;
-        });
-        
-        
-
         $pdf = Pdf::loadView('pdf.ReportPreProject', compact('codesWithStatus'));
         return $pdf->stream();
     }
