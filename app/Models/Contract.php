@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Contract extends Model
 {
     use HasFactory;
-    protected $fillable=['basic_salary','discount_remuneration','state','days_taken','hire_date','fired_date','employee_id','pension_id'];
+    protected $fillable=['basic_salary','discount_remuneration','discount_sctr','state','days_taken','hire_date','fired_date','employee_id','pension_id'];
 
     protected $appends = [
         'total_income',
@@ -32,6 +32,8 @@ class Contract extends Model
         'net_pay',
         'healths',
         'life_ley',
+        'sctr_p',
+        'sctr_s',
         'total_contribution'
     ];
 
@@ -144,6 +146,18 @@ class Contract extends Model
     {
         return 0;
     }
+
+    public function getSctrPAttribute()
+    {
+        return $this->pension->values_seg;    
+    }
+
+    public function getSctrSAttribute()
+    {
+        return $this->pension->values_seg;
+    }
+
+    // $numero = config('custom.mi_numero');
 
     public function getTotalContributionAttribute()
     {

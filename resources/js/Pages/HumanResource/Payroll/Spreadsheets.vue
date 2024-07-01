@@ -13,7 +13,11 @@
                         <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_pension"
                             type="button"
                             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                            Gestion de Sistema de Pension
+                            Sistemas de Pension
+                        </PrimaryButton>
+                        <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="click_sctr()" type="button"
+                            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                            SCTR
                         </PrimaryButton>
                         <a :href="route('spreadsheets.payroll.export')"
                             class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">
@@ -172,6 +176,14 @@
                                 VIDA LEY
                             </th>
                             <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
+                                SCTR P
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
+                                SCTR S
+                            </th>
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 APORTE TOTAL
                             </th>
@@ -277,6 +289,16 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
+                                    S/ {{ spreadsheet.discount_sctr ? spreadsheet.sctr_p : 0.00 }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    S/ {{ spreadsheet.discount_sctr ? spreadsheet.pension.value : 0.00 }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-no-wrap">
                                     S/ {{ spreadsheet.total_contribution.toFixed(2) }}
                                 </p>
                             </td>
@@ -325,6 +347,12 @@
                                 S/ {{ total.sum_life_ley.toFixed(2) }}
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                S/ TOTAL SCTR
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                S/ TOTAL SCTR
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 S/ {{ total.sum_total_contribution.toFixed(2) }}
                             </td>
                         </tr>
@@ -332,7 +360,31 @@
                 </table>
             </div>
         </div>
-
+        <Modal :show="showSctr">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Despido del Empleado
+                </h2>
+                <form @submit.prevent="submit">
+                    <div class="border-b border-gray-900/10 pb-12">
+                        <div class="mt-2">
+                            <InputLabel for="quote_employees">Cantidad de Empleados:
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" id="quote_employees" v-model="form.quote_employees"/>
+                                <InputError :message="form.errors.quote_employees" />
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-3">
+                            <SecondaryButton @click="click_sctr"> Cancelar </SecondaryButton>
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                                Guardar
+                            </PrimaryButton>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 
@@ -342,9 +394,12 @@ import { formattedDate } from '@/utils/utils';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import Pagination from '@/Components/Pagination.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     spreadsheets: Object,
@@ -359,7 +414,11 @@ const hasPermission = (permission) => {
 }
 
 const reentrystate = ref(props.boolean);
+const showSctr = ref(false);
 
+const form = useForm({
+    quote_employees:null,
+})
 
 const management_pension = () => {
     router.get(route('pension_system.edit'));
@@ -389,6 +448,10 @@ const search = () => {
         router.get(route('spreadsheets.index', { reentry: reentrystate.value }), data)
     }
 
+}
+
+function click_sctr() {
+    showSctr.value = !showSctr.value
 }
 
 </script>

@@ -24,7 +24,7 @@ let map;
 
 const initMap = () => {
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 15,
+    zoom: 8,
     center: props.origin,
     mapId: "9633a9a2b0cd074b"
   });
