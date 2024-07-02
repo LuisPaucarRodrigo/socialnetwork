@@ -64,7 +64,7 @@ class UpdateManagementEmployees extends FormRequest
             'blood_group' => 'nullable|string|in:A+,A-,B+,B-,AB-,AB+,O+,O-',
             'weight' => 'nullable|numeric',
             'height' => 'nullable|numeric',
-            'shoe_size' => 'nulllable|numeric',
+            'shoe_size' => 'nullable|numeric',
             'shirt_size' => 'nullable|string',
             'pants_size' => 'nullable|numeric',
             'medical_condition' => 'required|string|max:255',

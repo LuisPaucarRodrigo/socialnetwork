@@ -5,7 +5,7 @@
             Gestion de Sistema de Pension
         </template>
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-            <table class="w-full whitespace-no-wrap md:overflow-x-hidden">
+            <table class="w-full whitespace-nowrap md:overflow-x-hidden">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
