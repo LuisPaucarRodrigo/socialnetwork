@@ -55,7 +55,7 @@ class ProjectManagementController extends Controller
                 ->select('projects.*', 'preprojects.date as preproject_date')
                 ->whereNull('projects.status')
                 ->orderBy('preprojects.date', 'desc')
-                ->paginate();
+                ->paginate(12);
 
             return response()->json([
                 'projects' => $projects
@@ -89,7 +89,7 @@ class ProjectManagementController extends Controller
                 ->select('projects.*', 'preprojects.date as preproject_date')
                 ->where('projects.status', true)
                 ->orderBy('preprojects.date', 'desc')
-                ->paginate();
+                ->paginate(12);
 
             return response()->json([
                 'projects' => $projects
