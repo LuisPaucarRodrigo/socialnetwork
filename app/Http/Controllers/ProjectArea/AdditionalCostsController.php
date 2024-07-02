@@ -13,8 +13,8 @@ class AdditionalCostsController extends Controller
 {
     public function index(Project $project_id)
     {
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->get();
-        $providers = Provider::paginate(20);
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->paginate(20);
+        $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
