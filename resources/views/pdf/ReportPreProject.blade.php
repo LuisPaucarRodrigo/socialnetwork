@@ -70,10 +70,11 @@
 
             <h6 style="padding-top: 20px;">D. REPORTE FOTOGRÁFICO - Recorrido de Fibra</h6>
             @foreach ($codesWithStatus as $code)
-            <p class="centered-text">{{$code['code']}}</p>
-            @foreach ($code['images'] as $image)
+            <p class="centered-text">{{$code->code->code}}</p>
+            
+            @foreach ($code->imagecodepreprojet as $image)
             <div class="photo">
-                <img class="centered-text" src="{{ $image->image }}" alt="{{ $image->description }}">
+                <img class="centered-text" src="image/imagereportpreproject/{{ $image->image }}" alt="{{ $image->description }}">
                 <p class="centered-text" class="centered-text">Lat:{{ $image->lat }} Lon:{{ $image->lon }}</p>
                 <p class="centered-text" class="centered-text">Foto{{ $loop->iteration }}: {{ $image->description }}</p>
             </div>
