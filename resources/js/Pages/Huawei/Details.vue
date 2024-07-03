@@ -167,6 +167,7 @@
         </Modal>
 
         <SuccessOperationModal :confirming="showRefundConfirm" title="Éxito" message="La devolución se registró correctamente." />
+        <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'La cantidad solicitada para devolución excede a la disponible.'" />
 
     </AuthenticatedLayout>
 </template>
@@ -184,6 +185,7 @@
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+    import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
     const props = defineProps({
         entries: Object,
@@ -194,6 +196,8 @@
 
     const refundModal = ref(false);
     const showRefundConfirm = ref(false);
+    const showErrorModal = ref(false);
+
     console.log(props.entries);
     const searchForm = useForm({
         searchTerm: props.search ? props.search : '',
@@ -241,6 +245,14 @@
                     showRefundConfirm.value = false;
                 }, 2000);
             },
+            onError: (e) => {
+                if (e.error_exceed){
+                    showErrorModal.value = true;
+                    setTimeout(() => {
+                        showErrorModal.value = false;
+                    }, 3000);
+                }
+            }
         })
     }
 </script>
