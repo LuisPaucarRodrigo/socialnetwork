@@ -48,9 +48,6 @@ class Contract extends Model
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-
-
-
     public function getTruncatedMonthAttribute()
     {
         return Carbon::parse($this->fired_date)->diffInMonths(Carbon::parse($this->hire_date));

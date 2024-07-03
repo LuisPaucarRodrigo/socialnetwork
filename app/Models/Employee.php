@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,10 +19,16 @@ class Employee extends Model
         'email',
         'email_company',
         'phone1',
-        'phone2'
+        'phone2',
+        'life_policy_id'
     ];
 
+    //RELATIONS
 
+    public function life_policy()
+    {
+        return $this->belongsTo(LifePolicy::class, 'life_policy_id');
+    }
 
     public function contract()
     {
@@ -77,5 +82,4 @@ class Employee extends Model
     {
         return $this->contract()->first()->basic_salary / $days;
     }
-    
 }
