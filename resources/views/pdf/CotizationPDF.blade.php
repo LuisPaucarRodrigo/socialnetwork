@@ -127,7 +127,7 @@
       <tr>
         <td class="td-custom" style="width: 60px; text-align: center; background: #2e75b5; font-weight: normal;">Partida</td>
         <td class="td-custom" style="width: 286px; text-align: center; background: #2e75b5; font-weight: normal;">Descripción</td>
-        <td class="td-custom" style="width: 55px; text-align: center; background: #2e75b5; font-weight: normal;">Días</td>
+        <td class="td-custom" style="width: 55px; text-align: center; background: #2e75b5; font-weight: normal;">Unidad:</td>
         <td class="td-custom" style="width: 122px; text-align: center; background: #2e75b5; font-weight: normal;">N° de Productos</td>
         <td class="td-custom" style="width: 73px; text-align: center; background: #2e75b5; font-weight: normal;">Valor Unitario</td>
         <td class="td-custom" style="width: 80px; text-align: center; background: #2e75b5; font-weight: normal;">Valor total</td>

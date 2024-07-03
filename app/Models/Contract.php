@@ -5,11 +5,12 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 
 class Contract extends Model
 {
     use HasFactory;
-    protected $fillable=['basic_salary','discount_remuneration','state','days_taken','hire_date','fired_date','employee_id','pension_id'];
+    protected $fillable = ['basic_salary', 'discount_remuneration', 'discount_sctr', 'state', 'days_taken', 'hire_date', 'fired_date', 'employee_id', 'pension_id'];
 
     protected $appends = [
         'total_income',
@@ -32,6 +33,8 @@ class Contract extends Model
         'net_pay',
         'healths',
         'life_ley',
+        'sctr_p',
+        'sctr_s',
         'total_contribution'
     ];
 
@@ -44,9 +47,6 @@ class Contract extends Model
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
-
-
-
 
     public function getTruncatedMonthAttribute()
     {
@@ -92,7 +92,7 @@ class Contract extends Model
 
     public function getSnpOnpAttribute()
     {
-        return $this->pension->type == 'ONP' ? $this->total_income * $this->pension->values: 0;
+        return $this->pension->type == 'ONP' ? $this->total_income * $this->pension->values : 0;
     }
 
     public function getCommissionAttribute()
@@ -142,11 +142,31 @@ class Contract extends Model
 
     public function getLifeLeyAttribute()
     {
-        return 0;
+        return $this->employee->life_policy?->amount_unique_people;
+    }
+
+    public function getSctrPAttribute()
+    {
+        if ($this->discount_sctr) {
+            $data = json_decode(File::get(config_path('custom.json')), true);
+            return ($data['sctr_p'] / $data['number_people']) / 90;
+        } else {
+            return 0;
+        }
+    }
+
+    public function getSctrSAttribute()
+    {
+        if ($this->discount_sctr) {
+            $data = json_decode(File::get(config_path('custom.json')), true);
+            return ($data['sctr_s'] / $data['number_people']) / 90;
+        } else {
+            return 0;
+        }
     }
 
     public function getTotalContributionAttribute()
     {
-        return $this->healths + $this->life_ley;
+        return $this->healths + $this->life_ley + $this->sctr_p + $this->sctr_s;
     }
 }

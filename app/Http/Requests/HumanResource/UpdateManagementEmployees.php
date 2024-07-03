@@ -36,6 +36,9 @@ class UpdateManagementEmployees extends FormRequest
             'email_company' => 'nullable|email|max:255',
             'phone1' => 'required|numeric|digits:9',
             'phone2' => 'nullable|numeric|digits:9',
+
+            'discount_remuneration' => 'required|boolean',
+            'discount_sctr' => 'required|boolean',
             'pension_system' => 'required|numeric',
             'basic_salary' => 'required|numeric',
             'hire_date' => 'required|date',
@@ -61,7 +64,7 @@ class UpdateManagementEmployees extends FormRequest
             'blood_group' => 'nullable|string|in:A+,A-,B+,B-,AB-,AB+,O+,O-',
             'weight' => 'nullable|numeric',
             'height' => 'nullable|numeric',
-            'shoe_size' => 'nulllable|numeric',
+            'shoe_size' => 'nullable|numeric',
             'shirt_size' => 'nullable|string',
             'pants_size' => 'nullable|numeric',
             'medical_condition' => 'required|string|max:255',

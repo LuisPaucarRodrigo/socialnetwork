@@ -195,6 +195,7 @@ class DocumentController extends Controller
         $filePath = '/documents/documents/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
+            ob_end_clean();
             return response()->file($path);
         }
         abort(404, 'Documento no encontrado');

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string("email_company")->unique()->nullable();
             $table->string("phone1",9)->unique();
             $table->string("phone2",9)->unique()->nullable();
+            $table->foreignId('life_policy_id')->nullable();
             $table->timestamps();
         });
     }
