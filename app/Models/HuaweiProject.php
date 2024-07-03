@@ -11,23 +11,23 @@ class HuaweiProject extends Model
     protected $table = 'huawei_projects';
 
     protected $fillable = [
-        'date',
-        'codsap',
-        'description',
-        'serie',
-        'period',
-        'hire',
-        'oc_pap',
-        'sites',
-        'general_status',
-        'status',
-        'monetary_value',
-        'observation',
-        'project_id'
+        'name',
+        'huawei_site_id',
+        'description'
     ];
 
-    public function project ()
+    public function huawei_site ()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->belongsTo(HuaweiSite::class, 'huawei_site_id');
+    }
+
+    public function huawei_additional_costs ()
+    {
+        return $this->hasMany(HuaweiAdditionalCost::class, 'huawei_project_id');
+    }
+
+    public function huawei_project_employees ()
+    {
+        return $this->hasMany(HuaweiProjectEmployee::class, 'huawei_project_id');
     }
 }
