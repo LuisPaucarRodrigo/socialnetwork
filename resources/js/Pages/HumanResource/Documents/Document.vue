@@ -110,10 +110,10 @@
         class="bg-white p-4 rounded-md shadow md:col-span-2">
         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ getDocumentName(document.title) }}</h2>
         <div class="flex space-x-3 item-center">
-          <button v-if="document.title && /\.pdf$/.test(document.title)" @click="openPreviewDocumentModal(document.id)"
-            class="flex items-center text-green-600 hover:underline">
-            <EyeIcon class="h-4 w-4 ml-1" />
-          </button>
+            <button v-if="document.title && /\.(pdf|png|jpe?g)$/.test(document.title)" @click="openPreviewDocumentModal(document.id)"
+                class="flex items-center text-green-600 hover:underline">
+                <EyeIcon class="h-4 w-4 ml-1" />
+            </button>
           <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
@@ -212,7 +212,6 @@ const props = defineProps({
   userPermissions: Array,
   search: String
 });
-
 
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);

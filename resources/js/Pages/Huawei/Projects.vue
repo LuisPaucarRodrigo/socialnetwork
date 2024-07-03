@@ -36,9 +36,9 @@
                         :class="`text-gray-500 text-sm ${item.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
-                                :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
+                                :href="route('huawei.projects.additionalcosts', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Gastos
+                                Costos Adicionales
                             </Link>
                             <Link
                                 :href="route('projectmanagement.products', { project_id: item.id })"
