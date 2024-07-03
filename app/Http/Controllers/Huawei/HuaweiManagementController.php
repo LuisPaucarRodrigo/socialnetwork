@@ -13,8 +13,6 @@ use App\Models\HuaweiEquipmentSerie;
 use App\Models\HuaweiMaterial;
 use App\Models\Brand;
 use App\Models\HuaweiRefund;
-use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Validation\Rule;
 
 class HuaweiManagementController extends Controller
@@ -280,28 +278,100 @@ class HuaweiManagementController extends Controller
         ]);
     }
 
-    public function refund (Request $request, $equipment = null)
+    public function refund(Request $request, $equipment = null)
     {
         $request->validate([
             'huawei_entry_detail_id' => 'required',
             'quantity' => 'nullable',
             'observation' => 'nullable'
         ]);
-
-        if ($equipment){
+    
+        // Encontrar el detalle de entrada por ID
+        $entryDetail = HuaweiEntryDetail::findOrFail($request->huawei_entry_detail_id);
+    
+        // Obtener la cantidad disponible usando el campo calculado
+        $availableQuantity = $entryDetail->available_quantity;
+    
+        // Si es equipo, la cantidad siempre es 1
+        if ($equipment) {
+            if ($availableQuantity < 1) {
+                return redirect()->back()->withErrors(['error_exceed' => 'No hay suficiente cantidad disponible para la devolución.']);
+            }
             HuaweiRefund::create([
                 'huawei_entry_detail_id' => $request->huawei_entry_detail_id,
                 'quantity' => 1,
                 'observation' => $request->observation
             ]);
-        }else {
+        } else {
+            // Verificar si la cantidad solicitada es menor o igual a la cantidad disponible
+            if ($request->quantity > $availableQuantity) {
+                return redirect()->back()->withErrors(['error_exceed' => 'La cantidad solicitada excede la cantidad disponible.']);
+            }
             HuaweiRefund::create([
                 'huawei_entry_detail_id' => $request->huawei_entry_detail_id,
                 'quantity' => $request->quantity,
                 'observation' => $request->observation
             ]);
         }
+    
         return redirect()->back();
+    }    
+
+    public function getRefunds ($equipment = null)
+    {
+        if ($equipment){
+            $refunds = HuaweiRefund::with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment', 'huawei_entry_detail.huawei_entry')
+                ->whereHas('huawei_entry_detail', function ($query) {
+                    $query->whereNull('huawei_material_id');
+                })
+                ->paginate(10);
+        }else{
+            $refunds = HuaweiRefund::with('huawei_entry_detail.huawei_material', 'huawei_entry_detail.huawei_entry')
+                ->whereHas('huawei_entry_detail', function ($query) {
+                    $query->whereNull('huawei_equipment_serie_id');
+                })
+                ->paginate(10);
+        }
+        return Inertia::render('Huawei/Refunds', [
+            'refunds' => $refunds,
+            'equipment' => $equipment
+        ]);
+    }
+
+    public function searchRefunds ($request, $equipment = null)
+    {
+        $searchTerm = strtolower($request);
+
+        $query = HuaweiRefund::query();
+
+        if ($equipment){
+            $query->whereHas('huawei_entry_detail', function ($query){
+                $query->whereNull('huawei_material_id');
+            });
+            $query->where(function ($query) use ($searchTerm) {
+                $query->whereHas('huawei_entry_detail.huawei_equipment_serie.huawei_equipment', function ($query) use ($searchTerm) {
+                    $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                })
+                ->orWhereHas('huawei_entry_detail.huawei_equipment_serie', function ($query) use ($searchTerm) {
+                    $query->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
+                });
+            });
+        }else{
+            $query->whereHas('huawei_entry_detail', function ($query) {
+                $query->whereNull('huawei_equipment_serie_id');
+            });
+            $query->whereHas('huawei_entry_detail.huawei_material', function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+            });
+        }
+
+        $refunds = $query->with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment', 'huawei_entry_detail.huawei_material', 'huawei_entry_detail.huawei_entry')->get();
+    
+        return Inertia::render('Huawei/Refunds', [
+            'refunds' => $refunds,
+            'equipment' => $equipment,
+            'search' => $request
+        ]);
     }
 
 }
