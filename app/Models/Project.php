@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class  Project extends Model
+class Project extends Model
 {
     use HasFactory;
     protected $table = 'projects';
@@ -36,7 +36,6 @@ class  Project extends Model
         'total_sum_task',
         'is_liquidable',
         'total_products_cost_claro_cicsa',
-        'total_employee_essalud_costs'
     ];
 
     // CALCULATED
@@ -56,7 +55,8 @@ class  Project extends Model
         return $this->preproject->quote->total_amount_no_margin;
     }
 
-    public function getNameAttribute() {
+    public function getNameAttribute()
+    {
         return $this->preproject()->first()?->quote?->name;
     }
 
@@ -75,7 +75,7 @@ class  Project extends Model
     {
         $startDate = Carbon::parse($this->preproject()->first()?->quote->date);
         $daysFromQuote = optional($this->preproject()->first()->quote)->deliverable_time;
-        return $startDate->addDays($daysFromQuote-1)->format('d/m/Y');
+        return $startDate->addDays($daysFromQuote - 1)->format('d/m/Y');
     }
 
     public function getTotalPercentageTasksAttribute()
@@ -98,16 +98,22 @@ class  Project extends Model
 
     public function getRemainingBudgetAttribute()
     {
-        if($this->initial_budget === 0.00) {
+        if ($this->initial_budget === 0.00) {
             return 0;
         }
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts->sum('amount');
-        return $currentBudget
-            //- $this->getTotalProductsCostAttribute()
-            //- $this->getTotalServicesCostAttribute() //cause is all services we are giving to them
+
+        $currentBudget = $currentBudget
+            - $this->getTotalProductsCostAttribute()
             - $additionalCosts;
+
+        foreach ($this->getTotalEmployeeCostsAttribute() as $value){
+            $currentBudget -= $value['total_payroll']; 
+            $currentBudget -= $value['essalud']; 
+        }
+        return $currentBudget;
     }
 
     public function getCurrentBudgetAttribute()
@@ -136,20 +142,27 @@ class  Project extends Model
 
 
 
-    public function getIsLiquidableAttribute() {
+    public function getIsLiquidableAttribute()
+    {
         $project_entries = $this->project_entries()->get();
-        foreach($project_entries as $item){
-            if ($item->liquidation_state === false){ return false; }
+        foreach ($project_entries as $item) {
+            if ($item->liquidation_state === false) {
+                return false;
+            }
         }
         $preproject = $this->preproject()
-                                ->with('quote.preproject_quote_services')
-                                ->first();
-        foreach($preproject->quote->preproject_quote_services as $item){
-            if ($item->liquidation_state === false){ return false; }
+            ->with('quote.preproject_quote_services')
+            ->first();
+        foreach ($preproject->quote->preproject_quote_services as $item) {
+            if ($item->liquidation_state === false) {
+                return false;
+            }
         }
         $tasks = $this->tasks()->get();
-        foreach($tasks as $item) {
-            if ($item->status !== 'completado'){ return false;}
+        foreach ($tasks as $item) {
+            if ($item->status !== 'completado') {
+                return false;
+            }
         }
         return true;
     }
@@ -168,23 +181,41 @@ class  Project extends Model
 
     public function getTotalEmployeeCostsAttribute()
     {
-
-        $days = $this->getDaysAttribute();
-        return $this->project_employee()->get()->sum(function ($item) use ($days) {
-             return $item->salary_per_day * $days;
-        });
+        return [
+            [
+                'type' => 'Administrativo',
+                'total_payroll' => $this->employeeChargeCosts('Administrativo'),
+                'essalud' => $this->employeeChargeCosts('Administrativo') * 0.09
+            ],
+            [
+                'type' => 'MOD - Mano de Obra Directa' ,
+                'total_payroll' => $this->employeeChargeCosts('MOD - Mano de Obra Directa'),
+                'essalud' => $this->employeeChargeCosts('MOD - Mano de Obra Directa') * 0.09
+            ],
+            [
+                'type' => 'MOI - Mano de Obra Indirecta' ,
+                'total_payroll' => $this->employeeChargeCosts('MOI - Mano de Obra Indirecta'),
+                'essalud' => $this->employeeChargeCosts('MOI - Mano de Obra Indirecta') * 0.09
+            ],
+        ];
     }
 
-    public function employeeChargeCosts($type) {
+
+
+
+    public function employeeChargeCosts($type)
+    {
         $days = $this->getDaysAttribute();
         $totalMonthSalary = $this->project_employee()->where('charge', $type)->get()->sum(function ($item) use ($days) {
-             return $item->salary_per_day * $days;
+            return $item->salary_per_day * $days;
         });
+        return $totalMonthSalary;
     }
-    
 
-    public function getDaysAttribute () {
-       return optional($this->preproject()->first()->quote)->deliverable_time;
+
+    public function getDaysAttribute()
+    {
+        return optional($this->preproject()->first()->quote)->deliverable_time;
     }
 
     //RELATIONS

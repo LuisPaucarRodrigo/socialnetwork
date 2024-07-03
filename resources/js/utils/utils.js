@@ -22,3 +22,8 @@ export function formattedDate(fecha) {
   }
   return fechaFormateada;
 }
+
+
+export function realNumeration(perPage, currentPage, index) {
+  return perPage*(currentPage - 1) + (index+1)
+}

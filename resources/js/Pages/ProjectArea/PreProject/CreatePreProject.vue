@@ -272,7 +272,6 @@ const { preproject, customers, titles } = defineProps({
     titles: Object
 })
 
-console.log(preproject)
 
 let backUrls = preproject?.status === undefined
     ? 'preprojects.index'

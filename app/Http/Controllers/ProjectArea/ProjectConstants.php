@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Models\Employee;
 use App\Models\Preproject;
 use App\Models\Service;
 
@@ -20,7 +21,7 @@ class ProjectConstants
                     'subcustomer_id' => null,
                     'description' => $name,
                     'title' => null,
-                    'code' => $this->getCode($data['date'], 'CICSA-OBRAM'),
+                    'code' => $this->getCode($data['date'], 'CICSA-PINTOBRAM'),
                     'cpe' => $data['cpe'],
                     'status' => 1,
 
@@ -44,8 +45,9 @@ class ProjectConstants
                 'project' => [
                     'priority'=> 'Alta',
                     'description'=> $name,
+                    'status'=>null
                 ],
-                'project_employees' => $this->getEmployeesStructured($data['employees']) 
+                'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date']) 
 
 
             ];
@@ -115,10 +117,16 @@ class ProjectConstants
         return $result;
     }
 
-    function getEmployeesStructured ($employees) {
+    function getEmployeesStructured ($employees, $date) {
         $result = [];
+        $days = $this->getDaysInMonth($date);
         foreach($employees as $item){
-            $result[$item['id']] = ['charge' => 'trabajador'];
+            $emp = Employee::find($item['id']);
+            $result[
+                $item['id']] = [
+                    'charge' => $item['charge'],
+                    'salary_per_day' => $emp->salaryPerDay($days)
+                ];
         }
         return $result;
     }
