@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'management.employees'">
         <template #header>
@@ -70,10 +71,13 @@
                 </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full whitespace-no-wrap">
+                <table class="min-w-full table-auto whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
@@ -103,12 +107,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="employee in (props.search === undefined ? employees.data : employees)"
+                        <tr v-for="employee, i in (props.search === undefined ? employees.data : employees)"
                             :key="employee.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="inline-block text-gray-900 whitespace-nowrap text-center w-[22px]">
+                                    {{ props.search === undefined ?
+        realNumeration(employees.per_page, employees.current_page, i)
+        :
+        i + 1
+
+                                    }}
+                                </p>
+                            </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -137,7 +151,8 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     </Link>
-                                    <Link v-if="hasPermission('HumanResourceManager')" class="text-blue-900 whitespace-no-wrap"
+                                    <Link v-if="hasPermission('HumanResourceManager')"
+                                        class="text-blue-900 whitespace-no-wrap"
                                         :href="route('management.employees.edit', { id: employee.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -219,7 +234,7 @@
                             <InputLabel for="fired_date">Fecha de Deceso:
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" id="fired_date" v-model="form.fired_date"/>
+                                <TextInput type="date" id="fired_date" v-model="form.fired_date" />
                                 <InputError :message="form.errors.fired_date" />
                             </div>
                         </div>
@@ -227,7 +242,7 @@
                             <InputLabel for="days_taken">Dias Tomados:
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" id="days_taken" v-model="form.days_taken"/>
+                                <TextInput type="text" id="days_taken" v-model="form.days_taken" />
                                 <InputError :message="form.errors.days_taken" />
                             </div>
                         </div>
@@ -263,7 +278,7 @@ import { ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import { formattedDate } from '@/utils/utils';
+import { formattedDate, realNumeration } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const confirmingUserDeletion = ref(false);

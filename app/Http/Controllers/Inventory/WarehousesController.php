@@ -33,7 +33,6 @@ class WarehousesController extends Controller
 
     public function showProducts(Warehouse $warehouse)
     {
-
         $products = Inventory::where('warehouse_id', $warehouse->id)->with('entry', 'purchase_product')
             ->orderBy('created_at', 'desc')
             ->paginate(10);

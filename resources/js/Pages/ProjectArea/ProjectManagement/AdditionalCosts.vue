@@ -4,7 +4,7 @@
   <AuthenticatedLayout
     :redirectRoute="{ route: 'projectmanagement.purchases_request.index', params: { id: project_id.id } }">
     <template #header>
-      Costos adicionales del Proyecto {{ props.project_id.name }}
+      Gastos del Proyecto {{ props.project_id.name }}
     </template>
     <div class="inline-block min-w-full overflow-hidden rounded-lg">
       <div class="flex gap-4">
@@ -52,7 +52,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in additional_costs" :key="item.id" class="text-gray-700">
+          <tr v-for="item in additional_costs.data" :key="item.id" class="text-gray-700">
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.zone }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.expense_type }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.ruc }}</td>
@@ -77,6 +77,9 @@
           </tr>
         </tbody>
       </table>
+      <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <pagination :links="additional_costs.links" />
+            </div>
     </div>
     <Modal :show="create_additional">
       <div class="p-6">
@@ -92,6 +95,7 @@
                   <select v-model="form.expense_type" id="expense_type"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option disabled value="">Seleccionar Gasto</option>
+                    <option>Habitaciones</option>
                     <option>Camionetas</option>
                     <option>Combustible</option>
                     <option>Hospedaje</option>
@@ -100,9 +104,9 @@
                     <option>Seguros y Pólizas</option>
                     <option>Herramientas</option>
                     <option>Fletes</option>
-                    <option>EPPS</option>
+                    <option>EPPs</option>
                     <option>Gastos de Representación</option>
-                    <option>Compbustible GEP</option>
+                    <option>Combustible GEP</option>
                     <option>Otros</option>
                     <option>Consumibles</option>
                     <option>Equipos</option>
@@ -219,6 +223,7 @@
                   <select v-model="form.expense_type" id="expense_type"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option disabled value="">Seleccionar Gasto</option>
+                    <option>Habitaciones</option>
                     <option>Camionetas</option>
                     <option>Combustible</option>
                     <option>Hospedaje</option>
@@ -227,9 +232,9 @@
                     <option>Seguros y Pólizas</option>
                     <option>Herramientas</option>
                     <option>Fletes</option>
-                    <option>EPPS</option>
+                    <option>EPPs</option>
                     <option>Gastos de Representación</option>
-                    <option>Compbustible GEP</option>
+                    <option>Combustible GEP</option>
                     <option>Otros</option>
                     <option>Consumibles</option>
                     <option>Equipos</option>
@@ -355,6 +360,7 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Pagination from '@/Components/Pagination.vue'
 
 const props = defineProps({
   additional_costs: Object,
@@ -363,8 +369,6 @@ const props = defineProps({
   auth: Object,
   userPermissions: Array
 });
-
-console.log(props.additional_costs)
 
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);
