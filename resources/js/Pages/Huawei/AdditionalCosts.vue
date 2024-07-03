@@ -69,7 +69,7 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.amount ? 'S/. ' + item.amount.toFixed(2) : '-' }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">{{ item.amount ? 'S/. ' + item.amount.toFixed(2) : '-' }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
               <td
                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
