@@ -294,8 +294,6 @@ const hasPermission = (permission) => {
     return userPermissions.includes(permission);
 }
 
-console.log(project)
-
 const initialState = {
     preproject_id: '',
     priority: '',
