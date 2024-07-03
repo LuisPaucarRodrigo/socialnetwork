@@ -38,7 +38,7 @@
                             <Link
                                 :href="route('huawei.projects.additionalcosts', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Gastos
+                                Costos Adicionales
                             </Link>
                             <Link
                                 :href="route('projectmanagement.products', { project_id: item.id })"

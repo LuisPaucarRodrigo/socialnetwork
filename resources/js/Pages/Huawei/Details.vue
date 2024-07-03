@@ -198,7 +198,6 @@
     const showRefundConfirm = ref(false);
     const showErrorModal = ref(false);
 
-    console.log(props.entries);
     const searchForm = useForm({
         searchTerm: props.search ? props.search : '',
     })
