@@ -120,6 +120,10 @@ Route::middleware('permission:ProjectManager')->group(function () {
     //Member Cicsa Sections 
     Route::post('/cicsa/member/store', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsa.member.store');
     Route::post('/cicsa/store', [CicsaSectionController::class, 'storeSection'])->name('sections.cicsa.section.store');
+
+
+
+    Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
 });
 
 Route::middleware('permission:ProjectManager|Project')->group(function () {
@@ -203,6 +207,9 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
     Route::post('/preproject/auto-store/pint', [ProjectPintController::class, 'pint_store_project'])->name('project.auto_store.pint');
     Route::post('/product-CPE/', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
+
+
+    Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
 
 });
 
