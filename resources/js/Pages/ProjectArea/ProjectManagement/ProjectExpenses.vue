@@ -10,6 +10,8 @@
     <br>
     Total gastos en servicios: S/. {{ project.total_services_cost.toFixed(2) }}<br>
     Total gastos en productos: S/. {{ project.total_products_cost.toFixed(2) }}<br>
+    Total gastos en planilla: S/. {{ project.total_employee_costs.reduce((a, item)=>item.total_payroll + a, 0).toFixed(2) }}<br>
+    Total gastos en planilla(essalud): S/. {{ project.total_employee_costs.reduce((a, item)=>item.essalud + a, 0).toFixed(2) }}<br>
     Gastos adicionales: S/. {{ additionalCosts.toFixed(2) }}
     <br>
     <br>
@@ -95,16 +97,19 @@ const updateChart = () => {
 
   // Agregar el presupuesto restante y los costos adicionales a la data\
 
-  const dataWithRemainingBudget = [project.remaining_budget < 0 ? 0 : project.remaining_budget, additionalCosts, project.total_products_cost, project.total_services_cost];
+  const dataWithRemainingBudget = [project.remaining_budget < 0 ? 0 : project.remaining_budget, additionalCosts, project.total_products_cost, project.total_services_cost,
+  project.total_employee_costs.reduce((a, item)=>item.total_payroll + a, 0).toFixed(2), project.total_employee_costs.reduce((a, item)=>item.essalud + a, 0).toFixed(2)
+
+  ];
 
   // Crear un nuevo gráfico con los datos actualizados
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Presupuesto Restante', 'Costos Adicionales', 'Costos de Productos', 'Costos de Servicios'],
+      labels: ['Presupuesto Restante', 'Costos Adicionales', 'Costos de Productos', 'Costos de Servicios', 'Planilla', 'Planilla Essalud'],
       datasets: [{
         data: dataWithRemainingBudget,
-        backgroundColor: [getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()],
+        backgroundColor: [getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()],
       }],
     },
     options: {
