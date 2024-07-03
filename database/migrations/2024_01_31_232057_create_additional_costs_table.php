@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('doc_date');
             $table->double('amount');
             $table->text('description')->nullable();
+            $table->string('photo')->nullable();
             $table->foreignId('provider_id')
                 ->nullable()
                 ->constrained('providers')

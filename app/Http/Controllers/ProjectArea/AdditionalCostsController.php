@@ -39,10 +39,27 @@ class AdditionalCostsController extends Controller
             'zone'=>'required',
             'provider_id'=> 'nullable',
             'description' => 'required|string',
+            'photo' => 'nullable',
             'project_id'=> 'required'
         ]);
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
+        }
+        
         AdditionalCost::create($data);
         return redirect()->back(); 
+    }
+
+    public function download_ac_photo(AdditionalCost $additional_cost_id)
+    {
+        $fileName = $additional_cost_id->photo;
+        $filePath = 'documents/additionalcosts/' . $fileName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            ob_end_clean();
+            return response()->file($path, ['title' => $fileName]);
+        }
+        abort(404, 'Documento no encontrado');
     }
     
 
@@ -68,5 +85,13 @@ class AdditionalCostsController extends Controller
     {
         $additional_cost->delete();
         return to_route('projectmanagement.additionalCosts', ['project_id' => $project_id->id]);    
+    }
+
+
+    public function file_store($file, $path)
+    {
+        $name = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path($path), $name);
+        return $name;
     }
 }

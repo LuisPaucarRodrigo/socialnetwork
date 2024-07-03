@@ -6,13 +6,14 @@
     <template #header>
       Gastos del Proyecto {{ props.project_id.name }}
     </template>
-    <div class="inline-block min-w-full overflow-hidden rounded-lg">
-      <div class="flex gap-4">
-        <PrimaryButton v-if="project_id.status === null && hasPermission('ProjectManager')" @click="openCreateAdditionalModal"
-          type="button" class="mb-5"
-        >
+    <br>
+    <div class="inline-block min-w-full mb-4 overflow-hidden">
+      <div class="flex gap-4 justify-between">
+        <PrimaryButton v-if="project_id.status === null && hasPermission('ProjectManager')"
+          @click="openCreateAdditionalModal" type="button" class="">
           + Agregar
         </PrimaryButton>
+        <input type="text" @input="handleInput" placeholder="Buscar...">
       </div>
     </div>
     <div class="overflow-x-auto">
@@ -45,6 +46,9 @@
               Monto</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Archivo</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               Descripción</th>
             <th v-if="auth.user.role_id === 1 && project_id.status === null"
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -61,7 +65,16 @@
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}
             </td>
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">S/. {{ (item.amount).toFixed(2) }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+              S/. {{ (item.amount).toFixed(2) }}
+            </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+              <a v-if="item.photo" :href="route('additionalcost.archive', { additional_cost_id: item.id })" target="_blank">
+
+                <EyeIcon class="w-5 h-5 text-teal-600" />
+              </a>
+              <span v-else>-</span>
+            </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
             <td v-if="auth.user.role_id === 1 && project_id.status === null"
               class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -78,8 +91,8 @@
         </tbody>
       </table>
       <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="additional_costs.links" />
-            </div>
+        <pagination :links="additional_costs.links" />
+      </div>
     </div>
     <Modal :show="create_additional">
       <div class="p-6">
@@ -133,14 +146,14 @@
               <div>
                 <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete" autocomplete="off"
-                    list="options"
+                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete"
+                    autocomplete="off" list="options"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                    <datalist id="options">
-                                    <option v-for="item in providers" :value="item.ruc">
-                                        {{ item.company_name }}
-                                    </option>
-                                </datalist>
+                  <datalist id="options">
+                    <option v-for="item in providers" :value="item.ruc">
+                      {{ item.company_name }}
+                    </option>
+                  </datalist>
                   <InputError :message="form.errors.ruc" />
                 </div>
               </div>
@@ -163,9 +176,9 @@
                 <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.doc_number" id="doc_number"  pattern="^([a-zA-Z0-9]+([-|\/][a-zA-Z0-9]+)*)|([0-9]+)$"
-
-                  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <input type="text" v-model="form.doc_number" id="doc_number"
+                    pattern="^([a-zA-Z0-9]+([-|\/][a-zA-Z0-9]+)*)|([0-9]+)$"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.doc_number" />
                 </div>
               </div>
@@ -195,6 +208,17 @@
                   <textarea type="text" v-model="form.description" id="description"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.description" />
+                </div>
+              </div>
+              <div class="sm:col-span-2">
+                <InputLabel class="font-medium leading-6 text-gray-900">
+                  Archivo
+                </InputLabel>
+                <div class="mt-2">
+                  <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png, .pdf"
+                    class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <InputError :message="form.errors.photo" />
+
                 </div>
               </div>
 
@@ -258,22 +282,22 @@
                   <InputError :message="form.errors.zone" />
                 </div>
               </div>
-              
+
               <div>
                 <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI </InputLabel>
                 <div class="mt-2">
-                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete" autocomplete="off"
-                    list="options"
+                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete"
+                    autocomplete="off" list="options"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                    <datalist id="options">
-                                    <option v-for="item in providers" :value="item.ruc">
-                                        {{ item.company_name }}
-                                    </option>
-                                </datalist>
+                  <datalist id="options">
+                    <option v-for="item in providers" :value="item.ruc">
+                      {{ item.company_name }}
+                    </option>
+                  </datalist>
                   <InputError :message="form.errors.ruc" />
                 </div>
               </div>
-              
+
               <div>
                 <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
                 <div class="mt-2">
@@ -327,6 +351,20 @@
                 </div>
               </div>
 
+              <div class="sm:col-span-2">
+                <InputLabel class="font-medium leading-6 text-gray-900">
+                  Archivo
+                </InputLabel>
+                <div class="mt-2">
+                  <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png, .pdf"
+                    class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <InputError :message="form.errors.photo" />
+                  <InputLabel class="font-medium leading-6 text-indigo-700">
+                    Archivo
+                  </InputLabel>
+                </div>
+              </div>
+
 
             </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -360,7 +398,9 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import InputFile from '@/Components/InputFile.vue';
 import Pagination from '@/Components/Pagination.vue'
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   additional_costs: Object,
@@ -385,7 +425,8 @@ const form = useForm({
   doc_number: '',
   doc_date: '',
   description: '',
-  amount: null
+  photo: '',
+  amount: ''
 });
 
 const create_additional = ref(false);
@@ -486,5 +527,34 @@ const handleRucDniAutocomplete = (e) => {
     form.provider_id = ''
   }
 }
+
+
+const timeout = ref(null);
+function debounce(func, delay) {
+  return (...args) => {
+    if (timeout.value) {
+      clearTimeout(timeout.value);
+    }
+    timeout.value = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
+function search(query) {
+  console.log('Buscando:', query);
+}
+const debouncedSearch = debounce(search, 700);
+function handleInput(event) {
+  debouncedSearch(event.target.value);
+}
+
+
+
+
+
+
+
+
+
 
 </script>
