@@ -597,6 +597,9 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.inventory.show')">Inventario de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.sites')">Sites de Huawei</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.projects')">Proyectos de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">

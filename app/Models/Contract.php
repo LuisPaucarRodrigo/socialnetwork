@@ -142,7 +142,7 @@ class Contract extends Model
 
     public function getLifeLeyAttribute()
     {
-        return 0;
+        return $this->employee->life_policy?->amount_unique_people;
     }
 
     public function getSctrPAttribute()

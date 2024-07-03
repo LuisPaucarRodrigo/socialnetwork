@@ -444,7 +444,9 @@
           <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'Debe proporcionar al menos un equipo o material'" />
           <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos, excepto el precio unitario.'" />
           <ErrorOperationModal :showError="existingSerie" :title="'Error'" :message="'El número de serie ya está registrado para este equipo.'" />
-      </AuthenticatedLayout>
+          <ErrorOperationModal :showError="newExistingResource" :title="'Error'" :message="'El material o equipo acaba de ser registrado.'" />
+
+        </AuthenticatedLayout>
     </template>
 
     <script setup>
@@ -485,6 +487,7 @@
     const foundEquipment = ref(null);
     const foundMaterial = ref(null);
     const existingSerie = ref(false);
+    const newExistingResource = ref(false);
 
     const openMaterialModal = () => {
       materialModal.value = true;
@@ -541,18 +544,26 @@
         if (autoCompletement.value && foundEquipment.value) {
             const foundSerie = foundEquipment.value.huawei_equipment_series.find(seriesItem => seriesItem.serie_number === newSerie.value);
             if (foundSerie) {
-            existingSerie.value = true;
-            setTimeout(() => {
-                existingSerie.value = false;
-            }, 2000);
+                existingSerie.value = true;
+                setTimeout(() => {
+                    existingSerie.value = false;
+                }, 2000);
             } else {
-            equipmentForm.series.push(newSerie.value);
-            newSerie.value = '';
+                equipmentForm.series.push(newSerie.value);
+                newSerie.value = '';
             }
         } else {
-            // Manejar el caso cuando no hay autoCompletement o no se encuentra el equipo
-            equipmentForm.series.push(newSerie.value);
-            newSerie.value = '';
+            const foundSerie = equipmentForm.series.find(seriesItem => seriesItem === newSerie.value);
+
+            if (foundSerie) {
+                existingSerie.value = true;
+                setTimeout(() => {
+                    existingSerie.value = false;
+                }, 2000);
+            }else{
+                equipmentForm.series.push(newSerie.value);
+                newSerie.value = '';
+            }
         }
     };
 
@@ -590,18 +601,27 @@
           emptyModal.value = false;
         }, 2000);
       }else{
-        newMaterials.value.push({
-          name: materialForm.name,
-          claro_code: materialForm.claro_code,
-          brand: materialForm.brand,
-          brand_model: materialForm.brand_model,
-          quantity: materialForm.quantity,
-          unit_price: materialForm.unit_price,
-          material_id: materialForm.material_id
-        });
+        const existingMaterial = newMaterials.value.find(item => item.name === materialForm.name);
 
-        materialForm.reset();
-        closeMaterialModal();
+        if (existingMaterial){
+            newExistingResource.value = true;
+            setTimeout(() => {
+                newExistingResource.value = false;
+            }, 2000);
+        }else{
+            newMaterials.value.push({
+            name: materialForm.name,
+            claro_code: materialForm.claro_code,
+            brand: materialForm.brand,
+            brand_model: materialForm.brand_model,
+            quantity: materialForm.quantity,
+            unit_price: materialForm.unit_price,
+            material_id: materialForm.material_id
+            });
+
+            materialForm.reset();
+            closeMaterialModal();
+        }
         }
     };
 
@@ -616,18 +636,27 @@
           emptyModal.value = false;
         }, 2000);
       }else{
-          newEquipments.value.push({
-            name: equipmentForm.name,
-            claro_code: equipmentForm.claro_code,
-            brand: equipmentForm.brand,
-            brand_model: equipmentForm.brand_model,
-            unit_price: equipmentForm.unit_price,
-            series: equipmentForm.series ,
-            equipment_id: equipmentForm.equipment_id
-          });
+          const existingEquipment = newEquipments.value.find(item => item.name === equipmentForm.name);
+          if (existingEquipment){
+                newExistingResource.value = true;
+                setTimeout(() => {
+                    newExistingResource.value = false;
+                }, 2000);
+            }else{
+                newEquipments.value.push({
+                    name: equipmentForm.name,
+                    claro_code: equipmentForm.claro_code,
+                    brand: equipmentForm.brand,
+                    brand_model: equipmentForm.brand_model,
+                    unit_price: equipmentForm.unit_price,
+                    series: equipmentForm.series ,
+                    equipment_id: equipmentForm.equipment_id
+                });
 
-          equipmentForm.reset();
-          closeEquipmentModal();
+                equipmentForm.reset();
+                closeEquipmentModal();
+            }
+
         }
     };
 
