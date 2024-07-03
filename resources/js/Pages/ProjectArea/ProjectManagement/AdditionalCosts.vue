@@ -359,9 +359,16 @@
                   <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png, .pdf"
                     class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.photo" />
-                  <InputLabel class="font-medium leading-6 text-indigo-700">
-                    Archivo
-                  </InputLabel>
+                  <div v-if="form.photo_name" class="text-sm leading-6 text-indigo-700 flex space-x-2 items-center mt-3">
+                      <span>
+                        Archivo Actual:
+                      </span>
+                      <a :href="route('additionalcost.archive', { additional_cost_id: form.id })" target="_blank" class="hover:underline">
+                        {{ form.photo_name }} </a>
+                        <button type="button">
+                          <TrashIcon class="text-red-500 h-4 w-4"/>
+                        </button>
+                  </div>
                 </div>
               </div>
 
@@ -454,7 +461,8 @@ const openEditAdditionalModal = (additional) => {
   form.amount = editingAdditional.value.amount;
   form.description = editingAdditional.value.description;
   form.zone = editingAdditional.value.zone;
-  form.provider_id = editAdditionalModal.value.provider_id
+  form.provider_id = editingAdditional.value.provider_id
+  form.photo_name = editingAdditional.value.photo
 
   editAdditionalModal.value = true;
 };
