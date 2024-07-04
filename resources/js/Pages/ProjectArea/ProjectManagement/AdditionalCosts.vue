@@ -69,10 +69,10 @@
               S/. {{ (item.amount).toFixed(2) }}
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-              <a v-if="item.photo" :href="route('additionalcost.archive', { additional_cost_id: item.id })" target="_blank">
+              <button v-if="item.photo" @click="handlerPreview(item.id)">
 
                 <EyeIcon class="w-5 h-5 text-teal-600" />
-              </a>
+              </button>
               <span v-else>-</span>
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
@@ -90,9 +90,9 @@
           </tr>
         </tbody>
       </table>
-      <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <pagination :links="additional_costs.links" />
-      </div>
+    </div>
+    <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+      <pagination :links="additional_costs.links" />
     </div>
     <Modal :show="create_additional">
       <div class="p-6">
@@ -359,16 +359,29 @@
                   <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png, .pdf"
                     class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.photo" />
-                  <div v-if="form.photo_name" class="text-sm leading-6 text-indigo-700 flex space-x-2 items-center mt-3">
-                      <span>
-                        Archivo Actual:
-                      </span>
-                      <a :href="route('additionalcost.archive', { additional_cost_id: form.id })" target="_blank" class="hover:underline">
-                        {{ form.photo_name }} </a>
-                        <button type="button">
-                          <TrashIcon class="text-red-500 h-4 w-4"/>
-                        </button>
+                  <div v-if="form.photo_name && form.photo_status == 'stable'" 
+                    class="text-sm leading-6 text-indigo-700 flex space-x-2 items-center mt-3">
+                    <span>
+                      Archivo Actual:
+                    </span>
+                    <a :href="route('additionalcost.archive', { additional_cost_id: form.id })" target="_blank"
+                      class="hover:underline">
+                      {{ form.photo_name }} </a>
+                    <button type="button" @click="() => {
+                      form.photo_status = 'delete'
+                    }">
+                      <TrashIcon class="text-red-500 h-4 w-4" />
+                    </button>
                   </div>
+                  <div v-if="form.photo_status==='delete'" class="text-amber-700 mt-3 text-sm flex space-x-2">
+                    <span>
+                      El documento esta por ser borrado,
+                    </span>
+                    <button @click="()=>{form.photo_status = 'stable'}" type="button" class="font-black">
+                        ANULAR
+                    </button>
+                  </div>
+
                 </div>
               </div>
 
@@ -433,7 +446,8 @@ const form = useForm({
   doc_date: '',
   description: '',
   photo: '',
-  amount: ''
+  amount: '',
+  photo_status:'stable'
 });
 
 const create_additional = ref(false);
@@ -463,7 +477,7 @@ const openEditAdditionalModal = (additional) => {
   form.zone = editingAdditional.value.zone;
   form.provider_id = editingAdditional.value.provider_id
   form.photo_name = editingAdditional.value.photo
-
+  
   editAdditionalModal.value = true;
 };
 
@@ -561,6 +575,9 @@ function handleInput(event) {
 
 
 
+function handlerPreview(id) {
+  window.open(route('additionalcost.archive', { additional_cost_id: id }), '_blank')
+}
 
 
 

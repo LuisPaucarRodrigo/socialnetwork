@@ -50,14 +50,13 @@ class AdditionalCostsController extends Controller
         return redirect()->back(); 
     }
 
-    public function download_ac_photo(AdditionalCost $additional_cost_id)
-    {
+    public function download_ac_photo(AdditionalCost $additional_cost_id) {
         $fileName = $additional_cost_id->photo;
-        $filePath = 'documents/additionalcosts/' . $fileName;
+        $filePath = '/documents/additionalcosts/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
             ob_end_clean();
-            return response()->file($path, ['title' => $fileName]);
+            return response()->file($path);
         }
         abort(404, 'Documento no encontrado');
     }
@@ -74,8 +73,27 @@ class AdditionalCostsController extends Controller
             'amount' => 'required|numeric',
             'zone'=>'required',
             'provider_id'=> 'nullable',
+            'photo' => 'nullable',
             'description' => 'required|string',
         ]);
+        if ($request->hasFile('photo')) {
+            $filename = $additional_cost->photo;
+            if ($filename) {
+                $this->file_delete($filename, 'documents/additionalcosts/');
+            } 
+            $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
+            
+        } else if ($request->photo_status === 'stable') {
+            $filename = $additional_cost->photo;
+            if ($filename) {unset($data["photo"]);}
+        }
+
+        if($request->photo_status === 'delete') {
+            $filename = $additional_cost->photo;
+            if ($filename) {
+                $this->file_delete($filename, 'documents/additionalcosts/');
+            }
+        }
 
         $additional_cost->update($data);     
         return redirect()->back();
@@ -83,6 +101,7 @@ class AdditionalCostsController extends Controller
 
     public function destroy(Project $project_id, AdditionalCost $additional_cost)
     {
+        $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
         $additional_cost->delete();
         return to_route('projectmanagement.additionalCosts', ['project_id' => $project_id->id]);    
     }
@@ -93,5 +112,12 @@ class AdditionalCostsController extends Controller
         $name = time() . '_' . $file->getClientOriginalName();
         $file->move(public_path($path), $name);
         return $name;
+    }
+
+    public function file_delete($filename, $path)
+    {
+        $file_path = $path . $filename;
+        $path = public_path($file_path);
+        if (file_exists($path)) unlink($path);
     }
 }
