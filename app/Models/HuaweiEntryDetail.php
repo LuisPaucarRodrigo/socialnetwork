@@ -45,6 +45,11 @@ class HuaweiEntryDetail extends Model
         return $this->hasMany(HuaweiRefund::class, 'huawei_entry_detail_id');
     }
 
+    public function huawei_project_resources()
+    {
+        return $this->hasMany(HuaweiProjectResource::class, 'huawei_entry_detail_id');
+    }
+
     public function getStateAttribute()
     {
         if ($this->huawei_material_id) {

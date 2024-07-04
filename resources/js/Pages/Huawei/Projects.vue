@@ -41,7 +41,7 @@
                                 Costos Adicionales
                             </Link>
                             <Link
-                                :href="route('projectmanagement.products', { project_id: item.id })"
+                                :href="route('huawei.projects.resources', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Productos
                             </Link>
