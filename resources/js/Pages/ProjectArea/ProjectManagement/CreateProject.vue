@@ -1,8 +1,9 @@
 <template>
+
     <Head title="Proyecto" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template v-if="project" #header>
-            Edición de proyecto
+            Proyecto
         </template>
         <template v-else #header>
             Creación de proyecto
@@ -14,8 +15,9 @@
                     </div>
 
                     <div class="border-b border-gray-900 pb-12">
-                        <h2 v-if="project" class="text-base font-semibold leading-7 text-gray-900">{{ project.name }} | {{
-                            project.code }}</h2>
+                        <h2 v-if="project" class="text-base font-semibold leading-7 text-gray-900">{{ project.name }} |
+                            {{
+        project.code }}</h2>
                         <h2 v-else class="text-base font-semibold leading-7 text-gray-900">Registrar nuevo proyecto</h2>
                         <br>
                         <div v-if="!project" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mb-4">
@@ -27,7 +29,9 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccione uno</option>
 
-                                        <option v-for="(item, i) in preprojects" :key="i" :value="item.id">{{ item.code }}</option>
+                                        <option v-for="(item, i) in preprojects" :key="i" :value="item.id">{{ item.code
+                                            }}
+                                        </option>
 
                                     </select>
                                     <InputError :message="form.errors.preproject_id" />
@@ -40,9 +44,9 @@
                                     Nombre Proyecto
                                 </InputLabel>
                                 <div class="mt-2">
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    {{ project?.name }}
-                                </InputLabel>
+                                    <InputLabel class="font-medium leading-6 text-gray-900">
+                                        {{ project?.name }}
+                                    </InputLabel>
                                 </div>
                             </div>
                             <div class="sm:col-span-3">
@@ -50,9 +54,9 @@
                                     Código
                                 </InputLabel>
                                 <div class="mt-2">
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    {{ project?.code }}
-                                </InputLabel>
+                                    <InputLabel class="font-medium leading-6 text-gray-900">
+                                        {{ project?.code }}
+                                    </InputLabel>
                                 </div>
                             </div>
                             <div class="sm:col-span-3">
@@ -60,9 +64,9 @@
                                     Fecha de incio
                                 </InputLabel>
                                 <div class="mt-2">
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    {{ project?.start_date }}
-                                </InputLabel>
+                                    <InputLabel class="font-medium leading-6 text-gray-900">
+                                        {{ project?.start_date }}
+                                    </InputLabel>
                                 </div>
                             </div>
                             <div class="sm:col-span-3">
@@ -70,9 +74,9 @@
                                     Fecha de fin
                                 </InputLabel>
                                 <div class="mt-2">
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    {{ project?.end_date }}
-                                </InputLabel>
+                                    <InputLabel class="font-medium leading-6 text-gray-900">
+                                        {{ project?.end_date }}
+                                    </InputLabel>
                                 </div>
                             </div>
                         </div>
@@ -81,7 +85,8 @@
                                 <InputLabel for="priority" class="font-medium leading-6 text-gray-900">Prioridad
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select :disabled="auth.user.role_id === 1 ? false: true" required id="priority" v-model="form.priority"
+                                    <select :disabled="auth.user.role_id === 1 ? false : true" required id="priority"
+                                        v-model="form.priority"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccione uno</option>
                                         <option value="Alta">Alta</option>
@@ -97,14 +102,15 @@
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <textarea :disabled="auth.user.role_id === 1 ? false: true" required v-model="form.description" id="description"
+                                    <textarea :disabled="auth.user.role_id === 1 ? false : true" required
+                                        v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                     <InputError :message="form.errors.description" />
                                 </div>
                             </div>
 
 
-                            <div class="sm:col-span-3" v-if="project && project?.remaining_budget  !== 0 ">
+                            <div class="sm:col-span-6" v-if="project && project?.remaining_budget !== 0">
                                 <div class="flex gap-2">
                                     <InputLabel for="trainings" class="font-medium leading-6 text-gray-900">Miembros del
                                         equipo al proyecto
@@ -113,21 +119,60 @@
                                         <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
                                     </button>
                                 </div>
+                                <br>
 
-                                <div class="mt-2" v-if="project">
-                                    <div v-for="(member, index) in form.employees" :key="index"
-                                        class="grid grid-cols-8 items-center my-2">
-                                        <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
-                                            member.lastname }}: {{ member.pivot.charge }} </p>
-                                        <button v-if="hasPermission('UserManager')"  type="button" @click="delete_already_employee(member.pivot.id, index)"
-                                            class="col-span-1 flex justify-end">
-                                            <TrashIcon class=" text-red-500 h-4 w-4 " />
-                                        </button>
-                                        <div class="border-b col-span-8 border-gray-900/10">
+                                <div class="grid sm:grid-cols-2 gap-8">
+                                    <div class="mt-2">
+                                        <p class="text-sm  font-medium pb-2">Administrativos</p>
+                                        <div v-for="(member, index) in form.employees.filter(item =>
+        item.pivot.charge === 'Administrativo')" :key="index"
+                                            class="grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
+        member.lastname }}: {{ member.pivot.charge }} </p>
+                                            <button v-if="hasPermission('UserManager')" type="button"
+                                                @click="delete_already_employee(member.pivot.id, index)"
+                                                class="col-span-1 flex justify-end">
+                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                            </button>
+                                            <div class="border-b col-span-8 border-gray-900/10">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <p class="text-sm  font-medium pb-2">MOI - Mano de Obra Indirecta</p>
+                                        <div v-for="(member, index) in form.employees.filter(item =>
+        item.pivot.charge === 'MOI - Mano de Obra Indirecta')" :key="index"
+                                            class="grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
+        member.lastname }}: {{ member.pivot.charge }} </p>
+                                            <button v-if="hasPermission('UserManager')" type="button"
+                                                @click="delete_already_employee(member.pivot.id, index)"
+                                                class="col-span-1 flex justify-end">
+                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                            </button>
+                                            <div class="border-b col-span-8 border-gray-900/10">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <p class="text-sm font-medium pb-2">MOD - Mano de Obra Directa</p>
+                                        <div v-for="(member, index) in form.employees.filter(item =>
+        item.pivot.charge === 'MOD - Mano de Obra Directa')" :key="index"
+                                            class="grid grid-cols-8 items-center my-2">
+                                            <p class=" text-sm col-span-7 line-clamp-2">{{ member.name }} {{
+        member.lastname }} </p>
+                                            <button v-if="hasPermission('UserManager')" type="button"
+                                                @click="delete_already_employee(member.pivot.id, index)"
+                                                class="col-span-1 flex justify-end">
+                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                            </button>
+                                            <div class="border-b col-span-8 border-gray-900/10">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mt-2" v-else>
+
+                                <!-- <div class="mt-2" v-else>
                                     <div v-for="(member, index) in form.employees" :key="index"
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
@@ -139,7 +184,7 @@
                                         <div class="border-b col-span-8 border-gray-900/10">
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -151,9 +196,27 @@
             </form>
             <Modal :show="showModalMember">
                 <form class="p-6" @submit.prevent="add_employee">
+
                     <h2 class="text-lg font-medium text-gray-900">
                         Agregar un miembro del equipo
                     </h2>
+                    <br>
+                    <div class="inline-flex items-center p-2 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+                        role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                            <span class="font-small">
+                                El cálculo del costo de planilla se hará en base al salario <span class="font-semibold">
+                                    ACTUAL.
+                                </span> del empleado
+                            </span>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
                         <div class="sm:col-span-3">
                             <InputLabel for="name" class="font-medium leading-6 text-gray-900">Empleado
@@ -163,7 +226,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
                                     <option v-for="item in employees" :key="item.id" :value="item">{{ item.name }} {{
-                                        item.lastname }}</option>
+        item.lastname }}</option>
                                 </select>
                             </div>
                         </div>
@@ -174,10 +237,9 @@
                                 <select required id="type" v-model="employeeToAdd.charge"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
-                                    <option value="lider">lider</option>
-                                    <option value="sublider">sublider</option>
-                                    <option value="supervisor">supervisor</option>
-                                    <option value="trabajador">trabajador</option>
+                                    <option>Administrativo</option>
+                                    <option>MOD - Mano de Obra Directa</option>
+                                    <option>MOI - Mano de Obra Indirecta</option>
                                 </select>
                             </div>
                         </div>
@@ -195,9 +257,10 @@
         <SuccessOperationModal :confirming="showPersonalAddModal" :title="`Personal creado.`"
             :message="`El personal fue añadido.`" />
         <SuccessOperationModal :confirming="showPersonalRemoveModal" :title="`Personal removido.`"
-            :message="`El personal fue removido.`"/>
+            :message="`El personal fue removido.`" />
 
-        <ErrorOperationModal :showError="showEmployeeError" title="Presupuesto sobrepasado" message="El presupuesto ha sido sobrepasado" />
+        <ErrorOperationModal :showError="showEmployeeError" title="Presupuesto sobrepasado"
+            message="El presupuesto ha sido sobrepasado" />
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -283,11 +346,12 @@ const add_employee = () => {
                     alert('SERVER ERROR')
                 },
                 onSuccess: () => {
+                    closeModal()
                     showPersonalAddModal.value = true
                     setTimeout(() => {
                         showPersonalAddModal.value = false;
+                        router.visit(route('projectmanagement.update', { project_id: project.id }))
                     }, 1500);
-                    router.visit(route('projectmanagement.update', {project_id: project.id}))
                 }
             }
         )
@@ -309,8 +373,9 @@ const delete_already_employee = (pivot_id, index) => {
             showPersonalRemoveModal.value = true
             setTimeout(() => {
                 showPersonalRemoveModal.value = false;
+                router.visit(route('projectmanagement.update', { project_id: project.id }))
             }, 1500);
-            form.employees.splice(index, 1);
+
         }
     })
 }

@@ -59,9 +59,10 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ payment.sot_payment?.sot_bill }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ payment.sot_payment ?
-        payment.sot_payment.sot_bill_date :
-        '' }}
+                                <p class="text-gray-900 whitespace-no-wrap">
+                                    {{ payment.sot_payment ?
+                                payment.sot_payment.sot_bill_date :
+                                '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">

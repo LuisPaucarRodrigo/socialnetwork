@@ -197,7 +197,7 @@ const makeAreasArray = (perArray, ufArray) => {
 function see_download_handler(state, id) {
     router.post(route('documment.management.folders.permission.see_download', { folder_area_id: id }), { state }, {
         onSuccess: () => {
-            console.log('siuuuuuuuuuu')
+            
         }
     })
 }
@@ -303,7 +303,6 @@ function updatePermission() {
     }
     router.post(route(url, { folder_area_id: modalItem.value.postItem.folder_area_id }), { down_recursive: modalItem.value.postItem.down_recursive, state: modalItem.value.postItem.state }, {
         onSuccess: () => {
-            console.log('siudddddd si se pudo')
             showPermissionHandler.value = false
             modalItem.value = JSON.parse(JSON.stringify(initialModalItem))
         }
@@ -330,7 +329,6 @@ function closeAddFAModal() {
 
 
 function addFolderArea() {
-    console.log('llegue')
     addFolderAreaform.post(route('documment.management.folders.permission.add'), {
         onSuccess: () => {
             closeAddFAModal()

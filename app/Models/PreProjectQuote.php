@@ -86,4 +86,8 @@ class PreProjectQuote extends Model
     public function preproject_quote_services(){
         return $this->hasMany(PreprojectQuoteService::class,"preproject_quote_id");
     }
+
+    public function services(){
+        return $this->belongsToMany(Service::class,"preproject_quote_services", "preproject_quote_id", "service_id");
+    }
 }

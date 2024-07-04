@@ -99,7 +99,6 @@
   import { EyeIcon } from '@heroicons/vue/24/outline';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import Modal from '@/Components/Modal.vue';
-  import PrimaryButton from '@/Components/PrimaryButton.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
 
   const props = defineProps({

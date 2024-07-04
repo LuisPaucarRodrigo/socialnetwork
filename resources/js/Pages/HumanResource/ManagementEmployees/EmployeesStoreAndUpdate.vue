@@ -122,27 +122,49 @@
                 </div>
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion de Contrato</h2>
-                    <div class="mt-3 sm:col-span-3">
-                        <InputLabel for="discount_remuneration">
-                            ¿Tiene Descuento sobre remuneración?
-                        </InputLabel>
-                        <div class="mt-2 class flex gap-4">
-                            <label class="flex gap-2 items-center">
-                                Sí
-                                <input type="radio" v-model="form.discount_remuneration" id="discount_remuneration"
-                                    :value="true"
-                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                            </label>
-                            <label class="flex gap-2 items-center">
-                                No
-                                <input type="radio" v-model="form.discount_remuneration" id="discount_remuneration"
-                                    :value="false"
-                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                            </label>
-                            <InputError :message="form.errors.discount_remuneration" />
-                        </div>
-                    </div>
                     <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+                        <div class="mt-3 sm:col-span-2">
+                            <InputLabel for="discount_remuneration">
+                                ¿Tiene Descuento sobre remuneración?
+                            </InputLabel>
+                            <div class="mt-2 class flex gap-4">
+                                <label class="flex gap-2 items-center">
+                                    Sí
+                                    <input type="radio" v-model="form.discount_remuneration" id="discount_remuneration"
+                                        :value="true"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center">
+                                    No
+                                    <input type="radio" v-model="form.discount_remuneration" id="discount_remuneration"
+                                        :value="false"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <InputError :message="form.errors.discount_remuneration" />
+                            </div>
+                        </div>
+                        <div class="mt-3 sm:col-span-2">
+                            <InputLabel for="discount_sctr">
+                                ¿Tiene SCTR?
+                            </InputLabel>
+                            <div class="mt-2 class flex gap-4">
+                                <label class="flex gap-2 items-center">
+                                    Sí
+                                    <input type="radio" v-model="form.discount_sctr" id="discount_sctr"
+                                        :value="true"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center">
+                                    No
+                                    <input type="radio" v-model="form.discount_sctr" id="discount_sctr"
+                                        :value="false"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <InputError :message="form.errors.discount_sctr" />
+                            </div>
+                        </div>
+
                         <div class="sm:col-span-2 sm:col-start-1">
                             <InputLabel for="pension_system">Regimen
                                 Pensionario
@@ -597,6 +619,7 @@ const form = useForm({
     phone1: '',
     phone2: '',
     discount_remuneration: '',
+    discount_sctr: '',
     pension_system: '',
     basic_salary: '',
     hire_date: '',
@@ -636,6 +659,7 @@ if (props.employees) {
     form.phone1 = props.employees.phone1;
     form.phone2 = props.employees.phone2;
     form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false;
+    form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;
     form.pension_system = props.employees.contract.pension.id;
     form.basic_salary = props.employees.contract.basic_salary;
     form.hire_date = props.employees.contract.hire_date;

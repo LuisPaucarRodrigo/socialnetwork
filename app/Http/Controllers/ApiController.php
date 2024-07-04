@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\Imagespreproject;
-use App\Models\Preproject;
 use App\Models\PreprojectCode;
 use App\Models\Project;
 use App\Models\Projectimage;
@@ -47,7 +46,7 @@ class ApiController extends Controller
     public function preproject(Request $request)
     {
         $user = $request->user();
-        $preprojects = $user->preprojects;
+        $preprojects = $user->preprojects()->where('status', null)->get();
         $data = [];
         foreach ($preprojects as $preproject) {
             if (!$preproject->preproject_code_approve){
@@ -60,7 +59,7 @@ class ApiController extends Controller
                 ];
             }
         }
-
+        
         return response()->json($data);
     }
 
@@ -80,7 +79,7 @@ class ApiController extends Controller
     }
 
     public function codephotospecific($id)
-    {
+    {   
         $data = PreprojectCode::with('code', 'preproject')->find($id);
         $codesWith = [
             'id' => $data->id,
@@ -106,6 +105,8 @@ class ApiController extends Controller
             Imagespreproject::create([
                 'description' => $data['description'],
                 'image' => $imagename,
+                'lat' => $data['latitude'],
+                'lon' => $data['longitude'],
                 'preproject_code_id' => $data['id'],
             ]);
             DB::commit();

@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Cotización Anteproyecto" />
-    <AuthenticatedLayout :redirect-route="'preprojects.index'">
+    <AuthenticatedLayout :redirect-route="backUrl">
         <template v-if="preproject.quote" #header>
             Editando la cotización
         </template>
@@ -598,7 +598,7 @@
                                 Margen (%)
                             </InputLabel>
                             <div class="mt-2 flex gap-3 items-center">
-                                <input required type="number" v-model="productToAdd.profit_margin" min="0" step="0.01"
+                                <input required type="number" v-model="productToAdd.profit_margin" min="0" step="0.0001"
                                     id="profit_margin"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
@@ -660,7 +660,9 @@
                             <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen (%)
                             </InputLabel>
                             <div class="mt-2">
-                                <input required type="number" v-model="itemToAdd.profit_margin" min="0" step="0.01"
+                                <input required type="number" v-model="itemToAdd.profit_margin" 
+                                    min="0" 
+                                    step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -822,6 +824,12 @@ const { preproject, auth, products, purchasing_requests, existingProducts, servi
     preproject_products: Object
 })
 
+let backUrl = preproject.status === null
+    ? 'preprojects.index'
+    : preproject.status == true
+        ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { preprojects_status: 0 } }
+
 
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
@@ -920,7 +928,9 @@ const submit = () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
-                router.visit(route('preprojects.index'))
+                preproject.status == true
+                    ? router.visit(route('preprojects.index', {preprojects_status: 1}))
+                    : router.visit(route('preprojects.index', {preprojects_status: 0}))
             }, 2000);
         },
         onError: (e) => {

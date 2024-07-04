@@ -3,7 +3,7 @@
     <Head title="Anteproyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
-            Anteproyecto y Proyecto Claro CICSA
+            Anteproyecto y Proyecto CLARO CICSA
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
@@ -49,7 +49,8 @@
                                     CPE
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input @input="handleProductCPE($event.target.value)" type="number" v-model="form.cpe" id="cpe"
+                                    <input @input="handleProductCPE($event.target.value)" type="number"
+                                        v-model="form.cpe" id="cpe"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.cpe" />
                                 </div>
@@ -75,42 +76,94 @@
                                     <InputError :message="form.errors.contacts" />
                                 </div>
                             </div>
-                            <div class="">
+                            <div class="flex flex-col justify-between h-full">
+                                <div>
+                                    <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
+                                        Servicios
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                    <div class="overflow-x-auto ring-1 ring-gray-300 rounded-md">
+                                        <table class="w-full whitespace-no-wrap">
+                                            <thead>
+                                            <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                Nombre</th>
+                                                <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 pl-2 pr-12     py-2 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                Monto</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="(item, index) in form.services" :key="item.id" class="text-gray-700">
+                                                <td class="border-b border-gray-200 bg-white px-2 py-2 text-sm whitespace-nowrap">{{ item.name }}</td>
+                                                <td class="border-b border-gray-200 bg-white px-4 py-2 text-sm">
+                                                    <div class="flex justify-end items-center space-x-2">
+                                                        <span>S/.</span> <input  
+                                                            min="1"
+                                                            @change="handleProfitMargin(item)"
+                                                            type="number"
+                                                            v-model="form.services[index].rent_price"
+                                                            class="w-28 text-center rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                        <InputError :message="form.errors.services" />
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between bg-white py-2 px-4 ring-1 ring-gray-300 rounded-md">
+                                    <InputLabel class="font-medium leading-6 text-indigo-900">
+                                        TOTAL
+                                    </InputLabel>
+                                    <p class="font-medium text-base tracking-wider mr-8 text-indigo-900">
+                                        S/. {{ form.services.reduce((a, item)=>a+parseFloat(item.rent_price ? item.rent_price : 0), 0) }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-1">
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
-                                    Servicios
+                                    Empleados
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <div v-for="( item, i ) in  form.services " :key="i" class="">
+                                    <div v-for="( item, i ) in  form.employees " :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
-                                            <p class=" text-sm col-span-7 line-clamp-2">
-                                                {{ item.name }} </p>
+                                            <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
+                                                {{ item?.name }} {{ item?.lastname }} - {{ item.charge }}
+                                            </p>
                                             <button type="button" class="col-span-1 flex justify-end"
-                                                @click="deleteServiceItem(i)">
+                                                @click="deleteEmployee(i)">
                                                 <TrashIcon class=" text-red-500 h-4 w-4" />
                                             </button>
                                         </div>
                                     </div>
-                                    <InputError :message="form.errors.services" />
                                 </div>
+                                <InputError :message="form.errors.employees" />
                             </div>
-                            <div class="sm:col-span-1" >
+                            <div class="sm:col-span-1">
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
                                     Productos
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <div v-if="form.cpe !== '' && productsCPE.length>0"  v-for="( item, i ) in  productsCPE " :key="i" class="">
+                                    <div v-if="form.cpe !== '' && productsCPE.length > 0"
+                                        v-for="( item, i ) in  productsCPE " :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                             <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
-                                                {{ item.purchase_product?.name }}  -   {{ item.product_serial_number }}  -  {{ item.quantity }} </p>
-                                            
+                                                {{ item.purchase_product?.name }} - {{ item.product_serial_number }} -
+                                                {{ item.quantity }} 
+                                            </p>
+
                                         </div>
                                     </div>
                                     <div v-else class="">
-                                        <div
-                                            class="text-sm items-center my-2">
-                                           No hay productos asociados a este CPE
+                                        <div class="text-sm items-center my-2">
+                                            No hay productos asociados a este CPE
                                         </div>
                                     </div>
                                 </div>
@@ -182,21 +235,23 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import axios from 'axios';
+import Employees from '@/Pages/HumanResource/ManagementEmployees/Employees.vue';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { contacts_cicsa, services, currentProducts } = defineProps({
+const { contacts_cicsa, employees, services, currentProducts } = defineProps({
     contacts_cicsa: Object,
     services: Object,
+    employees: Object,
 })
 
 
 const productsCPE = ref([])
 
 const handleProductCPE = async (cpe) => {
-    let res = await axios.post(route('pint_project.products.cpe'),{cpe})
+    let res = await axios.post(route('pint_project.products.cpe'), { cpe })
     productsCPE.value = res.data
 }
 
@@ -212,16 +267,26 @@ const initial_state = {
     date: '',
     cpe: '',
     contacts: contacts_cicsa,
-    services: services
+    services: services.map(item=>{
+        item.original_price = item.rent_price
+        if([3,4,5,6].includes(item.id)){
+            item.profit_margin = (((21300 / item.rent_price)-1)*100).toFixed(5)
+            item.rent_price = 21300
+            item.days = 1
+        } else if ([7].includes(item.id)) {
+            item.profit_margin = (((22300 / item.rent_price)-1)*100).toFixed(5)
+            item.rent_price = 44600
+            item.days = 2
+        }
+        return item
+    }),
+    employees: employees,
 }
 
 
 const form = useForm({
     ...initial_state
 });
-
-
-
 
 
 const submit = () => {
@@ -250,5 +315,37 @@ const deleteServiceItem = (i) => {
     form.services.splice(i, 1)
 }
 
+const deleteEmployee = (i) => {
+    form.employees.splice(i, 1)
+}
+
+const serviceReferencePrices = [
+    {
+        groupName: 'group1',
+        ids: [3,4,5,6,7],
+        expectedPrice: 21300,
+        originalPrice: 15000
+    },
+    {
+        groupName: 'group2',
+        ids: [7],
+        expectedPrice: 44600,
+        originalPrice: 15000
+    }
+];
+
+function findGroupById(id) {
+    for (const group of serviceReferencePrices) {
+        if (group.ids.includes(id)) {
+            return group;
+        }
+    }
+    return null;
+}
+
+const handleProfitMargin = (item) => {
+    let group = findGroupById(item.id)
+    item.profit_margin = (((item.rent_price / 15000)-1)*100).toFixed(5)
+}
 
 </script>

@@ -69,6 +69,28 @@
             </form>
           </div>
         </Modal>
+
+
+        <Modal :show="showConfirmNameModal" :maxWidth="'sm'">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 text-center">
+                    ¿Está seguro de crear o actualizar el sitio?
+                </h2>
+                <p class="mt-1 text-sm text-gray-600 text-wrap">
+                    Actualmente, hay un site que tiene un nombre similar al que esta intentando registrar: <span class="font-black">{{ foundName }}</span>.               </p>
+                <div class="space-y-12">
+                <div class="border-gray-900/10">
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                    <SecondaryButton @click="noAccept"> No </SecondaryButton>
+                    <PrimaryButton @click="accept"
+                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Si</PrimaryButton>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </Modal>
+
+
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Site" />
         <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Site" />
 
@@ -91,6 +113,7 @@
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
   import Pagination from '@/Components/Pagination.vue';
+  import axios from 'axios';
 
   const showModal = ref(false);
   const showModalEdit = ref(false);
@@ -107,7 +130,8 @@
   const isCreateModalOpen = ref(false);
   const isUpdateModalOpen = ref(false);
   const editingSite = ref(null);
-
+  const showConfirmNameModal = ref(false);
+  const foundName = ref(null);
   const openCreateModal = () => {
     isCreateModalOpen.value = true;
   };
@@ -130,30 +154,85 @@
     isUpdateModalOpen.value = false;
   };
 
+  const noAccept = () => {
+    foundName.value = null;
+    form.reset();
+    showConfirmNameModal.value = false;
+    isCreateModalOpen.value = false;
+    isUpdateModalOpen.value = false;
+  }
+
+  const accept = () => {
+    if (isCreateModalOpen.value){
+        form.post(route('huawei.sites.post'), {
+            onSuccess: () => {
+                closeCreateModal();
+                form.reset();
+                showConfirmNameModal.value = false;
+                closeCreateModal();
+                showModal.value = true
+                setTimeout(() => {
+                    showModal.value = false;
+                }, 2000);
+            }
+        });
+    }else{
+        form.put(route('huawei.sites.put', { site: form.id}), {
+            onSuccess: () => {
+                closeUpdateModal();
+                form.reset();
+                showConfirmNameModal.value = false;
+                closeUpdateModal();
+                showModalEdit.value = true
+                setTimeout(() => {
+                    showModalEdit.value = false;
+                }, 2000);
+            }
+        });
+    }
+  }
 
   const submit = (update) => {
       if (update) {
-          form.put(route('huawei.sites.put', { site: form.id}), {
-          onSuccess: () => {
-          closeUpdateModal();
-          form.reset();
-          showModalEdit.value = true
-          setTimeout(() => {
-              showModalEdit.value = false;
-          }, 2000);
-          }
-      });
+        axios.post(route('huawei.sites.verify', {update: form.id}), form)
+        .then(res => {
+            if (res.data.message == 'found'){
+                foundName.value = res.data.name;
+                showConfirmNameModal.value = true;
+            }else{
+                form.put(route('huawei.sites.put', { site: form.id}), {
+                    onSuccess: () => {
+                        closeUpdateModal();
+                        form.reset();
+                        showModalEdit.value = true
+                        setTimeout(() => {
+                            showModalEdit.value = false;
+                        }, 2000);
+                        }
+                    });
+            }
+        })
+
       } else {
-          form.post(route('huawei.sites.post'), {
-          onSuccess: () => {
-          closeCreateModal();
-          form.reset();
-          showModal.value = true
-          setTimeout(() => {
-              showModal.value = false;
-          }, 2000);
-          }
-      });
+        axios.post(route('huawei.sites.verify'), form)
+        .then(res => {
+            if (res.data.message == 'found'){
+                foundName.value = res.data.name;
+                showConfirmNameModal.value = true;
+            }else{
+                form.post(route('huawei.sites.post'), {
+                    onSuccess: () => {
+                    closeCreateModal();
+                    form.reset();
+                    showModal.value = true
+                    setTimeout(() => {
+                        showModal.value = false;
+                    }, 2000);
+                    }
+                });
+            }
+        })
+
       }
   };
 

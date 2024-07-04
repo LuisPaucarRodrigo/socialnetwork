@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('healths', function (Blueprint $table) {
             $table->id();
-            $table->string('blood_group');
-            $table->string('weight');
-            $table->string('height');
-            $table->string('shoe_size');
-            $table->string('shirt_size');
-            $table->string('pants_size');
+            $table->string('blood_group')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('height')->nullable();
+            $table->string('shoe_size')->nullable();
+            $table->string('shirt_size')->nullable();
+            $table->string('pants_size')->nullable();
             $table->string('medical_condition');
             $table->string('allergies');
             $table->string('operations');

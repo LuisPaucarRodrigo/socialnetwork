@@ -5,10 +5,9 @@ namespace App\Http\Controllers\HumanResource;
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
-use App\Models\Employee;
 use App\Models\Pension;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -33,7 +32,7 @@ class SpreadsheetsController extends Controller
                     });
             })->get();
         } else {
-            $spreadsheet = $spreadsheet->paginate();
+            $spreadsheet = $spreadsheet->get();
         }
 
         $total = [
@@ -50,21 +49,29 @@ class SpreadsheetsController extends Controller
             'sum_net_pay' => $spreadsheet->sum('net_pay'),
             'sum_health' => $spreadsheet->sum('healths'),
             'sum_life_ley' => $spreadsheet->sum('life_ley'),
+            'sum_sctr_p' => $spreadsheet->sum('sctr_p'),
+            'sum_sctr_s' => $spreadsheet->sum('sctr_s'),
             'sum_total_contribution' => $spreadsheet->sum('total_contribution'),
         ];
-
+        $data = json_decode(File::get(config_path('custom.json')), true);
         return Inertia::render('HumanResource/Payroll/Spreadsheets', [
             'spreadsheets' => $spreadsheet,
             'search' => $searchTerm,
             'boolean' => boolval($reentry),
-            'total' => $total
+            'total' => $total,
+            'number_people' => $data['number_people'],
         ]);
     }
 
     public function edit()
     {
         $pensions = Pension::all();
-        return Inertia::render('HumanResource/Payroll/PensionSystem', ['pensions' => $pensions]);
+        $data = json_decode(File::get(config_path('custom.json')), true);
+        $sctrs = ['sctr_p' => $data['sctr_p'], 'sctr_s' => $data['sctr_s']];
+        return Inertia::render('HumanResource/Payroll/PensionSystem', [
+            'pensions' => $pensions,
+            'sctrs' => [$sctrs]
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -91,8 +98,31 @@ class SpreadsheetsController extends Controller
         return to_route('pension_system.edit');
     }
 
+    public function update_number_people(Request $request)
+    {   
+        $data = json_decode(File::get(config_path('custom.json')), true);
+        $data['number_people'] = $request->number_people;
+        File::put(config_path('custom.json'), json_encode($data));
+    }
+
     public function export()
     {
         return Excel::download(new PayrollExport, 'Planilla ' . date('m-Y') . '.xlsx');
+    }
+
+    public function update_sctr_p(Request $request)
+    {
+        $data = json_decode(File::get(config_path('custom.json')), true);
+        $data['sctr_p'] = $request->value;
+        File::put(config_path('custom.json'), json_encode($data));
+        return to_route('pension_system.edit');
+    }
+
+    public function update_sctr_s(Request $request)
+    {
+        $data = json_decode(File::get(config_path('custom.json')), true);
+        $data['sctr_s'] = $request->value;
+        File::put(config_path('custom.json'), json_encode($data));
+        return to_route('pension_system.edit');
     }
 }
