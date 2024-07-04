@@ -35,6 +35,11 @@ class HuaweiProject extends Model
         return $this->hasMany(HuaweiProjectEmployee::class, 'huawei_project_id');
     }
 
+    public function huawei_project_resources ()
+    {
+        return $this->hasMany(HuaweiProjectResource::class, 'huawei_project_id');
+    }
+
     public function getCodeAttribute ()
     {
         $year = date('Y', strtotime($this->created_at));
