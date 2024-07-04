@@ -15,17 +15,17 @@ class CheckPlatformMovil
      */
     public function handle(Request $request, Closure $next)
     {
-        // Obtener el usuario autenticado
         $user = $request->user();
-
-        // Verificar si el usuario está autenticado y su plataforma es válida
-        if ($user && $this->isValidPlatform($user->platform)) {
-            return $next($request);
+        if ($user) {
+            if ($this->isValidPlatform($user->platform)) {
+                return $next($request); 
+            } else {
+                return response()->json(['error' => 'Acceso no autorizado.'], 403);
+            }
         }
-
-        // Si la plataforma no es válida, redirigir o responder con un error
-        return response()->json(['error' => 'Acceso no autorizado.'], 403);
+        return response()->json(['error' => 'Usuario no Autenticado.'], 401);
     }
+
 
     /**
      * Verificar si la plataforma del usuario es válida.
@@ -35,8 +35,6 @@ class CheckPlatformMovil
      */
     private function isValidPlatform($platform)
     {
-        // Aquí defines la lógica para determinar si la plataforma es válida
-        // Por ejemplo, si la plataforma es 'web', 'móvil' o 'web/móvil'
-        return in_array($platform, ['Móvil', 'Web/Móvil']);
+        return in_array($platform, ['Móvil', 'Web/Movil']);
     }
 }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('additional_costs', function (Blueprint $table) {
+        Schema::create('static_costs', function (Blueprint $table) {
             $table->id();
             $table->string('expense_type');
             $table->string('ruc');
@@ -31,7 +31,6 @@ return new class extends Migration
                 ->constrained('projects')
                 ->onDelete('cascade');
             $table->timestamps();
-            // $table->unique(['ruc', 'doc_number']);
         });
     }
 
@@ -40,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('additional_costs');
+        Schema::dropIfExists('static_costs');
     }
 };

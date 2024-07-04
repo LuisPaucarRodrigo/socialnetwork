@@ -7,7 +7,7 @@
         </Link>
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
-            {{ status }}dd
+            {{ status }}
         </div>
 
         <form @submit.prevent="submit">
@@ -61,7 +61,6 @@ const props = defineProps({
     status: String,
 });
 
-console.log(props.canResetPassword)
 
 const form = useForm({
     email: '',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
+use App\Models\Provider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Project;
@@ -12,10 +13,12 @@ class AdditionalCostsController extends Controller
 {
     public function index(Project $project_id)
     {
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project')->get();
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->paginate(20);
+        $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
-            'project_id' => $project_id
+            'project_id' => $project_id,
+            'providers' => $providers
         ]);
     }
 
@@ -23,58 +26,98 @@ class AdditionalCostsController extends Controller
     {
         $remaining_budget = $project_id->remaining_budget;
         
-        $request->validate([
-            'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GEP',
-            'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
-            'doc_number' => 'required|string',
+        $data = $request->validate([
+            'expense_type' => 'required|string',
+            'ruc' =>'required|numeric|digits:11',
+            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',
             'amount' => ['required', 'numeric', function($attribute, $value, $fail) use ($request, $remaining_budget){
                 if($value > $remaining_budget){
                     $fail(__('El monto del gasto excede el presupuesto restante. S/. ' . number_format($remaining_budget, 2)));
             }}],
+            'zone'=>'required',
+            'provider_id'=> 'nullable',
             'description' => 'required|string',
+            'photo' => 'nullable',
+            'project_id'=> 'required'
         ]);
-
-        AdditionalCost::create([
-            'expense_type' => $request->expense_type,
-            'ruc' => $request->ruc,
-            'type_doc' => $request->type_doc,
-            'doc_number' => $request->doc_number,
-            'doc_date' => $request->doc_date,
-            'description' => $request->description,
-            'amount' => $request->amount,
-            'project_id' => $project_id->id
-        ]); 
-              
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
+        }
+        
+        AdditionalCost::create($data);
+        return redirect()->back(); 
     }
 
-    public function update(AdditionalCost $additional_cost, Request $request)
+    public function download_ac_photo(AdditionalCost $additional_cost_id) {
+        $fileName = $additional_cost_id->photo;
+        $filePath = '/documents/additionalcosts/' . $fileName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            ob_end_clean();
+            return response()->file($path);
+        }
+        abort(404, 'Documento no encontrado');
+    }
+    
+
+    public function update( Request $request, AdditionalCost $additional_cost)
     {
-        $request->validate([
-            'expense_type' => 'required|string|in:Combustible,Peaje,Otros,Combustible GEP',
+        $data = $request->validate([
+            'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Deposito,Factura,Boleta,Voucher de Pago',
-            'doc_number' => 'required|string',
+            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',
             'amount' => 'required|numeric',
+            'zone'=>'required',
+            'provider_id'=> 'nullable',
+            'photo' => 'nullable',
             'description' => 'required|string',
         ]);
+        if ($request->hasFile('photo')) {
+            $filename = $additional_cost->photo;
+            if ($filename) {
+                $this->file_delete($filename, 'documents/additionalcosts/');
+            } 
+            $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
+            
+        } else if ($request->photo_status === 'stable') {
+            $filename = $additional_cost->photo;
+            if ($filename) {unset($data["photo"]);}
+        }
 
-        $additional_cost->update([
-            'expense_type' => $request->expense_type,
-            'ruc' => $request->ruc,
-            'type_doc' => $request->type_doc,
-            'doc_number' => $request->doc_number,
-            'doc_date' => $request->doc_date,
-            'description' => $request->description,
-            'amount' => $request->amount,
-        ]);     
+        if($request->photo_status === 'delete') {
+            $filename = $additional_cost->photo;
+            if ($filename) {
+                $this->file_delete($filename, 'documents/additionalcosts/');
+            }
+        }
+
+        $additional_cost->update($data);     
+        return redirect()->back();
     }
 
     public function destroy(Project $project_id, AdditionalCost $additional_cost)
     {
+        $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
         $additional_cost->delete();
         return to_route('projectmanagement.additionalCosts', ['project_id' => $project_id->id]);    
+    }
+
+
+    public function file_store($file, $path)
+    {
+        $name = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path($path), $name);
+        return $name;
+    }
+
+    public function file_delete($filename, $path)
+    {
+        $file_path = $path . $filename;
+        $path = public_path($file_path);
+        if (file_exists($path)) unlink($path);
     }
 }

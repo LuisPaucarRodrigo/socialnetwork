@@ -13,6 +13,8 @@ class Imagespreproject extends Model
         'observation',
         'state',
         'image',
+        'lat',
+        'lon',
         'preproject_code_id'
     ];
 

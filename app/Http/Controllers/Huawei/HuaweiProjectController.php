@@ -9,15 +9,7 @@ use App\Models\HuaweiProjectEmployee;
 use App\Models\HuaweiSite;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\BrandModel;
-use App\Models\HuaweiEntry;
-use App\Models\HuaweiEquipment;
-use App\Models\HuaweiEntryDetail;
-use App\Models\HuaweiEquipmentSerie;
-use App\Models\HuaweiMaterial;
-use App\Models\Brand;
 use App\Models\HuaweiAdditionalCost;
-use App\Models\HuaweiRefund;
 use Illuminate\Validation\Rule;
 
 class HuaweiProjectController extends Controller
@@ -136,6 +128,52 @@ class HuaweiProjectController extends Controller
 
         return redirect()->back();
     }
+
+    public function verifySiteName(Request $request, $update = null)
+    {
+        $term = strtolower($request->input('name'));
+
+        // Recuperar todos los nombres de HuaweiSite
+        $sites = HuaweiSite::all()->pluck('name')->toArray();
+
+        // Variable para almacenar el nombre de la coincidencia cercana
+        $closeMatchName = null;
+
+        // Comparar el término con los nombres existentes
+        foreach ($sites as $site) {
+            $similarity = 0;
+            similar_text($term, strtolower($site), $similarity);
+
+            // Considerar un nombre como "cercano" si la similitud es mayor al 80%
+            if ($similarity > 80) {
+                $closeMatchName = $site;
+                break;
+            }
+        }
+
+        // Verificar si estamos en modo de actualización y el nombre encontrado es el mismo que el nombre actual
+        if ($update && $closeMatchName && $closeMatchName === HuaweiSite::find($update)->name) {
+            return response()->json([
+                'message' => 'notfound',
+                'status' => 'none'
+            ]);
+        }
+
+        // Construir la respuesta
+        if ($closeMatchName) {
+            return response()->json([
+                'message' => 'found',
+                'status' => 'close',
+                'name' => $closeMatchName
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'notfound',
+                'status' => 'none'
+            ]);
+        }
+    }
+
 
     //additional cost
 
