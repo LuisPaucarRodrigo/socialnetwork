@@ -117,7 +117,7 @@ class DocumentController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'document' => 'required|mimes:pdf,doc,docx,ppt,pptx,xlsx,png,jpg,jpeg|max:2048',
+            'document' => 'required',
             'subdivision_id' => 'required|numeric',
         ]);
         $documentName = null;
