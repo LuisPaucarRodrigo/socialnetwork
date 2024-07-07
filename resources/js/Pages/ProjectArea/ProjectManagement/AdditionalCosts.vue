@@ -13,28 +13,39 @@
           @click="openCreateAdditionalModal" type="button" class="">
           + Agregar
         </PrimaryButton>
-        <input type="text" @input="handleInput" placeholder="Buscar...">
+        <input type="text" v-model="serachTerm" @input="handleInput" placeholder="Buscar...">
       </div>
     </div>
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto h-[85vh]">
       <table class="w-full whitespace-no-wrap">
         <thead>
           <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Zona</th>
+              <TableHeaderFilter label="Zona" :options="zones" v-model="selectedZones" width="w-32" />
+            </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Tipo de Gasto</th>
+              <TableHeaderFilter label="Tipo de Gasto" :options="expenseTypes" v-model="selectedExpenseTypes"
+                width="w-44" />
+            </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              RUC</th>
+              <TableHeaderFilter label="Tipo de Documento" :options="docTypes" v-model="selectedDocTypes"
+                width="w-32" />
+            </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Proveedor</th>
+              <div class="flex justify-between items-center">
+                <p>RUC</p>
+              </div>
+            </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Tipo de Documento</th>
+              <div class="flex justify-between items-center">
+                <p>Proveedor</p>
+              </div>
+            </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               Numero de Doc</th>
@@ -56,12 +67,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in additional_costs.data" :key="item.id" class="text-gray-700">
+          <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700">
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.zone }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.expense_type }}</td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.ruc }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item?.provider?.company_name }}</td>
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}
             </td>
@@ -91,7 +102,7 @@
         </tbody>
       </table>
     </div>
-    <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+    <div v-if="!filterMode" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
       <pagination :links="additional_costs.links" />
     </div>
     <Modal :show="create_additional">
@@ -102,6 +113,21 @@
         <form @submit.prevent="submit">
           <div class="space-y-12 mt-4">
             <div class="border-b grid sm:grid-cols-2 gap-6 border-gray-900/10 pb-12">
+              <div>
+                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
+                <div class="mt-2">
+                  <select v-model="form.zone" id="zone"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option disabled value="">Seleccionar</option>
+                    <option>Arequipa</option>
+                    <option>Chala</option>
+                    <option>Moquegua</option>
+                    <option>Tacna</option>
+                    <option>MDD</option>
+                  </select>
+                  <InputError :message="form.errors.zone" />
+                </div>
+              </div>
               <div>
                 <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto</InputLabel>
                 <div class="mt-2">
@@ -129,18 +155,18 @@
                 </div>
               </div>
               <div>
-                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
+                <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
                 <div class="mt-2">
-                  <select v-model="form.zone" id="zone"
+                  <select v-model="form.type_doc" id="type_doc"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    <option disabled value="">Seleccionar</option>
-                    <option>Arequipa</option>
-                    <option>Chala</option>
-                    <option>Moquegua</option>
-                    <option>Tacna</option>
-                    <option>MDD</option>
+                    <option disabled value="">Seleccionar Documento</option>
+                    <option>Efectivo</option>
+                    <option>Deposito</option>
+                    <option>Factura</option>
+                    <option>Boleta</option>
+                    <option>Voucher de Pago</option>
                   </select>
-                  <InputError :message="form.errors.zone" />
+                  <InputError :message="form.errors.type_doc" />
                 </div>
               </div>
               <div>
@@ -157,21 +183,7 @@
                   <InputError :message="form.errors.ruc" />
                 </div>
               </div>
-              <div>
-                <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
-                <div class="mt-2">
-                  <select v-model="form.type_doc" id="type_doc"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    <option disabled value="">Seleccionar Documento</option>
-                    <option>Efectivo</option>
-                    <option>Deposito</option>
-                    <option>Factura</option>
-                    <option>Boleta</option>
-                    <option>Voucher de Pago</option>
-                  </select>
-                  <InputError :message="form.errors.type_doc" />
-                </div>
-              </div>
+             
               <div>
                 <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
@@ -242,6 +254,21 @@
           <div class="space-y-12">
             <div class="border-b grid sm:grid-cols-2 gap-6 border-gray-900/10 pb-12">
               <div>
+                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
+                <div class="mt-2">
+                  <select v-model="form.zone" id="zone"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option disabled value="">Seleccionar</option>
+                    <option>Arequipa</option>
+                    <option>Chala</option>
+                    <option>Moquegua</option>
+                    <option>Tacna</option>
+                    <option>MDD</option>
+                  </select>
+                  <InputError :message="form.errors.zone" />
+                </div>
+              </div>
+              <div>
                 <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto</InputLabel>
                 <div class="mt-2">
                   <select v-model="form.expense_type" id="expense_type"
@@ -267,37 +294,7 @@
                   <InputError :message="form.errors.expense_type" />
                 </div>
               </div>
-              <div>
-                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
-                <div class="mt-2">
-                  <select v-model="form.zone" id="zone"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    <option disabled value="">Seleccionar</option>
-                    <option>Arequipa</option>
-                    <option>Chala</option>
-                    <option>Moquegua</option>
-                    <option>Tacna</option>
-                    <option>MDD</option>
-                  </select>
-                  <InputError :message="form.errors.zone" />
-                </div>
-              </div>
-
-              <div>
-                <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI </InputLabel>
-                <div class="mt-2">
-                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete"
-                    autocomplete="off" list="options"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                  <datalist id="options">
-                    <option v-for="item in providers" :value="item.ruc">
-                      {{ item.company_name }}
-                    </option>
-                  </datalist>
-                  <InputError :message="form.errors.ruc" />
-                </div>
-              </div>
-
+              
               <div>
                 <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
                 <div class="mt-2">
@@ -313,6 +310,22 @@
                   <InputError :message="form.errors.type_doc" />
                 </div>
               </div>
+              <div>
+                <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI </InputLabel>
+                <div class="mt-2">
+                  <input type="text" v-model="form.ruc" id="ruc" maxlength="11" @input="handleRucDniAutocomplete"
+                    autocomplete="off" list="options"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                  <datalist id="options">
+                    <option v-for="item in providers" :value="item.ruc">
+                      {{ item.company_name }}
+                    </option>
+                  </datalist>
+                  <InputError :message="form.errors.ruc" />
+                </div>
+              </div>
+
+              
               <div>
                 <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
@@ -359,7 +372,7 @@
                   <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png, .pdf"
                     class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                   <InputError :message="form.errors.photo" />
-                  <div v-if="form.photo_name && form.photo_status == 'stable'" 
+                  <div v-if="form.photo_name && form.photo_status == 'stable'"
                     class="text-sm leading-6 text-indigo-700 flex space-x-2 items-center mt-3">
                     <span>
                       Archivo Actual:
@@ -368,17 +381,17 @@
                       class="hover:underline">
                       {{ form.photo_name }} </a>
                     <button type="button" @click="() => {
-                      form.photo_status = 'delete'
-                    }">
+      form.photo_status = 'delete'
+    }">
                       <TrashIcon class="text-red-500 h-4 w-4" />
                     </button>
                   </div>
-                  <div v-if="form.photo_status==='delete'" class="text-amber-700 mt-3 text-sm flex space-x-2">
+                  <div v-if="form.photo_status === 'delete'" class="text-amber-700 mt-3 text-sm flex space-x-2">
                     <span>
                       El documento esta por ser borrado,
                     </span>
-                    <button @click="()=>{form.photo_status = 'stable'}" type="button" class="font-black">
-                        ANULAR
+                    <button @click="() => { form.photo_status = 'stable' }" type="button" class="font-black">
+                      ANULAR
                     </button>
                   </div>
 
@@ -413,7 +426,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
@@ -421,14 +434,21 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputFile from '@/Components/InputFile.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
+import axios from 'axios';
 
 const props = defineProps({
   additional_costs: Object,
   project_id: Object,
   providers: Object,
   auth: Object,
-  userPermissions: Array
+  userPermissions: Array,
+  searchQuery: String
 });
+
+const dataToRender = ref(props.additional_costs.data);
+const filterMode = ref(false)
+
 
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);
@@ -447,7 +467,7 @@ const form = useForm({
   description: '',
   photo: '',
   amount: '',
-  photo_status:'stable'
+  photo_status: 'stable'
 });
 
 const create_additional = ref(false);
@@ -477,7 +497,7 @@ const openEditAdditionalModal = (additional) => {
   form.zone = editingAdditional.value.zone;
   form.provider_id = editingAdditional.value.provider_id
   form.photo_name = editingAdditional.value.photo
-  
+
   editAdditionalModal.value = true;
 };
 
@@ -552,6 +572,7 @@ const handleRucDniAutocomplete = (e) => {
 
 
 const timeout = ref(null);
+const serachTerm = ref((props.searchQuery ? props.searchQuery : ''));
 function debounce(func, delay) {
   return (...args) => {
     if (timeout.value) {
@@ -564,15 +585,18 @@ function debounce(func, delay) {
 }
 function search(query) {
   console.log('Buscando:', query);
+  if (serachTerm.value === '') {
+    router.visit(route('projectmanagement.additionalCosts', { project_id: props.project_id.id }))
+  } else {
+    let url = route('projectmanagement.additionalCosts', { project_id: props.project_id.id })
+    router.visit(url + `?search=${query}`)
+  }
 }
-const debouncedSearch = debounce(search, 700);
-function handleInput(event) {
-  debouncedSearch(event.target.value);
+
+const debouncedSearch = debounce(search, 1000);
+function handleInput() {
+  debouncedSearch(serachTerm.value);
 }
-
-
-
-
 
 
 function handlerPreview(id) {
@@ -582,4 +606,71 @@ function handlerPreview(id) {
 
 
 
+
+const zones = ['Arequipa', 'Chala', 'Moquegua', 'Tacna', 'MDD'];
+const selectedZones = ref(['Arequipa', 'Chala', 'Moquegua', 'Tacna', 'MDD']);
+
+
+const expenseTypes = ['Habitaciones',
+  'Camionetas',
+  'Combustible',
+  'Hospedaje',
+  'Movilidad',
+  'Peaje',
+  'Seguros y Pólizas',
+  'Herramientas',
+  'Fletes',
+  'EPPs',
+  'Gastos de Representación',
+  'Combustible GEP',
+  'Otros',
+  'Consumibles',
+  'Equipos',
+  'Otros']
+const selectedExpenseTypes = ref(['Habitaciones',
+  'Camionetas',
+  'Combustible',
+  'Hospedaje',
+  'Movilidad',
+  'Peaje',
+  'Seguros y Pólizas',
+  'Herramientas',
+  'Fletes',
+  'EPPs',
+  'Gastos de Representación',
+  'Combustible GEP',
+  'Otros',
+  'Consumibles',
+  'Equipos',
+  'Otros'])
+
+const docTypes = ['Efectivo',
+  'Deposito',
+  'Factura',
+  'Boleta',
+  'Voucher de Pago']
+const selectedDocTypes = ref(['Efectivo',
+  'Deposito',
+  'Factura',
+  'Boleta',
+  'Voucher de Pago'])
+
+
+
+watch([selectedZones, selectedExpenseTypes, selectedDocTypes], () => {
+  let data = {
+    selectedZones: selectedZones.value,
+    selectedExpenseTypes: selectedExpenseTypes.value,
+    selectedDocTypes: selectedDocTypes.value
+  };
+  search_advance(data)
+});
+
+async function search_advance ($data) {
+  let res = await axios.post(route('additionalcost.advance.search', {
+    project_id: props.project_id.id
+  }), $data)
+  dataToRender.value = res.data 
+}
 </script>
+

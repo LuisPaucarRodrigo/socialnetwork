@@ -124,6 +124,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
 
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
+    Route::post('/additionalcost_advancesearch/{project_id}', [AdditionalCostsController::class, 'search_costs'])->name('additionalcost.advance.search');
 });
 
 Route::middleware('permission:ProjectManager|Project')->group(function () {
