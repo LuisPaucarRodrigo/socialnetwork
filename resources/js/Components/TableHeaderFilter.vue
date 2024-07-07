@@ -1,0 +1,96 @@
+<template>
+    <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
+        <p>{{ label }}</p>
+        <button @click="togglePopup">
+            <BarsArrowDownIcon class="h-5 w-5" />
+        </button>
+        <div v-if="showPopup"
+            :class="['absolute top-8 right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg', widthClass]">
+            <div class="">
+                <label class="block border-b-2 border-gray-100 px-2 py-2">
+                    <input type="checkbox" v-model="selectAll" @change="toggleAll" class="mr-2" /> Todos
+                </label>
+                <div class='max-h-48 overflow-y-auto'>
+                    <label v-for="option in options" :key="option" class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
+                        <input type="checkbox" :value="option" v-model="selectedOptions" class="mr-2" /> 
+                        <p>
+                            {{ option }}
+                        </p>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
+import { BarsArrowDownIcon } from '@heroicons/vue/24/outline';
+
+const props = defineProps({
+    label: {
+        type: String,
+        default: 'Label'
+    },
+    options: {
+        type: Array,
+        required: true
+    },
+    modelValue: {
+        type: Array,
+        default: () => []
+    },
+    width: {
+        type: String,
+        default: 'w-48'
+    }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const showPopup = ref(false);
+const selectedOptions = ref([...props.modelValue]);
+const selectAll = ref(true);
+const popup = ref(null);
+
+const widthClass = computed(() => props.width);
+
+const togglePopup = () => {
+    showPopup.value = !showPopup.value;
+};
+
+const closePopup = (event) => {
+  if (popup.value && !popup.value.contains(event.target)) {
+    showPopup.value = false;
+  }
+};
+
+const toggleAll = () => {
+    if (selectAll.value) {
+        selectedOptions.value = [...props.options];
+    } else {
+        selectedOptions.value = [];
+    }
+};
+
+watch(selectedOptions, (newSelectedOptions) => {
+    emit('update:modelValue', newSelectedOptions);
+    if (newSelectedOptions.length === props.options.length) {
+        selectAll.value = true;
+    } else {
+        selectAll.value = false;
+    }
+});
+
+onMounted(() => {
+    document.addEventListener('click', closePopup);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', closePopup);
+});
+</script>
+
+<style scoped>
+/* No additional styles needed since Tailwind CSS is being used */
+</style>
