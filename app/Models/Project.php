@@ -104,10 +104,12 @@ class Project extends Model
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts->sum('amount');
+        $staticCosts = $this->staticCosts->sum('amount');
 
         $currentBudget = $currentBudget
             - $this->getTotalProductsCostAttribute()
-            - $additionalCosts;
+            - $additionalCosts
+            - $staticCosts;
 
         foreach ($this->getTotalEmployeeCostsAttribute() as $value){
             $currentBudget -= $value['total_payroll']; 
@@ -242,6 +244,11 @@ class Project extends Model
     public function additionalCosts()
     {
         return $this->hasMany(AdditionalCost::class);
+    }
+
+    public function staticCosts()
+    {
+        return $this->hasMany(StaticCost::class);
     }
 
     public function purchasing_request()
