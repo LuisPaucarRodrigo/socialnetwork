@@ -73,7 +73,7 @@
           </div>
         </div>
       </div>
-      <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+      <div v-if="staticCosts>0" class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
         <div class="w-full lg:w-1/2">
           <div class="overflow-x-auto ring-1 ring-gray-200">
             <table class="w-full whitespace-no-wrap">
@@ -103,7 +103,7 @@
           </div>
         </div>
       </div>
-      <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+      <div v-if="additionalCosts>0" class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
         <div class="w-full lg:w-1/2">
           <div class="overflow-x-auto ring-1 ring-gray-200">
             <table class="w-full whitespace-no-wrap">
