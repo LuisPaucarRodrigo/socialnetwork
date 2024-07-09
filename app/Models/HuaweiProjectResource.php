@@ -26,4 +26,9 @@ class HuaweiProjectResource extends Model
     {
         return $this->belongsTo(HuaweiEntryDetail::class, 'huawei_entry_detail_id');
     }
+
+    public function huawei_project_liquidations ()
+    {
+        return $this->hasOne(HuaweiProjectLiquidation::class, 'huawei_project_resource_id');
+    }
 }

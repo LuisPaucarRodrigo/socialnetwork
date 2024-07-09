@@ -452,4 +452,30 @@ class HuaweiProjectController extends Controller
 
         return redirect()->back();
     }
+
+    public function refundResource (HuaweiProjectResource $huawei_resource, Request $request, $equipment = null)
+    {
+        $request->validate([
+            'quantity' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($huawei_resource) {
+                    if ($value !== null && $value > $huawei_resource->quantity) {
+                        $fail('La cantidad debe ser menor o igual a la cantidad asignada del recurso.');
+                    }
+                },
+            ],
+        ]);
+
+        if ($equipment){
+            $huawei_resource->update([
+                'quantity' => 0
+            ]);
+        }else{
+            $huawei_resource->update([
+                'quantity' => $huawei_resource->quantity - $request->quantity
+            ]);
+        }
+
+        return redirect()->back();
+    }
 }

@@ -65,7 +65,11 @@ class HuaweiEntryDetail extends Model
             if ($this->huawei_refunds()->count() != 0) {
                 return 'Devuelto';
             }
-            if ($this->huawei_project_resources()->count() != 0){
+            $projectResourcesCount = $this->huawei_project_resources()
+                ->where('quantity', '>', 0)
+                ->count();
+
+            if ($projectResourcesCount != 0){
                 return 'En Proyecto';
             }
             return 'Disponible';

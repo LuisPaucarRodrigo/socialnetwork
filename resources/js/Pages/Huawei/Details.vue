@@ -181,12 +181,11 @@
 </template>
 
 <script setup>
-    import { Head, Link, router, useForm } from '@inertiajs/vue3';
+    import { Head, router, useForm } from '@inertiajs/vue3';
     import Pagination from '@/Components/Pagination.vue';
     import { formattedDate } from '@/utils/utils'
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import TextInput from '@/Components/TextInput.vue';
-    import { ReceiptRefundIcon } from '@heroicons/vue/24/outline';
     import Modal from '@/Components/Modal.vue';
     import { ref } from 'vue';
     import InputLabel from '@/Components/InputLabel.vue';
