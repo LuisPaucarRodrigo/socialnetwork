@@ -9,7 +9,7 @@ class StaticCost extends Model
 {
     use HasFactory;
 
-    protected $table = 'additional_costs';
+    protected $table = 'static_costs';
     protected $fillable = [
         'expense_type',
         'ruc',
