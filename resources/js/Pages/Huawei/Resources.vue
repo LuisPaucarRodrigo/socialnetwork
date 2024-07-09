@@ -126,7 +126,7 @@
                             <select v-model="form.resource" id="expense_type"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccionar {{ props.equipment ? 'Equipo' : 'Material' }}</option>
-                                <option v-for="item in (props.equipment ? props.equipments : props.materials)" :key="item.id" :value="item.id">{{ item.name }}</option>
+                                <option v-for="item in (props.equipment ? props.equipments : props.materials)" :key="item.id" :value="item.id">{{ item.name + ' - ' + item.available_quantity }}</option>
                             </select>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-span-1">
+                    <div class="col-span-1" v-if="!props.equipment">
                         <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
                         <input type="number" min="1" v-model="form.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
                     </div>
@@ -244,15 +244,15 @@
   const search = () => {
         if (searchForm.searchTerm == '') {
             if (props.equipment){
-                router.visit(route('huawei.inventory.refunds', {equipment: 1}));
+                router.visit(route('huawei.projects.resources', {huawei_project: props.huawei_project, equipment: 1}));
             } else {
-                router.visit(route('huawei.inventory.refunds'));
+                router.visit(route('huawei.projects.resources', {huawei_project: props.huawei_project}));
             }
         } else {
             if (props.equipment){
-                router.visit(route('huawei.inventory.refunds.search', {request: searchForm.searchTerm, equipment: 1}));
+                router.visit(route('huawei.projects.resources.search', {huawei_project: props.huawei_project, request: searchForm.searchTerm, equipment: 1}));
             } else {
-                router.visit(route('huawei.inventory.refunds.search', {request: searchForm.searchTerm}));
+                router.visit(route('huawei.projects.resources.search', {huawei_project: props.huawei_project, request: searchForm.searchTerm}));
             }
         }
     }

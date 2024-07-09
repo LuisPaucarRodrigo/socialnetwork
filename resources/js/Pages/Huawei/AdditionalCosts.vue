@@ -256,6 +256,11 @@ const openCreateAdditionalModal = () => {
   create_additional.value = true;
 };
 
+const closeCreateModal = () => {
+    form.reset();
+    create_additional.value = false;
+}
+
 const openEditAdditionalModal = (additional) => {
   // Copia de los datos de la subsección existente al formulario
   editingAdditional.value = JSON.parse(JSON.stringify(additional));

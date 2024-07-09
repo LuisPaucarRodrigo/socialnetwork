@@ -17,7 +17,7 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="first-name">Nombre</InputLabel>
                             <div class="mt-2">
-                                <TextInput required type="text" v-model="form.name" id="first-name" autocomplete="given-name" />
+                                <TextInput required type="text" v-model="form.name" id="first-name" autocomplete="off" />
                                 <InputError :message="form.errors.name" />
                             </div>
                         </div>

@@ -26,6 +26,21 @@ class HuaweiProjectController extends Controller
         ]);
     }
 
+    public function searchProject ($request)
+    {
+        $searchTerm = strtolower($request);
+        $projects = HuaweiProject::where(function ($query) use ($searchTerm) {
+            $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
+                  ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%']);
+        })->get();
+
+        return Inertia::render('Huawei/Projects', [
+            'projects' => $projects,
+            'huawei_sites' => HuaweiSite::all(),
+            'search' => $request,
+        ]);
+    }
+
     public function create ()
     {
         return Inertia::render('Huawei/ProjectForm', [
@@ -344,6 +359,67 @@ class HuaweiProjectController extends Controller
                 'materials' => HuaweiMaterial::all(),
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project
+            ]);
+        }
+    }
+
+    public function searchResources ($huawei_project, $request, $equipment = null)
+    {
+        $searchTerm = strtolower($request);
+        $query = HuaweiProjectResource::where('huawei_project_id', $huawei_project);
+
+        if ($equipment) {
+            // Agregar relaciones específicas para equipos
+            $query->with(['huawei_entry_detail.huawei_equipment_serie.huawei_equipment'])
+            ->whereHas('huawei_entry_detail', function ($query) use ($searchTerm) {
+                $query->whereNotNull('huawei_equipment_serie_id')
+                      ->whereNull('huawei_material_id')
+                      ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($searchTerm) {
+                          $query->where('name', 'like', '%'.$searchTerm.'%');
+                      })
+                      ->orWhereHas('huawei_equipment_serie', function ($query) use ($searchTerm) {
+                          $query->where('serie_number', 'like', '%'.$searchTerm.'%');
+                      });
+            });
+            $resources = $query->get();
+            $entryDetails = HuaweiEntryDetail::whereNull('huawei_material_id')
+                ->with('huawei_equipment_serie.huawei_equipment')
+                ->get()
+                ->filter(function ($detail) {
+                    return $detail->state === 'Disponible';
+                });
+            return Inertia::render('Huawei/Resources', [
+                'resources' => $resources,
+                'equipment' => $equipment,
+                'equipments' => HuaweiEquipment::all(),
+                'entry_details' => $entryDetails,
+                'huawei_project' => $huawei_project,
+                'search' => $request
+            ]);
+        } else {
+            // Agregar relaciones específicas para materiales
+            $query->with(['huawei_entry_detail.huawei_material'])
+            ->whereHas('huawei_entry_detail', function ($query) use ($searchTerm) {
+                $query->whereNotNull('huawei_material_id')
+                      ->whereNull('huawei_equipment_serie_id')
+                      ->whereHas('huawei_material', function ($query) use ($searchTerm) {
+                          $query->where('name', 'like', '%'.$searchTerm.'%');
+                      });
+            });
+            $resources = $query->get();
+            $entryDetails = HuaweiEntryDetail::whereNull('huawei_equipment_serie_id')
+                ->with('huawei_material')
+                ->get()
+                ->filter(function ($detail) {
+                    return $detail->state === 'Disponible';
+                });
+            return Inertia::render('Huawei/Resources', [
+                'resources' => $resources,
+                'equipment' => $equipment,
+                'materials' => HuaweiMaterial::all(),
+                'entry_details' => $entryDetails,
+                'huawei_project' => $huawei_project,
+                'search' => $request
             ]);
         }
     }

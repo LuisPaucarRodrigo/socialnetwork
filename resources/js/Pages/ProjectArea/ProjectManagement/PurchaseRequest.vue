@@ -17,7 +17,11 @@
                 </PrimaryButton>
                 <Link :href="route('projectmanagement.additionalCosts', { project_id: props.project.id })"
                     class="rounded-md bg-gray-600 px-4 py-2 text-center text-sm text-white hover:bg-gray-500">
-                    Gastos
+                    Gastos Variables
+                </Link>
+                <Link :href="route('projectmanagement.staticCosts', { project_id: props.project.id })"
+                    class="rounded-md bg-gray-600 px-4 py-2 text-center text-sm text-white hover:bg-gray-500">
+                    Gastos Fijos
                 </Link>
             </div>
             <div class="overflow-x-auto">
