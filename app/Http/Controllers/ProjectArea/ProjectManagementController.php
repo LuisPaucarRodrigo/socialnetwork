@@ -289,11 +289,13 @@ class ProjectManagementController extends Controller
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
         $additionalCosts = $project_id->additionalCosts->sum('amount');
+        $staticCosts = $project_id->staticCosts->sum('amount');
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'project' => $project_id,
             'additionalCosts' => $additionalCosts,
+            'staticCosts' => $staticCosts,
         ]);
     }
 
