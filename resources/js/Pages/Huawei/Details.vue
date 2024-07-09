@@ -52,7 +52,7 @@
                             <tbody>
                                 <tr v-for="item in (props.search ? props.entries : entries.data)" :key="item.id" class="text-gray-700">
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_equipment_serie?.huawei_equipment?.name }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state ? 'Disponible' : 'Devuelto' }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
@@ -84,6 +84,9 @@
                                         Descripción del producto
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        Estado
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Cantidad Ingresada
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -111,6 +114,7 @@
                             <tbody>
                                 <tr v-for="item in (props.search ? props.entries : entries.data)" :key="item.id" class="text-gray-700">
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_material.name }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.refund_quantity }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.available_quantity }}</td>

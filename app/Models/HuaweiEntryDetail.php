@@ -53,15 +53,22 @@ class HuaweiEntryDetail extends Model
     public function getStateAttribute()
     {
         if ($this->huawei_material_id) {
-            return true;
+            if ($this->getAvailableQuantityAttribute() === 0){
+                return 'No Disponible';
+            }else{
+                return 'Disponible';
+            }
         }
 
         if ($this->huawei_equipment_serie_id) {
-            if ($this->huawei_refunds()->count() === 0) {
-                return true;
+            if ($this->huawei_refunds()->count() != 0) {
+                return 'Devuelto';
             }
+            if ($this->huawei_project_resources()->count() != 0){
+                return 'En Proyecto';
+            }
+            return 'Disponible';
         }
-        return false;
     }
 
     public function getRefundQuantityAttribute ()
@@ -73,9 +80,9 @@ class HuaweiEntryDetail extends Model
     {
         // Verificar si hay reembolsos asociados
         $refundQuantity = $this->huawei_refunds()->sum('quantity');
-
+        $projectQuantity = $this->huawei_project_resources()->sum('quantity');
         // Calcular la cantidad disponible
-        return $this->quantity - $refundQuantity;
+        return $this->quantity - $refundQuantity - $projectQuantity;
     }
 
 }

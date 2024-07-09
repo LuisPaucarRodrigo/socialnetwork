@@ -18,7 +18,8 @@ class HuaweiMaterial extends Model
     ];
 
     protected $appends = [
-        'quantity'
+        'quantity',
+        'available_quantity'
     ];
 
     public function brand_model ()
@@ -34,5 +35,18 @@ class HuaweiMaterial extends Model
     public function getQuantityAttribute()
     {
         return $this->huawei_entry_details()->sum('quantity');
+    }
+
+    public function getAvailableQuantityAttribute ()
+    {
+        // Obtener todas las instancias relacionadas de HuaweiEntryDetail
+        $entryDetails = $this->huawei_entry_details;
+
+        // Sumar las cantidades disponibles de cada instancia
+        $totalAvailableQuantity = $entryDetails->reduce(function ($carry, $entryDetail) {
+            return $carry + $entryDetail->available_quantity;
+        }, 0);
+
+        return $totalAvailableQuantity;
     }
 }
