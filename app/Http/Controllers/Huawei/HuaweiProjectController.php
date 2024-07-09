@@ -311,11 +311,17 @@ class HuaweiProjectController extends Controller
                             ->whereNull('huawei_material_id');
                   });
             $resources = $query->paginate(10);
+            $entryDetails = HuaweiEntryDetail::whereNull('huawei_material_id')
+                ->with('huawei_equipment_serie.huawei_equipment')
+                ->get()
+                ->filter(function ($detail) {
+                    return $detail->state === 'Disponible';
+                });
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
                 'equipments' => HuaweiEquipment::all(),
-                'entry_details' => HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_equipment_serie.huawei_equipment')->get(),
+                'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project
             ]);
         } else {
@@ -326,14 +332,48 @@ class HuaweiProjectController extends Controller
                             ->whereNull('huawei_equipment_serie_id');
                   });
             $resources = $query->paginate(10);
+            $entryDetails = HuaweiEntryDetail::whereNull('huawei_equipment_serie_id')
+                ->with('huawei_material')
+                ->get()
+                ->filter(function ($detail) {
+                    return $detail->state === 'Disponible';
+                });
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
                 'materials' => HuaweiMaterial::all(),
-                'entry_details' => HuaweiEntryDetail::whereNull('huawei_equipment_serie_id')->with('huawei_material')->get(),
+                'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project
             ]);
         }
     }
 
+    public function storeProjectResource ($huawei_project, Request $request, $equipment = null)
+    {
+        if ($equipment){
+            $request->validate([
+                'huawei_entry_detail_id' => 'required',
+            ]);
+
+            HuaweiProjectResource::create([
+                'huawei_project_id' => $huawei_project,
+                'huawei_entry_detail_id' => $request->huawei_entry_detail_id,
+                'quantity' => 1
+            ]);
+
+        } else{
+            $request->validate([
+                'huawei_entry_detail_id' => 'required',
+                'quantity' => 'required'
+            ]);
+
+            HuaweiProjectResource::create([
+                'huawei_project_id' => $huawei_project,
+                'huawei_entry_detail_id' => $request->huawei_entry_detail_id,
+                'quantity' => $request->quantity
+            ]);
+        }
+
+        return redirect()->back();
+    }
 }

@@ -57,8 +57,6 @@
                         <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Precio
                         </th>
-                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,7 +64,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.huawei_equipment.name }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.serie_number }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price : '-'}}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                         </tr>
                     </tbody>
                     </table>
@@ -100,7 +98,7 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_material.name }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price : '-'}}</td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                             </tr>
                         </tbody>
                         </table>
@@ -139,10 +137,14 @@
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccionar {{ props.equipment ? 'Serie' : 'Entrada' }}</option>
                                 <option v-for="item in filteredEntryDetails" :key="item.id" :value="item.id">
-                                    {{ props.equipment ? (item.huawei_equipment_serie?.serie_number + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price : 'No hay precio registrado')) : (item.huawei_material?.name + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price : 'No hay precio registrado')) }}
+                                    {{ props.equipment ? (item.huawei_equipment_serie?.serie_number + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) : (item.huawei_material?.name + ' - ' + item.available_quantity + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
                                 </option>
                             </select>
                         </div>
+                    </div>
+                    <div class="col-span-1">
+                        <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
+                        <input type="number" min="1" v-model="form.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
                     </div>
                 </div>
 
@@ -158,6 +160,7 @@
             </form>
         </div>
         </Modal>
+        <SuccessOperationModal :confirming="showModal" title="Éxito" message="El recurso se asignó al proyecto correctamente." />
 
     </AuthenticatedLayout>
   </template>
@@ -176,6 +179,7 @@
   import InputLabel from '@/Components/InputLabel.vue';
   import InputError from '@/Components/InputError.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
+  import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 
   const props = defineProps({
     resources: Object,
@@ -188,14 +192,7 @@
   });
 
   const create_modal = ref(false);
-
-  const open_create = () => {
-    create_modal.value = true;
-  }
-
-  const close_create = () => {
-    create_modal.value = false;
-  }
+  const showModal = ref(false);
 
   const form = useForm({
     resource: '',
@@ -203,16 +200,41 @@
     quantity: ''
   });
 
+  const open_create = () => {
+    create_modal.value = true;
+  }
+
+  const close_create = () => {
+    form.reset();
+    create_modal.value = false;
+  }
+
+
   const filteredEntryDetails = computed(() => {
-    if (props.equipment){
-        return props.entry_details.filter(entry => entry.huawei_equipment_serie.huawei_equipment_id === form.resource);
-    }else{
-        return props.entry_details.filter(entry => entry.huawei_material_id === form.resource);
+    const entryDetailsArray = Object.values(props.entry_details);
+
+    if (props.equipment) {
+        return entryDetailsArray.filter(entry => entry.huawei_equipment_serie.huawei_equipment_id === form.resource);
+    } else {
+        return entryDetailsArray.filter(entry => entry.huawei_material_id === form.resource);
     }
   });
 
   const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
+  }
+
+  const submit = () => {
+    const url = props.equipment ? route('huawei.projects.resources.store', {huawei_project: props.huawei_project, equipment: 1}) : route('huawei.projects.resources.store', {huawei_project: props.huawei_project});
+    form.post(url, {
+        onSuccess: () => {
+            close_create();
+            showModal.value = true;
+            setTimeout(() => {
+                showModal.value = false;
+            }, 2000);
+        },
+    });
   }
 
   const searchForm = useForm({

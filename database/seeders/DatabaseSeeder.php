@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             'Project' => 'Solo podra visualizarl Area de Projectos',
             'PurchasingManager' => 'Permite acceso a la mayoria de funciones del Area de Compras',
             'Purchasing' => 'Solo podra visualizarl Area de Compras',
+            'HuaweiManager' => 'Permite acceso al Área de Huawei',
             'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
         ];
 
@@ -48,6 +49,7 @@ class DatabaseSeeder extends Seeder
             'InventoryManager',
             'ProjectManager',
             'PurchasingManager',
+            'HuaweiManager',
             'DocumentGestion'
         ];
 
