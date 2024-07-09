@@ -17,7 +17,7 @@
                             <div class="mt-2">
                                 <TextInput id="name" type="text"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.name" required autofocus autocomplete="name" />
+                                    v-model="form.name" required autofocus autocomplete="off" />
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                             <div class="mt-2">
                                 <TextInput id="email" type="email"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.email" required autocomplete="username" />
+                                    v-model="form.email" required autocomplete="off" />
                                 <InputError class="mt-2" :message="form.errors.email" />
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                             <div class="mt-2">
                                 <TextInput id="dni" type="text" maxlength="8"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.dni" required autocomplete="dni" />
+                                    v-model="form.dni" required autocomplete="off" />
                                 <InputError class="mt-2" :message="form.errors.dni" />
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                             <div class="mt-2">
                                 <TextInput id="phone" type="text" maxlength="9"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.phone" required autocomplete="phone" />
+                                    v-model="form.phone" required autocomplete="off" />
                                 <InputError class="mt-2" :message="form.errors.phone" />
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                             <div class="mt-2">
                                 <select id="platform"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.platform" required autocomplete="platform">
+                                    v-model="form.platform" required autocomplete="off">
                                     <option disabled>Seleccionar Plataforma</option>
                                     <option>Web</option>
                                     <option>Movil</option>
@@ -116,7 +116,7 @@
                             <div class="mt-2 relative">
                                 <TextInput id="password" :type="passwordVisible ? 'text' : 'password'"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.password" required autocomplete="new-password" />
+                                    v-model="form.password" required autocomplete="off" />
                                 <button type="button" @click="togglePasswordVisibility"
                                     class="absolute inset-y-0 right-0 flex items-center p-3">
                                     <span v-if="passwordVisible" class="">
@@ -147,7 +147,7 @@
                                 <TextInput id="password_confirmation"
                                     :type="passwordConfirmationVisible ? 'text' : 'password'"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="form.password_confirmation" required autocomplete="new-password" />
+                                    v-model="form.password_confirmation" required autocomplete="off" />
                                 <button type="button" @click="togglePasswordConfirmationVisibility"
                                     class="absolute inset-y-0 right-0 flex items-center p-3">
                                     <span v-if="passwordConfirmationVisible">
