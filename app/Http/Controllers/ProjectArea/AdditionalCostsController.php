@@ -47,6 +47,15 @@ class AdditionalCostsController extends Controller
     public function search_costs(Request $request, $project_id)
     {
         $result = AdditionalCost::where('project_id', $project_id);
+        if ($request->search) {
+            $searchTerms = $request->input('search');
+            $result = $result->where('ruc', 'like', "%$searchTerms%")
+            ->orWhere('doc_date', 'like', "%$searchTerms%")
+            ->orWhere('description', 'like', "%$searchTerms%")
+            ->orWhere('amount', 'like', "%$searchTerms%");
+        }
+
+
         if (count($request->selectedZones) < 5) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }

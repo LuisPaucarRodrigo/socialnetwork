@@ -4,34 +4,55 @@
   <AuthenticatedLayout
     :redirectRoute="{ route: 'projectmanagement.purchases_request.index', params: { id: project_id.id } }">
     <template #header>
-      Gastos del Proyecto {{ props.project_id.name }}
+      Gastos Adicionales del Proyecto {{ props.project_id.name }}
     </template>
     <br>
     <div class="inline-block min-w-full mb-4 overflow-hidden">
       <div class="flex gap-4 justify-between">
-        <PrimaryButton v-if="project_id.status === null && hasPermission('ProjectManager')"
-          @click="openCreateAdditionalModal" type="button" class="">
-          + Agregar
-        </PrimaryButton>
-        <input type="text" v-model="serachTerm" @input="handleInput" placeholder="Buscar...">
+        <div class="flex space-x-3">
+          <PrimaryButton v-if="project_id.status === null && hasPermission('ProjectManager')"
+            @click="openCreateAdditionalModal" type="button" class="">
+            + Agregar
+          </PrimaryButton>
+          <PrimaryButton type="button" @click="router.visit(route('projectmanagement.additionalCosts', {project_id: project_id.id}))">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="h-5 w-5 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+
+          </PrimaryButton>
+        </div>
+
+        <form @submit.prevent="handleSearch" class="flex items-center w-full sm:w-auto">
+          <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" />
+          <button type="submit"
+            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </form>
       </div>
     </div>
     <div class="overflow-x-auto h-[85vh]">
       <table class="w-full whitespace-no-wrap">
         <thead>
-          <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+          <tr class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              <TableHeaderFilter label="Zona" :options="zones" v-model="selectedZones" width="w-32" />
+              <TableHeaderFilter label="Zona" :options="zones" v-model="filterForm.selectedZones" width="w-32" />
             </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              <TableHeaderFilter label="Tipo de Gasto" :options="expenseTypes" v-model="selectedExpenseTypes"
+              <TableHeaderFilter label="Tipo de Gasto" :options="expenseTypes" v-model="filterForm.selectedExpenseTypes"
                 width="w-44" />
             </th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-              <TableHeaderFilter label="Tipo de Documento" :options="docTypes" v-model="selectedDocTypes"
+              <TableHeaderFilter label="Tipo de Documento" :options="docTypes" v-model="filterForm.selectedDocTypes"
                 width="w-32" />
             </th>
             <th
@@ -99,10 +120,36 @@
               </div>
             </td>
           </tr>
+          <tr class="sticky bottom-0 z-20 text-gray-700">
+            <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
+              TOTAL
+            </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+            </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+              S/. {{ (dataToRender.reduce((a, item)=> a+item.amount, 0)).toFixed(2) }}
+            </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+             
+            </td>
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
+            <td v-if="auth.user.role_id === 1 && project_id.status === null"
+              class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+              <div class="flex items-center">
+                
+              </div>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
-    <div v-if="!filterMode" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+    <div v-if="!filterMode"
+      class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
       <pagination :links="additional_costs.links" />
     </div>
     <Modal :show="create_additional">
@@ -183,7 +230,7 @@
                   <InputError :message="form.errors.ruc" />
                 </div>
               </div>
-             
+
               <div>
                 <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
@@ -294,7 +341,7 @@
                   <InputError :message="form.errors.expense_type" />
                 </div>
               </div>
-              
+
               <div>
                 <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
                 <div class="mt-2">
@@ -325,7 +372,7 @@
                 </div>
               </div>
 
-              
+
               <div>
                 <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento
                 </InputLabel>
@@ -436,6 +483,7 @@ import Pagination from '@/Components/Pagination.vue'
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import axios from 'axios';
+import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
   additional_costs: Object,
@@ -571,34 +619,6 @@ const handleRucDniAutocomplete = (e) => {
 }
 
 
-const timeout = ref(null);
-const serachTerm = ref((props.searchQuery ? props.searchQuery : ''));
-function debounce(func, delay) {
-  return (...args) => {
-    if (timeout.value) {
-      clearTimeout(timeout.value);
-    }
-    timeout.value = setTimeout(() => {
-      func(...args);
-    }, delay);
-  };
-}
-function search(query) {
-  console.log('Buscando:', query);
-  if (serachTerm.value === '') {
-    router.visit(route('projectmanagement.additionalCosts', { project_id: props.project_id.id }))
-  } else {
-    let url = route('projectmanagement.additionalCosts', { project_id: props.project_id.id })
-    router.visit(url + `?search=${query}`)
-  }
-}
-
-const debouncedSearch = debounce(search, 1000);
-function handleInput() {
-  debouncedSearch(serachTerm.value);
-}
-
-
 function handlerPreview(id) {
   window.open(route('additionalcost.archive', { additional_cost_id: id }), '_blank')
 }
@@ -606,11 +626,35 @@ function handlerPreview(id) {
 
 
 
+const filterForm = ref({
+  search: '',
+  selectedZones: ['Arequipa', 'Chala', 'Moquegua', 'Tacna', 'MDD'],
+  selectedExpenseTypes: ['Habitaciones',
+    'Camionetas',
+    'Combustible',
+    'Hospedaje',
+    'Movilidad',
+    'Peaje',
+    'Seguros y Pólizas',
+    'Herramientas',
+    'Fletes',
+    'EPPs',
+    'Gastos de Representación',
+    'Combustible GEP',
+    'Otros',
+    'Consumibles',
+    'Equipos',
+    'Otros'],
+  selectedDocTypes: ['Efectivo',
+    'Deposito',
+    'Factura',
+    'Boleta',
+    'Voucher de Pago']
+})
+
+
 
 const zones = ['Arequipa', 'Chala', 'Moquegua', 'Tacna', 'MDD'];
-const selectedZones = ref(['Arequipa', 'Chala', 'Moquegua', 'Tacna', 'MDD']);
-
-
 const expenseTypes = ['Habitaciones',
   'Camionetas',
   'Combustible',
@@ -627,50 +671,38 @@ const expenseTypes = ['Habitaciones',
   'Consumibles',
   'Equipos',
   'Otros']
-const selectedExpenseTypes = ref(['Habitaciones',
-  'Camionetas',
-  'Combustible',
-  'Hospedaje',
-  'Movilidad',
-  'Peaje',
-  'Seguros y Pólizas',
-  'Herramientas',
-  'Fletes',
-  'EPPs',
-  'Gastos de Representación',
-  'Combustible GEP',
-  'Otros',
-  'Consumibles',
-  'Equipos',
-  'Otros'])
-
 const docTypes = ['Efectivo',
   'Deposito',
   'Factura',
   'Boleta',
   'Voucher de Pago']
-const selectedDocTypes = ref(['Efectivo',
-  'Deposito',
-  'Factura',
-  'Boleta',
-  'Voucher de Pago'])
 
+watch(
+  () => [
+    filterForm.value.selectedZones,
+    filterForm.value.selectedExpenseTypes,
+    filterForm.value.selectedDocTypes
+  ],
+  () => {
+    filterMode.value = true
+    search_advance(filterForm.value);
+  },
+  { deep: true }
+);
 
-
-watch([selectedZones, selectedExpenseTypes, selectedDocTypes], () => {
-  let data = {
-    selectedZones: selectedZones.value,
-    selectedExpenseTypes: selectedExpenseTypes.value,
-    selectedDocTypes: selectedDocTypes.value
-  };
-  search_advance(data)
-});
-
-async function search_advance ($data) {
+async function search_advance($data) {
   let res = await axios.post(route('additionalcost.advance.search', {
     project_id: props.project_id.id
   }), $data)
-  dataToRender.value = res.data 
+  dataToRender.value = res.data
 }
-</script>
 
+
+async function handleSearch() {
+filterMode.value = true
+  search_advance(filterForm.value)
+}
+
+
+
+</script>
