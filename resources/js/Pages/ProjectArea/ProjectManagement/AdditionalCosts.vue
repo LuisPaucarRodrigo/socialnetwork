@@ -4,7 +4,7 @@
   <AuthenticatedLayout
     :redirectRoute="{ route: 'projectmanagement.purchases_request.index', params: { id: project_id.id } }">
     <template #header>
-      Gastos Adicionales del Proyecto {{ props.project_id.name }}
+      Gastos Variables del Proyecto {{ props.project_id.name }}
     </template>
     <br>
     <div class="inline-block min-w-full mb-4 overflow-hidden">
@@ -14,7 +14,8 @@
             @click="openCreateAdditionalModal" type="button" class="">
             + Agregar
           </PrimaryButton>
-          <PrimaryButton type="button" @click="router.visit(route('projectmanagement.additionalCosts', {project_id: project_id.id}))">
+          <PrimaryButton type="button"
+            @click="router.visit(route('projectmanagement.additionalCosts', { project_id: project_id.id }))">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="h-5 w-5 text-white">
               <path stroke-linecap="round" stroke-linejoin="round"
@@ -40,7 +41,8 @@
     <div class="overflow-x-auto h-[85vh]">
       <table class="w-full whitespace-no-wrap">
         <thead>
-          <tr class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+          <tr
+            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               <TableHeaderFilter label="Zona" :options="zones" v-model="filterForm.selectedZones" width="w-32" />
@@ -132,16 +134,16 @@
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-              S/. {{ (dataToRender.reduce((a, item)=> a+item.amount, 0)).toFixed(2) }}
+              S/. {{ (dataToRender.reduce((a, item) => a + item.amount, 0)).toFixed(2) }}
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-             
+
             </td>
             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
             <td v-if="auth.user.role_id === 1 && project_id.status === null"
               class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
               <div class="flex items-center">
-                
+
               </div>
             </td>
           </tr>
@@ -181,9 +183,6 @@
                   <select v-model="form.expense_type" id="expense_type"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option disabled value="">Seleccionar Gasto</option>
-                    <option>Habitaciones</option>
-                    <option>Camionetas</option>
-                    <option>Combustible</option>
                     <option>Hospedaje</option>
                     <option>Movilidad</option>
                     <option>Peaje</option>
@@ -192,8 +191,6 @@
                     <option>Fletes</option>
                     <option>EPPs</option>
                     <option>Gastos de Representación</option>
-                    <option>Combustible GEP</option>
-                    <option>Otros</option>
                     <option>Consumibles</option>
                     <option>Equipos</option>
                     <option>Otros</option>
@@ -321,9 +318,6 @@
                   <select v-model="form.expense_type" id="expense_type"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     <option disabled value="">Seleccionar Gasto</option>
-                    <option>Habitaciones</option>
-                    <option>Camionetas</option>
-                    <option>Combustible</option>
                     <option>Hospedaje</option>
                     <option>Movilidad</option>
                     <option>Peaje</option>
@@ -332,8 +326,6 @@
                     <option>Fletes</option>
                     <option>EPPs</option>
                     <option>Gastos de Representación</option>
-                    <option>Combustible GEP</option>
-                    <option>Otros</option>
                     <option>Consumibles</option>
                     <option>Equipos</option>
                     <option>Otros</option>
@@ -629,9 +621,7 @@ function handlerPreview(id) {
 const filterForm = ref({
   search: '',
   selectedZones: ['Arequipa', 'Chala', 'Moquegua', 'Tacna', 'MDD'],
-  selectedExpenseTypes: ['Habitaciones',
-    'Camionetas',
-    'Combustible',
+  selectedExpenseTypes: [
     'Hospedaje',
     'Movilidad',
     'Peaje',
@@ -640,11 +630,10 @@ const filterForm = ref({
     'Fletes',
     'EPPs',
     'Gastos de Representación',
-    'Combustible GEP',
-    'Otros',
     'Consumibles',
     'Equipos',
-    'Otros'],
+    'Otros'
+  ],
   selectedDocTypes: ['Efectivo',
     'Deposito',
     'Factura',
@@ -655,9 +644,7 @@ const filterForm = ref({
 
 
 const zones = ['Arequipa', 'Chala', 'Moquegua', 'Tacna', 'MDD'];
-const expenseTypes = ['Habitaciones',
-  'Camionetas',
-  'Combustible',
+const expenseTypes = [
   'Hospedaje',
   'Movilidad',
   'Peaje',
@@ -666,11 +653,10 @@ const expenseTypes = ['Habitaciones',
   'Fletes',
   'EPPs',
   'Gastos de Representación',
-  'Combustible GEP',
-  'Otros',
   'Consumibles',
   'Equipos',
-  'Otros']
+  'Otros'
+]
 const docTypes = ['Efectivo',
   'Deposito',
   'Factura',
@@ -699,7 +685,7 @@ async function search_advance($data) {
 
 
 async function handleSearch() {
-filterMode.value = true
+  filterMode.value = true
   search_advance(filterForm.value)
 }
 

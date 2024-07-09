@@ -14,27 +14,8 @@ class AdditionalCostsController extends Controller
 {
     public function index(Request $request, Project $project_id)
     {
-
-
-        if ($request->input('search')) {
-            $searchQuery = $request->input('search');
-            $searchTerms = $searchQuery;
-            $additional_costs = AdditionalCost::where('project_id', $project_id->id)->where(
-                function ($query) use ($searchTerms) {
-                    // foreach ($searchTerms as $term) {
-                    $query->where('ruc', 'like', "%$searchTerms%")
-                        ->orWhere('doc_date', 'like', "%$searchTerms%")
-                        ->orWhere('description', 'like', "%$searchTerms%")
-                        ->orWhere('amount', 'like', "%$searchTerms%");
-                    // }
-                }
-            )->paginate(20);
-        } else {
-            $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->paginate(20);
-            $searchQuery = '';
-        }
-
-
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->paginate(20);
+        $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
@@ -47,24 +28,31 @@ class AdditionalCostsController extends Controller
     public function search_costs(Request $request, $project_id)
     {
         $result = AdditionalCost::where('project_id', $project_id);
-        if ($request->search) {
-            $searchTerms = $request->input('search');
-            $result = $result->where('ruc', 'like', "%$searchTerms%")
-            ->orWhere('doc_date', 'like', "%$searchTerms%")
-            ->orWhere('description', 'like', "%$searchTerms%")
-            ->orWhere('amount', 'like', "%$searchTerms%");
-        }
+        
 
 
         if (count($request->selectedZones) < 5) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 16) {
+        if (count($request->selectedExpenseTypes) < 11) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedDocTypes) < 5) {
             $result = $result->whereIn('type_doc', $request->selectedDocTypes);
         }
+        if ($request->search) {
+            $searchTerms = $request->input('search');
+            $result = $result->where(function($query) use ($searchTerms){
+                $query->where('ruc', 'like', "%$searchTerms%")
+                ->orWhere('doc_date', 'like', "%$searchTerms%")
+                ->orWhere('description', 'like', "%$searchTerms%")
+                ->orWhere('amount', 'like', "%$searchTerms%");
+            });
+        }
+
+
+
+
         $result = $result->get();
         return response()->json($result, 200);
     }
