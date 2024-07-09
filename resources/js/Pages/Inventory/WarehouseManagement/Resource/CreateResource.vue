@@ -41,7 +41,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.entry_date" id="entry_date" :to-uppercase="true"
-                                    autocomplete="family-name" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.entry_date" />
                             </div>
                         </div>
@@ -49,7 +49,7 @@
                             <InputLabel for="entry_price">Precio de Entrada</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="number" v-model="form.entry_price" id="entry_price"
-                                    :to-uppercase="true" autocomplete="family-name" />
+                                    :to-uppercase="true" autocomplete="off" />
                                 <InputError :message="form.errors.entry_price" />
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="number" v-model="form.serial_number" id="serial_number" pattern="\d*"
-                                    autocomplete="given-name" maxlength="11" />
+                                    autocomplete="off" maxlength="11" />
                                 <InputError :message="form.errors.serial_number" />
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="number" v-model="form.referral_guide" id="referral_guide"
-                                    :to-uppercase="true" autocomplete="given-name"
+                                    :to-uppercase="true" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.referral_guide" />
                             </div>

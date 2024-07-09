@@ -18,7 +18,7 @@
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="email" value="Email" />
-                <TextInput id="email" type="email" class="block mt-1 w-full" v-model="form.email" required autofocus autocomplete="username" />
+                <TextInput id="email" type="email" class="block mt-1 w-full" v-model="form.email" required autofocus autocomplete="off" />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 

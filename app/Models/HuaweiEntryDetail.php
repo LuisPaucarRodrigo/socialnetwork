@@ -22,6 +22,7 @@ class HuaweiEntryDetail extends Model
     protected $appends = [
         'state',
         'refund_quantity',
+        'project_quantity',
         'available_quantity'
     ];
 
@@ -74,6 +75,11 @@ class HuaweiEntryDetail extends Model
     public function getRefundQuantityAttribute ()
     {
         return $this->huawei_refunds()->sum('quantity');
+    }
+
+    public function getProjectQuantityAttribute ()
+    {
+        return $this->huawei_project_resources()->sum('quantity');
     }
 
     public function getAvailableQuantityAttribute()
