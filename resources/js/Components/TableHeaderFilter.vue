@@ -5,7 +5,7 @@
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
         <div v-if="showPopup"
-            :class="['absolute top-8 right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg', widthClass]">
+            :class="['absolute z-40 top-8 right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg', widthClass]">
             <div class="">
                 <label class="block border-b-2 border-gray-100 px-2 py-2">
                     <input type="checkbox" v-model="selectAll" @change="toggleAll" class="mr-2" /> Todos

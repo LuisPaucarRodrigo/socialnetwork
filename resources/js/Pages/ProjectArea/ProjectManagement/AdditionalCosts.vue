@@ -122,7 +122,7 @@
               </div>
             </td>
           </tr>
-          <tr class="sticky bottom-0 z-20 text-gray-700">
+          <tr class="sticky bottom-0 z-10 text-gray-700">
             <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
               TOTAL
             </td>
