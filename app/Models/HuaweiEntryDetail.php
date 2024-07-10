@@ -81,9 +81,26 @@ class HuaweiEntryDetail extends Model
         return $this->huawei_refunds()->sum('quantity');
     }
 
-    public function getProjectQuantityAttribute ()
+    public function getProjectQuantityAttribute()
     {
-        return $this->huawei_project_resources()->sum('quantity');
+        $totalQuantity = 0;
+
+        // Recorrer todos los recursos del proyecto
+        foreach ($this->huawei_project_resources as $resource) {
+            // Sumar la cantidad del recurso
+            $resourceQuantity = $resource->quantity;
+
+            // Verificar si hay liquidación asociada y liquidated_quantity no es nulo
+            if ($resource->liquidated_quantity !== null) {
+                // Sumar la resta entre quantity y liquidated_quantity
+                $resourceQuantity += ($resource->quantity - $resource->liquidated_quantity);
+            }
+
+            // Sumar al total
+            $totalQuantity += $resourceQuantity;
+        }
+
+        return $totalQuantity;
     }
 
     public function getAvailableQuantityAttribute()

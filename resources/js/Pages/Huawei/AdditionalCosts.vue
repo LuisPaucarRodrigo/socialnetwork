@@ -75,10 +75,10 @@
                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
                   <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
-                    <PencilSquareIcon class="h-4 w-4 ml-1" />
+                    <PencilSquareIcon class="h-5 w-5 ml-1" />
                   </button>
                   <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
-                    <TrashIcon class="h-4 w-4" />
+                    <TrashIcon class="h-5 w-5" />
                   </button>
                 </div>
               </td>
@@ -258,7 +258,14 @@ const openCreateAdditionalModal = () => {
 
 const closeCreateModal = () => {
     form.reset();
+    form.clearErrors();
     create_additional.value = false;
+}
+
+const closeEditModal = () => {
+    form.reset();
+    form.clearErrors();
+    editAdditionalModal.value = false;
 }
 
 const openEditAdditionalModal = (additional) => {
