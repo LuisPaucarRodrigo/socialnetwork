@@ -4,7 +4,7 @@
     use Illuminate\Support\Facades\Route;
 
     Route::post('/login', [ApiController::class, 'login']);
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/users', [ApiController::class, 'users']);
 
         //Preprojects

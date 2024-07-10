@@ -20,15 +20,9 @@ class Employee extends Model
         'email_company',
         'phone1',
         'phone2',
-        'life_policy_id'
     ];
 
     //RELATIONS
-
-    public function life_policy()
-    {
-        return $this->belongsTo(LifePolicy::class, 'life_policy_id');
-    }
 
     public function contract()
     {

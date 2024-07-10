@@ -16,9 +16,9 @@ class SpreadsheetsController extends Controller
     public function index(Request $request, $reentry = false)
     {
         if ($reentry == false) {
-            $spreadsheet = Contract::with('pension', 'employee.life_policy')->where('state', 'Active');
+            $spreadsheet = Contract::with('pension', 'employee')->where('state', 'Active');
         } else {
-            $spreadsheet = Contract::with('pension', 'employee.life_policy')->where('state', 'Inactive');
+            $spreadsheet = Contract::with('pension', 'employee')->where('state', 'Inactive');
         }
         $searchTerm = strtolower($request->query('searchTerm'));
         if ($searchTerm !== '') {
