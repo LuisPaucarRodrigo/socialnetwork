@@ -196,7 +196,7 @@
 
   const liquidate = () => {
     form.huawei_project_resource_id = liquidate_resource_id.value.id;
-    const url = liquidate_equipment.value ? route('huawei.projects.liquidations.post', {equipment: 1}) : route('huawei.projects.liquidations.post');
+    const url = liquidate_equipment.value ? route('huawei.projects.liquidations.post', {huawei_project: props.huawei_project, equipment: 1}) : route('huawei.projects.liquidations.post', {huawei_project: props.huawei_project});
     form.post(url, {
         onSuccess: () => {
             closeLiquidateModal();

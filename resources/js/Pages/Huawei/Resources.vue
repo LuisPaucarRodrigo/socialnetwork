@@ -8,7 +8,7 @@
         <div class="flex gap-4 justify-between rounded-lg">
             <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
                 <div class="flex gap-4 items-center">
-                    <button @click="open_create" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                    <button v-if="props.project_state" @click="open_create" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                         + Agregar
                     </button>
                     <div v-if="props.equipment">
@@ -175,6 +175,7 @@
                     <div class="col-span-1" v-if="!props.equipment">
                         <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
                         <input type="number" min="1" v-model="form.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                        <InputError :message="form.errors.quantity" />
                     </div>
                 </div>
 
@@ -254,10 +255,9 @@
     equipments: [Object, null],
     materials: [Object, null],
     entry_details: Object,
-    search: String
+    search: String,
+    project_state: Number
   });
-
-  console.log(props.resources)
 
   const create_modal = ref(false);
   const showModal = ref(false);
