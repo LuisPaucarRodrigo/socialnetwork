@@ -43,7 +43,7 @@
                 <td>kW</td>
             </tr>
             <tr>
-                <td>='Hoja1'!A10</td>
+                <td>'Hoja1'!A10</td>
             </tr>
             <!-- Puedes agregar más filas y celdas según tus necesidades -->
         </tbody>
