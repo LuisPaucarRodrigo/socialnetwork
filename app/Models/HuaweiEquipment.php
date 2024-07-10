@@ -18,7 +18,8 @@ class HuaweiEquipment extends Model
     ];
 
     protected $appends = [
-        'quantity'
+        'quantity',
+        'available_quantity'
     ];
 
     public function brand_model ()
@@ -34,5 +35,22 @@ class HuaweiEquipment extends Model
     public function getQuantityAttribute()
     {
         return $this->huawei_equipment_series()->count();
+    }
+
+    public function getAvailableQuantityAttribute ()
+    {
+        $equipmentSeries = $this->huawei_equipment_series()->get();
+
+        $availableSeriesCount = $equipmentSeries->filter(function ($serie) {
+            $entryDetail = $serie->huawei_entry_detail;
+
+            // Verificar si el detalle de entrada existe y está disponible
+            if ($entryDetail && $entryDetail->state === 'Disponible') {
+                return true;
+            }
+            return false;
+        })->count();
+
+        return $availableSeriesCount;
     }
 }

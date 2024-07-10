@@ -289,11 +289,37 @@ class ProjectManagementController extends Controller
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
         $additionalCosts = $project_id->additionalCosts->sum('amount');
+        $acArr = $project_id->additionalCosts()
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $acExpensesAmounts = $acArr->map(function($cost) {
+            return [
+                'expense_type' => $cost->expense_type,
+                'total_amount' => $cost->total_amount,
+            ];
+        })->toArray();
+
+        $staticCosts = $project_id->staticCosts->sum('amount');
+        $scArr = $project_id->staticCosts()
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $scExpensesAmounts = $scArr->map(function($cost) {
+            return [
+                'expense_type' => $cost->expense_type,
+                'total_amount' => $cost->total_amount,
+            ];
+        })->toArray();
+
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'project' => $project_id,
             'additionalCosts' => $additionalCosts,
+            'acExpensesAmounts' => $acExpensesAmounts,
+            'scExpensesAmounts' => $scExpensesAmounts,
+            'staticCosts' => $staticCosts,
         ]);
     }
 

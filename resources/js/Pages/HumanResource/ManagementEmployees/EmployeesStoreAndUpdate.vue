@@ -17,7 +17,7 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="first-name">Nombre</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.name" id="first-name" autocomplete="given-name" />
+                                <TextInput type="text" v-model="form.name" id="first-name" autocomplete="off" />
                                 <InputError :message="form.errors.name" />
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.lastname" id="last_name"
-                                    autocomplete="family-name" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.lastname" />
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="gender">Genero</InputLabel>
                             <div class="mt-2">
-                                <select id="gender" v-model="form.gender" autocomplete="gender"
+                                <select id="gender" v-model="form.gender" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Genero</option>
                                     <option>Masculino</option>
@@ -49,7 +49,7 @@
                             <InputLabel for="state_civil">Estado Civil
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="state_civil" v-model="form.state_civil" autocomplete="country-name"
+                                <select id="state_civil" v-model="form.state_civil" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado Civil</option>
                                     <option>Casado(a)</option>
@@ -84,7 +84,7 @@
                             <InputLabel for="email">Correo Electronico
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="email" id="email" v-model="form.email" autocomplete="email" />
+                                <TextInput type="email" id="email" v-model="form.email" autocomplete="off" />
                                 <InputError :message="form.errors.email" />
                             </div>
                         </div>
@@ -96,7 +96,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="email" id="email_company" v-model="form.email_company"
-                                    autocomplete="email" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.email_company" />
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone1">Telefono 1</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.phone1" id="phone1" autocomplete="postal-code"
+                                <TextInput type="text" v-model="form.phone1" id="phone1" autocomplete="off"
                                     maxlength="9" />
                                 <InputError :message="form.errors.phone1" />
                             </div>
@@ -113,7 +113,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="phone2">Telefono 2</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="phone2"
+                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="off"
                                     maxlength="9" />
                                 <InputError :message="form.errors.phone2" />
                             </div>
@@ -144,7 +144,7 @@
                                 <InputError :message="form.errors.discount_remuneration" />
                             </div>
                         </div>
-                        <div class="mt-3 sm:col-span-2">
+                        <div class="mt-3 sm:col-span-1">
                             <InputLabel for="discount_sctr">
                                 ¿Tiene SCTR?
                             </InputLabel>
@@ -170,7 +170,7 @@
                                 Pensionario
                             </InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.pension_system" id="pension_system" autocomplete="pension-regime"
+                                <select v-model="form.pension_system" id="pension_system" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Sistema de Pension</option>
                                     <option v-for="pension in pensions" :key="pension" :value="pension.id">
@@ -185,9 +185,19 @@
                             <InputLabel for="basic_salary">Salario Basico
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.basic_salary" id="basic_salary"
-                                    autocomplete="basic-salary" />
+                                <TextInput type="number" v-model="form.basic_salary" id="basic_salary"
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.basic_salary" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <InputLabel for="life_ley">Póliza de vida
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.life_ley" id="life_ley"
+                                    autocomplete="life_ley" />
+                                <InputError :message="form.errors.life_ley" />
                             </div>
                         </div>
 
@@ -196,7 +206,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="Date" v-model="form.hire_date" id="hire_date"
-                                    autocomplete="hire-date" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.hire_date" />
                             </div>
                         </div>
@@ -219,7 +229,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.education_level" id="education_level"
-                                    autocomplete="education-level"
+                                    autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Nivel Educativo</option>
                                     <option>Universidad</option>
@@ -235,7 +245,7 @@
                                 Educacion</InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.education_status" id="education_status"
-                                    autocomplete="education-level"
+                                    autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado Educativo</option>
                                     <option>Completo</option>
@@ -251,7 +261,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.specialization" id="specialization"
-                                    autocomplete="specialization" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.specialization" />
                             </div>
                         </div>
@@ -269,7 +279,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.street_address" id="street_address"
-                                    autocomplete="street-address" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.street_address" />
                             </div>
                         </div>
@@ -278,7 +288,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.district" id="address"
-                                    autocomplete="postal-code" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.district" />
                             </div>
                         </div>
@@ -287,7 +297,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.province" id="province"
-                                    autocomplete="address-level1" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.province" />
                             </div>
                         </div>
@@ -296,7 +306,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.department" id="department"
-                                    autocomplete="address-level2" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.department" />
                             </div>
                         </div>
@@ -398,7 +408,7 @@
                                     Educativo</InputLabel>
                                 <div class="mt-2">
                                     <select v-model="dependent.family_education" id="family_education"
-                                        autocomplete="education-level"
+                                        autocomplete="off"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccionar Nivel Educativo</option>
                                         <option>Universidad</option>
@@ -472,7 +482,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="weight">Peso (kg)</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.weight" id="weight" autocomplete="weight" />
+                                <TextInput type="text" v-model="form.weight" id="weight" autocomplete="off" />
                                 <InputError :message="form.errors.weight" />
                             </div>
                         </div>
@@ -481,7 +491,7 @@
                             <InputLabel for="height">Altura (cm)
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.height" id="height" autocomplete="height" />
+                                <TextInput type="text" v-model="form.height" id="height" autocomplete="off" />
                                 <InputError :message="form.errors.height" />
                             </div>
                         </div>
@@ -491,7 +501,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.shoe_size" id="shoe_size"
-                                    autocomplete="shoe-size" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.shoe_size" />
                             </div>
                         </div>
@@ -501,7 +511,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.shirt_size" id="shirt_size"
-                                    autocomplete="shirt-size" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.shirt_size" />
                             </div>
                         </div>
@@ -511,7 +521,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.pants_size" id="pants_size"
-                                    autocomplete="pants-size" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.pants_size" />
                             </div>
                         </div>
@@ -622,6 +632,7 @@ const form = useForm({
     discount_sctr: '',
     pension_system: '',
     basic_salary: '',
+    life_ley:'',
     hire_date: '',
     education_level: '',
     education_status: '',
@@ -662,6 +673,7 @@ if (props.employees) {
     form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;
     form.pension_system = props.employees.contract.pension.id;
     form.basic_salary = props.employees.contract.basic_salary;
+    form.life_ley = props.employees.contract.life_ley;
     form.hire_date = props.employees.contract.hire_date;
     form.education_level = props.employees.education.education_level;
     form.education_status = props.employees.education.education_status;

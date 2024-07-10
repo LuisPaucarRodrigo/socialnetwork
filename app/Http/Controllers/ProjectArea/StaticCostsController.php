@@ -4,20 +4,19 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Models\Provider;
+use App\Models\StaticCost;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Project;
-use App\Models\AdditionalCost;
 use Illuminate\Support\Facades\Log;
-
-class AdditionalCostsController extends Controller
+class StaticCostsController extends Controller
 {
     public function index(Request $request, Project $project_id)
     {
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at')->paginate(20);
+        $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at')->paginate(20);
         $searchQuery = '';
         $providers = Provider::all();
-        return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
+        return Inertia::render('ProjectArea/ProjectManagement/StaticCosts', [
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
@@ -27,14 +26,11 @@ class AdditionalCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
-        $result = AdditionalCost::where('project_id', $project_id);
-        
-
-
+        $result = StaticCost::where('project_id', $project_id);
         if (count($request->selectedZones) < 5) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 11) {
+        if (count($request->selectedExpenseTypes) < 6) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedDocTypes) < 5) {
@@ -49,10 +45,6 @@ class AdditionalCostsController extends Controller
                 ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-
-
-
-
         $result = $result->get();
         return response()->json($result, 200);
     }
@@ -83,17 +75,17 @@ class AdditionalCostsController extends Controller
             'project_id' => 'required'
         ]);
         if ($request->hasFile('photo')) {
-            $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
+            $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
 
-        AdditionalCost::create($data);
+        StaticCost::create($data);
         return redirect()->back();
     }
 
-    public function download_ac_photo(AdditionalCost $additional_cost_id)
+    public function download_ac_photo(StaticCost $additional_cost_id)
     {
         $fileName = $additional_cost_id->photo;
-        $filePath = '/documents/additionalcosts/' . $fileName;
+        $filePath = '/documents/staticcosts/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
             ob_end_clean();
@@ -103,7 +95,7 @@ class AdditionalCostsController extends Controller
     }
 
 
-    public function update(Request $request, AdditionalCost $additional_cost)
+    public function update(Request $request, StaticCost $additional_cost)
     {
         $data = $request->validate([
             'expense_type' => 'required|string',
@@ -120,9 +112,9 @@ class AdditionalCostsController extends Controller
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;
             if ($filename) {
-                $this->file_delete($filename, 'documents/additionalcosts/');
+                $this->file_delete($filename, 'documents/staticcosts/');
             }
-            $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
+            $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
 
         } else if ($request->photo_status === 'stable') {
             $filename = $additional_cost->photo;
@@ -134,7 +126,7 @@ class AdditionalCostsController extends Controller
         if ($request->photo_status === 'delete') {
             $filename = $additional_cost->photo;
             if ($filename) {
-                $this->file_delete($filename, 'documents/additionalcosts/');
+                $this->file_delete($filename, 'documents/staticcosts/');
             }
         }
 
@@ -142,11 +134,11 @@ class AdditionalCostsController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(Project $project_id, AdditionalCost $additional_cost)
+    public function destroy(Project $project_id, StaticCost $additional_cost)
     {
-        $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
+        $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/staticcosts/');
         $additional_cost->delete();
-        return to_route('projectmanagement.additionalCosts', ['project_id' => $project_id->id]);
+        return redirect()->back();
     }
 
 
