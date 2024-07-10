@@ -93,6 +93,9 @@
                                         Cantidad Devuelta
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        Cantidad en Proyectos
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Cantidad Disponible
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -117,6 +120,7 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.refund_quantity }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.project_quantity }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.available_quantity }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
@@ -177,12 +181,11 @@
 </template>
 
 <script setup>
-    import { Head, Link, router, useForm } from '@inertiajs/vue3';
+    import { Head, router, useForm } from '@inertiajs/vue3';
     import Pagination from '@/Components/Pagination.vue';
     import { formattedDate } from '@/utils/utils'
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import TextInput from '@/Components/TextInput.vue';
-    import { ReceiptRefundIcon } from '@heroicons/vue/24/outline';
     import Modal from '@/Components/Modal.vue';
     import { ref } from 'vue';
     import InputLabel from '@/Components/InputLabel.vue';

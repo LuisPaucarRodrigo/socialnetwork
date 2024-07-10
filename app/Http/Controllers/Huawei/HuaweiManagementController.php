@@ -285,13 +285,13 @@ class HuaweiManagementController extends Controller
             'quantity' => 'nullable',
             'observation' => 'nullable'
         ]);
-    
+
         // Encontrar el detalle de entrada por ID
         $entryDetail = HuaweiEntryDetail::findOrFail($request->huawei_entry_detail_id);
-    
+
         // Obtener la cantidad disponible usando el campo calculado
         $availableQuantity = $entryDetail->available_quantity;
-    
+
         // Si es equipo, la cantidad siempre es 1
         if ($equipment) {
             if ($availableQuantity < 1) {
@@ -313,9 +313,9 @@ class HuaweiManagementController extends Controller
                 'observation' => $request->observation
             ]);
         }
-    
+
         return redirect()->back();
-    }    
+    }
 
     public function getRefunds ($equipment = null)
     {
@@ -366,7 +366,7 @@ class HuaweiManagementController extends Controller
         }
 
         $refunds = $query->with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment', 'huawei_entry_detail.huawei_material', 'huawei_entry_detail.huawei_entry')->get();
-    
+
         return Inertia::render('Huawei/Refunds', [
             'refunds' => $refunds,
             'equipment' => $equipment,
