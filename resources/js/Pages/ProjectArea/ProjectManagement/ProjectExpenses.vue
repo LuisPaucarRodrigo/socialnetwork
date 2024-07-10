@@ -163,13 +163,13 @@ const updateChart = () => {
     chartInstance.value.destroy();
   }
   const totalBudget = current_budget;
-  const dataWithRemainingBudget = [project.remaining_budget < 0 ? 0 : project.remaining_budget, additionalCosts, project.total_products_cost, project.total_services_cost,
+  const dataWithRemainingBudget = [project.remaining_budget < 0 ? 0 : project.remaining_budget, staticCosts, additionalCosts, project.total_products_cost, project.total_services_cost,
   project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2), project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2)
   ];
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Presupuesto Restante', 'Costos Adicionales', 'Costos de Productos', 'Costos de Servicios', 'Planilla', 'Planilla Essalud'],
+      labels: ['Presupuesto Restante', 'Costos Fijos' , 'Costos Variables', 'Costos de Productos', 'Costos de Servicios', 'Planilla', 'Planilla Essalud'],
       datasets: [{
         data: dataWithRemainingBudget,
         backgroundColor: Array(7).fill().map(() => getRandomColor()),
@@ -269,16 +269,15 @@ const updateChart3 = () => {
 
 onMounted(() => {
   updateChart();
-  updateChart2();
-  updateChart3();
+  if (staticCosts>0){
+    updateChart2();
+  }
+  if (additionalCosts>0){
+    updateChart3();
+  }
 });
 
 Chart.register(...registerables);
-
-
-
-
-
 
 
 

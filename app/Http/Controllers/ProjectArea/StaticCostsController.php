@@ -13,7 +13,7 @@ class StaticCostsController extends Controller
 {
     public function index(Request $request, Project $project_id)
     {
-        $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->paginate(20);
+        $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at')->paginate(20);
         $searchQuery = '';
         Log::info('porque');
         Log::info($additional_costs);
@@ -138,9 +138,9 @@ class StaticCostsController extends Controller
 
     public function destroy(Project $project_id, StaticCost $additional_cost)
     {
-        $this->file_delete($additional_cost->photo, 'documents/staticcosts/');
+        $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/staticcosts/');
         $additional_cost->delete();
-        return to_route('projectmanagement.StaticCosts', ['project_id' => $project_id->id]);
+        return redirect()->back();
     }
 
 

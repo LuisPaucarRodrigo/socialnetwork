@@ -14,7 +14,7 @@ class AdditionalCostsController extends Controller
 {
     public function index(Request $request, Project $project_id)
     {
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->paginate(20);
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at')->paginate(20);
         $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
@@ -144,7 +144,7 @@ class AdditionalCostsController extends Controller
 
     public function destroy(Project $project_id, AdditionalCost $additional_cost)
     {
-        $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
+        $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
         $additional_cost->delete();
         return to_route('projectmanagement.additionalCosts', ['project_id' => $project_id->id]);
     }
