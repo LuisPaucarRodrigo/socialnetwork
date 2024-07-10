@@ -15,8 +15,6 @@ class StaticCostsController extends Controller
     {
         $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at')->paginate(20);
         $searchQuery = '';
-        Log::info('porque');
-        Log::info($additional_costs);
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/StaticCosts', [
             'additional_costs' => $additional_costs,
