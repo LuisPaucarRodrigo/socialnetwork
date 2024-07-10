@@ -7,25 +7,26 @@
         Costos adicionales del Proyecto {{ props.huawei_project.name }}
       </template>
       <div class="inline-block min-w-full overflow-hidden rounded-lg">
-        <div class="flex items-center justify-between gap-4">
-    <PrimaryButton @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
-        + Agregar
-    </PrimaryButton>
-    <div class="flex items-center"> <!-- Alinear elementos horizontalmente -->
-        <form @submit.prevent="search" class="flex items-center">
-            <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
-            <!-- Estilo para el botón de búsqueda -->
-            <button type="submit"
-                    :class="{ 'opacity-25': searchForm.processing }"
-                    class="rounded-md bg-indigo-600 px-2 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-transparent">
-                <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                        stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
-        </form>
+        <div class="flex items-center justify-end gap-4">
+        <PrimaryButton v-if="props.huawei_project.status" @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
+            + Agregar
+        </PrimaryButton>
+        <div class="flex items-center ml-auto"> <!-- Alinear elementos horizontalmente -->
+            <form @submit.prevent="search" class="flex items-center">
+                <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
+                <!-- Estilo para el botón de búsqueda -->
+                <button type="submit"
+                        :class="{ 'opacity-25': searchForm.processing }"
+                        class="rounded-md bg-indigo-600 px-2 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-transparent">
+                    <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </form>
+        </div>
     </div>
-</div>
+
 
       </div>
       <div class="overflow-x-auto">
@@ -56,7 +57,7 @@
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Descripción</th>
-              <th
+              <th v-if="props.huawei_project.status"
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Acciones</th>
             </tr>
@@ -71,7 +72,7 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">{{ item.amount ? 'S/. ' + item.amount.toFixed(2) : '-' }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
-              <td
+              <td v-if="props.huawei_project.status"
                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
                   <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
