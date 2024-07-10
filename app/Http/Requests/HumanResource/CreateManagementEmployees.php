@@ -41,6 +41,7 @@ class CreateManagementEmployees extends FormRequest
             'discount_sctr' => 'required|boolean',
             'pension_system' => 'required|numeric',
             'basic_salary' => 'required|numeric',
+            'life_ley' => 'required|numeric',
             'hire_date' => 'required|date',
             'education_level' => 'required|string|in:Universidad,Instituto,Otros',
             'education_status' => 'required|string|in:Incompleto,Completo,En Progreso',
