@@ -144,7 +144,7 @@
                                 <InputError :message="form.errors.discount_remuneration" />
                             </div>
                         </div>
-                        <div class="mt-3 sm:col-span-2">
+                        <div class="mt-3 sm:col-span-1">
                             <InputLabel for="discount_sctr">
                                 ¿Tiene SCTR?
                             </InputLabel>
@@ -185,9 +185,19 @@
                             <InputLabel for="basic_salary">Salario Basico
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.basic_salary" id="basic_salary"
+                                <TextInput type="number" v-model="form.basic_salary" id="basic_salary"
                                     autocomplete="basic-salary" />
                                 <InputError :message="form.errors.basic_salary" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <InputLabel for="life_ley">Póliza de vida
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.life_ley" id="life_ley"
+                                    autocomplete="life_ley" />
+                                <InputError :message="form.errors.life_ley" />
                             </div>
                         </div>
 
@@ -622,6 +632,7 @@ const form = useForm({
     discount_sctr: '',
     pension_system: '',
     basic_salary: '',
+    life_ley:'',
     hire_date: '',
     education_level: '',
     education_status: '',
@@ -662,6 +673,7 @@ if (props.employees) {
     form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;
     form.pension_system = props.employees.contract.pension.id;
     form.basic_salary = props.employees.contract.basic_salary;
+    form.life_ley = props.employees.contract.life_ley;
     form.hire_date = props.employees.contract.hire_date;
     form.education_level = props.employees.education.education_level;
     form.education_status = props.employees.education.education_status;

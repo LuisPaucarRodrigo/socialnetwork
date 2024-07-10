@@ -4,7 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
+
 
 class CheckPlatformMovil
 {
@@ -14,27 +15,15 @@ class CheckPlatformMovil
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next)
-    {
-        $user = $request->user();
-        if ($user) {
-            if ($this->isValidPlatform($user->platform)) {
-                return $next($request); 
-            } else {
-                return response()->json(['error' => 'Acceso no autorizado.'], 403);
-            }
+    {   
+        if (Auth::guard('sanctum')->check()) {
+            // Si el usuario está autenticado con un token válido, permitir que la solicitud continúe
+            return $next($request);
+        } else {
+            // Si el token no es válido o no existe, devolver un error JSON
+            return $request->expectsJson() 
+                ? response()->json(['error' => 'Token no valido.'], 401)
+                : redirect()->route('login');
         }
-        return response()->json(['error' => 'Usuario no Autenticado.'], 401);
-    }
-
-
-    /**
-     * Verificar si la plataforma del usuario es válida.
-     *
-     * @param  string  $platform
-     * @return bool
-     */
-    private function isValidPlatform($platform)
-    {
-        return in_array($platform, ['Móvil', 'Web/Movil']);
     }
 }
