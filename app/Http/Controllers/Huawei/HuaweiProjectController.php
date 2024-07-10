@@ -13,6 +13,7 @@ use App\Models\HuaweiAdditionalCost;
 use App\Models\HuaweiEntryDetail;
 use App\Models\HuaweiEquipment;
 use App\Models\HuaweiMaterial;
+use App\Models\HuaweiProjectLiquidation;
 use App\Models\HuaweiProjectResource;
 use Illuminate\Validation\Rule;
 
@@ -477,5 +478,93 @@ class HuaweiProjectController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function geResourcesToLiquidate ($huawei_project)
+    {
+        $equipments = HuaweiProjectResource::where('huawei_project_id', $huawei_project)
+            ->where('quantity', '!=', 0)
+            ->whereDoesntHave('huawei_project_liquidation')
+            ->whereHas('huawei_entry_detail', function ($query) {
+                $query->whereNull('huawei_material_id');
+            })
+            ->with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment')
+            ->paginate(10);
+
+        $materials = HuaweiProjectResource::where('huawei_project_id', $huawei_project)
+            ->where('quantity', '!=', 0)
+            ->whereDoesntHave('huawei_project_liquidation')
+            ->whereHas('huawei_entry_detail', function ($query) {
+                $query->whereNull('huawei_equipment_serie_id');
+            })
+            ->with('huawei_entry_detail.huawei_material')
+            ->paginate(10);
+
+        return Inertia::render('Huawei/Liquidations', [
+            'equipments' => $equipments,
+            'materials' => $materials,
+            'huawei_project' => $huawei_project
+        ]);
+    }
+
+    public function liquidate (Request $request, $equipment = null) {
+        $huawei_project_resource = HuaweiProjectResource::with('huawei_project_liquidation')->find($request->huawei_project_resource_id);
+
+        if (!$huawei_project_resource || $huawei_project_resource->quantity <= 0 || $huawei_project_resource->huawei_project_liquidation !== null) {
+            abort(403, 'No se puede liquidar este recurso debido a restricciones.');
+        }
+
+        $data = $request->validate([
+            'huawei_project_resource_id' => 'required',
+            'liquidated_quantity' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($huawei_project_resource) {
+                    if ($value !== null && $value > $huawei_project_resource->quantity) {
+                        $fail('La cantidad liquidada debe ser menor o igual a la cantidad asignada del recurso.');
+                    }
+                },
+            ],
+        ]);
+
+        if ($equipment){
+            HuaweiProjectLiquidation::create([
+                'huawei_project_resource_id' => $request->huawei_project_resource_id,
+                'liquidated_quantity' => 1
+            ]);
+        }else{
+            HuaweiProjectLiquidation::create([
+                'huawei_project_resource_id' => $request->huawei_project_resource_id,
+                'liquidated_quantity' => $request->liquidated_quantity
+            ]);
+        }
+    }
+
+    public function liquidationsHistory ($huawei_project, $equipment = null)
+    {
+        if ($equipment){
+            $liquidations = HuaweiProjectLiquidation::whereHas('huawei_project_resource.huawei_entry_detail', function ($query) {
+                $query->whereNull('huawei_material_id');
+            })
+            ->whereHas('huawei_project_resource', function ($query) use ($huawei_project) {
+                $query->where('huawei_project_id', $huawei_project);
+            })
+            ->with('huawei_project_resource.huawei_entry_detail.huawei_equipment_serie.huawei_equipment')
+            ->paginate(10);
+        }else{
+            $liquidations = HuaweiProjectLiquidation::whereHas('huawei_project_resource.huawei_entry_detail', function ($query) {
+                $query->whereNull('huawei_equipment_serie_id');
+            })
+            ->whereHas('huawei_project_resource', function ($query) use ($huawei_project) {
+                $query->where('huawei_project_id', $huawei_project);
+            })
+            ->with('huawei_project_resource.huawei_entry_detail.huawei_material')
+            ->paginate(10);
+        }
+
+        return Inertia::render('Huawei/LiquidationsHistory', [
+            'liquidations' => $liquidations,
+            'huawei_project' => $huawei_project,
+            'equipment' => $equipment
+        ]);
     }
 }

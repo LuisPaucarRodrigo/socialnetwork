@@ -17,6 +17,11 @@ class HuaweiProjectResource extends Model
         'quantity'
     ];
 
+    protected $appends = [
+        'liquidated_quantity',
+        'state'
+    ];
+
     public function huawei_project ()
     {
         return $this->belongsTo(HuaweiProject::class, 'huawei_project_id');
@@ -27,8 +32,29 @@ class HuaweiProjectResource extends Model
         return $this->belongsTo(HuaweiEntryDetail::class, 'huawei_entry_detail_id');
     }
 
-    public function huawei_project_liquidations ()
+    public function huawei_project_liquidation ()
     {
         return $this->hasOne(HuaweiProjectLiquidation::class, 'huawei_project_resource_id');
+    }
+
+    public function getLiquidatedQuantityAttribute ()
+    {
+        if ($this->huawei_project_liquidation){
+            return $this->huawei_project_liquidation->liquidated_quantity;
+        }else{
+            return null;
+        }
+    }
+
+    public function getStateAttribute ()
+    {
+        if ($this->huawei_project_liquidation){
+            return 'Liquidado';
+        }
+        if ($this->quantity == 0){
+            return 'Devuelto';
+        }else{
+            return 'En proyecto';
+        }
     }
 }

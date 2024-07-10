@@ -201,6 +201,8 @@
         id: String
     });
 
+    console.log(props.entries)
+
     const refundModal = ref(false);
     const showRefundConfirm = ref(false);
     const showErrorModal = ref(false);
