@@ -559,6 +559,7 @@ const submit = () => {
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
+        router.visit(route('projectmanagement.additionalCosts', { project_id: props.project_id.id }))
       }, 2000);
     }
   });
@@ -573,6 +574,7 @@ const submitEdit = () => {
       showModalEdit.value = true;
       setTimeout(() => {
         showModalEdit.value = false;
+        router.visit(route('projectmanagement.additionalCosts', { project_id: props.project_id.id }))
       }, 2000);
     }, onError: (e) => {
       console.log(e)
@@ -594,7 +596,10 @@ const deleteAdditional = () => {
   const docId = docToDelete.value;
   if (docId) {
     router.delete(route('projectmanagement.deleteAdditionalCost', { project_id: props.project_id.id, additional_cost: docId }), {
-      onSuccess: () => closeModalDoc()
+      onSuccess: () => {
+        closeModalDoc()
+        router.visit(route('projectmanagement.additionalCosts', { project_id: props.project_id.id }))
+      }
     });
   }
 };
