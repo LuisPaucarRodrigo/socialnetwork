@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AdditionalCost extends Model
+class StaticCost extends Model
 {
     use HasFactory;
-    protected $table = 'additional_costs';
+
+    protected $table = 'static_costs';
     protected $fillable = [
         'expense_type',
         'ruc',
@@ -30,7 +31,4 @@ class AdditionalCost extends Model
     public function provider () {
         return $this->belongsTo(Provider::class, 'provider_id');
     }
-
-
-
 }

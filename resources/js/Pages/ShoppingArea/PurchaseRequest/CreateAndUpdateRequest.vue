@@ -17,7 +17,7 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="title">Titulo de Solicitud</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.title" id="title" autocomplete="family-name" />
+                                <TextInput type="text" v-model="form.title" id="title" autocomplete="off" />
                                 <InputError :message="form.errors.title" />
                             </div>
                         </div>
@@ -26,7 +26,7 @@
                             <InputLabel for="due_date">Fecha Limite de Compra</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.due_date" id="due_date" maxlength="9"
-                                    autocomplete="product_description-level1" />
+                                    autocomplete="off" />
                                 <InputError :message="form.errors.due_date" />
                             </div>
                         </div>

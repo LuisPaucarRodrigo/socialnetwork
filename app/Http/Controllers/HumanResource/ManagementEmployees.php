@@ -129,6 +129,7 @@ class ManagementEmployees extends Controller
 
             Contract::create([
                 'basic_salary' => $request->basic_salary,
+                'life_ley' => $request->life_ley,
                 'discount_remuneration' => $request->discount_remuneration,
                 'discount_sctr' => $request->discount_sctr,
                 'hire_date' => $request->hire_date,
@@ -238,6 +239,7 @@ class ManagementEmployees extends Controller
 
         $employee->contract->update([
             'basic_salary' => $request->basic_salary,
+            'life_ley' => $request->life_ley,
             'discount_remuneration' => $request->discount_remuneration,
             'discount_sctr' => $request->discount_sctr,
             'hire_date' => $request->hire_date,

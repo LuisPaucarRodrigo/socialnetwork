@@ -54,7 +54,7 @@
                   <InputLabel for="name">Agregar nuevo apartado:
                   </InputLabel>
                   <div class="mt-2">
-                    <TextInput type="text" v-model="form.name" id="name" autocomplete="address-level1" />
+                    <TextInput type="text" v-model="form.name" id="name" autocomplete="off" />
                     <InputError :message="form.errors.name" />
                   </div>
                 </div>
