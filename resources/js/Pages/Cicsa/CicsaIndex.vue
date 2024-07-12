@@ -9,7 +9,12 @@
 
         
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
+            <div class="flex justify-between">
+                <div class="flex">
+
+                </div>
+
+
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
             <br>
@@ -17,51 +22,59 @@
                 <table class="w-full">
                     <thead>
                         <tr
-                            class="border-b bg-gray-700 text-xs font-semibold uppercase tracking-wide text-gray-100">
+                            class="border-b  text-xs font-semibold uppercase tracking-wide text-white">
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
+                                class="bg-indigo-800 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Asignación
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
+                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Factibilidad PINT y PEXT
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
+                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Materiales
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
+                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Instalación PINT y PEXT
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
+                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" >
+                                Estado del Proyecto
+                            </th>
+                            <th
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
                                 Orden de Compra
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Validación de OC
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Orden de Servicio
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Cobranza
                             </th>
+                            <th
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                Estado de Cobranza
+                            </th>
                             <th  v-if="auth.user.role_id === 1"
-                                class="border-b-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                class="bg-gray-700 border-b-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                             </th>
                         </tr>
                         <tr
                             class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
-                                class="border-b-2 sticky left-0 z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Asignación
                             </th>
                             <th
-                                class=" border-b-2 sticky  left-[122px]  z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 ">
+                                class=" border-b-2 sticky left-0 z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 ">
                                 Nombre del Proyecto
                             </th>
                             <th
@@ -143,6 +156,10 @@
                             <th
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider ">
+                                
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -260,6 +277,10 @@
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                
+                            </th>
                             <th  v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
@@ -267,11 +288,11 @@
                     </thead>
                     <tbody>
                         <tr class="text-gray-700">
-                            <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">3/15/2024</p>
                             </td>
-                            <td class="border-b sticky left-[100px] z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
-                                <p class="text-gray-900 text-center w-[200px]">Qaliwarma Sede Arequipa</p>
+                            <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
+                                <p class="text-gray-900 text-center">Qaliwarma Sede Arequipa</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">GTD - CICSA</p>
@@ -360,6 +381,14 @@
                                     Valery Montalvan
                                 </p>
                             </td>
+
+
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Completado
+                                </p>
+                            </td>
+
 
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">02/02/2024</p>
@@ -457,6 +486,11 @@
                             <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
+                                </p>
+                            </td> 
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Completado
                                 </p>
                             </td> 
 
