@@ -375,8 +375,7 @@ import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { sots, auth } = defineProps({
-    sots: Object,
+const { auth } = defineProps({
     auth: Object
 })
 
