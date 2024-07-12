@@ -11,12 +11,9 @@ use App\Models\PriceGuide1;
 use App\Models\PriceGuide2;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\HeadingRowImport;
-use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Response;
+
 
 class HuaweiController extends Controller
 {
