@@ -29,6 +29,7 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     include_once 'shopping_area_route.php';
     include_once 'finance_route.php';
     include_once 'huawei_route.php';
+    include_once 'cicsa_route.php';
 });
 
 
