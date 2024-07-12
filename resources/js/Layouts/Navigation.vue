@@ -581,7 +581,7 @@ Usuarios
                     <span class="mx-3">CICSA</span>
                 </a>
                 <MyTransition :transitiondemonstration="showCicsa">
-                    <Link class="w-full" :href="'#'">Proceso CICSA</Link>
+                    <Link class="w-full" :href="route('cicsa.index')">Proceso CICSA</Link>
                 </MyTransition>
             </template>
 
