@@ -157,7 +157,7 @@ const disableTwoFactorAuthentication = () => {
                         <InputLabel for="code" value="Code" />
 
                         <TextInput id="code" v-model="confirmationForm.code" type="text" name="code"
-                            class="block mt-1 w-1/2" inputmode="numeric" autofocus autocomplete="one-time-code"
+                            class="block mt-1 w-1/2" inputmode="numeric" autofocus autocomplete="off"
                             @keyup.enter="confirmTwoFactorAuthentication" />
 
                         <InputError :message="confirmationForm.errors.code" class="mt-2" />

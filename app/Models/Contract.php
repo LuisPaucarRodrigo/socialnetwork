@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\File;
 class Contract extends Model
 {
     use HasFactory;
-    protected $fillable = ['basic_salary', 'discount_remuneration', 'discount_sctr', 'state', 'days_taken', 'hire_date', 'fired_date', 'employee_id', 'pension_id'];
+    protected $fillable = ['basic_salary', 'life_ley', 'discount_remuneration', 'discount_sctr', 'state', 'days_taken', 'hire_date', 'fired_date', 'employee_id', 'pension_id'];
 
     protected $appends = [
         'total_income',
@@ -32,11 +32,12 @@ class Contract extends Model
         'total_discount',
         'net_pay',
         'healths',
-        'life_ley',
         'sctr_p',
         'sctr_s',
         'total_contribution'
     ];
+
+    //RELATIONS
 
     public function pension()
     {
@@ -48,8 +49,7 @@ class Contract extends Model
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-
-
+    //CALCULATED
 
     public function getTruncatedMonthAttribute()
     {
@@ -141,11 +141,6 @@ class Contract extends Model
     public function getHealthsAttribute()
     {
         return $this->total_income * 0.09;
-    }
-
-    public function getLifeLeyAttribute()
-    {
-        return 0;
     }
 
     public function getSctrPAttribute()

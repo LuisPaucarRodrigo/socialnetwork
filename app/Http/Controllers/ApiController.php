@@ -25,7 +25,7 @@ class ApiController extends Controller
                     'token' => $token,
                 ]);
             } else {
-                return response()->json(['error' => 'La cuenta no tiene permiso Movil'], 401);
+                return response()->json(['error' => 'Usuario no Autorizado'], 401);
             }
         } else {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
@@ -60,7 +60,7 @@ class ApiController extends Controller
             }
         }
         
-        return response()->json($data);
+        return response()->json($preprojects);
     }
 
     public function preprojectcodephoto($id)

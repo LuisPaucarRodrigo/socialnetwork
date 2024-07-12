@@ -117,7 +117,7 @@ class DocumentController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'document' => 'required|mimes:pdf,doc,docx,ppt,pptx,xlsx,png,jpg,jpeg|max:2048',
+            'document' => 'required',
             'subdivision_id' => 'required|numeric',
         ]);
         $documentName = null;
@@ -195,6 +195,7 @@ class DocumentController extends Controller
         $filePath = '/documents/documents/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
+            ob_end_clean();
             return response()->file($path);
         }
         abort(404, 'Documento no encontrado');
