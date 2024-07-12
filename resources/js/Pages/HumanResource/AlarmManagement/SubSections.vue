@@ -41,16 +41,16 @@
               <div> <!-- Alineación a la derecha -->
                 <div class="dropdown">
                   <div class="dropdown-menu">
-                    <PrimaryButton @click="openCreateSubSectionModal" type="button">
+                    <button class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" @click="openCreateSubSectionModal" type="button">
                       + Agregar miembro
-                    </PrimaryButton>
+                    </button>
                   </div>
                 </div>
                 <div class="dropdown">
                   <div class="dropdown-menu">
-                    <PrimaryButton @click="management_section" type="button">
+                    <button class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out" @click="management_section" type="button">
                       Gestionar Apartados
-                    </PrimaryButton>
+                    </button>
                   </div>
                 </div>
                 <dropdown-link :href="route('sections.calendar')">

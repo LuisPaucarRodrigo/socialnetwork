@@ -114,7 +114,7 @@ const closeModal = () => {
                     sus dispositivos.
                     <div class="mt-4">
                         <TextInput ref="passwordInput" v-model="form.password" type="password" class="mt-1 block w-3/4"
-                            placeholder="Password" autocomplete="current-password"
+                            placeholder="Password" autocomplete="off"
                             @keyup.enter="logoutOtherBrowserSessions" />
 
                         <InputError :message="form.errors.password" class="mt-2" />

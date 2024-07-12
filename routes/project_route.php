@@ -9,6 +9,7 @@ use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ProjectArea\ProjectPintController;
+use App\Http\Controllers\ProjectArea\StaticCostsController;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use Illuminate\Support\Facades\Route;
@@ -89,7 +90,13 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project/purchases_request/{project_id}/store', [ProjectManagementController::class, 'project_purchases_request_store'])->name('projectmanagement.purchases_request.store');
     Route::get('/project/{project_id?}/purchases_request/edit/{id}', [ProjectManagementController::class, 'project_purchases_request_edit'])->name('projectmanagement.purchases_request.edit');
 
+
+
     Route::post('/project/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'store'])->name('projectmanagement.storeAdditionalCost');
+
+    Route::post('/project/purchases_request/{project_id}/static_costs', [StaticCostsController::class, 'store'])->name('projectmanagement.storeStaticCost');
+    
+
 
     //Project product
     Route::get('/project/warehouse_products/{project}/{warehouse}', [ProjectManagementController::class, 'warehouse_products'])->name('projectmanagement.warehouse_products');
@@ -120,6 +127,10 @@ Route::middleware('permission:ProjectManager')->group(function () {
     //Member Cicsa Sections 
     Route::post('/cicsa/member/store', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsa.member.store');
     Route::post('/cicsa/store', [CicsaSectionController::class, 'storeSection'])->name('sections.cicsa.section.store');
+
+
+
+    
 });
 
 Route::middleware('permission:ProjectManager|Project')->group(function () {
@@ -179,8 +190,22 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/project/purchases_request/{project_id}', [ProjectManagementController::class, 'project_purchases_request_index'])->name('projectmanagement.purchases_request.index');
     Route::get('/project/purchases_request/details/{id}', [ProjectManagementController::class, 'project_purchases_request_details'])->name('projectmanagement.purchases_request.details');
 
+    
+    
     Route::get('/project/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
     Route::get('/project/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'index'])->name('projectmanagement.additionalCosts');
+    Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
+    Route::post('/additionalcost_advancesearch/{project_id}', [AdditionalCostsController::class, 'search_costs'])->name('additionalcost.advance.search');
+
+
+    Route::get('/project/purchases_request/{project_id}/static_costs', [StaticCostsController::class, 'index'])->name('projectmanagement.staticCosts');
+    Route::get('/staticcost_photo/{additional_cost_id}', [StaticCostsController::class, 'download_ac_photo'])->name('staticcost.archive');
+    Route::post('/staticcost_advancesearch/{project_id}', [StaticCostsController::class, 'search_costs'])->name('staticcost.advance.search');
+
+
+
+
+
 
     //Project product
     Route::get('/project/products/{project_id}', [ProjectManagementController::class, 'project_product_index'])->name('projectmanagement.products');
@@ -203,6 +228,9 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
     Route::post('/preproject/auto-store/pint', [ProjectPintController::class, 'pint_store_project'])->name('project.auto_store.pint');
     Route::post('/product-CPE/', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
+
+
+    Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
 
 });
 

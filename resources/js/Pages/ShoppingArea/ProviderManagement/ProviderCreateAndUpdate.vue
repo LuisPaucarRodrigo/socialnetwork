@@ -15,7 +15,7 @@
                             <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.ruc" id="ruc" pattern="\d*"
-                                    autocomplete="given-name" maxlength="11"
+                                    autocomplete="off" maxlength="11"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.ruc" />
                             </div>
@@ -25,7 +25,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.company_name" id="company_name"
-                                    :to-uppercase="true" autocomplete="given-name"
+                                    :to-uppercase="true" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.company_name" />
                             </div>
@@ -36,7 +36,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.contact_name" id="contact_name"
-                                    :to-uppercase="true" autocomplete="family-name"
+                                    :to-uppercase="true" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.contact_name" />
                             </div>
@@ -46,7 +46,7 @@
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.zone" id="zone" :to-uppercase="true"
-                                    autocomplete="family-name"
+                                    autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.zone" />
                             </div>
@@ -54,7 +54,7 @@
                         <div class="sm:col-span-3">
                             <InputLabel for="address" class="font-medium leading-6 text-gray-900">Direccion</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.address" id="address" autocomplete="address-level1"
+                                <TextInput type="text" v-model="form.address" id="address" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.address" />
                             </div>
@@ -71,7 +71,7 @@
                             <InputLabel for="phone1" class="font-medium leading-6 text-gray-900">Telefono 1</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.phone1" id="phone1" maxlength="9"
-                                    autocomplete="address-level1"
+                                    autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.phone1" />
                             </div>
@@ -80,7 +80,7 @@
                             <InputLabel for="phone2" class="font-medium leading-6 text-gray-900">Telefono 2</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.phone2" id="phone2" maxlength="9"
-                                    autocomplete="address-level1"
+                                    autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.phone2" />
                             </div>

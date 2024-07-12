@@ -33,13 +33,29 @@ class ProjectManagementController extends Controller
     {
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/ProjectManagement/Project', [
-                'projects' => Project::where('status', null)->paginate(),
+                'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                    ->select('projects.*', 'preprojects.date as preproject_date')
+                    ->orderBy('preproject_date', 'desc')->where('projects.status', null)->paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $projects = Project::where('status', null)->whereHas('preproject', function ($query) use ($searchQuery) {
-                $query->where('code', 'like', "%$searchQuery%");
-            })->paginate();
+            $searchTerms = explode(' ', $searchQuery);
+
+            $projects = Project::where(function ($query) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $query->where('projects.description', 'like', "%$term%");
+                }
+            })
+                ->orWhereHas('preproject', function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term) {
+                        $query->where('description', 'like', "%$term%");
+                    }
+                })
+                ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                ->select('projects.*', 'preprojects.date as preproject_date')
+                ->whereNull('projects.status')
+                ->orderBy('preprojects.date', 'desc')
+                ->paginate(12);
 
             return response()->json([
                 'projects' => $projects
@@ -51,13 +67,29 @@ class ProjectManagementController extends Controller
     {
         if ($request->isMethod('get')) {
             return Inertia::render('ProjectArea/ProjectManagement/ProjectHistorial', [
-                'projects' => Project::where('status', true)->paginate(),
+                'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                    ->select('projects.*', 'preprojects.date as preproject_date')
+                    ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $projects = Project::where('status', true)->whereHas('preproject', function ($query) use ($searchQuery) {
-                $query->where('code', 'like', "%$searchQuery%");
-            })->paginate();
+            $searchTerms = explode(' ', $searchQuery);
+
+            $projects = Project::where(function ($query) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $query->where('projects.description', 'like', "%$term%");
+                }
+            })
+                ->orWhereHas('preproject', function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term) {
+                        $query->where('description', 'like', "%$term%");
+                    }
+                })
+                ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+                ->select('projects.*', 'preprojects.date as preproject_date')
+                ->where('projects.status', true)
+                ->orderBy('preprojects.date', 'desc')
+                ->paginate(12);
 
             return response()->json([
                 'projects' => $projects
@@ -118,14 +150,14 @@ class ProjectManagementController extends Controller
             }
 
             //Assignation with CPE
-            if($preproject->cpe){
-                $specialProducts = SpecialInventory::where('cpe',$preproject->cpe )->get();
+            if ($preproject->cpe) {
+                $specialProducts = SpecialInventory::where('cpe', $preproject->cpe)->get();
                 foreach ($specialProducts as $sPro) {
                     ProjectEntry::create([
                         'project_id' => $project->id,
                         'special_inventory_id' => $sPro->id,
                         'quantity' => $sPro->quantity,
-                    ]); 
+                    ]);
                 }
             }
 
@@ -159,8 +191,8 @@ class ProjectManagementController extends Controller
         $project = Project::find($project_id);
         $employee = Employee::find($request->input('employee.id'));
         $project->employees()->attach($request->input('employee.id'), [
-            'charge' => $request->input('charge'), 
-            'salary_per_day' => $employee->salaryPerDay($project->days), 
+            'charge' => $request->input('charge'),
+            'salary_per_day' => $employee->salaryPerDay($project->days),
         ]);
         return redirect()->back();
     }
@@ -257,11 +289,37 @@ class ProjectManagementController extends Controller
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
         $additionalCosts = $project_id->additionalCosts->sum('amount');
+        $acArr = $project_id->additionalCosts()
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $acExpensesAmounts = $acArr->map(function($cost) {
+            return [
+                'expense_type' => $cost->expense_type,
+                'total_amount' => $cost->total_amount,
+            ];
+        })->toArray();
+
+        $staticCosts = $project_id->staticCosts->sum('amount');
+        $scArr = $project_id->staticCosts()
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $scExpensesAmounts = $scArr->map(function($cost) {
+            return [
+                'expense_type' => $cost->expense_type,
+                'total_amount' => $cost->total_amount,
+            ];
+        })->toArray();
+
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'project' => $project_id,
             'additionalCosts' => $additionalCosts,
+            'acExpensesAmounts' => $acExpensesAmounts,
+            'scExpensesAmounts' => $scExpensesAmounts,
+            'staticCosts' => $staticCosts,
         ]);
     }
 

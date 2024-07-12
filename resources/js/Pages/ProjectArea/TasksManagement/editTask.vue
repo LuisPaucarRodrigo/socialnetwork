@@ -204,7 +204,6 @@ const delete_already_employee = (project_employee_id) => {
 
     deluser.post(route('tasks.delete.employee'), {
         onSuccess: () => {
-            console.log('Se elimino correctamente')
         },
     });
 }

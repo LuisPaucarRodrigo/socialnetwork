@@ -19,7 +19,8 @@ class AdditionalCost extends Model
         'description',
         'amount',
         'project_id',
-        'provider_id'
+        'provider_id',
+        'photo'
     ];
 
     public function project(){
