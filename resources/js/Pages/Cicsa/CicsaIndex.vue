@@ -10,7 +10,7 @@
         
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectSNSotComponent currentSelect="Proceso" />
+                <SelectCicsaComponent currentSelect="Proceso" />
             </div>
             <br>
             <div class="overflow-x-auto">
@@ -19,24 +19,36 @@
                         <tr
                             class="border-b bg-gray-700 text-xs font-semibold uppercase tracking-wide text-gray-100">
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
-                                Área Programación
+                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
+                                Asignación
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="5">
-                                Área de Operaciones
+                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
+                                Factibilidad PINT y PEXT
                             </th>
                             <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
-                                Área de Liquidación
+                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
+                                Materiales
                             </th>
                             <th
                                 class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
-                                Área de Cobranzas
+                                Instalación PINT y PEXT
                             </th>
                             <th
                                 class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
-                                Área de Control
+                                Orden de Compra
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                                Validación de OC
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                                Orden de Servicio
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                                Cobranza
                             </th>
                             <th  v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
@@ -46,67 +58,91 @@
                             class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 sticky left-0 z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                SOT
-                            </th>
-                            <th
-                                class=" border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 ">
-                                Descripción
-                            </th>
-                            <th
-                                class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Asignación
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class=" border-b-2 sticky  left-[122px]  z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 ">
+                                Nombre del Proyecto
+                            </th>
+                            <th
+                                class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cliente
                             </th>
                             <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Estado de Instalación
+                                class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Código de Proyecto
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Adicionales
+                                CPE
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Reporte Fotográfico
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Instalación Completada
+                                Fecha Límite del Proyecto
                             </th>
                             <th
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Materiales en Acta
+                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Subir Actas
+                                Fecha de Factibilidad
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Liquidación
+                                Informe
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Descargo de Almacen
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Liquidación
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Status de SOT
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Observaciones
+                                Lista de Materiales de Factibilidad
                             </th>
                             <th
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto a Facturar
+                                Encargado
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Recojo
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Guía
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Lista de Materiales
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Pext
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Pint
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Acta de Conformidad
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Informe
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Lista de Materiales Liquidados
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Envío de Informe
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -370,7 +406,7 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import SelectSNSotComponent from '@/Components/SelectSNSotComponent.vue';
+import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
