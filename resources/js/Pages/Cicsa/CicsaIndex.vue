@@ -1,15 +1,31 @@
 <template>
 
-    <Head title="SocialNetwork SOT" />
+    <Head title="CICSA" />
 
-    <AuthenticatedLayout :redirectRoute="'socialnetwork.sot'">
+    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
             Proceso CICSA
         </template>
 
         
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
+            <div class="flex justify-between">
+                <div class="flex">
+                    <FilterProcess 
+                        :options="[
+                            'Asignación',
+                            'Factibilidad PINT y PEXT',
+                            'Materiales',
+                            'Instalación PINT y PEXT',
+                            'Orden de Compra',
+                            'Validación de OC',
+                            'Orden de Servicio',
+                            'Cobranza'
+                        ]"
+                        v-model="selectedOptions"
+                        :width="'w-[230px]'"
+                    />
+                </div>
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
             <br>
@@ -17,259 +33,485 @@
                 <table class="w-full">
                     <thead>
                         <tr
-                            class="border-b bg-gray-700 text-xs font-semibold uppercase tracking-wide text-gray-100">
-                            <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
+                            class="border-b  text-xs font-semibold uppercase tracking-wide text-white">
+                            <th v-if="!checkVisibility('Asignación')"
+                                class="bg-black sticky left-0 z-10 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                
+                            </th>
+                            <th v-if="checkVisibility('Asignación')"
+                                class="bg-indigo-800 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Asignación
                             </th>
-                            <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
+                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Factibilidad PINT y PEXT
                             </th>
-                            <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
+                            <th v-if="checkVisibility('Materiales')"
+                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Materiales
                             </th>
-                            <th
-                                class="border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
+                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Instalación PINT y PEXT
                             </th>
-                            <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                            <th 
+                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" >
+                                Estado del Proyecto
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
                                 Orden de Compra
                             </th>
-                            <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Validación de OC
                             </th>
-                            <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                            <th v-if="checkVisibility('Orden de Servicio')"
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Orden de Servicio
                             </th>
-                            <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Cobranza
                             </th>
+                            <th 
+                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                Estado de Cobranza
+                            </th>
                             <th  v-if="auth.user.role_id === 1"
-                                class="border-b-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                class="bg-gray-700 border-b-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                             </th>
                         </tr>
                         <tr
                             class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
-                                class="border-b-2 sticky left-0 z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            <th v-if="checkVisibility('Asignación')" 
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Asignación
                             </th>
-                            <th
-                                class=" border-b-2 sticky  left-[122px]  z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 ">
+                            <th 
+                                :class="['border-b-2 sticky left-0 z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación')?'':'border-r-2']"
+                                >
                                 Nombre del Proyecto
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cliente
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Código de Proyecto
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha Límite del Proyecto
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Factibilidad
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Informe
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales de Factibilidad
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Recojo
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Guía
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Pext
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Pint
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acta de Conformidad
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Informe
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales Liquidados
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Envío de Informe
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
                             <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                SOT a facturar
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider ">
+                                
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha
+                                Fecha de Orden de Compra
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Factura
+                                Numero de Orden de Compra
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha
+                                Formato Maestro
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Cobranza
+                                Item 3456
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Presupuesto
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Inicio de Validación
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Control de Materiales
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Supervisor
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Almacen
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Jefe de Obra
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Liquidador
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Superintendente
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')" 
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Orden de Servicio
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')" 
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Orden de Servicio
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')" 
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Hoja de Estimación
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')" 
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Orden de Compra
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')" 
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Factura en PDF
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')" 
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Factura en ZIP
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')" 
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
+                            </th>
+
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Número de Factura
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Factura
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Crédito A
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Pago
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Días de Atraso
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Abono
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Estado de Pago
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha
+                                
                             </th>
-                            <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad Mala Instalación
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad Falta RF
-                            </th>
-                            <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad Rechazos
-                            </th>
-                            <th  v-if="auth.user.role_id === 1"
+                            <th v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
-                    <!-- <tbody>
-                        <tr v-for="item in sots.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item.name }}</p>
+                    <tbody>
+                        <tr class="text-gray-700">
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">3/15/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
-                                <p class="text-gray-900 text-center w-[200px]">{{ item.description }}</p>
+                            <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
+                                <p class="text-gray-900 text-center">Qaliwarma Sede Arequipa</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ formattedDate(item.assigned_date) }}</p>
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">GTD - CICSA</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">240215</p>
+                            </td>
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">cpe000147894</p>
+                            </td>
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">3/15/2024</p>
+                            </td>
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td>
+
+
+
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">3/15/2024</p>
+                            </td>
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">En Proceso</p>
+                            </td>
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
-                                    <p class="text-gray-900">{{ item?.customer }}</p>
-                                    <button @click="openCustomerDetails(item)" class="text-green-600">
+                                    <button  class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
                             </td>
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td>
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.i_state }}</p>
+
+
+                            <td v-if="checkVisibility('Materiales')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">01/01/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.additionals }}</p>
+                            <td v-if="checkVisibility('Materiales')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Guía</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.photo_report }}</p>
+                            <td v-if="checkVisibility('Materiales')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex items-center justify-center">
+                                    <button  class="text-green-600">
+                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                    </button>
+                                </div>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ formattedDate(item?.sot_operation?.ic_date) }}</p>
+                            <td v-if="checkVisibility('Materiales')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button v-if="item?.sot_operation?.minute_materials" type="button" @click="openMaterialsModal(item.sot_operation.minute_materials)">
-                                    <EyeIcon class="w-5 h-5 text-green-600" />
-                                </button>
+
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.up_minutes }}</p>
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.liquidation }}</p>
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.down_warehouse }}</p>
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Presentado</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.liquidation_date }}</p>
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex items-center justify-center">
+                                    <button  class="text-green-600">
+                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                    </button>
+                                </div>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.sot_status }}</p>
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.observations }}</p>
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                <p class="text-gray-900 text-center">{{ item.sot_liquidation ? 'S/. '+item.sot_liquidation.bill_amount.toFixed(2) : '' }}</p>
+
+
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Completado
+                                </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.sot_bill }}</p>
+
+
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.sot_bill_date }}</p>
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">04858</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.bill }}</p>
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.bill_date }}</p>
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.charge }}</p>
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.charge_date }}</p>
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td> 
+
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_bad_installation }}</p>
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_no_rf }}</p>
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_rejections }}</p>
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
                             </td>
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td> 
+
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">485748</p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Pendiente</p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td> 
+
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">8457838h</p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">03/02/2024</p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">30 días</p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">05/03/2024</p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">1 días</p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">06/03/2024</p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Pagado</p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td> 
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Completado
+                                </p>
+                            </td> 
+
+                            
                             
                             <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
@@ -284,7 +526,8 @@
                             </td>
                         </tr>
 
-                    </tbody> -->
+                    </tbody> 
+                
                 </table>
             </div>
 
@@ -410,57 +653,79 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import FilterProcess from '@/Components/FilterProcess.vue'
 
 const { auth } = defineProps({
     auth: Object
 })
 
-// const showSotDeleteModal = ref(false);
-// const sotToDelete = ref(null)
-// const confirmSotDelete = ref(false)
-// const showCustomerDetails = ref(false);
-// const customer = ref([]);
+const showSotDeleteModal = ref(false);
+const sotToDelete = ref(null)
+const confirmSotDelete = ref(false)
+const showCustomerDetails = ref(false);
+const customer = ref([]);
 
-// const openCustomerDetails = (item) => {
-//     showCustomerDetails.value = true
-//     customer.value = item 
-// }
+const openCustomerDetails = (item) => {
+    showCustomerDetails.value = true
+    customer.value = item 
+}
 
-// const closeCustomerDetails = () => {
-//     customer.value = [];
-//     showCustomerDetails.value = false;
-// }
+const closeCustomerDetails = () => {
+    customer.value = [];
+    showCustomerDetails.value = false;
+}
 
-// function openSotDeleteModal (id) {
-//     sotToDelete.value = id
-//     showSotDeleteModal.value = true
-// }
-// function closeSotDeleteModal () {
-//     sotToDelete.value = null
-//     showSotDeleteModal.value = false
-// }
-// function deleteSot () {
-//     router.delete(route('socialnetwork.sot.delete', {sot_id: sotToDelete.value}),{
-//         onSuccess: () => {
-//             closeSotDeleteModal()
-//             confirmSotDelete.value = true
-//             setTimeout(()=>{
-//                 confirmSotDelete.value = false
-//             }, 1500)
-//         }
-//     })
-// }
+function openSotDeleteModal (id) {
+    sotToDelete.value = id
+    showSotDeleteModal.value = true
+}
+function closeSotDeleteModal () {
+    sotToDelete.value = null
+    showSotDeleteModal.value = false
+}
+function deleteSot () {
+    router.delete(route('socialnetwork.sot.delete', {sot_id: sotToDelete.value}),{
+        onSuccess: () => {
+            closeSotDeleteModal()
+            confirmSotDelete.value = true
+            setTimeout(()=>{
+                confirmSotDelete.value = false
+            }, 1500)
+        }
+    })
+}
 
 
-// //materials
-// const showMaterials = ref(false)
-// const materials = ref([]);
-// function openMaterialsModal(arrayMaterials) {
-//     materials.value = arrayMaterials ? arrayMaterials : []
-//     showMaterials.value = true
-// }
-// function closeMaterialsModal() {
-//     showMaterials.value = false
-// }
+//materials
+const showMaterials = ref(false)
+const materials = ref([]);
+function openMaterialsModal(arrayMaterials) {
+    materials.value = arrayMaterials ? arrayMaterials : []
+    showMaterials.value = true
+}
+function closeMaterialsModal() {
+    showMaterials.value = false
+}
+
+
+
+
+const selectedOptions = ref([
+    'Asignación',
+    'Factibilidad PINT y PEXT',
+    'Materiales',
+    'Instalación PINT y PEXT',
+    'Orden de Compra',
+    'Validación de OC',
+    'Orden de Servicio',
+    'Cobranza'
+])
+
+function checkVisibility(option) {
+  return selectedOptions.value.includes(option);
+}
+
+
+
 
 </script>
