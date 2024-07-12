@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Project;
 use App\Models\AdditionalCost;
+use App\Exports\AdditionalCostsExport;
+use Maatwebsite\Excel\Concerns\Excel;
 use Illuminate\Support\Facades\Log;
 
 class AdditionalCostsController extends Controller
@@ -163,5 +165,9 @@ class AdditionalCostsController extends Controller
         $path = public_path($file_path);
         if (file_exists($path))
             unlink($path);
+    }
+
+    public function export() {
+        return Excel::download(new AdditionalCostsExport, 'additionalCosts.xlsx');
     }
 }
