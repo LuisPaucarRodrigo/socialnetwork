@@ -39,15 +39,15 @@
                                 Orden de Compra
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Validación de OC
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Orden de Servicio
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
+                                class="border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Cobranza
                             </th>
                             <th  v-if="auth.user.role_id === 1"
@@ -170,106 +170,297 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad Mala Instalación
+                                Fecha de Inicio de Validación
                             </th>
                             <th
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad Falta RF
+                                Control de Materiales
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Supervisor
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Almacen
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Jefe de Obra
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Liquidador
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Superintendente
                             </th>
                             <th
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Penalidad Rechazos
+                                Encargado
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Orden de Servicio
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Orden de Servicio
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Hoja de Estimación
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Orden de Compra
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Factura en PDF
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Factura en ZIP
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Número de Factura
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Factura
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Crédito A
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Pago
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Días de Atraso
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Abono
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Estado de Pago
+                            </th>
+                            <th
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
                             </th>
                             <th  v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
-                    <!-- <tbody>
-                        <tr v-for="item in sots.data" :key="item.id" class="text-gray-700">
+                    <tbody>
+                        <tr class="text-gray-700">
                             <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item.name }}</p>
+                                <p class="text-gray-900 text-center">3/15/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
-                                <p class="text-gray-900 text-center w-[200px]">{{ item.description }}</p>
+                            <td class="border-b sticky left-[100px] z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
+                                <p class="text-gray-900 text-center w-[200px]">Qaliwarma Sede Arequipa</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ formattedDate(item.assigned_date) }}</p>
+                                <p class="text-gray-900 text-center">GTD - CICSA</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">240215</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">cpe000147894</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">3/15/2024</p>
+                            </td>
+                            <td class="border-b border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td>
+
+
+
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">3/15/2024</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">En Proceso</p>
+                            </td>
+                            <td class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
-                                    <p class="text-gray-900">{{ item?.customer }}</p>
-                                    <button @click="openCustomerDetails(item)" class="text-green-600">
+                                    <button  class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
                             </td>
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td>
+
+
 
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.i_state }}</p>
+                                <p class="text-gray-900 text-center">01/01/2024</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.additionals }}</p>
+                                <p class="text-gray-900 text-center">Guía</p>
+                            </td>
+                            <td class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex items-center justify-center">
+                                    <button  class="text-green-600">
+                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td>
+
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_operation?.photo_report }}</p>
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ formattedDate(item?.sot_operation?.ic_date) }}</p>
-                            </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button v-if="item?.sot_operation?.minute_materials" type="button" @click="openMaterialsModal(item.sot_operation.minute_materials)">
-                                    <EyeIcon class="w-5 h-5 text-green-600" />
-                                </button>
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.up_minutes }}</p>
+                                <p class="text-gray-900 text-center">Presentado</p>
+                            </td>
+                            <td class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex items-center justify-center">
+                                    <button  class="text-green-600">
+                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                    </button>
+                                </div>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.liquidation }}</p>
+                                <p class="text-gray-900 text-center">02/02/2024</p>
+                            </td>
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td>
+
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.down_warehouse }}</p>
+                                <p class="text-gray-900 text-center">04858</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.liquidation_date }}</p>
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.sot_status }}</p>
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_liquidation?.observations }}</p>
+                                <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                <p class="text-gray-900 text-center">{{ item.sot_liquidation ? 'S/. '+item.sot_liquidation.bill_amount.toFixed(2) : '' }}</p>
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td> 
+
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.sot_bill }}</p>
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.sot_bill_date }}</p>
+                                <p class="text-gray-900 text-center">Completado</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.bill }}</p>
+                                <p class="text-gray-900 text-center">Completado</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.bill_date }}</p>
+                                <p class="text-gray-900 text-center">Completado</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.charge }}</p>
-                            </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_payment?.charge_date }}</p>
+                                <p class="text-gray-900 text-center">Completado</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_bad_installation }}</p>
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td> 
+
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_no_rf }}</p>
+                                <p class="text-gray-900 text-center">485748</p>
                             </td>
-                            <td class="border-b border-r border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.sot_control?.p_rejections }}</p>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Completado</p>
+                            </td>
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td> 
+
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">8457838h</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">03/02/2024</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">30 días</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">05/03/2024</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">1 días</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">06/03/2024</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">Pagado</p>
+                            </td>
+                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Valery Montalvan
+                                </p>
+                            </td> 
+
+                            
                             
                             <td v-if="auth.user.role_id === 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
@@ -284,7 +475,8 @@
                             </td>
                         </tr>
 
-                    </tbody> -->
+                    </tbody> 
+                
                 </table>
             </div>
 
@@ -415,52 +607,52 @@ const { auth } = defineProps({
     auth: Object
 })
 
-// const showSotDeleteModal = ref(false);
-// const sotToDelete = ref(null)
-// const confirmSotDelete = ref(false)
-// const showCustomerDetails = ref(false);
-// const customer = ref([]);
+const showSotDeleteModal = ref(false);
+const sotToDelete = ref(null)
+const confirmSotDelete = ref(false)
+const showCustomerDetails = ref(false);
+const customer = ref([]);
 
-// const openCustomerDetails = (item) => {
-//     showCustomerDetails.value = true
-//     customer.value = item 
-// }
+const openCustomerDetails = (item) => {
+    showCustomerDetails.value = true
+    customer.value = item 
+}
 
-// const closeCustomerDetails = () => {
-//     customer.value = [];
-//     showCustomerDetails.value = false;
-// }
+const closeCustomerDetails = () => {
+    customer.value = [];
+    showCustomerDetails.value = false;
+}
 
-// function openSotDeleteModal (id) {
-//     sotToDelete.value = id
-//     showSotDeleteModal.value = true
-// }
-// function closeSotDeleteModal () {
-//     sotToDelete.value = null
-//     showSotDeleteModal.value = false
-// }
-// function deleteSot () {
-//     router.delete(route('socialnetwork.sot.delete', {sot_id: sotToDelete.value}),{
-//         onSuccess: () => {
-//             closeSotDeleteModal()
-//             confirmSotDelete.value = true
-//             setTimeout(()=>{
-//                 confirmSotDelete.value = false
-//             }, 1500)
-//         }
-//     })
-// }
+function openSotDeleteModal (id) {
+    sotToDelete.value = id
+    showSotDeleteModal.value = true
+}
+function closeSotDeleteModal () {
+    sotToDelete.value = null
+    showSotDeleteModal.value = false
+}
+function deleteSot () {
+    router.delete(route('socialnetwork.sot.delete', {sot_id: sotToDelete.value}),{
+        onSuccess: () => {
+            closeSotDeleteModal()
+            confirmSotDelete.value = true
+            setTimeout(()=>{
+                confirmSotDelete.value = false
+            }, 1500)
+        }
+    })
+}
 
 
-// //materials
-// const showMaterials = ref(false)
-// const materials = ref([]);
-// function openMaterialsModal(arrayMaterials) {
-//     materials.value = arrayMaterials ? arrayMaterials : []
-//     showMaterials.value = true
-// }
-// function closeMaterialsModal() {
-//     showMaterials.value = false
-// }
+//materials
+const showMaterials = ref(false)
+const materials = ref([]);
+function openMaterialsModal(arrayMaterials) {
+    materials.value = arrayMaterials ? arrayMaterials : []
+    showMaterials.value = true
+}
+function closeMaterialsModal() {
+    showMaterials.value = false
+}
 
 </script>
