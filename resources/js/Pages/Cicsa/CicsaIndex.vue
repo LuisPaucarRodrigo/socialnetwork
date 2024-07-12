@@ -1,8 +1,8 @@
 <template>
 
-    <Head title="SocialNetwork SOT" />
+    <Head title="CICSA" />
 
-    <AuthenticatedLayout :redirectRoute="'socialnetwork.sot'">
+    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
             Proceso CICSA
         </template>
@@ -11,10 +11,21 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex">
-
+                    <FilterProcess 
+                        :options="[
+                            'Asignación',
+                            'Factibilidad PINT y PEXT',
+                            'Materiales',
+                            'Instalación PINT y PEXT',
+                            'Orden de Compra',
+                            'Validación de OC',
+                            'Orden de Servicio',
+                            'Cobranza'
+                        ]"
+                        v-model="selectedOptions"
+                        :width="'w-[230px]'"
+                    />
                 </div>
-
-
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
             <br>
@@ -23,43 +34,47 @@
                     <thead>
                         <tr
                             class="border-b  text-xs font-semibold uppercase tracking-wide text-white">
-                            <th
+                            <th v-if="!checkVisibility('Asignación')"
+                                class="bg-black sticky left-0 z-10 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                
+                            </th>
+                            <th v-if="checkVisibility('Asignación')"
                                 class="bg-indigo-800 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Asignación
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Factibilidad PINT y PEXT
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Materiales
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Instalación PINT y PEXT
                             </th>
-                            <th
+                            <th 
                                 class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" >
                                 Estado del Proyecto
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
                                 Orden de Compra
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Validación de OC
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Servicio')"
                                 class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Orden de Servicio
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Cobranza
                             </th>
-                            <th
+                            <th 
                                 class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                                 Estado de Cobranza
                             </th>
@@ -69,91 +84,92 @@
                         </tr>
                         <tr
                             class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
+                            <th v-if="checkVisibility('Asignación')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Asignación
                             </th>
-                            <th
-                                class=" border-b-2 sticky left-0 z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 ">
+                            <th 
+                                :class="['border-b-2 sticky left-0 z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación')?'':'border-r-2']"
+                                >
                                 Nombre del Proyecto
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cliente
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Código de Proyecto
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha Límite del Proyecto
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Factibilidad
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Informe
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales de Factibilidad
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Recojo
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Guía
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Materiales')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Pext
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Pint
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acta de Conformidad
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Informe
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales Liquidados
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Envío de Informe
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
@@ -161,119 +177,120 @@
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider ">
                                 
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Orden de Compra
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Numero de Orden de Compra
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Formato Maestro
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Item 3456
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Presupuesto
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Inicio de Validación
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Control de Materiales
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Supervisor
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Almacen
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Jefe de Obra
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Liquidador
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Superintendente
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Servicio')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Orden de Servicio
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Servicio')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Orden de Servicio
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Servicio')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Hoja de Estimación
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Servicio')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Orden de Compra
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Servicio')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Factura en PDF
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Servicio')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Factura en ZIP
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Orden de Servicio')" 
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Número de Factura
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Factura
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Crédito A
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Pago
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Días de Atraso
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Abono
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Estado de Pago
                             </th>
-                            <th
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
@@ -281,32 +298,32 @@
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 
                             </th>
-                            <th  v-if="auth.user.role_id === 1"
+                            <th v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">3/15/2024</p>
                             </td>
                             <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
                                 <p class="text-gray-900 text-center">Qaliwarma Sede Arequipa</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">GTD - CICSA</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">240215</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">cpe000147894</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">3/15/2024</p>
                             </td>
-                            <td class="border-b border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Asignación')"  class="border-b border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
                                 </p>
@@ -314,20 +331,20 @@
 
 
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">3/15/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">En Proceso</p>
                             </td>
-                            <td class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
                                     <button  class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
                             </td>
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
                                 </p>
@@ -335,48 +352,48 @@
 
 
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Materiales')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">01/01/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Materiales')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Guía</p>
                             </td>
-                            <td class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Materiales')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
                                     <button  class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
                             </td>
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Materiales')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
                                 </p>
                             </td>
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Presentado</p>
                             </td>
-                            <td class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
                                     <button  class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
                                 </p>
@@ -390,100 +407,100 @@
                             </td>
 
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">04858</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Compra')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
                                 </p>
                             </td> 
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Validación de OC')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
                                 </p>
                             </td> 
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">02/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">485748</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Pendiente</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Completado</p>
                             </td>
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
                                 </p>
                             </td> 
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">8457838h</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">03/02/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">30 días</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">05/03/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">1 días</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">06/03/2024</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">Pagado</p>
                             </td>
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="checkVisibility('Cobranza')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     Valery Montalvan
                                 </p>
@@ -636,6 +653,7 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import FilterProcess from '@/Components/FilterProcess.vue'
 
 const { auth } = defineProps({
     auth: Object
@@ -688,5 +706,26 @@ function openMaterialsModal(arrayMaterials) {
 function closeMaterialsModal() {
     showMaterials.value = false
 }
+
+
+
+
+const selectedOptions = ref([
+    'Asignación',
+    'Factibilidad PINT y PEXT',
+    'Materiales',
+    'Instalación PINT y PEXT',
+    'Orden de Compra',
+    'Validación de OC',
+    'Orden de Servicio',
+    'Cobranza'
+])
+
+function checkVisibility(option) {
+  return selectedOptions.value.includes(option);
+}
+
+
+
 
 </script>
