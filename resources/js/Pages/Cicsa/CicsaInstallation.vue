@@ -107,7 +107,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
-                                        @click="openEditFeasibilityModal(item.id, item.cicsa_feasibility)">
+                                        @click="openEditFeasibilityModal(item.id, item.cicsa_installation, item.total_materials)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -129,7 +129,7 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Factibilidada' : 'Nueva Factibilidada' }}
+                    {{ form.id ? 'Editar Instalación' : 'Nueva Instalación' }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -184,9 +184,60 @@
                                 <InputError :message="form.errors.shipping_report_date" />
                             </div>
                         </div>
-                        
-                        
                     </div>
+                    <br>
+                    <br>
+                    <template v-if="true">
+                        <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
+
+
+                            <div class="flex gap-2 items-center">
+                                <b>Liquidación de Materiales</b>
+                            </div>
+                            <br>
+                            <div v-if="form.total_materials.length > 0" class="overflow-auto">
+                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                    <thead>
+                                        <tr
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                                Material
+                                            </th>
+                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Recibidos
+                                            </th>
+                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Usados
+                                            </th>
+                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Resto
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(item, i) in form.total_materials" :key="i"
+                                            class="text-gray-700 bg-white text-sm">
+                                            <td class="border-b border-slate-300  px-2 py-4">
+                                                {{ item?.name }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item?.quantity }}
+                                            </td>
+                                            <td class="border-b border-slate-300  px-2 py-4">
+                                                <input required type="number" min="0" v-model="form.total_materials[i]['used_quantity']"
+                                                    autocomplete="off" :max="item.quantity"
+                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item?.quantity - item.used_quantity }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </template>
+
                     <br>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
@@ -287,7 +338,7 @@
                 </div>
             </div>
         </Modal>
-<!-- 
+        <!-- 
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
@@ -369,8 +420,8 @@ const initialState = {
     cicsa_assignation_id: '',
     pext_date: '',
     pint_date: '',
-    conformity: '',
-    report: '',
+    conformity: 'Pendiente',
+    report: 'Pendiente',
     shipping_report_date: '',
 }
 
@@ -419,10 +470,16 @@ function submitStore() {
 
 const confirmUpdateAssignation = ref(false);
 
-function openEditFeasibilityModal(cicsa_assignation_id, item) {
-    form.cicsa_assignation_id = 1;
-    form.defaults({ ...item })
-    form.reset()
+function openEditFeasibilityModal(ca_id, item, total_materials) {
+    if (item) {
+        total_materials = total_materials.map(item=>({...item, used_quantity:0}))
+        form.defaults({ ...item, total_materials, cicsa_assignation_id: ca_id })
+        form.reset()
+    } else {
+        total_materials = total_materials.map(item=>({...item, used_quantity:0}))
+        form.defaults({ ...initialState, total_materials, cicsa_assignation_id: ca_id })
+        form.reset()
+    }
     showAddEditModal.value = true
 }
 
@@ -443,10 +500,10 @@ function submit() {
     console.log(form)
     // form.id ? submitUpdate() : submitStore()
     form.material_feasibility = materialArray.value.map(material => ({
-            name: material.name,
-            unit: material.unit,
-            quantity: material.quantity,
-        }))
+        name: material.name,
+        unit: material.unit,
+        quantity: material.quantity,
+    }))
     let url = route('feasibilities.storeOrUpdate', { cicsa_assignation_id: form.cicsa_assignation_id })
     form.put(url, {
         onSuccess: () => {
@@ -474,7 +531,7 @@ function addMaterial() {
         mateiralObject.value.name = '';
         mateiralObject.value.unit = '';
         mateiralObject.value.quantity = '';
-        
+
     } else {
         console.error('Por favor completa todos los campos del formulario.');
     }
