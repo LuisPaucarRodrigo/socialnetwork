@@ -17,3 +17,8 @@ Route::get('/cicsa_material', [CicsaController::class, 'indexMaterial'])->name('
 
 
 Route::get('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
+
+
+
+
+Route::get('/cicsa_installation', [CicsaController::class, 'indexInstallation'])->name('cicsa.installation.index');
