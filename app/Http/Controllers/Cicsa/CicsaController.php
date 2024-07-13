@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Cicsa;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cicsa\StoreOrUpdateAssigantionRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
+use App\Models\CicsaInstallation;
+use Illuminate\Http\Request;
 use App\Models\CicsaAssignation;
 use App\Models\CicsaFeasibility;
 use App\Models\CicsaFeasibilityMaterial;
@@ -87,8 +89,7 @@ class CicsaController extends Controller
 
 
 
-    public function indexInstallation()
-    {
+    public function indexInstallation() {
         $installations = CicsaAssignation::select('id', 'project_name')
             ->with(
                 'cicsa_installation.cicsa_installation_materials',
@@ -99,6 +100,19 @@ class CicsaController extends Controller
         return Inertia::render('Cicsa/CicsaInstallation', [
             'installations' => $installations
         ]);
+    }
+
+
+    public function updateOrStoreInstallation(Request $request, $ci_id=null) {
+        $validateData = $request->validated();
+        $cicsaFeasibility =  CicsaInstallation::updateOrCreate(
+            ['cicsa_assignation_id' => $ci_id],
+            $validateData
+        );
+        foreach ($request->total_materials as $material) {
+            $material['cicsa_feasibility_id'] = $cicsaFeasibility->id;
+            CicsaFeasibilityMaterial::create($material);
+        }
     }
 
 
