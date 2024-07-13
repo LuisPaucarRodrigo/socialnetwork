@@ -18,15 +18,15 @@ const SotOptions = [
     },
     {
         optionName: 'Asignación',
-        route: '#',
+        route: route('assignation.index'),
     },
     {
         optionName: 'Factibilidad PINT y PEXT',
-        route: '#',
+        route: route('feasibilities.index'),
     },
     {
         optionName: 'Materiales',
-        route: '#',
+        route: route('material.index'),
     },
     {
         optionName: 'Instalación PINT y PEXT',
@@ -34,7 +34,7 @@ const SotOptions = [
     },
     {
         optionName: 'Orden de Compra',
-        route: '#',
+        route: route('purchase.order.index'),
     },
     {
         optionName: 'Validación de OC',
