@@ -76,4 +76,44 @@ class CicsaController extends Controller
             'purchase_order' => $purchase_order
         ]);
     }
+
+
+
+
+
+
+
+
+
+
+
+    public function indexInstallation()
+    {
+        $feasibility = CicsaAssignation::select('id', 'project_name')
+            ->with(
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_installation.user'
+                )
+            ->orderBy('updated_at', 'desc')
+            ->paginate();
+        return Inertia::render('Cicsa/CicsaInstallation', [
+            'feasibility' => $feasibility
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

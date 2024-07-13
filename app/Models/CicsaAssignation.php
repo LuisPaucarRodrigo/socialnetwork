@@ -22,6 +22,10 @@ class CicsaAssignation extends Model
         'user_id'
     ];
 
+    protected $appends = [
+        'total_materials'
+    ];
+
     public function user ()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -60,5 +64,10 @@ class CicsaAssignation extends Model
     public function cicsa_charge_area ()
     {
         return $this->hasOne(CicsaChargeArea::class, 'cicsa_assignation_id');
+    }
+
+    public function getTotalMaterialsAttribute ()
+    {
+        return $this->cicsa_feasibility()->first()->getTotalMaterialsAttribute();
     }
 }
