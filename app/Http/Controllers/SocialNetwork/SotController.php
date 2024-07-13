@@ -161,7 +161,7 @@ class SotController extends Controller
     }
 
     public function sot_control_udpate(CreateAndpdateControl $request, $sot_id)
-    {
+    {   
         $validateData = $request->validated();
         SNSotControl::updateOrCreate(
             ['s_n_sot_id' => $sot_id],

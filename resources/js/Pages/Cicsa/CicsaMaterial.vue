@@ -4,14 +4,14 @@
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
-            Ásignación
+            Materiales
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <PrimaryButton @click="openAddAssignationModal" type="button">
                     + Agregar
                 </PrimaryButton>
-                <SelectCicsaComponent currentSelect="Asignación" />
+                <SelectCicsaComponent currentSelect="Materiales" />
             </div>
             <br>
             <div class="overflow-x-auto">
@@ -53,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in assignation.data" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in materiales.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -61,7 +61,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.assignation_date) }}
+                                    {{ formattedDate(item.materiales_date) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -106,7 +106,7 @@
             </div>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="assignation.links" />
+                <pagination :links="materiales.links" />
             </div>
         </div>
 
@@ -119,11 +119,11 @@
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="">
-                            <InputLabel for="assignation_date">Fecha de Asignación</InputLabel>
+                            <InputLabel for="materiales_date">Fecha de Asignación</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.assignation_date" autocomplete="off" id="assignation_date"
+                                <input type="date" v-model="form.materiales_date" autocomplete="off" id="materiales_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.assignation_date" />
+                                <InputError :message="form.errors.materiales_date" />
                             </div>
                         </div>
 
@@ -200,15 +200,15 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import {formattedDate} from '@/utils/utils.js';
 
-const { assignation, auth } = defineProps({
-    assignation: Object,
+const { materiales, auth } = defineProps({
+    materiales: Object,
     auth: Object
 })
 
 const initialState = {
     id: null,
     user_id: auth.user.id,
-    assignation_date: '',
+    materiales_date: '',
     project_name: '',
     customer: '',
     project_code: '',
@@ -232,7 +232,7 @@ function closeAddAssignationModal() {
     form.reset()
 }
 function submitStore() {
-    let url = route('assignation.storeOrUpdate');
+    let url = route('materiales.storeOrUpdate');
     form.put(url, {
         onSuccess: () => {
             closeAddAssignationModal()
@@ -256,7 +256,7 @@ function openEditSotModal (item) {
 }
 
 function submitUpdate() {
-    let url = route('assignation.storeOrUpdate', {cicsa_assignation_id:form.id})
+    let url = route('materiales.storeOrUpdate', {cicsa_materiales_id:form.id})
     form.put(url, {
         onSuccess: () => {
             closeAddAssignationModal()
