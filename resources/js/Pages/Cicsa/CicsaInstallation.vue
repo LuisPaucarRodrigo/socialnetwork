@@ -135,74 +135,57 @@
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="sm:col-span-1">
-                            <InputLabel for="feasibility_date">Fecha de Factibilidad</InputLabel>
+                            <InputLabel for="feasibility_date">Fecha de PEXT</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" v-model="form.feasibility_date" autocomplete="off"
-                                    id="feasibility_date"/>
-                                <InputError :message="form.errors.feasibility_date" />
+                                <input type="date" v-model="form.pext_date" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.pext_date" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <InputLabel for="feasibility_date">Fecha de PINT</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.pint_date" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.pint_date" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <InputLabel for="feasibility_date">Acta de Conformidad</InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.conformity" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option>Pendiente</option>
+                                    <option>Completado</option>
+                                </select>
+                                <InputError :message="form.errors.conformity" />
                             </div>
                         </div>
                         <div class="sm:col-span-1">
-                            <InputLabel for="report">Informe</InputLabel>
+                            <InputLabel for="feasibility_date">Informe</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.report" autocomplete="off" id="report"/>
+                                <select v-model="form.report" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option>Pendiente</option>
+                                    <option>En Proceso</option>
+                                    <option>Completado</option>
+                                </select>
                                 <InputError :message="form.errors.report" />
                             </div>
                         </div>
+
                         <div class="sm:col-span-1">
-                            <div class="flex gap-2 items-center">
-                                <h2 class="text-base font-bold leading-6 text-gray-900 ">
-                                    Añadir Materiales
-                                </h2>
-                                <button @click="modalMaterial" type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="indigo" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
-                                    </svg>
-                                </button>
+                            <InputLabel for="feasibility_date">Fecha de envío de Informe</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.shipping_report_date" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.shipping_report_date" />
                             </div>
                         </div>
-                        <div class="sm:col-span-2">
-                            <table class="w-full whitespace-no-wrap">
-                                <thead>
-                                    <tr
-                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Nombre
-                                        </th>
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Unidad
-                                        </th>
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                            Cantidad
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="item in materialArray" :key="item.id" class="text-gray-700">
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 text-center">
-                                                {{ item.name }}
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 text-center">
-                                                {{ item.unit }}
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 text-center">
-                                                {{ item.quantity }}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        
+                        
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -379,16 +362,16 @@ const { installations, auth } = defineProps({
     auth: Object
 })
 
-console.log(installations.data)
 
 const initialState = {
     user_id: auth.user.id,
-    feasibility_date: '',
-    report: '',
     user_name: auth.user.name,
-    material_feasibility: [],
-    //Aqui lo ingreso desde el inicio por lo que solo tomara como id de assination 1
-    cicsa_assignation_id: 1,
+    cicsa_assignation_id: '',
+    pext_date: '',
+    pint_date: '',
+    conformity: '',
+    report: '',
+    shipping_report_date: '',
 }
 
 const form = useForm(
@@ -437,12 +420,10 @@ function submitStore() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(cicsa_assignation_id, item) {
-    console.log(item);
     form.cicsa_assignation_id = 1;
     form.defaults({ ...item })
     form.reset()
     showAddEditModal.value = true
-
 }
 
 function submitUpdate() {
