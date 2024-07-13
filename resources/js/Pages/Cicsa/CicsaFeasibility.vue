@@ -241,6 +241,7 @@ const initialState = {
     report: '',
     user_name: auth.user.name,
     material_feasibility: [],
+    //Aqui lo ingreso desde el inicio por lo que solo tomara como id de assination 1
     cicsa_assignation_id: 1,
 }
 
@@ -291,7 +292,7 @@ const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(cicsa_assignation_id, item) {
     console.log(item);
-    form.cicsa_assignation_id = cicsa_assignation_id;
+    form.cicsa_assignation_id = 1;
     form.defaults({ ...item })
     form.reset()
     showAddEditModal.value = true
