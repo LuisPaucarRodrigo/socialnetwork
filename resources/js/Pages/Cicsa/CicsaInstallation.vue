@@ -58,7 +58,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in feasibility.data" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in installations.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -85,7 +85,7 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button type="button" @click="openMaterialsModal(item.minute_materials)">
+                                <button type="button" @click="openMaterialsModal(item.total_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
                             </td>
@@ -122,7 +122,7 @@
             </div>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="feasibility.links" />
+                <pagination :links="installations.links" />
             </div>
         </div>
 
@@ -271,6 +271,9 @@
                                         Material
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Unidad
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Cantidad
                                     </th>
                                 </tr>
@@ -278,7 +281,10 @@
                             <tbody>
                                 <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
                                     <td class="border-b border-slate-300  px-4 py-4">
-                                        {{ item?.material }}
+                                        {{ item?.name }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.unit }}
                                     </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.quantity }}
@@ -368,10 +374,12 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { TrashIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
-const { feasibility, auth } = defineProps({
-    feasibility: Object,
+const { installations, auth } = defineProps({
+    installations: Object,
     auth: Object
 })
+
+console.log(installations.data)
 
 const initialState = {
     user_id: auth.user.id,

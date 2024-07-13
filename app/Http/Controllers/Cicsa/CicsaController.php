@@ -89,7 +89,7 @@ class CicsaController extends Controller
 
     public function indexInstallation()
     {
-        $feasibility = CicsaAssignation::select('id', 'project_name')
+        $installations = CicsaAssignation::select('id', 'project_name')
             ->with(
                 'cicsa_installation.cicsa_installation_materials',
                 'cicsa_installation.user'
@@ -97,7 +97,7 @@ class CicsaController extends Controller
             ->orderBy('updated_at', 'desc')
             ->paginate();
         return Inertia::render('Cicsa/CicsaInstallation', [
-            'feasibility' => $feasibility
+            'installations' => $installations
         ]);
     }
 

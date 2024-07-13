@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class CicsaFeasibility extends Model
 {
@@ -35,23 +36,4 @@ class CicsaFeasibility extends Model
     }
 
 
-    public function getTotalMaterialsAttribute () {
-        $total_materials=[];
-        $list = $this->cicsa_feasibility_materials()->get();
-        foreach($list as $item){
-            $name = $item->name;
-            $key = array_search($name, array_column($total_materials, 'name'));
-            if($key !== false){
-                $newQuantity = $total_materials[$key]["quantity"] + $item->quantity;
-                $total_materials[$key]["quantity"] = $newQuantity;
-            } else {
-                array_push($total_materials,[
-                    'name'=> $item->name,
-                    'unit'=> $item->unit,
-                    'quantity'=> $item->quantity,
-                ]);
-            }
-        }
-        return $total_materials;
-    }
 }
