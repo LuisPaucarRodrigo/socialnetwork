@@ -4,14 +4,14 @@
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
-            Ásignación
+            Orden de Compra
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <PrimaryButton @click="openAddAssignationModal" type="button">
                     + Agregar
                 </PrimaryButton>
-                <SelectCicsaComponent currentSelect="Asignación" />
+                <SelectCicsaComponent currentSelect="Orden de Compra" />
             </div>
             <br>
             <div class="overflow-x-auto">
