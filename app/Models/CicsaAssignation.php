@@ -67,8 +67,14 @@ class CicsaAssignation extends Model
         return $this->hasOne(CicsaChargeArea::class, 'cicsa_assignation_id');
     }
 
-    public function getTotalMaterialsAttribute ()
-    {
+
+    public function getCicsaProjectStatusAttribute () {
+        
+    }
+
+
+
+    public function getTotalMaterialsAttribute () {
         $total_materials=[];
         $guides = $this->cicsa_feasibility()->with('cicsa_feasibility_materials')->get();
         foreach($guides as $guide){
