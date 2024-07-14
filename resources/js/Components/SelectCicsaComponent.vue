@@ -14,7 +14,7 @@ import { ref, watch } from 'vue';
 const SotOptions = [
     {
         optionName: 'Proceso',
-        route: '#',
+        route: route('cicsa.index'),
     },
     {
         optionName: 'Asignación',
@@ -30,7 +30,7 @@ const SotOptions = [
     },
     {
         optionName: 'Instalación PINT y PEXT',
-        route: '#',
+        route: route('cicsa.installation.index'),
     },
     {
         optionName: 'Orden de Compra',

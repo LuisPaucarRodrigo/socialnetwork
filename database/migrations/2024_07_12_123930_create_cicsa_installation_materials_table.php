@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('unit');
             $table->integer('quantity');
+            $table->integer('used_quantity');
             $table->foreignId('cicsa_installation_id')->constrained('cicsa_installations')->onDelete('cascade');
             $table->timestamps();
         });
