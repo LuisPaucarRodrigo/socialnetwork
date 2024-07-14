@@ -109,10 +109,12 @@
                                 <InputError :message="form.errors.report" />
                             </div>
                         </div>
+                        
                         <div class="sm:col-span-1">
+                            <br>
                             <div class="flex gap-2 items-center">
                                 <h2 class="text-base font-bold leading-6 text-gray-900 ">
-                                    Añadir Feasibilityes
+                                    Añadir Materiales
                                 </h2>
                                 <button @click="modalFeasibility" type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -122,6 +124,7 @@
                                     </svg>
                                 </button>
                             </div>
+                            <br>
                         </div>
                         <div class="sm:col-span-2">
                             <table class="w-full whitespace-no-wrap">
