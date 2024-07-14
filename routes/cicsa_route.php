@@ -14,9 +14,10 @@ Route::put('/cicsa_feasibilities/store/update/{cicsa_assignation_id?}', [CicsaCo
 
 
 Route::get('/cicsa_material', [CicsaController::class, 'indexMaterial'])->name('material.index');
-
+Route::put('/cicsa_material/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStoreMaterial'])->name('material.storeOrUpdate');
 
 Route::get('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
+Route::put('/cicsa_purchase_order/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
 
 
 
@@ -40,3 +41,5 @@ Route::post('/cicsa_service_orders/update/{cicsa_service_order_id}', [CicsaContr
 Route::get('/cicsa_charge_areas', [CicsaController::class, 'indexChargeArea'])->name('cicsa.charge_areas');
 Route::post('/cicsa_charge_areas/store/{cicsa_assignation_id?}', [CicsaController::class, 'storeChargeArea'])->name('cicsa.charge_areas.store');
 Route::post('/cicsa_charge_areas/update/{cicsa_charge_area}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
+
+

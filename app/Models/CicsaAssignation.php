@@ -44,7 +44,7 @@ class CicsaAssignation extends Model
 
     public function cicsa_materials ()
     {
-        return $this->hasMany(CicsaMaterial::class, 'cicsa_assignation_id');
+        return $this->hasOne(CicsaMaterial::class, 'cicsa_assignation_id');
     }
 
     public function cicsa_purchase_order ()

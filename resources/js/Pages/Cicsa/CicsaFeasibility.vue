@@ -7,7 +7,7 @@
             Factibilidad PINT y PEXT
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-between">
+            <div class="flex justify-end">
                 <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
             </div>
             <br>
@@ -81,10 +81,10 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
+        <Modal :show="showAddEditModal" @close="closeAddFeasibilityModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Factibilidada' : 'Nueva Factibilidada' }}
+                    {{ form.id ? 'Editar Factibilidad' : 'Nueva Factibilidad' }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -93,23 +93,23 @@
                             <InputLabel for="feasibility_date">Fecha de Factibilidad</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.feasibility_date" autocomplete="off"
-                                    id="feasibility_date"/>
+                                    id="feasibility_date" />
                                 <InputError :message="form.errors.feasibility_date" />
                             </div>
                         </div>
                         <div class="sm:col-span-1">
                             <InputLabel for="report">Informe</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.report" autocomplete="off" id="report"/>
+                                <TextInput type="text" v-model="form.report" autocomplete="off" id="report" />
                                 <InputError :message="form.errors.report" />
                             </div>
                         </div>
                         <div class="sm:col-span-1">
                             <div class="flex gap-2 items-center">
                                 <h2 class="text-base font-bold leading-6 text-gray-900 ">
-                                    Añadir Materiales
+                                    Añadir Feasibilityes
                                 </h2>
-                                <button @click="modalMaterial" type="button">
+                                <button @click="modalFeasibility" type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="indigo" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -135,10 +135,14 @@
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Cantidad
                                         </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in materialArray" :key="item.id" class="text-gray-700">
+                                    <tr v-for="item in form.cicsa_feasibility_materials" :key="item.id"
+                                        class="text-gray-700">
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
@@ -154,6 +158,18 @@
                                                 {{ item.quantity }}
                                             </p>
                                         </td>
+                                        <td
+                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <button v-if="!item.id" type="button" @click="delete_material(item.name)"
+                                                class="text-blue-900 whitespace-no-wrap">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6 text-red-500">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -161,7 +177,7 @@
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
+                        <SecondaryButton type="button" @click="closeAddFeasibilityModal"> Cancelar </SecondaryButton>
 
                         <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
@@ -172,46 +188,46 @@
             </div>
         </Modal>
 
-        <Modal :show="showModalMaterial">
+        <Modal :show="showModalFeasibility">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Agregar un Material
+                    Agregar un Factibilidad
                 </h2>
                 <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                     <div class="sm:col-span-1">
                         <InputLabel for="name">Nombre</InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="text" v-model="mateiralObject.name" id="name" />
+                            <TextInput required type="text" v-model="feasibilityObject.name" id="name" />
                         </div>
                     </div>
                     <div class="sm:col-span-1">
                         <InputLabel for="unit">Unidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="text" v-model="mateiralObject.unit" id="unit" />
+                            <TextInput required type="text" v-model="feasibilityObject.unit" id="unit" />
                         </div>
                     </div>
                     <div class="sm:col-span-1">
                         <InputLabel for="quantity">Cantidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="number" v-model="mateiralObject.quantity" id="quantity" />
+                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity" />
                         </div>
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <SecondaryButton type="button" @click="modalMaterial"> Cerrar </SecondaryButton>
-                    <PrimaryButton type="button" @click="addMaterial"> Agregar </PrimaryButton>
+                    <SecondaryButton type="button" @click="modalFeasibility"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="button" @click="addFeasibility"> Agregar </PrimaryButton>
                 </div>
             </div>
 
 
         </Modal>
 
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
-            :message="'La Asignacion fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Asignacion Actualizada'"
-            :message="'La Asignacion fue actualizada'" />
+        <SuccessOperationModal :confirming="confirmFeasibility" :title="'Nueva Factibilidad creada'"
+            :message="'La Factibilidad fue creada con éxito'" />
+        <SuccessOperationModal :confirming="confirmUpdateFeasibility" :title="'Factibilidad Actualizada'"
+            :message="'La Factibilidad fue actualizada'" />
     </AuthenticatedLayout>
 </template>
 
@@ -240,93 +256,53 @@ const initialState = {
     feasibility_date: '',
     report: '',
     user_name: auth.user.name,
-    material_feasibility: [],
-    //Aqui lo ingreso desde el inicio por lo que solo tomara como id de assination 1
-    cicsa_assignation_id: 1,
+    cicsa_feasibility_materials: [],
 }
 
 const form = useForm(
     { ...initialState }
 );
 
-const materialArray = ref([]);
-const mateiralObject = ref({
+const feasibilityObject = ref({
+    id: '',
     name: '',
     unit: '',
     quantity: 0,
-    cicsa_feasibility_id: ''
 });
 const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
-const showModalMaterial = ref(false)
+const confirmFeasibility = ref(false);
+const showModalFeasibility = ref(false);
+const cicsa_assignation_id = ref(null);
 
-function modalMaterial() {
-    showModalMaterial.value = !showModalMaterial.value
+function modalFeasibility() {
+    showModalFeasibility.value = !showModalFeasibility.value
 }
 
-function openAddFeasibilityModal() {
-    showAddEditModal.value = true
-}
-function closeAddAssignationModal() {
+function closeAddFeasibilityModal() {
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
 }
-function submitStore() {
-    let url = route('feasibility.storeOrUpdate');
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmAssignation.value = true
-            setTimeout(() => {
-                confirmAssignation.value = false
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
-        }
-    })
-}
 
-const confirmUpdateAssignation = ref(false);
+const confirmUpdateFeasibility = ref(false);
 
-function openEditFeasibilityModal(cicsa_assignation_id, item) {
-    console.log(item);
-    form.cicsa_assignation_id = 1;
+function openEditFeasibilityModal(id, item) {
+    cicsa_assignation_id.value = id;
     form.defaults({ ...item })
     form.reset()
+    form.cicsa_feasibility_materials = item ? item.cicsa_feasibility_materials : []
     showAddEditModal.value = true
 
 }
 
-function submitUpdate() {
-    // let url = route('feasibility.storeOrUpdate', {cicsa_assignation_id:form.id})
-    // form.put(url, {
-    //     onSuccess: () => {
-    //         closeAddAssignationModal()
-    //         confirmUpdateAssignation.value = true
-    //         setTimeout(() => {
-    //             confirmUpdateAssignation.value = false
-    //         }, 1500)
-    //     }
-    // })
-}
-
 function submit() {
-    console.log(form)
-    // form.id ? submitUpdate() : submitStore()
-    form.material_feasibility = materialArray.value.map(material => ({
-            name: material.name,
-            unit: material.unit,
-            quantity: material.quantity,
-        }))
-    let url = route('feasibilities.storeOrUpdate', { cicsa_assignation_id: form.cicsa_assignation_id })
+    let url = route('feasibilities.storeOrUpdate', { cicsa_assignation_id: cicsa_assignation_id.value })
     form.put(url, {
         onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
+            closeAddFeasibilityModal()
+            confirmUpdateFeasibility.value = true
             setTimeout(() => {
-                confirmUpdateAssignation.value = false
+                confirmUpdateFeasibility.value = false
             }, 1500)
         },
         onError: (e) => {
@@ -335,22 +311,28 @@ function submit() {
     })
 }
 
-function addMaterial() {
-    if (mateiralObject.value.name && mateiralObject.value.unit && mateiralObject.value.quantity) {
-        const newMaterial = {
-            name: mateiralObject.value.name,
-            unit: mateiralObject.value.unit,
-            quantity: mateiralObject.value.quantity
+function addFeasibility() {
+    if (feasibilityObject.value.name && feasibilityObject.value.unit && feasibilityObject.value.quantity) {
+        const newFeasibility = {
+            name: feasibilityObject.value.name,
+            unit: feasibilityObject.value.unit,
+            quantity: feasibilityObject.value.quantity
         };
-        materialArray.value.push(newMaterial);
-
-        mateiralObject.value.name = '';
-        mateiralObject.value.unit = '';
-        mateiralObject.value.quantity = '';
-        
+        form.cicsa_feasibility_materials.push(newFeasibility);
+        feasibilityObject.value.name = '';
+        feasibilityObject.value.unit = '';
+        feasibilityObject.value.quantity = '';
     } else {
         console.error('Por favor completa todos los campos del formulario.');
     }
 }
 
+function delete_material(materialName) {
+    const index = form.cicsa_feasibility_materials.findIndex(material => material.name === materialName);
+    if (index !== -1) {
+        form.cicsa_feasibility_materials.splice(index, 1);
+    } else {
+        console.error(`No se encontró ningún material con el nombre '${materialName}'.`);
+    }
+}
 </script>
