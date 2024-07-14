@@ -205,6 +205,8 @@ const { assignation, auth } = defineProps({
     auth: Object
 })
 
+console.log(assignation.data)
+
 const initialState = {
     id: null,
     user_id: auth.user.id,

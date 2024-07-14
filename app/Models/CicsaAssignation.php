@@ -24,7 +24,8 @@ class CicsaAssignation extends Model
     ];
 
     protected $appends = [
-        'total_materials'
+        'total_materials',
+        'cicsa_project_status',
     ];
 
     public function user ()
@@ -92,8 +93,46 @@ class CicsaAssignation extends Model
         }
         return true;
     }
+    public function checkMaterials() {
+        $feasibility = $this->cicsa_materials()->first();
+        if (!$feasibility) {return false;}
+        $fieldsToCheck = ['pick_date',
+        'guide_number',
+        'received_materials',];
+        foreach ($fieldsToCheck as $field) {
+            if (is_null($feasibility->$field)) {return false;}
+        }
+        return true;
+    }
+
+    public function checkInstallation() {
+        $feasibility = $this->cicsa_installation()->first();
+        if (!$feasibility) {return false;}
+        $fieldsToCheck = ['pext_date',
+        'pint_date',
+        'conformity',
+        'report',
+        'shipping_report_date',];
+        foreach ($fieldsToCheck as $field) {
+            if (is_null($feasibility->$field)) {return false;}
+        }
+        if ($feasibility->conformity !== 'Completado'
+            && $feasibility->report !== 'Completado'
+        ) {return false;}
+        if ($feasibility->cicsa_installation_materials()->count() === 0) {
+            return false;
+        }
+        return true;
+    }
+
+
     public function getCicsaProjectStatusAttribute () {
-        
+        return [
+            'assignation' => $this->checkAssignation(),
+            'feasibility' => $this->checkFeasibility(),
+            'material' => $this->checkMaterials(),
+            'installation' => $this->checkInstallation(),
+        ];
     }
 
 
