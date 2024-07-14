@@ -1,16 +1,13 @@
 <template>
 
-    <Head title="CICSA Asignación" />
+    <Head title="CICSA Material" />
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
             Materiales
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-between">
-                <PrimaryButton @click="openAddAssignationModal" type="button">
-                    + Agregar
-                </PrimaryButton>
+            <div class="flex justify-end">
                 <SelectCicsaComponent currentSelect="Materiales" />
             </div>
             <br>
@@ -21,31 +18,23 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre del Proyecto
+                                Proyecto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Asignacion
+                                Fecha de Recojo
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Cliente
+                                Guia
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Proyecto
+                                Lista de Materiales Recibidos
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                CPE
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha limite de Proyecto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre del Usuario
+                                Lista de Materiales de Factibilidad
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -53,7 +42,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in materiales.data" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in materials.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -61,37 +50,27 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.materiales_date) }}
+                                    {{ formattedDate(item.cicsa_materials?.pick_date) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.customer }}
+                                    {{ item.cicsa_materials?.guide_number }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.project_code }}
+                                    {{ item.cicsa_materials?.received_materials }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cpe }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.project_deadline) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.user_name }}
+                                <p v-for="material in item.cicsa_feasibility?.cicsa_feasibility_materials" class="text-gray-900 text-center">
+                                   - Nombre: {{ material.name }}, Cantidad: {{ material.quantity }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900" @click="openEditSotModal(item)">
+                                    <button class="text-blue-900" @click="openEditSotModal(item.id,item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -106,71 +85,54 @@
             </div>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="materiales.links" />
+                <pagination :links="materials.links" />
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
+        <Modal :show="showAddEditModal" @close="closeAddMaterialModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{form.id ? 'Editar Asignación' : 'Nueva Asignación'}}
+                    {{form.id ? 'Editar Material' : 'Nueva Material'}}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                        <div class="">
-                            <InputLabel for="materiales_date">Fecha de Asignación</InputLabel>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="pick_date">Fecha de Recojo</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.materiales_date" autocomplete="off" id="materiales_date"
+                                <input type="date" v-model="form.pick_date" autocomplete="off" id="pick_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.materiales_date" />
+                                <InputError :message="form.errors.pick_date" />
                             </div>
                         </div>
-
-                        <div class="">
-                            <InputLabel for="project_name">Nombre del Proyecto</InputLabel>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="guide_number">Numero de Guia</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.project_name" autocomplete="off" id="project_name"
+                                <input type="text" v-model="form.guide_number" autocomplete="off" id="guide_number"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.project_name" />
+                                <InputError :message="form.errors.guide_number" />
                             </div>
                         </div>
-                        <div class="">
-                            <InputLabel for="customer">Cliente</InputLabel>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="received_materials">Lista de Materiales Recibidos</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.customer" autocomplete="off" id="customer"
+                                <textarea type="text" v-model="form.received_materials" autocomplete="off" id="received_materials"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
-                                <InputError :message="form.errors.customer" />
+                                <InputError :message="form.errors.received_materials" />
                             </div>
                         </div>
-                        <div class="">
-                            <InputLabel for="project_code">Codigo de Proyecto</InputLabel>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="received_materials">Lista de Materiales Recibidos</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.project_code" autocomplete="off" id="project_code"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
-                                <InputError :message="form.errors.project_code" />
-                            </div>
-                        </div>
-                        <div class="">
-                            <InputLabel for="cpe">CPE</InputLabel>
-                            <div class="mt-2">
-                                <input type="text" v-model="form.cpe" autocomplete="off" id="cpe"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
-                                <InputError :message="form.errors.cpe" />
-                            </div>
-                        </div>
-                        <div class="">
-                            <InputLabel for="project_deadline">Fecha Limite del Proyecto</InputLabel>
-                            <div class="mt-2">
-                                <input type="date" v-model="form.project_deadline" autocomplete="off" id="project_deadline"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
-                                <InputError :message="form.errors.project_deadline" />
+                                <p v-for="material in material_feasibility" class="text-gray-900 text-center">
+                                   - Nombre: {{ material.name }}, Cantidad: {{ material.quantity }}
+                                </p>
                             </div>
                         </div>
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
+                        <SecondaryButton type="button" @click="closeAddMaterialModal"> Cancelar </SecondaryButton>
                         <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
                             Guardar
@@ -179,10 +141,10 @@
                 </form>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
-            :message="'La Asignacion fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Asignacion Actualizada'"
-            :message="'La Asignacion fue actualizada'" />
+        <SuccessOperationModal :confirming="confirmMaterial" :title="'Nueva Material creada'"
+            :message="'La Material fue creada con éxito'" />
+        <SuccessOperationModal :confirming="confirmUpdateMaterial" :title="'Material Actualizada'"
+            :message="'La Material fue actualizada'" />
     </AuthenticatedLayout>
 </template>
 
@@ -200,20 +162,16 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import {formattedDate} from '@/utils/utils.js';
 
-const { materiales, auth } = defineProps({
-    materiales: Object,
+const { materials, auth } = defineProps({
+    materials: Object,
     auth: Object
 })
 
 const initialState = {
-    id: null,
     user_id: auth.user.id,
-    materiales_date: '',
-    project_name: '',
-    customer: '',
-    project_code: '',
-    cpe: '',
-    project_deadline: '',
+    pick_date: '',
+    guide_number: '',
+    received_materials: '',
     user_name: auth.user.name,
 }
 
@@ -222,54 +180,41 @@ const form = useForm(
 );
 
 const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
-function openAddAssignationModal() {
-    showAddEditModal.value = true
-}
-function closeAddAssignationModal() {
+const confirmMaterial = ref(false);
+const cicsa_assignation_id = ref(null);
+const material_feasibility = ref(null)
+
+function closeAddMaterialModal() {
     showAddEditModal.value = false
     form.defaults({...initialState})
     form.reset()
 }
-function submitStore() {
-    let url = route('materiales.storeOrUpdate');
+
+const confirmUpdateMaterial = ref(false);
+
+function openEditSotModal (id, item) {
+    material_feasibility.value = item?.cicsa_feasibility.cicsa_feasibility_materials
+    cicsa_assignation_id.value = id;
+    form.defaults({...item.cicsa_materials})
+    form.reset()
+    showAddEditModal.value = true
+}
+
+
+function submit() {
+    let url = route('material.storeOrUpdate', {cicsa_assignation_id:cicsa_assignation_id.value})
     form.put(url, {
         onSuccess: () => {
-            closeAddAssignationModal()
-            confirmAssignation.value = true
+            closeAddMaterialModal()
+            confirmUpdateMaterial.value = true
             setTimeout(() => {
-                confirmAssignation.value = false
+                confirmUpdateMaterial.value = false
             }, 1500)
         },
         onError: (e) => {
             console.error(e)
         }
     })
-}
-
-const confirmUpdateAssignation = ref(false);
-
-function openEditSotModal (item) {
-    form.defaults({...item})
-    form.reset()
-    showAddEditModal.value = true
-}
-
-function submitUpdate() {
-    let url = route('materiales.storeOrUpdate', {cicsa_materiales_id:form.id})
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false
-            }, 1500)
-        }
-    })
-}
-
-function submit() {
-    form.id ? submitUpdate() : submitStore()
 }
 
 </script>
