@@ -4,7 +4,7 @@ namespace App\Http\Requests\Cicsa;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreOrUpdateFeasibilitiesRequest extends FormRequest
+class StoreOrUpdatePurchaseOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,13 @@ class StoreOrUpdateFeasibilitiesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'feasibility_date' => 'required|date',
-            'report' => 'required|string',
+            'oc_date' => 'required|date',
+            'oc_number' => 'required|string',
+            'master_format' => 'required|string',
+            'item3456' => 'required|string',
+            'budget' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
-            'cicsa_feasibility_materials' => 'required|array'
         ];
     }
 }

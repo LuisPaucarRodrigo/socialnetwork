@@ -5,16 +5,22 @@ namespace App\Http\Controllers\Cicsa;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cicsa\StoreOrUpdateAssigantionRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
+use App\Http\Requests\Cicsa\StoreOrUpdateInstallationRequest;
+use App\Models\CicsaInstallation;
+use App\Models\CicsaInstallationMaterial;
+use Illuminate\Http\Request;
+use App\Http\Requests\Cicsa\StoreOrUpdateMaterialRequest;
+use App\Http\Requests\Cicsa\StoreOrUpdatePurchaseOrderRequest;
 use App\Models\CicsaAssignation;
 use App\Models\CicsaChargeArea;
 use App\Models\CicsaFeasibility;
 use App\Models\CicsaFeasibilityMaterial;
 use App\Models\CicsaMaterial;
 use App\Models\CicsaPurchaseOrder;
-use App\Models\CicsaPurchaseOrderValidation;
 use App\Models\CicsaServiceOrder;
+use App\Models\CicsaPurchaseOrderValidation;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
+use Mockery\Undefined;
 
 class CicsaController extends Controller
 {
@@ -51,39 +57,103 @@ class CicsaController extends Controller
     }
 
     public function updateOrStoreFeasibilities(StoreOrUpdateFeasibilitiesRequest $request, $cicsa_assignation_id = null)
-    {   
-
+    {
         $validateData = $request->validated();
-        $cicsaFeasibility =  CicsaFeasibility::updateOrCreate(
+        $cicsaFeasibility = CicsaFeasibility::updateOrCreate(
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
         $cicsaFeasibilityId = $cicsaFeasibility->id;
-        foreach ($request->material_feasibility as $material) {
-            $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
-            CicsaFeasibilityMaterial::create($material);
+        if ($cicsa_assignation_id) {
+            foreach ($request->cicsa_feasibility_materials as $material) {
+                if (!isset($material['id'])) {
+                    $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
+                    CicsaFeasibilityMaterial::create($material);
+                }
+            }
+        } else {
+            foreach ($request->cicsa_feasibility_materials as $material) {
+                $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
+                CicsaFeasibilityMaterial::create($material);
+            }
         }
     }
 
     public function indexMaterial()
     {
-        $materials = CicsaMaterial::paginate();
+        $material = CicsaAssignation::select('id', 'project_name')
+            ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials')
+            ->paginate();
         return Inertia::render('Cicsa/CicsaMaterial', [
-            'materiales' => $materials
+            'materials' => $material
         ]);
+    }
+
+    public function updateOrStoreMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_assignation_id = null)
+    {
+        $validateData = $request->validated();
+        CicsaMaterial::updateOrCreate(
+            ['cicsa_assignation_id' => $cicsa_assignation_id],
+            $validateData
+        );
     }
 
     public function indexPurchaseOrder()
     {
-        $purchase_order = CicsaPurchaseOrder::paginate();
+        $purchase_order = CicsaAssignation::select('id', 'project_name')
+            ->with('cicsa_purchase_order')
+            ->paginate();
         return Inertia::render('Cicsa/CicsaPurchaseOrder', [
-            'purchase_order' => $purchase_order
+            'purchaseOrder' => $purchase_order
         ]);
     }
 
+    public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_assignation_id = null)
+    {   
+        $validateData = $request->validated();
+        CicsaPurchaseOrder::updateOrCreate(
+            ['cicsa_assignation_id' => $cicsa_assignation_id],
+            $validateData
+        );
+    }
+
+
+    public function indexInstallation()
+    {
+        $installations = CicsaAssignation::select('id', 'project_name')
+            ->with(
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_installation.user'
+            )
+            ->orderBy('updated_at', 'desc')
+            ->paginate();
+        return Inertia::render('Cicsa/CicsaInstallation', [
+            'installations' => $installations
+        ]);
+    }
+
+
+    public function updateOrStoreInstallation(StoreOrUpdateInstallationRequest $request, $ci_id = null)
+    {
+        $validateData = $request->validated();
+        $cicsaInstallation = CicsaInstallation::updateOrCreate(
+            ['id' => $ci_id],
+            $validateData
+        );
+        if ($ci_id) {
+            CicsaInstallationMaterial::where('cicsa_installation_id', $ci_id)->delete();
+        }
+        foreach ($request->total_materials as $material) {
+            $material['cicsa_installation_id'] = $cicsaInstallation->id;
+            CicsaInstallationMaterial::create($material);
+        }
+        return redirect()->back();
+    }
+
+
     // CicsaPurchaseOrderValidations
 
-    public function indexOCValidation ()
+    public function indexOCValidation()
     {
         $purchase_validations = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_purchase_order_validation')
@@ -93,7 +163,7 @@ class CicsaController extends Controller
         ]);
     }
 
-    public function storeOCValidation (Request $request, $cicsa_assignation_id = null)
+    public function storeOCValidation(Request $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validate([
             'validation_date' => 'required',
@@ -113,7 +183,7 @@ class CicsaController extends Controller
         );
     }
 
-    public function updateOCValidation (Request $request, CicsaPurchaseOrderValidation $cicsa_validation_id)
+    public function updateOCValidation(Request $request, CicsaPurchaseOrderValidation $cicsa_validation_id)
     {
         $validateData = $request->validate([
             'validation_date' => 'required',
@@ -134,7 +204,7 @@ class CicsaController extends Controller
 
     // CicsaServiceOrder
 
-    public function indexServiceOrder ()
+    public function indexServiceOrder()
     {
         $service_orders = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_service_order')
@@ -183,7 +253,7 @@ class CicsaController extends Controller
 
     //CicsaChargeArea
 
-    public function indexChargeArea ()
+    public function indexChargeArea()
     {
         $charge_areas = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_charge_area')
@@ -225,4 +295,9 @@ class CicsaController extends Controller
 
         $cicsa_charge_area->update($validateData);
     }
+
+
+
+
+
 }
