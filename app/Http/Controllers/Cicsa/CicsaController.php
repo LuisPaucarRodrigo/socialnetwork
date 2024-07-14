@@ -32,7 +32,7 @@ class CicsaController extends Controller
 
     public function indexAssignation()
     {
-        $assignation = CicsaAssignation::paginate();
+        $assignation = CicsaAssignation::orderBy('updated_at', 'desc')->paginate();
         return Inertia::render('Cicsa/CicsaAssignation', [
             'assignation' => $assignation
         ]);

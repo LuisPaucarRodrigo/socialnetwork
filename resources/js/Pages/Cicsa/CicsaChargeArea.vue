@@ -196,6 +196,12 @@
                 </form>
             </div>
         </Modal>
+        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Cobranza creada'"
+            :message="'La Cobranza fue creada con éxito'" />
+        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Cobranza Actualizada'"
+            :message="'La Cobranza fue actualizada'" />
+
+
     </AuthenticatedLayout>
 </template>
 
