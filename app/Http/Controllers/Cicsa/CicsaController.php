@@ -257,7 +257,7 @@ class CicsaController extends Controller
     }
 
     //CicsaChargeArea
-
+    
     public function indexChargeArea()
     {
         $charge_areas = CicsaAssignation::select('id', 'project_name')
