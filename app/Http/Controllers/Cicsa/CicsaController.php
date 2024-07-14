@@ -5,25 +5,20 @@ namespace App\Http\Controllers\Cicsa;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cicsa\StoreOrUpdateAssigantionRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
-
 use App\Http\Requests\Cicsa\StoreOrUpdateInstallationRequest;
 use App\Models\CicsaInstallation;
 use App\Models\CicsaInstallationMaterial;
 use Illuminate\Http\Request;
-
 use App\Http\Requests\Cicsa\StoreOrUpdateMaterialRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdatePurchaseOrderRequest;
-
 use App\Models\CicsaAssignation;
 use App\Models\CicsaChargeArea;
 use App\Models\CicsaFeasibility;
 use App\Models\CicsaFeasibilityMaterial;
 use App\Models\CicsaMaterial;
 use App\Models\CicsaPurchaseOrder;
-
-use App\Models\CicsaPurchaseOrderValidation;
 use App\Models\CicsaServiceOrder;
-
+use App\Models\CicsaPurchaseOrderValidation;
 use Inertia\Inertia;
 use Mockery\Undefined;
 
@@ -86,7 +81,6 @@ class CicsaController extends Controller
 
     public function indexMaterial()
     {
-
         $material = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials')
             ->paginate();
@@ -114,7 +108,8 @@ class CicsaController extends Controller
         ]);
     }
 
-    public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_assignation_id = null) {
+    public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_assignation_id = null)
+    {   
         $validateData = $request->validated();
         CicsaPurchaseOrder::updateOrCreate(
             ['cicsa_assignation_id' => $cicsa_assignation_id],
