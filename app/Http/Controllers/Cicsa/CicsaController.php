@@ -21,6 +21,7 @@ use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use Inertia\Inertia;
 use Mockery\Undefined;
+use Carbon\Carbon;
 
 class CicsaController extends Controller
 {
@@ -268,8 +269,24 @@ class CicsaController extends Controller
         $validateData = $request->validate([
             'invoice_number' => 'required',
             'invoice_date' => 'required',
-            'payment_date' => 'required',
-            'deposit_date' => 'nullable',
+            'payment_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
+                        $fail('La fecha de pago debe ser mayor o igual que la fecha de la factura.');
+                    }
+                }
+            ],
+            'deposit_date' => [
+                'nullable',
+                'date',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value && Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
+                        $fail('La fecha de abono debe ser mayor o igual que la fecha de la factura.');
+                    }
+                }
+            ],
             'amount' => 'required',
             'user_name' => 'required',
             'user_id' => 'required',
@@ -286,8 +303,24 @@ class CicsaController extends Controller
         $validateData = $request->validate([
             'invoice_number' => 'required',
             'invoice_date' => 'required',
-            'payment_date' => 'required',
-            'deposit_date' => 'nullable',
+            'payment_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
+                        $fail('La fecha de pago debe ser mayor o igual que la fecha de la factura.');
+                    }
+                }
+            ],
+            'deposit_date' => [
+                'nullable',
+                'date',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value && Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
+                        $fail('La fecha de abono debe ser mayor o igual que la fecha de la factura.');
+                    }
+                }
+            ],
             'amount' => 'required',
             'user_name' => 'required',
             'user_id' => 'required',
