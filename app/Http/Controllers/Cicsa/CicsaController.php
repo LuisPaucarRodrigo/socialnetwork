@@ -7,12 +7,14 @@ use App\Http\Requests\Cicsa\StoreOrUpdateAssigantionRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateMaterialRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdatePurchaseOrderRequest;
+use App\Http\Requests\Cicsa\StoreOrUpdateInstallationRequest;
+use App\Models\CicsaInstallation;
+use App\Models\CicsaInstallationMaterial;
 use App\Models\CicsaAssignation;
 use App\Models\CicsaFeasibility;
 use App\Models\CicsaFeasibilityMaterial;
 use App\Models\CicsaMaterial;
 use App\Models\CicsaPurchaseOrder;
-use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 use Mockery\Undefined;
 
@@ -110,4 +112,59 @@ class CicsaController extends Controller
             $validateData
         );
     }
+
+
+
+
+
+
+
+
+
+
+    public function indexInstallation() {
+        $installations = CicsaAssignation::select('id', 'project_name')
+            ->with(
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_installation.user'
+                )
+            ->orderBy('updated_at', 'desc')
+            ->paginate();
+        return Inertia::render('Cicsa/CicsaInstallation', [
+            'installations' => $installations
+        ]);
+    }
+
+
+    public function updateOrStoreInstallation(StoreOrUpdateInstallationRequest $request, $ci_id=null) {
+        $validateData = $request->validated();
+        $cicsaInstallation =  CicsaInstallation::updateOrCreate(
+            ['id' => $ci_id],
+            $validateData
+        );
+        if ($ci_id) {
+            CicsaInstallationMaterial::where('cicsa_installation_id', $ci_id)->delete();
+        }
+        foreach ($request->total_materials as $material) {
+            $material['cicsa_installation_id'] = $cicsaInstallation->id;
+            CicsaInstallationMaterial::create($material);
+        }
+        return redirect()->back();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
