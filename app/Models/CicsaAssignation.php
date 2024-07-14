@@ -79,6 +79,19 @@ class CicsaAssignation extends Model
         }
         return true;
     }
+    public function checkFeasibility() {
+        $feasibility = $this->cicsa_feasibility()->first();
+        if (!$feasibility) {return false;}
+        $fieldsToCheck = ['feasibility_date', 'report'];
+        foreach ($fieldsToCheck as $field) {
+            if (is_null($feasibility->$field)) {return false;}
+        }
+        if ($feasibility->report !== 'Completado') {return false;}
+        if ($feasibility->cicsa_feasibility_materials()->count() === 0) {
+            return false;
+        }
+        return true;
+    }
     public function getCicsaProjectStatusAttribute () {
         
     }
