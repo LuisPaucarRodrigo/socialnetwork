@@ -85,14 +85,21 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button type="button" @click="openMaterialsModal(item.total_materials)">
+
+                                <button v-if="item?.total_materials?.length > 0" type="button" @click="openMaterialsModal(item.total_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
+                                <p v-else class="text-gray-900 text-center">
+                                    -
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button type="button" @click="openMaterialsModal(item.minute_materials)">
+                                <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"  type="button" @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
+                                <p v-else class="text-gray-900 text-center">
+                                    -
+                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
@@ -107,7 +114,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
-                                        @click="openEditFeasibilityModal(item.id, item.cicsa_installation, item.total_materials)">
+                                        @click="openEditFeasibilityModal(item.id, item.cicsa_installation, item.total_materials, item?.cicsa_installation?.cicsa_installation_materials)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -235,7 +242,12 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div v-else>
+                                No hay materiales por liquidar
+                            </div>
                         </div>
+
+                        <InputError :message="form.errors.total_materials" />
                     </template>
 
                     <br>
@@ -338,15 +350,15 @@
                 </div>
             </div>
         </Modal>
-        <!-- 
-        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+        
+        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Acta
+                    Materiales Liquidados
                 </h2>
                 <br>
                 <div class="mt-2">
-                    <div v-if="materials.length > 0" class="overflow-auto">
+                    <div v-if="instMaterials.length > 0" class="overflow-auto">
                         <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
                             <thead>
                                 <tr
@@ -355,17 +367,29 @@
                                         Material
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
-                                        Cantidad
+                                        Recibidos
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Usados
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Resto
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                <tr v-for="(item, i) in instMaterials" :key="i" class="text-gray-700 bg-white text-sm">
                                     <td class="border-b border-slate-300  px-4 py-4">
-                                        {{ item?.material }}
+                                        {{ item?.name }}
                                     </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.quantity }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.used_quantity }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.quantity - item?.used_quantity }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -376,18 +400,18 @@
                     </p>
                     <br>
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
+                        <SecondaryButton type="button" @click="closeInstMaterialsModal"> Cerrar </SecondaryButton>
 
                     </div>
                 </div>
             </div>
         </Modal> 
-        -->
+        
 
 
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
+        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
             :message="'La Asignacion fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Asignacion Actualizada'"
+        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Instalación PINT y PEXT Actualizada'"
             :message="'La Asignacion fue actualizada'" />
     </AuthenticatedLayout>
 </template>
@@ -406,7 +430,7 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import { TrashIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 const { installations, auth } = defineProps({
     installations: Object,
@@ -444,36 +468,20 @@ function modalMaterial() {
     showModalMaterial.value = !showModalMaterial.value
 }
 
-function openAddFeasibilityModal() {
-    showAddEditModal.value = true
-}
+
 function closeAddAssignationModal() {
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
-}
-function submitStore() {
-    let url = route('feasibility.storeOrUpdate');
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmAssignation.value = true
-            setTimeout(() => {
-                confirmAssignation.value = false
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
-        }
-    })
+    form.clearErrors()
 }
 
 const confirmUpdateAssignation = ref(false);
 
-function openEditFeasibilityModal(ca_id, item, total_materials) {
+function openEditFeasibilityModal(ca_id, item, total_materials, cicsa_installation_materials) {
     if (item) {
-        total_materials = total_materials.map(item=>({...item, used_quantity:0}))
-        form.defaults({ ...item, total_materials, cicsa_assignation_id: ca_id })
+        total_materials = cicsa_installation_materials
+        form.defaults({ ...item, total_materials})
         form.reset()
     } else {
         total_materials = total_materials.map(item=>({...item, used_quantity:0}))
@@ -483,29 +491,9 @@ function openEditFeasibilityModal(ca_id, item, total_materials) {
     showAddEditModal.value = true
 }
 
-function submitUpdate() {
-    // let url = route('feasibility.storeOrUpdate', {cicsa_assignation_id:form.id})
-    // form.put(url, {
-    //     onSuccess: () => {
-    //         closeAddAssignationModal()
-    //         confirmUpdateAssignation.value = true
-    //         setTimeout(() => {
-    //             confirmUpdateAssignation.value = false
-    //         }, 1500)
-    //     }
-    // })
-}
-
 function submit() {
-    console.log(form)
-    // form.id ? submitUpdate() : submitStore()
-    form.material_feasibility = materialArray.value.map(material => ({
-        name: material.name,
-        unit: material.unit,
-        quantity: material.quantity,
-    }))
-    let url = route('feasibilities.storeOrUpdate', { cicsa_assignation_id: form.cicsa_assignation_id })
-    form.put(url, {
+    let url = route('cicsa.installation.store', { ci_id: form?.id })
+    form.post(url, {
         onSuccess: () => {
             closeAddAssignationModal()
             confirmUpdateAssignation.value = true
@@ -538,6 +526,7 @@ function addMaterial() {
 }
 
 
+//materiasls
 const showMaterials = ref(false)
 const materials = ref([]);
 function openMaterialsModal(arrayMaterials) {
@@ -547,5 +536,19 @@ function openMaterialsModal(arrayMaterials) {
 function closeMaterialsModal() {
     showMaterials.value = false
 }
+
+
+
+//installation materials
+const showInstMaterials = ref(false)
+const instMaterials = ref([]);
+function openInstMaterialsModal(arrayMaterials) {
+    instMaterials.value = arrayMaterials ? arrayMaterials : []
+    showInstMaterials.value = true
+}
+function closeInstMaterialsModal() {
+    showInstMaterials.value = false
+}
+
 
 </script>

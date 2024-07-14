@@ -22,3 +22,4 @@ Route::get('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder
 
 
 Route::get('/cicsa_installation', [CicsaController::class, 'indexInstallation'])->name('cicsa.installation.index');
+Route::post('/cicsa_installation/store/{ci_id?}', [CicsaController::class, 'updateOrStoreInstallation'])->name('cicsa.installation.store');
