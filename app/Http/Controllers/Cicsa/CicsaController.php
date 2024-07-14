@@ -83,6 +83,7 @@ class CicsaController extends Controller
     public function indexMaterial()
     {
         $material = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_feasibility')
             ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials')
             ->paginate();
         return Inertia::render('Cicsa/CicsaMaterial', [
@@ -102,6 +103,7 @@ class CicsaController extends Controller
     public function indexPurchaseOrder()
     {
         $purchase_order = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_installation')
             ->with('cicsa_purchase_order')
             ->paginate();
         return Inertia::render('Cicsa/CicsaPurchaseOrder', [
@@ -110,7 +112,7 @@ class CicsaController extends Controller
     }
 
     public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_assignation_id = null)
-    {   
+    {
         $validateData = $request->validated();
         CicsaPurchaseOrder::updateOrCreate(
             ['cicsa_assignation_id' => $cicsa_assignation_id],
@@ -122,6 +124,7 @@ class CicsaController extends Controller
     public function indexInstallation()
     {
         $installations = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_materials')
             ->with(
                 'cicsa_installation.cicsa_installation_materials',
                 'cicsa_installation.user'
@@ -157,6 +160,7 @@ class CicsaController extends Controller
     public function indexOCValidation()
     {
         $purchase_validations = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_purchase_order')
             ->with('cicsa_purchase_order_validation')
             ->paginate(10);
         return Inertia::render('Cicsa/CicsaPurchaseOrderValidation', [
@@ -208,6 +212,7 @@ class CicsaController extends Controller
     public function indexServiceOrder()
     {
         $service_orders = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_purchase_order_validation')
             ->with('cicsa_service_order')
             ->paginate(10);
         return Inertia::render('Cicsa/CicsaServiceOrder', [
@@ -257,6 +262,7 @@ class CicsaController extends Controller
     public function indexChargeArea()
     {
         $charge_areas = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_service_order')
             ->with('cicsa_charge_area')
             ->paginate(10);
         return Inertia::render('Cicsa/CicsaChargeArea', [
@@ -328,9 +334,4 @@ class CicsaController extends Controller
 
         $cicsa_charge_area->update($validateData);
     }
-
-
-
-
-
 }
