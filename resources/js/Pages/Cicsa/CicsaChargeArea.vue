@@ -78,7 +78,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.credit }} día(s)
+                                    {{ item.cicsa_charge_area ? item.cicsa_charge_area.credit + ' día(s)' : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -88,7 +88,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.days_late }} día(s)
+                                    {{ item.cicsa_charge_area ? item.cicsa_charge_area.days_late + ' día(s)' : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -103,7 +103,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.amount ? 'S/. ' + item.cicsa_charge_area?.amount.toFixed(2) : '-' }}
+                                    {{ item.cicsa_charge_area?.amount ? 'S/. ' + item.cicsa_charge_area?.amount.toFixed(2) : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -184,18 +184,12 @@
                                 <InputError :message="form.errors.amount" />
                             </div>
                         </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="user_name">Nombre de Usuario</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="form.user_name" autocomplete="off" id="user_name"/>
-                                <InputError :message="form.errors.user_name" />
-                            </div>
-                        </div>
                     </div>
 
                     <div class="mt-6 flex justify-end">
-                        <PrimaryButton>
+                        <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
+                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
+                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
                             Guardar
                         </PrimaryButton>
                     </div>
