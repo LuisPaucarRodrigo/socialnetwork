@@ -42,6 +42,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Nombre Usuario
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -75,6 +79,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_purchase_order?.budget }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_purchase_order?.user_name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -127,7 +136,6 @@
                             <div class="mt-2">
                                 <select id="master_format" v-model="form.master_format" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Genero</option>
                                     <option>Pendiente</option>
                                     <option>Completado</option>
                                 </select>
@@ -139,7 +147,6 @@
                             <div class="mt-2">
                                 <select id="item3456" v-model="form.item3456" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Genero</option>
                                     <option>Pendiente</option>
                                     <option>Completado</option>
                                 </select>
@@ -151,7 +158,6 @@
                             <div class="mt-2">
                                 <select id="budget" v-model="form.budget" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Genero</option>
                                     <option>Pendiente</option>
                                     <option>Completado</option>
                                 </select>
@@ -200,9 +206,9 @@ const initialState = {
     user_id: auth.user.id,
     oc_date: '',
     oc_number: '',
-    master_format: '',
-    item3456: '',
-    budget: '',
+    master_format: 'Pendiente',
+    item3456: 'Pendiente',
+    budget: 'Pendiente',
     user_name: auth.user.name,
 }
 

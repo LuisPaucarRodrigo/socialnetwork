@@ -38,6 +38,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Nombre Usuario
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -66,6 +70,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p v-for="material in item.cicsa_feasibility?.cicsa_feasibility_materials" class="text-gray-900 text-center">
                                    - Nombre: {{ material.name }}, Cantidad: {{ material.quantity }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_materials?.user_name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -121,8 +130,8 @@
                                 <InputError :message="form.errors.received_materials" />
                             </div>
                         </div>
-                        <div class="sm:col-span-2">
-                            <InputLabel for="received_materials">Lista de Materiales Recibidos</InputLabel>
+                        <div v-if="material_feasibility" class="sm:col-span-2">
+                            <InputLabel for="received_materials">Lista de Materiales de Factibilidad</InputLabel>
                             <div class="mt-2">
                                 <p v-for="material in material_feasibility" class="text-gray-900 text-center">
                                    - Nombre: {{ material.name }}, Cantidad: {{ material.quantity }}
@@ -193,9 +202,9 @@ function closeAddMaterialModal() {
 const confirmUpdateMaterial = ref(false);
 
 function openEditSotModal (id, item) {
-    material_feasibility.value = item?.cicsa_feasibility.cicsa_feasibility_materials
+    material_feasibility.value = item.cicsa_feasibility?.cicsa_feasibility_materials
     cicsa_assignation_id.value = id;
-    form.defaults({...item.cicsa_materials})
+    form.defaults({...item?.cicsa_materials})
     form.reset()
     showAddEditModal.value = true
 }
