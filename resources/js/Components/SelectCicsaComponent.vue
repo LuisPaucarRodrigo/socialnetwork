@@ -38,15 +38,15 @@ const SotOptions = [
     },
     {
         optionName: 'Validación de OC',
-        route: '#',
+        route: route('cicsa.purchase_orders.validation'),
     },
     {
         optionName: 'Orden de Servicio',
-        route: '#',
+        route: route('cicsa.service_orders'),
     },
     {
         optionName: 'Cobranza',
-        route: '#',
+        route: route('cicsa.charge_areas'),
     },
 ]
 
