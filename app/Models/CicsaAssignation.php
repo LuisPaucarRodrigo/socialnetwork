@@ -68,6 +68,17 @@ class CicsaAssignation extends Model
     }
 
 
+
+
+
+    public function checkAssignation() {
+        foreach ($this->fillable as $field) {
+            if (is_null($this->$field)) {
+                return false;
+            }
+        }
+        return true;
+    }
     public function getCicsaProjectStatusAttribute () {
         
     }

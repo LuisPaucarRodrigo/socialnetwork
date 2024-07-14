@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="CICSA Asignación" />
+    <Head title="CICSA Factibilidad" />
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
@@ -22,15 +22,15 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre Usuario
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Factibilidad
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Informe
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Nombre Usuario
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -46,17 +46,17 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_feasibility?.user_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_feasibility?.feasibility_date) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_feasibility?.report }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_feasibility?.user_name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -100,7 +100,12 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="report">Informe</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.report" autocomplete="off" id="report" />
+                                <select id="report" v-model="form.report" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option>Pendiente</option>
+                                    <option>Proceso</option>
+                                    <option>Completado</option>
+                                </select>
                                 <InputError :message="form.errors.report" />
                             </div>
                         </div>
@@ -254,7 +259,7 @@ const { feasibility, auth } = defineProps({
 const initialState = {
     user_id: auth.user.id,
     feasibility_date: '',
-    report: '',
+    report: 'Pendiente',
     user_name: auth.user.name,
     cicsa_feasibility_materials: [],
 }
