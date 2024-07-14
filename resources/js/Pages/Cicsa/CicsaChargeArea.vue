@@ -1,13 +1,11 @@
 <template>
-
     <Head title="CICSA Área de Cobranza" />
-
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
             Área de Cobranza
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-between">
+            <div class="flex justify-end">
                 <SelectCicsaComponent currentSelect="Cobranza" />
             </div>
             <br>
@@ -30,7 +28,15 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Crédito a
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Pago
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Días Atrasados
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -38,11 +44,15 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Estado
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Monto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Usuario
+                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -68,7 +78,17 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_charge_area?.credit }} día(s)
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_charge_area?.payment_date) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_charge_area?.days_late }} día(s)
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -78,7 +98,12 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.amount }}
+                                    {{ item.cicsa_charge_area?.state }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_charge_area?.amount ? 'S/. ' + item.cicsa_charge_area?.amount.toFixed(2) : '-' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -155,31 +180,31 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="amount">Monto</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" step="0.01" v-model="form.amount" autocomplete="off"
-                                    id="amount"/>
+                                <TextInput type="number" step="any" v-model="form.amount" autocomplete="off" id="amount"/>
                                 <InputError :message="form.errors.amount" />
                             </div>
                         </div>
 
+                        <div class="sm:col-span-1">
+                            <InputLabel for="user_name">Nombre de Usuario</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.user_name" autocomplete="off" id="user_name"/>
+                                <InputError :message="form.errors.user_name" />
+                            </div>
+                        </div>
                     </div>
-                    <br>
+
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
-                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
-                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
+                        <PrimaryButton>
                             Guardar
                         </PrimaryButton>
                     </div>
                 </form>
             </div>
         </Modal>
-
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Cobranza creada'"
-            :message="'La Cobranza fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Cobranza Actualizada'"
-            :message="'La Cobranza fue actualizada'" />
     </AuthenticatedLayout>
 </template>
+
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -200,6 +225,8 @@ const { charge_areas, auth } = defineProps({
     charge_areas: Object,
     auth: Object
 })
+
+console.log(charge_areas)
 
 const initialState = {
     id: null,

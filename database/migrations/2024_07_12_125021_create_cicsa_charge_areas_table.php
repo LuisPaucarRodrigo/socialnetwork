@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('invoice_number');
             $table->date('invoice_date');
             $table->date('payment_date');
-            $table->date('deposit_date');
+            $table->date('deposit_date')->nullable();
             $table->double('amount');
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');

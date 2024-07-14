@@ -7,7 +7,7 @@
             Validación de OC
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-between">
+            <div class="flex justify-end">
                 <SelectCicsaComponent currentSelect="Validación de OC" />
             </div>
             <br>
@@ -50,7 +50,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Usuario
+                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -170,7 +170,7 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="warehouse">Álmacen</InputLabel>
+                            <InputLabel for="warehouse">Almacén</InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.warehouse" id="warehouse"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -183,15 +183,15 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="warehouse">Jefe</InputLabel>
+                            <InputLabel for="boss">Jefe</InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.warehouse" id="warehouse"
+                                <select v-model="form.boss" id="boss"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccione una opción</option>
                                     <option value="Pendiente">Pendiente</option>
                                     <option value="Completado">Completado</option>
                                 </select>
-                                <InputError :message="form.errors.warehouse" />
+                                <InputError :message="form.errors.boss" />
                             </div>
                         </div>
 

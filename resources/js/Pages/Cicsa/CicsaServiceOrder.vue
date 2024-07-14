@@ -7,7 +7,7 @@
             Orden de Servicio
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-between">
+            <div class="flex justify-end">
                 <SelectCicsaComponent currentSelect="Orden de Servicio" />
             </div>
             <br>
@@ -46,7 +46,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Usuario
+                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
