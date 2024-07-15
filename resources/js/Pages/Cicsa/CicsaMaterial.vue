@@ -30,11 +30,11 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Lista de Materiales Recibidos
+                                Lista de Materiales de Factibilidad
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Lista de Materiales de Factibilidad
+                                Lista de Materiales Recibidos
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -63,13 +63,13 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_materials?.received_materials }}
+                                <p v-for="material in item.cicsa_feasibility?.cicsa_feasibility_materials" class="text-gray-900 text-center">
+                                    - Nombre: {{ material.name }}, Cantidad: {{ material.quantity }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p v-for="material in item.cicsa_feasibility?.cicsa_feasibility_materials" class="text-gray-900 text-center">
-                                   - Nombre: {{ material.name }}, Cantidad: {{ material.quantity }}
+                                <p class="text-gray-900 text-center">
+                                    to edit
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -79,7 +79,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900" @click="openEditSotModal(item.id,item)">
+                                    <button class="text-blue-900" @click="openEditSotModal(item.id,item.cicsa_materials, item.cicsa_feasibility?.cicsa_feasibility_materials)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -122,21 +122,78 @@
                                 <InputError :message="form.errors.guide_number" />
                             </div>
                         </div>
-                        <div class="sm:col-span-2">
-                            <InputLabel for="received_materials">Lista de Materiales Recibidos</InputLabel>
-                            <div class="mt-2">
-                                <textarea type="text" v-model="form.received_materials" autocomplete="off" id="received_materials"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
-                                <InputError :message="form.errors.received_materials" />
+                        <div class="sm:col-span-1">
+                            <br>
+                            <div class="flex gap-2 items-center">
+                                <h2 class="text-base font-bold leading-6 text-gray-900 ">
+                                    Materiales Recibidos
+                                </h2>
+                                <button @click="modalFeasibility" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="indigo" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
+                                    </svg>
+                                </button>
                             </div>
+                            <br>
                         </div>
-                        <div v-if="material_feasibility" class="sm:col-span-2">
-                            <InputLabel for="received_materials">Lista de Materiales de Factibilidad</InputLabel>
-                            <div class="mt-2">
-                                <p v-for="material in material_feasibility" class="text-gray-900 text-center">
-                                   - Nombre: {{ material.name }}, Cantidad: {{ material.quantity }}
-                                </p>
-                            </div>
+                        <div class="sm:col-span-2">
+                            <table class="w-full whitespace-no-wrap">
+                                <thead>
+                                    <tr
+                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                            Nombre
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                            Unidad
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                            Cantidad
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, i) in form.cicsa_material_items" :key="i"
+                                        class="text-gray-700">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <p class="text-gray-900 text-center">
+                                                {{ item.name }}
+                                            </p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <p class="text-gray-900 text-center">
+                                                {{ item.unit }}
+                                            </p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"><div class="flex justify-center">
+                                            <input required type="number" min="0" v-model="form.cicsa_material_items[i]['quantity']"
+                                                    autocomplete="off"
+                                                    class="block  text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                            </div>
+                                        </td>
+                                        <td
+                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <button type="button" @click="delete_material(i)"
+                                                class="text-blue-900 whitespace-no-wrap">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor"
+                                                    class="w-4 h-4 text-red-500">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <br>
@@ -149,6 +206,43 @@
                     </div>
                 </form>
             </div>
+        </Modal>
+
+
+        <Modal :show="showModalFeasibility">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Agregar un Factibilidad
+                </h2>
+                <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                    <div class="sm:col-span-1">
+                        <InputLabel for="name">Nombre</InputLabel>
+                        <div class="mt-2">
+                            <TextInput required type="text" v-model="material_item.name" id="name" />
+                        </div>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <InputLabel for="unit">Unidad
+                        </InputLabel>
+                        <div class="mt-2">
+                            <TextInput required type="text" v-model="material_item.unit" id="unit" />
+                        </div>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <InputLabel for="quantity">Cantidad
+                        </InputLabel>
+                        <div class="mt-2">
+                            <TextInput required type="number" v-model="material_item.quantity" id="quantity" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="modalFeasibility"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="button" @click="addFeasibility"> Agregar </PrimaryButton>
+                </div>
+            </div>
+
+
         </Modal>
         <SuccessOperationModal :confirming="confirmMaterial" :title="'Nueva Material creada'"
             :message="'La Material fue creada con éxito'" />
@@ -170,6 +264,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import {formattedDate} from '@/utils/utils.js';
+import TextInput from '@/Components/TextInput.vue';
 
 const { materials, auth } = defineProps({
     materials: Object,
@@ -180,7 +275,7 @@ const initialState = {
     user_id: auth.user.id,
     pick_date: '',
     guide_number: '',
-    received_materials: '',
+    cicsa_material_items: [],
     user_name: auth.user.name,
 }
 
@@ -201,10 +296,16 @@ function closeAddMaterialModal() {
 
 const confirmUpdateMaterial = ref(false);
 
-function openEditSotModal (id, item) {
-    material_feasibility.value = item.cicsa_feasibility?.cicsa_feasibility_materials
+
+
+function openEditSotModal (id, item, feasibility_materials) {
     cicsa_assignation_id.value = id;
-    form.defaults({...item?.cicsa_materials})
+    if (item?.id){
+        form.defaults({...item})
+    }else {
+        let cicsa_material_items = feasibility_materials.map(item=>({...item}))
+        form.defaults({...item, cicsa_material_items})
+    }
     form.reset()
     showAddEditModal.value = true
 }
@@ -224,6 +325,47 @@ function submit() {
             console.error(e)
         }
     })
+}
+
+const showModalFeasibility = ref(false);
+function modalFeasibility() {
+    showModalFeasibility.value = !showModalFeasibility.value
+}
+
+function closeAddFeasibilityModal() {
+    showAddEditModal.value = false
+    form.defaults({ ...initialState })
+    form.reset()
+}
+
+const material_item = ref({
+    id: '',
+    name: '',
+    unit: '',
+    quantity: 0,
+});
+
+function addFeasibility() {
+    if (material_item.value.name && material_item.value.unit && material_item.value.quantity) {
+        const newFeasibility = {
+            name: material_item.value.name,
+            unit: material_item.value.unit,
+            quantity: material_item.value.quantity
+        };
+        form.cicsa_material_items.push(newFeasibility);
+        material_item.value.name = '';
+        material_item.value.unit = '';
+        material_item.value.quantity = '';
+    } else {
+        console.error('Por favor completa todos los campos del formulario.');
+    }
+}
+
+
+
+
+function delete_material(i) {
+    form.cicsa_material_items.splice(i, 1);
 }
 
 </script>

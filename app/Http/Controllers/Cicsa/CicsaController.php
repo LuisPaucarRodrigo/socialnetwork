@@ -8,6 +8,7 @@ use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateInstallationRequest;
 use App\Models\CicsaInstallation;
 use App\Models\CicsaInstallationMaterial;
+use App\Models\CicsaMaterialsItem;
 use Illuminate\Http\Request;
 use App\Http\Requests\Cicsa\StoreOrUpdateMaterialRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdatePurchaseOrderRequest;
@@ -103,7 +104,7 @@ class CicsaController extends Controller
     {
         $material = CicsaAssignation::select('id', 'project_name')
             ->whereHas('cicsa_feasibility')
-            ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials')
+            ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items')
             ->orderBy('assignation_date', 'desc')
             ->paginate();
         return Inertia::render('Cicsa/CicsaMaterial', [
@@ -114,10 +115,15 @@ class CicsaController extends Controller
     public function updateOrStoreMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validated();
-        CicsaMaterial::updateOrCreate(
+        $cicsaMaterial = CicsaMaterial::updateOrCreate(
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        foreach ($request->cicsa_material_items as $item) {
+            $item['cicsa_material_id'] = $cicsaMaterial->id;
+            CicsaMaterialsItem::create($item);
+        }
+        return redirect()->back();
     }
 
     public function indexPurchaseOrder()
