@@ -237,9 +237,9 @@ class CicsaAssignation extends Model
 
     public function getTotalMaterialsAttribute () {
         $total_materials=[];
-        $guides = $this->cicsa_feasibility()->with('cicsa_feasibility_materials')->get();
+        $guides = $this->cicsa_materials()->with('cicsa_material_items')->get();
         foreach($guides as $guide){
-            $list = $guide->cicsa_feasibility_materials;
+            $list = $guide->cicsa_material_items;
             foreach($list as $item){
                 $name = $item->name;
                 Log::info($name);
