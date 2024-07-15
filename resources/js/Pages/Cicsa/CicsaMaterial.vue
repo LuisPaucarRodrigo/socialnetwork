@@ -62,14 +62,17 @@
                                     {{ item.cicsa_materials?.guide_number }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p v-for="material in item.cicsa_feasibility?.cicsa_feasibility_materials" class="text-gray-900 text-center">
-                                    - Nombre: {{ material.name }}, Cantidad: {{ material.quantity }}
-                                </p>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                <button v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </button>
+                                
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    to edit
+                                    <button v-if="item?.cicsa_materials?.cicsa_material_items?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_materials?.cicsa_material_items)">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </button>
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -208,11 +211,10 @@
             </div>
         </Modal>
 
-
         <Modal :show="showModalFeasibility">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
-                    Agregar un Factibilidad
+                    Agregar Material
                 </h2>
                 <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                     <div class="sm:col-span-1">
@@ -244,6 +246,58 @@
 
 
         </Modal>
+
+        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Materiales en Acta
+                </h2>
+                <br>
+                <div class="mt-2">
+                    <div v-if="feas_materials.length > 0" class="overflow-auto">
+                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                            <thead>
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Material
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Unidad
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Cantidad
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, i) in feas_materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.name }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.unit }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.quantity }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p v-else>
+                        No hay materiales asignados
+                    </p>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
+
+                    </div>
+                </div>
+            </div>
+        </Modal>
+
+
         <SuccessOperationModal :confirming="confirmMaterial" :title="'Nueva Material creada'"
             :message="'La Material fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateMaterial" :title="'Material Actualizada'"
@@ -265,11 +319,14 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import {formattedDate} from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 const { materials, auth } = defineProps({
     materials: Object,
     auth: Object
 })
+
+
 
 const initialState = {
     user_id: auth.user.id,
@@ -367,5 +424,21 @@ function addFeasibility() {
 function delete_material(i) {
     form.cicsa_material_items.splice(i, 1);
 }
+
+
+
+
+
+//materiasls
+const showMaterials = ref(false)
+const feas_materials = ref([]);
+function openMaterialsModal(arrayMaterials) {
+    feas_materials.value = arrayMaterials ? arrayMaterials : []
+    showMaterials.value = true
+}
+function closeMaterialsModal() {
+    showMaterials.value = false
+}
+
 
 </script>

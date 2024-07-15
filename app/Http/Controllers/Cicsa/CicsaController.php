@@ -30,7 +30,7 @@ class CicsaController extends Controller
         $projects = CicsaAssignation::orderBy('assignation_date', 'desc')
                     ->with(
                         'cicsa_feasibility.cicsa_feasibility_materials',
-                        'cicsa_materials',
+                        'cicsa_materials.cicsa_material_items',
                         'cicsa_installation.cicsa_installation_materials',
                         'cicsa_purchase_order',
                         'cicsa_purchase_order_validation',
@@ -119,6 +119,9 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        if ($cicsaMaterial->cicsa_material_items) {
+            CicsaMaterialsItem::where('cicsa_material_id', $cicsaMaterial->id)->delete();
+        }
         foreach ($request->cicsa_material_items as $item) {
             $item['cicsa_material_id'] = $cicsaMaterial->id;
             CicsaMaterialsItem::create($item);
