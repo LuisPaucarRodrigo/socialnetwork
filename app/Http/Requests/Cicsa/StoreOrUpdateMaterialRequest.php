@@ -24,7 +24,7 @@ class StoreOrUpdateMaterialRequest extends FormRequest
         return [
             'pick_date' => 'required|date',
             'guide_number' => 'required|string',
-            'received_materials' => 'required|string',
+            'cicsa_material_items' => 'required|array',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
         ];
