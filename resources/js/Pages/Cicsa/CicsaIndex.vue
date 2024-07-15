@@ -304,59 +304,61 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="text-gray-700">
+                        <tr v-for="item in projects.data" :key="item.id" class="text-gray-700">
                             <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">3/15/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item.assignation_date) }}</p>
                             </td>
                             <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
-                                <p class="text-gray-900 text-center">Qaliwarma Sede Arequipa</p>
+                                <p class="text-gray-900 text-center">{{ item.project_name }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">GTD - CICSA</p>
+                                <p class="text-gray-900 text-center">{{ item.customer }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">240215</p>
+                                <p class="text-gray-900 text-center">{{ item.project_code }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">cpe000147894</p>
+                                <p class="text-gray-900 text-center">{{ item.cpe }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">3/15/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item.project_deadline) }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')"  class="border-b border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    Valery Montalvan
+                                    {{ item.user_name }}
                                 </p>
                             </td>
 
 
 
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">3/15/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_feasibility?.feasibility_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">En Proceso</p>
+                                <p :class="stateClass(item?.cicsa_feasibility?.report)"  class=" text-center">
+                                    {{ item?.cicsa_feasibility?.report }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex items-center justify-center">
-                                    <button  class="text-green-600">
+                                <div v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length>0" class="flex items-center justify-center">
+                                    <button @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)" class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
                             </td>
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    Valery Montalvan
+                                    {{ item?.cicsa_feasibility?.user_name }}
                                 </p>
                             </td>
 
 
 
                             <td v-if="checkVisibility('Materiales')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">01/01/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_materials?.pick_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Materiales')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Guía</p>
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_materials?.guide_number }}</p>
                             </td>
                             <td v-if="checkVisibility('Materiales')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
@@ -367,148 +369,182 @@
                             </td>
                             <td v-if="checkVisibility('Materiales')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    Valery Montalvan
+                                    {{ item?.cicsa_materials?.user_name }}
                                 </p>
                             </td>
 
                             <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">02/02/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item.cicsa_installation?.pext_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">02/02/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item.cicsa_installation?.pint_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Pendiente</p>
+                                <p :class="stateClass(item?.cicsa_installation?.conformity)"  class=" text-center">
+                                    {{ item?.cicsa_installation?.conformity }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Presentado</p>
+                                <p :class="stateClass(item?.cicsa_installation?.report)"  class=" text-center">
+                                    {{ item?.cicsa_installation?.report }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
-                                    <button  class="text-green-600">
+                                    <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length>0" 
+                                        @click="openInstMaterialsModal(item?.cicsa_installation?.cicsa_installation_materials)"
+                                         class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
                             </td>
                             <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">02/02/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_installation?.shipping_report_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    Valery Montalvan
+                                    {{ item?.cicsa_installation?.user_name }}
                                 </p>
                             </td>
 
 
                             <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    Completado
+                                <p :class="stateClass(item?.cicsa_project_status)"  class="font-black uppercase text-center">
+                                    {{ item?.cicsa_project_status }}
                                 </p>
                             </td>
 
 
                             <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">02/02/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_purchase_order?.oc_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">04858</p>
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_purchase_order?.oc_number }}</p>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Pendiente</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order?.master_format)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order?.master_format }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Pendiente</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order?.item3456)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order?.item3456 }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order?.budget)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order?.budget }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    Valery Montalvan
+                                    {{ item?.cicsa_purchase_order?.user_name }}
                                 </p>
                             </td> 
 
                             <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">02/02/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item.cicsa_purchase_order_validation?.validation_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Pendiente</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.materials_control)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order_validation?.materials_control }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.supervisor)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order_validation?.supervisor }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.warehouse)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order_validation?.warehouse }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.boss)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order_validation?.boss }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.liquidator)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order_validation?.liquidator }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.superintendent)"  class=" text-center">
+                                    {{ item?.cicsa_purchase_order_validation?.superintendent }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    Valery Montalvan
+                                    {{ item.cicsa_purchase_order_validation?.user_name }}
                                 </p>
                             </td> 
 
                             <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">02/02/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_service_order?.service_order_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">485748</p>
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_service_order?.service_order }}</p>
                             </td>
                             <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Pendiente</p>
+                                <p :class="stateClass(item?.cicsa_service_order?.estimate_sheet)"  class=" text-center">
+                                    {{ item?.cicsa_service_order?.estimate_sheet }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_service_order?.purchase_order)"  class=" text-center">
+                                    {{ item?.cicsa_service_order?.purchase_order }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_service_order?.pdf_invoice)"  class=" text-center">
+                                    {{ item?.cicsa_service_order?.pdf_invoice }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Completado</p>
+                                <p :class="stateClass(item?.cicsa_service_order?.zip_invoice)"  class=" text-center">
+                                    {{ item?.cicsa_service_order?.zip_invoice }}
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Servicio')"  class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    Valery Montalvan
+                                    {{ item?.cicsa_service_order?.user_name }}
                                 </p>
                             </td> 
 
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">8457838h</p>
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_charge_area?.invoice_number }}</p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">03/02/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_charge_area?.invoice_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">30 días</p>
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_charge_area?.credit }} {{ item?.cicsa_charge_area?.credit ? 'días' : '' }}</p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">05/03/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_charge_area?.payment_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">1 días</p>
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_charge_area?.days_late }} {{ item?.cicsa_charge_area?.days_late ? 'días' : '' }}</p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">06/03/2024</p>
+                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_charge_area?.deposit_date) }}</p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">Pagado</p>
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_charge_area?.amount ? 'S/.' : '' }} {{ item?.cicsa_charge_area?.amount }} </p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    Valery Montalvan
+                                    {{ item?.cicsa_charge_area?.user_name }}
                                 </p>
                             </td> 
                             <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    Completado
+                                
+                                <p :class="stateClass(item?.cicsa_charge_status)"  class="font-black uppercase text-center">
+                                    {{ item?.cicsa_charge_status }}
                                 </p>
+                
                             </td> 
 
                             
@@ -531,10 +567,137 @@
                 </table>
             </div>
 
-            <!-- <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="sots.links" />
-            </div> -->
+            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <pagination :links="projects.links" />
+            </div> 
         </div>
+
+
+        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Materiales en Factibilidad
+                </h2>
+                <br>
+                <div class="mt-2">
+                    <div v-if="materials.length > 0" class="overflow-auto">
+                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                            <thead>
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Material
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Unidad
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Cantidad
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.name }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.unit }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.quantity }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p v-else>
+                        No hay materiales asignados
+                    </p>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
+
+                    </div>
+                </div>
+            </div>
+        </Modal>
+
+        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" max-width="md" :closeable="true">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    Materiales Liquidados
+                </h2>
+                <br>
+                <div class="mt-2">
+                    <div v-if="instMaterials.length > 0" class="overflow-auto">
+                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                            <thead>
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Material
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Recibidos
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Usados
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Resto
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, i) in instMaterials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.name }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.quantity }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.used_quantity }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.quantity - item?.used_quantity }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p v-else>
+                        No hay materiales asignados
+                    </p>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="closeInstMaterialsModal"> Cerrar </SecondaryButton>
+
+                    </div>
+                </div>
+            </div>
+        </Modal> 
+
+        <Modal :show="showSotDeleteModal" @close="closeSotDeleteModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Estás seguro de que quieres eliminar el registro?
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600">
+                    Una vez que se elimine el registro, todos sus recursos y datos se eliminarán permanentemente.
+                </p>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeSotDeleteModal"> Cancelar </SecondaryButton>
+
+                    <DangerButton class="ml-3" @click="deleteSot">
+                        Eliminar
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
 
         <!-- <Modal :show="showSotDeleteModal" @close="closeSotDeleteModal">
             <div class="p-6">
@@ -655,8 +818,9 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import FilterProcess from '@/Components/FilterProcess.vue'
 
-const { auth } = defineProps({
-    auth: Object
+const { auth, projects } = defineProps({
+    auth: Object,
+    projects: Object,
 })
 
 const showSotDeleteModal = ref(false);
@@ -675,6 +839,8 @@ const closeCustomerDetails = () => {
     showCustomerDetails.value = false;
 }
 
+
+
 function openSotDeleteModal (id) {
     sotToDelete.value = id
     showSotDeleteModal.value = true
@@ -684,7 +850,7 @@ function closeSotDeleteModal () {
     showSotDeleteModal.value = false
 }
 function deleteSot () {
-    router.delete(route('socialnetwork.sot.delete', {sot_id: sotToDelete.value}),{
+    router.delete(route('cicsa.assignation.destroy', {ca_id: sotToDelete.value}),{
         onSuccess: () => {
             closeSotDeleteModal()
             confirmSotDelete.value = true
@@ -706,9 +872,16 @@ function openMaterialsModal(arrayMaterials) {
 function closeMaterialsModal() {
     showMaterials.value = false
 }
-
-
-
+//installation materials
+const showInstMaterials = ref(false)
+const instMaterials = ref([]);
+function openInstMaterialsModal(arrayMaterials) {
+    instMaterials.value = arrayMaterials ? arrayMaterials : []
+    showInstMaterials.value = true
+}
+function closeInstMaterialsModal() {
+    showInstMaterials.value = false
+}
 
 const selectedOptions = ref([
     'Asignación',
@@ -725,6 +898,19 @@ function checkVisibility(option) {
   return selectedOptions.value.includes(option);
 }
 
+
+const stateClass = (state) => {
+  switch (state) {
+    case 'Pendiente':
+      return 'text-yellow-700';
+    case 'En Proceso':
+      return 'text-blue-700';
+    case 'Completado':
+      return 'text-green-700';
+    default:
+      return 'text-gray-900';
+  }
+}
 
 
 
