@@ -1,6 +1,6 @@
 <template>
-    <Head title="Recursos del Proyecto" :redirectRoute="'huawei.projects'"/>
-    <AuthenticatedLayout>
+    <Head title="Recursos del Proyecto"/>
+    <AuthenticatedLayout :redirectRoute="'huawei.projects'">
       <template #header>
         {{ props.equipment ? 'Equipos del Proyecto: ' : 'Materiales del Proyecto: ' }} {{ props.huawei_project_name_code }}
       </template>
