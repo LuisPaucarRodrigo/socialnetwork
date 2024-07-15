@@ -71,7 +71,22 @@ class ProjectPintController extends Controller
         $template['project']['preproject_id'] = $preproject->id;
         $project = Project::create($template['project']);
         $project->employees()->sync($template['project_employees']);
+
+        //ProjectFolder
+
         return redirect()->back();
+    }
+
+
+    public function createFolder($name){
+        $path = '';
+        $publicPath = public_path($path . '/' . $name);
+        if (!file_exists($publicPath)) {
+            mkdir($publicPath, 0777, true);
+            return $path . '/' . $name;
+        } else {
+            return abort(403, 'Carpeta ya existente');
+        }
     }
 
 
