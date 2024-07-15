@@ -20,14 +20,32 @@ use App\Models\CicsaPurchaseOrder;
 use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use Inertia\Inertia;
-use Mockery\Undefined;
 use Carbon\Carbon;
 
 class CicsaController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Cicsa/CicsaIndex');
+        $projects = CicsaAssignation::orderBy('assignation_date', 'desc')
+                    ->with(
+                        'cicsa_feasibility.cicsa_feasibility_materials',
+                        'cicsa_materials',
+                        'cicsa_installation.cicsa_installation_materials',
+                        'cicsa_purchase_order',
+                        'cicsa_purchase_order_validation',
+                        'cicsa_service_order',
+                        'cicsa_charge_area'
+                        )
+                    ->paginate(20);
+        return Inertia::render('Cicsa/CicsaIndex', [
+            'projects' => $projects
+        ]);
+    }
+
+    public function destroy($ca_id)
+    {
+        CicsaAssignation::findOrFail($ca_id)->delete();
+        return redirect()->back();
     }
 
     public function indexAssignation()
