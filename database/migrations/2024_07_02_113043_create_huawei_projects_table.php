@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('huawei_site_id')->constrained('huawei_sites')->onDelete('cascade');
             $table->string('description')->nullable();
+            $table->string('ot');
+            $table->string('pre_report');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

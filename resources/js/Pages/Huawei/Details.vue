@@ -25,10 +25,16 @@
                             <thead>
                                 <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                                        Descripción del producto
+                                        Descripción del Equipo
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Estado
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        Proyecto
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        OT del Proyecto
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Número de Guía de Entrada
@@ -53,6 +59,24 @@
                                 <tr v-for="item in (props.search ? props.entries : entries.data)" :key="item.id" class="text-gray-700">
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_equipment_serie?.huawei_equipment?.name }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                        <template v-if="item.huawei_project_resources.length > 0 && item.state == 'En Proyecto'">
+                                        <Link class="text-blue-600 hover:underline" :href="route('huawei.projects.resources', {huawei_project: item.huawei_project_resources[item.huawei_project_resources.length - 1].huawei_project.id, equipment: 1})">
+                                            {{ item.huawei_project_resources[item.huawei_project_resources.length - 1].huawei_project.name + ' / ' + item.huawei_project_resources[item.huawei_project_resources.length - 1].huawei_project.code }}
+                                        </Link>
+                                        </template>
+                                        <template v-else>
+                                        <span>-</span>
+                                        </template>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                        <template v-if="item.huawei_project_resources.length > 0 && item.state == 'En Proyecto'">
+                                            {{ item.huawei_project_resources[item.huawei_project_resources.length - 1].huawei_project.ot }}
+                                        </template>
+                                        <template v-else>
+                                        <span>-</span>
+                                        </template>
+                                    </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
@@ -181,7 +205,7 @@
 </template>
 
 <script setup>
-    import { Head, router, useForm } from '@inertiajs/vue3';
+    import { Head, router, useForm, Link } from '@inertiajs/vue3';
     import Pagination from '@/Components/Pagination.vue';
     import { formattedDate } from '@/utils/utils'
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';

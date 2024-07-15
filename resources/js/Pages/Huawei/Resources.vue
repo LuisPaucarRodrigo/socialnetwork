@@ -1,8 +1,8 @@
 <template>
-    <Head title="Recursos del Proyecto" />
+    <Head title="Recursos del Proyecto" :redirectRoute="'huawei.projects'"/>
     <AuthenticatedLayout>
       <template #header>
-        {{ props.equipment ? 'Equipos del Proyecto' : 'Materiales del Proyecto' }}
+        {{ props.equipment ? 'Equipos del Proyecto: ' : 'Materiales del Proyecto: ' }} {{ props.huawei_project_name_code }}
       </template>
       <div class="min-w-full rounded-lg shadow">
         <div class="flex gap-4 justify-between rounded-lg">
@@ -70,7 +70,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.serie_number }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                 <div v-if="item.quantity !== 0 && !item.liquidated_quantity" class="flex items-center">
                                     <button @click.prevent="openRefundModal(item.id)" class="text-blue-600 hover:underline mr-2">
@@ -119,7 +119,7 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                     <div v-if="item.quantity !== 0 && !item.liquidated_quantity" class="flex items-center">
                                         <button @click.prevent="openRefundModal(item.id)" class="text-blue-600 hover:underline mr-2">
@@ -256,7 +256,8 @@
     materials: [Object, null],
     entry_details: Object,
     search: String,
-    project_state: Number
+    huawei_project_name_code: String,
+    project_state: Number,
   });
 
   const create_modal = ref(false);
