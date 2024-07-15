@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->date('pick_date');
             $table->string('guide_number');
-            $table->text('received_materials');
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('cicsa_assignation_id')->constrained('cicsa_assignations')->onDelete('cascade');
