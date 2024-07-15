@@ -127,7 +127,6 @@ class CicsaController extends Controller
     public function indexInstallation()
     {
         $installations = CicsaAssignation::select('id', 'project_name')
-            ->whereHas('cicsa_materials')
             ->with(
                 'cicsa_installation.cicsa_installation_materials',
                 'cicsa_installation.user'
