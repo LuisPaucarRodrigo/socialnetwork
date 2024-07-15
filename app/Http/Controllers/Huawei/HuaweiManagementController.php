@@ -229,7 +229,7 @@ class HuaweiManagementController extends Controller
                     $query->where('id', $id);
                 });
             })
-            ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment')
+            ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'huawei_project_resources.huawei_project')
             ->paginate(10);
         } else {
             $entries = HuaweiEntryDetail::where('huawei_material_id', $id)->with('huawei_entry', 'huawei_material')->paginate(10);
