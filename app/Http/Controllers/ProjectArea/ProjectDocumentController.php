@@ -16,8 +16,10 @@ class ProjectDocumentController extends Controller
     {
         $this->main_directory = 'Projects';
     }
-    public function project_doc_index($path, $project_id = null)
+    public function project_doc_index(Request $request)
     {
+        $project_id = $request->input('project_id');
+        $path = $request->input('path');
         $currentPath = $project_id ? $this->main_directory . '/' . $path
         : $path;
         $publicPath = public_path($currentPath);
@@ -29,8 +31,17 @@ class ProjectDocumentController extends Controller
     }
 
 
-    public function project_doc_store($path)
+    public function project_doc_store(Request  $request)
     {
+        $data = $request->validate([
+            'name'=> 'required',
+            'path'=> 'required',
+            'type'=> 'required'
+        ]);
+        if($data['type']=== 'Carpeta') {
+            $this->createFolder($data['path'], $data['name']);
+        }
+        return redirect()->back();
         // $currentPath = $project_id ? $this->main_directory . '/' . $path
         // : $path;
         // $publicPath = public_path($currentPath);
@@ -72,5 +83,16 @@ class ProjectDocumentController extends Controller
             }
         }
         return $folderStructure;
+    }
+
+
+    public function createFolder($path, $name){
+        $publicPath = public_path($path . '/' . $name);
+        if (!file_exists($publicPath)) {
+            mkdir($publicPath, 0777, true);
+            return $path . '/' . $name;
+        } else {
+            return abort(403, 'Carpeta ya existente');
+        }
     }
 }

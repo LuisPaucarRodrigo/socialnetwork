@@ -132,7 +132,8 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
 
 
-    Route::get('/project-document-gestion/{path?}/{project_id?}', [ProjectDocumentController::class, 'project_doc_index'])->name('project.document.index');
+    Route::get('/project-document-gestion', [ProjectDocumentController::class, 'project_doc_index'])->name('project.document.index');
+    Route::post('/project-document-gestion/store/{path?}', [ProjectDocumentController::class, 'project_doc_store'])->name('project.document.store');
 
     
 });
