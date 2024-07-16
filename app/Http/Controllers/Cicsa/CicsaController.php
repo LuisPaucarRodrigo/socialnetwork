@@ -300,7 +300,7 @@ class CicsaController extends Controller
     public function storeChargeArea(Request $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validate([
-            'invoice_number' => 'required',
+            'invoice_number' => 'nullable',
             'invoice_date' => 'nullable',
             'payment_date' => [
                 'nullable',
@@ -334,7 +334,7 @@ class CicsaController extends Controller
     public function updateChargeArea(Request $request, CicsaChargeArea $cicsa_charge_area)
     {
         $validateData = $request->validate([
-            'invoice_number' => 'required',
+            'invoice_number' => 'nullable',
             'invoice_date' => 'nullable',
             'payment_date' => [
                 'nullable',

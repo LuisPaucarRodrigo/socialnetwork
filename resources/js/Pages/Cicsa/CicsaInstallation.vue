@@ -89,17 +89,11 @@
                                 <button v-if="item?.total_materials?.length > 0" type="button" @click="openMaterialsModal(item.total_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
-                                <p v-else class="text-gray-900 text-center">
-                                    -
-                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                 <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"  type="button" @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
-                                <p v-else class="text-gray-900 text-center">
-                                    -
-                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
