@@ -232,6 +232,18 @@ class CicsaAssignation extends Model
         return true;
     }
 
+    public function checkCSP(){
+        $purchaseOrder = $this->cicsa_purchase_order()->first();
+        if (!$purchaseOrder) {return false;}
+        $validationOrder = $this->cicsa_purchase_order_validation()->first();
+                if (!$validationOrder) {return false;}
+        $serviceOrder = $this->cicsa_service_order()->first();
+                if (!$serviceOrder) {return false;}
+        $chargeArea = $this->cicsa_charge_area()->first();
+                if (!$chargeArea) {return false;}
+        return true;
+    }
+
     public function getCicsaChargeStatusAttribute () {
         if (
             $this->checkPurchaseOrder()
@@ -241,7 +253,7 @@ class CicsaAssignation extends Model
         ) {
             return 'Completado';
         }
-        if ($this->checkPurchaseOrder()) {
+        if ($this->checkCSP()) {
             return 'En Proceso';
         }
         if (!$this->checkPurchaseOrder()) {
