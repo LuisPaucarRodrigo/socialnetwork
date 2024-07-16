@@ -479,15 +479,14 @@ function closeAddAssignationModal() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(ca_id, item, total_materials, cicsa_installation_materials) {
+    total_materials = cicsa_installation_materials?.length>0 ?  cicsa_installation_materials 
+        : total_materials.map(item=>({...item, used_quantity:0}))
     if (item) {
-        total_materials = cicsa_installation_materials
         form.defaults({ ...item, total_materials})
-        form.reset()
     } else {
-        total_materials = total_materials.map(item=>({...item, used_quantity:0}))
         form.defaults({ ...initialState, total_materials, cicsa_assignation_id: ca_id })
-        form.reset()
     }
+    form.reset()
     showAddEditModal.value = true
 }
 
