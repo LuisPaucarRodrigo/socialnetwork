@@ -1,6 +1,6 @@
 <template>
     <Head title="Devoluciones Huawei" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'huawei.inventory.show'">
       <template #header>
         {{ props.equipment ? 'Devolución de Equipos' : 'Devolución de Materiales' }}
       </template>
