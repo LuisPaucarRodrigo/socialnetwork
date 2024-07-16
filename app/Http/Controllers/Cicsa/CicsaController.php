@@ -28,16 +28,16 @@ class CicsaController extends Controller
     public function index()
     {
         $projects = CicsaAssignation::orderBy('assignation_date', 'desc')
-                    ->with(
-                        'cicsa_feasibility.cicsa_feasibility_materials',
-                        'cicsa_materials.cicsa_material_items',
-                        'cicsa_installation.cicsa_installation_materials',
-                        'cicsa_purchase_order',
-                        'cicsa_purchase_order_validation',
-                        'cicsa_service_order',
-                        'cicsa_charge_area'
-                        )
-                    ->paginate(20);
+            ->with(
+                'cicsa_feasibility.cicsa_feasibility_materials',
+                'cicsa_materials.cicsa_material_items',
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_purchase_order',
+                'cicsa_purchase_order_validation',
+                'cicsa_service_order',
+                'cicsa_charge_area'
+            )
+            ->paginate(20);
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects
         ]);
@@ -78,25 +78,22 @@ class CicsaController extends Controller
     }
 
     public function updateOrStoreFeasibilities(StoreOrUpdateFeasibilitiesRequest $request, $cicsa_assignation_id = null)
-    {
+    {   
         $validateData = $request->validated();
         $cicsaFeasibility = CicsaFeasibility::updateOrCreate(
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
         $cicsaFeasibilityId = $cicsaFeasibility->id;
-        if ($cicsa_assignation_id) {
-            foreach ($request->cicsa_feasibility_materials as $material) {
-                if (!isset($material['id'])) {
-                    $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
-                    CicsaFeasibilityMaterial::create($material);
-                }
+        foreach ($request->cicsa_feasibility_materials as $material) {
+            $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
+            if(!$material['name']){
+                $material->delete();
             }
-        } else {
-            foreach ($request->cicsa_feasibility_materials as $material) {
-                $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
-                CicsaFeasibilityMaterial::create($material);
-            }
+            CicsaFeasibilityMaterial::updateOrCreate(
+                ['id' => isset($material['id']) ? $material['id'] : null],
+                $material
+            );
         }
     }
 
@@ -289,7 +286,7 @@ class CicsaController extends Controller
     }
 
     //CicsaChargeArea
-    
+
     public function indexChargeArea()
     {
         $charge_areas = CicsaAssignation::select('id', 'project_name')
