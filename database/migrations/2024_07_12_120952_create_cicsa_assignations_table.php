@@ -16,9 +16,9 @@ return new class extends Migration
             $table->date('assignation_date');
             $table->string('project_name');
             $table->string('customer');
-            $table->string('project_code');
-            $table->string('cpe');
-            $table->date('project_deadline');
+            $table->string('project_code')->nullable();
+            $table->string('cpe')->nullable();
+            $table->date('project_deadline')->nullable();
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
