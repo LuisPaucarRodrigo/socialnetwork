@@ -95,13 +95,16 @@ class CicsaAssignation extends Model
         return true;
     }
     public function checkMaterials() {
-        $feasibility = $this->cicsa_materials()->first();
-        if (!$feasibility) {return false;}
+        $materials = $this->cicsa_materials()->first();
+        if (!$materials) {return false;}
         $fieldsToCheck = ['pick_date',
         'guide_number',
         'received_materials',];
         foreach ($fieldsToCheck as $field) {
-            if (is_null($feasibility->$field)) {return false;}
+            if (is_null($materials->$field)) {return false;}
+        }
+        if ($materials->cicsa_material_items()->count() === 0) {
+            return false;
         }
         return true;
     }
@@ -127,6 +130,17 @@ class CicsaAssignation extends Model
     }
 
 
+    public function checkPSP(){
+        $feasibility = $this->cicsa_feasibility()->first();
+        if (!$feasibility) {return false;}
+        $materials = $this->cicsa_materials()->first();
+        if (!$materials) {return false;}
+        $installation = $this->cicsa_installation()->first();
+        if (!$installation) {return false;}
+        return true;
+    }
+
+
     public function getCicsaProjectStatusAttribute () {
         if ( $this->getCicsaChargeStatusAttribute() === 'Completado'
                 || ( $this->checkAssignation()
@@ -137,7 +151,7 @@ class CicsaAssignation extends Model
         ) {
             return 'Completado';
         }
-        if ($this->checkAssignation()) {
+        if ($this->checkPSP()) {
             return 'En Proceso';
         }
         if (!$this->checkAssignation()) {

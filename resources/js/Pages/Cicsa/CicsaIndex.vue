@@ -699,107 +699,6 @@
             </div>
         </Modal>
 
-        <!-- <Modal :show="showSotDeleteModal" @close="closeSotDeleteModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    ¿Estás seguro de que quieres eliminar la SOT?
-                </h2>
-
-                <p class="mt-1 text-sm text-gray-600">
-                    Una vez que se elimine el registro, todos sus recursos y datos se eliminarán permanentemente.
-                </p>
-
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeSotDeleteModal"> Cancelar </SecondaryButton>
-
-                    <DangerButton class="ml-3" @click="deleteSot">
-                        Eliminar
-                    </DangerButton>
-                </div>
-            </div>
-        </Modal>
-        <Modal :show="showCustomerDetails" @close="showCustomerDetails = false" :maxWidth="'xl'">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-base font-medium leading-7">
-                        Detalles del Cliente
-                    </h2>
-                    <button @click="closeCustomerDetails"
-                        class="text-gray-500 hover:text-gray-700 focus:outline-none"> 
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="mb-4">
-                    <p class="font-medium text-gray-900">Cliente:
-                        <span class="text-gray-600">{{ customer.customer }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Plano del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_flat }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Teléfono del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_phone }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Dirección del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_address }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Distrito del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_district }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Referencia del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_ref }}</span>
-                    </p>
-                </div>
-            </div>
-        </Modal>
-        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Acta
-                </h2>
-                <br>
-                <div class="mt-2">
-                    <div v-if="materials.length > 0" class="overflow-auto">
-                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
-                            <thead>
-                                <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
-                                        Material
-                                    </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
-                                        Cantidad
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
-                                    <td class="border-b border-slate-300  px-4 py-4">
-                                        {{ item?.material }}
-                                    </td>
-                                    <td class="border-b border-slate-300  px-4 py-4">
-                                        {{ item?.quantity }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p v-else>
-                        No hay materiales asignados
-                    </p>
-                    <br>
-                    <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
-
-                    </div>
-                </div>
-            </div>
-        </Modal>
-        -->
-
         <SuccessOperationModal :confirming="confirmSotDelete" :title="'Registro Eliminado'"
             :message="'El proyecto fue eliminado'" />
     </AuthenticatedLayout>
@@ -903,11 +802,11 @@ function checkVisibility(option) {
 const stateClass = (state, g) => {
   switch (state) {
     case 'Pendiente':
-      return 'bg-red-200';
+      return 'bg-red-100';
     case 'En Proceso':
-      return 'bg-yellow-200';
+      return 'bg-yellow-100';
     case 'Completado':
-      return 'bg-green-200';
+      return 'bg-green-100';
     default:
       return 'text-gray-900';
   }
