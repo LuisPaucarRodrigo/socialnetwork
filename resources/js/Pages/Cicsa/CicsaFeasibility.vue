@@ -186,7 +186,6 @@
                     <br>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeAddFeasibilityModal"> Cancelar </SecondaryButton>
-
                         <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
                             Guardar
