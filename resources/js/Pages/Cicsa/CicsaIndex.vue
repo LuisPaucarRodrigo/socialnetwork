@@ -900,7 +900,7 @@ function checkVisibility(option) {
 }
 
 
-const stateClass = (state) => {
+const stateClass = (state, g) => {
   switch (state) {
     case 'Pendiente':
       return 'bg-red-200';
