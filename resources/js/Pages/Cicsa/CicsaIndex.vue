@@ -341,7 +341,7 @@
                             </td>
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length>0" class="flex items-center justify-center">
-                                    <button @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)" class="text-green-600">
+                                    <button @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials, 'Materiales de Factibilidad')" class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
@@ -362,7 +362,7 @@
                             </td>
                             <td v-if="checkVisibility('Materiales')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
-                                    <button v-if="item?.cicsa_materials?.cicsa_material_items?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_materials?.cicsa_material_items)" class="text-green-600">
+                                    <button v-if="item?.cicsa_materials?.cicsa_material_items?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_materials?.cicsa_material_items, 'Materiales Recibidos')" class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
@@ -576,7 +576,7 @@
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Factibilidad
+                    {{ material_title }}
                 </h2>
                 <br>
                 <div class="mt-2">
@@ -761,12 +761,13 @@ function deleteSot () {
     })
 }
 
-
+const material_title = ref('')
 //materials
 const showMaterials = ref(false)
 const materials = ref([]);
-function openMaterialsModal(arrayMaterials) {
+function openMaterialsModal(arrayMaterials, title) {
     materials.value = arrayMaterials ? arrayMaterials : []
+    material_title.value = title
     showMaterials.value = true
 }
 function closeMaterialsModal() {
