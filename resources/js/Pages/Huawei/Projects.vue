@@ -71,9 +71,7 @@
                         </h2>
                         <div class="inline-flex justify-end items-start gap-x-2">
                             <button
-                                @click="()=>{router.put(route('huawei.projects.liquidateproject', {huawei_project: item.id}), {
-                                    onSuccess: () => router.visit(route('huawei.projects'))
-                                })}"
+                                @click="openLiquidateModal(item.id)"
                                 v-if="item.status"
                                 :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.state ? '': 'opacity-60'}`"
                                 :disabled="item.state ? false : true"
@@ -123,7 +121,23 @@
                 <pagination :links="props.projects.links" />
             </div>
         </div>
-
+        <Modal :show="liquidateModal" :maxWidth="'md'">
+            <!-- Contenido del modal cuando no hay empleados -->
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Seguro de liquidar el proyecto?
+                </h2>
+                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
+                <p class="mt-2 text-sm text-gray-500">
+                    ¿Está seguro de liquidar el proyecto? No se podrán deshacer los cambios.
+                </p>
+                <div class="mt-6 flex space-x-3 justify-end">
+                    <SecondaryButton type="button" @click="closeLiquidateModal"> Cancelar
+                    </SecondaryButton>
+                    <PrimaryButton type="button" @click="liquidate()"> Aceptar </PrimaryButton>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -133,6 +147,10 @@ import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import { PencilIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     projects: Object,
@@ -140,6 +158,9 @@ const props = defineProps({
     userPermissions:Array,
     search: String,
 })
+
+const liquidateModal = ref(false);
+const projectId = ref(null);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -155,6 +176,25 @@ const search = () => {
     }else{
         router.visit(route('huawei.projects.search', {request: searchForm.searchTerm}));
     }
+}
+
+const openLiquidateModal = (id) => {
+    projectId.value = id;
+    liquidateModal.value = true;
+}
+
+const closeLiquidateModal = () => {
+    projectId.value = null;
+    liquidateModal.value = false;
+}
+
+const liquidate = () => {
+    router.put(route('huawei.projects.liquidateproject', {huawei_project: projectId.value}), null,{
+        onSuccess: () => {
+            closeLiquidateModal();
+            router.visit(route('huawei.projects'));
+        }
+    })
 }
 
 </script>
