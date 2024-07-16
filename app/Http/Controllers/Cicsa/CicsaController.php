@@ -110,7 +110,7 @@ class CicsaController extends Controller
     }
 
     public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_assignation_id = null)
-    {   
+    {
         $validateData = $request->validated();
         CicsaPurchaseOrder::updateOrCreate(
             ['cicsa_assignation_id' => $cicsa_assignation_id],
@@ -269,15 +269,7 @@ class CicsaController extends Controller
         $validateData = $request->validate([
             'invoice_number' => 'required',
             'invoice_date' => 'required',
-            'payment_date' => [
-                'required',
-                'date',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
-                        $fail('La fecha de pago debe ser mayor o igual que la fecha de la factura.');
-                    }
-                }
-            ],
+            'credit_to' => 'required|min:0',
             'deposit_date' => [
                 'nullable',
                 'date',
@@ -303,15 +295,7 @@ class CicsaController extends Controller
         $validateData = $request->validate([
             'invoice_number' => 'required',
             'invoice_date' => 'required',
-            'payment_date' => [
-                'required',
-                'date',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
-                        $fail('La fecha de pago debe ser mayor o igual que la fecha de la factura.');
-                    }
-                }
-            ],
+            'credit_to' => 'required|min:0',
             'deposit_date' => [
                 'nullable',
                 'date',
