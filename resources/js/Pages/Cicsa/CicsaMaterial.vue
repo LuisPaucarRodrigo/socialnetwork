@@ -357,12 +357,14 @@ const confirmUpdateMaterial = ref(false);
 
 function openEditSotModal (id, item, feasibility_materials) {
     cicsa_assignation_id.value = id;
+    let cicsa_material_items = []
     if (item?.id){
-        form.defaults({...item})
+        cicsa_material_items = item.cicsa_material_items?.length>0 ? [...item.cicsa_material_items]: feasibility_materials ? feasibility_materials?.map(item=>({...item})) : []
+        console.log('hol')
     }else {
-        let cicsa_material_items = feasibility_materials ? feasibility_materials?.map(item=>({...item})) : []
-        form.defaults({...item, cicsa_material_items})
+        cicsa_material_items = feasibility_materials ? feasibility_materials?.map(item=>({...item})) : []
     }
+    form.defaults({...item, cicsa_material_items})
     form.reset()
     showAddEditModal.value = true
 }

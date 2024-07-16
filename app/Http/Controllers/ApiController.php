@@ -7,12 +7,15 @@ use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\Imagespreproject;
 use App\Models\Preproject;
 use App\Models\PreprojectCode;
+use App\Models\PreReportHuaweiGeneral;
 use App\Models\Project;
 use App\Models\Projectimage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
+use function Pest\Laravel\json;
 
 class ApiController extends Controller
 {
@@ -63,7 +66,7 @@ class ApiController extends Controller
             }
         }
 
-        return response()->json($data);
+        return response()->json($preprojects);
     }
 
     public function preprojectcodephoto($id)
@@ -187,5 +190,26 @@ class ApiController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
+    }
+
+    public function indexHuaweiProjectGeneral()
+    {
+        $data = PreReportHuaweiGeneral::all();
+        return response()->json($data);
+    }
+
+    public function storeHuaweiProjectGeneral(Request $request)
+    {
+        $validateData = $request->validate([
+            'site' => 'required',
+            'elaborated' => 'required',
+            'code' => 'required',
+            'name' => 'required',
+            'address' => 'required',
+            'reference' => 'required',
+            'access' => 'required',
+        ]);
+        PreReportHuaweiGeneral::create($validateData);
+        return response()->json([], 200);
     }
 }
