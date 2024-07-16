@@ -20,4 +20,8 @@
         Route::post('/project/store/image', [ApiController::class, 'project_store_image']);
 
         Route::post('/logout', [ApiController::class, 'logout']);
+
+        //ProjectHuawei
+        Route::get('/huaweiproject/index', [ApiController::class, 'indexHuaweiProjectGeneral']);
+        Route::post('/huaweiproject/store', [ApiController::class, 'storeHuaweiProjectGeneral']);
     });
