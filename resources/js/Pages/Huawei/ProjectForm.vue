@@ -109,7 +109,7 @@
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-6">
                                 <InputLabel for="name" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
