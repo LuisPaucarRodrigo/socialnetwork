@@ -22,9 +22,9 @@ class StoreOrUpdateMaterialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pick_date' => 'required|date',
-            'guide_number' => 'required|string',
-            'cicsa_material_items' => 'required|array',
+            'pick_date' => 'nullable|date',
+            'guide_number' => 'nullable|string',
+            'cicsa_material_items' => 'nullable|array',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
         ];
