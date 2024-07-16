@@ -109,7 +109,7 @@
                                 <InputError :message="form.errors.report" />
                             </div>
                         </div>
-                        
+
                         <div class="sm:col-span-1">
                             <br>
                             <div class="flex gap-2 items-center">
@@ -151,23 +151,24 @@
                                 <tbody>
                                     <tr v-for="item in form.cicsa_feasibility_materials" :key="item.id"
                                         class="text-gray-700">
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.unit }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 text-center">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <TextInput class="text-center" type="number"
+                                                @change="modifyQuantity(item.id, $event)" :value="item.quantity" />
+                                            <!-- <p class="text-gray-900 text-center">
                                                 {{ item.quantity }}
-                                            </p>
+                                            </p> -->
                                         </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <button v-if="!item.id" type="button" @click="delete_material(item.name)"
                                                 class="text-blue-900 whitespace-no-wrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -218,7 +219,7 @@
                         <InputLabel for="quantity">Cantidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity" />
+                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity" min="0" />
                         </div>
                     </div>
                 </div>
@@ -341,5 +342,14 @@ function delete_material(materialName) {
     } else {
         console.error(`No se encontró ningún material con el nombre '${materialName}'.`);
     }
+}
+
+function modifyQuantity(id, event) {
+    form.cicsa_feasibility_materials = form.cicsa_feasibility_materials.map(item => {
+        if (item.id === id) {
+            return { ...item, quantity: event.target.value };
+        }
+        return item;
+    });
 }
 </script>
