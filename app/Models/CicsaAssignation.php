@@ -132,12 +132,12 @@ class CicsaAssignation extends Model
 
     public function checkPSP(){
         $feasibility = $this->cicsa_feasibility()->first();
-        if (!$feasibility) {return false;}
+        if ($feasibility) {return true;}
         $materials = $this->cicsa_materials()->first();
-        if (!$materials) {return false;}
+        if ($materials) {return true;}
         $installation = $this->cicsa_installation()->first();
-        if (!$installation) {return false;}
-        return true;
+        if ($installation) {return true;}
+        return false;
     }
 
 
@@ -234,14 +234,14 @@ class CicsaAssignation extends Model
 
     public function checkCSP(){
         $purchaseOrder = $this->cicsa_purchase_order()->first();
-        if (!$purchaseOrder) {return false;}
+        if ($purchaseOrder) {return true;}
         $validationOrder = $this->cicsa_purchase_order_validation()->first();
-                if (!$validationOrder) {return false;}
+        if ($validationOrder) {return true;}
         $serviceOrder = $this->cicsa_service_order()->first();
-                if (!$serviceOrder) {return false;}
+        if ($serviceOrder) {return true;}
         $chargeArea = $this->cicsa_charge_area()->first();
-                if (!$chargeArea) {return false;}
-        return true;
+        if ($chargeArea) {return true;}
+        return false;
     }
 
     public function getCicsaChargeStatusAttribute () {

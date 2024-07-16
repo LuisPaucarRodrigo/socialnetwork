@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_number')->nullable();
             $table->date('invoice_date')->nullable();
-            $table->date('payment_date')->nullable();
+            $table->integer('credit_to')->nullable();
             $table->date('deposit_date')->nullable();
             $table->double('amount')->nullable();
             $table->string('user_name');

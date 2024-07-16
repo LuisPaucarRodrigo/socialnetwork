@@ -302,15 +302,7 @@ class CicsaController extends Controller
         $validateData = $request->validate([
             'invoice_number' => 'nullable',
             'invoice_date' => 'nullable',
-            'payment_date' => [
-                'nullable',
-                'date',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
-                        $fail('La fecha de pago debe ser mayor o igual que la fecha de la factura.');
-                    }
-                }
-            ],
+            'credit_to' => 'nullable|min:0',
             'deposit_date' => [
                 'nullable',
                 'date',
@@ -336,15 +328,7 @@ class CicsaController extends Controller
         $validateData = $request->validate([
             'invoice_number' => 'nullable',
             'invoice_date' => 'nullable',
-            'payment_date' => [
-                'nullable',
-                'date',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
-                        $fail('La fecha de pago debe ser mayor o igual que la fecha de la factura.');
-                    }
-                }
-            ],
+            'credit_to' => 'nullable|min:0',
             'deposit_date' => [
                 'nullable',
                 'date',

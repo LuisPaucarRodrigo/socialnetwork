@@ -808,7 +808,7 @@ const stateClass = (state, g) => {
     case 'Completado':
       return 'bg-green-100';
     default:
-      return 'text-gray-900';
+      return 'bg-white';
   }
 }
 

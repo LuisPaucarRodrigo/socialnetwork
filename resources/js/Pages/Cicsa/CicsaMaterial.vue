@@ -360,7 +360,7 @@ function openEditSotModal (id, item, feasibility_materials) {
     if (item?.id){
         form.defaults({...item})
     }else {
-        let cicsa_material_items = feasibility_materials.map(item=>({...item}))
+        let cicsa_material_items = feasibility_materials ? feasibility_materials?.map(item=>({...item})) : []
         form.defaults({...item, cicsa_material_items})
     }
     form.reset()
