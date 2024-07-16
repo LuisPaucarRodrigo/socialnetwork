@@ -198,7 +198,7 @@ class CicsaController extends Controller
     public function storeOCValidation(Request $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validate([
-            'validation_date' => 'required',
+            'validation_date' => 'nullable',
             'materials_control' => 'required',
             'supervisor' => 'required',
             'warehouse' => 'required',
@@ -218,7 +218,7 @@ class CicsaController extends Controller
     public function updateOCValidation(Request $request, CicsaPurchaseOrderValidation $cicsa_validation_id)
     {
         $validateData = $request->validate([
-            'validation_date' => 'required',
+            'validation_date' => 'nullable',
             'materials_control' => 'required',
             'supervisor' => 'required',
             'warehouse' => 'required',
@@ -250,8 +250,8 @@ class CicsaController extends Controller
     public function storeServiceOrder(Request $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validate([
-            'service_order_date' => 'required',
-            'service_order' => 'required',
+            'service_order_date' => 'nullable',
+            'service_order' => 'nullable',
             'estimate_sheet' => 'required',
             'purchase_order' => 'required',
             'pdf_invoice' => 'required',
@@ -269,8 +269,8 @@ class CicsaController extends Controller
     public function updateServiceOrder(Request $request, CicsaServiceOrder $cicsa_service_order_id)
     {
         $validateData = $request->validate([
-            'service_order_date' => 'required',
-            'service_order' => 'required',
+            'service_order_date' => 'nullable',
+            'service_order' => 'nullable',
             'estimate_sheet' => 'required',
             'purchase_order' => 'required',
             'pdf_invoice' => 'required',
@@ -301,9 +301,9 @@ class CicsaController extends Controller
     {
         $validateData = $request->validate([
             'invoice_number' => 'required',
-            'invoice_date' => 'required',
+            'invoice_date' => 'nullable',
             'payment_date' => [
-                'required',
+                'nullable',
                 'date',
                 function ($attribute, $value, $fail) use ($request) {
                     if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
@@ -320,7 +320,7 @@ class CicsaController extends Controller
                     }
                 }
             ],
-            'amount' => 'required',
+            'amount' => 'nullable',
             'user_name' => 'required',
             'user_id' => 'required',
         ]);
@@ -335,9 +335,9 @@ class CicsaController extends Controller
     {
         $validateData = $request->validate([
             'invoice_number' => 'required',
-            'invoice_date' => 'required',
+            'invoice_date' => 'nullable',
             'payment_date' => [
-                'required',
+                'nullable',
                 'date',
                 function ($attribute, $value, $fail) use ($request) {
                     if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
@@ -354,7 +354,7 @@ class CicsaController extends Controller
                     }
                 }
             ],
-            'amount' => 'required',
+            'amount' => 'nullable',
             'user_name' => 'required',
             'user_id' => 'required',
         ]);
