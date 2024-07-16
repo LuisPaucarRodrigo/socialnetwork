@@ -45,7 +45,7 @@ class PreProjectController extends Controller
                     ->orderBy('created_at')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
-                'users' => User::select('id','name')->where()->get()
+                'users' => User::select('id','name')->get()
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
