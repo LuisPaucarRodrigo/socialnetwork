@@ -87,9 +87,6 @@ class CicsaController extends Controller
         $cicsaFeasibilityId = $cicsaFeasibility->id;
         foreach ($request->cicsa_feasibility_materials as $material) {
             $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
-            if(!$material['name']){
-                $material->delete();
-            }
             CicsaFeasibilityMaterial::updateOrCreate(
                 ['id' => isset($material['id']) ? $material['id'] : null],
                 $material
