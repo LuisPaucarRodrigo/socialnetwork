@@ -14,6 +14,8 @@ class HuaweiProject extends Model
         'name',
         'huawei_site_id',
         'description',
+        'ot',
+        'pre_report',
         'status'
     ];
 

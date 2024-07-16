@@ -51,6 +51,11 @@ class HuaweiEntryDetail extends Model
         return $this->hasMany(HuaweiProjectResource::class, 'huawei_entry_detail_id');
     }
 
+    public function latest_huawei_project_resource()
+    {
+        return $this->hasOne(HuaweiProjectResource::class)->latestOfMany();
+    }
+
     public function getStateAttribute()
     {
         if ($this->huawei_material_id) {
