@@ -128,11 +128,12 @@ class CicsaAssignation extends Model
 
 
     public function getCicsaProjectStatusAttribute () {
-        if (
-            $this->checkAssignation()
-            && $this->checkFeasibility()
-            && $this->checkMaterials()
-            && $this->checkInstallation()
+        if ( $this->getCicsaChargeStatusAttribute() === 'Completado'
+                || ( $this->checkAssignation()
+                    && $this->checkFeasibility()
+                    && $this->checkMaterials()
+                    && $this->checkInstallation()
+            )
         ) {
             return 'Completado';
         }
