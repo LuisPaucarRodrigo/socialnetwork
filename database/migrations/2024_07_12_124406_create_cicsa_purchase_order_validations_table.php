@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cicsa_purchase_order_validations', function (Blueprint $table) {
             $table->id();
-            $table->date('validation_date');
+            $table->date('validation_date')->nullable();
             $table->string('materials_control');
             $table->string('supervisor');
             $table->string('warehouse');
