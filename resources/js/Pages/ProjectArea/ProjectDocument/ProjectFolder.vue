@@ -45,20 +45,9 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Estado
+                                Tamaño
                             </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Propietario
-                            </th>
-                            <th v-if="auth.user.role_id === 1"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Permisos
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Tipo
-                            </th>
+                           
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 pl-4 pr-10 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
@@ -66,17 +55,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in folders" :key="item.item_db.id" class="text-gray-700">
+                        <tr v-for="(item, i) in folders_archives" :key="i" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white  text-sm">
                                 <!-- for button instead of Link -->
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
-                                <Link v-if="item.item_db.state && checkSeeDownloadPermission(item.item_db)"
-                                    :href="item.item_db.type === 'Carpeta' ? route('documment.management.folders', { folder_id: item.item_db.id }) : (item.item_db.type === 'Archivos' ? route('archives.show', { folder: item.item_db.id }) : '#')"
+                                <Link 
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
                                 <div class="flex space-x-3 items-center w-full mr-8 xl:mr-0">
-                                    <img v-if="item.item_db.type === 'Archivos'" src="/image/FolderIcons/archive_5.png"
+                                    <img v-if="item.type === 'folder'" src="/image/FolderIcons/archive_5.png"
                                         class="h-12 w-12">
-                                    <img v-if="item.item_db.type === 'Carpeta'" src="/image/FolderIcons/folder_5.png"
+                                    <img v-if="item.type === 'archive'" src="/image/FolderIcons/folder_5.png"
                                         class="h-12 w-12">
                                     <p>
                                         {{ item.name }}
@@ -85,42 +73,16 @@
 
                                 </Link>
 
-                                <div v-else class="px-5 py-5 ">
-                                    <div class="flex space-x-3 opacity-60 items-center  mr-8 xl:mr-0">
-                                        <img v-if="item.item_db.type === 'Archivos'"
-                                            src="/image/FolderIcons/archive_5.png" class="h-12 w-12">
-                                        <img v-if="item.item_db.type === 'Carpeta'"
-                                            src="/image/FolderIcons/folder_5.png" class="h-12 w-12">
-                                        <p class="text-gray-700 whitespace-nowrap font-bold tracking-widest text-base">
-                                            {{ item.name }}
-                                        </p>
-                                    </div>
-                                </div>
+                                
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
 
-                                <p v-if="item.item_db.state" class="text-gray-700">
-                                    {{ checkSeeDownloadPermission(item.item_db)
-            ? 'Autorizado'
-            : 'No Autorizado' }}
+                                <p  class="text-gray-700">
+                                    tamaño 
                                 </p>
-                                <p v-else class="text-red-400">
-                                    Por aprobar
-                                </p>
+                               
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.item_db.user.name }}</p>
-                            </td>
-                            <td v-if="auth.user.role_id === 1"
-                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <Link
-                                    :href="route('documment.management.folders.permissions', { folder_id: item.item_db.id })"
-                                    class="text-indigo-500 hover:underline hover:text-indigo-400 hover:cursor-pointer">
-                                Administrar</Link>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.item_db.type }}</p>
-                            </td>
+                            
                             <td class="border-b border-gray-200 bg-white pl-5 py-5 pr-10 text-sm">
                                 <div class="flex space-x-3 justify-end">
                                     <!-- <Link class="text-blue-900 whitespace-no-wrap" :href="'#'">
@@ -130,17 +92,9 @@
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
                                     </Link> -->
-                                    <a type="button" :href="checkSeeDownloadPermission(item.item_db)
-            ? route('folder.test.download', {
-                folder_id: item.item_db.id
-            })
-            : '#'" :class="checkSeeDownloadPermission(item.item_db)
-            ? ''
-            : 'cursor-default'">
+                                    <a type="button" :href="'#'">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="green" :class="`w-6 h-6 ${checkSeeDownloadPermission(item.item_db)
-            ? ''
-            : 'opacity-50'}`">
+                                            stroke-width="1.5" stroke="green" :class="`w-6 h-6`">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                         </svg>
@@ -265,8 +219,8 @@ import DangerButton from '@/Components/DangerButton.vue';
 import InputFile from '@/Components/InputFile.vue';
 
 
-const { folders, folder, currentPath, auth, areas } = defineProps({
-    folders: Object,
+const { folders_archives, folder, currentPath, auth, areas } = defineProps({
+    folders_archives: Object,
     folder: Object,
     currentPath: String,
     areas: Object,
@@ -293,7 +247,8 @@ const confirmFolderCreate = ref(false)
 const createFolderForm = useForm({
     name: '',
     type: 'Carpeta',
-    file: undefined
+    file: undefined,
+    path: currentPath,
 })
 function openAddFoldermodal() {
     showAddFolderModal.value = true
@@ -304,11 +259,12 @@ function closeAddFolderModal() {
 }
 function handleFolderType() {
     createFolderForm.file = undefined
+    createFolderForm.name = ''
 }
 
 
 function submit() {
-    createFolderForm.post(route('documment.management.folders.store'), {
+    createFolderForm.post(route('project.document.store'), {
         onSuccess: () => {
             closeAddFolderModal()
             confirmFolderCreate.value = true
