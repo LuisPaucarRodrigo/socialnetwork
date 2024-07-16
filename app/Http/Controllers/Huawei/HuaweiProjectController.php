@@ -497,6 +497,8 @@ class HuaweiProjectController extends Controller
     {
         $searchTerm = strtolower($request);
         $query = HuaweiProjectResource::where('huawei_project_id', $huawei_project);
+        $project_state = HuaweiProject::find($huawei_project)->status;
+        $huawei_project_name_code = HuaweiProject::find($huawei_project)->name . ' / ' . HuaweiProject::find($huawei_project)->code;
 
         if ($equipment) {
             // Agregar relaciones específicas para equipos
@@ -524,6 +526,8 @@ class HuaweiProjectController extends Controller
                 'equipments' => HuaweiEquipment::all(),
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
+                'huawei_project_name_code' => $huawei_project_name_code,
+                'project_state' => $project_state,
                 'search' => $request
             ]);
         } else {
@@ -549,6 +553,8 @@ class HuaweiProjectController extends Controller
                 'materials' => HuaweiMaterial::all(),
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
+                'huawei_project_name_code' => $huawei_project_name_code,
+                'project_state' => $project_state,
                 'search' => $request
             ]);
         }
