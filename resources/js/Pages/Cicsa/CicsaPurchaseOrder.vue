@@ -18,7 +18,7 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Proyecto
+                                Nombre de Proyecto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -124,7 +124,7 @@
                             </div>
                         </div>
                         <div class="sm:col-span-1">
-                            <InputLabel for="oc_number">Numero de Guia</InputLabel>
+                            <InputLabel for="oc_number">Numero de OC</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.oc_number" autocomplete="off" id="oc_number"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
