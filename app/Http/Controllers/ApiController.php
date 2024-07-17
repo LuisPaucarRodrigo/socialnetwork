@@ -66,7 +66,7 @@ class ApiController extends Controller
             }
         }
 
-        return response()->json($preprojects);
+        return response()->json($data);
     }
 
     public function preprojectcodephoto($id)
