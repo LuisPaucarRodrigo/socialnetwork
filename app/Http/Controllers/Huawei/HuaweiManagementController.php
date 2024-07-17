@@ -15,6 +15,7 @@ use App\Models\Brand;
 use App\Models\HuaweiRefund;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class HuaweiManagementController extends Controller
 {
@@ -158,7 +159,19 @@ class HuaweiManagementController extends Controller
         if ($request->equipments) {
             foreach ($request->equipments as $equipment) {
                 if (isset($equipment['equipment_id']) && $equipment['equipment_id']) {
+
+                    DB::beginTransaction();
+
                     foreach ($equipment['series'] as $serie) {
+                        $existing_serie = HuaweiEquipmentSerie::where('huawei_equipment_id', $equipment['equipment_id'])
+                            ->where('serie_number', $serie)
+                            ->first();
+
+                        if ($existing_serie){
+                            DB::rollBack();
+                            return response()->json(['error' => 'Ocurrió un error durante la inserción de datos o se encontraron duplicados'], 500);
+                        }
+
                         $new_serie = HuaweiEquipmentSerie::create([
                             'huawei_equipment_id' => $equipment['equipment_id'], // Asegúrate de usar 'huawei_equipment_id' aquí
                             'serie_number' => $serie
@@ -171,6 +184,9 @@ class HuaweiManagementController extends Controller
                             'unit_price' => $equipment['unit_price']
                         ]);
                     }
+
+                    DB::commit();
+
                 } else {
                     $new_equipment = HuaweiEquipment::create([
                         'name' => $equipment['name'],
@@ -196,8 +212,6 @@ class HuaweiManagementController extends Controller
         }
 
     }
-
-
 
     public function storeBrand (Request $request)
     {
@@ -408,14 +422,22 @@ class HuaweiManagementController extends Controller
                 })
                 ->orWhereHas('huawei_entry_detail.huawei_equipment_serie', function ($query) use ($searchTerm) {
                     $query->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
+                })
+                ->orWhereHas('huawei_entry_detail.huawei_entry', function ($query) use ($searchTerm) {
+                    $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
                 });
             });
         }else{
             $query->whereHas('huawei_entry_detail', function ($query) {
                 $query->whereNull('huawei_equipment_serie_id');
             });
-            $query->whereHas('huawei_entry_detail.huawei_material', function ($query) use ($searchTerm) {
-                $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+            $query->where(function ($query) use ($searchTerm){
+                $query->whereHas('huawei_entry_detail.huawei_material', function ($query) use ($searchTerm) {
+                    $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                })
+                ->orWhereHas('huawei_entry_detail.huawei_entry', function ($query) use ($searchTerm){
+                    $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
+                });
             });
         }
 

@@ -37,11 +37,26 @@
                             N° {{ item.code }}
                         </h2>
                     </div>
-                    <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-                        {{ item.name }}
-                    </h3>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Nombre: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.name }}
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Site: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.huawei_site.name }}
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">OT: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.ot }}
+                        </h3>
+                    </div>
                     <div
-                        :class="`text-gray-500 text-sm ${item.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`">
+                        class="text-gray-500 text-sm mt-1">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
                                 :href="route('huawei.projects.additionalcosts', { huawei_project: item.id })"
