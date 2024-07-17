@@ -1,5 +1,5 @@
 <template>
-    <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
+    <div :class="['relative flex justify-between items-center']" ref="popup">
       <button class="p-2 bg-slate-900 rounded-md" @click="togglePopup">
         <Squares2X2Icon class="h-5 w-5 text-white" />
       </button>
