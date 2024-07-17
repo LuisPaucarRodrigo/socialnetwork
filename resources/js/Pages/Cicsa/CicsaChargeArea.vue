@@ -78,7 +78,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area ? item.cicsa_charge_area.credit + ' día(s)' : '' }}
+                                    {{ item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.credit_to + ' día(s)' : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -88,7 +88,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area ? item.cicsa_charge_area.days_late + ' día(s)' : '' }}
+                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.days_late + ' día(s)' : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -98,7 +98,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.state }}
+                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area?.state : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
@@ -160,9 +160,18 @@
                         </div>
 
                         <div class="sm:col-span-1">
+                            <InputLabel for="credit_to">Crédito a</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.credit_to" autocomplete="off"
+                                    id="invoice_date"/>
+                                <InputError :message="form.errors.credit_to" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
                             <InputLabel for="payment_date">Fecha de Pago</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" v-model="form.payment_date" autocomplete="off"
+                                <TextInput disabled readonly type="date" v-model="form.payment_date" autocomplete="off"
                                     id="payment_date"/>
                                 <InputError :message="form.errors.payment_date" />
                             </div>
@@ -212,7 +221,7 @@ import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
@@ -224,13 +233,12 @@ const { charge_areas, auth } = defineProps({
     auth: Object
 })
 
-console.log(charge_areas)
-
 const initialState = {
     id: null,
     user_id: auth.user.id,
     invoice_number: '',
     invoice_date: '',
+    credit_to: '',
     payment_date: '',
     deposit_date: '',
     amount: '',
@@ -274,6 +282,34 @@ function submit() {
             console.error(e)
         }
     })
+}
+
+watch(() => form.credit_to, (newCreditTo) => {
+    // Convertir el crédito a un número entero
+    const creditDays = parseInt(newCreditTo) + 1;
+
+    // Verificar si invoice_date tiene una fecha válida
+    if (form.invoice_date && creditDays) {
+        // Calcular la fecha de pago sumando los días de crédito a invoice_date
+        const invoiceDate = new Date(form.invoice_date); // Convertir invoice_date a objeto Date
+        invoiceDate.setDate(invoiceDate.getDate() + creditDays); // Sumar los días de crédito
+
+        // Formatear la fecha de pago
+        form.payment_date = formattedDate2(invoiceDate);
+    } else {
+        form.payment_date = ''; // Reiniciar payment_date si falta información
+    }
+});
+
+function formattedDate2(dateString) {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 }
 
 </script>

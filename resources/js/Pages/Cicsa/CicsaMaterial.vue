@@ -300,7 +300,7 @@
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Acta
+                    {{ material_title }}
                 </h2>
                 <br>
                 <div class="mt-2">
@@ -412,6 +412,7 @@ function openEditSotModal(id, item, feasibility_materials) {
         let cicsa_material_items = feasibility_materials.map(item => ({ ...item }))
         form.defaults({ ...item, cicsa_material_items })
     }
+    form.defaults({...item, cicsa_material_items})
     form.reset()
     showAddEditModal.value = true
 }
@@ -492,14 +493,14 @@ function delete_material(i) {
 
 
 
-
+const material_title = ref('')
 
 //materiasls
 const showMaterials = ref(false)
 const feas_materials = ref([]);
-
-function openMaterialsModal(arrayMaterials) {
+function openMaterialsModal(arrayMaterials, title) {
     feas_materials.value = arrayMaterials ? arrayMaterials : []
+    material_title.value = title
     showMaterials.value = true
 }
 function closeMaterialsModal() {

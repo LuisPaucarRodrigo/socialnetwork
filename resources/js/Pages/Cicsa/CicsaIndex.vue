@@ -334,14 +334,14 @@
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_feasibility?.feasibility_date) }}</p>
                             </td>
-                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_feasibility?.report)"  class=" text-center">
+                            <td  :class="stateClass(item?.cicsa_feasibility?.report)" v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b border-gray-200 px-5 py-5 text-sm">
+                                <p  class=" text-center">
                                     {{ item?.cicsa_feasibility?.report }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length>0" class="flex items-center justify-center">
-                                    <button @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)" class="text-green-600">
+                                    <button @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials, 'Materiales de Factibilidad')" class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
@@ -362,7 +362,7 @@
                             </td>
                             <td v-if="checkVisibility('Materiales')" class="border-b  border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
-                                    <button v-if="item?.cicsa_materials?.cicsa_material_items?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_materials?.cicsa_material_items)" class="text-green-600">
+                                    <button v-if="item?.cicsa_materials?.cicsa_material_items?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_materials?.cicsa_material_items, 'Materiales Recibidos')" class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
@@ -379,13 +379,13 @@
                             <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item.cicsa_installation?.pint_date) }}</p>
                             </td>
-                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_installation?.conformity)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_installation?.conformity)" v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p   class=" text-center">
                                     {{ item?.cicsa_installation?.conformity }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_installation?.report)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_installation?.report)" v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p   class=" text-center">
                                     {{ item?.cicsa_installation?.report }}
                                 </p>
                             </td>
@@ -408,8 +408,8 @@
                             </td>
 
 
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_project_status)"  class="font-black uppercase text-center">
+                            <td :class="stateClass(item?.cicsa_project_status)" class="border-b  border-r-2 border-gray-200  px-5 py-5 text-sm">
+                                <p  class="font-black uppercase text-center">
                                     {{ item?.cicsa_project_status }}
                                 </p>
                             </td>
@@ -421,18 +421,18 @@
                             <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.cicsa_purchase_order?.oc_number }}</p>
                             </td>
-                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order?.master_format)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order?.master_format)" v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order?.master_format }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order?.item3456)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order?.item3456)" v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order?.item3456 }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order?.budget)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order?.budget)" v-if="checkVisibility('Orden de Compra')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order?.budget }}
                                 </p>
                             </td>
@@ -445,33 +445,33 @@
                             <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item.cicsa_purchase_order_validation?.validation_date) }}</p>
                             </td>
-                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.materials_control)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order_validation?.materials_control)" v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order_validation?.materials_control }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.supervisor)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order_validation?.supervisor)" v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order_validation?.supervisor }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.warehouse)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order_validation?.warehouse)" v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order_validation?.warehouse }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.boss)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order_validation?.boss)" v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order_validation?.boss }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.liquidator)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order_validation?.liquidator)" v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order_validation?.liquidator }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_purchase_order_validation?.superintendent)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_purchase_order_validation?.superintendent)" v-if="checkVisibility('Validación de OC')" class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_purchase_order_validation?.superintendent }}
                                 </p>
                             </td>
@@ -487,23 +487,23 @@
                             <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.cicsa_service_order?.service_order }}</p>
                             </td>
-                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_service_order?.estimate_sheet)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_service_order?.estimate_sheet)" v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_service_order?.estimate_sheet }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_service_order?.purchase_order)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_service_order?.purchase_order)" v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_service_order?.purchase_order }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_service_order?.pdf_invoice)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_service_order?.pdf_invoice)" v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_service_order?.pdf_invoice }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p :class="stateClass(item?.cicsa_service_order?.zip_invoice)"  class=" text-center">
+                            <td :class="stateClass(item?.cicsa_service_order?.zip_invoice)" v-if="checkVisibility('Orden de Servicio')"  class="border-b border-gray-200  px-5 py-5 text-sm">
+                                <p class=" text-center">
                                     {{ item?.cicsa_service_order?.zip_invoice }}
                                 </p>
                             </td>
@@ -539,9 +539,9 @@
                                     {{ item?.cicsa_charge_area?.user_name }}
                                 </p>
                             </td> 
-                            <td class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td :class="stateClass(item?.cicsa_charge_status)" class="border-b  border-r-2 border-gray-200  px-5 py-5 text-sm">
                                 
-                                <p :class="stateClass(item?.cicsa_charge_status)"  class="font-black uppercase text-center">
+                                <p  class="font-black uppercase text-center">
                                     {{ item?.cicsa_charge_status }}
                                 </p>
                 
@@ -576,7 +576,7 @@
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Factibilidad
+                    {{ material_title }}
                 </h2>
                 <br>
                 <div class="mt-2">
@@ -699,108 +699,8 @@
             </div>
         </Modal>
 
-        <!-- <Modal :show="showSotDeleteModal" @close="closeSotDeleteModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900">
-                    ¿Estás seguro de que quieres eliminar la SOT?
-                </h2>
-
-                <p class="mt-1 text-sm text-gray-600">
-                    Una vez que se elimine el registro, todos sus recursos y datos se eliminarán permanentemente.
-                </p>
-
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeSotDeleteModal"> Cancelar </SecondaryButton>
-
-                    <DangerButton class="ml-3" @click="deleteSot">
-                        Eliminar
-                    </DangerButton>
-                </div>
-            </div>
-        </Modal>
-        <Modal :show="showCustomerDetails" @close="showCustomerDetails = false" :maxWidth="'xl'">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-base font-medium leading-7">
-                        Detalles del Cliente
-                    </h2>
-                    <button @click="closeCustomerDetails"
-                        class="text-gray-500 hover:text-gray-700 focus:outline-none"> 
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="mb-4">
-                    <p class="font-medium text-gray-900">Cliente:
-                        <span class="text-gray-600">{{ customer.customer }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Plano del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_flat }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Teléfono del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_phone }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Dirección del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_address }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Distrito del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_district }}</span>
-                    </p>
-                    <p class="font-medium text-gray-900">Referencia del Cliente:
-                        <span class="text-gray-600">{{ customer.customer_ref }}</span>
-                    </p>
-                </div>
-            </div>
-        </Modal>
-        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Acta
-                </h2>
-                <br>
-                <div class="mt-2">
-                    <div v-if="materials.length > 0" class="overflow-auto">
-                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
-                            <thead>
-                                <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
-                                        Material
-                                    </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
-                                        Cantidad
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
-                                    <td class="border-b border-slate-300  px-4 py-4">
-                                        {{ item?.material }}
-                                    </td>
-                                    <td class="border-b border-slate-300  px-4 py-4">
-                                        {{ item?.quantity }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p v-else>
-                        No hay materiales asignados
-                    </p>
-                    <br>
-                    <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
-
-                    </div>
-                </div>
-            </div>
-        </Modal>
-
-        <SuccessOperationModal :confirming="confirmSotDelete" :title="'SOT Eliminada'"
-            :message="'La SOT fue eliminada y todos los registros de ella'" /> -->
+        <SuccessOperationModal :confirming="confirmSotDelete" :title="'Registro Eliminado'"
+            :message="'El proyecto fue eliminado'" />
     </AuthenticatedLayout>
 </template>
 
@@ -861,12 +761,13 @@ function deleteSot () {
     })
 }
 
-
+const material_title = ref('')
 //materials
 const showMaterials = ref(false)
 const materials = ref([]);
-function openMaterialsModal(arrayMaterials) {
+function openMaterialsModal(arrayMaterials, title) {
     materials.value = arrayMaterials ? arrayMaterials : []
+    material_title.value = title
     showMaterials.value = true
 }
 function closeMaterialsModal() {
@@ -899,16 +800,16 @@ function checkVisibility(option) {
 }
 
 
-const stateClass = (state) => {
+const stateClass = (state, g) => {
   switch (state) {
     case 'Pendiente':
-      return 'text-yellow-700';
+      return 'bg-red-100';
     case 'En Proceso':
-      return 'text-blue-700';
+      return 'bg-yellow-100';
     case 'Completado':
-      return 'text-green-700';
+      return 'bg-green-100';
     default:
-      return 'text-gray-900';
+      return 'bg-white';
   }
 }
 

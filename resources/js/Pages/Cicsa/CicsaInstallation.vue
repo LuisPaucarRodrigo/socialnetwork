@@ -89,17 +89,11 @@
                                 <button v-if="item?.total_materials?.length > 0" type="button" @click="openMaterialsModal(item.total_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
-                                <p v-else class="text-gray-900 text-center">
-                                    -
-                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                 <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"  type="button" @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
-                                <p v-else class="text-gray-900 text-center">
-                                    -
-                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
@@ -304,7 +298,7 @@
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Acta
+                    Materiales en Recibidos
                 </h2>
                 <br>
                 <div class="mt-2">
@@ -479,15 +473,14 @@ function closeAddAssignationModal() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(ca_id, item, total_materials, cicsa_installation_materials) {
+    total_materials = cicsa_installation_materials?.length>0 ?  cicsa_installation_materials 
+        : total_materials.map(item=>({...item, used_quantity:0}))
     if (item) {
-        total_materials = cicsa_installation_materials
         form.defaults({ ...item, total_materials})
-        form.reset()
     } else {
-        total_materials = total_materials.map(item=>({...item, used_quantity:0}))
         form.defaults({ ...initialState, total_materials, cicsa_assignation_id: ca_id })
-        form.reset()
     }
+    form.reset()
     showAddEditModal.value = true
 }
 

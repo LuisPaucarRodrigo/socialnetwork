@@ -313,17 +313,9 @@ class CicsaController extends Controller
     public function storeChargeArea(Request $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validate([
-            'invoice_number' => 'required',
-            'invoice_date' => 'required',
-            'payment_date' => [
-                'required',
-                'date',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
-                        $fail('La fecha de pago debe ser mayor o igual que la fecha de la factura.');
-                    }
-                }
-            ],
+            'invoice_number' => 'nullable',
+            'invoice_date' => 'nullable',
+            'credit_to' => 'nullable|min:0',
             'deposit_date' => [
                 'nullable',
                 'date',
@@ -347,17 +339,9 @@ class CicsaController extends Controller
     public function updateChargeArea(Request $request, CicsaChargeArea $cicsa_charge_area)
     {
         $validateData = $request->validate([
-            'invoice_number' => 'required',
-            'invoice_date' => 'required',
-            'payment_date' => [
-                'required',
-                'date',
-                function ($attribute, $value, $fail) use ($request) {
-                    if (Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
-                        $fail('La fecha de pago debe ser mayor o igual que la fecha de la factura.');
-                    }
-                }
-            ],
+            'invoice_number' => 'nullable',
+            'invoice_date' => 'nullable',
+            'credit_to' => 'nullable|min:0',
             'deposit_date' => [
                 'nullable',
                 'date',
