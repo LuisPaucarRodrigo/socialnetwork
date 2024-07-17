@@ -78,7 +78,7 @@ class CicsaController extends Controller
     }
 
     public function updateOrStoreFeasibilities(StoreOrUpdateFeasibilitiesRequest $request, $cicsa_assignation_id = null)
-    {   
+    {
         $validateData = $request->validated();
         $cicsaFeasibility = CicsaFeasibility::updateOrCreate(
             ['cicsa_assignation_id' => $cicsa_assignation_id],
@@ -97,6 +97,7 @@ class CicsaController extends Controller
     public function indexMaterial()
     {
         $material = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_feasibility')
             ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items')
             ->orderBy('assignation_date', 'desc')
             ->paginate();
@@ -105,7 +106,21 @@ class CicsaController extends Controller
         ]);
     }
 
-    public function updateOrStoreMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_assignation_id = null)
+    public function storeMaterial(StoreOrUpdateMaterialRequest $request)
+    {   
+        // dd($request->all());
+        $validateData = $request->validated();
+        $cicsaMaterial = CicsaMaterial::create(
+            $validateData
+        );
+        foreach ($request->cicsa_material_items as $item) {
+            $item['cicsa_material_id'] = $cicsaMaterial->id;
+            CicsaMaterialsItem::create($item);
+        }
+        return redirect()->back();
+    }
+
+    public function updateMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validated();
         $cicsaMaterial = CicsaMaterial::updateOrCreate(
@@ -125,6 +140,7 @@ class CicsaController extends Controller
     public function indexPurchaseOrder()
     {
         $purchase_order = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_installation')
             ->with('cicsa_purchase_order')
             ->orderBy('assignation_date', 'desc')
             ->paginate();
@@ -181,6 +197,7 @@ class CicsaController extends Controller
     public function indexOCValidation()
     {
         $purchase_validations = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_purchase_order')
             ->with('cicsa_purchase_order_validation')
             ->orderBy('assignation_date', 'desc')
             ->paginate(10);
@@ -192,7 +209,7 @@ class CicsaController extends Controller
     public function storeOCValidation(Request $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validate([
-            'validation_date' => 'nullable',
+            'validation_date' => 'required',
             'materials_control' => 'required',
             'supervisor' => 'required',
             'warehouse' => 'required',
@@ -212,7 +229,7 @@ class CicsaController extends Controller
     public function updateOCValidation(Request $request, CicsaPurchaseOrderValidation $cicsa_validation_id)
     {
         $validateData = $request->validate([
-            'validation_date' => 'nullable',
+            'validation_date' => 'required',
             'materials_control' => 'required',
             'supervisor' => 'required',
             'warehouse' => 'required',
@@ -233,6 +250,7 @@ class CicsaController extends Controller
     public function indexServiceOrder()
     {
         $service_orders = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_purchase_order_validation')
             ->with('cicsa_service_order')
             ->orderBy('assignation_date', 'desc')
             ->paginate(10);
@@ -244,8 +262,8 @@ class CicsaController extends Controller
     public function storeServiceOrder(Request $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validate([
-            'service_order_date' => 'nullable',
-            'service_order' => 'nullable',
+            'service_order_date' => 'required',
+            'service_order' => 'required',
             'estimate_sheet' => 'required',
             'purchase_order' => 'required',
             'pdf_invoice' => 'required',
@@ -263,8 +281,8 @@ class CicsaController extends Controller
     public function updateServiceOrder(Request $request, CicsaServiceOrder $cicsa_service_order_id)
     {
         $validateData = $request->validate([
-            'service_order_date' => 'nullable',
-            'service_order' => 'nullable',
+            'service_order_date' => 'required',
+            'service_order' => 'required',
             'estimate_sheet' => 'required',
             'purchase_order' => 'required',
             'pdf_invoice' => 'required',
@@ -283,6 +301,7 @@ class CicsaController extends Controller
     public function indexChargeArea()
     {
         $charge_areas = CicsaAssignation::select('id', 'project_name')
+            ->whereHas('cicsa_service_order')
             ->with('cicsa_charge_area')
             ->orderBy('assignation_date', 'desc')
             ->paginate(10);
@@ -306,7 +325,7 @@ class CicsaController extends Controller
                     }
                 }
             ],
-            'amount' => 'nullable',
+            'amount' => 'required',
             'user_name' => 'required',
             'user_id' => 'required',
         ]);
@@ -332,7 +351,7 @@ class CicsaController extends Controller
                     }
                 }
             ],
-            'amount' => 'nullable',
+            'amount' => 'required',
             'user_name' => 'required',
             'user_id' => 'required',
         ]);

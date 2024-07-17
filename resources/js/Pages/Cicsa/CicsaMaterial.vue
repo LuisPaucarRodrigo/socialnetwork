@@ -18,80 +18,130 @@
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Proyecto
+
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Recojo
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Guia
+                                Proyecto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales de Factibilidad
                             </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Lista de Materiales Recibidos
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Encargado
-                            </th>
-                            <th
+                            <th colspan="1"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in materials.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_materials?.pick_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_materials?.guide_number }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials, 'Materiales de Factibilidad')">
-                                    <EyeIcon class="w-5 h-5 text-green-600" />
-                                </button>
-                                
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    <button v-if="item?.cicsa_materials?.cicsa_material_items?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_materials?.cicsa_material_items, 'Materiales Recibidos')">
-                                    <EyeIcon class="w-5 h-5 text-green-600" />
-                                </button>
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_materials?.user_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900" @click="openEditSotModal(item.id,item.cicsa_materials, item.cicsa_feasibility?.cicsa_feasibility_materials)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
+                        <template v-for="item in materials.data" :key="item.id">
+                            <tr class=" text-gray-700">
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.project_name }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                    <button v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length > 0"
+                                        type="button"
+                                        @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)">
+                                        <EyeIcon class="w-5 h-5 text-green-600" />
                                     </button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <div class="flex space-x-3 justify-center">
+                                        <button @click="openCreateSotModal(item.id)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+
+                                        </button>
+
+
+                                        <button type="button" @click="toggleDetails(item.cicsa_materials)"
+                                            class="text-blue-900 whitespace-no-wrap">
+                                            <svg v-if="materialRow !== item.id" xmlns="http://www.w3.org/2000/svg"
+                                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <template v-if="materialRow == item.id">
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+
+                                    </th>
+                                    <th
+                                        class="w-1/3 border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        Fecha de Recojo
+                                    </th>
+                                    <th
+                                        class="w-1/3 border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        Numero de Guia
+                                    </th>
+                                    <th
+                                        class="w-1/3 border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        Lista de Materiales Recibidos
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    </th>
+                                </tr>
+                                <tr v-for="materialDetail in item.cicsa_materials" :key="materialDetail.id"
+                                    class="bg-gray-100">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">
+                                            {{ formattedDate(materialDetail.pick_date) }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">
+                                            {{ materialDetail.guide_number }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-2 py-5 text-sm text-center">
+                                        <p class="text-gray-900 whitespace-no-wrap">
+                                            <button v-if="materialDetail?.cicsa_material_items?.length > 0"
+                                                type="button"
+                                                @click="openMaterialsModal(materialDetail?.cicsa_material_items)">
+                                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                            </button>
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap">
+                                            <button class="text-blue-900"
+                                                @click="openEditSotModal(item.id, materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor"
+                                                    class="w-5 h-5 text-amber-400">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                </svg>
+                                            </button>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </template>
+                        </template>
                     </tbody>
                 </table>
             </div>
@@ -104,7 +154,7 @@
         <Modal :show="showAddEditModal" @close="closeAddMaterialModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{form.id ? 'Editar Material' : 'Nueva Material'}}
+                    {{ form.id ? 'Editar Material' : 'Nueva Material' }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -164,8 +214,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(item, i) in form.cicsa_material_items" :key="i"
-                                        class="text-gray-700">
+                                    <tr v-for="(item, i) in form.cicsa_material_items" :key="i" class="text-gray-700">
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
@@ -176,14 +225,15 @@
                                                 {{ item.unit }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"><div class="flex justify-center">
-                                            <input required type="number" min="0" v-model="form.cicsa_material_items[i]['quantity']"
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <div class="flex justify-center">
+                                                <input required type="number" min="0"
+                                                    v-model="form.cicsa_material_items[i]['quantity']"
                                                     autocomplete="off"
                                                     class="block  text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                             </div>
                                         </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <button type="button" @click="delete_material(i)"
                                                 class="text-blue-900 whitespace-no-wrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -317,7 +367,7 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import {formattedDate} from '@/utils/utils.js';
+import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
@@ -326,9 +376,8 @@ const { materials, auth } = defineProps({
     auth: Object
 })
 
-
-
 const initialState = {
+    cicsa_assignation_id: null,
     user_id: auth.user.id,
     pick_date: '',
     guide_number: '',
@@ -345,24 +394,23 @@ const confirmMaterial = ref(false);
 const cicsa_assignation_id = ref(null);
 const material_feasibility = ref(null)
 
+const materialRow = ref(0);
+
 function closeAddMaterialModal() {
     showAddEditModal.value = false
-    form.defaults({...initialState})
+    form.defaults({ ...initialState })
     form.reset()
 }
 
 const confirmUpdateMaterial = ref(false);
 
-
-
-function openEditSotModal (id, item, feasibility_materials) {
+function openEditSotModal(id, item, feasibility_materials) {
     cicsa_assignation_id.value = id;
-    let cicsa_material_items = []
-    if (item?.id){
-        cicsa_material_items = item.cicsa_material_items?.length>0 ? [...item.cicsa_material_items]: feasibility_materials ? feasibility_materials?.map(item=>({...item})) : []
-        console.log('hol')
-    }else {
-        cicsa_material_items = feasibility_materials ? feasibility_materials?.map(item=>({...item})) : []
+    if (item?.id) {
+        form.defaults({ ...item })
+    } else {
+        let cicsa_material_items = feasibility_materials.map(item => ({ ...item }))
+        form.defaults({ ...item, cicsa_material_items })
     }
     form.defaults({...item, cicsa_material_items})
     form.reset()
@@ -371,19 +419,35 @@ function openEditSotModal (id, item, feasibility_materials) {
 
 
 function submit() {
-    let url = route('material.storeOrUpdate', {cicsa_assignation_id:cicsa_assignation_id.value})
-    form.put(url, {
-        onSuccess: () => {
-            closeAddMaterialModal()
-            confirmUpdateMaterial.value = true
-            setTimeout(() => {
-                confirmUpdateMaterial.value = false
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
-        }
-    })
+    let url = cicsa_assignation_id.value ? route('material.update', { cicsa_assignation_id: cicsa_assignation_id.value }) : route('material.store')
+    if (cicsa_assignation_id.value) {
+        form.put(url, {
+            onSuccess: () => {
+                closeAddMaterialModal()
+                confirmUpdateMaterial.value = true
+                setTimeout(() => {
+                    confirmUpdateMaterial.value = false
+                }, 1500)
+            },
+            onError: (e) => {
+                console.error(e)
+            }
+        })
+    } else {
+        form.post(url, {
+            onSuccess: () => {
+                closeAddMaterialModal()
+                confirmUpdateMaterial.value = true
+                setTimeout(() => {
+                    confirmUpdateMaterial.value = false
+                }, 1500)
+            },
+            onError: (e) => {
+                console.error(e)
+            }
+        })
+    }
+
 }
 
 const showModalFeasibility = ref(false);
@@ -443,5 +507,18 @@ function closeMaterialsModal() {
     showMaterials.value = false
 }
 
+const toggleDetails = (material) => {
+    if (materialRow.value === material[0].cicsa_assignation_id) {
+        materialRow.value = 0;
+    } else {
+        materialRow.value = material[0].cicsa_assignation_id;
+    }
+}
+
+function openCreateSotModal(cicsa_assignation_id) {
+    form.reset()
+    form.cicsa_assignation_id = cicsa_assignation_id
+    showAddEditModal.value = true
+}
 
 </script>
