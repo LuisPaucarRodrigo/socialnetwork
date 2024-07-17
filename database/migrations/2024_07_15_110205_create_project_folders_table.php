@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('huawei_projects', function (Blueprint $table) {
+        Schema::create('project_folders', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('huawei_site_id')->constrained('huawei_sites')->onDelete('cascade');
-            $table->string('description')->nullable();
-            $table->string('ot');
-            $table->string('pre_report');
-            $table->boolean('status')->default(true);
+            $table->text('path');
+            $table->boolean('state')->default(true);
+            $table->foreignId('upper_folder_id')->nullable()->constrained('project_folders')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('huawei_projects');
+        Schema::dropIfExists('project_folders');
     }
 };

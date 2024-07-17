@@ -95,13 +95,16 @@ class CicsaAssignation extends Model
         return true;
     }
     public function checkMaterials() {
-        $feasibility = $this->cicsa_materials()->first();
-        if (!$feasibility) {return false;}
+        $materials = $this->cicsa_materials()->first();
+        if (!$materials) {return false;}
         $fieldsToCheck = ['pick_date',
         'guide_number',
         'received_materials',];
         foreach ($fieldsToCheck as $field) {
-            if (is_null($feasibility->$field)) {return false;}
+            if (is_null($materials->$field)) {return false;}
+        }
+        if ($materials->cicsa_material_items()->count() === 0) {
+            return false;
         }
         return true;
     }
@@ -127,16 +130,28 @@ class CicsaAssignation extends Model
     }
 
 
+    public function checkPSP(){
+        $feasibility = $this->cicsa_feasibility()->first();
+        if ($feasibility) {return true;}
+        $materials = $this->cicsa_materials()->first();
+        if ($materials) {return true;}
+        $installation = $this->cicsa_installation()->first();
+        if ($installation) {return true;}
+        return false;
+    }
+
+
     public function getCicsaProjectStatusAttribute () {
-        if (
-            $this->checkAssignation()
-            && $this->checkFeasibility()
-            && $this->checkMaterials()
-            && $this->checkInstallation()
+        if ( $this->getCicsaChargeStatusAttribute() === 'Completado'
+                || ( $this->checkAssignation()
+                    && $this->checkFeasibility()
+                    && $this->checkMaterials()
+                    && $this->checkInstallation()
+            )
         ) {
             return 'Completado';
         }
-        if ($this->checkAssignation()) {
+        if ($this->checkPSP()) {
             return 'En Proceso';
         }
         if (!$this->checkAssignation()) {
@@ -217,6 +232,18 @@ class CicsaAssignation extends Model
         return true;
     }
 
+    public function checkCSP(){
+        $purchaseOrder = $this->cicsa_purchase_order()->first();
+        if ($purchaseOrder) {return true;}
+        $validationOrder = $this->cicsa_purchase_order_validation()->first();
+        if ($validationOrder) {return true;}
+        $serviceOrder = $this->cicsa_service_order()->first();
+        if ($serviceOrder) {return true;}
+        $chargeArea = $this->cicsa_charge_area()->first();
+        if ($chargeArea) {return true;}
+        return false;
+    }
+
     public function getCicsaChargeStatusAttribute () {
         if (
             $this->checkPurchaseOrder()
@@ -226,7 +253,7 @@ class CicsaAssignation extends Model
         ) {
             return 'Completado';
         }
-        if ($this->checkPurchaseOrder()) {
+        if ($this->checkCSP()) {
             return 'En Proceso';
         }
         if (!$this->checkPurchaseOrder()) {

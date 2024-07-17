@@ -7,6 +7,7 @@ use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
+use App\Http\Controllers\ProjectArea\ProjectDocumentController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ProjectArea\ProjectPintController;
 use App\Http\Controllers\ProjectArea\StaticCostsController;
@@ -129,6 +130,10 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/cicsa/store', [CicsaSectionController::class, 'storeSection'])->name('sections.cicsa.section.store');
 
 
+
+
+    Route::get('/project-document-gestion', [ProjectDocumentController::class, 'project_doc_index'])->name('project.document.index');
+    Route::post('/project-document-gestion/store/{path?}', [ProjectDocumentController::class, 'project_doc_store'])->name('project.document.store');
 
     
 });
