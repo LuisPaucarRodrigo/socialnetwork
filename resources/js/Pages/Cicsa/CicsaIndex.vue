@@ -35,7 +35,7 @@
                         <tr
                             class="border-b  text-xs font-semibold uppercase tracking-wide text-white">
                             <th v-if="!checkVisibility('Asignación')"
-                                class="bg-black sticky left-0 z-10 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                class="bg-gray-700 sticky left-0 z-10 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                                 
                             </th>
                             <th v-if="checkVisibility('Asignación')"
