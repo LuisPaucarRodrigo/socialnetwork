@@ -63,7 +63,7 @@
                                         </button>
 
 
-                                        <button type="button" @click="toggleDetails(item?.cicsa_materials)"
+                                        <button v-if="item.cicsa_materials.length > 0" type="button" @click="toggleDetails(item?.cicsa_materials)"
                                             class="text-blue-900 whitespace-no-wrap">
                                             <svg v-if="materialRow !== item.id" xmlns="http://www.w3.org/2000/svg"
                                                 fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -508,6 +508,7 @@ function closeMaterialsModal() {
 }
 
 const toggleDetails = (material) => {
+
     if (materialRow.value === material[0].cicsa_assignation_id) {
         materialRow.value = 0;
     } else {
@@ -517,10 +518,8 @@ const toggleDetails = (material) => {
 
 function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility) {
     form.defaults({ ...initialState })
-    console.log(form)
     form.cicsa_assignation_id = cicsa_assignation_id
-    form.cicsa_material_items = cicsa_material_feasibility
+    form.cicsa_material_items = cicsa_material_feasibility ?? []
     showAddEditModal.value = true
 }
-
 </script>
