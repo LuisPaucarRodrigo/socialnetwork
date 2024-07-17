@@ -97,7 +97,6 @@ class CicsaController extends Controller
     public function indexMaterial()
     {
         $material = CicsaAssignation::select('id', 'project_name')
-            ->whereHas('cicsa_feasibility')
             ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items')
             ->orderBy('assignation_date', 'desc')
             ->paginate();
@@ -108,14 +107,15 @@ class CicsaController extends Controller
 
     public function storeMaterial(StoreOrUpdateMaterialRequest $request)
     {   
-        // dd($request->all());
         $validateData = $request->validated();
         $cicsaMaterial = CicsaMaterial::create(
             $validateData
         );
-        foreach ($request->cicsa_material_items as $item) {
-            $item['cicsa_material_id'] = $cicsaMaterial->id;
-            CicsaMaterialsItem::create($item);
+        if (isset($validateData['cicsa_material_items'])){
+            foreach ($validateData['cicsa_material_items'] as $item) {
+                $item['cicsa_material_id'] = $cicsaMaterial->id;
+                CicsaMaterialsItem::create($item);
+            }
         }
         return redirect()->back();
     }
@@ -140,7 +140,6 @@ class CicsaController extends Controller
     public function indexPurchaseOrder()
     {
         $purchase_order = CicsaAssignation::select('id', 'project_name')
-            ->whereHas('cicsa_installation')
             ->with('cicsa_purchase_order')
             ->orderBy('assignation_date', 'desc')
             ->paginate();
@@ -197,7 +196,6 @@ class CicsaController extends Controller
     public function indexOCValidation()
     {
         $purchase_validations = CicsaAssignation::select('id', 'project_name')
-            ->whereHas('cicsa_purchase_order')
             ->with('cicsa_purchase_order_validation')
             ->orderBy('assignation_date', 'desc')
             ->paginate(10);
@@ -250,7 +248,6 @@ class CicsaController extends Controller
     public function indexServiceOrder()
     {
         $service_orders = CicsaAssignation::select('id', 'project_name')
-            ->whereHas('cicsa_purchase_order_validation')
             ->with('cicsa_service_order')
             ->orderBy('assignation_date', 'desc')
             ->paginate(10);
@@ -301,7 +298,6 @@ class CicsaController extends Controller
     public function indexChargeArea()
     {
         $charge_areas = CicsaAssignation::select('id', 'project_name')
-            ->whereHas('cicsa_service_order')
             ->with('cicsa_charge_area')
             ->orderBy('assignation_date', 'desc')
             ->paginate(10);

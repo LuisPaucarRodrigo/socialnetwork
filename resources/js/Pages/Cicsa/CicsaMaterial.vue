@@ -52,7 +52,8 @@
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div class="flex space-x-3 justify-center">
-                                        <button @click="openCreateSotModal(item.id)">
+                                        <button
+                                            @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -62,7 +63,7 @@
                                         </button>
 
 
-                                        <button type="button" @click="toggleDetails(item.cicsa_materials)"
+                                        <button type="button" @click="toggleDetails(item?.cicsa_materials)"
                                             class="text-blue-900 whitespace-no-wrap">
                                             <svg v-if="materialRow !== item.id" xmlns="http://www.w3.org/2000/svg"
                                                 fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -106,6 +107,9 @@
                                 <tr v-for="materialDetail in item.cicsa_materials" :key="materialDetail.id"
                                     class="bg-gray-100">
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <!-- <p>
+                                            {{ materialDetail }}
+                                        </p> -->
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap">
@@ -151,7 +155,7 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddMaterialModal">
+        <Modal :show="showAddEditModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     {{ form.id ? 'Editar Material' : 'Nueva Material' }}
@@ -341,7 +345,6 @@
                     <br>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
-
                     </div>
                 </div>
             </div>
@@ -392,11 +395,10 @@ const form = useForm(
 const showAddEditModal = ref(false);
 const confirmMaterial = ref(false);
 const cicsa_assignation_id = ref(null);
-const material_feasibility = ref(null)
-
 const materialRow = ref(0);
 
 function closeAddMaterialModal() {
+    cicsa_assignation_id.value = null;
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
@@ -404,15 +406,16 @@ function closeAddMaterialModal() {
 
 const confirmUpdateMaterial = ref(false);
 
+
 function openEditSotModal(id, item, feasibility_materials) {
     cicsa_assignation_id.value = id;
+    let cicsa_material_items = []
     if (item?.id) {
-        form.defaults({ ...item })
+        cicsa_material_items = item.cicsa_material_items?.length > 0 ? [...item.cicsa_material_items] : feasibility_materials ? feasibility_materials?.map(item => ({ ...item })) : []
     } else {
-        let cicsa_material_items = feasibility_materials.map(item => ({ ...item }))
-        form.defaults({ ...item, cicsa_material_items })
+        cicsa_material_items = feasibility_materials ? feasibility_materials?.map(item => ({ ...item })) : []
     }
-    form.defaults({...item, cicsa_material_items})
+    form.defaults({ ...item, cicsa_material_items })
     form.reset()
     showAddEditModal.value = true
 }
@@ -452,14 +455,10 @@ function submit() {
 
 const showModalFeasibility = ref(false);
 function modalFeasibility() {
+    cleanArrayMaterial()
     showModalFeasibility.value = !showModalFeasibility.value
 }
 
-function closeAddFeasibilityModal() {
-    showAddEditModal.value = false
-    form.defaults({ ...initialState })
-    form.reset()
-}
 
 const material_item = ref({
     id: '',
@@ -476,22 +475,22 @@ function addFeasibility() {
             quantity: material_item.value.quantity
         };
         form.cicsa_material_items.push(newFeasibility);
-        material_item.value.name = '';
-        material_item.value.unit = '';
-        material_item.value.quantity = '';
+        cleanArrayMaterial()
     } else {
         console.error('Por favor completa todos los campos del formulario.');
     }
 }
 
-
+function cleanArrayMaterial() {
+    material_item.value.name = '';
+    material_item.value.unit = '';
+    material_item.value.quantity = '';
+}
 
 
 function delete_material(i) {
     form.cicsa_material_items.splice(i, 1);
 }
-
-
 
 const material_title = ref('')
 
@@ -503,6 +502,7 @@ function openMaterialsModal(arrayMaterials, title) {
     material_title.value = title
     showMaterials.value = true
 }
+
 function closeMaterialsModal() {
     showMaterials.value = false
 }
@@ -515,9 +515,11 @@ const toggleDetails = (material) => {
     }
 }
 
-function openCreateSotModal(cicsa_assignation_id) {
-    form.reset()
+function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility) {
+    form.defaults({ ...initialState })
+    console.log(form)
     form.cicsa_assignation_id = cicsa_assignation_id
+    form.cicsa_material_items = cicsa_material_feasibility
     showAddEditModal.value = true
 }
 
