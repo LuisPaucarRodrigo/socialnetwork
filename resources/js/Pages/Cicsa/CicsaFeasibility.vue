@@ -162,7 +162,7 @@
                                             </p>
                                         </td>
                                         <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <TextInput class="text-center" type="number"
+                                            <TextInput class="text-center" type="number" min="0"
                                                 @change="modifyQuantity(item.id, $event)" :value="item.quantity" />
                                             <!-- <p class="text-gray-900 text-center">
                                                 {{ item.quantity }}
