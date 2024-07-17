@@ -477,7 +477,7 @@ class HuaweiProjectController extends Controller
             abort(403, 'Acción no permitida');
         }
         // Construir la consulta inicial
-        $query = HuaweiProjectResource::where('huawei_project_id', $huawei_project);
+        $query = HuaweiProjectResource::where('huawei_project_id', $huawei_project)->with('huawei_project_liquidation');
         $project_state = HuaweiProject::find($huawei_project)->status;
         $huawei_project_name_code = HuaweiProject::find($huawei_project)->name . ' / ' . HuaweiProject::find($huawei_project)->code;
         if ($equipment) {
