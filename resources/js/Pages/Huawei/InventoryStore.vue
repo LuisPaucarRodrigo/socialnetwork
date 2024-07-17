@@ -543,7 +543,9 @@
 
         if (autoCompletement.value && foundEquipment.value) {
             const foundSerie = foundEquipment.value.huawei_equipment_series.find(seriesItem => seriesItem.serie_number === newSerie.value);
-            if (foundSerie) {
+            const foundSerie2 = equipmentForm.series.find(seriesItem => seriesItem === newSerie.value);
+
+            if (foundSerie || foundSerie2) {
                 existingSerie.value = true;
                 setTimeout(() => {
                     existingSerie.value = false;

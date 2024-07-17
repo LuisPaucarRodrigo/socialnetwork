@@ -105,7 +105,7 @@
                             <thead>
                                 <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                                        Descripción del producto
+                                        Descripción del Material
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Estado
@@ -139,27 +139,125 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="item in (props.search ? props.entries : entries.data)" :key="item.id" class="text-gray-700">
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_material.name }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.refund_quantity }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.project_quantity }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.available_quantity }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                        <div v-if="item.available_quantity !== 0 " class="flex items-center">
-                                            <button @click.prevent="openRefundModal(item.id)" class="text-blue-600 hover:underline mr-2">
-                                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M4 8L3.29289 8.70711L2.58579 8L3.29289 7.29289L4 8ZM9 20C8.44772 20 8 19.5523 8 19C8 18.4477 8.44772 18 9 18L9 20ZM8.29289 13.7071L3.29289 8.70711L4.70711 7.29289L9.70711 12.2929L8.29289 13.7071ZM3.29289 7.29289L8.29289 2.29289L9.70711 3.70711L4.70711 8.70711L3.29289 7.29289ZM4 7L14.5 7L14.5 9L4 9L4 7ZM14.5 20L9 20L9 18L14.5 18L14.5 20ZM21 13.5C21 17.0898 18.0898 20 14.5 20L14.5 18C16.9853 18 19 15.9853 19 13.5L21 13.5ZM14.5 7C18.0899 7 21 9.91015 21 13.5L19 13.5C19 11.0147 16.9853 9 14.5 9L14.5 7Z" fill="#33363F"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <template v-for="item in (props.search ? props.entries : entries.data)" :key="item.id">
+                                    <tr class="text-gray-700">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_material.name }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.refund_quantity }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.project_quantity }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.available_quantity }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                            <div class="flex items-center">
+                                                <div v-if="item.available_quantity !== 0">
+                                                    <button @click.prevent="openRefundModal(item.id)" class="text-blue-600 hover:underline mr-2">
+                                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M4 8L3.29289 8.70711L2.58579 8L3.29289 7.29289L4 8ZM9 20C8.44772 20 8 19.5523 8 19C8 18.4477 8.44772 18 9 18L9 20ZM8.29289 13.7071L3.29289 8.70711L4.70711 7.29289L9.70711 12.2929L8.29289 13.7071ZM3.29289 7.29289L8.29289 2.29289L9.70711 3.70711L4.70711 8.70711L3.29289 7.29289ZM4 7L14.5 7L14.5 9L4 9L4 7ZM14.5 20L9 20L9 18L14.5 18L14.5 20ZM21 13.5C21 17.0898 18.0898 20 14.5 20L14.5 18C16.9853 18 19 15.9853 19 13.5L21 13.5ZM14.5 7C18.0899 7 21 9.91015 21 13.5L19 13.5C19 11.0147 16.9853 9 14.5 9L14.5 7Z" fill="#33363F"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <button type="button" @click="toggleDetails(item)"
+                                                    class="text-blue-900 whitespace-no-wrap">
+                                                    <svg v-if="huaweiProject?.id !== item.id" xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                                    </svg>
+                                                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <template v-if="huaweiProject?.id == item.id">
+                                    <tr class="border-b text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                            Cantidad en Proyecto
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                            Proyecto
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                            OT
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                    </tr>
+                                    <tr v-for="project_resource in huaweiProject?.huawei_project_resources" :key="project_resource.id" class="bg-gray-100">
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                            {{  project_resource.huawei_project_liquidation ? project_resource.huawei_project_liquidation.liquidated_quantity : project_resource.quantity }}
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center">
+                                            <Link class="text-blue-600 hover:underline" :href="route('huawei.projects.resources', {huawei_project: project_resource.huawei_project_id})">
+                                                {{  project_resource.huawei_project.name + ' / ' + project_resource.huawei_project.code  }}
+                                            </Link>
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center">
+                                            {{  project_resource.huawei_project.ot  }}
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        </th>
+                                    </tr>
+                                    </template>
+                                </template>
                             </tbody>
                         </table>
                     </div>
@@ -228,7 +326,7 @@
     const refundModal = ref(false);
     const showRefundConfirm = ref(false);
     const showErrorModal = ref(false);
-
+    const huaweiProject = ref(null);
 
     const searchForm = useForm({
         searchTerm: props.search ? props.search : '',
@@ -248,6 +346,14 @@
     const closeRefundModal = () => {
         refundForm.reset();
         refundModal.value = false;
+    }
+
+    const toggleDetails = (item) => {
+        if (huaweiProject.value && huaweiProject.value.id === item.id){
+            huaweiProject.value = null;
+        }else{
+            huaweiProject.value = item;
+        }
     }
 
     const search = () => {
