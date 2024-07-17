@@ -27,6 +27,7 @@ class StoreOrUpdateMaterialRequest extends FormRequest
             'cicsa_material_items' => 'nullable|array',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
+            'cicsa_assignation_id' => 'sometimes|required|numeric'
         ];
     }
 }

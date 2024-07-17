@@ -15,7 +15,8 @@ Route::put('/cicsa_feasibilities/store/update/{cicsa_assignation_id?}', [CicsaCo
 
 
 Route::get('/cicsa_material', [CicsaController::class, 'indexMaterial'])->name('material.index');
-Route::put('/cicsa_material/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStoreMaterial'])->name('material.storeOrUpdate');
+Route::post('/cicsa_material/store', [CicsaController::class, 'storeMaterial'])->name('material.store');
+Route::put('/cicsa_material/update/{cicsa_assignation_id}', [CicsaController::class, 'updateMaterial'])->name('material.update');
 
 Route::get('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
 Route::put('/cicsa_purchase_order/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
