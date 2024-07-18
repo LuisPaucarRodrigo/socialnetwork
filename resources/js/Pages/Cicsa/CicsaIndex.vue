@@ -174,8 +174,8 @@
                                 Encargado
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider ">
-                                    <TableHeaderFilter label="E. P." labelClass=" text-gray-600" :options="proj_stats" v-model="filterForm.project_status" />
+                                class="w-[200px] border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider ">
+                                    <TableHeaderFilter label="E. P." labelClass=" text-gray-600" :options="stats" v-model="filterForm.project_status" />
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -300,8 +300,8 @@
                                 Encargado
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider ">
-                                    <TableHeaderFilter label="E. C." labelClass=" text-gray-600" :options="proj_stats" v-model="filterForm.project_status" />
+                                class="w-[200px] border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider ">
+                                    <TableHeaderFilter label="E. C." labelClass=" text-gray-600" :options="stats" v-model="filterForm.charge_status" />
                             </th>
                             <th v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -319,10 +319,10 @@
                             <td  class="sticky left-[108px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item.project_code }}</p>
                             </td>
-                            <td v-if="checkVisibility('Asignación')"  class="sticky left-[216px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
+                            <td  class="sticky left-[216px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item.cpe }}</p>
                             </td>
-                            <td :class="stateClass(item.customer)" class="border-b border-gray-200 px-5 py-5 text-sm">
+                            <td  v-if="checkVisibility('Asignación')" :class="stateClass(item.customer)" class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.customer }}
                                 </p>
@@ -346,7 +346,7 @@
                                     {{ item?.cicsa_feasibility?.report }}
                                 </p>
                             </td>
-                            <td :class="stateClass(item?.cicsa_feasibility?.cicsa_feasibility_materials)" v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-gray-200 px-5 py-5 text-sm">
+                            <td :class="stateClass(item?.cicsa_feasibility?.cicsa_feasibility_materials?.length>0)" v-if="checkVisibility('Factibilidad PINT y PEXT')" class="border-b  border-gray-200 px-5 py-5 text-sm">
                                 <div v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length>0" class="flex items-center justify-center">
                                     <button @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials, 'Materiales de Factibilidad')" class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
@@ -367,7 +367,7 @@
                             <td :class="stateClass(item?.cicsa_materials?.guide_number)" v-if="checkVisibility('Materiales')" class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.cicsa_materials?.guide_number }}</p>
                             </td>
-                            <td :class="stateClass(item?.cicsa_materials?.cicsa_material_items)" v-if="checkVisibility('Materiales')" class="border-b  border-gray-200 px-5 py-5 text-sm">
+                            <td :class="stateClass(item?.cicsa_materials?.cicsa_material_items?.length>0)" v-if="checkVisibility('Materiales')" class="border-b  border-gray-200 px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
                                     <button v-if="item?.cicsa_materials?.cicsa_material_items?.length > 0" type="button" @click="openMaterialsModal(item?.cicsa_materials?.cicsa_material_items, 'Materiales Recibidos')" class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
@@ -396,7 +396,7 @@
                                     {{ item?.cicsa_installation?.report }}
                                 </p>
                             </td>
-                            <td :class="stateClass(item?.cicsa_installation?.cicsa_installation_materials)" v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b  border-gray-200 px-5 py-5 text-sm">
+                            <td :class="stateClass(item?.cicsa_installation?.cicsa_installation_materials?.length>0)" v-if="checkVisibility('Instalación PINT y PEXT')" class="border-b  border-gray-200 px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
                                     <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length>0" 
                                         @click="openInstMaterialsModal(item?.cicsa_installation?.cicsa_installation_materials)"
@@ -416,9 +416,11 @@
 
 
                             <td :class="stateClass(item?.cicsa_project_status)" class="border-b border-r-2 border-gray-200  px-5 py-5 text-sm">
-                                <p  class="w-[130px] font-black uppercase text-center">
-                                    {{ item?.cicsa_project_status }}
-                                </p>
+                                <div class="flex justify-center">
+                                    <p  class="w-[130px] font-black uppercase text-center">
+                                        {{ item?.cicsa_project_status }}
+                                    </p>
+                                </div>
                             </td>
 
 
@@ -552,11 +554,11 @@
                                 </p>
                             </td> 
                             <td :class="stateClass(item?.cicsa_charge_status)" class="border-b  border-r-2 border-gray-200  px-5 py-5 text-sm">
-                                
-                                <p  class="font-black uppercase text-center">
-                                    {{ item?.cicsa_charge_status }}
-                                </p>
-                
+                                <div class="flex justify-center">
+                                    <p  class="w-[130px] font-black uppercase text-center">
+                                        {{ item?.cicsa_charge_status }}
+                                    </p>
+                                </div>
                             </td> 
 
                             
@@ -833,6 +835,7 @@ const stateClass = (state) => {
   switch (state) {
     case undefined:
     case null:
+    case false:
     case 'Pendiente':
         return 'bg-red-100';
     case 'En Proceso':
@@ -854,13 +857,14 @@ function getTotalAmount(objArray) {
 }
 
 //filter
-const proj_stats = [
+const stats = [
     'Pendiente',
     'En Proceso',
     'Completado',
 ]
 const filterForm = ref({
-    project_status: [...proj_stats]
+    project_status: [...stats],
+    charge_status: [...stats]
 })
 
 
