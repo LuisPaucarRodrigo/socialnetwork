@@ -43,6 +43,13 @@ class CicsaController extends Controller
         ]);
     }
 
+
+    public function search(){
+        
+    }
+
+
+
     public function destroy($ca_id)
     {
         CicsaAssignation::findOrFail($ca_id)->delete();
@@ -108,14 +115,15 @@ class CicsaController extends Controller
 
     public function storeMaterial(StoreOrUpdateMaterialRequest $request)
     {   
-        // dd($request->all());
         $validateData = $request->validated();
         $cicsaMaterial = CicsaMaterial::create(
             $validateData
         );
-        foreach ($request->cicsa_material_items as $item) {
-            $item['cicsa_material_id'] = $cicsaMaterial->id;
-            CicsaMaterialsItem::create($item);
+        if (isset($validateData['cicsa_material_items'])){
+            foreach ($validateData['cicsa_materials_item'] as $item) {
+                $item['cicsa_material_id'] = $cicsaMaterial->id;
+                CicsaMaterialsItem::create($item);
+            }
         }
         return redirect()->back();
     }
