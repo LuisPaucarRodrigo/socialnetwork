@@ -22,6 +22,9 @@ use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class CicsaController extends Controller
 {
@@ -106,12 +109,12 @@ class CicsaController extends Controller
     }
 
     public function storeMaterial(StoreOrUpdateMaterialRequest $request)
-    {   
+    {
         $validateData = $request->validated();
         $cicsaMaterial = CicsaMaterial::create(
             $validateData
         );
-        if (isset($validateData['cicsa_material_items'])){
+        if (isset($validateData['cicsa_material_items'])) {
             foreach ($validateData['cicsa_material_items'] as $item) {
                 $item['cicsa_material_id'] = $cicsaMaterial->id;
                 CicsaMaterialsItem::create($item);
@@ -135,6 +138,34 @@ class CicsaController extends Controller
             CicsaMaterialsItem::create($item);
         }
         return redirect()->back();
+    }
+
+    public function importMaterial(Request $request)
+    {
+
+        if ($request->hasFile('document')) {
+            $file = $request->file('document');
+
+            $spreadsheet = IOFactory::load($file);
+
+            // $data = Excel::toArray(new HeadingRowImport, $file);
+            // $processedData = [];
+            // foreach ($data[0] as $row) {
+            //     $processedData[] = [
+            //         'nombre' => $row['Nombre'],
+            //         'unidad' => $row['Unidad'],
+            //         'cantidad' => $row['Cantidad'],
+            //     ];
+            // }
+
+            return response()->json([
+                'data' => $spreadsheet,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'No file uploaded'
+        ], 400);
     }
 
     public function indexPurchaseOrder()
