@@ -63,7 +63,8 @@
                                         </button>
 
 
-                                        <button v-if="item.cicsa_materials.length > 0" type="button" @click="toggleDetails(item?.cicsa_materials)"
+                                        <button v-if="item.cicsa_materials.length > 0" type="button"
+                                            @click="toggleDetails(item?.cicsa_materials)"
                                             class="text-blue-900 whitespace-no-wrap">
                                             <svg v-if="materialRow !== item.id" xmlns="http://www.w3.org/2000/svg"
                                                 fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -158,7 +159,7 @@
         <Modal :show="showAddEditModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Material' : 'Nueva Material' }}
+                    {{ form.id ? 'Editar Material' : 'Nuevo Material' }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -191,6 +192,15 @@
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
                                     </svg>
+                                </button>
+
+                                <button @click="modalImportMaterial" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="green" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+                                    </svg>
+
                                 </button>
                             </div>
                             <br>
@@ -349,6 +359,30 @@
                 </div>
             </div>
         </Modal>
+        <Modal :show="showModalImport">
+            <div class="p-4 sm:p-8 md:p-12 lg:p-16">
+                <h2 class="text-lg md:text-xl lg:text-2xl font-medium leading-7 text-gray-900 mb-4">
+                    Importar Excel de Material
+                </h2>
+                <form @submit.prevent="submitImportExcel">
+                    <div class="space-y-4 sm:space-y-6 lg:space-y-8">
+                        <div class="border-b border-gray-900/10 pb-4 sm:pb-6 lg:pb-8">
+                            <div class="mb-2">
+                                <InputFile type="file" v-model="formImport.document" id="documentFile" accept=".xlsx" />
+                                <InputError :message="formImport.errors.document" />
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end gap-x-4 sm:gap-x-6 lg:gap-x-8">
+                            <SecondaryButton @click="modalImportMaterial">Cancelar</SecondaryButton>
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': formImport.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Importar
+                            </PrimaryButton>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
 
 
         <SuccessOperationModal :confirming="confirmMaterial" :title="'Nueva Material creada'"
@@ -363,6 +397,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
+import InputFile from '@/Components/InputFile.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
@@ -392,10 +427,15 @@ const form = useForm(
     { ...initialState }
 );
 
+const formImport = useForm({
+    document: null
+})
+
 const showAddEditModal = ref(false);
 const confirmMaterial = ref(false);
 const cicsa_assignation_id = ref(null);
 const materialRow = ref(0);
+const showModalImport = ref(false);
 
 function closeAddMaterialModal() {
     cicsa_assignation_id.value = null;
@@ -521,5 +561,28 @@ function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility) {
     form.cicsa_assignation_id = cicsa_assignation_id
     form.cicsa_material_items = cicsa_material_feasibility ?? []
     showAddEditModal.value = true
+}
+
+function modalImportMaterial() {
+    showModalImport.value = !showModalImport.value
+}
+
+function submitImportExcel() {
+    console.log(formImport)
+    axios.post(route('material.import'), formImport, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })
+        .then(response => {
+            if (response.status === 200) {
+                console.log(response.data)
+            } else {
+                throw new Error('Fallo en el servidor con status ' + response.status)
+            }
+        })
+        .catch(error => {
+            console.error('Error in server:', error);
+        })
 }
 </script>
