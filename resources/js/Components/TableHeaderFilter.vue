@@ -1,13 +1,13 @@
 <template>
     <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
-        <p>{{ label }}</p>
+        <p :class="labelClass">{{ label }}</p>
         <button @click="togglePopup">
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
         <div v-if="showPopup"
             :class="['absolute z-40 top-8 right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg', widthClass]">
             <div class="">
-                <label class="block border-b-2 border-gray-100 px-2 py-2">
+                <label class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
                     <input type="checkbox" v-model="selectAll" @change="toggleAll" class="mr-2" /> Todos
                 </label>
                 <div class='max-h-48 overflow-y-auto'>
@@ -32,6 +32,10 @@ const props = defineProps({
         type: String,
         default: 'Label'
     },
+    labelClass: {
+        type: String,
+        default: 'text-base font-medium'
+    },
     options: {
         type: Array,
         required: true
@@ -42,9 +46,10 @@ const props = defineProps({
     },
     width: {
         type: String,
-        default: 'w-48'
+        default: 'w-full'
     }
 });
+
 
 const emit = defineEmits(['update:modelValue']);
 

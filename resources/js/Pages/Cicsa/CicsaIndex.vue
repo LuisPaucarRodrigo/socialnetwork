@@ -29,57 +29,59 @@
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[65vh]">
                 <table class="w-full">
-                    <thead>
+                    <thead class="sticky top-0 z-10">
                         <tr
-                            class="border-b  text-xs font-semibold uppercase tracking-wide text-white">
+                            class=" text-xs font-semibold uppercase tracking-wide text-white">
                             <th v-if="!checkVisibility('Asignación')"
-                                class="bg-gray-700 sticky left-0 z-10 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                class="bg-gray-700 sticky left-0 z-10 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="3">
                                 
                             </th>
                             <th v-if="checkVisibility('Asignación')"
-                                class="bg-indigo-800 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
+                                class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Asignación
                             </th>
                             <th v-if="checkVisibility('Factibilidad PINT y PEXT')"
-                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
+                                class="bg-indigo-800  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Factibilidad PINT y PEXT
                             </th>
                             <th v-if="checkVisibility('Materiales')"
-                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
+                                class="bg-indigo-800  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="4">
                                 Materiales
                             </th>
                             <th v-if="checkVisibility('Instalación PINT y PEXT')"
-                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
+                                class="bg-indigo-800  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Instalación PINT y PEXT
                             </th>
                             <th 
-                                class="bg-indigo-800 border-b-2  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" >
+                                class="bg-indigo-800  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" >
                                 Estado del Proyecto
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
-                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
+                                class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="6">
                                 Orden de Compra
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
+                                class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
                                 Validación de OC
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
+                                class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="7">
                                 Orden de Servicio
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
-                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="8">
+                                class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider" colspan="9">
                                 Cobranza
                             </th>
+                            <th v-if="!checkVisibility('Cobranza')" class="bg-gray-700 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider border-r-2">
+                            </th>
                             <th 
-                                class="bg-purple-700 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                                 Estado de Cobranza
                             </th>
                             <th  v-if="auth.user.role_id === 1"
-                                class="bg-gray-700 border-b-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                class="bg-gray-700 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                             </th>
                         </tr>
                         <tr
@@ -89,7 +91,7 @@
                                 Fecha de Asignación
                             </th>
                             <th 
-                                :class="['border-b-2 sticky left-0 z-10 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación')?'':'border-r-2']"
+                                :class="['border-b-2 col-width-150 sticky left-0 z-5 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación')?'':'border-r-2']"
                                 >
                                 Nombre del Proyecto
                             </th>
@@ -97,13 +99,15 @@
                                 class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cliente
                             </th>
-                            <th v-if="checkVisibility('Asignación')"
-                                class="border-b-2  border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Código de Proyecto
+                            <th :class="['border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación')?'':'border-r-2']">
+                                <p class="">
+                                    CPE
+                                </p>
                             </th>
-                            <th v-if="checkVisibility('Asignación')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                CPE
+                            <th :class="['border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación')?'':'border-r-2']">
+                                <p class="">
+                                    CPE
+                                </p>
                             </th>
                             <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -174,8 +178,8 @@
                                 Encargado
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider ">
-                                
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider ">
+                                    <TableHeaderFilter label="E. P." labelClass=" text-gray-600" :options="proj_stats" v-model="filterForm.project_status" />
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -286,6 +290,11 @@
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Abono
                             </th>
+                            <th 
+
+                                :class="['border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Conbranza')?'':'border-r-2']">
+                                Monto
+                            </th>
                             <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Estado de Pago
@@ -295,8 +304,8 @@
                                 Encargado
                             </th>
                             <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider ">
+                                    <TableHeaderFilter label="E. C." labelClass=" text-gray-600" :options="proj_stats" v-model="filterForm.project_status" />
                             </th>
                             <th v-if="auth.user.role_id === 1"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -308,13 +317,15 @@
                             <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item.assignation_date) }}</p>
                             </td>
-                            <td class="border-b sticky left-0 z-10 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
+                            <td class="border-b sticky left-0 z-5 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
                                 <p class="text-gray-900 text-center">{{ item.project_name }}</p>
                             </td>
-                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item.customer }}</p>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.customer }}
+                                </p>
                             </td>
-                            <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item.project_code }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')"  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -408,8 +419,8 @@
                             </td>
 
 
-                            <td :class="stateClass(item?.cicsa_project_status)" class="border-b  border-r-2 border-gray-200  px-5 py-5 text-sm">
-                                <p  class="font-black uppercase text-center">
+                            <td :class="stateClass(item?.cicsa_project_status)" class="border-b border-r-2 border-gray-200  px-5 py-5 text-sm">
+                                <p  class=" font-black uppercase text-center">
                                     {{ item?.cicsa_project_status }}
                                 </p>
                             </td>
@@ -514,7 +525,9 @@
                             </td> 
 
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.cicsa_charge_area?.invoice_number }}</p>
+                                <p class="text-gray-900 text-center">
+                                    {{ item?.cicsa_charge_area?.invoice_number }} 
+                                </p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_charge_area?.invoice_date) }}</p>
@@ -531,8 +544,11 @@
                             <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_charge_area?.deposit_date) }}</p>
                             </td>
-                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td  class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.cicsa_charge_area?.amount ? 'S/.' : '' }} {{ item?.cicsa_charge_area?.amount }} </p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_charge_area?.state }} </p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')" class="border-b  border-r-2 border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
@@ -563,9 +579,25 @@
                         </tr>
 
                     </tbody> 
-                
+                    
                 </table>
             </div>
+            <table class="w-full">
+                <tbody>
+                    <tr class="text-gray-700 w-full">
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <p class="text-gray-900 text-center">
+                                Total Registros: {{ projects.data.length }}
+                            </p>
+                        </td>
+                        <td   class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <p class="text-gray-900 text-center">
+                                Monto Total: S/. {{ getTotalAmount(projects.data) }}
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
@@ -717,6 +749,7 @@ import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import FilterProcess from '@/Components/FilterProcess.vue'
+import TableHeaderFilter from '@/Components/TableHeaderFilter.vue'
 
 const { auth, projects } = defineProps({
     auth: Object,
@@ -800,9 +833,9 @@ function checkVisibility(option) {
 }
 
 
-const stateClass = (state, g) => {
+const stateClass = (state) => {
   switch (state) {
-    case 'Pendiente':
+    case 'Pendiente' || null || undefined:
       return 'bg-red-100';
     case 'En Proceso':
       return 'bg-yellow-100';
@@ -815,4 +848,31 @@ const stateClass = (state, g) => {
 
 
 
+//Totals
+function getTotalAmount(objArray) {
+    return objArray.reduce(
+        (a, item)=>a+item?.cicsa_charge_area?.amount ? item?.cicsa_charge_area?.amount: 0
+    , 0)
+}
+
+//filter
+const proj_stats = [
+    'Pendiente',
+    'En Proceso',
+    'Completado',
+]
+const filterForm = ref({
+    project_status: [...proj_stats]
+})
+
+
 </script>
+
+
+
+
+<style scoped>
+.col-width-150 {
+      width: 300px;
+    }
+</style>
