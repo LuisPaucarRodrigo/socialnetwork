@@ -39,15 +39,25 @@ class ProjectDocumentController extends Controller
     }
     public function project_doc_store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required',
-            'path' => 'required',
-            'type' => 'required'
-        ]);
-
-        if ($data['type'] === 'Carpeta') {
+        if ($request->type === 'Carpeta') {
+            $data = $request->validate([
+                'name' => ['required', 'regex:/^[a-zA-Z0-9 _-]+$/'],
+                'path' => 'required',
+                'type' => 'required'
+            ]);
             $this->createFolder($data['path'], $data['name']);
+        } 
+        if ($request->type === 'Archivo'){
+            $data = $request->validate([
+                'file' => 'required|file',
+                'path' => 'required',
+                'type' => 'required'
+            ]);
+            if ($request->hasfile('file')) {
+                $this->createArchive($request->file('file'), $data['path']);
+            }
         }
+
 
         return redirect()->back();
     }
@@ -90,5 +100,12 @@ class ProjectDocumentController extends Controller
             return abort(403, 'Carpeta ya existente');
         }
     }
+
+
+    public function createArchive ($file, $path){
+        $filename = $file->getClientOriginalName();
+        $filePath = $file->storeAs($path, $filename);
+    }
+    
 
 }
