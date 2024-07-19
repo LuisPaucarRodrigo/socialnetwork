@@ -134,7 +134,8 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     Route::get('/project-document-gestion', [ProjectDocumentController::class, 'project_doc_index'])->name('project.document.index');
     Route::post('/project-document-gestion/store/{path?}', [ProjectDocumentController::class, 'project_doc_store'])->name('project.document.store');
-    Route::post('/project-document-gestion/folder_delete', [ProjectDocumentController::class, 'project_doc_folder_delete'])->name('project.folder.delete');
+    Route::post('/project-document-gestion/folder_archive_delete', [ProjectDocumentController::class, 'project_doc_delete'])->name('project.folder.delete');
+    Route::get('/project-document-gestion/folder_archive_dowload', [ProjectDocumentController::class, 'project_doc_download'])->name('project.folder.download');
 
     
 });
