@@ -2,18 +2,25 @@
 
     <Head title="G. Documentaria" />
 
-    <AuthenticatedLayout
-        :redirectRoute="backUrl">
+    <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
             {{ currentPath }}
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex space-x-4">
-                <PrimaryButton 
-                    @click="openAddFoldermodal" type="button">
+                <PrimaryButton @click="openAddFoldermodal" type="button">
                     + Agregar
                 </PrimaryButton>
-                
+
+                <a type="button"
+                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
+                    :href="route('project.folder.download', { path: currentPath })">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-5 h-5 text-white">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                    </svg>
+                </a>
 
 
                 <!-- <div class="flex items-center mt-4 sm:mt-0">
@@ -49,7 +56,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Tamaño
                             </th>
-                           
+
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 pl-4 pr-10 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
@@ -61,13 +68,11 @@
                             <td class="border-b border-gray-200 bg-white  text-sm">
                                 <!-- for button instead of Link -->
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
-                                <Link :href="route('project.document.index',{path: item.path})"
+                                <Link :href="route('project.document.index', { path: item.path })"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
                                 <div class="flex space-x-8 items-center w-full mr-8 xl:mr-0">
-                                    <FolderIcon v-if="item.type === 'folder'" 
-                                        class="h-10 w-10"/>
-                                    <DocumentTextIcon v-if="item.type === 'archive'" 
-                                        class="h-9 w-9"/>
+                                    <FolderIcon v-if="item.type === 'folder'" class="h-10 w-10" />
+                                    <DocumentTextIcon v-if="item.type === 'archive'" class="h-9 w-9" />
                                     <p>
                                         {{ item.name }}
                                     </p>
@@ -75,16 +80,16 @@
 
                                 </Link>
 
-                                
+
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
 
-                                <p  class="text-gray-700">
+                                <p class="text-gray-700">
                                     {{ item.size }}
                                 </p>
-                               
+
                             </td>
-                            
+
                             <td class="border-b border-gray-200 bg-white pl-5 py-5 pr-10 text-sm">
                                 <div class="flex space-x-3 justify-end">
                                     <!-- <Link class="text-blue-900 whitespace-no-wrap" :href="'#'">
@@ -94,7 +99,7 @@
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
                                     </Link> -->
-                                    <a type="button" :href="route('project.folder.download', {path: item.path})">
+                                    <a type="button" :href="route('project.folder.download', { path: item.path })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="green" :class="`w-6 h-6`">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -144,7 +149,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div  v-if="createFolderForm.type === 'Carpeta'" class="">
+                        <div v-if="createFolderForm.type === 'Carpeta'" class="">
                             <InputLabel>Nombre</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="createFolderForm.name" id="first-name"
@@ -156,12 +161,12 @@
                         <div v-if="createFolderForm.type === 'Archivo'" class="">
                             <InputLabel>Archivo</InputLabel>
                             <div class="mt-2">
-                                <InputFile type="file" v-model="createFolderForm.file" 
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputFile type="file" v-model="createFolderForm.file"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="createFolderForm.errors.file" />
                             </div>
                         </div>
-                         
+
 
                     </div>
                     <br>
@@ -183,17 +188,17 @@
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 mb-2">
                     {{ itemToDelete.type === 'folder' ? 'Eliminación de Carpeta' :
-                         itemToDelete.type === 'archive' && 'Eliminación de Archivo'
+        itemToDelete.type === 'archive' && 'Eliminación de Archivo'
                     }}
                 </h2>
                 <InputLabel class="mb-5">
                     <template v-if="itemToDelete.type === 'folder'">
-                        ¿Estás seguro de querer eliminar toda la carpeta 
+                        ¿Estás seguro de querer eliminar toda la carpeta
                         <span class="mx-1 font-bold text-lg">{{ itemToDelete.name }}</span>?
                         Esta acción eliminará también las subcarpetas y archivos de esta. La acción es irreversible.
                     </template>
                     <template v-else-if="itemToDelete.type === 'archive'">
-                        ¿Estás seguro de querer eliminar el archivo 
+                        ¿Estás seguro de querer eliminar el archivo
                         <span class=" mx-1 font-bold text-lg">{{ itemToDelete.name }}</span>?
                         La acción es irreversible.
                     </template>
@@ -241,8 +246,8 @@ const { folders_archives, folder, currentPath, previousPath, auth, areas } = def
     auth: Object
 })
 
-let backUrl = previousPath ? { route: 'project.document.index' , params: {path: previousPath}} 
-                : { route: 'projectmanagement.index'}
+let backUrl = previousPath ? { route: 'project.document.index', params: { path: previousPath } }
+    : { route: 'projectmanagement.index' }
 
 //---------- Check Permission -------//
 function checkSeeDownloadPermission(item) {
@@ -307,7 +312,7 @@ function closeDeleteFolderModal() {
     showDeleteFolderModal.value = false
 }
 function deleteFolder() {
-    router.post(route('project.folder.delete'),  { path: itemToDelete.value.path, type: itemToDelete.value.type }, {
+    router.post(route('project.folder.delete'), { path: itemToDelete.value.path, type: itemToDelete.value.type }, {
         onSuccess: () => {
             closeDeleteFolderModal()
         }, onError: (e) => {
@@ -322,7 +327,7 @@ const searchForm = useForm({
 })
 const search = () => {
     if (searchForm.searchTerm !== '') {
-        router.visit(route('documment.management.folders', {folder_id:folder?.id})+`?search=${searchForm.searchTerm}`)
+        router.visit(route('documment.management.folders', { folder_id: folder?.id }) + `?search=${searchForm.searchTerm}`)
     }
 }
 
