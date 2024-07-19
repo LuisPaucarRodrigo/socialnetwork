@@ -589,10 +589,8 @@ function submitImportExcel() {
     })
         .then(response => {
             if (response.status === 200) {
-                console.log(response);
-                // console.log(form.cicsa_material_items);
-                // form.cicsa_material_items = response.data;
-                // console.log(form.cicsa_material_items);
+                
+                form.cicsa_material_items = response.data;
                 modalImportMaterial();
             }
         })
