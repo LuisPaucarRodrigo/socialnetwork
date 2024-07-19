@@ -151,12 +151,13 @@ class CicsaAssignation extends Model
         ) {
             return 'Completado';
         }
-        if ($this->checkPSP()) {
+
+        if ($this->checkPSP() || $this->checkAssignation()) {
             return 'En Proceso';
         }
         if (!$this->checkAssignation()) {
             return 'Pendiente';
-        }  
+        }
     }
 
 
