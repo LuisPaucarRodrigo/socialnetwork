@@ -16,7 +16,8 @@ class HuaweiProject extends Model
         'description',
         'ot',
         'pre_report',
-        'status'
+        'status',
+        'initial_amount'
     ];
 
     protected $appends = [
@@ -27,6 +28,7 @@ class HuaweiProject extends Model
         'equipments_in_project',
         'materials_liquidated',
         'equipments_liquidated',
+        'total_earnings',
         'total_project_cost'
     ];
 
@@ -48,6 +50,11 @@ class HuaweiProject extends Model
     public function huawei_project_resources ()
     {
         return $this->hasMany(HuaweiProjectResource::class, 'huawei_project_id');
+    }
+
+    public function huawei_project_earnings ()
+    {
+        return $this->hasMany(HuaweiProjectEarning::class, 'huawei_project_id');
     }
 
     public function getCodeAttribute()
@@ -133,6 +140,11 @@ class HuaweiProject extends Model
             ->sum(function ($resource) {
                 return $resource->huawei_project_liquidation->liquidated_quantity * ($resource->huawei_entry_detail->unit_price ?? 0);
             });
+    }
+
+    public function getTotalEarningsAttribute ()
+    {
+        return $this->huawei_project_earnings->sum('amount');
     }
 
     public function getTotalProjectCostAttribute ()
