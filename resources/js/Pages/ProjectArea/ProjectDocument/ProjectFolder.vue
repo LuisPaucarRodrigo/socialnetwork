@@ -296,7 +296,7 @@ function closeDeleteFolderModal() {
     showDeleteFolderModal.value = false
 }
 function deleteFolder() {
-    router.delete(route('document.management.folder.destroy', { folder_id: folderToDelete.value.item_db.id }), {
+    router.post(route('project.folder.delete'),  { path: folderToDelete.value.path }, {
         onSuccess: () => {
             closeDeleteFolderModal()
         }, onError: (e) => {

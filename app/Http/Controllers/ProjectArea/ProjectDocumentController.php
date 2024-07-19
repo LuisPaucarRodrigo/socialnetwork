@@ -7,6 +7,7 @@ use App\Models\Project;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectDocumentController extends Controller
 {
@@ -16,8 +17,7 @@ class ProjectDocumentController extends Controller
     {
         $this->main_directory = 'Projects';
     }
-    public function project_doc_index(Request $request)
-    {
+    public function project_doc_index(Request $request) {
         $project_id = $request->input('project_id');
         $path = $request->input('path');
         $previousPath = '';
@@ -37,8 +37,8 @@ class ProjectDocumentController extends Controller
             'previousPath' => $previousPath,
         ]);
     }
-    public function project_doc_store(Request $request)
-    {
+
+    public function project_doc_store(Request $request){
         if ($request->type === 'Carpeta') {
             $data = $request->validate([
                 'name' => ['required', 'regex:/^[a-zA-Z0-9 _-]+$/'],
@@ -57,27 +57,32 @@ class ProjectDocumentController extends Controller
                 $this->createArchive($request->file('file'), $data['path']);
             }
         }
-
-
         return redirect()->back();
     }
-    private function scanFolder($folderPath)
-    {
-        $folderStructure = [];
-        $contents = scandir($folderPath);
 
+    public function project_doc_folder_delete (Request $request){
+        $path = $request->input('path');
+        $this->deleteFolder($path);
+        return redirect()->back();
+    }
+
+
+    private function scanFolder($folderPath) {
+        $folders = [];
+        $files = [];
+        $contents = scandir($folderPath);
         foreach ($contents as $item) {
             if ($item[0] !== '.') {
                 $itemPath = $folderPath . '/' . $item;
                 if (is_dir($itemPath)) {
-                    $folderStructure[] = [
+                    $folders[] = [
                         'name' => $item,
                         'type' => 'folder',
                         'path' => str_replace(storage_path('app/'), '', $itemPath),
                         'size' => null,
                     ];
                 } else {
-                    $folderStructure[] = [
+                    $files[] = [
                         'name' => $item,
                         'type' => 'archive',
                         'path' => str_replace(storage_path('app/'), '', $itemPath),
@@ -86,18 +91,22 @@ class ProjectDocumentController extends Controller
                 }
             }
         }
-
-        return $folderStructure;
+        return array_merge($folders, $files);
     }
-    public function createFolder($path, $name)
-    {
-        $storagePath = storage_path('app/' . $path . '/' . $name);
 
+    public function createFolder($path, $name) {
+        $storagePath = storage_path('app/' . $path . '/' . $name);
         if (!file_exists($storagePath)) {
             mkdir($storagePath, 0777, true);
             return $path . '/' . $name;
         } else {
             return abort(403, 'Carpeta ya existente');
+        }
+    }
+
+    public function deleteFolder($path){
+        if (Storage::exists($path)) {
+            Storage::deleteDirectory($path);
         }
     }
 
