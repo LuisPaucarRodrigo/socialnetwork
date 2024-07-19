@@ -3,7 +3,7 @@
     <Head title="G. Documentaria" />
 
     <AuthenticatedLayout
-        :redirectRoute="{ route: 'documment.management.folders', params: { folder_id: folder?.upper_folder_id } }">
+        :redirectRoute="backUrl">
         <template #header>
             {{ currentPath }}
         </template>
@@ -59,13 +59,13 @@
                             <td class="border-b border-gray-200 bg-white  text-sm">
                                 <!-- for button instead of Link -->
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
-                                <Link 
+                                <Link :href="route('project.document.index',{path: item.path})"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
-                                <div class="flex space-x-3 items-center w-full mr-8 xl:mr-0">
-                                    <img v-if="item.type === 'folder'" src="/image/FolderIcons/archive_5.png"
-                                        class="h-12 w-12">
-                                    <img v-if="item.type === 'archive'" src="/image/FolderIcons/folder_5.png"
-                                        class="h-12 w-12">
+                                <div class="flex space-x-8 items-center w-full mr-8 xl:mr-0">
+                                    <FolderIcon v-if="item.type === 'folder'" 
+                                        class="h-10 w-10"/>
+                                    <DocumentTextIcon v-if="item.type === 'archive'" 
+                                        class="h-9 w-9"/>
                                     <p>
                                         {{ item.name }}
                                     </p>
@@ -78,7 +78,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
 
                                 <p  class="text-gray-700">
-                                    tamaño 
+                                    {{ item.size }}
                                 </p>
                                
                             </td>
@@ -217,15 +217,21 @@ import { ref } from 'vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import InputFile from '@/Components/InputFile.vue';
+import { FolderIcon } from '@heroicons/vue/24/solid';
+import { DocumentTextIcon } from '@heroicons/vue/24/outline';
 
 
-const { folders_archives, folder, currentPath, auth, areas } = defineProps({
+const { folders_archives, folder, currentPath, previousPath, auth, areas } = defineProps({
     folders_archives: Object,
     folder: Object,
     currentPath: String,
+    previousPath: String,
     areas: Object,
     auth: Object
 })
+
+let backUrl = previousPath ? { route: 'project.document.index' , params: {path: previousPath}} 
+                : { route: 'projectmanagement.index'}
 
 //---------- Check Permission -------//
 function checkSeeDownloadPermission(item) {
