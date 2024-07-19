@@ -246,10 +246,10 @@ class CicsaAssignation extends Model
 
     public function getCicsaChargeStatusAttribute () {
         if (
-            $this->checkPurchaseOrder()
-            && $this->checkValidationOrder()
-            && $this->checkServiceOrder()
-            && $this->checkCicsaChargeArea()
+            $this->checkCicsaChargeArea()
+            // && $this->checkValidationOrder()
+            // && $this->checkServiceOrder()
+            // && $this->checkPurchaseOrder()
         ) {
             return 'Completado';
         }

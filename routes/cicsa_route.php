@@ -45,3 +45,8 @@ Route::post('/cicsa_charge_areas/store/{cicsa_assignation_id?}', [CicsaControlle
 Route::post('/cicsa_charge_areas/update/{cicsa_charge_area}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
 
 
+
+
+//search
+
+Route::post('/cicsa_advance_search', [CicsaController::class, 'search'])->name('cicsa.advance.search');
