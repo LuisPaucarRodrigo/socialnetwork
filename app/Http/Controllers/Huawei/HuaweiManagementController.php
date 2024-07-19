@@ -109,6 +109,13 @@ class HuaweiManagementController extends Controller
         ]);
     }
 
+    public function antiquation ()
+    {
+        return Inertia::render('Huawei/Antiquation', [
+            'equipments' => HuaweiEquipment::with('huawei_equipment_series')->get()
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
