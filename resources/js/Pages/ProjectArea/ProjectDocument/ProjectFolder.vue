@@ -137,7 +137,7 @@
                                 <label class="flex gap-2 items-center text-sm">
                                     Archivos
                                     <input type="radio" v-model="createFolderForm.type" @input="handleFolderType"
-                                        id="resorceOrProduct" :value="'Archivos'"
+                                        id="resorceOrProduct" :value="'Archivo'"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
                             </div>
@@ -151,7 +151,7 @@
                                 <InputError :message="createFolderForm.errors.name" />
                             </div>
                         </div>
-                        <div v-if="createFolderForm.type === 'Archivos'" class="">
+                        <div v-if="createFolderForm.type === 'Archivo'" class="">
                             <InputLabel>Archivo</InputLabel>
                             <div class="mt-2">
                                 <InputFile type="file" v-model="createFolderForm.file" 
