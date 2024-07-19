@@ -15,19 +15,19 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($additionalCosts as $dato)
+        @foreach($costs as $item)
         <tr>
-            <td>{{ $dato->project?->code }}</td>
-            <td>{{ $dato->project?->description }}</td>
-            <td>{{ $dato->zone }}</td>
-            <td>{{ $dato->expense_type }}</td>
-            <td>{{ $dato->type_doc }}</td>
-            <td>{{ $dato->ruc }}</td>
-            <td>{{ $dato->provider?->company_name }}</td>
-            <td>{{ $dato->doc_number }}</td>
-            <td>{{ $dato->doc_date }}</td>
-            <td>{{ $dato->amount }}</td>
-            <td>{{ $dato->description }}</td>
+            <td>{{ $item->project?->code }}</td>
+            <td>{{ $item->project?->description }}</td>
+            <td>{{ $item->zone }}</td>
+            <td>{{ $item->expense_type }}</td>
+            <td>{{ $item->type_doc }}</td>
+            <td>{{ $item->ruc }}</td>
+            <td>{{ $item->provider?->company_name }}</td>
+            <td>{{ $item->doc_number }}</td>
+            <td>{{ $item->doc_date }}</td>
+            <td>{{ $item->amount }}</td>
+            <td>{{ $item->description }}</td>
         </tr>
         @endforeach
     </tbody>
