@@ -131,6 +131,7 @@ class ProjectManagementController extends Controller
             $project->update($data);
         } else {
             $project = Project::create($data);
+            $this->createFolder($project->code.'_'.$project->id);
             $preproject = Preproject::find($request->preproject_id);
             $preproject->update(['status' => true]);
             Purchasing_request::where('preproject_id', $request->preproject_id)
@@ -178,6 +179,7 @@ class ProjectManagementController extends Controller
             }
         }
     }
+    
 
     public function project_delete_employee($pivot_id)
     {
@@ -457,5 +459,18 @@ class ProjectManagementController extends Controller
     {
         Project::find($request->project_id)?->update(['status' => true]);
         return redirect()->back();
+    }
+
+
+
+    public function createFolder($name){
+        $path = 'Projects';
+        $storagePath = storage_path('app/' . $path . '/' . $name);
+        if (!file_exists($storagePath)) {
+            mkdir($storagePath, 0777, true);
+            return $path . '/' . $name;
+        } else {
+            return abort(403, 'Carpeta ya existente');
+        }
     }
 }
