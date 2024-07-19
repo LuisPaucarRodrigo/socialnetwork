@@ -29,11 +29,11 @@
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full">
                     <thead>
                         <tr
-                            class="border-b  text-xs font-semibold uppercase tracking-wide text-white">
+                            class="sticky top-0 z-20 border-b  text-xs font-semibold uppercase tracking-wide text-white">
                             <th v-if="!checkVisibility('Asignación')"
                                 class="bg-black sticky left-0 z-10 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                                 
