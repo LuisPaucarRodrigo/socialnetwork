@@ -10,17 +10,26 @@
 
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <div class="flex">
+                <div class="flex space-x-4">
                     <FilterProcess :options="[
-        'Asignación',
-        'Factibilidad PINT y PEXT',
-        'Materiales',
-        'Instalación PINT y PEXT',
-        'Orden de Compra',
-        'Validación de OC',
-        'Orden de Servicio',
-        'Cobranza'
-    ]" v-model="selectedOptions" :width="'w-[230px]'" />
+                        'Asignación',
+                        'Factibilidad PINT y PEXT',
+                        'Materiales',
+                        'Instalación PINT y PEXT',
+                        'Orden de Compra',
+                        'Validación de OC',
+                        'Orden de Servicio',
+                        'Cobranza'
+                    ]" v-model="selectedOptions" :width="'w-[230px]'" />
+                    <button @click="getAllData()"
+                        class="p-2 bg-white ring-1 ring-slate-400 rounded-md text-slate-900 hover:text-slate-400">
+                        <ServerIcon class="h-5 w-5  font-bold" />
+                    </button>
+                    <button
+                    @click="router.visit(route('cicsa.index'))"
+                        class="p-2 bg-transparent ring-1 ring-slate-300 rounded-md text-slate-900 hover:text-slate-400">
+                        <ArrowPathIcon class="h-5 w-5 " />
+                    </button>
                 </div>
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
@@ -181,8 +190,10 @@
                             <th
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider ">
                                 <div class="w-[150px]">
-                                    <TableHeaderFilter label="E. P." labelClass=" text-gray-600" :options="[...stats]"
-                                    v-model="filterForm.project_status" />
+                                    <TableHeaderCicsaFilter label="E. P." labelClass=" text-gray-600" :options="[...stats]"
+                                        v-model="filterForm.project_status" 
+                                        ref="childRef"
+                                        />
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
@@ -309,8 +320,10 @@
                             <th
                                 class=" border-b-2 border-r-2 border-gray-300 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider ">
                                 <div class="w-[150px]">
-                                    <TableHeaderFilter label="E. C." labelClass=" text-gray-600" :options="[...stats]"
-                                        v-model="filterForm.charge_status" />
+                                    <TableHeaderCicsaFilter label="E. C." labelClass=" text-gray-600" :options="[...stats]"
+                                        v-model="filterForm.charge_status" 
+                                        ref="childRef2"
+                                        />
                                 </div>
                             </th>
                             <th v-if="auth.user.role_id === 1"
@@ -390,20 +403,20 @@
 
 
 
-                            <td :class="stateClass(item?.cicsa_materials?.some(item=>item?.pick_date))"
-                                v-if="checkVisibility('Materiales')" class="border-b border-gray-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{item?.cicsa_materials
-                                    ?.filter(item => item?.pick_date !== null)
-                                    .map(item => formattedDate(item?.pick_date))
-                                    .join(', ')
-                                    }}</p>
-                            </td>
-                            <td :class="stateClass(item?.cicsa_materials?.some(item=>item?.guide_number))"
+                            <td :class="stateClass(item?.cicsa_materials?.some(item => item?.pick_date))"
                                 v-if="checkVisibility('Materiales')" class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item?.cicsa_materials
-                                    ?.filter(item => item?.guide_number !== null)
-                                    .map(item => item.guide_number)
-                                    .join(', ') }}</p>
+        ?.filter(item => item?.pick_date !== null)
+        .map(item => formattedDate(item?.pick_date))
+        .join(', ')
+                                    }}</p>
+                            </td>
+                            <td :class="stateClass(item?.cicsa_materials?.some(item => item?.guide_number))"
+                                v-if="checkVisibility('Materiales')" class="border-b border-gray-200 px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_materials
+        ?.filter(item => item?.guide_number !== null)
+        .map(item => item.guide_number)
+        .join(', ') }}</p>
                             </td>
                             <td :class="stateClass(item?.total_materials?.length > 0)"
                                 v-if="checkVisibility('Materiales')"
@@ -416,14 +429,14 @@
                                     </button>
                                 </div>
                             </td>
-                            <td :class="stateClass(item?.cicsa_materials?.some(item=>item?.user_name))"
+                            <td :class="stateClass(item?.cicsa_materials?.some(item => item?.user_name))"
                                 v-if="checkVisibility('Materiales')"
                                 class="border-b  border-r-2 border-gray-200 px-5 py-5 text-sm">
                                 <p class="w-[200px] text-gray-900 text-center">
                                     {{ item?.cicsa_materials
-                                    ?.filter(item => item?.user_name !== null)
-                                    .map(item => item.user_name)
-                                    .join(', ') }}
+        ?.filter(item => item?.user_name !== null)
+        .map(item => item.user_name)
+        .join(', ') }}
                                 </p>
                             </td>
 
@@ -730,7 +743,7 @@
                 </tbody>
             </table>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="!filterMode" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
             </div>
         </div>
@@ -886,31 +899,20 @@ import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import FilterProcess from '@/Components/FilterProcess.vue'
-import TableHeaderFilter from '@/Components/TableHeaderFilter.vue'
+import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue'
+import { ArrowPathIcon, ServerIcon } from '@heroicons/vue/24/outline';
 
 const { auth, projects } = defineProps({
     auth: Object,
     projects: Object,
 })
 const dataToRender = ref(projects.data)
+const filterMode = ref(false)
 
 
 const showSotDeleteModal = ref(false);
 const sotToDelete = ref(null)
 const confirmSotDelete = ref(false)
-const showCustomerDetails = ref(false);
-const customer = ref([]);
-
-const openCustomerDetails = (item) => {
-    showCustomerDetails.value = true
-    customer.value = item
-}
-
-const closeCustomerDetails = () => {
-    customer.value = [];
-    showCustomerDetails.value = false;
-}
-
 
 
 function openSotDeleteModal(id) {
@@ -1007,25 +1009,34 @@ const stats = [
     'En Proceso',
     'Completado',
 ]
-const filterForm = ref({
+const initSearch = {
     project_status: [...stats],
     charge_status: [...stats]
-})
+}
+const filterForm = ref({...initSearch})
 watch(() => [
     filterForm.value.project_status,
     filterForm.value.charge_status,
 ], () => {
     search_advance(filterForm.value)
-        ,
-        { deep: true }
-})
-
+    filterMode.value = true
+},
+{ deep: true }
+)
 
 async function search_advance($data) {
     let res = await axios.post(route('cicsa.advance.search'), $data)
     dataToRender.value = res.data
 }
 
+const childRef = ref(null);
+const childRef2 = ref(null);
+function getAllData() {
+    filterMode.value = true
+    childRef.value.checkAll();
+    childRef2.value.checkAll();
+    search_advance(filterForm.value)
+}
 
 
 </script>
