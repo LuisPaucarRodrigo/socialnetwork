@@ -577,7 +577,6 @@ class FolderController extends Controller
 
 
     public function searchInFolder($search, $folder_id) {
-        Log::info('llegue....');
         $searchTerm = str_replace([' ', '-', '_'], '', $search);
         $currentFolder = Folder::find($folder_id);
         $result = $this->recursiveFolderSearch($currentFolder?->id, $searchTerm);

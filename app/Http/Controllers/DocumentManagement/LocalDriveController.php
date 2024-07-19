@@ -1,31 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\ProjectArea;
+namespace App\Http\Controllers\DocumentManagement;
 
-use App\Http\Controllers\Controller;
-use App\Models\Project;
-use Exception;
-use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 use ZipArchive;
 use Response;
 
-class ProjectDocumentController extends Controller
+
+class LocalDriveController extends Controller
 {
     protected $main_directory;
 
     public function __construct()
     {
-        $this->main_directory = 'Projects';
+        $this->main_directory = 'LocalDrive';
     }
-    public function project_doc_index(Request $request)
+    public function localDriveIndex(Request $request)
     {
-        $project_id = $request->input('project_id');
+        $root = $request->input('root');
         $path = $request->input('path');
         $previousPath = '';
-        if (!$project_id) {
+        if (!$root) {
             $lastSlashPosition = strrpos($path, '/');
             if ($lastSlashPosition !== false) {
                 $previousPath = substr($path, 0, $lastSlashPosition) !== $this->main_directory
@@ -33,7 +31,7 @@ class ProjectDocumentController extends Controller
                     : '';
             }
         }
-        $currentPath = $project_id ? $this->main_directory . '/' . $path : $path;
+        $currentPath = $root ? $this->main_directory : $path;
         $folders_archives = $this->scanFolder(storage_path('app/' . $currentPath));
         return Inertia::render('ProjectArea/ProjectDocument/ProjectFolder', [
             'folders_archives' => $folders_archives,
@@ -42,7 +40,7 @@ class ProjectDocumentController extends Controller
         ]);
     }
 
-    public function project_doc_store(Request $request)
+    public function localDriveStore(Request $request)
     {
         if ($request->type === 'Carpeta') {
             $data = $request->validate([
@@ -65,7 +63,7 @@ class ProjectDocumentController extends Controller
         return redirect()->back();
     }
 
-    public function project_doc_delete(Request $request)
+    public function localDriveDelete(Request $request)
     {
         $path = $request->input('path');
         $type = $request->input('type');
@@ -142,12 +140,7 @@ class ProjectDocumentController extends Controller
         }
     }
 
-
-
-
-
-
-    public function project_doc_download(Request $request)
+    public function localDriveDownload(Request $request)
     {
         $path = $request->input('path');
         $storagePath = storage_path('app/' . $path);
