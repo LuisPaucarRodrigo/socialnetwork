@@ -2,20 +2,25 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Contracts\View\View;
-use App\Models\User;
+use App\Models\AdditionalCost;
+
+
 
 class AdditionalCostsExport implements FromView
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
+    protected $project_id;
+
+    public function __construct($project_id)
+    {
+        $this->project_id = $project_id;
+    }
+
     public function view():View
     {
-        return view('export', [
-            'users' => User::all()
+        return view('Export/CostsExport', [
+            'additionalCosts' => AdditionalCost::with('project', 'provider')->where('project_id', $this->project_id)->get()
         ]);
     }
 }

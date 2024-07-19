@@ -236,6 +236,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
 
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
+    Route::get('/additionalcosts/excel_export/{project_id}', [AdditionalCostsController::class, 'export'])->name('additionalcost.excel.export');
 
 });
 
