@@ -274,11 +274,14 @@ class CicsaAssignation extends Model
                 $key = array_search($name, array_column($total_materials, 'name'));
                 if($key !== false){
                     $newQuantity = $total_materials[$key]["quantity"] + $item->quantity;
+                    $newGuideNumber = $total_materials[$key]["guide_number"].', '.$guide->guide_number;
                     $total_materials[$key]["quantity"] = $newQuantity;
+                    $total_materials[$key]["guide_number"] = $newGuideNumber;
                 } else {
                     array_push($total_materials,[
                         'name'=> $item->name,
                         'unit'=> $item->unit,
+                        'guide_number' => $guide->guide_number,
                         'quantity'=> $item->quantity,
                     ]);
                 }

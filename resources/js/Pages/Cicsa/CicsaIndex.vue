@@ -390,31 +390,40 @@
 
 
 
-                            <td :class="stateClass(item?.cicsa_materials?.pick_date)"
+                            <td :class="stateClass(item?.cicsa_materials?.some(item=>item?.pick_date))"
                                 v-if="checkVisibility('Materiales')" class="border-b border-gray-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ formattedDate(item?.cicsa_materials?.pick_date)
+                                <p class="text-gray-900 text-center">{{item?.cicsa_materials
+                                    ?.filter(item => item?.pick_date !== null)
+                                    .map(item => formattedDate(item?.pick_date))
+                                    .join(', ')
                                     }}</p>
                             </td>
-                            <td :class="stateClass(item?.cicsa_materials?.guide_number)"
+                            <td :class="stateClass(item?.cicsa_materials?.some(item=>item?.guide_number))"
                                 v-if="checkVisibility('Materiales')" class="border-b border-gray-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item?.cicsa_materials?.guide_number }}</p>
+                                <p class="text-gray-900 text-center">{{ item?.cicsa_materials
+                                    ?.filter(item => item?.guide_number !== null)
+                                    .map(item => item.guide_number)
+                                    .join(', ') }}</p>
                             </td>
-                            <td :class="stateClass(item?.cicsa_materials?.cicsa_material_items?.length > 0)"
+                            <td :class="stateClass(item?.total_materials?.length > 0)"
                                 v-if="checkVisibility('Materiales')"
                                 class="border-b  border-gray-200 px-5 py-5 text-sm">
                                 <div class="flex items-center justify-center">
-                                    <button v-if="item?.cicsa_materials?.cicsa_material_items?.length > 0" type="button"
-                                        @click="openMaterialsModal(item?.cicsa_materials?.cicsa_material_items, 'Materiales Recibidos')"
+                                    <button v-if="item?.total_materials?.length > 0" type="button"
+                                        @click="openMaterialsModal(item?.total_materials, 'Materiales Recibidos')"
                                         class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
                             </td>
-                            <td :class="stateClass(item?.cicsa_materials?.user_name)"
+                            <td :class="stateClass(item?.cicsa_materials?.some(item=>item?.user_name))"
                                 v-if="checkVisibility('Materiales')"
                                 class="border-b  border-r-2 border-gray-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_materials?.user_name }}
+                                <p class="w-[200px] text-gray-900 text-center">
+                                    {{ item?.cicsa_materials
+                                    ?.filter(item => item?.user_name !== null)
+                                    .map(item => item.user_name)
+                                    .join(', ') }}
                                 </p>
                             </td>
 
@@ -730,7 +739,7 @@
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ material_title }}
+                    Materiales en Recibidos
                 </h2>
                 <br>
                 <div class="mt-2">
@@ -739,6 +748,9 @@
                             <thead>
                                 <tr
                                     class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        N° Guía
+                                    </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Material
                                     </th>
@@ -752,6 +764,9 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.guide_number }}
+                                    </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.name }}
                                     </td>
