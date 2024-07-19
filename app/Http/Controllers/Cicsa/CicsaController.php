@@ -55,7 +55,7 @@ class CicsaController extends Controller
 
     public function indexAssignation()
     {
-        $assignation = CicsaAssignation::orderBy('assignation_date', 'desc')->paginate();
+        $assignation = CicsaAssignation::paginate(20);
         return Inertia::render('Cicsa/CicsaAssignation', [
             'assignation' => $assignation
         ]);
@@ -75,7 +75,7 @@ class CicsaController extends Controller
         $feasibility = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_feasibility.cicsa_feasibility_materials')
             ->orderBy('assignation_date', 'desc')
-            ->paginate();
+            ->paginate(20);
         return Inertia::render('Cicsa/CicsaFeasibility', [
             'feasibility' => $feasibility
         ]);
@@ -103,7 +103,7 @@ class CicsaController extends Controller
         $material = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items')
             ->orderBy('assignation_date', 'desc')
-            ->paginate();
+            ->paginate(20);
         return Inertia::render('Cicsa/CicsaMaterial', [
             'materials' => $material
         ]);
@@ -147,10 +147,9 @@ class CicsaController extends Controller
             if ($request->hasFile('document')) {
                 $import = new CicsaMaterialImport();
                 Excel::import($import, $request->file('document'));
-                // $data = $import->getData();
+                $data = $import->getData();
                 return response()->json(
-                    // $data->toArray()
-                    []
+                    $data->toArray()
                 );
             } else {
                 return response()->json([
@@ -170,7 +169,7 @@ class CicsaController extends Controller
         $purchase_order = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_purchase_order')
             ->orderBy('assignation_date', 'desc')
-            ->paginate();
+            ->paginate(20);
         return Inertia::render('Cicsa/CicsaPurchaseOrder', [
             'purchaseOrder' => $purchase_order
         ]);
@@ -194,7 +193,7 @@ class CicsaController extends Controller
                 'cicsa_installation.user'
             )
             ->orderBy('assignation_date', 'desc')
-            ->paginate();
+            ->paginate(20);
         return Inertia::render('Cicsa/CicsaInstallation', [
             'installations' => $installations
         ]);
@@ -226,7 +225,7 @@ class CicsaController extends Controller
         $purchase_validations = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_purchase_order_validation')
             ->orderBy('assignation_date', 'desc')
-            ->paginate(10);
+            ->paginate(20);
         return Inertia::render('Cicsa/CicsaPurchaseOrderValidation', [
             'purchase_validations' => $purchase_validations,
         ]);
@@ -278,7 +277,7 @@ class CicsaController extends Controller
         $service_orders = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_service_order')
             ->orderBy('assignation_date', 'desc')
-            ->paginate(10);
+            ->paginate(20);
         return Inertia::render('Cicsa/CicsaServiceOrder', [
             'service_orders' => $service_orders,
         ]);
@@ -328,7 +327,7 @@ class CicsaController extends Controller
         $charge_areas = CicsaAssignation::select('id', 'project_name')
             ->with('cicsa_charge_area')
             ->orderBy('assignation_date', 'desc')
-            ->paginate(10);
+            ->paginate(20);
         return Inertia::render('Cicsa/CicsaChargeArea', [
             'charge_areas' => $charge_areas,
         ]);
