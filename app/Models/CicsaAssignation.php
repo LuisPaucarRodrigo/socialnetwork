@@ -270,7 +270,6 @@ class CicsaAssignation extends Model
             $list = $guide->cicsa_material_items;
             foreach($list as $item){
                 $name = $item->name;
-                Log::info($name);
                 $key = array_search($name, array_column($total_materials, 'name'));
                 if($key !== false){
                     $newQuantity = $total_materials[$key]["quantity"] + $item->quantity;
