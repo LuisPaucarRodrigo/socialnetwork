@@ -291,7 +291,20 @@
                         <InputLabel for="unit">Unidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="text" v-model="material_item.unit" id="unit" />
+                            <select id="unit" v-model="material_item.unit" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccionar Unidad</option>
+                                <option>Unidad</option>
+                                <option>Metros</option>
+                                <option>Caja</option>
+                                <option>Global</option>
+                                <option>Matros 2</option>
+                                <option>Metros 3</option>
+                                <option>Pieza</option>
+                                <option>Lata</option>
+                                <option>Paquete</option>
+                                <option>Rollo</option>
+                            </select>
                         </div>
                     </div>
                     <div class="sm:col-span-1">
@@ -372,7 +385,7 @@
                                 <InputError :message="formImport.errors.document" />
                             </div>
                         </div>
-                        <div class="flex items-center justify-end gap-x-4 sm:gap-x-6 lg:gap-x-8">
+                        <div class="flex items-center justify-end gap-x-4 sm:gap-x-3 lg:gap-x-3">
                             <SecondaryButton @click="modalImportMaterial">Cancelar</SecondaryButton>
                             <PrimaryButton type="submit" :class="{ 'opacity-25': formImport.processing }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -568,7 +581,7 @@ function modalImportMaterial() {
 }
 
 function submitImportExcel() {
-    console.log(formImport)
+
     axios.post(route('material.import'), formImport, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -576,13 +589,20 @@ function submitImportExcel() {
     })
         .then(response => {
             if (response.status === 200) {
-                console.log(response.data)
-            } else {
-                throw new Error('Fallo en el servidor con status ' + response.status)
+                console.log(response);
+                // console.log(form.cicsa_material_items);
+                // form.cicsa_material_items = response.data;
+                // console.log(form.cicsa_material_items);
+                modalImportMaterial();
             }
         })
         .catch(error => {
-            console.error('Error in server:', error);
-        })
+            if (error.response.status === 400) {
+                formImport.errors.document = error.response.data.errorMessage
+            } else {
+                console.error('Error en el server:', error.message);
+            }
+
+        });
 }
 </script>

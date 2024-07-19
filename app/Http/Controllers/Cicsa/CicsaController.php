@@ -12,6 +12,7 @@ use App\Models\CicsaMaterialsItem;
 use Illuminate\Http\Request;
 use App\Http\Requests\Cicsa\StoreOrUpdateMaterialRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdatePurchaseOrderRequest;
+use App\Imports\CicsaMaterialImport;
 use App\Models\CicsaAssignation;
 use App\Models\CicsaChargeArea;
 use App\Models\CicsaFeasibility;
@@ -141,31 +142,27 @@ class CicsaController extends Controller
     }
 
     public function importMaterial(Request $request)
-    {
-
-        if ($request->hasFile('document')) {
-            $file = $request->file('document');
-
-            $spreadsheet = IOFactory::load($file);
-
-            // $data = Excel::toArray(new HeadingRowImport, $file);
-            // $processedData = [];
-            // foreach ($data[0] as $row) {
-            //     $processedData[] = [
-            //         'nombre' => $row['Nombre'],
-            //         'unidad' => $row['Unidad'],
-            //         'cantidad' => $row['Cantidad'],
-            //     ];
-            // }
-
+    {   
+        try {
+            if ($request->hasFile('document')) {
+                $import = new CicsaMaterialImport();
+                Excel::import($import, $request->file('document'));
+                // $data = $import->getData();
+                return response()->json(
+                    // $data->toArray()
+                    []
+                );
+            } else {
+                return response()->json([
+                    'errorMessage' => 'Ingrese un archivo Excel'
+                ], 400);
+            }
+            
+        } catch (\Exception $e) {
             return response()->json([
-                'data' => $spreadsheet,
-            ]);
+                'errorMessage' => 'Error durante la Importacion: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'message' => 'No file uploaded'
-        ], 400);
     }
 
     public function indexPurchaseOrder()
