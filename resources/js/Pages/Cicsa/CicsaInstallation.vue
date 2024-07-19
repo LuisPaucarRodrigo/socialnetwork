@@ -298,7 +298,7 @@
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Recibidos
+                    Total Materiales Recibidos
                 </h2>
                 <br>
                 <div class="mt-2">
