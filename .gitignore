@@ -19,6 +19,7 @@
 /public/uploads/huawei
 /storage/*.key
 /storage/app/Projects/
+/storage/app/LocalDrive/
 /vendor
 .env
 .env.backup
