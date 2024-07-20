@@ -298,7 +298,7 @@
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Recibidos
+                    Total Materiales Recibidos
                 </h2>
                 <br>
                 <div class="mt-2">
@@ -307,6 +307,9 @@
                             <thead>
                                 <tr
                                     class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        N° Guía
+                                    </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Material
                                     </th>
@@ -320,6 +323,9 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.guide_number }}
+                                    </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.name }}
                                     </td>

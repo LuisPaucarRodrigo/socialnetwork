@@ -151,12 +151,13 @@ class CicsaAssignation extends Model
         ) {
             return 'Completado';
         }
-        if ($this->checkPSP()) {
+
+        if ($this->checkPSP() || $this->checkAssignation()) {
             return 'En Proceso';
         }
         if (!$this->checkAssignation()) {
             return 'Pendiente';
-        }  
+        }
     }
 
 
@@ -246,10 +247,10 @@ class CicsaAssignation extends Model
 
     public function getCicsaChargeStatusAttribute () {
         if (
-            $this->checkPurchaseOrder()
-            && $this->checkValidationOrder()
-            && $this->checkServiceOrder()
-            && $this->checkCicsaChargeArea()
+            $this->checkCicsaChargeArea()
+            // && $this->checkValidationOrder()
+            // && $this->checkServiceOrder()
+            // && $this->checkPurchaseOrder()
         ) {
             return 'Completado';
         }
@@ -269,15 +270,17 @@ class CicsaAssignation extends Model
             $list = $guide->cicsa_material_items;
             foreach($list as $item){
                 $name = $item->name;
-                Log::info($name);
                 $key = array_search($name, array_column($total_materials, 'name'));
                 if($key !== false){
                     $newQuantity = $total_materials[$key]["quantity"] + $item->quantity;
+                    $newGuideNumber = $total_materials[$key]["guide_number"].', '.$guide->guide_number;
                     $total_materials[$key]["quantity"] = $newQuantity;
+                    $total_materials[$key]["guide_number"] = $newGuideNumber;
                 } else {
                     array_push($total_materials,[
                         'name'=> $item->name,
                         'unit'=> $item->unit,
+                        'guide_number' => $guide->guide_number,
                         'quantity'=> $item->quantity,
                     ]);
                 }
