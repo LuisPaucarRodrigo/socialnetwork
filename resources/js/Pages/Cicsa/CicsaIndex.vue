@@ -41,7 +41,6 @@
                             <th v-if="!checkVisibility('Asignación')"
                                 class="bg-gray-700 sticky left-0 z-50 border-b-2 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
                                 colspan="3">
-
                             </th>
                             <th v-if="checkVisibility('Asignación')"
                                 class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
