@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted, defineExpose } from 'vue';
 import { BarsArrowDownIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
@@ -50,7 +50,6 @@ const props = defineProps({
     }
 });
 
-
 const emit = defineEmits(['update:modelValue']);
 
 const showPopup = ref(false);
@@ -65,9 +64,9 @@ const togglePopup = () => {
 };
 
 const closePopup = (event) => {
-  if (popup.value && !popup.value.contains(event.target)) {
-    showPopup.value = false;
-  }
+    if (popup.value && !popup.value.contains(event.target)) {
+        showPopup.value = false;
+    }
 };
 
 const toggleAll = () => {
@@ -76,15 +75,18 @@ const toggleAll = () => {
     } else {
         selectedOptions.value = [];
     }
+    emit('update:modelValue', selectedOptions.value);
+};
+
+const checkAll = () => {
+    selectedOptions.value = [...props.options];
+    selectAll.value = true;
+    emit('update:modelValue', selectedOptions.value);
 };
 
 watch(selectedOptions, (newSelectedOptions) => {
     emit('update:modelValue', newSelectedOptions);
-    if (newSelectedOptions.length === props.options.length) {
-        selectAll.value = true;
-    } else {
-        selectAll.value = false;
-    }
+    selectAll.value = newSelectedOptions.length === props.options.length;
 });
 
 onMounted(() => {
@@ -94,6 +96,9 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('click', closePopup);
 });
+
+// Expose the `checkAll` function to the parent component
+defineExpose({ checkAll });
 </script>
 
 <style scoped>

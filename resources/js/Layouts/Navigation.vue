@@ -529,6 +529,7 @@ Usuarios
                         <Link class="w-full" :href="route('documment.management.folders')">CCIP</Link>
                     </div>
                 </MyTransition>
+                
                 <template v-if="showArchivesAlarms">
                     <div class="mb-4">
                         <MyTransition v-for="item in archiveAlarms" :key="item.id" class="ml-4"
@@ -563,6 +564,11 @@ Usuarios
                         </MyTransition>
                     </div>
                 </template>
+                <MyTransition :transitiondemonstration="showDocs">
+                    <div class="relative">
+                        <Link class="w-full" :href="route('local.drive.index', {root: 1})">Local Drive</Link>
+                    </div>
+                </MyTransition>
                 <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="route('documment.management.folders.validation')">Aprobación</Link>
                 </MyTransition>

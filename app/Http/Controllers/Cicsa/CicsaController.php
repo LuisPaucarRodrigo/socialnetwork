@@ -47,6 +47,36 @@ class CicsaController extends Controller
         ]);
     }
 
+
+    public function search(Request $request){
+        $projectsCicsa =  CicsaAssignation::orderBy('assignation_date', 'desc')
+        ->with(
+            'cicsa_feasibility.cicsa_feasibility_materials',
+            'cicsa_materials.cicsa_material_items',
+            'cicsa_installation.cicsa_installation_materials',
+            'cicsa_purchase_order',
+            'cicsa_purchase_order_validation',
+            'cicsa_service_order',
+            'cicsa_charge_area'
+        )
+        ->get();
+        if (count($request->project_status) < 3) {
+            $selectedPS = $request->project_status;
+            $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS){
+                return in_array($item->cicsa_project_status, $selectedPS);
+            });
+        }
+        if (count($request->charge_status) < 3) {
+            $selectedPS = $request->charge_status;
+            $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS){
+                return in_array($item->cicsa_charge_status, $selectedPS);
+            });
+        }
+        return response()->json($projectsCicsa->values()->all(), 200);
+    }
+
+
+
     public function destroy($ca_id)
     {
         CicsaAssignation::findOrFail($ca_id)->delete();
