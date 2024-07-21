@@ -34,8 +34,8 @@
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
             <br>
-            <div class="overflow-x-auto h-[65vh]">
-                <table class="w-full">
+            <div ref="container" class="overflow-x-auto h-[65vh]">
+                <table  ref="table" class="w-full">
                     <thead class="sticky top-0 z-40 ">
                         <tr class=" text-xs font-semibold uppercase tracking-wide text-white">
                             <th v-if="!checkVisibility('Asignación')"
@@ -105,14 +105,22 @@
                             </th>
                             <th
                                 :class="['w-[250px] border-b-2 sticky left-0 z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : '']">
-                                Nombre del Proyecto
+                                <div class="flex justify-center">
+                                    <p class="w-[180px]">
+                                        Nombre del Proyecto
+                                    </p>
+                                </div>
                             </th>
                             <th
-                                :class="[` border-b-2 sticky left-[108px] z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600`, checkVisibility('Asignación') ? '' : '']">
-                                Código del Proyecto
+                            :class="[` border-b-2 sticky left-[220px] z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600`, checkVisibility('Asignación') ? '' : '']">
+                                <div class="flex justify-center">
+                                    <p class="w-[120px]">
+                                            Código del Proyecto
+                                    </p>
+                                </div>
                             </th>
                             <th
-                                :class="['border-b-2 sticky left-[216px] z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : 'border-r-2']">
+                                :class="['border-b-2 sticky left-[380px] z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : 'border-r-2']">
                                 CPE
                             </th>
                             <th v-if="checkVisibility('Asignación')"
@@ -338,14 +346,18 @@
                                 <p class="text-gray-900 text-center">{{ formattedDate(item.assignation_date) }}</p>
                             </td>
                             <td class="border-b sticky left-0 z-30 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
-                                <p class="text-gray-900 text-center">{{ item.project_name }}</p>
+                                <div class="flex justify-center">
+                                    <p class="w-[180px] break-words text-pretty text-gray-900 text-center">{{ item.project_name }}</p>
+                                </div>
                             </td>
                             <td
-                                class="sticky left-[108px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item.project_code }}</p>
+                                class="sticky left-[220px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
+                                <div class="flex justify-center">
+                                    <p class="w-[120px] text-gray-900 text-center">{{ item.project_code }}</p>
+                                </div>
                             </td>
                             <td
-                                class="sticky left-[216px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
+                                class="sticky left-[380px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item.cpe }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.customer)"
@@ -893,7 +905,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { ref, onMounted, watch } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
@@ -973,6 +985,10 @@ const selectedOptions = ref([
 function checkVisibility(option) {
     return selectedOptions.value.includes(option);
 }
+watch(selectedOptions, async () => {
+  await nextTick();
+  checkOverflow();
+})
 
 
 //Cells background
@@ -1020,6 +1036,7 @@ watch(() => [
 ], () => {
     search_advance(filterForm.value)
     filterMode.value = true
+    checkOverflow()
 },
 { deep: true }
 )
@@ -1036,7 +1053,18 @@ function getAllData() {
     childRef.value.checkAll();
     childRef2.value.checkAll();
     search_advance(filterForm.value)
+    checkOverflow()
 }
+
+const container = ref(null);
+const table = ref(null);
+
+const checkOverflow = () => {
+  if (container.value && table.value) {
+    const isOverflowing = table.value.scrollWidth > container.value.clientWidth;
+    console.log(`La tabla está ${isOverflowing ? 'en' : 'sin'} overflow en el eje X.`);
+  }
+};
 
 
 </script>
