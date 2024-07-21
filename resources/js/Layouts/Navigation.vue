@@ -353,6 +353,9 @@ Usuarios
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="'#'">BackLog</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">
                         <button @click="toggleMembersCicsa">
                             <span v-if="cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length > 0"
@@ -398,6 +401,7 @@ Usuarios
                     </div>
                 </template>
             </template>
+            
 
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
