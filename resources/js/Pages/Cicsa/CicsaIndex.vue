@@ -30,7 +30,13 @@
                         <ArrowPathIcon class="h-5 w-5 " />
                     </button>
                 </div>
-                <SelectCicsaComponent currentSelect="Proceso" />
+                <div class="flex space-x-4">
+                    
+                        <TextInput type="text" v-model="filterForm.search" placeholder="Nombre,Cliente,Codigo" />
+                        
+                       
+                    <SelectCicsaComponent currentSelect="Proceso" />
+                </div>
             </div>
             <br>
             <div class="overflow-x-auto h-[65vh]">
@@ -914,6 +920,7 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import FilterProcess from '@/Components/FilterProcess.vue'
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue'
 import { ArrowPathIcon, ServerIcon } from '@heroicons/vue/24/outline';
+import TextInput from '@/Components/TextInput.vue'
 
 const { auth, projects } = defineProps({
     auth: Object,
@@ -1030,27 +1037,33 @@ const initSearch = {
     project_status: [...stats],
     charge_status: [...stats],
     assignation_date: '',
-    project_deadline: ''
+    project_deadline: '',
+    search: '',
 }
 const filterForm = ref({ ...initSearch })
+
 watch(() => [
     filterForm.value.project_status,
     filterForm.value.charge_status,
     filterForm.value.assignation_date,
     filterForm.value.project_deadline,
-], async () => {
-    await nextTick();
+    filterForm.value.search,
+],  () => {
     search_advance(filterForm.value)
     filterMode.value = true
-    establishStickyStyles()
 },
     { deep: true }
 )
 
+
+watch(dataToRender,async () => {
+    await nextTick();
+    establishStickyStyles()
+})
+
 async function search_advance($data) {
     let res = await axios.post(route('cicsa.advance.search'), $data)
     dataToRender.value = res.data
-    establishStickyStyles()
 }
 
 const childRef = ref(null);
@@ -1060,11 +1073,9 @@ function getAllData() {
     childRef.value.checkAll();
     childRef2.value.checkAll();
     search_advance(filterForm.value)
-    establishStickyStyles()
 }
 
-
-
+  
 const thProjectName = ref(null);
 const thProjectCode = ref(null);
 const getThWidth = (thElement) => {
@@ -1097,6 +1108,7 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
 });
+
 
 
 </script>
