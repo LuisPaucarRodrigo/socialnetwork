@@ -8,7 +8,10 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
+                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
+                </div>
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
@@ -38,7 +41,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in feasibility.data" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in feasibilitys.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -77,7 +80,7 @@
             </div>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="feasibility.links" />
+                <pagination :links="feasibilitys.links" />
             </div>
         </div>
 
@@ -219,7 +222,8 @@
                         <InputLabel for="quantity">Cantidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity" min="0" />
+                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity"
+                                min="0" />
                         </div>
                     </div>
                 </div>
@@ -258,6 +262,8 @@ const { feasibility, auth } = defineProps({
     feasibility: Object,
     auth: Object
 })
+
+const feasibilitys = ref(feasibility)
 
 const initialState = {
     user_id: auth.user.id,
@@ -352,4 +358,13 @@ function modifyQuantity(id, event) {
         return item;
     });
 }
+
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('feasibilities.index'), { searchQuery: $search });
+        feasibilitys.value = response.data.feasibility;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>
