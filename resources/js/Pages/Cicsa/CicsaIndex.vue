@@ -12,15 +12,15 @@
             <div class="flex justify-between">
                 <div class="flex space-x-4">
                     <FilterProcess :options="[
-                        'Asignación',
-                        'Factibilidad PINT y PEXT',
-                        'Materiales',
-                        'Instalación PINT y PEXT',
-                        'Orden de Compra',
-                        'Validación de OC',
-                        'Orden de Servicio',
-                        'Cobranza'
-                    ]" v-model="selectedOptions" :width="'w-[230px]'" />
+        'Asignación',
+        'Factibilidad PINT y PEXT',
+        'Materiales',
+        'Instalación PINT y PEXT',
+        'Orden de Compra',
+        'Validación de OC',
+        'Orden de Servicio',
+        'Cobranza'
+    ]" v-model="selectedOptions" :width="'w-[230px]'" />
                     <button @click="getAllData()"
                         class="p-2 bg-white ring-1 ring-slate-400 rounded-md text-slate-900 hover:text-slate-400">
                         <ServerIcon class="h-5 w-5  font-bold" />
@@ -104,16 +104,23 @@
                                          v-model="filterForm.assignation_date" />
                                 </div>
                             </th>
-                            <th
-                                :class="['w-[250px] border-b-2 sticky left-0 z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : '']">
-                                Nombre del Proyecto
+                            <th ref="thProjectName"
+                                :class="['border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', `sticky left-0 z-30`]">
+                                <div class="flex justify-center sm:w-full w-[70px]">
+                                    <p class="">
+                                        Nombre del Proyecto
+                                    </p>
+                                </div>
                             </th>
-                            <th
-                                :class="[` border-b-2 sticky left-[108px] z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600`, checkVisibility('Asignación') ? '' : '']">
-                                Código del Proyecto
+                            <th ref="thProjectCode" :style="thStickyStyle.pc_sticky" :class="[`border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600`]">
+                                <div class="flex justify-center">
+                                    <p class="">
+                                        Código del Proyecto
+                                    </p>
+                                </div>
                             </th>
-                            <th
-                                :class="['border-b-2 sticky left-[216px] z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : 'border-r-2']">
+                            <th :style="thStickyStyle.pcpe_sticky"
+                                :class="['border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : 'border-r-2']">
                                 CPE
                             </th>
                             <th v-if="checkVisibility('Asignación')"
@@ -337,15 +344,20 @@
                                 class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item.assignation_date) }}</p>
                             </td>
-                            <td class="border-b sticky left-0 z-30 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
-                                <p class="text-gray-900 text-center">{{ item.project_name }}</p>
+                            <td class="border-b border-gray-200 bg-amber-200 px-5 py-5 text-sm sticky left-0 z-30">
+                                <div class="flex justify-center ">
+                                    <p class="sm:w-full w-[70px] break-words text-gray-900 text-center">{{ item.project_name }}
+                                    </p>
+                                </div>
                             </td>
-                            <td
-                                class="sticky left-[108px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
-                                <p class="text-gray-900 text-center">{{ item.project_code }}</p>
+                            <td :style="thStickyStyle.pc_sticky"
+                                class="sticky border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
+                                <div class="flex justify-center">
+                                    <p class="text-gray-900 text-center">{{ item.project_code }}</p>
+                                </div>
                             </td>
-                            <td
-                                class="sticky left-[216px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
+                            <td :style="thStickyStyle.pcpe_sticky"
+                                class="border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item.cpe }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.customer)"
@@ -894,7 +906,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { ref, onMounted, watch } from 'vue';
+import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
@@ -974,6 +986,10 @@ const selectedOptions = ref([
 function checkVisibility(option) {
     return selectedOptions.value.includes(option);
 }
+watch(selectedOptions, async () => {
+    await nextTick();
+    establishStickyStyles();
+})
 
 
 //Cells background
@@ -1022,9 +1038,11 @@ watch(() => [
     filterForm.value.charge_status,
     filterForm.value.assignation_date,
     filterForm.value.project_deadline,
-], () => {
+], async () => {
+    await nextTick();
     search_advance(filterForm.value)
     filterMode.value = true
+    establishStickyStyles()
 },
     { deep: true }
 )
@@ -1032,6 +1050,7 @@ watch(() => [
 async function search_advance($data) {
     let res = await axios.post(route('cicsa.advance.search'), $data)
     dataToRender.value = res.data
+    establishStickyStyles()
 }
 
 const childRef = ref(null);
@@ -1041,7 +1060,43 @@ function getAllData() {
     childRef.value.checkAll();
     childRef2.value.checkAll();
     search_advance(filterForm.value)
+    establishStickyStyles()
 }
+
+
+
+const thProjectName = ref(null);
+const thProjectCode = ref(null);
+const getThWidth = (thElement) => {
+    return thElement ? Math.floor(thElement.getBoundingClientRect().width) : 0;
+};
+const establishStickyStyles = () => {
+    thStickyStyle.value = window.innerWidth >= 768 ? // > sm
+        {
+            pc_sticky:{ left: getThWidth(thProjectName.value) + 'px', position: 'sticky', zIndex: 30 },
+            pcpe_sticky: { left: (getThWidth(thProjectName.value) + getThWidth(thProjectCode.value)) + 'px', position: 'sticky', zIndex: 30 }
+        } : 
+        {
+            pc_sticky: {},
+            pcpe_sticky: {}
+        }
+};
+const thStickyStyle = ref({
+    pc_sticky: {},
+    pcpe_sticky: {}
+})
+const handleResize = () => {
+    establishStickyStyles();
+};
+onMounted(async () => {
+    await nextTick();
+    establishStickyStyles();
+    window.addEventListener('resize', handleResize);
+
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
 
 
 </script>

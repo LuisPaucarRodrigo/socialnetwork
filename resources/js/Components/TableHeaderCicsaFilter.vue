@@ -6,7 +6,7 @@
                 <BarsArrowDownIcon class="h-5 w-5" />
             </button>
             <div v-if="showPopup"
-                :class="['absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 rounded shadow-lg', widthClass]">
+                :class="['absolute z-20 top-8 right-0 mt-0 bg-white border border-gray-300 rounded shadow-lg', widthClass]">
                 <div class="">
                     <label class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
                         <input type="checkbox" v-model="selectAll" @change="toggleAll" class="mr-2" /> Todos
@@ -19,6 +19,15 @@
                                 {{ option }}
                             </p>
                         </label>
+                        <div class='max-h-48 overflow-y-auto'>
+                            <label v-for="option in options" :key="option"
+                                class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
+                                <input type="checkbox" :value="option" v-model="selectedOptions" class="mr-2" />
+                                <p>
+                                    {{ option }}
+                                </p>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -126,6 +135,6 @@ defineExpose({ checkAll });
 const handleInput = (event) => {
     console.log(event.target.value)
     emit('update:modelValue', event.target.value);
-  };
+};
 
 </script>
