@@ -1029,18 +1029,19 @@ const filterForm = ref({ ...initSearch })
 watch(() => [
     filterForm.value.project_status,
     filterForm.value.charge_status,
-], async () => {
-    await nextTick();
-    search_advance(filterForm.value)
-    filterMode.value = true
-    establishStickyStyles()
-},
+    ], async () => {
+        await nextTick();
+        search_advance(filterForm.value)
+        filterMode.value = true
+        
+    },
     { deep: true }
 )
 
 async function search_advance($data) {
     let res = await axios.post(route('cicsa.advance.search'), $data)
     dataToRender.value = res.data
+    establishStickyStyles()
 }
 
 const childRef = ref(null);
@@ -1057,12 +1058,9 @@ function getAllData() {
 
 const thProjectName = ref(null);
 const thProjectCode = ref(null);
-
-
 const getThWidth = (thElement) => {
     return thElement ? Math.floor(thElement.getBoundingClientRect().width) : 0;
 };
-
 const establishStickyStyles = () => {
     thStickyStyle.value = window.innerWidth >= 768 ? // > sm
         {
@@ -1074,24 +1072,19 @@ const establishStickyStyles = () => {
             pcpe_sticky: {}
         }
 };
-
 const thStickyStyle = ref({
     pc_sticky: {},
     pcpe_sticky: {}
 })
-
 const handleResize = () => {
     establishStickyStyles();
 };
-
-
 onMounted(async () => {
     await nextTick();
     establishStickyStyles();
     window.addEventListener('resize', handleResize);
 
 });
-
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
 });
