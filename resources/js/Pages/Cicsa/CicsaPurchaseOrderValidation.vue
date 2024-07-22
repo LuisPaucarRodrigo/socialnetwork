@@ -8,14 +8,17 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Validación de OC" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
+                    <SelectCicsaComponent currentSelect="Validación de OC" />
+                </div>
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
@@ -138,7 +141,7 @@
                             <InputLabel for="validation_date">Fecha de Validación</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.validation_date" autocomplete="off"
-                                    id="validation_date"/>
+                                    id="validation_date" />
                                 <InputError :message="form.errors.validation_date" />
                             </div>
                         </div>
@@ -256,10 +259,12 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
-const { purchase_validations, auth } = defineProps({
-    purchase_validations: Object,
+const { purchase_validation, auth } = defineProps({
+    purchase_validation: Object,
     auth: Object
 })
+
+const purchase_validations = ref(purchase_validation)
 
 const initialState = {
     id: null,
@@ -298,7 +303,7 @@ function openEditFeasibilityModal(cicsa_assignation_id, item) {
 }
 
 function submit() {
-    let url = form.id ? route('cicsa.purchase_orders.validation.update', {cicsa_validation_id: form.id}) : route('cicsa.purchase_orders.validation.store', { cicsa_assignation_id: form.cicsa_assignation_id });
+    let url = form.id ? route('cicsa.purchase_orders.validation.update', { cicsa_validation_id: form.id }) : route('cicsa.purchase_orders.validation.store', { cicsa_assignation_id: form.cicsa_assignation_id });
     form.post(url, {
         onSuccess: () => {
             closeAddAssignationModal()
@@ -313,4 +318,12 @@ function submit() {
     })
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('cicsa.purchase_orders.validation'), { searchQuery: $search });
+        purchase_validations.value = response.data.purchase_validation;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

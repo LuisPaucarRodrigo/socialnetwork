@@ -8,14 +8,17 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
+                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
+                </div>
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
@@ -30,7 +33,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre Usuario
+                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -38,7 +41,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in feasibility.data" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in feasibilitys.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -77,7 +80,7 @@
             </div>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="feasibility.links" />
+                <pagination :links="feasibilitys.links" />
             </div>
         </div>
 
@@ -109,10 +112,12 @@
                                 <InputError :message="form.errors.report" />
                             </div>
                         </div>
+
                         <div class="sm:col-span-1">
+                            <br>
                             <div class="flex gap-2 items-center">
                                 <h2 class="text-base font-bold leading-6 text-gray-900 ">
-                                    Añadir Feasibilityes
+                                    Añadir Materiales
                                 </h2>
                                 <button @click="modalFeasibility" type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -122,6 +127,7 @@
                                     </svg>
                                 </button>
                             </div>
+                            <br>
                         </div>
                         <div class="sm:col-span-2">
                             <table class="w-full whitespace-no-wrap">
@@ -148,28 +154,29 @@
                                 <tbody>
                                     <tr v-for="item in form.cicsa_feasibility_materials" :key="item.id"
                                         class="text-gray-700">
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.unit }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 text-center">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <TextInput class="text-center" type="number" min="0"
+                                                @change="modifyQuantity(item.id, $event)" :value="item.quantity" />
+                                            <!-- <p class="text-gray-900 text-center">
                                                 {{ item.quantity }}
-                                            </p>
+                                            </p> -->
                                         </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <button v-if="!item.id" type="button" @click="delete_material(item.name)"
                                                 class="text-blue-900 whitespace-no-wrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
-                                                    class="w-6 h-6 text-red-500">
+                                                    class="w-4 h-4 text-red-500">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                 </svg>
@@ -183,7 +190,6 @@
                     <br>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeAddFeasibilityModal"> Cancelar </SecondaryButton>
-
                         <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
                             Guardar
@@ -216,7 +222,8 @@
                         <InputLabel for="quantity">Cantidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity" />
+                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity"
+                                min="0" />
                         </div>
                     </div>
                 </div>
@@ -255,6 +262,8 @@ const { feasibility, auth } = defineProps({
     feasibility: Object,
     auth: Object
 })
+
+const feasibilitys = ref(feasibility)
 
 const initialState = {
     user_id: auth.user.id,
@@ -340,4 +349,22 @@ function delete_material(materialName) {
         console.error(`No se encontró ningún material con el nombre '${materialName}'.`);
     }
 }
+
+function modifyQuantity(id, event) {
+    form.cicsa_feasibility_materials = form.cicsa_feasibility_materials.map(item => {
+        if (item.id === id) {
+            return { ...item, quantity: event.target.value };
+        }
+        return item;
+    });
+}
+
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('feasibilities.index'), { searchQuery: $search });
+        feasibilitys.value = response.data.feasibility;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

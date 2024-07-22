@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('cicsa_materials', function (Blueprint $table) {
             $table->id();
-            $table->date('pick_date');
-            $table->string('guide_number');
-            $table->text('received_materials');
+            $table->date('pick_date')->nullable();
+            $table->string('guide_number')->nullable();
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('cicsa_assignation_id')->constrained('cicsa_assignations')->onDelete('cascade');

@@ -14,7 +14,6 @@ class CicsaMaterial extends Model
     protected $fillable = [
         'pick_date',
         'guide_number',
-        'received_materials',
         'user_name',
         'user_id',
         'cicsa_assignation_id'
@@ -28,6 +27,10 @@ class CicsaMaterial extends Model
     public function cicsa_assignation ()
     {
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
+    }
+    public function cicsa_material_items ()
+    {
+        return $this->hasMany(CicsaMaterialsItem::class, 'cicsa_material_id');
     }
 }
 

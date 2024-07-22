@@ -245,7 +245,6 @@ const closeModal = () => {
 
 
 const search = async ($search) => {
-    //to avoid bug
     if ($search === '') {
         router.visit(route('preprojects.index', {
             preprojects_status: JSON.parse(props.preprojects_status)

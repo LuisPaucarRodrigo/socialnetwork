@@ -22,8 +22,8 @@ class StoreOrUpdatePurchaseOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'oc_date' => 'required|date',
-            'oc_number' => 'required|string',
+            'oc_date' => 'nullable|date',
+            'oc_number' => 'nullable|string',
             'master_format' => 'required|string',
             'item3456' => 'required|string',
             'budget' => 'required|string',

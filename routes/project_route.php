@@ -7,6 +7,7 @@ use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
+use App\Http\Controllers\ProjectArea\ProjectDocumentController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ProjectArea\ProjectPintController;
 use App\Http\Controllers\ProjectArea\StaticCostsController;
@@ -130,6 +131,12 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
 
 
+
+    Route::get('/project-document-gestion', [ProjectDocumentController::class, 'project_doc_index'])->name('project.document.index');
+    Route::post('/project-document-gestion/store/{path?}', [ProjectDocumentController::class, 'project_doc_store'])->name('project.document.store');
+    Route::post('/project-document-gestion/folder_archive_delete', [ProjectDocumentController::class, 'project_doc_delete'])->name('project.folder.delete');
+    Route::get('/project-document-gestion/folder_archive_dowload', [ProjectDocumentController::class, 'project_doc_download'])->name('project.folder.download');
+
     
 });
 
@@ -230,7 +237,10 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::post('/product-CPE/', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
 
 
+    //Costs Export
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
+    Route::get('/additionalcosts/excel_export/{project_id}', [AdditionalCostsController::class, 'export'])->name('additionalcost.excel.export');
+    Route::get('/staticcosts/excel_export/{project_id}', [StaticCostsController::class, 'export'])->name('staticcost.excel.export');
 
 });
 

@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\Imagespreproject;
+use App\Models\Preproject;
 use App\Models\PreprojectCode;
+use App\Models\PreReportHuaweiGeneral;
 use App\Models\Project;
 use App\Models\Projectimage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
+use function Pest\Laravel\json;
 
 class ApiController extends Controller
 {
@@ -32,9 +37,9 @@ class ApiController extends Controller
         }
     }
 
-    public function users(Request $request)
+    public function users($id)
     {
-        $user = $request->user();
+        $user = User::select('name','dni','email')->find($id);
         if ($user) {
             return response()->json($user);
         } else {
@@ -43,13 +48,14 @@ class ApiController extends Controller
     }
 
     //PreProject
-    public function preproject(Request $request)
+    public function preproject($id)
     {
-        $user = $request->user();
-        $preprojects = $user->preprojects()->where('status', null)->get();
+        $user = User::find($id);
+        $preprojects = $user->preprojects()
+            ->where('status', null)->get();
         $data = [];
         foreach ($preprojects as $preproject) {
-            if (!$preproject->preproject_code_approve){
+            if (!$preproject->preproject_code_approve) {
                 $data[] = [
                     'id' => $preproject->id,
                     'code' => $preproject->code,
@@ -59,8 +65,8 @@ class ApiController extends Controller
                 ];
             }
         }
-        
-        return response()->json($preprojects);
+
+        return response()->json($data);
     }
 
     public function preprojectcodephoto($id)
@@ -79,7 +85,7 @@ class ApiController extends Controller
     }
 
     public function codephotospecific($id)
-    {   
+    {
         $data = PreprojectCode::with('code', 'preproject')->find($id);
         $codesWith = [
             'id' => $data->id,
@@ -184,5 +190,26 @@ class ApiController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
+    }
+
+    public function indexHuaweiProjectGeneral()
+    {
+        $data = PreReportHuaweiGeneral::all();
+        return response()->json($data);
+    }
+
+    public function storeHuaweiProjectGeneral(Request $request)
+    {
+        $validateData = $request->validate([
+            'site' => 'required',
+            'elaborated' => 'required',
+            'code' => 'required',
+            'name' => 'required',
+            'address' => 'required',
+            'reference' => 'required',
+            'access' => 'required',
+        ]);
+        PreReportHuaweiGeneral::create($validateData);
+        return response()->json([], 200);
     }
 }

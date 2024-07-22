@@ -8,14 +8,17 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
+                    <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
+                </div>
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
@@ -86,20 +89,17 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
 
-                                <button v-if="item?.total_materials?.length > 0" type="button" @click="openMaterialsModal(item.total_materials)">
+                                <button v-if="item?.total_materials?.length > 0" type="button"
+                                    @click="openMaterialsModal(item.total_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
-                                <p v-else class="text-gray-900 text-center">
-                                    -
-                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"  type="button" @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
+                                <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"
+                                    type="button"
+                                    @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
-                                <p v-else class="text-gray-900 text-center">
-                                    -
-                                </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
@@ -210,13 +210,16 @@
                                             <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                                 Material
                                             </th>
-                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Recibidos
                                             </th>
-                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Usados
                                             </th>
-                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Resto
                                             </th>
                                         </tr>
@@ -231,7 +234,8 @@
                                                 {{ item?.quantity }}
                                             </td>
                                             <td class="border-b border-slate-300  px-2 py-4">
-                                                <input required type="number" min="0" v-model="form.total_materials[i]['used_quantity']"
+                                                <input required type="number" min="0"
+                                                    v-model="form.total_materials[i]['used_quantity']"
                                                     autocomplete="off" :max="item.quantity"
                                                     class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                             </td>
@@ -304,7 +308,7 @@
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Acta
+                    Total Materiales Recibidos
                 </h2>
                 <br>
                 <div class="mt-2">
@@ -313,6 +317,9 @@
                             <thead>
                                 <tr
                                     class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        N° Guía
+                                    </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Material
                                     </th>
@@ -326,6 +333,9 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.guide_number }}
+                                    </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.name }}
                                     </td>
@@ -350,7 +360,7 @@
                 </div>
             </div>
         </Modal>
-        
+
         <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
@@ -405,8 +415,8 @@
                     </div>
                 </div>
             </div>
-        </Modal> 
-        
+        </Modal>
+
 
 
         <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
@@ -432,11 +442,11 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { installations, auth } = defineProps({
-    installations: Object,
+const { installation, auth } = defineProps({
+    installation: Object,
     auth: Object
 })
-
+const installations= ref(installation)
 
 const initialState = {
     user_id: auth.user.id,
@@ -479,15 +489,14 @@ function closeAddAssignationModal() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(ca_id, item, total_materials, cicsa_installation_materials) {
+    total_materials = cicsa_installation_materials?.length > 0 ? cicsa_installation_materials
+        : total_materials.map(item => ({ ...item, used_quantity: 0 }))
     if (item) {
-        total_materials = cicsa_installation_materials
-        form.defaults({ ...item, total_materials})
-        form.reset()
+        form.defaults({ ...item, total_materials })
     } else {
-        total_materials = total_materials.map(item=>({...item, used_quantity:0}))
         form.defaults({ ...initialState, total_materials, cicsa_assignation_id: ca_id })
-        form.reset()
     }
+    form.reset()
     showAddEditModal.value = true
 }
 
@@ -550,5 +559,12 @@ function closeInstMaterialsModal() {
     showInstMaterials.value = false
 }
 
-
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('cicsa.installation.index'), { searchQuery: $search });
+        installations.value = response.data.installation;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

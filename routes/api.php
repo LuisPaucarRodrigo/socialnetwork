@@ -5,10 +5,10 @@
 
     Route::post('/login', [ApiController::class, 'login']);
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::post('/users', [ApiController::class, 'users']);
+        Route::get('/users/{id}', [ApiController::class, 'users']);
 
         //Preprojects
-        Route::get('/preproject', [ApiController::class, 'preproject']);
+        Route::get('/preproject/{id}', [ApiController::class, 'preproject']);
         Route::get('/codephotospecific/{id}', [ApiController::class, 'codephotospecific']);
         Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
         Route::get('/preproject/code/{id}', [ApiController::class, 'preprojectcodephoto']);
@@ -20,4 +20,8 @@
         Route::post('/project/store/image', [ApiController::class, 'project_store_image']);
 
         Route::post('/logout', [ApiController::class, 'logout']);
+
+        //ProjectHuawei
+        Route::get('/huaweiproject/index', [ApiController::class, 'indexHuaweiProjectGeneral']);
+        Route::post('/huaweiproject/store', [ApiController::class, 'storeHuaweiProjectGeneral']);
     });

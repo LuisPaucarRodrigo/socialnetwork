@@ -9,7 +9,7 @@ use Inertia\Inertia;
 use App\Models\Project;
 use App\Models\AdditionalCost;
 use App\Exports\AdditionalCostsExport;
-use Maatwebsite\Excel\Concerns\Excel;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 
 class AdditionalCostsController extends Controller
@@ -167,7 +167,7 @@ class AdditionalCostsController extends Controller
             unlink($path);
     }
 
-    public function export() {
-        return Excel::download(new AdditionalCostsExport, 'additionalCosts.xlsx');
+    public function export($project_id) {
+        return Excel::download(new AdditionalCostsExport($project_id), 'Gastos_Variables.xlsx');
     }
 }
