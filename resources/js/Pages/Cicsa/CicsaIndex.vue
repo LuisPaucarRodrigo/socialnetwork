@@ -33,9 +33,12 @@
                 </div>
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
+            <p class="text-right">
+                {{ JSON.stringify(sitckyWidths)  }}
+                </p>
             <br>
-            <div ref="container" class="overflow-x-auto h-[65vh]">
-                <table  ref="table" class="w-full">
+            <div class="overflow-x-auto h-[65vh]">
+                <table  class="w-full">
                     <thead class="sticky top-0 z-40 ">
                         <tr class=" text-xs font-semibold uppercase tracking-wide text-white">
                             <th v-if="!checkVisibility('Asignación')"
@@ -99,28 +102,31 @@
                             </th>
                         </tr>
                         <tr class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th v-if="checkVisibility('Asignación')"
+                            <th v-if="checkVisibility('Asignación')" 
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Asignación
                             </th>
                             <th
-                                :class="['w-[250px] border-b-2 sticky left-0 z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : '']">
+                                ref="thProjectName" :class="['border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : '', `sticky left-0 z-30`, ]">
                                 <div class="flex justify-center">
-                                    <p class="w-[180px]">
+                                    <p class="">
                                         Nombre del Proyecto
                                     </p>
                                 </div>
                             </th>
-                            <th
-                            :class="[` border-b-2 sticky left-[220px] z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600`, checkVisibility('Asignación') ? '' : '']">
+                            <th ref="thProjectCode"
+                            :style="{ left: sitckyWidths.pn_width + 'px', position: 'sticky', zIndex: 30 }"
+                            :class="[`border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600`, checkVisibility('Asignación') ? '' : ''
+                                        ]">
                                 <div class="flex justify-center">
-                                    <p class="w-[120px]">
+                                    <p class="">
                                             Código del Proyecto
                                     </p>
                                 </div>
                             </th>
                             <th
-                                :class="['border-b-2 sticky left-[380px] z-40 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : 'border-r-2']">
+                            :style="{ left: (sitckyWidths.pc_width + sitckyWidths.pn_width) + 'px', position: 'sticky', zIndex: 30 }"
+                                :class="['border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600', checkVisibility('Asignación') ? '' : 'border-r-2']">
                                 CPE
                             </th>
                             <th v-if="checkVisibility('Asignación')"
@@ -345,19 +351,19 @@
                                 class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ formattedDate(item.assignation_date) }}</p>
                             </td>
-                            <td class="border-b sticky left-0 z-30 border-gray-200 bg-amber-200 px-5 py-5 text-sm ">
+                            <td class="border-b border-gray-200 bg-amber-200 px-5 py-5 text-sm sticky left-0 z-30">
                                 <div class="flex justify-center">
-                                    <p class="w-[180px] break-words text-pretty text-gray-900 text-center">{{ item.project_name }}</p>
+                                    <p class="break-words text-pretty text-gray-900 text-center">{{ item.project_name }}</p>
                                 </div>
                             </td>
-                            <td
-                                class="sticky left-[220px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
+                            <td :style="{ left: (sitckyWidths.pn_width) + 'px', position: 'sticky', zIndex: 30 }"
+                                class="sticky border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
                                 <div class="flex justify-center">
-                                    <p class="w-[120px] text-gray-900 text-center">{{ item.project_code }}</p>
+                                    <p class="text-gray-900 text-center">{{ item.project_code }}</p>
                                 </div>
                             </td>
-                            <td
-                                class="sticky left-[380px] z-30 border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
+                            <td :style="{ left: (sitckyWidths.pc_width + sitckyWidths.pn_width) + 'px', position: 'sticky', zIndex: 30 }"
+                                class="border-b bg-amber-200 border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{ item.cpe }}</p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.customer)"
@@ -987,7 +993,7 @@ function checkVisibility(option) {
 }
 watch(selectedOptions, async () => {
   await nextTick();
-  checkOverflow();
+  establishStickyWidth();
 })
 
 
@@ -1033,10 +1039,11 @@ const filterForm = ref({...initSearch})
 watch(() => [
     filterForm.value.project_status,
     filterForm.value.charge_status,
-], () => {
+], async () => {
+    await nextTick();
     search_advance(filterForm.value)
     filterMode.value = true
-    checkOverflow()
+    establishStickyWidth()
 },
 { deep: true }
 )
@@ -1053,18 +1060,35 @@ function getAllData() {
     childRef.value.checkAll();
     childRef2.value.checkAll();
     search_advance(filterForm.value)
-    checkOverflow()
+    establishStickyWidth()
 }
 
-const container = ref(null);
-const table = ref(null);
 
-const checkOverflow = () => {
-  if (container.value && table.value) {
-    const isOverflowing = table.value.scrollWidth > container.value.clientWidth;
-    console.log(`La tabla está ${isOverflowing ? 'en' : 'sin'} overflow en el eje X.`);
-  }
+
+const thProjectName = ref(null);
+const thProjectCode = ref(null);
+const sitckyWidths = ref({
+    pn_width: 0,
+    pc_width: 0
+});
+
+const getThWidth = (thElement) => {
+  return thElement?.offsetWidth || 0;
 };
+
+const establishStickyWidth = () => {
+  sitckyWidths.value = {
+    pn_width: getThWidth(thProjectName.value),
+    pc_width: getThWidth(thProjectCode.value)
+  };
+};
+
+onMounted(async () => {
+  await nextTick(); 
+  establishStickyWidth();
+});
+
+
 
 
 </script>
