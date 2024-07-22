@@ -589,7 +589,6 @@ function submitImportExcel() {
     })
         .then(response => {
             if (response.status === 200) {
-                
                 form.cicsa_material_items = response.data;
                 modalImportMaterial();
             }
@@ -598,7 +597,7 @@ function submitImportExcel() {
             if (error.response.status === 400) {
                 formImport.errors.document = error.response.data.errorMessage
             } else {
-                console.error('Error en el server:', error.message);
+                console.error('Error en el server:', error.errorMessage);
             }
 
         });
