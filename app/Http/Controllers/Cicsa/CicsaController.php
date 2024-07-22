@@ -8,9 +8,11 @@ use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateInstallationRequest;
 use App\Models\CicsaInstallation;
 use App\Models\CicsaInstallationMaterial;
+use App\Models\CicsaMaterialsItem;
 use Illuminate\Http\Request;
 use App\Http\Requests\Cicsa\StoreOrUpdateMaterialRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdatePurchaseOrderRequest;
+use App\Imports\CicsaMaterialImport;
 use App\Models\CicsaAssignation;
 use App\Models\CicsaChargeArea;
 use App\Models\CicsaFeasibility;
@@ -20,22 +22,99 @@ use App\Models\CicsaPurchaseOrder;
 use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use Inertia\Inertia;
-use Mockery\Undefined;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
+use Monolog\Handler\IFTTTHandler;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class CicsaController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Cicsa/CicsaIndex');
+        $projects = CicsaAssignation::orderBy('assignation_date', 'desc')
+            ->with(
+                'cicsa_feasibility.cicsa_feasibility_materials',
+                'cicsa_materials.cicsa_material_items',
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_purchase_order',
+                'cicsa_purchase_order_validation',
+                'cicsa_service_order',
+                'cicsa_charge_area'
+            )
+            ->paginate(20);
+        return Inertia::render('Cicsa/CicsaIndex', [
+            'projects' => $projects
+        ]);
     }
 
-    public function indexAssignation()
+    public function search(Request $request)
     {
-        $assignation = CicsaAssignation::paginate();
-        return Inertia::render('Cicsa/CicsaAssignation', [
-            'assignation' => $assignation
-        ]);
+        $projectsCicsa =  CicsaAssignation::orderBy('assignation_date', 'desc')
+            ->with(
+                'cicsa_feasibility.cicsa_feasibility_materials',
+                'cicsa_materials.cicsa_material_items',
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_purchase_order',
+                'cicsa_purchase_order_validation',
+                'cicsa_service_order',
+                'cicsa_charge_area'
+            )
+            ->get();
+        if (count($request->project_status) < 3) {
+            $selectedPS = $request->project_status;
+            $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS) {
+                return in_array($item->cicsa_project_status, $selectedPS);
+            });
+        }
+        if (count($request->charge_status) < 3) {
+            $selectedPS = $request->charge_status;
+            $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS) {
+                return in_array($item->cicsa_charge_status, $selectedPS);
+            });
+        }
+        if (!empty($request->assignation_date)) {
+            $assignationDate  = $request->assignation_date;
+            if (!empty($request->project_deadline)) {
+                $deadLineDate  = $request->project_deadline;
+                $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate)
+                    ->where('project_deadline', '<', $deadLineDate);
+            } else {
+                $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate);
+            }
+        }
+        if (!empty($request->project_deadline)) {
+            $selectedPS = $request->project_deadline;
+            $projectsCicsa = $projectsCicsa->where('project_deadline', '<', $request->project_deadline);
+        }
+
+        return response()->json($projectsCicsa->values()->all(), 200);
+    }
+
+
+
+    public function destroy($ca_id)
+    {
+        CicsaAssignation::findOrFail($ca_id)->delete();
+        return redirect()->back();
+    }
+
+    public function indexAssignation(Request $request)
+    {
+        if ($request->isMethod('get')) {
+            $assignation = CicsaAssignation::paginate(20);
+            return Inertia::render('Cicsa/CicsaAssignation', [
+                'assignation' => $assignation
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $assignation = CicsaAssignation::orWhere('project_name', 'like', "%$request->searchQuery%")
+                ->orWhere('customer', 'like', "%$request->searchQuery%")
+                ->orWhere('cpe', 'like', "%$request->searchQuery%")
+                ->paginate(20);
+            return response()->json([
+                'assignation' => $assignation,
+            ]);
+        }
     }
 
     public function updateOrStoreAssignation(StoreOrUpdateAssigantionRequest $request, $cicsa_assignation_id = null)
@@ -47,14 +126,25 @@ class CicsaController extends Controller
         );
     }
 
-    public function indexFeasibilities()
+    public function indexFeasibilities(Request $request)
     {
-        $feasibility = CicsaAssignation::select('id', 'project_name')
-            ->with('cicsa_feasibility.cicsa_feasibility_materials')
-            ->paginate();
-        return Inertia::render('Cicsa/CicsaFeasibility', [
-            'feasibility' => $feasibility
-        ]);
+        if ($request->isMethod('get')) {
+            $feasibility = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_feasibility.cicsa_feasibility_materials')
+                ->orderBy('assignation_date', 'desc')
+                ->paginate(20);
+            return Inertia::render('Cicsa/CicsaFeasibility', [
+                'feasibility' => $feasibility
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $feasibility = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_feasibility.cicsa_feasibility_materials')
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
+                ->paginate(20);
+            return response()->json([
+                'feasibility' => $feasibility
+            ]);
+        }
     }
 
     public function updateOrStoreFeasibilities(StoreOrUpdateFeasibilitiesRequest $request, $cicsa_assignation_id = null)
@@ -65,48 +155,109 @@ class CicsaController extends Controller
             $validateData
         );
         $cicsaFeasibilityId = $cicsaFeasibility->id;
-        if ($cicsa_assignation_id) {
-            foreach ($request->cicsa_feasibility_materials as $material) {
-                if (!isset($material['id'])) {
-                    $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
-                    CicsaFeasibilityMaterial::create($material);
-                }
-            }
-        } else {
-            foreach ($request->cicsa_feasibility_materials as $material) {
-                $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
-                CicsaFeasibilityMaterial::create($material);
-            }
+        foreach ($request->cicsa_feasibility_materials as $material) {
+            $material['cicsa_feasibility_id'] = $cicsaFeasibilityId;
+            CicsaFeasibilityMaterial::updateOrCreate(
+                ['id' => isset($material['id']) ? $material['id'] : null],
+                $material
+            );
         }
     }
 
-    public function indexMaterial()
+    public function indexMaterial(Request $request)
     {
-        $material = CicsaAssignation::select('id', 'project_name')
-            ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials')
-            ->paginate();
-        return Inertia::render('Cicsa/CicsaMaterial', [
-            'materials' => $material
-        ]);
+        if ($request->isMethod('get')) {
+            $material = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items')
+                ->orderBy('assignation_date', 'desc')
+                ->paginate(20);
+            return Inertia::render('Cicsa/CicsaMaterial', [
+                'material' => $material
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $material = CicsaAssignation::select('id', 'project_name')
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
+                ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items')
+                ->paginate(20);
+            return response()->json([
+                'material' => $material
+            ]);
+        }
     }
 
-    public function updateOrStoreMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_assignation_id = null)
+    public function storeMaterial(StoreOrUpdateMaterialRequest $request)
     {
         $validateData = $request->validated();
-        CicsaMaterial::updateOrCreate(
+        $cicsaMaterial = CicsaMaterial::create(
+            $validateData
+        );
+        if (isset($validateData['cicsa_material_items'])) {
+            foreach ($validateData['cicsa_material_items'] as $item) {
+                $item['cicsa_material_id'] = $cicsaMaterial->id;
+                CicsaMaterialsItem::create($item);
+            }
+        }
+        return redirect()->back();
+    }
+
+    public function updateMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_assignation_id = null)
+    {
+        $validateData = $request->validated();
+        $cicsaMaterial = CicsaMaterial::updateOrCreate(
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        if ($cicsaMaterial->cicsa_material_items) {
+            CicsaMaterialsItem::where('cicsa_material_id', $cicsaMaterial->id)->delete();
+        }
+        foreach ($request->cicsa_material_items as $item) {
+            $item['cicsa_material_id'] = $cicsaMaterial->id;
+            CicsaMaterialsItem::create($item);
+        }
+        return redirect()->back();
     }
 
-    public function indexPurchaseOrder()
+    public function importMaterial(Request $request)
     {
-        $purchase_order = CicsaAssignation::select('id', 'project_name')
-            ->with('cicsa_purchase_order')
-            ->paginate();
-        return Inertia::render('Cicsa/CicsaPurchaseOrder', [
-            'purchaseOrder' => $purchase_order
-        ]);
+        try {
+            if ($request->hasFile('document')) {
+                $import = new CicsaMaterialImport();
+                Excel::import($import, $request->file('document'));
+                $data = $import->getData();
+                return response()->json(
+                    $data->toArray()
+                );
+            } else {
+                return response()->json([
+                    'errorMessage' => 'Ingrese un archivo Excel'
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'errorMessage' => 'Error durante la Importacion: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function indexPurchaseOrder(Request $request)
+    {
+        if ($request->isMethod('get')) {
+            $purchase_order = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_purchase_order')
+                ->orderBy('assignation_date', 'desc')
+                ->paginate(20);
+            return Inertia::render('Cicsa/CicsaPurchaseOrder', [
+                'purchaseOrder' => $purchase_order
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $purchase_order = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_purchase_order')
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
+                ->paginate(20);
+            return response()->json([
+                'purchaseOrder' => $purchase_order
+            ]);
+        }
     }
 
     public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_assignation_id = null)
@@ -119,18 +270,31 @@ class CicsaController extends Controller
     }
 
 
-    public function indexInstallation()
+    public function indexInstallation(Request $request)
     {
-        $installations = CicsaAssignation::select('id', 'project_name')
-            ->with(
-                'cicsa_installation.cicsa_installation_materials',
-                'cicsa_installation.user'
-            )
-            ->orderBy('updated_at', 'desc')
-            ->paginate();
-        return Inertia::render('Cicsa/CicsaInstallation', [
-            'installations' => $installations
-        ]);
+        if ($request->isMethod('get')) {
+            $installations = CicsaAssignation::select('id', 'project_name')
+                ->with(
+                    'cicsa_installation.cicsa_installation_materials',
+                    'cicsa_installation.user'
+                )
+                ->orderBy('assignation_date', 'desc')
+                ->paginate(20);
+            return Inertia::render('Cicsa/CicsaInstallation', [
+                'installation' => $installations
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $installations = CicsaAssignation::select('id', 'project_name')
+                ->with(
+                    'cicsa_installation.cicsa_installation_materials',
+                    'cicsa_installation.user'
+                )
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
+                ->paginate(20);
+            return response()->json([
+                'installation' => $installations
+            ]);
+        }
     }
 
 
@@ -154,14 +318,25 @@ class CicsaController extends Controller
 
     // CicsaPurchaseOrderValidations
 
-    public function indexOCValidation()
+    public function indexOCValidation(Request $request)
     {
-        $purchase_validations = CicsaAssignation::select('id', 'project_name')
-            ->with('cicsa_purchase_order_validation')
-            ->paginate(10);
-        return Inertia::render('Cicsa/CicsaPurchaseOrderValidation', [
-            'purchase_validations' => $purchase_validations,
-        ]);
+        if ($request->isMethod('get')) {
+            $purchase_validations = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_purchase_order_validation')
+                ->orderBy('assignation_date', 'desc')
+                ->paginate(20);
+            return Inertia::render('Cicsa/CicsaPurchaseOrderValidation', [
+                'purchase_validation' => $purchase_validations,
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $purchase_validations = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_purchase_order_validation')
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
+                ->paginate(20);
+            return response()->json([
+                'purchase_validation' => $purchase_validations,
+            ]);
+        }
     }
 
     public function storeOCValidation(Request $request, $cicsa_assignation_id = null)
@@ -205,14 +380,25 @@ class CicsaController extends Controller
 
     // CicsaServiceOrder
 
-    public function indexServiceOrder()
+    public function indexServiceOrder(Request $request)
     {
-        $service_orders = CicsaAssignation::select('id', 'project_name')
-            ->with('cicsa_service_order')
-            ->paginate(10);
-        return Inertia::render('Cicsa/CicsaServiceOrder', [
-            'service_orders' => $service_orders,
-        ]);
+        if ($request->isMethod('get')) {
+            $service_orders = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_service_order')
+                ->orderBy('assignation_date', 'desc')
+                ->paginate(20);
+            return Inertia::render('Cicsa/CicsaServiceOrder', [
+                'service_order' => $service_orders,
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $service_orders = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_service_order')
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
+                ->paginate(20);
+            return response()->json([
+                'service_order' => $service_orders,
+            ]);
+        }
     }
 
     public function storeServiceOrder(Request $request, $cicsa_assignation_id = null)
@@ -254,22 +440,33 @@ class CicsaController extends Controller
 
     //CicsaChargeArea
 
-    public function indexChargeArea()
+    public function indexChargeArea(Request $request)
     {
-        $charge_areas = CicsaAssignation::select('id', 'project_name')
-            ->with('cicsa_charge_area')
-            ->paginate(10);
-        return Inertia::render('Cicsa/CicsaChargeArea', [
-            'charge_areas' => $charge_areas,
-        ]);
+        if ($request->isMethod('get')) {
+            $charge_areas = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_charge_area')
+                ->orderBy('assignation_date', 'desc')
+                ->paginate(20);
+            return Inertia::render('Cicsa/CicsaChargeArea', [
+                'charge_area' => $charge_areas,
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $charge_areas = CicsaAssignation::select('id', 'project_name')
+                ->with('cicsa_charge_area')
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
+                ->paginate(20);
+            return response()->json([
+                'charge_area' => $charge_areas,
+            ]);
+        }
     }
 
     public function storeChargeArea(Request $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validate([
-            'invoice_number' => 'required',
-            'invoice_date' => 'required',
-            'credit_to' => 'required|min:0',
+            'invoice_number' => 'nullable',
+            'invoice_date' => 'nullable',
+            'credit_to' => 'nullable|min:0',
             'deposit_date' => [
                 'nullable',
                 'date',
@@ -293,9 +490,9 @@ class CicsaController extends Controller
     public function updateChargeArea(Request $request, CicsaChargeArea $cicsa_charge_area)
     {
         $validateData = $request->validate([
-            'invoice_number' => 'required',
-            'invoice_date' => 'required',
-            'credit_to' => 'required|min:0',
+            'invoice_number' => 'nullable',
+            'invoice_date' => 'nullable',
+            'credit_to' => 'nullable|min:0',
             'deposit_date' => [
                 'nullable',
                 'date',
@@ -312,9 +509,4 @@ class CicsaController extends Controller
 
         $cicsa_charge_area->update($validateData);
     }
-
-
-
-
-
 }

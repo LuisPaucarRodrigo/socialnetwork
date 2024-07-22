@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DocumentManagement\FolderController;
 use App\Http\Controllers\DocumentGestion\ArchivesController;
+use App\Http\Controllers\DocumentManagement\LocalDriveController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -26,3 +27,11 @@ Route::get('/documentGestion/archives/{archive}/pdf', [ArchivesController::class
 
 
 Route::get('/serach_folder_test/{folder_id}', [FolderController::class, 'search_in_folder'])->name('search.folder.test');
+
+
+
+//Local Drive routes
+Route::get('/local-drive-gestion', [LocalDriveController::class, 'localDriveIndex'])->name('local.drive.index');
+Route::post('/local-drive-gestion/store/{path?}', [LocalDriveController::class, 'localDriveStore'])->name('local.drive.store');
+Route::post('/local-drive-gestion/folder_archive_delete', [LocalDriveController::class, 'localDriveDelete'])->name('local.drive.delete');
+Route::get('/local-drive-gestion/folder_archive_dowload', [LocalDriveController::class, 'localDriveDownload'])->name('local.drive.download');

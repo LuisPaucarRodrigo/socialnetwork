@@ -353,6 +353,9 @@ Usuarios
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="'#'">BackLog</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">
                         <button @click="toggleMembersCicsa">
                             <span v-if="cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length > 0"
@@ -398,6 +401,7 @@ Usuarios
                     </div>
                 </template>
             </template>
+            
 
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
@@ -529,6 +533,7 @@ Usuarios
                         <Link class="w-full" :href="route('documment.management.folders')">CCIP</Link>
                     </div>
                 </MyTransition>
+                
                 <template v-if="showArchivesAlarms">
                     <div class="mb-4">
                         <MyTransition v-for="item in archiveAlarms" :key="item.id" class="ml-4"
@@ -563,6 +568,11 @@ Usuarios
                         </MyTransition>
                     </div>
                 </template>
+                <MyTransition :transitiondemonstration="showDocs">
+                    <div class="relative">
+                        <Link class="w-full" :href="route('local.drive.index', {root: 1})">Local Drive</Link>
+                    </div>
+                </MyTransition>
                 <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="route('documment.management.folders.validation')">Aprobación</Link>
                 </MyTransition>

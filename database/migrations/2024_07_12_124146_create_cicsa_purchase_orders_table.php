@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('cicsa_purchase_orders', function (Blueprint $table) {
             $table->id();
-            $table->date('oc_date');
-            $table->string('oc_number');
+            $table->date('oc_date')->nullable();
+            $table->string('oc_number')->nullable();
             $table->string('master_format');
             $table->string('item3456');
             $table->string('budget');
