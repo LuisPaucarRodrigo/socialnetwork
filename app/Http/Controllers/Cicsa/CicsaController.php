@@ -59,8 +59,21 @@ class CicsaController extends Controller
                 'cicsa_purchase_order_validation',
                 'cicsa_service_order',
                 'cicsa_charge_area'
-            )
-            ->get();
+            );
+            
+        
+
+        if (!empty($request->search)) {
+            $search = $request->search;
+            $projectsCicsa = $projectsCicsa->where('project_name', 'like', "%$search%")
+                                    ->orWhere('project_code', 'like', "%$search%")
+                                    ->orWhere('cpe', 'like', "%$search%");
+        }
+
+        $projectsCicsa = $projectsCicsa->get();
+    
+
+
         if (count($request->project_status) < 3) {
             $selectedPS = $request->project_status;
             $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS) {
@@ -87,7 +100,7 @@ class CicsaController extends Controller
             $selectedPS = $request->project_deadline;
             $projectsCicsa = $projectsCicsa->where('project_deadline', '<', $request->project_deadline);
         }
-
+        
         return response()->json($projectsCicsa->values()->all(), 200);
     }
 
