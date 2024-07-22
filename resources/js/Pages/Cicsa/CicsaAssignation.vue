@@ -11,7 +11,11 @@
                 <PrimaryButton @click="openAddAssignationModal" type="button">
                     + Agregar
                 </PrimaryButton>
-                <SelectCicsaComponent currentSelect="Asignación" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Cliente,Codigo"/>
+                    <SelectCicsaComponent currentSelect="Asignación" />
+                </div>
+                
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
@@ -53,7 +57,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in assignation.data" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in assignations.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -105,7 +109,7 @@
                 </table>
             </div>
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="assignation.links" />
+                <pagination :links="assignations.links" />
             </div>
         </div>
 
@@ -198,11 +202,14 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import {formattedDate} from '@/utils/utils.js';
+import TextInput from '@/Components/TextInput.vue';
 
 const { assignation, auth } = defineProps({
     assignation: Object,
     auth: Object
 })
+
+const assignations = ref(assignation);
 
 const initialState = {
     id: null,
@@ -271,4 +278,12 @@ function submit() {
     form.id ? submitUpdate() : submitStore()
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('assignation.index'), { searchQuery: $search });
+        assignations.value = response.data.assignation;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

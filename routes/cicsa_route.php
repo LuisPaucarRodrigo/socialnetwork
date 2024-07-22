@@ -6,21 +6,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/cicsa_process', [CicsaController::class, 'index'])->name('cicsa.index');
 
-Route::get('/cicsa_assignation', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
+Route::any('/cicsa_assignation', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
 Route::delete('/cicsa_assignation/destroy/{ca_id}', [CicsaController::class, 'destroy'])->name('cicsa.assignation.destroy');
 Route::put('/cicsa_assignation/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStoreAssignation'])->name('assignation.storeOrUpdate');
 
-Route::get('/cicsa_feasibilities', [CicsaController::class, 'indexFeasibilities'])->name('feasibilities.index');
+Route::any('/cicsa_feasibilities', [CicsaController::class, 'indexFeasibilities'])->name('feasibilities.index');
 Route::put('/cicsa_feasibilities/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStoreFeasibilities'])->name('feasibilities.storeOrUpdate');
 
 
-Route::get('/cicsa_material', [CicsaController::class, 'indexMaterial'])->name('material.index');
+Route::any('/cicsa_material', [CicsaController::class, 'indexMaterial'])->name('material.index');
 Route::post('/cicsa_material/store', [CicsaController::class, 'storeMaterial'])->name('material.store');
 Route::put('/cicsa_material/update/{cicsa_assignation_id}', [CicsaController::class, 'updateMaterial'])->name('material.update');
 
 Route::post('/cicsa_material/importmaterial', [CicsaController::class, 'importMaterial'])->name('material.import');
 
-Route::get('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
+Route::any('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
 Route::put('/cicsa_purchase_order/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
 
 

@@ -95,7 +95,3 @@ onUnmounted(() => {
     document.removeEventListener('click', closePopup);
 });
 </script>
-
-<style scoped>
-/* No additional styles needed since Tailwind CSS is being used */
-</style>
