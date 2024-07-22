@@ -37,11 +37,26 @@
                             N° {{ item.code }}
                         </h2>
                     </div>
-                    <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-                        {{ item.name }}
-                    </h3>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Nombre: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.name }}
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Site: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.huawei_site.name }}
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">OT: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.ot }}
+                        </h3>
+                    </div>
                     <div
-                        :class="`text-gray-500 text-sm ${item.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`">
+                        class="text-gray-500 text-sm mt-1">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
                                 :href="route('huawei.projects.additionalcosts', { huawei_project: item.id })"
@@ -59,6 +74,17 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Liquidaciones
                             </Link>
+                            <Link v-if="item.pre_report"
+                                :href="route('huawei.projects.balance', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Balance del Proyecto
+                            </Link>
+                            <span v-else class="text-gray-400">Balance del Proyecto</span>
+                            <a v-if="item.pre_report" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
+                                Reporte
+                            </a>
+                            <span v-else class="text-gray-400">Reporte</span>
+
                         </div>
                     </div>
                 </div>

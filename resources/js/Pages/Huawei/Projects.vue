@@ -10,11 +10,11 @@
                 <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
                     <div class="flex gap-4 items-center">
                         <Link :href="route('huawei.projects.create')" type="button"
-                            class="hidden sm:block inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white whitespace-nowrap">
+                            class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white whitespace-nowrap">
                             + Agregar
                         </Link>
                         <Link :href="route('huawei.projects.history')" type="button"
-                            class="hidden sm:block inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                            class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                             Historial
                         </Link>
                         <div class="sm:hidden">
@@ -71,9 +71,7 @@
                         </h2>
                         <div class="inline-flex justify-end items-start gap-x-2">
                             <button
-                                @click="()=>{router.put(route('huawei.projects.liquidateproject', {huawei_project: item.id}), {
-                                    onSuccess: () => router.visit(route('huawei.projects'))
-                                })}"
+                                @click="openLiquidateModal(item.id)"
                                 v-if="item.status"
                                 :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.state ? '': 'opacity-60'}`"
                                 :disabled="item.state ? false : true"
@@ -86,11 +84,27 @@
                             </Link>
                         </div>
                     </div>
-                    <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
-                        {{ item.name }}
-                    </h3>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Nombre: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.name }}
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Site: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.huawei_site.name }}
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">OT: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.ot }}
+                        </h3>
+                    </div>
+
                     <div
-                        :class="`text-gray-500 text-sm ${item.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`">
+                        class="text-gray-500 text-sm mt-1">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link v-if="item.pre_report"
                                 :href="route('huawei.projects.additionalcosts', { huawei_project: item.id })"
@@ -110,10 +124,17 @@
                                 Liquidaciones
                             </Link>
                             <span v-else class="text-gray-400">Liquidaciones</span>
+                            <Link v-if="item.pre_report"
+                                :href="route('huawei.projects.balance', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Balance del Proyecto
+                            </Link>
+                            <span v-else class="text-gray-400">Balance del Proyecto</span>
                             <a v-if="item.pre_report" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
                                 Reporte
                             </a>
                             <span v-else class="text-gray-400">Reporte</span>
+
                         </div>
                     </div>
                 </div>
@@ -123,7 +144,23 @@
                 <pagination :links="props.projects.links" />
             </div>
         </div>
-
+        <Modal :show="liquidateModal" :maxWidth="'md'">
+            <!-- Contenido del modal cuando no hay empleados -->
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Seguro de liquidar el proyecto?
+                </h2>
+                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
+                <p class="mt-2 text-sm text-gray-500">
+                    ¿Está seguro de liquidar el proyecto? No se podrán deshacer los cambios.
+                </p>
+                <div class="mt-6 flex space-x-3 justify-end">
+                    <SecondaryButton type="button" @click="closeLiquidateModal"> Cancelar
+                    </SecondaryButton>
+                    <PrimaryButton type="button" @click="liquidate()"> Aceptar </PrimaryButton>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -133,6 +170,10 @@ import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import { PencilIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     projects: Object,
@@ -140,6 +181,9 @@ const props = defineProps({
     userPermissions:Array,
     search: String,
 })
+
+const liquidateModal = ref(false);
+const projectId = ref(null);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -155,6 +199,25 @@ const search = () => {
     }else{
         router.visit(route('huawei.projects.search', {request: searchForm.searchTerm}));
     }
+}
+
+const openLiquidateModal = (id) => {
+    projectId.value = id;
+    liquidateModal.value = true;
+}
+
+const closeLiquidateModal = () => {
+    projectId.value = null;
+    liquidateModal.value = false;
+}
+
+const liquidate = () => {
+    router.put(route('huawei.projects.liquidateproject', {huawei_project: projectId.value}), null,{
+        onSuccess: () => {
+            closeLiquidateModal();
+            router.visit(route('huawei.projects'));
+        }
+    })
 }
 
 </script>

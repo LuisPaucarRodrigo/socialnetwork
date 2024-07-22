@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="G. Documentaria" />
+    <Head title="LocalDrive" />
 
     <AuthenticatedLayout :redirectRoute="backUrl">
         <template #header>
@@ -14,7 +14,7 @@
 
                 <a type="button"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
-                    :href="route('project.folder.download', { path: currentPath })">
+                    :href="route('local.drive.download', { path: currentPath })">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5 text-white">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -69,7 +69,7 @@
                                 <!-- for button instead of Link -->
                                 <!-- @click="() => router.visit(route('documment.management.folders', { folder_id: item.item_db.id }))" -->
                                 <Link v-if="item.type === 'folder'"
-                                    :href="route('project.document.index', { path: item.path })"
+                                    :href="route('local.drive.index', { path: item.path })"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
                                 <div class="flex space-x-8 items-center w-full mr-8 xl:mr-0">
                                     <FolderIcon v-if="item.type === 'folder'" class="h-10 w-10" />
@@ -79,7 +79,7 @@
                                 </div>
                                 </Link>
                                 <a v-if="item.type === 'archive'"
-                                    :href="route('project.folder.download', { path: item.path })"
+                                    :href="route('local.drive.download', { path: item.path })"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
                                     <div class="flex space-x-8 items-center w-full mr-8 xl:mr-0">
                                         <DocumentTextIcon class="h-9 w-9" />
@@ -106,7 +106,7 @@
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
                                     </Link> -->
-                                    <a type="button" :href="route('project.folder.download', { path: item.path })">
+                                    <a type="button" :href="route('local.drive.download', { path: item.path })">
                                         <svg v-if="item.type === 'folder'" xmlns="http://www.w3.org/2000/svg"
                                             fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="green"
                                             class="w-6 h-6 text-white">
@@ -260,20 +260,8 @@ const { folders_archives, folder, currentPath, previousPath, auth, areas } = def
     auth: Object
 })
 
-let backUrl = previousPath ? { route: 'project.document.index', params: { path: previousPath } }
-    : { route: 'projectmanagement.index' }
-
-//---------- Check Permission -------//
-function checkSeeDownloadPermission(item) {
-    if (auth.user.role_id === 1) {
-        return true
-    }
-    return item?.folder_areas?.find(i => i.area_id == auth.user.area_id)?.see_download
-}
-function checkCreatePermission() {
-    return folder?.folder_areas.find(i => i.area_id == auth.user.area_id)?.create
-}
-//---------------------------------//
+let backUrl = previousPath ? { route: 'local.drive.index', params: { path: previousPath } }
+    : { route: 'local.drive.index', params: {root: 1} }
 
 
 
@@ -300,7 +288,7 @@ function handleFolderType() {
 
 
 function submit() {
-    createFolderForm.post(route('project.document.store'), {
+    createFolderForm.post(route('local.drive.store'), {
         onSuccess: () => {
             closeAddFolderModal()
             confirmFolderCreate.value = true
@@ -326,7 +314,7 @@ function closeDeleteFolderModal() {
     showDeleteFolderModal.value = false
 }
 function deleteFolder() {
-    router.post(route('project.folder.delete'), { path: itemToDelete.value.path, type: itemToDelete.value.type }, {
+    router.post(route('local.drive.delete'), { path: itemToDelete.value.path, type: itemToDelete.value.type }, {
         onSuccess: () => {
             closeDeleteFolderModal()
         }, onError: (e) => {

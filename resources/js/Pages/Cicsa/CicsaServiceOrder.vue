@@ -8,7 +8,10 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Orden de Servicio" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
+                    <SelectCicsaComponent currentSelect="Orden de Servicio" />
+                </div>
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
@@ -129,7 +132,7 @@
                             <InputLabel for="service_order_date">Fecha de Orden de Servicio</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.service_order_date" autocomplete="off"
-                                    id="service_order_date"/>
+                                    id="service_order_date" />
                                 <InputError :message="form.errors.service_order_date" />
                             </div>
                         </div>
@@ -138,7 +141,7 @@
                             <InputLabel for="service_order">Orden de Servicio</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.service_order" autocomplete="off"
-                                    id="service_order"/>
+                                    id="service_order" />
                                 <InputError :message="form.errors.service_order" />
                             </div>
                         </div>
@@ -230,10 +233,12 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
-const { service_orders, auth } = defineProps({
-    service_orders: Object,
+const { service_order, auth } = defineProps({
+    service_order: Object,
     auth: Object
 })
+
+const service_orders = ref(service_order)
 
 const initialState = {
     id: null,
@@ -271,7 +276,7 @@ function openEditFeasibilityModal(cicsa_assignation_id, item) {
 }
 
 function submit() {
-    let url = form.id ? route('cicsa.service_orders.update', {cicsa_service_order_id: form.id}) : route('cicsa.service_orders.store', { cicsa_assignation_id: form.cicsa_assignation_id });
+    let url = form.id ? route('cicsa.service_orders.update', { cicsa_service_order_id: form.id }) : route('cicsa.service_orders.store', { cicsa_assignation_id: form.cicsa_assignation_id });
     form.post(url, {
         onSuccess: () => {
             closeAddAssignationModal()
@@ -286,4 +291,12 @@ function submit() {
     })
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('cicsa.service_orders'), { searchQuery: $search });
+        service_orders.value = response.data.service_order;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

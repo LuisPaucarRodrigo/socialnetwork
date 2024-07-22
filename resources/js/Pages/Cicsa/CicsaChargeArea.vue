@@ -1,4 +1,5 @@
 <template>
+
     <Head title="CICSA Área de Cobranza" />
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
@@ -6,7 +7,10 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Cobranza" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
+                    <SelectCicsaComponent currentSelect="Cobranza" />
+                </div>
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
@@ -78,7 +82,8 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.credit_to + ' día(s)' : '' }}
+                                    {{ item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.credit_to + ' día(s)'
+        : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -88,7 +93,8 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.days_late + ' día(s)' : '' }}
+                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
+        item.cicsa_charge_area.days_late + ' día(s)' : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -98,12 +104,15 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area?.state : '' }}
+                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
+        item.cicsa_charge_area?.state : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.amount ? 'S/. ' + item.cicsa_charge_area?.amount.toFixed(2) : '' }}
+                                    {{ item.cicsa_charge_area?.amount ? 'S/. ' +
+        item.cicsa_charge_area?.amount.toFixed(2) : ''
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -145,7 +154,7 @@
                             <InputLabel for="invoice_number">Número de Factura</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.invoice_number" autocomplete="off"
-                                    id="invoice_number"/>
+                                    id="invoice_number" />
                                 <InputError :message="form.errors.invoice_number" />
                             </div>
                         </div>
@@ -154,7 +163,7 @@
                             <InputLabel for="invoice_date">Fecha de Factura</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.invoice_date" autocomplete="off"
-                                    id="invoice_date"/>
+                                    id="invoice_date" />
                                 <InputError :message="form.errors.invoice_date" />
                             </div>
                         </div>
@@ -163,7 +172,7 @@
                             <InputLabel for="credit_to">Crédito a</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="number" v-model="form.credit_to" autocomplete="off"
-                                    id="invoice_date"/>
+                                    id="invoice_date" />
                                 <InputError :message="form.errors.credit_to" />
                             </div>
                         </div>
@@ -172,7 +181,7 @@
                             <InputLabel for="payment_date">Fecha de Pago</InputLabel>
                             <div class="mt-2">
                                 <TextInput disabled readonly type="date" v-model="form.payment_date" autocomplete="off"
-                                    id="payment_date"/>
+                                    id="payment_date" />
                                 <InputError :message="form.errors.payment_date" />
                             </div>
                         </div>
@@ -181,7 +190,7 @@
                             <InputLabel for="deposit_date">Fecha de Abono</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.deposit_date" autocomplete="off"
-                                    id="deposit_date"/>
+                                    id="deposit_date" />
                                 <InputError :message="form.errors.deposit_date" />
                             </div>
                         </div>
@@ -189,7 +198,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="amount">Monto</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" step="any" v-model="form.amount" autocomplete="off" id="amount"/>
+                                <TextInput type="number" step="any" v-model="form.amount" autocomplete="off"
+                                    id="amount" />
                                 <InputError :message="form.errors.amount" />
                             </div>
                         </div>
@@ -228,10 +238,12 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
-const { charge_areas, auth } = defineProps({
-    charge_areas: Object,
+const { charge_area, auth } = defineProps({
+    charge_area: Object,
     auth: Object
 })
+
+const charge_areas = ref(charge_area)
 
 const initialState = {
     id: null,
@@ -269,7 +281,7 @@ function openEditFeasibilityModal(cicsa_assignation_id, item) {
 }
 
 function submit() {
-    let url = form.id ? route('cicsa.charge_areas.update', {cicsa_charge_area: form.id}) : route('cicsa.charge_areas.store', { cicsa_assignation_id: form.cicsa_assignation_id });
+    let url = form.id ? route('cicsa.charge_areas.update', { cicsa_charge_area: form.id }) : route('cicsa.charge_areas.store', { cicsa_assignation_id: form.cicsa_assignation_id });
     form.post(url, {
         onSuccess: () => {
             closeAddAssignationModal()
@@ -312,4 +324,12 @@ function formattedDate2(dateString) {
     return `${year}-${month}-${day}`;
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('cicsa.charge_areas'), { searchQuery: $search });
+        charge_areas.value = response.data.charge_area;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

@@ -8,7 +8,10 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Materiales" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
+                    <SelectCicsaComponent currentSelect="Materiales" />
+                </div>
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
@@ -422,10 +425,12 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { materials, auth } = defineProps({
-    materials: Object,
+const { material, auth } = defineProps({
+    material: Object,
     auth: Object
 })
+
+const materials = ref(material)
 
 const initialState = {
     cicsa_assignation_id: null,
@@ -602,4 +607,13 @@ function submitImportExcel() {
 
         });
 }
+
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('material.index'), { searchQuery: $search });
+        materials.value = response.data.material;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>
