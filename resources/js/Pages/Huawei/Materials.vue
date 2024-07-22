@@ -8,7 +8,7 @@
         <div class="flex gap-4 justify-between rounded-lg">
             <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
             <div class="flex gap-4 items-center justify-between">
-                <Link :href="route('huawei.inventory.create')" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <Link :href="route('huawei.inventory.create')" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                 + Agregar
                 </Link>
                 <div v-if="props.equipment" class="hidden sm:block">
@@ -24,7 +24,9 @@
                 <Link :href="route('huawei.inventory.refunds')" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     Devoluciones
                 </Link>
-
+                <Link :href="route('huawei.inventory.antiquation')" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                    Anticuamiento de Equipos
+                </Link>
                 <div class="sm:hidden">
                 <dropdown align="left">
                     <template #trigger>
@@ -54,6 +56,9 @@
                             <Link :href="route('huawei.inventory.refunds', {equipment: 1})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Devoluciones
                             </Link>
+                            <Link :href="route('huawei.inventory.antiquation', {equipment: 1})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            Anticuamiento de Equipos
+                            </Link>
                         </div>
                         </div>
                         <div class="dropdown" v-else>
@@ -65,6 +70,9 @@
                         <div class="dropdown-menu">
                             <Link :href="route('huawei.inventory.refunds')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Devoluciones
+                            </Link>
+                            <Link :href="route('huawei.inventory.antiquation', {equipment: 1})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            Anticuamiento de Equipos
                             </Link>
                         </div>
                         </div>

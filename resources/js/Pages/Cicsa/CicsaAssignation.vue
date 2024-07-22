@@ -11,7 +11,11 @@
                 <PrimaryButton @click="openAddAssignationModal" type="button">
                     + Agregar
                 </PrimaryButton>
-                <SelectCicsaComponent currentSelect="Asignación" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Cliente,Codigo" />
+                    <SelectCicsaComponent currentSelect="Asignación" />
+                </div>
+
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
@@ -53,7 +57,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in assignation.data" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in assignations.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -105,14 +109,14 @@
                 </table>
             </div>
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="assignation.links" />
+                <pagination :links="assignations.links" />
             </div>
         </div>
 
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{form.id ? 'Editar Asignación' : 'Nueva Asignación'}}
+                    {{ form.id ? 'Editar Asignación' : 'Nueva Asignación' }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -120,7 +124,8 @@
                         <div class="">
                             <InputLabel for="assignation_date">Fecha de Asignación</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.assignation_date" autocomplete="off" id="assignation_date"
+                                <input type="date" v-model="form.assignation_date" autocomplete="off"
+                                    id="assignation_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.assignation_date" />
                             </div>
@@ -138,7 +143,7 @@
                             <InputLabel for="customer">Cliente</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.customer" autocomplete="off" id="customer"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.customer" />
                             </div>
                         </div>
@@ -146,7 +151,7 @@
                             <InputLabel for="project_code">Codigo de Proyecto</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.project_code" autocomplete="off" id="project_code"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.project_code" />
                             </div>
                         </div>
@@ -154,15 +159,16 @@
                             <InputLabel for="cpe">CPE</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.cpe" autocomplete="off" id="cpe"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.cpe" />
                             </div>
                         </div>
                         <div class="">
                             <InputLabel for="project_deadline">Fecha Limite del Proyecto</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.project_deadline" autocomplete="off" id="project_deadline"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <input type="date" v-model="form.project_deadline" autocomplete="off"
+                                    id="project_deadline"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.project_deadline" />
                             </div>
                         </div>
@@ -197,12 +203,15 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import {formattedDate} from '@/utils/utils.js';
+import { formattedDate } from '@/utils/utils.js';
+import TextInput from '@/Components/TextInput.vue';
 
 const { assignation, auth } = defineProps({
     assignation: Object,
     auth: Object
 })
+
+const assignations = ref(assignation);
 
 const initialState = {
     id: null,
@@ -227,7 +236,7 @@ function openAddAssignationModal() {
 }
 function closeAddAssignationModal() {
     showAddEditModal.value = false
-    form.defaults({...initialState})
+    form.defaults({ ...initialState })
     form.reset()
 }
 function submitStore() {
@@ -248,14 +257,14 @@ function submitStore() {
 
 const confirmUpdateAssignation = ref(false);
 
-function openEditSotModal (item) {
-    form.defaults({...item})
+function openEditSotModal(item) {
+    form.defaults({ ...item })
     form.reset()
     showAddEditModal.value = true
 }
 
 function submitUpdate() {
-    let url = route('assignation.storeOrUpdate', {cicsa_assignation_id:form.id})
+    let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
     form.put(url, {
         onSuccess: () => {
             closeAddAssignationModal()
@@ -263,6 +272,9 @@ function submitUpdate() {
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
             }, 1500)
+        },
+        onError: (e) => {
+            console.log(e)
         }
     })
 }
@@ -271,4 +283,12 @@ function submit() {
     form.id ? submitUpdate() : submitStore()
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('assignation.index'), { searchQuery: $search });
+        assignations.value = response.data.assignation;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

@@ -15,7 +15,7 @@ export default {
   props: {
     accept: {
       type: String,
-      default: '.pdf, .png, .jpeg, .jpg, .doc, .docx, .xls, .xlsx, .ppt, .pptx' // Valor por defecto si no se proporciona
+      default: '.pdf, .png, .jpeg, .jpg, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt' // Valor por defecto si no se proporciona
     }
   },
   setup(props, { emit }) {

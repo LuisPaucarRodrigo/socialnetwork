@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Exports\StaticCostsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Provider;
 use App\Models\StaticCost;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Project;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 class StaticCostsController extends Controller
 {
@@ -155,5 +157,10 @@ class StaticCostsController extends Controller
         $path = public_path($file_path);
         if (file_exists($path))
             unlink($path);
+    }
+
+
+    public function export($project_id) {
+        return Excel::download(new StaticCostsExport($project_id), 'Gastos_Fijos.xlsx');
     }
 }
