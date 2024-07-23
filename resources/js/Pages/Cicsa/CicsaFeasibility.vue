@@ -41,28 +41,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in feasibilitys.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="item in feasibilitys.data ?? feasibilitys" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_feasibility?.feasibility_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_feasibility?.report }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_feasibility?.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
                                         @click="openEditFeasibilityModal(item.id, item.cicsa_feasibility)">
@@ -79,7 +79,7 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="feasibilitys.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="feasibilitys.links" />
             </div>
         </div>
@@ -154,24 +154,24 @@
                                 <tbody>
                                     <tr v-for="item in form.cicsa_feasibility_materials" :key="item.id"
                                         class="text-gray-700">
-                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
                                             </p>
                                         </td>
-                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.unit }}
                                             </p>
                                         </td>
-                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <TextInput class="text-center" type="number" min="0"
                                                 @change="modifyQuantity(item.id, $event)" :value="item.quantity" />
                                             <!-- <p class="text-gray-900 text-center">
                                                 {{ item.quantity }}
                                             </p> -->
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <button v-if="!item.id" type="button" @click="delete_material(item.name)"
                                                 class="text-blue-900 whitespace-no-wrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
