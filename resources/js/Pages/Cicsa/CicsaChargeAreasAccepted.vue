@@ -6,12 +6,6 @@
             Proyectos Cobrados
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
-                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
-                    <SelectCicsaComponent currentSelect="Cobranza" />
-                </div>
-            </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
@@ -61,7 +55,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in props.charge_areas" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in charge_areas.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -137,32 +131,13 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import { Head } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils.js';
-import TextInput from '@/Components/TextInput.vue';
 
-const props = defineProps({
+
+const { charge_areas, auth } = defineProps({
     charge_areas: Object,
     auth: Object
 })
-
-console.log(props.charge_areas)
-
-const search = async ($search) => {
-    try {
-        const response = await axios.post(route('cicsa.charge_areas'), { searchQuery: $search });
-        charge_areas.value = response.data.charge_area;
-    } catch (error) {
-        console.error('Error searching:', error);
-    }
-};
 
 </script>
