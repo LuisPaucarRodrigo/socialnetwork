@@ -64,63 +64,63 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in charge_areas.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="item in charge_areas.data ?? charge_areas" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.invoice_number }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_charge_area?.invoice_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.credit_to + ' día(s)'
         : '' }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_charge_area?.payment_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
         item.cicsa_charge_area.days_late + ' día(s)' : '' }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_charge_area?.deposit_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
         item.cicsa_charge_area?.state : '' }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.amount ? 'S/. ' +
         item.cicsa_charge_area?.amount.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
                                         @click="openEditFeasibilityModal(item.id, item.cicsa_charge_area)">
@@ -137,7 +137,7 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="charge_areas.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="charge_areas.links" />
             </div>
         </div>

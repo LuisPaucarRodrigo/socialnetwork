@@ -119,8 +119,6 @@ class CicsaController extends Controller
 
         $projectsCicsa = $projectsCicsa->get();
 
-
-
         if (count($request->project_status) < 3) {
             $selectedPS = $request->project_status;
             $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS) {
@@ -133,7 +131,6 @@ class CicsaController extends Controller
                 return in_array($item->cicsa_charge_status, $selectedPS);
             });
         }
-
 
         return response()->json($projectsCicsa->values()->all(), 200);
     }
@@ -172,7 +169,7 @@ class CicsaController extends Controller
             $assignation = CicsaAssignation::orWhere('project_name', 'like', "%$request->searchQuery%")
                 ->orWhere('customer', 'like', "%$request->searchQuery%")
                 ->orWhere('cpe', 'like', "%$request->searchQuery%")
-                ->paginate(20);
+                ->get();
             return response()->json([
                 'assignation' => $assignation,
             ]);
@@ -202,7 +199,7 @@ class CicsaController extends Controller
             $feasibility = CicsaAssignation::select('id', 'project_name')
                 ->with('cicsa_feasibility.cicsa_feasibility_materials')
                 ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->paginate(20);
+                ->get();
             return response()->json([
                 'feasibility' => $feasibility
             ]);
@@ -240,7 +237,7 @@ class CicsaController extends Controller
             $material = CicsaAssignation::select('id', 'project_name')
                 ->orWhere('project_name', 'like', "%$request->searchQuery%")
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items')
-                ->paginate(20);
+                ->get();
             return response()->json([
                 'material' => $material
             ]);
@@ -315,7 +312,7 @@ class CicsaController extends Controller
             $purchase_order = CicsaAssignation::select('id', 'project_name')
                 ->with('cicsa_purchase_order')
                 ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->paginate(20);
+                ->get();
             return response()->json([
                 'purchaseOrder' => $purchase_order
             ]);
@@ -352,7 +349,7 @@ class CicsaController extends Controller
                     'cicsa_installation.user'
                 )
                 ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->paginate(20);
+                ->get();
             return response()->json([
                 'installation' => $installations
             ]);
@@ -394,7 +391,7 @@ class CicsaController extends Controller
             $purchase_validations = CicsaAssignation::select('id', 'project_name')
                 ->with('cicsa_purchase_order_validation')
                 ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->paginate(20);
+                ->get();
             return response()->json([
                 'purchase_validation' => $purchase_validations,
             ]);
@@ -460,7 +457,7 @@ class CicsaController extends Controller
             $service_orders = CicsaAssignation::select('id', 'project_name')
                 ->with('cicsa_service_order')
                 ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->paginate(20);
+                ->get();
             return response()->json([
                 'service_order' => $service_orders,
             ]);
@@ -524,7 +521,7 @@ class CicsaController extends Controller
             $charge_areas = CicsaAssignation::select('id', 'project_name')
                 ->with('cicsa_charge_area')
                 ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->paginate(20);
+                ->get();
             return response()->json([
                 'charge_area' => $charge_areas,
             ]);

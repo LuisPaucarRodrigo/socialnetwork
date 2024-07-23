@@ -57,43 +57,43 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in assignations.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="item in assignations.data ?? assignations" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.assignation_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.customer }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_code }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.project_deadline) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900" @click="openEditSotModal(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -108,8 +108,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="assignations.links" />
+            <div v-if="assignations.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <pagination :links="assignation.links" />
             </div>
         </div>
 
@@ -287,6 +288,7 @@ const search = async ($search) => {
     try {
         const response = await axios.post(route('assignation.index'), { searchQuery: $search });
         assignations.value = response.data.assignation;
+
     } catch (error) {
         console.error('Error searching:', error);
     }
