@@ -42,7 +42,7 @@ class CicsaController extends Controller
                 'cicsa_service_order',
                 'cicsa_charge_area'
             )
-            ->paginate(20);
+            ->paginate(10);
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects
         ]);
