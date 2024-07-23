@@ -27,6 +27,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
 use Monolog\Handler\IFTTTHandler;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CicsaController extends Controller
 {
@@ -115,6 +116,21 @@ class CicsaController extends Controller
     {
         CicsaAssignation::findOrFail($ca_id)->delete();
         return redirect()->back();
+    }
+
+    public function chargeCicsa()
+    {
+        $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
+            ->with('cicsa_charge_area')
+            ->whereHas('cicsa_charge_area', function ($query) {
+                $query->whereNotNull('invoice_number')
+                    ->whereNotNull('invoice_date')
+                    ->whereNotNull('amount');
+            })
+            ->paginate(20);
+        return Inertia::render('Cicsa/CicsaCollect', [
+            'charge_areas' => $charge_areas,
+        ]);
     }
 
     public function indexAssignation(Request $request)
@@ -375,6 +391,8 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        return redirect()->back();
+
     }
 
     public function updateOCValidation(Request $request, CicsaPurchaseOrderValidation $cicsa_validation_id)
@@ -394,6 +412,8 @@ class CicsaController extends Controller
         $cicsa_validation_id->update(
             $validateData
         );
+        return redirect()->back();
+
     }
 
     // CicsaServiceOrder
@@ -436,6 +456,8 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        return redirect()->back();
+
     }
 
     public function updateServiceOrder(Request $request, CicsaServiceOrder $cicsa_service_order_id)
@@ -454,6 +476,8 @@ class CicsaController extends Controller
         $cicsa_service_order_id->update(
             $validateData
         );
+        return redirect()->back();
+
     }
 
     //CicsaChargeArea
@@ -503,6 +527,8 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        return redirect()->back();
+
     }
 
     public function updateChargeArea(Request $request, CicsaChargeArea $cicsa_charge_area)
@@ -526,5 +552,32 @@ class CicsaController extends Controller
         ]);
 
         $cicsa_charge_area->update($validateData);
+        return redirect()->back();
+
     }
+
+    public function getChargeAreaAccepted()
+    {
+        // Obtener y filtrar las asignaciones
+        $charge_areas = CicsaAssignation::with('cicsa_charge_area')->get()->filter(function ($assignation) {
+            return $assignation->cicsa_charge_area !== null && $assignation->cicsa_charge_area->state === 'Pagado';
+        });
+    
+        // Paginar manualmente la colección filtrada
+        $perPage = 10; // Número de elementos por página
+        $page = request()->input('page', 1); // Obtener la página actual
+        $total = $charge_areas->count(); // Contar el total de elementos
+    
+        $currentPageItems = $charge_areas->slice(($page - 1) * $perPage, $perPage)->values(); // Obtener los elementos para la página actual
+    
+        $paginatedChargeAreas = new LengthAwarePaginator($currentPageItems, $total, $perPage, $page, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+            'pageName' => 'page',
+        ]);
+    
+        return Inertia::render('Cicsa/CicsaChargeAreasAccepted', [
+            'charge_areas' => $paginatedChargeAreas
+        ]);
+    }
+    
 }
