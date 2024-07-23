@@ -30,7 +30,13 @@
                         <ArrowPathIcon class="h-5 w-5 " />
                     </button>
                 </div>
-                <SelectCicsaComponent currentSelect="Proceso" />
+                <div class="flex space-x-4">
+                    <Link :href="route('cicsa.charge')"  
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    Por Cobrar
+                    </Link>
+                    <SelectCicsaComponent currentSelect="Proceso" />
+                </div>
             </div>
             <br>
             <div class="overflow-x-auto h-[65vh]">
@@ -101,7 +107,7 @@
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[120px]">
                                     <TableHeaderCicsaFilter label="Fecha de Asignación" labelClass="text-gray-600"
-                                         v-model="filterForm.assignation_date" />
+                                        v-model="filterForm.assignation_date" />
                                 </div>
                             </th>
                             <th
@@ -124,7 +130,7 @@
                                 class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[120px]">
                                     <TableHeaderCicsaFilter label="Fecha Límite del Proyecto" labelClass="text-gray-600"
-                                         v-model="filterForm.project_deadline" />
+                                        v-model="filterForm.project_deadline" />
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Asignación')"
@@ -372,7 +378,7 @@
                                 class="border-b border-gray-200 px-5 py-5 text-sm">
                                 <p class="text-gray-900 text-center">{{
                                     formattedDate(item?.cicsa_feasibility?.feasibility_date)
-                                    }}</p>
+                                }}</p>
                             </td>
                             <td :class="stateClass(item?.cicsa_feasibility?.report)"
                                 v-if="checkVisibility('Factibilidad PINT y PEXT')"
@@ -435,8 +441,8 @@
                                 <p class="w-[200px] text-gray-900 text-center">
                                     {{ item?.cicsa_materials
                                         ?.filter(item => item?.user_name !== null)
-                                    .map(item => item.user_name)
-                                    .join(', ') }}
+                                        .map(item => item.user_name)
+                                        .join(', ') }}
                                 </p>
                             </td>
 
@@ -893,7 +899,7 @@ import Pagination from '@/Components/Pagination.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, onMounted, watch } from 'vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils';
@@ -902,6 +908,7 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import FilterProcess from '@/Components/FilterProcess.vue'
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue'
 import { ArrowPathIcon, ServerIcon } from '@heroicons/vue/24/outline';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const { auth, projects } = defineProps({
     auth: Object,
