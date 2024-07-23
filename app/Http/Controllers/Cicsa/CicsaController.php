@@ -57,8 +57,6 @@ class CicsaController extends Controller
     )
     ->paginate(10);
 
-
-
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects
         ]);

@@ -954,7 +954,6 @@ const { auth, projects } = defineProps({
 const dataToRender = ref(projects.data)
 const filterMode = ref(false)
 
-
 const showSotDeleteModal = ref(false);
 const sotToDelete = ref(null)
 const confirmSotDelete = ref(false)
