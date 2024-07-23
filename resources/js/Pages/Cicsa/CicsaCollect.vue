@@ -65,73 +65,73 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in charge_areas.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" :class="!item.project_code ? 'bg-red-200' :'bg-white'">
+                        <tr v-for="item in charge_areas.data ?? charge_areas" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]" :class="!item.project_code ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="!item.project_code ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="!item.project_code ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_code }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="!item.cpe ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="!item.cpe ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="!item.cicsa_charge_area?.invoice_number ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="!item.cicsa_charge_area?.invoice_number ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.invoice_number }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="!item.cicsa_charge_area?.invoice_date ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="!item.cicsa_charge_area?.invoice_date ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_charge_area?.invoice_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="!item.cicsa_charge_area.credit_to ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="!item.cicsa_charge_area.credit_to ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.credit_to + ' día(s)'
                                     : '' }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="!item.cicsa_charge_area?.payment_date ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="!item.cicsa_charge_area?.payment_date ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_charge_area?.payment_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="item.cicsa_charge_area.days_late <= 0 ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="item.cicsa_charge_area.days_late <= 0 ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
                                         item.cicsa_charge_area.days_late + ' día(s)' : '' }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="!item.cicsa_charge_area?.deposit_date ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="!item.cicsa_charge_area?.deposit_date ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_charge_area?.deposit_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="item.cicsa_charge_area?.state === 'Con deuda' && !item.cicsa_charge_area?.credit_to ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="item.cicsa_charge_area?.state === 'Con deuda' && !item.cicsa_charge_area?.credit_to ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
                                     item.cicsa_charge_area?.state : '' }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm whitespace-nowrap" :class="!item.cicsa_charge_area?.amount ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px] whitespace-nowrap" :class="!item.cicsa_charge_area?.amount ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.amount ? 'S/. ' +
                                         item.cicsa_charge_area?.amount.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-5 text-sm" :class="!item.cicsa_charge_area?.user_name ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="!item.cicsa_charge_area?.user_name ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.user_name }}
                                 </p>
                             </td>
-                            <!-- <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <!-- <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
                                         @click="openEditFeasibilityModal(item.id, item.cicsa_charge_area)">
@@ -148,7 +148,7 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="charge_areas" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="charge_areas.links" />
             </div>
         </div>
@@ -159,17 +159,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
-import TextInput from '@/Components/TextInput.vue';
 
 const { charge_areas, auth } = defineProps({
     charge_areas: Object,

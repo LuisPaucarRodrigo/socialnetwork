@@ -37,23 +37,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="item in materials.data" :key="item.id">
+                        <template v-for="item in materials.data ?? materials" :key="item.id">
                             <tr class=" text-gray-700">
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_name }}
                                     </p>
                                 </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
                                     <button v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length > 0"
                                         type="button"
                                         @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)">
                                         <EyeIcon class="w-5 h-5 text-green-600" />
                                     </button>
                                 </td>
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <div class="flex space-x-3 justify-center">
                                         <button
                                             @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials)">
@@ -110,22 +110,22 @@
                                 </tr>
                                 <tr v-for="materialDetail in item.cicsa_materials" :key="materialDetail.id"
                                     class="bg-gray-100">
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <!-- <p>
                                             {{ materialDetail }}
                                         </p> -->
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             {{ formattedDate(materialDetail.pick_date) }}
                                         </p>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             {{ materialDetail.guide_number }}
                                         </p>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-2 py-5 text-sm text-center">
+                                    <td class="border-b border-gray-200 bg-white px-2 py-3 text-[13px] text-center">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             <button v-if="materialDetail?.cicsa_material_items?.length > 0"
                                                 type="button"
@@ -134,7 +134,7 @@
                                             </button>
                                         </p>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             <button class="text-blue-900"
                                                 @click="openEditSotModal(item.id, materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
@@ -154,7 +154,7 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="materials.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="materials.links" />
             </div>
         </div>
@@ -232,17 +232,17 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, i) in form.cicsa_material_items" :key="i" class="text-gray-700">
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.unit }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <div class="flex justify-center">
                                                 <input required type="number" min="0"
                                                     v-model="form.cicsa_material_items[i]['quantity']"
@@ -250,7 +250,7 @@
                                                     class="block  text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                             </div>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <button type="button" @click="delete_material(i)"
                                                 class="text-blue-900 whitespace-no-wrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
