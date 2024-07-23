@@ -66,7 +66,7 @@
                 <div v-for="item in (props.search ? props.projects : projects.data)" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
-                        <h2 class="text-sm font-semibold mb-3">
+                        <h2 class="text-sm font-semibold mb-3 mr-3">
                             N° {{ item.code }}
                         </h2>
                         <div class="inline-flex justify-end items-start gap-x-2">
@@ -80,8 +80,12 @@
                             </button>
                             <Link :href="route('huawei.projects.toupdate', {huawei_project: item.id})"
                                 class="flex items-start">
-                            <PencilIcon class="h-4 w-4 text-teal-600" />
+                            <PencilIcon class="h-5 w-5 text-teal-600" />
                             </Link>
+                            <button @click.prevent="openCancelModal(item.id)" v-if="item.status"
+                                class="flex items-start">
+                                <NoSymbolIcon class="h-5 w-5 text-red-600" />
+                            </button>
                         </div>
                     </div>
                     <div class="flex gap-1">
@@ -118,6 +122,12 @@
                                 Asignar Productos
                             </Link>
                             <span v-else class="text-gray-400">Asignar Productos</span>
+                            <Link v-if="item.pre_report"
+                                :href="route('huawei.projects.earnings', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Ingresos
+                            </Link>
+                            <span v-else class="text-gray-400">Ingresos</span>
                             <Link v-if="item.pre_report"
                                 :href="route('huawei.projects.liquidations', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -161,6 +171,24 @@
                 </div>
             </div>
         </Modal>
+        <Modal :show="cancelModal" :maxWidth="'md'">
+            <!-- Contenido del modal cuando no hay empleados -->
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Seguro de cancelar el proyecto?
+                </h2>
+                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
+                <p class="mt-2 text-sm text-gray-500">
+                    ¿Está seguro de cancelar el proyecto? No se podrán deshacer los cambios.
+                </p>
+                <div class="mt-6 flex space-x-3 justify-end">
+                    <SecondaryButton type="button" @click="closeCancelModal"> Cancelar
+                    </SecondaryButton>
+                    <button class="rounded-md bg-red-600 px-2 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-transparent"
+                     type="button" @click="cancel_project()"> Aceptar </button>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -168,7 +196,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon } from '@heroicons/vue/24/outline';
+import { PencilIcon, NoSymbolIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
@@ -184,6 +212,7 @@ const props = defineProps({
 
 const liquidateModal = ref(false);
 const projectId = ref(null);
+const cancelModal = ref(false);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -211,10 +240,29 @@ const closeLiquidateModal = () => {
     liquidateModal.value = false;
 }
 
+const openCancelModal = (id) => {
+    projectId.value = id;
+    cancelModal.value = true;
+}
+
+const closeCancelModal = () => {
+    projectId.value = null;
+    cancelModal.value = false;
+}
+
 const liquidate = () => {
     router.put(route('huawei.projects.liquidateproject', {huawei_project: projectId.value}), null,{
         onSuccess: () => {
             closeLiquidateModal();
+            router.visit(route('huawei.projects'));
+        }
+    })
+}
+
+const cancel_project = () => {
+    router.put(route('huawei.projects.cancelproject', {huawei_project: projectId.value}), null,{
+        onSuccess: () => {
+            closeCancelModal();
             router.visit(route('huawei.projects'));
         }
     })

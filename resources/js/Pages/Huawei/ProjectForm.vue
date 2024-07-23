@@ -21,16 +21,6 @@
                         <div v-if="props.huawei_project" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mb-4">
                             <div class="sm:col-span-3">
                                 <InputLabel class="font-medium leading-6 text-gray-900">
-                                    Nombre Proyecto
-                                </InputLabel>
-                                <div class="mt-2">
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    {{ props.huawei_project.name }}
-                                </InputLabel>
-                                </div>
-                            </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel class="font-medium leading-6 text-gray-900">
                                     Site
                                 </InputLabel>
                                 <div class="mt-2">
@@ -61,7 +51,7 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-                            <div v-if="!props.huawei_project" class="sm:col-span-3">
+                            <div class="sm:col-span-3">
                                 <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre
                                 </InputLabel>
                                 <div class="mt-2">
@@ -109,7 +99,17 @@
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-6">
+                            <div class="sm:col-span-3">
+                                <InputLabel for="initial_amount" class="font-medium leading-6 text-gray-900">Monto Inicial
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="number" step="0.01" v-model="form.initial_amount" id="initial_amount"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    <InputError :message="form.errors.initial_amount" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
                                 <InputLabel for="name" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
@@ -257,7 +257,8 @@ const initialState = {
     huawei_site_id: '',
     ot: '',
     pre_report: null,
-    employees: []
+    employees: [],
+    initial_amount: ''
 }
 
 const form = useForm(
@@ -269,6 +270,7 @@ if (props.huawei_project) {
     form.huawei_site_id = props.huawei_project.huawei_site_id || '';
     form.description = props.huawei_project.description || '';
     form.ot = props.huawei_project.ot || '';
+    form.initial_amount = props.huawei_project.initial_amount || '';
     form.employees = props.huawei_project.huawei_project_employees ? props.huawei_project.huawei_project_employees.map(employee => ({
         id: employee.id,
         employee: employee.employee,

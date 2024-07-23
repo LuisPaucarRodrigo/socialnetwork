@@ -9,7 +9,9 @@
 
 
         <div class="min-w-full rounded-lg shadow">
+
             <div class="flex justify-between">
+                
                 <div class="flex space-x-4">
                     <FilterProcess :options="[
         'Asignación',
@@ -31,10 +33,15 @@
                     </button>
                 </div>
                 <div class="flex space-x-4">
-                    
-                        <TextInput type="text" v-model="filterForm.search" placeholder="Nombre,Cliente,Codigo" />
-                        
-                       
+                    <Link :href="route('cicsa.charge_areas.accpeted')"  
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    Cobrados
+                    </Link>
+                    <Link :href="route('cicsa.charge')"  
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                    Por Cobrar
+                    </Link>
+                    <TextInput type="text" v-model="filterForm.search" placeholder="Nombre,Cliente,Codigo" />
                     <SelectCicsaComponent currentSelect="Proceso" />
                 </div>
             </div>
@@ -107,7 +114,7 @@
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[120px]">
                                     <TableHeaderCicsaFilter label="Fecha de Asignación" labelClass="text-gray-600"
-                                         v-model="filterForm.assignation_date" />
+                                        v-model="filterForm.assignation_date" />
                                 </div>
                             </th>
                             <th ref="thProjectName"
@@ -137,7 +144,7 @@
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[120px]">
                                     <TableHeaderCicsaFilter label="Fecha Límite del Proyecto" labelClass="text-gray-600"
-                                         v-model="filterForm.project_deadline" />
+                                        v-model="filterForm.project_deadline" />
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Asignación')"
@@ -408,7 +415,7 @@
                                 class="border-b border-gray-200 px-2 py-2 text-[11px]">
                                 <p class="text-gray-900 text-center">{{
                                     formattedDate(item?.cicsa_feasibility?.feasibility_date)
-                                    }}</p>
+                                }}</p>
                             </td>
                             <td :class="stateClass(item?.cicsa_feasibility?.report)"
                                 v-if="checkVisibility('Factibilidad PINT y PEXT')"
@@ -471,8 +478,8 @@
                                 <p class="w-[200px] text-gray-900 text-center">
                                     {{ item?.cicsa_materials
                                         ?.filter(item => item?.user_name !== null)
-                                    .map(item => item.user_name)
-                                    .join(', ') }}
+                                        .map(item => item.user_name)
+                                        .join(', ') }}
                                 </p>
                             </td>
 
@@ -929,7 +936,7 @@ import Pagination from '@/Components/Pagination.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, Link } from '@inertiajs/vue3';
 import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils';

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/cicsa_process', [CicsaController::class, 'index'])->name('cicsa.index');
+Route::get('/cicsa_approve', [CicsaController::class, 'chargeCicsa'])->name('cicsa.charge');
 
 Route::any('/cicsa_assignation', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
 Route::delete('/cicsa_assignation/destroy/{ca_id}', [CicsaController::class, 'destroy'])->name('cicsa.assignation.destroy');
@@ -45,9 +46,7 @@ Route::post('/cicsa_service_orders/update/{cicsa_service_order_id}', [CicsaContr
 Route::any('/cicsa_charge_areas', [CicsaController::class, 'indexChargeArea'])->name('cicsa.charge_areas');
 Route::post('/cicsa_charge_areas/store/{cicsa_assignation_id?}', [CicsaController::class, 'storeChargeArea'])->name('cicsa.charge_areas.store');
 Route::post('/cicsa_charge_areas/update/{cicsa_charge_area}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
-
-
-
+Route::get('/cicsa_charge_areas/accepted/get', [CicsaController::class, 'getChargeAreaAccepted'])->name('cicsa.charge_areas.accpeted');
 
 //search
 
