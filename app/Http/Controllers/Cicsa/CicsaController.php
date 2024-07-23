@@ -61,13 +61,31 @@ class CicsaController extends Controller
                 'cicsa_charge_area'
             );
             
-        
+        if (!empty($request->assignation_date)) {
+            $assignationDate  = $request->assignation_date;
+            if (!empty($request->project_deadline)) {
+                $deadLineDate  = $request->project_deadline;
+                $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate)
+                    ->where('project_deadline', '<', $deadLineDate);
+            } else {
+                $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate);
+            }
+        }
+        if (!empty($request->project_deadline)) {
+            $selectedPS = $request->project_deadline;
+            $projectsCicsa = $projectsCicsa->where('project_deadline', '<', $request->project_deadline);
+        }
 
         if (!empty($request->search)) {
             $search = $request->search;
-            $projectsCicsa = $projectsCicsa->where('project_name', 'like', "%$search%")
-                                    ->orWhere('project_code', 'like', "%$search%")
-                                    ->orWhere('cpe', 'like', "%$search%");
+            $searchTerms = explode(' ', $search);
+            $projectsCicsa = $projectsCicsa->where(function ($query) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $query->where('project_name', 'like', "%$term%")
+                    ->orWhere('project_code', 'like', "%$term%")
+                    ->orWhere('cpe', 'like', "%$term%");
+                }
+            });
         }
 
         $projectsCicsa = $projectsCicsa->get();
@@ -86,20 +104,7 @@ class CicsaController extends Controller
                 return in_array($item->cicsa_charge_status, $selectedPS);
             });
         }
-        if (!empty($request->assignation_date)) {
-            $assignationDate  = $request->assignation_date;
-            if (!empty($request->project_deadline)) {
-                $deadLineDate  = $request->project_deadline;
-                $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate)
-                    ->where('project_deadline', '<', $deadLineDate);
-            } else {
-                $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate);
-            }
-        }
-        if (!empty($request->project_deadline)) {
-            $selectedPS = $request->project_deadline;
-            $projectsCicsa = $projectsCicsa->where('project_deadline', '<', $request->project_deadline);
-        }
+        
         
         return response()->json($projectsCicsa->values()->all(), 200);
     }
