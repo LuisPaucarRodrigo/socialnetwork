@@ -24,9 +24,6 @@ use App\Models\CicsaPurchaseOrderValidation;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\HeadingRowImport;
-use Monolog\Handler\IFTTTHandler;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class CicsaController extends Controller
@@ -34,16 +31,34 @@ class CicsaController extends Controller
     public function index()
     {
         $projects = CicsaAssignation::orderBy('assignation_date', 'desc')
-            ->with(
-                'cicsa_feasibility.cicsa_feasibility_materials',
-                'cicsa_materials.cicsa_material_items',
-                'cicsa_installation.cicsa_installation_materials',
-                'cicsa_purchase_order',
-                'cicsa_purchase_order_validation',
-                'cicsa_service_order',
-                'cicsa_charge_area'
-            )
-            ->paginate(10);
+    ->where(function ($query) {
+        // Registros que no tienen la relación cicsa_charge_area
+        $query->whereDoesntHave('cicsa_charge_area')
+              ->orWhere(function ($query) {
+                  // Registros que tienen la relación cicsa_charge_area pero al menos uno de los campos invoice_number, invoice_date o amount es NULL
+                  $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                      $subQuery->where(function ($subQuery) {
+                          $subQuery->whereNull('invoice_number')
+                                   ->orWhereNull('invoice_date')
+                                   ->orWhereNull('amount');
+                      })
+                      ->whereNull('deposit_date'); // Asegura que deposit_date sea NULL
+                  });
+              });
+    })
+    ->with(
+        'cicsa_feasibility.cicsa_feasibility_materials',
+        'cicsa_materials.cicsa_material_items',
+        'cicsa_installation.cicsa_installation_materials',
+        'cicsa_purchase_order',
+        'cicsa_purchase_order_validation',
+        'cicsa_service_order',
+        'cicsa_charge_area'
+    )
+    ->paginate(10);
+
+
+
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects
         ]);
@@ -51,7 +66,20 @@ class CicsaController extends Controller
 
     public function search(Request $request)
     {
-        $projectsCicsa =  CicsaAssignation::orderBy('assignation_date', 'desc')
+        $projectsCicsa = CicsaAssignation::orderBy('assignation_date', 'desc')
+            ->where(function ($query) {
+                $query->whereDoesntHave('cicsa_charge_area')
+                    ->orWhere(function ($query) {
+                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                            $subQuery->where(function ($subQuery) {
+                                $subQuery->whereNull('invoice_number')
+                                        ->orWhereNull('invoice_date')
+                                        ->orWhereNull('amount');
+                            })
+                            ->whereNull('deposit_date'); // Asegura que deposit_date sea NULL
+                        });
+                    });
+            })
             ->with(
                 'cicsa_feasibility.cicsa_feasibility_materials',
                 'cicsa_materials.cicsa_material_items',
@@ -61,11 +89,11 @@ class CicsaController extends Controller
                 'cicsa_service_order',
                 'cicsa_charge_area'
             );
-            
+
         if (!empty($request->assignation_date)) {
-            $assignationDate  = $request->assignation_date;
+            $assignationDate = $request->assignation_date;
             if (!empty($request->project_deadline)) {
-                $deadLineDate  = $request->project_deadline;
+                $deadLineDate = $request->project_deadline;
                 $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate)
                     ->where('project_deadline', '<', $deadLineDate);
             } else {
@@ -83,14 +111,14 @@ class CicsaController extends Controller
             $projectsCicsa = $projectsCicsa->where(function ($query) use ($searchTerms) {
                 foreach ($searchTerms as $term) {
                     $query->where('project_name', 'like', "%$term%")
-                    ->orWhere('project_code', 'like', "%$term%")
-                    ->orWhere('cpe', 'like', "%$term%");
+                        ->orWhere('project_code', 'like', "%$term%")
+                        ->orWhere('cpe', 'like', "%$term%");
                 }
             });
         }
 
         $projectsCicsa = $projectsCicsa->get();
-    
+
 
 
         if (count($request->project_status) < 3) {
@@ -105,8 +133,8 @@ class CicsaController extends Controller
                 return in_array($item->cicsa_charge_status, $selectedPS);
             });
         }
-        
-        
+
+
         return response()->json($projectsCicsa->values()->all(), 200);
     }
 
@@ -562,22 +590,22 @@ class CicsaController extends Controller
         $charge_areas = CicsaAssignation::with('cicsa_charge_area')->get()->filter(function ($assignation) {
             return $assignation->cicsa_charge_area !== null && $assignation->cicsa_charge_area->state === 'Pagado';
         });
-    
+
         // Paginar manualmente la colección filtrada
         $perPage = 10; // Número de elementos por página
         $page = request()->input('page', 1); // Obtener la página actual
         $total = $charge_areas->count(); // Contar el total de elementos
-    
+
         $currentPageItems = $charge_areas->slice(($page - 1) * $perPage, $perPage)->values(); // Obtener los elementos para la página actual
-    
+
         $paginatedChargeAreas = new LengthAwarePaginator($currentPageItems, $total, $perPage, $page, [
             'path' => LengthAwarePaginator::resolveCurrentPath(),
             'pageName' => 'page',
         ]);
-    
+
         return Inertia::render('Cicsa/CicsaChargeAreasAccepted', [
             'charge_areas' => $paginatedChargeAreas
         ]);
     }
-    
+
 }
