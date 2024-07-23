@@ -47,7 +47,7 @@
             </div>
             <br>
             <div class="overflow-x-auto ">
-                <table class="w-full">
+                <table :class="['w-full', dataToRender.length===0 ? 'h-[50vh]' : '']">
                     <thead class="sticky top-0 z-40 ">
                         <tr class=" text-xs font-semibold uppercase tracking-wide text-white">
                             <th v-if="!checkVisibility('Asignación')"
@@ -75,7 +75,7 @@
                                 Instalación PINT y PEXT
                             </th>
                             <th
-                                class="w-[200px] bg-indigo-800  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                class="w-[150px] bg-indigo-800  border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                                 Estado del Proyecto
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
@@ -102,7 +102,7 @@
                                 class="bg-gray-700 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider border-r-2">
                             </th>
                             <th
-                                class="w-[200px] bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                class="w-[150px] bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                                 Estado de Cobranza
                             </th>
                             <th v-if="auth.user.role_id === 1"
@@ -769,22 +769,23 @@
 
                 </table>
             </div>
-            <table class="w-full">
-                <tbody>
-                    <tr class="text-gray-700 w-full">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 text-center">
-                                Total Registros: {{ dataToRender.length }}
-                            </p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 text-center">
-                                Monto Total: S/. {{ getTotalAmount(dataToRender) }}
-                            </p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+
+                <table class="w-full">
+                    <tbody>
+                        <tr class="text-gray-700 w-full">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Total Registros: {{ dataToRender.length }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 text-center">
+                                    Monto Total: S/. {{ getTotalAmount(dataToRender) }}
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
             <div v-if="!filterMode"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">

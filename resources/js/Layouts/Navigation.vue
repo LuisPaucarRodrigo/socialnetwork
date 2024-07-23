@@ -366,6 +366,11 @@ Usuarios
                         <Link class="w-full" :href="route('member.cicsa')">Alarmas Cicsa</Link>
                     </div>
                 </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="route('project.backlog.index')">
+                        Backlog
+                    </Link>
+                </MyTransition>
 
                 <template v-if="cicsashowingMembers && cicsashowingMembers7">
                     <div class="mb-4">

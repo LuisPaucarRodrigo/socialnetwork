@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
+use App\Http\Controllers\ProjectArea\BacklogController;
 use App\Http\Controllers\ProjectArea\CalendarController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
@@ -136,6 +137,13 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project-document-gestion/store/{path?}', [ProjectDocumentController::class, 'project_doc_store'])->name('project.document.store');
     Route::post('/project-document-gestion/folder_archive_delete', [ProjectDocumentController::class, 'project_doc_delete'])->name('project.folder.delete');
     Route::get('/project-document-gestion/folder_archive_dowload', [ProjectDocumentController::class, 'project_doc_download'])->name('project.folder.download');
+
+
+
+
+
+    Route::get('/project-backlog/', [BacklogController::class, 'index'])->name('project.backlog.index');
+
 
     
 });
