@@ -99,6 +99,21 @@ class CicsaController extends Controller
         return redirect()->back();
     }
 
+    public function chargeCicsa()
+    {
+        $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
+            ->with('cicsa_charge_area')
+            ->whereHas('cicsa_charge_area', function ($query) {
+                $query->whereNotNull('invoice_number')
+                    ->whereNotNull('invoice_date')
+                    ->whereNotNull('amount');
+            })
+            ->paginate(20);
+        return Inertia::render('Cicsa/CicsaCollect', [
+            'charge_areas' => $charge_areas,
+        ]);
+    }
+
     public function indexAssignation(Request $request)
     {
         if ($request->isMethod('get')) {
