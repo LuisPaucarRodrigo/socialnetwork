@@ -9,7 +9,9 @@
 
 
         <div class="min-w-full rounded-lg shadow">
+
             <div class="flex justify-between">
+                
                 <div class="flex space-x-4">
                     <FilterProcess :options="[
         'Asignación',
@@ -29,6 +31,9 @@
                         class="p-2 bg-transparent ring-1 ring-slate-300 rounded-md text-slate-900 hover:text-slate-400">
                         <ArrowPathIcon class="h-5 w-5 " />
                     </button>
+                </div>
+                <div>
+                    <Link class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowra" :href="route('cicsa.charge_areas.accpeted')">Cobrados</Link>
                 </div>
                 <SelectCicsaComponent currentSelect="Proceso" />
             </div>
@@ -905,7 +910,7 @@ import Pagination from '@/Components/Pagination.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, Link } from '@inertiajs/vue3';
 import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils';
