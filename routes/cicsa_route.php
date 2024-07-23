@@ -45,9 +45,7 @@ Route::post('/cicsa_service_orders/update/{cicsa_service_order_id}', [CicsaContr
 Route::any('/cicsa_charge_areas', [CicsaController::class, 'indexChargeArea'])->name('cicsa.charge_areas');
 Route::post('/cicsa_charge_areas/store/{cicsa_assignation_id?}', [CicsaController::class, 'storeChargeArea'])->name('cicsa.charge_areas.store');
 Route::post('/cicsa_charge_areas/update/{cicsa_charge_area}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
-
-
-
+Route::get('/cicsa_charge_areas/accepted/get', [CicsaController::class, 'getChargeAreaAccepted'])->name('cicsa.charge_areas.accpeted');
 
 //search
 

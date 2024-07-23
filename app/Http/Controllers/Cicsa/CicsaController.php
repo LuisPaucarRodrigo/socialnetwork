@@ -357,6 +357,8 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        return redirect()->back();
+
     }
 
     public function updateOCValidation(Request $request, CicsaPurchaseOrderValidation $cicsa_validation_id)
@@ -376,6 +378,8 @@ class CicsaController extends Controller
         $cicsa_validation_id->update(
             $validateData
         );
+        return redirect()->back();
+
     }
 
     // CicsaServiceOrder
@@ -418,6 +422,8 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        return redirect()->back();
+
     }
 
     public function updateServiceOrder(Request $request, CicsaServiceOrder $cicsa_service_order_id)
@@ -436,6 +442,8 @@ class CicsaController extends Controller
         $cicsa_service_order_id->update(
             $validateData
         );
+        return redirect()->back();
+
     }
 
     //CicsaChargeArea
@@ -485,6 +493,8 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
+        return redirect()->back();
+
     }
 
     public function updateChargeArea(Request $request, CicsaChargeArea $cicsa_charge_area)
@@ -508,5 +518,19 @@ class CicsaController extends Controller
         ]);
 
         $cicsa_charge_area->update($validateData);
+        return redirect()->back();
+
     }
+
+    public function getChargeAreaAccepted()
+    {
+        $charge_areas = CicsaAssignation::with('cicsa_charge_area')->get()->filter(function ($assignation) {
+            return $assignation->cicsa_charge_area !== null && $assignation->cicsa_charge_area->state === 'Pagado';
+        });
+    
+        return Inertia::render('Cicsa/CicsaChargeAreasAccepted', [
+            'charge_areas' => $charge_areas
+        ]);
+    }
+    
 }
