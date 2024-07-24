@@ -1,0 +1,35 @@
+const backlogHeaders = [
+    { headerName: "Código", headerRef: "thCode" },
+    { headerName: "Región", headerRef: "thRegion" },
+    { headerName: "Departamento", headerRef: "thDepartment" },
+    { headerName: "Nombre Site", headerRef: "thSiteName" },
+    { headerName: "Dirección", headerRef: "thAddress" },
+    { headerName: "Distrito", headerRef: "thDistrict" },
+    { headerName: "Tipo de Local", headerRef: "thLocalType" },
+    { headerName: "Tipo de Actividad", headerRef: "thActivityType" },
+    { headerName: "Task ID", headerRef: "thTaskID" },
+    { headerName: "Sistema", headerRef: "thSystem" },
+    { headerName: "Subsistema", headerRef: "thSubsystem" },
+    { headerName: "Elemento", headerRef: "thElement" },
+    { headerName: "Cantidad", headerRef: "thQuantity" },
+    { headerName: "Fecha del Evento", headerRef: "thEventDate" },
+    { headerName: "Fecha del Informe", headerRef: "thReportDate" },
+    { headerName: "Retraso", headerRef: "thDelay" },
+    { headerName: "Descripción del Evento y Detalle del Elemento", headerRef: "thEventDescElementDet" },
+    { headerName: "Estado", headerRef: "thStatus" },
+    { headerName: "Compromiso", headerRef: "thCommitment" },
+    { headerName: "Fecha de Cierre", headerRef: "thClosureDate" },
+    { headerName: "Responsable", headerRef: "thResponsible" },
+    { headerName: "Responsable CICSA", headerRef: "thCicsaResponsible" },
+    { headerName: "Criticidad", headerRef: "thCriticality" },
+    { headerName: "Área Comproco", headerRef: "thComprocoArea" },
+    { headerName: "Origen del Evento", headerRef: "thEventOrigin" },
+    { headerName: "Reportado por", headerRef: "thReportedBy" },
+    { headerName: "Informe", headerRef: "thReport" },
+    { headerName: "Correo Enviado", headerRef: "thEmailSent" },
+    { headerName: "Presupuesto/Cotización", headerRef: "thBudgetQuotation" },
+    { headerName: "Requiere Presupuesto", headerRef: "thRequiresBudget" }
+];
+
+
+export {backlogHeaders}
