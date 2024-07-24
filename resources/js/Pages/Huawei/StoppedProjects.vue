@@ -3,7 +3,7 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'huawei.projects'">
         <template #header>
-            Proyectos Huawei Detenidos
+            Proyectos Detenidos de Huawei
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex gap-4 justify-between items-center rounded-lg w-full">

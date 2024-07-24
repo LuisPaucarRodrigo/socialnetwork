@@ -27,7 +27,7 @@
                   <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Monto Inicial</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          huawei_project.initial_amount }}</td>
+          huawei_project.initial_amount.toFixed(2) }}</td>
                   </tr>
                   <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Ingresos</td>
@@ -64,7 +64,7 @@
         </div>
         <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
           <div class="w-full lg:w-1/2">
-            <h3 class="text-lg font-semibold mb-5">Resumen de Gastos e Ingresos</h3>
+            <h3 class="text-lg font-semibold mb-5">Resumen de Gastos</h3>
             <div class="overflow-x-auto ring-1 ring-gray-200">
               <table class="w-full whitespace-no-wrap">
                 <thead>
