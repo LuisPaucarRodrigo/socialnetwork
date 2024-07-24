@@ -42,6 +42,9 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::put('huawei/projects/{huawei_project}/liquidate/put', [HuaweiProjectController::class, 'liquidateProject'])->name('huawei.projects.liquidateproject');
     Route::put('huawei/projects/{huawei_project}/cancel/put', [HuaweiProjectController::class, 'cancelProject'])->name('huawei.projects.cancelproject');
     Route::get('huawei/projects/balance/{huawei_project}/get', [HuaweiProjectController::class, 'projectBalance'])->name('huawei.projects.balance');
+    Route::get('huawei/projects/stopped/get', [HuaweiProjectController::class, 'showStoppedProjects'])->name('huawei.projects.stopped');
+    Route::put('huawei/projects/stopped/{huawei_project}/put', [HuaweiProjectController::class, 'resumeProject'])->name('huawei.projects.stopped.resume');
+    Route::get('huawei/projects/stopped/{request}/search', [HuaweiProjectController::class, 'searchStoppedProjects'])->name('huawei.projects.stopped.search');
 
     //sites
     Route::get('huawei/sites/get', [HuaweiProjectController::class, 'getSites'])->name('huawei.sites');
