@@ -16,7 +16,7 @@ class BacklogController extends Controller
 
     public function autocomplete(Request $request) {
         $query = $request->input('query');
-        $items = BacklogSite::where('site_name', 'like', "%{$query}%")->get();
+        $items = BacklogSite::where('site_name', 'like', "%{$query}%")->orWhere('site_id', 'like', "%{$query}%")->get();
         return response()->json($items);
     }
 }

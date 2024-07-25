@@ -45,7 +45,7 @@
                                 ]"
                                 @dblclick="
                                     b_item.editable
-                                        ? editCell(key, b_key)
+                                        ? editCell(key, b_key, b_item.propType)
                                         : null
                                 "
                             >
@@ -109,7 +109,7 @@
                                                         )
                                                     "
                                                 >
-                                                    {{ item.site_name }}
+                                                    {{ item.site_name }} - {{ item.site_id }}
                                                 </li>
                                             </ul>
                                         </transition>
@@ -273,7 +273,6 @@ function addBacklogRow() {
     backlogsToRender.value.unshift({});
 }
 
-
 function getProplabel(item, b_item) {
     let itemProps = b_item.propName.split("."); // Cambié el nombre de la variable local
     let value = item;
@@ -334,24 +333,26 @@ const editingCells = ref({});
 function isEditing(key, b_key) {
     return editingCells.value[`${key}-${b_key}`] === true;
 }
-function editCell(key, b_key) {
+function editCell(key, b_key, propType) {
     editingCells.value[`${key}-${b_key}`] = true;
-    activateAutocomplete(key, b_key);
+    propType === "autocomplete" && activateAutocomplete(key, b_key);
     nextTick(() => {
         const input = document.getElementById(`${key}-${b_key}`);
         if (input) {
             input.focus();
         }
+        if (propType === "autocomplete")
+            input.value =
+                backlogsToRender.value[key]?.backlog_site?.site_id ?? "";
     });
 }
 
 function saveEdit(key, b_key) {
     deactivateAutocomplete();
     delete editingCells.value[`${key}-${b_key}`];
-    console.log(backlogsToRender.value[key])
-    
 }
 
+//edit cells autocomplete
 const results = ref([]);
 const highlightedIndex = ref(-1);
 const showResults = ref(false);
@@ -360,7 +361,6 @@ const activeAutocomplete = ref(null);
 function activateAutocomplete(key, b_key) {
     activeAutocomplete.value = `${key}-${b_key}`;
 }
-
 function deactivateAutocomplete() {
     results.value = [];
     activeAutocomplete.value = null;
@@ -373,7 +373,6 @@ const searchItems = async (key, b_key) => {
         showResults.value = false;
         return;
     }
-
     try {
         const response = await axios.get(
             route("project.backlog.autocomplete"),
@@ -383,21 +382,24 @@ const searchItems = async (key, b_key) => {
         );
         results.value = response.data;
         showResults.value = true;
-        highlightedIndex.value = -1; // Reinicia la selección
+        highlightedIndex.value = -1;
     } catch (error) {
         console.error("Error fetching items:", error);
     }
 };
 
 const selectItem = (item, key, b_key) => {
-    console.log(item);
     if (item) {
         const input = document.getElementById(`${key}-${b_key}`);
         input.value = item.site_id;
         results.value = [];
         backlogsToRender.value[key].backlog_site = { ...item };
         backlogsToRender.value[key].backlog_site_id = item.id;
+    } else {
+        delete backlogsToRender.value[key].backlog_site;
+        delete backlogsToRender.value[key].backlog_site_id;
     }
+    saveEdit(key, b_key);
 };
 
 const selectHighlightedItem = (key, b_key) => {
@@ -406,6 +408,8 @@ const selectHighlightedItem = (key, b_key) => {
         highlightedIndex.value < results.value.length
     ) {
         selectItem(results.value[highlightedIndex.value], key, b_key);
+    } else {
+        selectItem(null, key, b_key);
     }
 };
 
