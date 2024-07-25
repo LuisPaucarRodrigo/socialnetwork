@@ -142,7 +142,8 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
 
 
-    Route::get('/project-backlog/', [BacklogController::class, 'index'])->name('project.backlog.index');
+    Route::get('/project-backlog', [BacklogController::class, 'index'])->name('project.backlog.index');
+    Route::get('/project-backlog/autcomplete', [BacklogController::class, 'autocomplete'])->name('project.backlog.autocomplete');
 
 
     
