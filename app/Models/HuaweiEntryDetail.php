@@ -16,7 +16,9 @@ class HuaweiEntryDetail extends Model
         'huawei_material_id',
         'huawei_equipment_serie_id',
         'quantity',
-        'unit_price'
+        'unit_price',
+        'assigned_diu',
+        'observation'
     ];
 
     protected $appends = [

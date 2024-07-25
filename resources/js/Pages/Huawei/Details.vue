@@ -1,6 +1,6 @@
 <template>
     <Head title="Detalles"/>
-    <AuthenticatedLayout :redirectRoute="'huawei.inventory.show'">
+    <AuthenticatedLayout :redirectRoute="{route: props.equipment ? 'huawei.inventory.show' : 'huawei.inventory.show', params: {equipment: 1} }">
         <template #header>
             Detalles
         </template>
@@ -37,6 +37,9 @@
                                         OT del Proyecto
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        DIU Asignada
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Número de Guía de Entrada
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -49,7 +52,10 @@
                                         N° Serie Ingresada
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                                        Observaciones
+                                        Observaciones de Ingreso
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        Observaciones del Equipo
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                     </th>
@@ -77,11 +83,13 @@
                                         <span>-</span>
                                         </template>
                                     </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.assigned_diu }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_equipment_serie?.serie_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                         <div v-if="item.state == 'Disponible'" class="flex items-center">
                                             <button @click.prevent="openRefundModal(item.id)" class="text-blue-600 hover:underline mr-2">

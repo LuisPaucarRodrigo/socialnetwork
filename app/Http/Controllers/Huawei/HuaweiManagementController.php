@@ -188,7 +188,9 @@ class HuaweiManagementController extends Controller
                             'huawei_entry_id' => $huawei_entry->id,
                             'huawei_equipment_serie_id' => $new_serie->id,
                             'quantity' => 1,
-                            'unit_price' => $equipment['unit_price']
+                            'unit_price' => $equipment['unit_price'],
+                            'assigned_diu' => $equipment['assigned_diu'],
+                            'observation' => $equipment['observation']
                         ]);
                     }
 
@@ -211,7 +213,9 @@ class HuaweiManagementController extends Controller
                             'huawei_entry_id' => $huawei_entry->id,
                             'huawei_equipment_serie_id' => $new_serie->id,
                             'quantity' => 1,
-                            'unit_price' => $equipment['unit_price']
+                            'unit_price' => $equipment['unit_price'],
+                            'assigned_diu' => $equipment['assigned_diu'],
+                            'observation' => $equipment['observation']
                         ]);
                     }
                 }

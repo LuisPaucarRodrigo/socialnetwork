@@ -41,6 +41,7 @@ class HuaweiProjectController extends Controller
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                 });
@@ -59,6 +60,7 @@ class HuaweiProjectController extends Controller
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                   });
@@ -135,6 +137,7 @@ class HuaweiProjectController extends Controller
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                   });
@@ -180,7 +183,8 @@ class HuaweiProjectController extends Controller
             'ot' => 'required',
             'pre_report' => 'nullable',
             'employees' => 'nullable',
-            'initial_amount' => 'required'
+            'initial_amount' => 'required',
+            'assigned_diu' => 'required'
         ]);
 
         if ($request->hasFile('pre_report')){
@@ -195,7 +199,8 @@ class HuaweiProjectController extends Controller
                 'description' => $request->description,
                 'ot' => $request->ot,
                 'pre_report' => $documentName,
-                'initial_amount' => $request->initial_amount
+                'initial_amount' => $request->initial_amount,
+                'assigned_diu' => $request->assigned_diu
             ]);
         }else{
             $project = HuaweiProject::create([
@@ -203,7 +208,8 @@ class HuaweiProjectController extends Controller
                 'huawei_site_id' => $request->huawei_site_id,
                 'description' => $request->description,
                 'ot' => $request->ot,
-                'initial_amount' => $request->initial_amount
+                'initial_amount' => $request->initial_amount,
+                'assigned_diu' => $request->assigned_diu
             ]);
         }
 
@@ -232,7 +238,8 @@ class HuaweiProjectController extends Controller
             'description' => 'nullable',
             'ot' => 'required',
             'pre_report' => 'nullable',
-            'initial_amount' => 'required'
+            'initial_amount' => 'required',
+            'assigned_diu' => 'required'
         ]);
 
         if ($request->hasFile('pre_report')){
@@ -252,7 +259,8 @@ class HuaweiProjectController extends Controller
                 'description' => $request->description,
                 'ot' => $request->ot,
                 'pre_report' => $documentName,
-                'initial_amount' => $request->initial_amount
+                'initial_amount' => $request->initial_amount,
+                'assigned_diu' => $request->assigned_diu
             ]);
         }else{
             $huawei_project->update([
@@ -260,7 +268,8 @@ class HuaweiProjectController extends Controller
                 'huawei_site_id' => $request->huawei_site_id,
                 'description' => $request->description,
                 'ot' => $request->ot,
-                'initial_amount' => $request->initial_amount
+                'initial_amount' => $request->initial_amount,
+                'assigned_diu' => $request->assigned_diu
             ]);
         }
 
