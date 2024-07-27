@@ -9,7 +9,62 @@
       <br>
       <div class="flex flex-col space-y-24">
         <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+            <div class="w-full lg:w-1/2">
+                <h3 class="text-lg font-semibold mb-5">Resumen de Gastos e Ingresos</h3>
+            <div class="overflow-x-auto ring-1 ring-gray-200">
+              <table class="w-full whitespace-no-wrap">
+                <thead>
+                  <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <th
+                      class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                      Nombre</th>
+                    <th
+                      class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
+                      Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="text-gray-700">
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Monto Inicial</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+          huawei_project.initial_amount.toFixed(2) }}</td>
+                  </tr>
+                  <tr class="text-gray-700">
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Ingresos</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+          huawei_project.total_earnings.toFixed(2) }}</td>
+                  </tr>
+                  <tr class="text-gray-700">
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Gastos</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+          huawei_project.total_project_cost.toFixed(2) }}</td>
+                  </tr>
+                  <tr :class="{
+                        'text-gray-700': true,
+                        'bg-red-500': huawei_project.total_earnings - huawei_project.total_project_cost < 0,
+                        'bg-green-500': huawei_project.total_earnings - huawei_project.total_project_cost >= 0 && huawei_project.total_earnings - huawei_project.total_project_cost !== 0,
+                        'bg-gray-100': huawei_project.total_earnings - huawei_project.total_project_cost === 0
+                    }">
+                        <td class="border-b border-gray-200 px-3 py-3 text-sm font-black text-black">Estado Actual</td>
+                        <td class="border-b border-gray-200 px-3 py-3 text-sm font-black text-black whitespace-nowrap text-right">
+                            S/. {{ (huawei_project.total_earnings - huawei_project.total_project_cost).toFixed(2) }}
+                        </td>
+                    </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="w-full lg:w-1/2 flex flex-col items-center">
+          <h3 class="text-lg font-semibold mb-5 lg:hidden">Resumen de Gastos e Ingresos</h3>
+          <div class="relative h-96 w-full">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+        </div>
+        <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
           <div class="w-full lg:w-1/2">
+            <h3 class="text-lg font-semibold mb-5">Resumen de Gastos</h3>
             <div class="overflow-x-auto ring-1 ring-gray-200">
               <table class="w-full whitespace-no-wrap">
                 <thead>
@@ -63,48 +118,6 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
-          <div class="w-full lg:w-1/2">
-            <div class="overflow-x-auto ring-1 ring-gray-200">
-              <table class="w-full whitespace-no-wrap">
-                <thead>
-                  <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    <th
-                      class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                      Nombre</th>
-                    <th
-                      class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
-                      Monto</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Monto Inicial</td>
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          huawei_project.initial_amount }}.00</td>
-                  </tr>
-                  <tr class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Ingresos</td>
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          huawei_project.total_earnings.toFixed(2) }}</td>
-                  </tr>
-                  <tr class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Gastos</td>
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          huawei_project.total_project_cost.toFixed(2) }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="flex flex-col items-center lg:w-1/2 mx-auto">
-          <h2 class="text-lg font-semibold mb-4">Ingresos y Costos</h2>
-          <div class="relative h-96 w-full">
-            <canvas id="barChart"></canvas>
-          </div>
-        </div>
-        </div>
-
       </div>
     </AuthenticatedLayout>
   </template>
@@ -165,14 +178,14 @@
                 label: 'Montos', // Etiqueta común para todos los datos
                 data: [huawei_project.initial_amount, huawei_project.total_earnings, huawei_project.total_project_cost],
                 backgroundColor: [
-                    'rgba(75, 192, 192, 0.2)', // Color para 'Monto Inicial'
-                    'rgba(54, 162, 235, 0.2)', // Color para 'Ingresos Totales'
-                    'rgba(255, 99, 132, 0.2)'  // Color para 'Gastos Totales'
+                'rgba(75, 192, 192, 0.2)',  // Azul para 'Monto Inicial'
+                'rgba(75, 192, 75, 0.2)',   // Verde para 'Total de Ingresos'
+                'rgba(255, 99, 71, 0.2)'    // Rojo más intenso para 'Total de Gastos'
                 ],
                 borderColor: [
-                    'rgba(75, 192, 192, 1)', // Color del borde para 'Monto Inicial'
-                    'rgba(54, 162, 235, 1)', // Color del borde para 'Ingresos Totales'
-                    'rgba(255, 99, 132, 1)'  // Color del borde para 'Gastos Totales'
+                'rgba(75, 192, 192, 1)',  // Azul para 'Monto Inicial'
+                'rgba(75, 192, 75, 1)',   // Verde para 'Total de Ingresos'
+                'rgba(255, 99, 71, 1)'    // Rojo más intenso para 'Total de Gastos'
                 ],
                 borderWidth: 2 // Grosor de las barras
             }]

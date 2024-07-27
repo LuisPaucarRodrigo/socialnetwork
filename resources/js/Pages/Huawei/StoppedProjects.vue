@@ -1,9 +1,9 @@
 <template>
 
-    <Head title="Proyectos Liquidados" />
+    <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'huawei.projects'">
         <template #header>
-            Proyectos Liquidados de Huawei
+            Proyectos Detenidos de Huawei
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex gap-4 justify-between items-center rounded-lg w-full">
@@ -32,9 +32,15 @@
                 <div v-for="item in (props.search ? props.projects : projects.data)" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
-                        <h2 class="text-sm font-semibold mb-3">
+                        <h2 class="text-sm font-semibold mb-3 mr-3">
                             N° {{ item.code }}
                         </h2>
+                        <div class="inline-flex justify-end items-start gap-x-2">
+                            <button @click.prevent="openResumeModal(item.id)" v-if="item.status == null"
+                                class="flex items-start">
+                                <PlayIcon class="h-5 w-5 text-green-600" />
+                            </button>
+                        </div>
                     </div>
                     <div class="flex gap-1">
                         <p class="text-sm font-semibold text-black">Nombre: </p>
@@ -54,25 +60,34 @@
                             {{ item.ot }}
                         </h3>
                     </div>
+
                     <div
                         class="text-gray-500 text-sm mt-1">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link
+                            <Link v-if="item.pre_report"
                                 :href="route('huawei.projects.additionalcosts', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Costos Adicionales
                             </Link>
-                            <Link
+                            <span v-else class="text-gray-400">Costos Adicionales</span>
+                            <Link v-if="item.pre_report"
                                 :href="route('huawei.projects.resources', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Productos
                             </Link>
-
-                            <Link
+                            <span v-else class="text-gray-400">Asignar Productos</span>
+                            <Link v-if="item.pre_report"
+                                :href="route('huawei.projects.earnings', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Ingresos
+                            </Link>
+                            <span v-else class="text-gray-400">Ingresos</span>
+                            <Link v-if="item.pre_report"
                                 :href="route('huawei.projects.liquidations', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Liquidaciones
                             </Link>
+                            <span v-else class="text-gray-400">Liquidaciones</span>
                             <Link v-if="item.pre_report"
                                 :href="route('huawei.projects.balance', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -93,7 +108,24 @@
                 <pagination :links="props.projects.links" />
             </div>
         </div>
-
+        <Modal :show="resumeModal" :maxWidth="'md'">
+            <!-- Contenido del modal cuando no hay empleados -->
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Seguro de reanudar el proyecto?
+                </h2>
+                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
+                <p class="mt-2 text-sm text-gray-500">
+                    EL proyecto volverá a la vista principal y podrá ser manejado con normalidad.
+                </p>
+                <div class="mt-6 flex space-x-3 justify-end">
+                    <SecondaryButton type="button" @click="closeResumeModal"> Cancelar
+                    </SecondaryButton>
+                    <button class="rounded-md bg-indigo-600 px-2 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-transparent"
+                     type="button" @click="resume_project()"> Aceptar </button>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -101,8 +133,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon } from '@heroicons/vue/24/outline';
+import { PencilIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     projects: Object,
@@ -110,6 +146,9 @@ const props = defineProps({
     userPermissions:Array,
     search: String,
 })
+
+const projectId = ref(null);
+const resumeModal = ref(false);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -121,10 +160,29 @@ const searchForm = useForm({
 
 const search = () => {
     if (searchForm.searchTerm == ''){
-        router.visit(route('huawei.projects.history'))
+        router.visit(route('huawei.projects.stopped'))
     }else{
-        router.visit(route('huawei.projects.search.history', {request: searchForm.searchTerm}));
+        router.visit(route('huawei.projects.stopped.search', {request: searchForm.searchTerm}));
     }
+}
+
+const openResumeModal = (id) => {
+    projectId.value = id;
+    resumeModal.value = true;
+}
+
+const closeResumeModal = () => {
+    projectId.value = null;
+    resumeModal.value = false;
+}
+
+const resume_project = () => {
+    router.put(route('huawei.projects.stopped.resume', {huawei_project: projectId.value}), null,{
+        onSuccess: () => {
+            closeResumeModal();
+            router.visit(route('huawei.projects.stopped'));
+        }
+    })
 }
 
 </script>
