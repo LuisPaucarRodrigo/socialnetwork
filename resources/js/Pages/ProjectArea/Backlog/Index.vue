@@ -71,6 +71,7 @@
                                           "
                                           @blur="saveEdit(key, b_key)"
                                           @keydown.enter.prevent="
+                                                isEnterPressed = true;
                                               selectHighlightedItem(
                                                   key,
                                                   b_key
@@ -102,6 +103,7 @@
                                                       },
                                                   ]"
                                                   @mousedown="
+                                                  isEnterPressed = true;
                                                       selectItem(
                                                           item,
                                                           key,
@@ -349,7 +351,10 @@ function editCell(key, b_key, propType) {
 }
 
 const isEnterPressed = ref(false);
+
 function saveEdit(key, b_key) {
+    console.log('--------------> ', isEnterPressed)
+
     if (isEmpty(backlogsToRender.value[key])){
         delete editingCells.value[`${key}-${b_key}`];
         return
