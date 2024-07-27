@@ -40,7 +40,7 @@
                               v-for="(b_item, b_key) in backlogItems"
                               :key="b_key"
                               :class="[
-                                  'border border-gray-200 px-2 bg-white py-1 text-[12px]',
+                                  'border border-gray-200 px-2 bg-white py-2 text-[12px]',
                                   item?.id ? '' : 'h-16', b_item.editable ? 'cursor-pointer' : ''
                               ]"
                               @dblclick="
@@ -120,7 +120,7 @@
                                       :id="`${key}-${b_key}`"
                                       v-model="item[b_item.propName]"
                                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                      @keydown.enter="saveEdit(key, b_key)"
+                                      @keydown.enter="isEnterPressed = true; saveEdit(key, b_key)"
                                       @blur="saveEdit(key, b_key)"
                                   >
                                       <option
@@ -155,7 +155,7 @@
                                       :id="`${key}-${b_key}`"
                                       v-model="item[b_item.propName]"
                                       @blur="saveEdit(key, b_key)"
-                                      @keydown.enter="saveEdit(key, b_key)"
+                                      @keydown.enter="isEnterPressed = true; saveEdit(key, b_key)"
                                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
                                   <textarea
@@ -164,7 +164,7 @@
                                       :id="`${key}-${b_key}`"
                                       v-model="item[b_item.propName]"
                                       @blur="saveEdit(key, b_key)"
-                                      @keydown.enter="saveEdit(key, b_key)"
+                                      @keydown.enter="isEnterPressed = true; saveEdit(key, b_key)"
                                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
                               </template>
@@ -210,9 +210,9 @@
               </table>
           </div>
 
-          <!-- <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-              <pagination :links="backlogsToRender.links" />
-          </div> -->
+          <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+              <pagination :links="inertiaBacklogs.links" />
+          </div>
       </div>
 
       <Modal :show="showSotDeleteModal" @close="closeSotDeleteModal">
@@ -264,10 +264,11 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 import { backlogHeaders, backlogItems } from "./BacklogConstants";
 
-const { auth } = defineProps({
+const { inertiaBacklogs, auth } = defineProps({
+  inertiaBacklogs: Object,
   auth: Object,
 });
-const backlogsToRender = ref([]);
+const backlogsToRender = ref(inertiaBacklogs.data);
 
 function addBacklogRow() {
   backlogsToRender.value.unshift({});
@@ -314,7 +315,7 @@ function closeSotDeleteModal() {
 }
 function deleteSot() {
   router.delete(
-      route("socialnetwork.sot.delete", { sot_id: sotToDelete.value }),
+      route("project.backlog.destroy", { backlog_id: sotToDelete.value }),
       {
           onSuccess: () => {
               backlogsToRender.value.splice(i, 1);
@@ -347,10 +348,27 @@ function editCell(key, b_key, propType) {
   });
 }
 
+const isEnterPressed = ref(false);
 function saveEdit(key, b_key) {
-  deactivateAutocomplete();
-  delete editingCells.value[`${key}-${b_key}`];
+    if (isEmpty(backlogsToRender.value[key])){
+        delete editingCells.value[`${key}-${b_key}`];
+        return
+    }
+    if (isEnterPressed.value) {
+        isEnterPressed.value = false;
+        delete editingCells.value[`${key}-${b_key}`];
+        return;
+    }
+    deactivateAutocomplete();
+    storeBacklog(key)
+    delete editingCells.value[`${key}-${b_key}`];
 }
+
+async function storeBacklog (key) {
+    const res = await axios.post(route('project.backlog.store'), backlogsToRender.value[key]) 
+    backlogsToRender.value[key] = res.data.backlog_res
+}
+
 
 //edit cells autocomplete
 const results = ref([]);
@@ -428,6 +446,10 @@ document.addEventListener("mousedown", (event) => {
       deactivateAutocomplete();
   }
 });
+
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
 </script>
 
 <style scoped>
