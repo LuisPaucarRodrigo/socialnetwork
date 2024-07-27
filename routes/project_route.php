@@ -144,6 +144,8 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     Route::get('/project-backlog', [BacklogController::class, 'index'])->name('project.backlog.index');
     Route::get('/project-backlog/autcomplete', [BacklogController::class, 'autocomplete'])->name('project.backlog.autocomplete');
+    Route::post('/project-backlog/store', [BacklogController::class, 'store'])->name('project.backlog.store');
+    Route::delete('/project-backlog/delete/{backlog_id}', [BacklogController::class, 'destroy'])->name('project.backlog.destroy');
 
 
     
