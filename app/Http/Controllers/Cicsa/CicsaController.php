@@ -289,10 +289,9 @@ class CicsaController extends Controller
             if ($request->hasFile('document')) {
                 $import = new CicsaMaterialImport();
                 Excel::import($import, $request->file('document'));
-                // $data = $import->getData();
+                $data = $import->getData();
                 return response()->json(
-                    // $data->toArray()
-                    
+                    $data->toArray()
                 );
             } else {
                 return response()->json([
