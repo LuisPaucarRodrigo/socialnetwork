@@ -41,5 +41,6 @@ class BacklogController extends Controller
     public function destroy ($backlog_id) {
         $backlog = Backlog::find($backlog_id);
         $backlog->delete();
+        return response()->json(['message'=>'success'], 200);
     }
 }

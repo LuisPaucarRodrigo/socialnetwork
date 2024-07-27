@@ -186,7 +186,7 @@
                                       type="button"
                                       @click="
                                           item?.id
-                                              ? openSotDeleteModal(item.id)
+                                              ? openSotDeleteModal(item.id, key)
                                               : deleteBacklogRow(key)
                                       "
                                   >
@@ -257,10 +257,8 @@ import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { Head, router } from "@inertiajs/vue3";
 import { ref, nextTick } from "vue";
-import SelectSNSotComponent from "@/Components/SelectSNSotComponent.vue";
 import { formattedDate } from "@/utils/utils";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TestChildCompo from "@/Components/TestChildCompo.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
@@ -277,7 +275,7 @@ function addBacklogRow() {
 }
 
 function getProplabel(item, b_item) {
-  let itemProps = b_item.propName.split("."); // Cambié el nombre de la variable local
+  let itemProps = b_item.propName.split("."); 
   let value = item;
   for (let part of itemProps) {
       value = value?.[part];
@@ -306,30 +304,33 @@ function deleteBacklogRow(i) {
 //Delete With ID
 const showSotDeleteModal = ref(false);
 const sotToDelete = ref(null);
+const backlogKey = ref(null);
 const confirmSotDelete = ref(false);
-function openSotDeleteModal(id) {
+function openSotDeleteModal(id, key) {
   sotToDelete.value = id;
+  backlogKey.value = key;
   showSotDeleteModal.value = true;
 }
 function closeSotDeleteModal() {
   sotToDelete.value = null;
   showSotDeleteModal.value = false;
 }
+
 function deleteSot() {
-  router.delete(
-      route("project.backlog.destroy", { backlog_id: sotToDelete.value }),
-      {
-          onSuccess: () => {
-              backlogsToRender.value.splice(i, 1);
-              closeSotDeleteModal();
-              confirmSotDelete.value = true;
-              setTimeout(() => {
-                  confirmSotDelete.value = false;
-              }, 1500);
-          },
-      }
-  );
+    deleteBacklog()
 }
+async function deleteBacklog () {
+    const res = await axios.delete(route('project.backlog.destroy', { backlog_id: sotToDelete.value }))
+    if (res.data.message === 'success') {
+        deleteBacklogRow(backlogKey.value)
+        showSotDeleteModal.value = false
+        confirmSotDelete.value = true
+        setTimeout(()=>{
+            confirmSotDelete.value = false
+        }, 1500)
+    }
+}   
+
 
 //Editing Cells
 const editingCells = ref({});
@@ -353,8 +354,6 @@ function editCell(key, b_key, propType) {
 const isEnterPressed = ref(false);
 
 function saveEdit(key, b_key) {
-    console.log('--------------> ', isEnterPressed)
-
     if (isEmpty(backlogsToRender.value[key])){
         delete editingCells.value[`${key}-${b_key}`];
         return
