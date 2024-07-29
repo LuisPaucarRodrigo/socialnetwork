@@ -33,6 +33,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Numero de OC
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Validación
                             </th>
                             <th
@@ -69,7 +73,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in purchase_validations.data ?? purchase_validations" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in purchase_validations.data ?? purchase_validations" :key="item.id"
+                            class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
@@ -83,6 +88,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_purchase_order?.oc_number }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -142,7 +152,8 @@
                 </table>
             </div>
 
-            <div v-if="purchase_validations.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="purchase_validations.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="purchase_validations.links" />
             </div>
         </div>
@@ -269,7 +280,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -321,19 +332,21 @@ function openEditFeasibilityModal(cicsa_assignation_id, item) {
 }
 
 function submit() {
-    let url = form.id ? route('cicsa.purchase_orders.validation.update', { cicsa_validation_id: form.id }) : route('cicsa.purchase_orders.validation.store', { cicsa_assignation_id: form.cicsa_assignation_id });
+    let url = form.cicsa_assignation_id ? route('cicsa.purchase_orders.validation.storeOrUpdate', { cicsa_assignation_id: form.cicsa_assignation_id }) : route('cicsa.purchase_orders.validation.storeOrUpdate');
     form.post(url, {
         onSuccess: () => {
             closeAddAssignationModal()
             confirmUpdateAssignation.value = true
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
+                router.get(route('cicsa.purchase_orders.validation'))
             }, 1500)
         },
         onError: (e) => {
             console.error(e)
         }
     })
+
 }
 
 const search = async ($search) => {
