@@ -93,20 +93,20 @@
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
           huawei_project.materials_liquidated.toFixed(2) }}</td>
                   </tr>
+                  <tr class="text-gray-700 bg-blue-400">
+                    <td class="border-b border-gray-200 px-3 py-3 text-sm font-black text-black">TOTAL</td>
+                    <td class="border-b border-gray-200 px-3 py-3 text-black font-black text-sm whitespace-nowrap text-right">S/. {{
+          huawei_project.total_project_cost.toFixed(2) }}</td>
+                  </tr>
                   <tr class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Equipos en Proyecto</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Referencia de Equipos en Proyecto</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
           huawei_project.equipments_in_project.toFixed(2) }}</td>
                   </tr>
                   <tr class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Equipos Liquidados</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Referencia de Equipos Liquidados</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
           huawei_project.equipments_liquidated.toFixed(2) }}</td>
-                  </tr>
-                  <tr class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">TOTAL</td>
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          huawei_project.total_project_cost.toFixed(2) }}</td>
                   </tr>
                 </tbody>
               </table>

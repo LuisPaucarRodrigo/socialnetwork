@@ -150,6 +150,6 @@ class HuaweiProject extends Model
 
     public function getTotalProjectCostAttribute ()
     {
-        return $this->additional_cost_total + $this->materials_in_project + $this->materials_liquidated + $this->equipments_in_project + $this->equipments_liquidated;
+        return $this->additional_cost_total + $this->materials_in_project + $this->materials_liquidated;
     }
 }
