@@ -91,7 +91,7 @@
                                         <span>-</span>
                                         </template>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><p v-if="item.assigned_diu">{{ item.assigned_diu }}</p><button @click.prevent="openAssignModal(item.id)" class="text-blue-600 font-black hover:underline" v-else>Asignar DIU</button></td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openAssignModal(item.id)" class="text-blue-600 font-black hover:underline">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button></td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
@@ -413,7 +413,8 @@
     }
 
     const closeAssignModal = () => {
-        assignForm.huawei_entry_detail_id = '';
+        assignForm.reset();
+        assignForm.clearErrors();
         assignModal.value = false;
     }
 
