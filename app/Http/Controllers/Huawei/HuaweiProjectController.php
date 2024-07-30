@@ -562,15 +562,19 @@ class HuaweiProjectController extends Controller
                   });
             $resources = $query->paginate(10);
             $entryDetails = HuaweiEntryDetail::whereNull('huawei_material_id')
+                ->where('assigned_diu', $found_project->assigned_diu)
                 ->with('huawei_equipment_serie.huawei_equipment')
                 ->get()
                 ->filter(function ($detail) {
                     return $detail->state === 'Disponible';
                 });
+                $equipments = HuaweiEquipment::whereHas('huawei_equipment_series.huawei_entry_detail', function ($query) use ($found_project) {
+                    $query->where('assigned_diu', $found_project->assigned_diu);
+                })->get();
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'equipments' => HuaweiEquipment::all(),
+                'equipments' => $equipments,
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
