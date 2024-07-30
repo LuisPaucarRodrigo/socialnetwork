@@ -381,10 +381,6 @@ class HuaweiManagementController extends Controller
 
         $entry_detail = HuaweiEntryDetail::find($request->huawei_entry_detail_id);
 
-        if ($entry_detail->assigned_diu){
-            abort(403, 'Este equipo ya esta asignado a una DIU');
-        }
-
         $entry_detail->update([
             'assigned_diu' => $request->assigned_diu
         ]);
