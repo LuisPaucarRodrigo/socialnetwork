@@ -33,7 +33,6 @@ class LocalDriveController extends Controller
         }
         $currentPath = $root ? $this->main_directory : $path;
         $folders_archives = $this->scanFolder(storage_path('app/' . $currentPath));
-        
         return Inertia::render('DocumentManagement/LocalDrive/LocalDrive', [
             'folders_archives' => $folders_archives,
             'currentPath' => $currentPath,

@@ -50,80 +50,80 @@
           <thead>
             <tr class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                <TableHeaderFilter label="Zona" :options="zones" v-model="filterForm.selectedZones" width="w-32" />
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones" v-model="filterForm.selectedZones" width="w-32" />
               </th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                <TableHeaderFilter label="Tipo de Gasto" :options="expenseTypes" v-model="filterForm.selectedExpenseTypes"
-                  width="w-44" />
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes" v-model="filterForm.selectedExpenseTypes"
+                  width="w-48" />
               </th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                <TableHeaderFilter label="Tipo de Documento" :options="docTypes" v-model="filterForm.selectedDocTypes"
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes" v-model="filterForm.selectedDocTypes"
                   width="w-32" />
               </th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                <div class="flex justify-between items-center">
-                  <p>RUC</p>
-                </div>
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                  RUC
               </th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                <div class="flex justify-between items-center">
-                  <p>Proveedor</p>
-                </div>
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                  Proveedor
               </th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                 Numero de Doc</th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                 Fecha de Documento</th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-8 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                 Monto</th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                 Archivo</th>
               <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                 Descripción</th>
               <th v-if="auth.user.role_id === 1 && project_id.status === null"
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                 Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700">
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.zone }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.expense_type }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.ruc }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item?.provider?.company_name }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">{{ item.zone }}</td>
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                <p class="w-48 break-words">
+                  {{ item.expense_type }}
+                </p>
               </td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">{{ item.type_doc }}</td>
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">{{ item.ruc }}</td>
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">{{ item?.provider?.company_name }}</td>
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">{{ item.doc_number }}</td>
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">{{ formattedDate(item.doc_date) }}
+              </td>
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
                 S/. {{ (item.amount).toFixed(2) }}
               </td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                 <button v-if="item.photo" @click="handlerPreview(item.id)">
   
-                  <EyeIcon class="w-5 h-5 text-teal-600" />
+                  <EyeIcon class="w-4 h-4 text-teal-600" />
                 </button>
                 <span v-else>-</span>
               </td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
+              <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">{{ item.description }}</td>
               <td v-if="auth.user.role_id === 1 && project_id.status === null"
-                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                 <div class="flex items-center">
                   <button @click="openEditAdditionalModal(item)" class="text-amber-600 hover:underline mr-2">
-                    <PencilSquareIcon class="h-5 w-5 ml-1" />
+                    <PencilSquareIcon class="h-4 w-4 ml-1" />
                   </button>
                   <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
-                    <TrashIcon class="h-5 w-5" />
+                    <TrashIcon class="h-4 w-4" />
                   </button>
                 </div>
               </td>
@@ -194,6 +194,7 @@
                       <option>Combustible</option>
                       <option>Combustible GEP</option>
                       <option>Terceros</option>
+                      <option>Viáticos</option>
                       <option>Otros</option>
                     </select>
                     <InputError :message="form.errors.expense_type" />
@@ -324,6 +325,7 @@
                       <option>Combustible</option>
                       <option>Combustible GEP</option>
                       <option>Terceros</option>
+                      <option>Viáticos</option>
                       <option>Otros</option>
                     </select>
                     <InputError :message="form.errors.expense_type" />
@@ -627,6 +629,7 @@
       'Combustible GEP',
       'Habitaciones',
       'Terceros',
+      'Viáticos',
       'Otros'],
     selectedDocTypes: ['Efectivo',
       'Deposito',
@@ -644,6 +647,7 @@
     'Combustible GEP',
     'Habitaciones',
     'Terceros',
+    'Viáticos',
     'Otros']
   const docTypes = ['Efectivo',
     'Deposito',
