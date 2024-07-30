@@ -144,7 +144,8 @@ class HuaweiManagementController extends Controller
                         'huawei_entry_id' => $huawei_entry->id,
                         'huawei_material_id' => $material['material_id'], // Asegúrate de usar 'huawei_material_id' aquí
                         'quantity' => $material['quantity'],
-                        'unit_price' => $material['unit_price']
+                        'unit_price' => $material['unit_price'],
+                        'observation' => $material['observation']
                     ]);
                 } else {
                     $new_material = HuaweiMaterial::create([
@@ -157,7 +158,8 @@ class HuaweiManagementController extends Controller
                         'huawei_entry_id' => $huawei_entry->id,
                         'huawei_material_id' => $new_material->id, // Usar el ID del nuevo material creado
                         'quantity' => $material['quantity'],
-                        'unit_price' => $material['unit_price']
+                        'unit_price' => $material['unit_price'],
+                        'observation' => $material['observation']
                     ]);
                 }
             }
@@ -285,7 +287,18 @@ class HuaweiManagementController extends Controller
                 ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
                 ->get();
 
+            $diuQuery = HuaweiEntryDetail::query()
+                ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
+                    $query->where('huawei_equipment_id', $id);
+                })->whereNull('huawei_material_id')
+                ->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
+                ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+                ->get();
+
             $guideNumberQuery = HuaweiEntryDetail::query()
+                ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
+                    $query->where('huawei_equipment_id', $id);
+                })->whereNull('huawei_material_id')
                 ->whereHas('huawei_entry', function ($query) use ($searchTerm) {
                     $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
                 })->whereNull('huawei_material_id')
@@ -293,6 +306,9 @@ class HuaweiManagementController extends Controller
                 ->get();
 
             $projectQuery = HuaweiEntryDetail::query()
+                ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
+                    $query->where('huawei_equipment_id', $id);
+                })->whereNull('huawei_material_id')
                 ->whereHas('huawei_project_resources', function ($query) use ($searchTerm) {
                     $query->whereHas('huawei_project', function ($query) use ($searchTerm) {
                         $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
@@ -305,6 +321,9 @@ class HuaweiManagementController extends Controller
                 ->get();
 
             $queryByCode = HuaweiEntryDetail::query()
+                ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
+                    $query->where('huawei_equipment_id', $id);
+                })->whereNull('huawei_material_id')
                 ->whereNull('huawei_material_id')
                 ->with(['huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project'])
                 ->get()
@@ -320,6 +339,7 @@ class HuaweiManagementController extends Controller
             // Fusionar todas las colecciones de resultados en una sola y eliminar duplicados
             $mergedResults = collect()
                 ->merge($equipmentSerieQuery)
+                ->merge($diuQuery)
                 ->merge($guideNumberQuery)
                 ->merge($projectQuery)
                 ->merge($queryByCode)
@@ -342,6 +362,7 @@ class HuaweiManagementController extends Controller
                 ->get();
         }
 
+
         // Retornar los resultados fusionados
         return Inertia::render('Huawei/Details', [
             'entries' => $mergedResults,
@@ -349,6 +370,26 @@ class HuaweiManagementController extends Controller
             'id' => $id,
             'search' => $request
         ]);
+    }
+
+    public function assignDIU (Request $request)
+    {
+        $request->validate([
+            'huawei_entry_detail_id' => 'required',
+            'assigned_diu' => 'required'
+        ]);
+
+        $entry_detail = HuaweiEntryDetail::find($request->huawei_entry_detail_id);
+
+        if ($entry_detail->assigned_diu){
+            abort(403, 'Este equipo ya esta asignado a una DIU');
+        }
+
+        $entry_detail->update([
+            'assigned_diu' => $request->assigned_diu
+        ]);
+
+        return redirect()->back();
     }
 
     public function refund(Request $request, $equipment = null)

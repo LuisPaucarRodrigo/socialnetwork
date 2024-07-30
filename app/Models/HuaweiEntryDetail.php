@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class HuaweiEntryDetail extends Model
 {
@@ -25,7 +26,8 @@ class HuaweiEntryDetail extends Model
         'state',
         'refund_quantity',
         'project_quantity',
-        'available_quantity'
+        'available_quantity',
+        'antiquation_state'
     ];
 
     public function huawei_entry()
@@ -117,4 +119,28 @@ class HuaweiEntryDetail extends Model
         return $this->quantity - $refundQuantity - $projectQuantity;
     }
 
+    public function getAntiquationStateAttribute ()
+    {
+        if ($this->state == 'En Proyecto' || $this->state == 'Devuelto'){
+            return 'none';
+        }
+        $entryDate = Carbon::parse($this->huawei_entry->entry_date);
+
+        // Obtener la fecha actual
+        $now = Carbon::now();
+
+        // Calcular la diferencia en meses
+        $diffInMonths = $entryDate->diffInMonths($now);
+
+        // Determinar el estado basado en la diferencia en meses
+        if ($diffInMonths < 3) {
+            return 'Green'; // Menos de 3 meses
+        } elseif ($diffInMonths >= 3 && $diffInMonths < 6) {
+            return 'Yellow'; // Entre 3 y 6 meses
+        } elseif ($diffInMonths >= 6 && $diffInMonths < 9) {
+            return 'Orange'; // Entre 6 y 9 meses
+        } else {
+            return 'Red'; // Mayor de 9 meses
+        }
+    }
 }

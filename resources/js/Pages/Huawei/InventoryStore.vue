@@ -79,6 +79,9 @@
                         Cantidad
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                        Observación
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                       </th>
                     </tr>
                   </thead>
@@ -90,6 +93,7 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brand_models.find(model => model.id == item.brand_model)?.name }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit_price ? item.unit_price : '-' }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
                           <button @click.prevent="delete_material(index)" class="text-red-600 hover:underline mr-2"><TrashIcon class="h-5 w-5" /></button>
@@ -246,6 +250,11 @@
                 <div class="col-span-1">
                     <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
                     <input type="number" min="0" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                </div>
+
+                <div class="col-span-2">
+                    <InputLabel class="mb-1" for="unit_price">Observación</InputLabel>
+                    <textarea v-model="materialForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
                 </div>
               </div>
 
@@ -539,7 +548,8 @@
       brand_model: '',
       quantity: '',
       unit_price: '',
-      material_id: ''
+      material_id: '',
+      observation: ''
     });
 
     const equipmentForm = useForm({
@@ -636,7 +646,8 @@
             brand_model: materialForm.brand_model,
             quantity: materialForm.quantity,
             unit_price: materialForm.unit_price,
-            material_id: materialForm.material_id
+            material_id: materialForm.material_id,
+            observation: materialForm.observation
             });
 
             materialForm.reset();
