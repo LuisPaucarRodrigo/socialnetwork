@@ -17,6 +17,10 @@
                             class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                             Historial
                         </Link>
+                        <Link :href="route('huawei.projects.stopped')" type="button"
+                            class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                            Detenidos
+                        </Link>
                         <div class="sm:hidden">
                             <dropdown align="left">
                                 <template #trigger>
@@ -38,6 +42,9 @@
                                         </Link>
                                         <Link :href="route('huawei.projects.history')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Historial
+                                        </Link>
+                                        <Link :href="route('huawei.projects.stopped')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Detenidos
                                         </Link>
                                     </div>
                                     </div>
@@ -84,7 +91,7 @@
                             </Link>
                             <button @click.prevent="openCancelModal(item.id)" v-if="item.status"
                                 class="flex items-start">
-                                <NoSymbolIcon class="h-5 w-5 text-red-600" />
+                                <PauseIcon class="h-5 w-5 text-red-600" />
                             </button>
                         </div>
                     </div>
@@ -175,16 +182,16 @@
             <!-- Contenido del modal cuando no hay empleados -->
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
-                    ¿Seguro de cancelar el proyecto?
+                    ¿Seguro de pausar el proyecto?
                 </h2>
                 <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
                 <p class="mt-2 text-sm text-gray-500">
-                    ¿Está seguro de cancelar el proyecto? No se podrán deshacer los cambios.
+                    ¿Está seguro de pausar el proyecto? Podrá reanudarlo después.
                 </p>
                 <div class="mt-6 flex space-x-3 justify-end">
                     <SecondaryButton type="button" @click="closeCancelModal"> Cancelar
                     </SecondaryButton>
-                    <button class="rounded-md bg-red-600 px-2 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-transparent"
+                    <button class="rounded-md bg-indigo-600 px-2 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-transparent"
                      type="button" @click="cancel_project()"> Aceptar </button>
                 </div>
             </div>
@@ -196,7 +203,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon, NoSymbolIcon } from '@heroicons/vue/24/outline';
+import { PencilIcon, PauseIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';

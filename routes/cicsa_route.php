@@ -32,8 +32,8 @@ Route::post('/cicsa_installation/store/{ci_id?}', [CicsaController::class, 'upda
 // CicsaPurchaseOrderValidations
 
 Route::any('/cicsa_purchase_order_validation', [CicsaController::class, 'indexOCValidation'])->name('cicsa.purchase_orders.validation');
-Route::post('/cicsa_purchase_order_validation/store/{cicsa_assignation_id?}', [CicsaController::class, 'storeOCValidation'])->name('cicsa.purchase_orders.validation.store');
-Route::post('/cicsa_purchase_order_validation/store/{cicsa_validation_id}', [CicsaController::class, 'updateOCValidation'])->name('cicsa.purchase_orders.validation.update');
+Route::post('/cicsa_purchase_order_validation/store/{cicsa_assignation_id?}', [CicsaController::class, 'storeOrUpdateOCValidation'])->name('cicsa.purchase_orders.validation.storeOrUpdate');
+// Route::post('/cicsa_purchase_order_validation/store/{cicsa_validation_id}', [CicsaController::class, 'updateOCValidation'])->name('cicsa.purchase_orders.validation.update');
 
 // CicsaServiceOrders
 

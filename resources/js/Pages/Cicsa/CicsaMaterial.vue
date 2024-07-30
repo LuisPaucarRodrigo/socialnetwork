@@ -9,7 +9,7 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre" />
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
                     <SelectCicsaComponent currentSelect="Materiales" />
                 </div>
             </div>
@@ -21,11 +21,18 @@
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Codigo de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                CPE
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -44,6 +51,16 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_name }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.project_code }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.cpe }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
@@ -154,7 +171,8 @@
                 </table>
             </div>
 
-            <div v-if="materials.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="materials.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="materials.links" />
             </div>
         </div>
