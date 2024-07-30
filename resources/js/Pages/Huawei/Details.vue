@@ -1,6 +1,6 @@
 <template>
     <Head title="Detalles"/>
-    <AuthenticatedLayout :redirectRoute="{route: props.equipment ? 'huawei.inventory.show' : 'huawei.inventory.show', params: {equipment: 1} }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.inventory.show', params: props.equipment ? { equipment: 1 } : { equipment: null } }">
         <template #header>
             Detalles
         </template>
@@ -24,13 +24,13 @@
                         <table class="w-full whitespace-no-wrap">
                             <thead>
                                 <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center min-w-[200px]">
                                         Descripción del Equipo
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Estado
                                     </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center min-w-[200px]">
                                         Proyecto
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -63,7 +63,15 @@
                             </thead>
                             <tbody>
                                 <tr v-for="item in (props.search ? props.entries : entries.data)" :key="item.id" class="text-gray-700">
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_equipment_serie?.huawei_equipment?.name }}</td>
+                                    <td class="border-b border-gray-200 px-5 py-5 text-sm text-center"
+                                     :class="{
+                                        'bg-green-400': item.antiquation_state === 'Green',
+                                        'bg-yellow-400': item.antiquation_state === 'Yellow',
+                                        'bg-orange-400': item.antiquation_state === 'Orange',
+                                        'bg-red-400': item.antiquation_state === 'Red',
+                                        'bg-white': item.antiquation_state === 'none'
+                                    }">
+                                    {{ item.huawei_equipment_serie?.huawei_equipment?.name }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                         <template v-if="item.state == 'En Proyecto'">
@@ -83,7 +91,7 @@
                                         <span>-</span>
                                         </template>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.assigned_diu }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><p v-if="item.assigned_diu">{{ item.assigned_diu }}</p><button @click.prevent="openAssignModal(item.id)" class="text-blue-600 font-black hover:underline" v-else>Asignar DIU</button></td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
@@ -140,7 +148,10 @@
                                         Precio Unitario de Entrada
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                                        Observaciones
+                                        Observaciones del Material
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        Observaciones de Ingreso
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                     </th>
@@ -158,6 +169,7 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                             <div class="flex items-center">
@@ -221,6 +233,10 @@
                                             OT
                                         </th>
                                         <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                            DIU del Proyecto
+                                        </th>
+                                        <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         </th>
                                     </tr>
@@ -246,6 +262,7 @@
                                         <th
                                             class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         </th>
+
                                         <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                             {{  project_resource.huawei_project_liquidation ? project_resource.huawei_project_liquidation.liquidated_quantity : project_resource.quantity }}
@@ -259,6 +276,10 @@
                                         <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center">
                                             {{  project_resource.huawei_project.ot  }}
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center">
+                                            {{  project_resource.huawei_project.assigned_diu  }}
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -304,8 +325,31 @@
           </div>
         </Modal>
 
+        <Modal :show="assignModal">
+          <div class="p-6">
+            <h2 class="text-base font-medium leading-7 text-gray-900">Asignar DIU</h2>
+            <form @submit.prevent="assignDiu" class="grid grid-cols-2 gap-3">
+
+              <!-- Tercera Fila -->
+              <div class="col-span-2 grid grid-cols-2 gap-3">
+                <div class="col-span-2">
+                    <InputLabel class="mb-1" for="quantity">DIU</InputLabel>
+                    <input type="text" v-model="assignForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                </div>
+              </div>
+
+              <!-- Botones de Acción -->
+              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
+                <SecondaryButton @click="closeAssignModal">Cancelar</SecondaryButton>
+                <PrimaryButton type="submit" :class="{ 'opacity-25': assignForm.processing }">Asignar</PrimaryButton>
+              </div>
+            </form>
+          </div>
+        </Modal>
+
         <SuccessOperationModal :confirming="showRefundConfirm" title="Éxito" message="La devolución se registró correctamente." />
         <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'La cantidad solicitada para devolución excede a la disponible.'" />
+        <SuccessOperationModal :confirming="confirmAssign" title="Éxito" message="Se asignó la DIU correctamente." />
 
     </AuthenticatedLayout>
 </template>
@@ -335,6 +379,8 @@
     const showRefundConfirm = ref(false);
     const showErrorModal = ref(false);
     const huaweiProject = ref(null);
+    const assignModal = ref(false);
+    const confirmAssign = ref(false);
 
     const searchForm = useForm({
         searchTerm: props.search ? props.search : '',
@@ -354,6 +400,33 @@
     const closeRefundModal = () => {
         refundForm.reset();
         refundModal.value = false;
+    }
+
+    const assignForm = useForm({
+        huawei_entry_detail_id: '',
+        assigned_diu: ''
+    })
+
+    const openAssignModal = (id) => {
+        assignForm.huawei_entry_detail_id = id;
+        assignModal.value = true;
+    }
+
+    const closeAssignModal = () => {
+        assignForm.huawei_entry_detail_id = '';
+        assignModal.value = false;
+    }
+
+    const assignDiu = () => {
+        assignForm.post(route('huawei.inventory.details.assigndiu'), {
+            onSuccess: () => {
+                closeAssignModal();
+                confirmAssign.value = true;
+                setTimeout(() => {
+                    confirmAssign.value = false;
+                }, 2000);
+            }
+        })
     }
 
     const toggleDetails = (item) => {

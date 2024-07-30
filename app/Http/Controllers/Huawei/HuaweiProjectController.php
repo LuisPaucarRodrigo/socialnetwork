@@ -634,15 +634,19 @@ class HuaweiProjectController extends Controller
             });
             $resources = $query->get();
             $entryDetails = HuaweiEntryDetail::whereNull('huawei_material_id')
+                ->where('assigned_diu', $found_project->assigned_diu)
                 ->with('huawei_equipment_serie.huawei_equipment')
                 ->get()
                 ->filter(function ($detail) {
                     return $detail->state === 'Disponible';
                 });
+                $equipments = HuaweiEquipment::whereHas('huawei_equipment_series.huawei_entry_detail', function ($query) use ($found_project) {
+                    $query->where('assigned_diu', $found_project->assigned_diu);
+                })->get();
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'equipments' => HuaweiEquipment::all(),
+                'equipments' => $equipments,
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
@@ -682,15 +686,21 @@ class HuaweiProjectController extends Controller
     public function storeProjectResource ($huawei_project, Request $request, $equipment = null)
     {
         $found_project = HuaweiProject::find($huawei_project);
+        $found_detail = HuaweiEntryDetail::find($request->huawei_entry_detail_id);
 
         if (!$found_project->status || !$found_project->pre_report){
             abort(403, 'Acción no permitida');
         }
 
         if ($equipment){
+
             $request->validate([
                 'huawei_entry_detail_id' => 'required',
             ]);
+
+            if ($found_detail->assigned_diu !== $found_project->assigned_diu){
+                abort(403, 'Equipo no asignado al proyecto');
+            }
 
             HuaweiProjectResource::create([
                 'huawei_project_id' => $huawei_project,
