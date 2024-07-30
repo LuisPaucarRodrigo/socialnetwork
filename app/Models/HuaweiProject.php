@@ -17,7 +17,8 @@ class HuaweiProject extends Model
         'ot',
         'pre_report',
         'status',
-        'initial_amount'
+        'initial_amount',
+        'assigned_diu'
     ];
 
     protected $appends = [

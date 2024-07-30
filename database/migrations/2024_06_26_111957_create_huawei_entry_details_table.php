@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('huawei_equipment_serie_id')->nullable()->constrained('huawei_equipment_series')->onDelete('cascade');
             $table->integer('quantity');
             $table->double('unit_price')->nullable();
+            $table->string('assigned_diu')->nullable();
+            $table->text('observation')->nullable();
             $table->timestamps();
         });
     }

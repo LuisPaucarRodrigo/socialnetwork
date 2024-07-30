@@ -110,6 +110,16 @@
                             </div>
 
                             <div class="sm:col-span-3">
+                                <InputLabel for="assigned_diu" class="font-medium leading-6 text-gray-900">DIU del Proyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.assigned_diu" id="assigned_diu"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    <InputError :message="form.errors.assigned_diu" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-6">
                                 <InputLabel for="name" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
@@ -258,7 +268,8 @@ const initialState = {
     ot: '',
     pre_report: null,
     employees: [],
-    initial_amount: ''
+    initial_amount: '',
+    assigned_diu: ''
 }
 
 const form = useForm(
@@ -271,6 +282,7 @@ if (props.huawei_project) {
     form.description = props.huawei_project.description || '';
     form.ot = props.huawei_project.ot || '';
     form.initial_amount = props.huawei_project.initial_amount || '';
+    form.assigned_diu = props.huawei_project.assigned_diu || '';
     form.employees = props.huawei_project.huawei_project_employees ? props.huawei_project.huawei_project_employees.map(employee => ({
         id: employee.id,
         employee: employee.employee,

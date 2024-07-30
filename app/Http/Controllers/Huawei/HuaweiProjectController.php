@@ -41,6 +41,7 @@ class HuaweiProjectController extends Controller
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                 });
@@ -59,6 +60,7 @@ class HuaweiProjectController extends Controller
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                   });
@@ -135,6 +137,7 @@ class HuaweiProjectController extends Controller
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                   });
@@ -180,7 +183,8 @@ class HuaweiProjectController extends Controller
             'ot' => 'required',
             'pre_report' => 'nullable',
             'employees' => 'nullable',
-            'initial_amount' => 'required'
+            'initial_amount' => 'required',
+            'assigned_diu' => 'required'
         ]);
 
         if ($request->hasFile('pre_report')){
@@ -195,7 +199,8 @@ class HuaweiProjectController extends Controller
                 'description' => $request->description,
                 'ot' => $request->ot,
                 'pre_report' => $documentName,
-                'initial_amount' => $request->initial_amount
+                'initial_amount' => $request->initial_amount,
+                'assigned_diu' => $request->assigned_diu
             ]);
         }else{
             $project = HuaweiProject::create([
@@ -203,7 +208,8 @@ class HuaweiProjectController extends Controller
                 'huawei_site_id' => $request->huawei_site_id,
                 'description' => $request->description,
                 'ot' => $request->ot,
-                'initial_amount' => $request->initial_amount
+                'initial_amount' => $request->initial_amount,
+                'assigned_diu' => $request->assigned_diu
             ]);
         }
 
@@ -232,7 +238,8 @@ class HuaweiProjectController extends Controller
             'description' => 'nullable',
             'ot' => 'required',
             'pre_report' => 'nullable',
-            'initial_amount' => 'required'
+            'initial_amount' => 'required',
+            'assigned_diu' => 'required'
         ]);
 
         if ($request->hasFile('pre_report')){
@@ -252,7 +259,8 @@ class HuaweiProjectController extends Controller
                 'description' => $request->description,
                 'ot' => $request->ot,
                 'pre_report' => $documentName,
-                'initial_amount' => $request->initial_amount
+                'initial_amount' => $request->initial_amount,
+                'assigned_diu' => $request->assigned_diu
             ]);
         }else{
             $huawei_project->update([
@@ -260,7 +268,8 @@ class HuaweiProjectController extends Controller
                 'huawei_site_id' => $request->huawei_site_id,
                 'description' => $request->description,
                 'ot' => $request->ot,
-                'initial_amount' => $request->initial_amount
+                'initial_amount' => $request->initial_amount,
+                'assigned_diu' => $request->assigned_diu
             ]);
         }
 
@@ -553,15 +562,19 @@ class HuaweiProjectController extends Controller
                   });
             $resources = $query->paginate(10);
             $entryDetails = HuaweiEntryDetail::whereNull('huawei_material_id')
+                ->where('assigned_diu', $found_project->assigned_diu)
                 ->with('huawei_equipment_serie.huawei_equipment')
                 ->get()
                 ->filter(function ($detail) {
                     return $detail->state === 'Disponible';
                 });
+                $equipments = HuaweiEquipment::whereHas('huawei_equipment_series.huawei_entry_detail', function ($query) use ($found_project) {
+                    $query->where('assigned_diu', $found_project->assigned_diu);
+                })->get();
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'equipments' => HuaweiEquipment::all(),
+                'equipments' => $equipments,
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
@@ -621,15 +634,19 @@ class HuaweiProjectController extends Controller
             });
             $resources = $query->get();
             $entryDetails = HuaweiEntryDetail::whereNull('huawei_material_id')
+                ->where('assigned_diu', $found_project->assigned_diu)
                 ->with('huawei_equipment_serie.huawei_equipment')
                 ->get()
                 ->filter(function ($detail) {
                     return $detail->state === 'Disponible';
                 });
+                $equipments = HuaweiEquipment::whereHas('huawei_equipment_series.huawei_entry_detail', function ($query) use ($found_project) {
+                    $query->where('assigned_diu', $found_project->assigned_diu);
+                })->get();
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'equipments' => HuaweiEquipment::all(),
+                'equipments' => $equipments,
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
@@ -669,15 +686,21 @@ class HuaweiProjectController extends Controller
     public function storeProjectResource ($huawei_project, Request $request, $equipment = null)
     {
         $found_project = HuaweiProject::find($huawei_project);
+        $found_detail = HuaweiEntryDetail::find($request->huawei_entry_detail_id);
 
         if (!$found_project->status || !$found_project->pre_report){
             abort(403, 'Acción no permitida');
         }
 
         if ($equipment){
+
             $request->validate([
                 'huawei_entry_detail_id' => 'required',
             ]);
+
+            if ($found_detail->assigned_diu !== $found_project->assigned_diu){
+                abort(403, 'Equipo no asignado al proyecto');
+            }
 
             HuaweiProjectResource::create([
                 'huawei_project_id' => $huawei_project,
