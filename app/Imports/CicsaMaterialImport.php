@@ -3,7 +3,13 @@
 namespace App\Imports;
 
 use App\Models\CicsaAssignation;
+use App\Models\CicsaChargeArea;
+use App\Models\CicsaFeasibility;
+use App\Models\CicsaInstallation;
 use App\Models\CicsaPurchaseOrder;
+use App\Models\CicsaPurchaseOrderValidation;
+use App\Models\CicsaSection;
+use App\Models\CicsaServiceOrder;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -25,7 +31,7 @@ class CicsaMaterialImport implements ToCollection, WithStartRow, WithLimit
 
     public function startRow(): int
     {
-        return 3; // Iniciar desde la tercera fila (puedes ajustarlo según tus necesidades).
+        return 2; // Iniciar desde la tercera fila (puedes ajustarlo según tus necesidades).
     }
 
     public function __construct()

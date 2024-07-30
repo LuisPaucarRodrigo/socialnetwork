@@ -88,6 +88,8 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
     Route::get('/management_employees/index-search', [ManagementEmployees::class, 'search'])->name('management.employees.search');
 
+    Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])->name('management.employees.happy.birthday');
+
     //Nomina
     Route::get('/management_employees/spreadsheets/{reentry?}', [SpreadsheetsController::class, 'index'])->name('spreadsheets.index');
     Route::get('/management_employees/spreadsheets/payroll/export', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
