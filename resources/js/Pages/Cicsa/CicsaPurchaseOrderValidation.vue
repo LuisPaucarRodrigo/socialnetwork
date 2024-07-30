@@ -9,7 +9,7 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
                     <SelectCicsaComponent currentSelect="Validación de OC" />
                 </div>
             </div>
@@ -346,7 +346,6 @@ function submit() {
             console.error(e)
         }
     })
-
 }
 
 const search = async ($search) => {

@@ -22,6 +22,7 @@ class LocalDriveController extends Controller
     {
         $root = $request->input('root');
         $path = $request->input('path');
+        dd($root,$path);
         $previousPath = '';
         if (!$root) {
             $lastSlashPosition = strrpos($path, '/');

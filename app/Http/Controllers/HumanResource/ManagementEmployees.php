@@ -15,6 +15,7 @@ use App\Models\Employee;
 use App\Models\Family;
 use App\Models\Health;
 use App\Models\Pension;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -371,6 +372,15 @@ class ManagementEmployees extends Controller
             'fired_date' => null,
             'days_taken' => 0,
             'state' => 'Active'
+        ]);
+    }
+
+    public function happy_birthday()
+    {   
+        $now = Carbon::now();
+        $data = Employee::where('birthdate','<=',$now->addDays(3))->get();
+        return response()->json([
+            'happyBirthday' => $data
         ]);
     }
 }
