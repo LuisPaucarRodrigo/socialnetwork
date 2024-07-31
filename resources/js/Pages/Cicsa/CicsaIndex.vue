@@ -59,8 +59,7 @@
             <div class="overflow-x-auto">
                 <table
                     :class="[
-                        'w-full',
-                        dataToRender.length === 0 ? 'h-[50vh]' : '',
+                        'w-full min-h-[50vh]',
                     ]"
                 >
                     <thead class="sticky top-0 z-40">
@@ -174,7 +173,7 @@
                                 ]"
                             >
                                 <div class="flex justify-center">
-                                    <p class="sm:w-[150px] w-[70px]">
+                                    <p class="sm:w-[250px] w-[70px]">
                                         Nombre del Proyecto
                                     </p>
                                 </div>
@@ -574,7 +573,7 @@
                             >
                                 <div class="flex justify-center">
                                     <p
-                                        class="sm:w-[150px] w-[70px] break-words text-gray-900 text-center"
+                                        class="sm:w-[250px] w-[70px] break-words text-gray-900 text-center"
                                     >
                                         {{ item.project_name }}
                                     </p>
@@ -1824,7 +1823,7 @@ function getTotalAmount(objArray) {
                 ? item?.cicsa_charge_area?.amount
                 : 0),
         0
-    );
+    ).toFixed(2);
 }
 
 //filter

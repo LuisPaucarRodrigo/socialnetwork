@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
+use App\Imports\CostsImport;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -142,5 +143,12 @@ class AdditionalCostsController extends Controller
 
     public function export($project_id) {
         return Excel::download(new AdditionalCostsExport($project_id), 'Gastos_Variables.xlsx');
+    }
+
+    public function import(Request $request, $project_id) {
+        $request->validate([
+            'import_file' => 'required|mimes:xlsx,csv',
+        ]);
+        return Excel::import(new CostsImport('AdditionalCost' ,$project_id), $request->file('import_file'));
     }
 }
