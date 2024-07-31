@@ -27,7 +27,7 @@ class HuaweiEntryDetail extends Model
         'refund_quantity',
         'project_quantity',
         'available_quantity',
-        'antiquation_state'
+        'antiquation_state',
     ];
 
     public function huawei_entry()
@@ -143,4 +143,5 @@ class HuaweiEntryDetail extends Model
             return 'Red'; // Mayor de 9 meses
         }
     }
+
 }

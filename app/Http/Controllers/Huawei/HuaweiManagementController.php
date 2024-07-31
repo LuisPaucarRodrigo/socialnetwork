@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Huawei;
 
+use App\Exports\HuaweiInventoryExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,17 +17,18 @@ use App\Models\HuaweiRefund;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HuaweiManagementController extends Controller
 {
     public function show ($equipment = null)
     {
-        if ($equipment){
+            if ($equipment){
             return Inertia::render('Huawei/Materials', [
                 'equipments' => HuaweiEquipment::with('huawei_equipment_series', 'brand_model.brand')->paginate(10),
                 'brand_models' => BrandModel::all(),
                 'brands' => Brand::all(),
-                'equipment' => $equipment
+                'equipment' => $equipment,
             ]);
         } else {
             return Inertia::render('Huawei/Materials', [
@@ -496,6 +498,11 @@ class HuaweiManagementController extends Controller
             'equipment' => $equipment,
             'search' => $request
         ]);
+    }
+
+    public function exportInventory ()
+    {
+        return Excel::download(new HuaweiInventoryExport(), 'Inventario Huawei.xlsx');
     }
 
 }

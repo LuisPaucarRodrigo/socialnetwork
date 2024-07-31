@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Huawei;
 
+use App\Exports\HuaweiProjectEarningsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\HuaweiProject;
@@ -17,6 +18,9 @@ use App\Models\HuaweiProjectEarning;
 use App\Models\HuaweiProjectLiquidation;
 use App\Models\HuaweiProjectResource;
 use Illuminate\Validation\Rule;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Models\HuaweiPriceGuide;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HuaweiProjectController extends Controller
 {
@@ -180,7 +184,7 @@ class HuaweiProjectController extends Controller
             'name' => 'required',
             'huawei_site_id' => 'required',
             'description' => 'nullable',
-            'ot' => 'required',
+            'ot' => 'nullable',
             'pre_report' => 'nullable',
             'employees' => 'nullable',
             'initial_amount' => 'required',
@@ -236,7 +240,7 @@ class HuaweiProjectController extends Controller
             'name' => 'required',
             'huawei_site_id' => 'required',
             'description' => 'nullable',
-            'ot' => 'required',
+            'ot' => 'nullable',
             'pre_report' => 'nullable',
             'initial_amount' => 'required',
             'assigned_diu' => 'required'
@@ -879,7 +883,7 @@ class HuaweiProjectController extends Controller
             return abort(403, 'Acción no permitida');
         }
 
-        $earnings = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->paginate(10);
+        $earnings = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->orderBy('updated_at', 'desc')->paginate(10);
         return Inertia::render('Huawei/ProjectEarnings', [
             'earnings' => $earnings,
             'huawei_project' => $huawei_project
@@ -896,10 +900,12 @@ class HuaweiProjectController extends Controller
         $query = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id);
 
             $query->where(function ($q) use ($searchTerm) {
-                $q->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"]);
+                $q->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(code) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(unit_price) LIKE ?', ["%{$searchTerm}%"]);
             });
 
-        $earnings = $query->get();
+        $earnings = $query->orderBy('updated_at', 'desc')->get();
 
         return Inertia::render('Huawei/ProjectEarnings', [
             'earnings' => $earnings,
@@ -917,11 +923,15 @@ class HuaweiProjectController extends Controller
         }
 
         $data = $request->validate([
-            'description' => 'nullable',
-            'amount' => 'required',
+            'description' => 'required',
+            'quantity' => 'required',
+            'unit_price' => 'required',
             'huawei_project_id' => 'required'
         ]);
 
+        $count = HuaweiProjectEarning::where('huawei_project_id', $request->huawei_project_id)->count();
+        $nextNumber = $count + 1;
+        $data['code'] = sprintf('COE-%04d', $nextNumber);
         HuaweiProjectEarning::create($data);
         return redirect()->back();
     }
@@ -935,8 +945,9 @@ class HuaweiProjectController extends Controller
         }
 
         $data = $request->validate([
-            'description' => 'nullable',
-            'amount' => 'required',
+            'description' => 'required',
+            'quantity' => 'required',
+            'unit_price' => 'required',
             'huawei_project_id' => 'required'
         ]);
 
@@ -955,5 +966,78 @@ class HuaweiProjectController extends Controller
 
         $huawei_project_earning->delete();
         return redirect()->back();
+    }
+
+    public function importEarnings ($huawei_project, Request $request)
+    {
+        $found_project = HuaweiProject::find($huawei_project);
+
+        if (!$found_project->pre_report || !$found_project->status) {
+            return abort(403, 'Acción no permitida');
+        }
+
+        // Validar que el archivo es un Excel
+        $data = $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+            'zone' => 'required'
+        ]);
+
+        // Manejar la carga del archivo
+        $document = $request->file('file');
+
+        // Leer el archivo Excel directamente desde el stream
+        $spreadsheet = IOFactory::load($document->getRealPath());
+
+        // Obtener la primera hoja
+        /** @var Worksheet $sheet */
+        $sheet = $spreadsheet->getSheet(0);
+
+        // Definir el rango de lectura: A1 hasta la última fila en la columna C
+        $startCell = 'A1';
+        $endCell = 'C' . $sheet->getHighestRow();
+        $range = "$startCell:$endCell";
+
+        // Leer el rango especificado
+        $data = $sheet->rangeToArray($range, null, true, true, true);
+
+        // Array para almacenar los objetos
+        $rowsAsObjects = [];
+
+        // Recorrer las filas y convertir a objetos
+        foreach ($data as $index => $row) {
+            // Saltar la primera fila si es el encabezado
+            if ($index == 1) continue;
+
+            $rowObject = (object)[
+                'code' => $row['A'],
+                'description' => $row['B'],
+                'quantity' => $row['C'],
+            ];
+
+            $rowsAsObjects[] = $rowObject;
+        }
+
+        foreach ($rowsAsObjects as $item) {
+            $priceGuide = HuaweiPriceGuide::where('code', $item->code)->first();
+            if ($priceGuide) {
+                $unitPriceField = 'b' . $request->zone;
+                $unitPrice = $priceGuide->$unitPriceField;
+
+                HuaweiProjectEarning::create([
+                    'code' => $item->code,
+                    'description' => $item->description,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $unitPrice,
+                    'huawei_project_id' => $huawei_project
+                ]);
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    public function exportEarnings (HuaweiProject $huawei_project)
+    {
+        return Excel::download(new HuaweiProjectEarningsExport($huawei_project->id), 'Trabajos_de_'. $huawei_project->assigned_diu .'.xlsx');
     }
 }
