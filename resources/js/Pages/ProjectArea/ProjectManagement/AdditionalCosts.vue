@@ -895,7 +895,7 @@
             </div>
         </Modal>
 
-        <Modal :show="showImportModal">
+        <Modal :show="showImportModal" @close="closeImportModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Importar Excel
@@ -915,10 +915,12 @@
                                     <InputFile
                                         type="file"
                                         v-model="importForm.import_file"
-                                        accept=".jpeg, .jpg, .png, .pdf"
+                                        accept=".xlsx, .csv"
                                         class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
-                                    <InputError :message="importForm.errors.import_file" />
+                                    <InputError
+                                        :message="importForm.errors.import_file"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -953,6 +955,11 @@
             :confirmingupdate="showModalEdit"
             itemType="Costo Adicional"
         />
+        <SuccessOperationModal
+            :confirming="confirmImport"
+            :title="'Datos Importados'"
+            :message="'Los datos fueron importados con éxito'"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -961,6 +968,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
 import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
+import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -1220,18 +1228,38 @@ async function handleSearch() {
     search_advance(filterForm.value);
 }
 
-
-
 //import modal
-const showImportModal = ref(false)
+const showImportModal = ref(false);
+const confirmImport = ref(false);
 const importForm = useForm({
-    import_file: undefined
-})
-function openImportModal () { showImportModal.value = true }
-function closeImportModal () { importForm.reset(); showImportModal.value = false }
-function submitImport () {
-    
+    import_file: undefined,
+});
+function openImportModal() {
+    showImportModal.value = true;
 }
-
-
+function closeImportModal() {
+    importForm.reset();
+    showImportModal.value = false;
+}
+function submitImport() {
+    importForm.post(
+        route("projectmanagement.importAdditionalCost", {
+            project_id: props.project_id.id,
+        }),
+        {
+            onSuccess: () => {
+                closeImportModal()
+                confirmImport.value = true;
+                setTimeout(() => {
+                    confirmImport.value = false;
+                    router.visit(
+                        route('projectmanagement.additionalCosts', {
+                                    project_id: props.project_id.id,
+                                })
+                    );
+                }, 2000);
+            },
+        }
+    );
+}
 </script>
