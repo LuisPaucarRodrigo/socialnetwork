@@ -20,7 +20,7 @@
                         "
                         @click="openCreateAdditionalModal"
                         type="button"
-                        class=""
+                        class="whitespace-nowrap"
                     >
                         + Agregar
                     </PrimaryButton>
@@ -49,6 +49,7 @@
                             />
                         </svg>
                     </PrimaryButton>
+
                     <a
                         type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
@@ -59,7 +60,7 @@
                         "
                     >
                         <svg
-                            class="h-6 w-6"
+                            class="h-5 w-5"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -72,6 +73,40 @@
                             />
                         </svg>
                     </a>
+
+                    <button
+                        type="button"
+                        class="rounded-md bg-yellow-500 px-4 py-2 text-center text-sm text-white hover:bg-yellow-400"
+                        @click="openImportModal()"
+                    >
+                        <svg
+                            class="h-6 w-6 text-white"
+                            viewBox="0 0 512 512"
+                            version="1.1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                        >
+                            <title>upload-document-note</title>
+                            <g
+                                id="Page-1"
+                                stroke="none"
+                                stroke-width="1"
+                                fill="none"
+                                fill-rule="evenodd"
+                            >
+                                <g
+                                    id="icon"
+                                    fill="#ffffff"
+                                    transform="translate(64.000000, 42.666667)"
+                                >
+                                    <path
+                                        d="M298.642975,268.433404 L392.812864,362.603293 L362.642975,392.773183 L319.976085,350.117404 L319.976308,447.956959 L277.309641,447.956959 L277.309085,350.116404 L234.642975,392.773183 L204.473085,362.603293 L298.642975,268.433404 Z M234.666667,7.10542736e-15 L341.333333,106.666667 L341.333,280.469 L298.779055,237.915875 L298.666,238.028 L298.666667,124.339779 L216.993555,42.6666667 L42.6666667,42.6666667 L42.6666667,384 L196.184,384 L234.773299,422.589676 L256.093414,401.26939 L256.101,426.666 L1.42108547e-14,426.666667 L1.42108547e-14,7.10542736e-15 L234.666667,7.10542736e-15 Z M213.333333,298.666667 L213.333,323.361 L195.361,341.333 L64,341.333333 L64,298.666667 L213.333333,298.666667 Z M196,85.3333333 L256,145.333333 L124,277.333333 L64,277.333333 L64,217.333333 L196,85.3333333 Z M195.989333,130.581333 L96,230.570667 L96,245.333333 L110.72,245.333333 L210.730667,145.322667 L195.989333,130.581333 Z"
+                                        id="Combined-Shape"
+                                    ></path>
+                                </g>
+                            </g>
+                        </svg>
+                    </button>
                 </div>
 
                 <form
@@ -860,6 +895,50 @@
             </div>
         </Modal>
 
+        <Modal :show="showImportModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Importar Excel
+                </h2>
+                <form @submit.prevent="submitImport">
+                    <div class="space-y-12">
+                        <div
+                            class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12"
+                        >
+                            <div>
+                                <InputLabel
+                                    class="font-medium leading-6 text-gray-900"
+                                >
+                                    Archivo
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <InputFile
+                                        type="file"
+                                        v-model="importForm.import_file"
+                                        accept=".jpeg, .jpg, .png, .pdf"
+                                        class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError :message="importForm.errors.import_file" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeImportModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button
+                                type="submit"
+                                :class="{ 'opacity-25': importForm.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                                Importar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
             itemType="Costo Adicional"
@@ -1140,4 +1219,19 @@ async function handleSearch() {
     filterMode.value = true;
     search_advance(filterForm.value);
 }
+
+
+
+//import modal
+const showImportModal = ref(false)
+const importForm = useForm({
+    import_file: undefined
+})
+function openImportModal () { showImportModal.value = true }
+function closeImportModal () { importForm.reset(); showImportModal.value = false }
+function submitImport () {
+    
+}
+
+
 </script>
