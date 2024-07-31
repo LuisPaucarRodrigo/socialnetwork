@@ -4,11 +4,13 @@ namespace App\Imports;
 
 use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\ToModel;
+use App\Models\Provider;
 
 class CostsImport implements ToModel
 {
     protected $modelClass;
     protected $project_id;
+    protected $skipHeader = true;
 
     public function __construct($modelClass, $project_id)
     {
@@ -21,12 +23,23 @@ class CostsImport implements ToModel
         if (!class_exists($this->modelClass)) {
             throw new \Exception('El modelo no existe.');
         }
-        $model = app($this->modelClass);
+        if ($this->skipHeader) {
+            $this->skipHeader = false;
+            return null; // O no retornar nada para la cabecera
+        }
 
+        $model = app($this->modelClass);
         return new $model([
-            'codigo' => $row[0], // Columna 1
-            'name' => $row[1],   // Columna 2
-            'email' => $row[2],  // Columna 3
+            'zone' => $row[2],
+            'expense_type' => $row[3],  
+            'type_doc' => $row[4],
+            'ruc' => $row[5],
+            'doc_number' => $row[7],
+            'doc_date' => $row[8],
+            'amount' => $row[9],
+            'description' => $row[10],
+            'provider_id' => null,
+            'photo' => null,
             'project_id' => $this->project_id,  // Columna 3
         ]);
     }

@@ -149,6 +149,6 @@ class AdditionalCostsController extends Controller
         $request->validate([
             'import_file' => 'required|mimes:xlsx,csv',
         ]);
-        return Excel::import(new CostsImport('AdditionalCost' ,$project_id), $request->file('import_file'));
+        Excel::import(new CostsImport("App\\Models\\AdditionalCost" ,$project_id), $request->file('import_file'));
     }
 }
