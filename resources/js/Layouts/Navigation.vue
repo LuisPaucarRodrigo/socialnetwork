@@ -377,7 +377,9 @@ Usuarios
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="'#'">BackLog</Link>
+                    <Link class="w-full" :href="route('project.backlog.index')">
+                        Backlog
+                    </Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">
@@ -389,11 +391,6 @@ Usuarios
                         </button>
                         <Link class="w-full" :href="route('member.cicsa')">Alarmas Cicsa</Link>
                     </div>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('project.backlog.index')">
-                        Backlog
-                    </Link>
                 </MyTransition>
 
                 <template v-if="cicsashowingMembers && cicsashowingMembers7">
