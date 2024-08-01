@@ -25,8 +25,10 @@
             <td>{{ $item->huawei_equipment->name }}</td>
             <td>{{ $item->serie_number }}</td>
             <td>CCIP</td>
-            <td>{{ $item->huawei_entry_detail->latest_huawei_project_resource ? $item->huawei_entry_detail->latest_huawei_project_resource->huawei_project->huawei_site->name : '' }}</td>
-            <td>{{ $item->huawei_entry_detail->state }}</td>
+            <td>{{ $item->huawei_entry_detail->assigned_site }}</td>
+            <td>{{ $item->huawei_entry_detail->instalation_state ? 'INSTALADO' :
+                  ($item->huawei_entry_detail->state == 'En Proyecto' ? 'EN SITE' :
+                   ($item->huawei_entry_detail->state == 'Disponible' ? 'EN ALMACÉN' : 'DEVUELTO')) }}</td>
             <td>
                 @php
                     $observation = $item->huawei_entry_detail->observation;

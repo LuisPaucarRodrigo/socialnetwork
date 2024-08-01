@@ -5,9 +5,17 @@
             Detalles
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex items-center justify-end p-4"> <!-- Añadí justify-end para alinear a la derecha y padding para separación del borde -->
-                <form @submit.prevent="search" class="flex items-center">
-                    <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" /> <!-- Añadí mr-2 para separación del botón -->
+            <div class="flex items-center justify-between p-4"> <!-- justify-between para separar los elementos -->
+                <div v-if="props.equipment">
+                    <Link v-if="!props.nodiu" :href="route('huawei.inventory.show.details.withoutdiu', {id: props.id})" type="button" class="rounded-md whitespace-nowrap bg-indigo-600 px-2 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        Sin DIU
+                    </Link>
+                    <Link v-else :href="route('huawei.inventory.show.details', {id: props.id, equipment: 1})" type="button" class="rounded-md whitespace-nowrap bg-indigo-600 px-2 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        Con DIU
+                    </Link>
+                </div>
+                <form @submit.prevent="search" class="flex items-center ml-auto"> <!-- ml-auto para mover el formulario a la derecha -->
+                    <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" /> <!-- mr-2 para separación del botón -->
                     <button type="submit"
                         :class="{ 'opacity-25': searchForm.processing }"
                         class="rounded-md bg-indigo-600 px-2 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-transparent">
@@ -62,7 +70,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="item in (props.search ? props.entries : entries.data)" :key="item.id" class="text-gray-700">
+                                <tr v-for="item in (props.search || props.nodiu  ? props.entries : entries.data)" :key="item.id" class="text-gray-700">
                                     <td class="border-b border-gray-200 px-5 py-5 text-sm text-center"
                                      :class="{
                                         'bg-green-400': item.antiquation_state === 'Green',
@@ -72,7 +80,7 @@
                                         'bg-white': item.antiquation_state === 'none'
                                     }">
                                     {{ item.huawei_equipment_serie?.huawei_equipment?.name }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.instalation_state ? item.instalation_state : item.state }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                         <template v-if="item.state == 'En Proyecto'">
                                         <Link class="text-blue-600 hover:underline" :href="route('huawei.projects.resources', {huawei_project: item.latest_huawei_project_resource.huawei_project_id, equipment: 1})">
@@ -91,7 +99,7 @@
                                         <span>-</span>
                                         </template>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openAssignModal(item.id)" class="text-blue-600 font-black hover:underline">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button></td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openAssignModal(item.id)" class="font-black hover:underline" :class="{'text-blue-600': item.assigned_diu, 'text-red-600': !item.assigned_diu}">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button></td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
@@ -111,7 +119,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div v-if="!props.search" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                    <div v-if="!props.search && !props.nodiu" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                         <pagination :links="props.entries.links" />
                     </div>
                 </div>
@@ -370,9 +378,10 @@
 
     const props = defineProps({
         entries: Object,
-        equipment: [String, null],
+        equipment: [String, Number, null],
         search: String,
-        id: String
+        id: String,
+        nodiu: [Number, null]
     });
 
     const refundModal = ref(false);
