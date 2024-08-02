@@ -139,12 +139,12 @@
       chartInstance.value.destroy();
     }
 
-    const dataWithRemainingBudget = [huawei_project.additional_cost_total, huawei_project.materials_in_project, huawei_project.materials_liquidated, huawei_project.equipments_in_project, huawei_project.equipments_liquidated
+    const dataWithRemainingBudget = [huawei_project.additional_cost_total, huawei_project.materials_in_project, huawei_project.materials_liquidated
     ];
     chartInstance.value = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ['Gastos Adicionales', 'Materiales en Proyecto' , 'Materiales Liquidados', 'Equipos en Proyectos', 'Equipos Liquidados'],
+        labels: ['Gastos Adicionales', 'Materiales en Proyecto' , 'Materiales Liquidados'],
         datasets: [{
           data: dataWithRemainingBudget,
           backgroundColor: Array(7).fill().map(() => getRandomColor()),

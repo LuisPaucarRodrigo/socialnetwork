@@ -283,6 +283,25 @@ class HuaweiManagementController extends Controller
         ]);
     }
 
+    public function detailsWithoutDiu ($id)
+    {
+        $entries = HuaweiEntryDetail::whereNull('assigned_diu')
+            ->whereHas('huawei_equipment_serie', function ($query) use ($id) {
+            $query->whereHas('huawei_equipment', function ($query) use ($id) {
+                $query->where('id', $id);
+            });
+        })
+        ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+        ->get();
+
+        return Inertia::render('Huawei/Details', [
+            'entries' => $entries,
+            'equipment' => 1,
+            'id' => $id,
+            'nodiu' => 1
+        ]);
+    }
+
     public function search($id, $request, $equipment = null)
     {
         $searchTerm = strtolower($request);
