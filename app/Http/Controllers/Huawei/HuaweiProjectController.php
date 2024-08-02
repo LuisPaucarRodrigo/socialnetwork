@@ -884,8 +884,13 @@ class HuaweiProjectController extends Controller
         }
 
         $earnings = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->orderBy('updated_at', 'desc')->paginate(10);
+        $total = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->get()->reduce(function ($carry, $item) {
+            return $carry + ($item->unit_price * $item->quantity);
+        }, 0);
+
         return Inertia::render('Huawei/ProjectEarnings', [
             'earnings' => $earnings,
+            'total' => $total,
             'huawei_project' => $huawei_project
         ]);
     }
@@ -906,11 +911,15 @@ class HuaweiProjectController extends Controller
             });
 
         $earnings = $query->orderBy('updated_at', 'desc')->get();
+        $total = $earnings->reduce(function ($carry, $item) {
+            return $carry + ($item->unit_price * $item->quantity);
+        }, 0);
 
         return Inertia::render('Huawei/ProjectEarnings', [
             'earnings' => $earnings,
             'huawei_project' => $huawei_project,
-            'search' => $request
+            'search' => $request,
+            'total' => $total
         ]);
     }
 

@@ -6,68 +6,67 @@
       <template #header>
         Ingresos del Proyecto {{ props.huawei_project.name }}
       </template>
-      <div class="flex gap-4 justify-between rounded-lg">
-                <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
-                    <div class="flex gap-4 items-center">
-                        <button @click.prevent="openCreateAdditionalModal" type="button"
-                            class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+      <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
+    <!-- Botones principales visibles en pantallas grandes -->
+    <div class="flex flex-col sm:flex-row gap-4 items-center">
+        <button @click.prevent="openCreateAdditionalModal" type="button"
+            class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+            + Agregar
+        </button>
+        <button @click.prevent="openImportModal" type="button"
+            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
+            Importar Datos
+        </button>
+        <a :href="route('huawei.projects.earnings.export', {huawei_project: props.huawei_project})" type="button"
+            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
+            Exportar Datos
+        </a>
+        <!-- Menú desplegable visible en pantallas pequeñas -->
+        <div class="sm:hidden flex items-center">
+            <dropdown align="left">
+                <template #trigger>
+                    <button @click="dropdownOpen = !dropdownOpen"
+                        class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                        <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </template>
+
+                <template #content class="origin-left bg-white border rounded-lg shadow-lg mt-2">
+                    <div>
+                        <button @click.prevent="openCreateAdditionalModal" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             + Agregar
                         </button>
-                        <button @click.prevent="openImportModal" type="button"
-                            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
+                        <button @click.prevent="openImportModal" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Importar Datos
                         </button>
-                        <a :href="route('huawei.projects.earnings.export', {huawei_project: props.huawei_project})" type="button"
-                            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
+                        <a :href="route('huawei.projects.earnings.export', {huawei_project: props.huawei_project})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Exportar Datos
                         </a>
-                        <div class="sm:hidden">
-                            <dropdown align="left">
-                                <template #trigger>
-                                <button @click="dropdownOpen = !dropdownOpen"
-                                    class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    </svg>
-                                </button>
-                                </template>
-
-                                <template #content class="origin-left">
-                                <div>
-                                    <div class="dropdown">
-                                    <div class="dropdown-menu">
-                                        <button @click.prevent="openCreateAdditionalModal" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        + Agregar
-                                        </button>
-                                        <button @click.prevent="openImportModal" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Importar Datos
-                                        </button>
-                                        <a :href="route('huawei.projects.earnings.export', {huawei_project: props.huawei_project})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Exportar Datos
-                                        </a>
-                                    </div>
-                                    </div>
-
-                                </div>
-                                </template>
-                            </dropdown>
-                        </div>
                     </div>
-                </div>
-                <div class="flex items-center ml-auto sm:ml-0"> <!-- ml-auto para alinear a la derecha en pantallas grandes y sm:ml-0 para mantener en la izquierda en pantallas pequeñas -->
-                    <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
-                        <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
-                                class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-            </div>
+                </template>
+            </dropdown>
+        </div>
+    </div>
+
+    <!-- Total y formulario de búsqueda -->
+    <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+        <p class="whitespace-nowrap text-sm font-semibold">Total: {{ props.total ? props.total.toFixed(2) : '' }}</p>
+        <form @submit.prevent="search" class="flex items-center gap-2">
+            <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2 min-w-[150px] sm:min-w-[200px]" />
+            <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
+                    class="flex items-center rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                        stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
       <div class="overflow-x-auto">
         <table class="w-full whitespace-no-wrap">
           <thead>
@@ -84,6 +83,9 @@
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 Precio Unitario</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                Monto</th>
               <th v-if="props.huawei_project.status"
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 </th>
@@ -95,6 +97,7 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.description }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '-' }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + (item.unit_price * item.quantity).toFixed(2) : '-' }}</td>
               <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <div class="flex justify-center items-center">
                     <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
@@ -247,7 +250,8 @@ const props = defineProps({
   huawei_project: Object,
   auth: Object,
   userPermissions: Array,
-  search: String
+  search: String,
+  total: Number
 });
 
 const hasPermission = (permission) => {
