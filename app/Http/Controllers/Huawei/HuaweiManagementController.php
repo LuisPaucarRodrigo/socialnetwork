@@ -272,6 +272,17 @@ class HuaweiManagementController extends Controller
         ]);
     }
 
+    public function getGeneralEquipments ()
+    {
+        $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
+            ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+            ->paginate(20);
+
+        return Inertia::render('Huawei/GeneralEquipments', [
+            'equipments' => $equipments
+        ]);
+    }
+
     public function search($id, $request, $equipment = null)
     {
         $searchTerm = strtolower($request);
