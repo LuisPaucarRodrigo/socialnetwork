@@ -817,6 +817,7 @@ class HuaweiProjectController extends Controller
 
         $data = $request->validate([
             'huawei_project_resource_id' => 'required',
+            'instalation_date' => 'required',
             'liquidated_quantity' => [
                 'nullable',
                 function ($attribute, $value, $fail) use ($huawei_project_resource) {
