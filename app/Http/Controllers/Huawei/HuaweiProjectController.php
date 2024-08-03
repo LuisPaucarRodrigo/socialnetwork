@@ -187,7 +187,7 @@ class HuaweiProjectController extends Controller
             'ot' => 'nullable',
             'pre_report' => 'nullable',
             'employees' => 'nullable',
-            'initial_amount' => 'required',
+            'initial_amount' => 'nullable',
             'assigned_diu' => 'required'
         ]);
 
@@ -242,7 +242,7 @@ class HuaweiProjectController extends Controller
             'description' => 'nullable',
             'ot' => 'nullable',
             'pre_report' => 'nullable',
-            'initial_amount' => 'required',
+            'initial_amount' => 'nullable',
             'assigned_diu' => 'required'
         ]);
 
@@ -572,13 +572,31 @@ class HuaweiProjectController extends Controller
                 ->filter(function ($detail) {
                     return $detail->state === 'Disponible';
                 });
-                $equipments = HuaweiEquipment::whereHas('huawei_equipment_series.huawei_entry_detail', function ($query) use ($found_project) {
+
+
+                $equipments = HuaweiEquipment::with(['huawei_equipment_series.huawei_entry_detail' => function ($query) use ($found_project) {
                     $query->where('assigned_diu', $found_project->assigned_diu);
-                })->get();
+                }])->get();
+
+                $filteredEquipments = $equipments->filter(function ($equipment) {
+                    // Verifica la relación `huawei_equipment_series`
+                    if ($equipment->huawei_equipment_series) {
+                        foreach ($equipment->huawei_equipment_series as $serie) {
+                            // Verifica la relación `huawei_entry_detail`
+                            if ($serie->huawei_entry_detail) {
+                                if ($serie->huawei_entry_detail->state === 'Disponible'){
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                });
+
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'equipments' => $equipments,
+                'equipments' => $filteredEquipments,
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
@@ -644,13 +662,28 @@ class HuaweiProjectController extends Controller
                 ->filter(function ($detail) {
                     return $detail->state === 'Disponible';
                 });
-                $equipments = HuaweiEquipment::whereHas('huawei_equipment_series.huawei_entry_detail', function ($query) use ($found_project) {
+                $equipments = HuaweiEquipment::with(['huawei_equipment_series.huawei_entry_detail' => function ($query) use ($found_project) {
                     $query->where('assigned_diu', $found_project->assigned_diu);
-                })->get();
+                }])->get();
+
+                $filteredEquipments = $equipments->filter(function ($equipment) {
+                    // Verifica la relación `huawei_equipment_series`
+                    if ($equipment->huawei_equipment_series) {
+                        foreach ($equipment->huawei_equipment_series as $serie) {
+                            // Verifica la relación `huawei_entry_detail`
+                            if ($serie->huawei_entry_detail) {
+                                if ($serie->huawei_entry_detail->state === 'Disponible'){
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                });
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'equipments' => $equipments,
+                'equipments' => $filteredEquipments,
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
@@ -831,11 +864,13 @@ class HuaweiProjectController extends Controller
         if ($equipment){
             HuaweiProjectLiquidation::create([
                 'huawei_project_resource_id' => $request->huawei_project_resource_id,
+                'instalation_date' => $request->instalation_date,
                 'liquidated_quantity' => 1
             ]);
         }else{
             HuaweiProjectLiquidation::create([
                 'huawei_project_resource_id' => $request->huawei_project_resource_id,
+                'instalation_date' => $request->instalation_date,
                 'liquidated_quantity' => $request->liquidated_quantity
             ]);
         }

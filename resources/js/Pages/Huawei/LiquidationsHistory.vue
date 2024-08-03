@@ -30,7 +30,7 @@
                                     Precio
                                 </th>
                                 <th class="w-1/4 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                    Fecha de Liquidación
+                                    Fecha de Instalación/Liquidación
                                 </th>
                             </tr>
                         </thead>
@@ -39,7 +39,7 @@
                                 <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_project_resource.huawei_entry_detail.huawei_equipment_serie.huawei_equipment.name }}</td>
                                 <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_project_resource.huawei_entry_detail.huawei_equipment_serie.serie_number }}</td>
                                 <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_project_resource.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_project_resource.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
-                                <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
+                                <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.instalation_date) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -65,7 +65,7 @@
                                     Cantidad Liquidada
                                 </th>
                                 <th class="w-1/4 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                    Fecha de Liquidación
+                                    Fecha de Instalación/Liquidación
                                 </th>
                             </tr>
                         </thead>
@@ -74,7 +74,7 @@
                                 <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_project_resource.huawei_entry_detail.huawei_material.name }}</td>
                                 <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_project_resource.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_project_resource.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                                 <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.liquidated_quantity }}</td>
-                                <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
+                                <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.instalation_date) }}</td>
                             </tr>
                         </tbody>
                     </table>

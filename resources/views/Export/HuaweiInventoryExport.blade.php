@@ -38,7 +38,7 @@
                 @endphp
                 {{ $result }}
             </td>
-            <td>{{ $item->huawei_entry_detail->latest_huawei_project_resource ? $item->huawei_entry_detail->latest_huawei_project_resource->created_at : '' }}</td>
+            <td>{{ $item->huawei_entry_detail->latest_huawei_project_resource ? $item->huawei_entry_detail->latest_huawei_project_resource->huawei_project_liquidation?->instalation_date : '' }}</td>
             <td>{{ $item->huawei_entry_detail->assigned_diu }}</td>
             <td>{{ $item->huawei_entry_detail->unit_price }}</td>
             <td>
