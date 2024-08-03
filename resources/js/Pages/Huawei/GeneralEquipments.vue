@@ -83,7 +83,7 @@
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.huawei_equipment_serie.serie_number }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.assigned_site }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.instalation_state ? item.instalation_state : item.state }}</td>
-                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{  }}</td>
+                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.latest_huawei_project_resource ? formattedDate(item.latest_huawei_project_resource.huawei_project_liquidation?.instalation_date) : '' }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.assigned_diu }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center min-w-[200px]">{{ item.observation }}</td>
@@ -118,12 +118,10 @@
 
   const search = () => {
     if (searchForm.searchTerm == '') {
-      router.visit(route('huawei.inventory.show', props.equipment ? { equipment: 1 } : {}));
+      router.visit(route('huawei.inventory.general.equipments'));
     } else {
-      router.visit(route('huawei.inventory.show.search', {
-        request: searchForm.searchTerm,
-        ...(props.equipment ? { equipment: 1 } : {})
-      }));
+      router.visit(route('huawei.inventory.general.equipments.search', {
+        request: searchForm.searchTerm}));
     }
   };
   </script>

@@ -283,6 +283,51 @@ class HuaweiManagementController extends Controller
         ]);
     }
 
+    public function searchGeneralEquipments($request)
+    {
+        $searchTerm = strtolower($request);
+
+        // Paso 1: Consulta inicial basada en parámetros de búsqueda específicos
+        $equipmentsQuery = HuaweiEntryDetail::whereNull('huawei_material_id');
+
+        // Filtrar por assigned_diu
+        $equipmentsQuery->where(function ($query) use ($searchTerm) {
+            $query->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereHas('huawei_equipment_serie.huawei_equipment', function ($subQuery) use ($searchTerm) {
+                    $subQuery->whereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
+                        ->orWhereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                })
+                ->orWhereHas('huawei_equipment_serie', function ($subQuery) use ($searchTerm) {
+                    $subQuery->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
+                })
+                ->orWhereRaw('LOWER(unit_price) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(observation) LIKE ?', ["%{$searchTerm}%"]);
+        });
+
+        // Ejecuta la consulta y carga relaciones necesarias
+        $equipments = $equipmentsQuery->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+            ->get();
+
+        // Paso 2: Aplica filtros adicionales sobre los resultados obtenidos
+        $filteredEquipments = $equipments->filter(function ($detail) use ($searchTerm) {
+            // Filtra por assigned_site y state calculado
+            $stateMatches = strtolower($detail->state) === strtolower($searchTerm);
+            $assignedSiteMatches = strtolower($detail->assigned_site) === strtolower($searchTerm);
+
+            return $stateMatches || $assignedSiteMatches;
+        });
+
+        dd($equipments); // Depura el resultado
+
+        return Inertia::render('Huawei/GeneralEquipments', [
+            'equipments' => $filteredEquipments,
+            'search' => $request
+        ]);
+    }
+
+
+
+
     public function detailsWithoutDiu ($id)
     {
         $entries = HuaweiEntryDetail::whereNull('assigned_diu')
