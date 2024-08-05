@@ -22,7 +22,7 @@ class LocalDriveController extends Controller
     {
         $root = $request->input('root');
         $path = $request->input('path');
-        dd($root,$path);
+
         $previousPath = '';
         if (!$root) {
             $lastSlashPosition = strrpos($path, '/');
@@ -34,6 +34,7 @@ class LocalDriveController extends Controller
         }
         $currentPath = $root ? $this->main_directory : $path;
         $folders_archives = $this->scanFolder(storage_path('app/' . $currentPath));
+
         return Inertia::render('DocumentManagement/LocalDrive/LocalDrive', [
             'folders_archives' => $folders_archives,
             'currentPath' => $currentPath,
@@ -157,7 +158,8 @@ class LocalDriveController extends Controller
         }
     }
 
-    private function downloadFile($path) {
+    private function downloadFile($path)
+    {
         $filePath = storage_path('app/' . $path);
 
         if (!file_exists($filePath)) {
@@ -184,7 +186,6 @@ class LocalDriveController extends Controller
         } else {
             return abort(403, 'Empty folder >:(');
         }
-
     }
 
     private function addFolderToZip($folder, ZipArchive $zip, $parentFolder = '')
@@ -207,8 +208,4 @@ class LocalDriveController extends Controller
             }
         }
     }
-
-
-
-
 }

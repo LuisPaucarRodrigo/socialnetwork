@@ -46,7 +46,7 @@
                 </div>
             </div>
             <br>
-            <div class="overflow-x-auto ">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full">
                     <thead class="sticky top-0 z-40 ">
                         <tr class=" text-xs font-semibold uppercase tracking-wide text-white">

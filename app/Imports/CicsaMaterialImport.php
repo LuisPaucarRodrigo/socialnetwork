@@ -10,13 +10,13 @@ use App\Models\CicsaPurchaseOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use App\Models\CicsaSection;
 use App\Models\CicsaServiceOrder;
+use App\Models\ToolsGtd;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithLimit;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class CicsaMaterialImport implements ToCollection, WithStartRow, WithLimit
+class CicsaMaterialImport implements ToCollection, WithStartRow
 {
     /**
      * @param Collection $collection
@@ -24,14 +24,9 @@ class CicsaMaterialImport implements ToCollection, WithStartRow, WithLimit
 
     public $data;
 
-    public function limit(): int
-    {
-        return 139; // Ajusta el número de filas que deseas importar
-    }
-
     public function startRow(): int
     {
-        return 2; // Iniciar desde la tercera fila (puedes ajustarlo según tus necesidades).
+        return 2;
     }
 
     public function __construct()

@@ -165,7 +165,7 @@ class FormationDevelopment extends Controller
             })
             ->get();
         $alarm7d = Employee::with('assignated_programs.formation_program')
-            ->whereHas('assignated_programs', function($query) use ($today, $alarm3d) {
+            ->whereHas('assignated_programs', function($query) use ($today) {
                 $query->where('end_date', '>', $today->copy()->addDays(3))
                       ->where('end_date', '<=', $today->copy()->addDays(7))
                       ->where('state', null);
