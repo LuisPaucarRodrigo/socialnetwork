@@ -199,7 +199,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -248,6 +248,7 @@ function submitStore() {
             confirmAssignation.value = true
             setTimeout(() => {
                 confirmAssignation.value = false
+                router.get(route('assignation.index'))
             }, 1500)
         },
         onError: (e) => {
@@ -272,6 +273,7 @@ function submitUpdate() {
             confirmUpdateAssignation.value = true
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
+                router.get(route('assignation.index'))
             }, 1500)
         },
         onError: (e) => {

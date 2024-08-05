@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cicsa;
 
+use App\Exports\PurchaseOrderExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cicsa\StoreOrUpdateAssigantionRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
@@ -21,6 +22,7 @@ use App\Models\CicsaMaterial;
 use App\Models\CicsaPurchaseOrder;
 use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
+use App\Models\ToolsGtd;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -287,6 +289,18 @@ class CicsaController extends Controller
         return redirect()->back();
     }
 
+    public function searchMaterial(Request $request)
+    {
+        $material = ToolsGtd::orWhere('code_ax', 'like', "%$request->searchQuery%")
+                ->orWhere('name', 'like', "%$request->searchQuery%")
+                ->orWhere('internal_reference', 'like', "%$request->searchQuery%")
+                ->orWhere('unit', 'like', "%$request->searchQuery%")
+                ->get();
+            return response()->json([
+                'materials' => $material
+            ]);
+    }
+
     public function importMaterial(Request $request)
     {
         try {
@@ -348,6 +362,11 @@ class CicsaController extends Controller
         );
     }
 
+    public function exportPurchaseOrder()
+    {
+        return Excel::download(new PurchaseOrderExport, 'Orden de Compra ' . date('m-Y') . '.xlsx');
+    }
+
 
     public function indexInstallation(Request $request)
     {
@@ -393,7 +412,6 @@ class CicsaController extends Controller
             $material['cicsa_installation_id'] = $cicsaInstallation->id;
             CicsaInstallationMaterial::create($material);
         }
-        return redirect()->back();
     }
 
 
@@ -452,44 +470,30 @@ class CicsaController extends Controller
         }
     }
 
-    // public function updateOCValidation(Request $request, CicsaPurchaseOrderValidation $cicsa_validation_id)
-    // {
-    //     $validateData = $request->validate([
-    //         'validation_date' => 'required',
-    //         'materials_control' => 'required',
-    //         'supervisor' => 'required',
-    //         'warehouse' => 'required',
-    //         'boss' => 'required',
-    //         'liquidator' => 'required',
-    //         'superintendent' => 'required',
-    //         'user_name' => 'required',
-    //         'user_id' => 'required',
-    //     ]);
-
-    //     $cicsa_validation_id->update(
-    //         $validateData
-    //     );
-    //     return redirect()->back();
-    // }
-
     // CicsaServiceOrder
 
     public function indexServiceOrder(Request $request)
     {
         if ($request->isMethod('get')) {
             $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_service_order')
+                ->with('cicsa_service_order','cicsa_purchase_order')
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaServiceOrder', [
                 'service_order' => $service_orders,
             ]);
         } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->searchQuery;
             $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_service_order')
-                ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                ->orWhere('cpe', 'like', "%$request->searchQuery%")
+                ->with('cicsa_service_order','cicsa_purchase_order')
+                ->orWhere('project_name', 'like', "%$searchQuery%")
+                ->orWhere('project_code', 'like', "%$searchQuery%")
+                ->orWhere('cpe', 'like', "%$searchQuery%")
+                ->orWhere(function ($query) use ($searchQuery) {
+                    $query->whereHas('cicsa_purchase_order', function ($query) use ($searchQuery) {
+                        $query->where('oc_number', 'like', "%$searchQuery%");
+                    });
+                })
                 ->get();
             return response()->json([
                 'service_order' => $service_orders,
@@ -514,7 +518,6 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
-        return redirect()->back();
     }
 
     public function updateServiceOrder(Request $request, CicsaServiceOrder $cicsa_service_order_id)
@@ -533,7 +536,6 @@ class CicsaController extends Controller
         $cicsa_service_order_id->update(
             $validateData
         );
-        return redirect()->back();
     }
 
     //CicsaChargeArea
@@ -542,18 +544,29 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_charge_area')
+                ->with('cicsa_charge_area','cicsa_purchase_order')
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaChargeArea', [
                 'charge_area' => $charge_areas,
             ]);
         } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->searchQuery;
             $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_charge_area')
-                ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                ->orWhere('cpe', 'like', "%$request->searchQuery%")
+                ->with('cicsa_charge_area','cicsa_purchase_order')
+                ->orWhere('project_name', 'like', "%$searchQuery%")
+                ->orWhere('project_code', 'like', "%$searchQuery%")
+                ->orWhere('cpe', 'like', "%$searchQuery%")
+                ->orWhere(function ($query) use ($searchQuery) {
+                    $query->whereHas('cicsa_purchase_order', function ($query) use ($searchQuery) {
+                        $query->where('oc_number', 'like', "%$searchQuery%");
+                    });
+                })
+                ->orWhere(function ($query) use ($searchQuery) {
+                    $query->whereHas('cicsa_charge_area', function ($query) use ($searchQuery) {
+                        $query->where('invoice_number', 'like', "%$searchQuery%");
+                    });
+                })
                 ->get();
             return response()->json([
                 'charge_area' => $charge_areas,
@@ -585,7 +598,6 @@ class CicsaController extends Controller
             ['cicsa_assignation_id' => $cicsa_assignation_id],
             $validateData
         );
-        return redirect()->back();
     }
 
     public function updateChargeArea(Request $request, CicsaChargeArea $cicsa_charge_area)
@@ -609,7 +621,6 @@ class CicsaController extends Controller
         ]);
 
         $cicsa_charge_area->update($validateData);
-        return redirect()->back();
     }
 
     public function getChargeAreaAccepted()
