@@ -11,7 +11,7 @@
                         Sin DIU
                     </Link>
                     <Link v-else :href="route('huawei.inventory.show.details', {id: props.id, equipment: 1})" type="button" class="rounded-md whitespace-nowrap bg-indigo-600 px-2 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                        Con DIU
+                        Todos
                     </Link>
                 </div>
                 <form @submit.prevent="search" class="flex items-center ml-auto"> <!-- ml-auto para mover el formulario a la derecha -->
@@ -99,7 +99,7 @@
                                         <span>-</span>
                                         </template>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openAssignModal(item.id)" class="font-black hover:underline" :class="{'text-blue-600': item.assigned_diu, 'text-red-600': !item.assigned_diu}">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button></td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button v-if="item.state === 'Disponible'" @click.prevent="openAssignModal(item.id)" class="font-black hover:underline" :class="{'text-blue-600': item.assigned_diu, 'text-red-600': !item.assigned_diu}">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button><p v-else>{{ item.assigned_diu }}</p></td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
@@ -320,6 +320,7 @@
                 <div class="col-span-2">
                     <InputLabel class="mb-1" for="observation">Observación</InputLabel>
                     <textarea v-model="refundForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                    <InputError :message="refundForm.errors.observation" />
                 </div>
 
               </div>
@@ -343,6 +344,7 @@
                 <div class="col-span-2">
                     <InputLabel class="mb-1" for="quantity">DIU</InputLabel>
                     <input type="text" v-model="assignForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                    <InputError :message="assignForm.errors.assigned_diu" />
                 </div>
               </div>
 

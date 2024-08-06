@@ -154,7 +154,7 @@
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
                 <div class="grid grid-cols-2 gap-6">
-                    <div>
+                    <div :class="{'col-span-2' : props.equipment, 'col-span-1' : !props.equipment}">
                         <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">{{ props.equipment ? 'Equipo': 'Material' }}</InputLabel>
                         <div class="mt-2">
                             <select v-model="form.resource" id="expense_type"
@@ -164,14 +164,26 @@
                             </select>
                         </div>
                     </div>
-                    <div>
+                    <div v-if="props.equipment" class="col-span-2">
+                        <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">{{ props.equipment ? 'Serie': 'Entrada' }}</InputLabel>
+                        <div class="mt-2">
+                            <select v-model="form.huawei_entry_detail_ids" id="expense_type"
+                                    :size="filteredEntryDetails.length + 1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" multiple>
+                                <option disabled value="">Seleccionar Entrada</option>
+                                <option v-for="item in filteredEntryDetails" :key="item.id" :value="item.id">
+                                    {{ (item.huawei_equipment_serie?.serie_number  + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div v-else>
                         <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">{{ props.equipment ? 'Serie': 'Entrada' }}</InputLabel>
                         <div class="mt-2">
                             <select v-model="form.huawei_entry_detail_id" id="expense_type"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled value="">Seleccionar {{ props.equipment ? 'Serie' : 'Entrada' }}</option>
+                                <option disabled value="">Seleccionar Entrada</option>
                                 <option v-for="item in filteredEntryDetails" :key="item.id" :value="item.id">
-                                    {{ props.equipment ? (item.huawei_equipment_serie?.serie_number + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) : (item.huawei_material?.name + ' - ' + item.available_quantity + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
+                                    {{ (item.huawei_material?.name + ' - ' + item.available_quantity + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
                                 </option>
                             </select>
                         </div>
@@ -273,6 +285,7 @@
   const form = useForm({
     resource: '',
     huawei_entry_detail_id: '',
+    huawei_entry_detail_ids: [],
     quantity: ''
   });
 

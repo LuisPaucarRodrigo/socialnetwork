@@ -79,17 +79,14 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Liquidaciones
                             </Link>
-                            <Link v-if="item.pre_report"
+                            <Link
                                 :href="route('huawei.projects.balance', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Balance del Proyecto
                             </Link>
-                            <span v-else class="text-gray-400">Balance del Proyecto</span>
-                            <a v-if="item.pre_report" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
+                            <a class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
                                 Reporte
                             </a>
-                            <span v-else class="text-gray-400">Reporte</span>
-
                         </div>
                     </div>
                 </div>
