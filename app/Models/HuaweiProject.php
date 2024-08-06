@@ -77,6 +77,17 @@ class HuaweiProject extends Model
             return true;
         }
 
+        $details = HuaweiEntryDetail::where('assigned_diu', $this->assigned_diu)
+                ->get();
+                
+        $detail = $details->first(function ($detail) {
+            return $detail->state === 'Disponible';
+        });
+
+        if ($detail){
+            return false;
+        }
+
         foreach ($resources as $resource) {
             if ($resource->quantity > 0) {
                 if (!$resource->huawei_project_liquidation) {
