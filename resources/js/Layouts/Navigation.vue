@@ -377,7 +377,9 @@ Usuarios
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="'#'">BackLog</Link>
+                    <Link class="w-full" :href="route('project.backlog.index')">
+                        Backlog
+                    </Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">

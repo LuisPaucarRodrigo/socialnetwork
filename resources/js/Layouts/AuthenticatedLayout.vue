@@ -24,5 +24,12 @@ import Navigation from '@/Layouts/Navigation.vue';
 const props = defineProps({
     redirectRoute: [String, Object],
 })
+import { onMounted } from 'vue'
+import { initFlowbite } from 'flowbite'
+
+// initialize components based on data attribute selectors
+onMounted(() => {
+    initFlowbite();
+})
 
 </script>

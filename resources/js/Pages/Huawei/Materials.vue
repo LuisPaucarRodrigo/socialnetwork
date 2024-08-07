@@ -24,6 +24,9 @@
                 <Link :href="route('huawei.inventory.refunds')" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     Devoluciones
                 </Link>
+                <a :href="route('huawei.inventory.general.equipments')" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    General
+                </a>
                 <div class="sm:hidden">
                 <dropdown align="left">
                     <template #trigger>
@@ -53,6 +56,9 @@
                             <Link :href="route('huawei.inventory.refunds', {equipment: 1})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Devoluciones
                             </Link>
+                            <a :href="route('huawei.inventory.general.equipments')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            General
+                            </a>
                         </div>
                         </div>
                         <div class="dropdown" v-else>
@@ -65,6 +71,9 @@
                             <Link :href="route('huawei.inventory.refunds')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Devoluciones
                             </Link>
+                            <a :href="route('huawei.inventory.general.equipments')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            General
+                            </a>
                         </div>
                         </div>
                     </div>
@@ -77,7 +86,7 @@
             </div>
             <div class="flex items-center ml-auto sm:ml-0">
                 <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                    <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2 w-[180px]" />
+                    <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2 min-w-[100px] w-[200px]" />
                     <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                     class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -120,7 +129,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in (props.search ? props.equipments : equipments.data)" :key="item.id" class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.name }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center min-w-[250px]">{{ item.name }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.claro_code }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.brand_model.brand.name }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.brand_model.name }}</td>
@@ -217,7 +226,7 @@
     brand_models: Object,
     brands: Object,
     equipment: [String, null],
-    search: String
+    search: String,
   });
 
   const hasPermission = (permission) => {
