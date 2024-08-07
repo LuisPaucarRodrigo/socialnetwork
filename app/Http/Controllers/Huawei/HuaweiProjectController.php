@@ -99,7 +99,7 @@ class HuaweiProjectController extends Controller
 
     public function liquidateProject (HuaweiProject $huawei_project)
     {
-        if (!$huawei_project->status){
+        if (!$huawei_project->status || !$huawei_project->pre_report){
             abort(403, 'Acción no permitida');
         }
 
@@ -823,7 +823,7 @@ class HuaweiProjectController extends Controller
 
     public function liquidate (HuaweiProject $huawei_project, Request $request, $equipment = null) {
 
-        if (!$huawei_project->status || !$huawei_project->pre_report){
+        if (!$huawei_project->status){
             abort(403, 'Acción no permitida');
         }
 
@@ -835,7 +835,7 @@ class HuaweiProjectController extends Controller
 
         $data = $request->validate([
             'huawei_project_resource_id' => 'required',
-            'instalation_date' => 'required',
+            'instalation_date' => 'nullable',
             'liquidated_quantity' => [
                 'nullable',
                 function ($attribute, $value, $fail) use ($huawei_project_resource) {
@@ -863,6 +863,8 @@ class HuaweiProjectController extends Controller
 
     public function liquidationsHistory ($huawei_project, $equipment = null)
     {
+        $project = HuaweiProject::find($huawei_project);
+        $project_name = $project->name . ' / ' . $project->code;
         if ($equipment){
             $liquidations = HuaweiProjectLiquidation::whereHas('huawei_project_resource.huawei_entry_detail', function ($query) {
                 $query->whereNull('huawei_material_id');
@@ -886,7 +888,8 @@ class HuaweiProjectController extends Controller
         return Inertia::render('Huawei/LiquidationsHistory', [
             'liquidations' => $liquidations,
             'huawei_project' => $huawei_project,
-            'equipment' => $equipment
+            'equipment' => $equipment,
+            'project_name' => $project_name
         ]);
     }
 

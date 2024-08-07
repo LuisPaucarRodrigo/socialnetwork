@@ -2,7 +2,7 @@
     <Head title="Liquidaciones" />
     <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects.liquidations', params: {huawei_project: props.huawei_project}}">
       <template #header>
-        LIquidaciones del Proyecto
+        LIquidaciones del Proyecto {{ props.project_name }}
       </template>
       <div class="min-w-full rounded-lg shadow">
         <div class="flex gap-4 items-center justify-between">
@@ -91,25 +91,16 @@
 
   <script setup>
 
-  import { Head, Link, useForm, router } from '@inertiajs/vue3';
+  import { Head, Link } from '@inertiajs/vue3';
   import Pagination from '@/Components/Pagination.vue';
-  import { EyeIcon } from '@heroicons/vue/24/outline';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-  import TextInput from '@/Components/TextInput.vue';
-  import Dropdown from '@/Components/Dropdown.vue';
   import { formattedDate } from '@/utils/utils'
-  import Modal from '@/Components/Modal.vue';
-  import { ref, computed, watch } from 'vue';
-  import InputLabel from '@/Components/InputLabel.vue';
-  import InputError from '@/Components/InputError.vue';
-  import SecondaryButton from '@/Components/SecondaryButton.vue';
-  import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-  import PrimaryButton from '@/Components/PrimaryButton.vue';
 
   const props = defineProps({
     liquidations: Object,
     huawei_project: String,
-    equipment: String
+    equipment: String,
+    project_name: String
   });
 
   const hasPermission = (permission) => {
