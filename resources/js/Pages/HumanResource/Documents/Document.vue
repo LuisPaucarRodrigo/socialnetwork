@@ -53,7 +53,7 @@
           </div>
           <div class="flex sm:hidden items-center ml-auto sm:ml-0">
             <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-              <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
+              <TextInput type="text" placeholder="Buscar..." v-model="searchForm.search" />
               <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                 class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -68,9 +68,9 @@
 
         <div class="flex sm:space-x-3  sm:flex-row flex-col sm:items-center">
           <InputLabel for="selectElement">Sección:</InputLabel>
-          <select v-model="selectedSection" id="selectElement"
+          <select v-model="newSection" @change="filterSection" id="selectElement"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
-            <option :value="''">Todos</option>
+            <option value="">Todos</option>
             <option v-for="section in sections" :key="section.id" :value="section.id">
               {{ section.name }}
             </option>
@@ -78,9 +78,9 @@
 
           <!-- Nuevo filtro para subdivisiones -->
           <InputLabel for="selectSubdivision">Subdivisión:</InputLabel>
-          <select v-model="selectedSubdivision" id="selectSubdivision"
+          <select v-model="newSubdivision" @change="filterSubdivision" id="selectSubdivision"
             class="rounded-md py-2 text-sm text-black border-indigo-600">
-            <option :value="''">Todas</option>
+            <option value="">Todas</option>
             <option v-for="subdivision in subdivisionsForSelectedSection" :key="subdivision.id" :value="subdivision.id">
               {{ subdivision.name }}
             </option>
@@ -90,7 +90,7 @@
 
       <div class="hidden sm:flex sm:items-center">
         <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-          <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
+          <TextInput type="text" placeholder="Buscar..." v-model="searchForm.search" />
           <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,7 +106,7 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mt-5">
-      <div v-for="document in filteredDocuments" :key="document.id"
+      <div v-for="document in (props.search || props.section || props.subdivision ? props.documents : documents.data)" :key="document.id"
         class="bg-white p-4 rounded-md shadow md:col-span-2">
         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ getDocumentName(document.title) }}</h2>
         <div class="flex space-x-3 item-center">
@@ -127,6 +127,11 @@
         </div>
       </div>
     </div>
+    <div v-if="!props.search && !props.section && !props.subdivision" class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+        <pagination :links="documents.links" />
+    </div>
+
+
     <Modal :show="create_document || update_document">
       <div class="p-6">
         <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -203,14 +208,16 @@ import { ref, computed, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import Dropdown from '@/Components/Dropdown.vue';
-
+import Pagination from '@/Components/Pagination.vue'
 
 const props = defineProps({
   sections: Object,
   documents: Object,
   subdivisions: Object,
   userPermissions: Array,
-  search: String
+  section: [String, null],
+  subdivision: [String, null],
+  search: [String, null]
 });
 
 const hasPermission = (permission) => {
@@ -233,6 +240,8 @@ const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const editingDocument = ref(null);
 const selectedSection = ref('');
+const newSection = ref(props.section);
+const newSubdivision = ref(props.subdivision);
 
 const management_section = () => {
   router.get(route('documents.sections'));
@@ -339,24 +348,10 @@ const getDocumentName = (documentTitle) => {
 const selectedSubdivision = ref('');
 
 const subdivisionsForSelectedSection = computed(() => {
-  // Filtra las subdivisiones según la sección seleccionada
-  return props.subdivisions.filter(subdivision => subdivision.section_id === selectedSection.value);
-});
-
-const filteredDocuments = computed(() => {
-  let filtered = props.documents;
-
-  // Filtrar por sección
-  if (selectedSection.value) {
-    filtered = filtered.filter(document => document.subdivision.section_id === selectedSection.value);
+  if (newSection.value === '') {
+    return []; // Mostrar todas las subdivisiones si no se selecciona ninguna sección
   }
-
-  // Filtrar por subdivisión
-  if (selectedSubdivision.value) {
-    filtered = filtered.filter(document => document.subdivision_id === selectedSubdivision.value);
-  }
-
-  return filtered.map(document => ({ ...document, title: getDocumentName(document.title) }));
+  return props.subdivisions.filter(subdivision => subdivision.section_id == newSection.value);
 });
 
 watch(() => selectedSection, () => {
@@ -377,11 +372,64 @@ watch(() => form.section_id, (newSectionId, oldSectionId) => {
 });
 
 const searchForm = useForm({
-  searchTerm: props.search,
+  search: props.search,
+  section: props.section,
+  subdivision: props.subdivision
 })
 
 const search = () => {
-  let data = { searchTerm: searchForm.searchTerm }
-  router.get(route('documents.index'), data)
+    if (!searchForm.search){
+        if (props.section){
+            if (props.subdivision){
+                router.visit(route('documents.filter.subdivision', {section: props.section, subdivision: props.subdivision}))
+            }else{
+                router.visit(route('documents.filter.section', {section: props.section}))
+            }
+        }else{
+            router.visit(route('documents.index'));
+        }
+    }else{
+        const url = route('documents.search', {section: (props.section ? props.section : 'no'), subdivision: (props.subdivision ? props.subdivision : 'no'), request: searchForm.search});
+        router.visit(url);
+    }
 }
+
+const filterSection = (e) => {
+    newSection.value = e.target.value;
+    searchForm.section = newSection;
+    searchForm.subdivision = '';
+    if (!newSection.value){
+        if (props.search){
+            router.visit(route('documents.search', {section: 'no', subdivision: 'no', request: searchForm.search}))
+        }else{
+            router.visit(route('documents.index'));
+        }
+    }else{
+        if (props.search){
+            router.visit(route('documents.filter.section', {section: newSection.value, request: searchForm.search}))
+        }else{
+            router.visit(route('documents.filter.section', {section: newSection.value}))
+        }
+    }
+}
+
+const filterSubdivision = (e) => {
+    newSubdivision.value = e.target.value;
+    searchForm.subdivision = newSubdivision.value;
+    if (!newSubdivision.value){
+        if (props.search){
+            router.visit(route('documents.filter.section', {section: props.section, request: searchForm.search}))
+        }else{
+            router.visit(route('documents.filter.section', {section: props.section}));
+        }
+    }else{
+        if (props.search){
+            router.visit(route('documents.filter.subdivision', {section: props.section, subdivision: newSubdivision.value, request: searchForm.search}))
+        }else{
+            router.visit(route('documents.filter.subdivision', {section: props.section, subdivision: newSubdivision.value}))
+        }
+    }
+
+}
+
 </script>
