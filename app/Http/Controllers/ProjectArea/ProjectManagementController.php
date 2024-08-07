@@ -378,6 +378,9 @@ class ProjectManagementController extends Controller
             $products = SpecialInventory::with('purchase_product')
                 ->where('warehouse_id', $warehouse->id)
                 ->where('cpe', $project->preproject->cpe)->get();
+            $products = $products->filter(function($item){
+                return $item->quantity_available > 0;
+            })->values()->all();
             return response()->json(['products' => $products]);
         } else {
             $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse->id)->get();

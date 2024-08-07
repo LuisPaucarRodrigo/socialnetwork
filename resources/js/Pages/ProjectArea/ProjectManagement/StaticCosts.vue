@@ -49,14 +49,10 @@
                             />
                         </svg>
                     </PrimaryButton>
-                    <a
+                    <button
                         type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
-                        :href="
-                            route('staticcost.excel.export', {
-                                project_id: project_id.id,
-                            })
-                        "
+                        @click="openExportExcel"
                     >
                         <svg
                             class="h-6 w-6"
@@ -71,7 +67,7 @@
                                 fill="#ffffff"
                             />
                         </svg>
-                    </a>
+                    </button>
                 </div>
 
                 <form
@@ -1115,5 +1111,16 @@ async function search_advance($data) {
 async function handleSearch() {
     filterMode.value = true;
     search_advance(filterForm.value);
+}
+
+function openExportExcel() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route("staticcost.excel.export", {
+            project_id: props.project_id.id,
+        }) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
 }
 </script>

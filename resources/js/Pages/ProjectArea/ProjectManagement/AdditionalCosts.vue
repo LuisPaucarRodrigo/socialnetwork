@@ -50,14 +50,10 @@
                         </svg>
                     </PrimaryButton>
 
-                    <a
+                    <button
                         type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
-                        :href="
-                            route('additionalcost.excel.export', {
-                                project_id: project_id.id,
-                            })
-                        "
+                        @click="openExportExcel"
                     >
                         <svg
                             class="h-5 w-5"
@@ -72,7 +68,7 @@
                                 fill="#ffffff"
                             />
                         </svg>
-                    </a>
+                    </button>
 
                     <button
                         type="button"
@@ -1346,5 +1342,16 @@ function submitImport() {
             },
         }
     );
+}
+
+function openExportExcel() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route("additionalcost.excel.export", {
+            project_id: props.project_id.id,
+        }) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
 }
 </script>
