@@ -8,6 +8,8 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
+                <!-- <a :href="route('material.export')"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a> -->
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
                     <SelectCicsaComponent currentSelect="Materiales" />
@@ -20,34 +22,30 @@
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Codigo de Proyecto
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales de Factibilidad
                             </th>
-                            <th colspan="1"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            <th
+                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Acciones
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <template v-for="item in materials.data ?? materials" :key="item.id">
                             <tr class=" text-gray-700">
-                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_name }}
@@ -104,33 +102,30 @@
                             </tr>
                             <template v-if="materialRow == item.id">
                                 <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
-
+                                    class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    <th 
+                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
                                     <th
-                                        class="w-1/3 border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Fecha de Recojo
                                     </th>
                                     <th
-                                        class="w-1/3 border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Numero de Guia
                                     </th>
-                                    <th
-                                        class="w-1/3 border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    <th 
+                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Lista de Materiales Recibidos
                                     </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    <th colspan="2"
+                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        Acciones
                                     </th>
                                 </tr>
                                 <tr v-for="materialDetail in item.cicsa_materials" :key="materialDetail.id"
                                     class="bg-gray-100">
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <!-- <p>
-                                            {{ materialDetail }}
-                                        </p> -->
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
@@ -151,7 +146,7 @@
                                             </button>
                                         </p>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             <button class="text-blue-900"
                                                 @click="openEditSotModal(item.id, materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
@@ -233,6 +228,10 @@
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                            Codigo AX
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Nombre
                                         </th>
                                         <th
@@ -250,6 +249,11 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, i) in form.cicsa_material_items" :key="i" class="text-gray-700">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                            <p class="text-gray-900 text-center">
+                                                {{ item.code_ax }}
+                                            </p>
+                                        </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
@@ -303,9 +307,16 @@
                 </h2>
                 <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                     <div class="sm:col-span-1">
-                        <InputLabel for="name">Nombre</InputLabel>
+                        <InputLabel for="name">Codigo AX</InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="text" v-model="material_item.name" id="name" />
+                            <TextInput required type="text" list="names" v-model="material_item.name"
+                                placeholder="Codigo AX" @input="searchMaterial($event.target.value)"
+                                @change="updateMaterialItem($event.target.value)" id="name" />
+                            <datalist id="names">
+                                <option v-for="item in arrayMaterials" :key="item.id" :value="item.code_ax">
+                                    {{ item.code_ax }} || {{ item.name }} || {{ item.internal_reference }}
+                                </option>
+                            </datalist>
                         </div>
                     </div>
                     <div class="sm:col-span-1">
@@ -315,16 +326,16 @@
                             <select id="unit" v-model="material_item.unit" required
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccionar Unidad</option>
-                                <option>Unidad</option>
-                                <option>Metros</option>
-                                <option>Caja</option>
-                                <option>Global</option>
-                                <option>Matros 2</option>
-                                <option>Metros 3</option>
-                                <option>Pieza</option>
-                                <option>Lata</option>
-                                <option>Paquete</option>
-                                <option>Rollo</option>
+                                <option>UNIDAD</option>
+                                <option>METROS</option>
+                                <option>CAJA</option>
+                                <option>GLB</option>
+                                <option>METROS 2</option>
+                                <option>METROS 3</option>
+                                <option>PIEZA</option>
+                                <option>LATA</option>
+                                <option>PAQUETE</option>
+                                <option>ROLLO</option>
                             </select>
                         </div>
                     </div>
@@ -345,7 +356,7 @@
 
         </Modal>
 
-        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+        <Modal :show="showMaterials" @close="closeMaterialsModal" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     {{ material_title }}
@@ -358,7 +369,10 @@
                                 <tr
                                     class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
-                                        Material
+                                        Codigo AX
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Nombre
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Unidad
@@ -370,6 +384,9 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item, i) in feas_materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.code_ax }}
+                                    </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.name }}
                                     </td>
@@ -434,7 +451,7 @@ import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -449,6 +466,7 @@ const { material, auth } = defineProps({
 })
 
 const materials = ref(material)
+const arrayMaterials = ref([])
 
 const initialState = {
     cicsa_assignation_id: null,
@@ -506,6 +524,7 @@ function submit() {
                 confirmUpdateMaterial.value = true
                 setTimeout(() => {
                     confirmUpdateMaterial.value = false
+                    router.get(route('material.index'))
                 }, 1500)
             },
             onError: (e) => {
@@ -519,6 +538,7 @@ function submit() {
                 confirmUpdateMaterial.value = true
                 setTimeout(() => {
                     confirmUpdateMaterial.value = false
+                    router.get(route('material.index'))
                 }, 1500)
             },
             onError: (e) => {
@@ -535,9 +555,9 @@ function modalFeasibility() {
     showModalFeasibility.value = !showModalFeasibility.value
 }
 
-
 const material_item = ref({
     id: '',
+    code_ax:'',
     name: '',
     unit: '',
     quantity: 0,
@@ -546,6 +566,7 @@ const material_item = ref({
 function addFeasibility() {
     if (material_item.value.name && material_item.value.unit && material_item.value.quantity) {
         const newFeasibility = {
+            code_ax: material_item.value.code_ax,
             name: material_item.value.name,
             unit: material_item.value.unit,
             quantity: material_item.value.quantity
@@ -558,6 +579,7 @@ function addFeasibility() {
 }
 
 function cleanArrayMaterial() {
+    material_item.value.code_ax = '';
     material_item.value.name = '';
     material_item.value.unit = '';
     material_item.value.quantity = '';
@@ -630,8 +652,27 @@ const search = async ($search) => {
     try {
         const response = await axios.post(route('material.index'), { searchQuery: $search });
         materials.value = response.data.material;
+
     } catch (error) {
         console.error('Error searching:', error);
     }
 };
+
+const searchMaterial = async ($search) => {
+    try {
+        const response = await axios.post(route('material.search.material'), { searchQuery: $search });
+        arrayMaterials.value = response.data.materials;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
+
+function updateMaterialItem(e) {
+    const selectedItem = arrayMaterials.value.find(item => item.code_ax === e);
+    if (selectedItem) {
+        material_item.value.code_ax = selectedItem.code_ax
+        material_item.value.name = selectedItem.name
+        material_item.value.unit = selectedItem.unit
+    }
+}
 </script>

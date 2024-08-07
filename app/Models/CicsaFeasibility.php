@@ -15,6 +15,7 @@ class CicsaFeasibility extends Model
     protected $fillable = [
         'feasibility_date',
         'report',
+        'coordinator',
         'user_name',
         'user_id',
         'cicsa_assignation_id'

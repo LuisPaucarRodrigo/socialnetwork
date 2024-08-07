@@ -7,9 +7,11 @@
             Orden de Servicio
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
+            <div class="flex justify-between">
+                <a :href="route('cicsa.service_orders.export')"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
                     <SelectCicsaComponent currentSelect="Orden de Servicio" />
                 </div>
             </div>
@@ -30,6 +32,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Numero de OC
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -79,6 +85,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_purchase_order?.oc_number }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -158,8 +169,12 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="service_order">Orden de Servicio</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.service_order" autocomplete="off"
-                                    id="service_order" />
+                                <select v-model="form.service_order" id="service_order"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccione una opción</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Completado">Completado</option>
+                                </select>
                                 <InputError :message="form.errors.service_order" />
                             </div>
                         </div>
@@ -243,7 +258,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -301,6 +316,7 @@ function submit() {
             confirmUpdateAssignation.value = true
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
+                router.get(route('cicsa.service_orders'))
             }, 1500)
         },
         onError: (e) => {
