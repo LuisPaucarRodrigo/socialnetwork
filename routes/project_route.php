@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
+use App\Http\Controllers\ProjectArea\BacklogController;
 use App\Http\Controllers\ProjectArea\CalendarController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
+use App\Http\Controllers\ProjectArea\ProjectDocumentController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ProjectArea\ProjectPintController;
 use App\Http\Controllers\ProjectArea\StaticCostsController;
@@ -91,10 +93,11 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::get('/project/{project_id?}/purchases_request/edit/{id}', [ProjectManagementController::class, 'project_purchases_request_edit'])->name('projectmanagement.purchases_request.edit');
 
 
-
+    //AdditionalCosts
     Route::post('/project/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'store'])->name('projectmanagement.storeAdditionalCost');
-
+    Route::post('/project/additional_costs/import/{project_id}', [AdditionalCostsController::class, 'import'])->name('projectmanagement.importAdditionalCost');
     Route::post('/project/purchases_request/{project_id}/static_costs', [StaticCostsController::class, 'store'])->name('projectmanagement.storeStaticCost');
+
     
 
 
@@ -128,6 +131,22 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/cicsa/member/store', [CicsaSectionController::class, 'storeSubSection'])->name('sections.cicsa.member.store');
     Route::post('/cicsa/store', [CicsaSectionController::class, 'storeSection'])->name('sections.cicsa.section.store');
 
+
+
+
+    Route::get('/project-document-gestion', [ProjectDocumentController::class, 'project_doc_index'])->name('project.document.index');
+    Route::post('/project-document-gestion/store/{path?}', [ProjectDocumentController::class, 'project_doc_store'])->name('project.document.store');
+    Route::post('/project-document-gestion/folder_archive_delete', [ProjectDocumentController::class, 'project_doc_delete'])->name('project.folder.delete');
+    Route::get('/project-document-gestion/folder_archive_dowload', [ProjectDocumentController::class, 'project_doc_download'])->name('project.folder.download');
+
+
+
+
+
+    Route::get('/project-backlog', [BacklogController::class, 'index'])->name('project.backlog.index');
+    Route::get('/project-backlog/autcomplete', [BacklogController::class, 'autocomplete'])->name('project.backlog.autocomplete');
+    Route::post('/project-backlog/store', [BacklogController::class, 'store'])->name('project.backlog.store');
+    Route::delete('/project-backlog/delete/{backlog_id}', [BacklogController::class, 'destroy'])->name('project.backlog.destroy');
 
 
     
@@ -230,7 +249,10 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::post('/product-CPE/', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
 
 
+    //Costs Export
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
+    Route::get('/additionalcosts/excel_export/{project_id}', [AdditionalCostsController::class, 'export'])->name('additionalcost.excel.export');
+    Route::get('/staticcosts/excel_export/{project_id}', [StaticCostsController::class, 'export'])->name('staticcost.excel.export');
 
 });
 

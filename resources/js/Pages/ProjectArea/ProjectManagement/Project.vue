@@ -123,6 +123,12 @@
                             Liquidaciones
                             </Link>
                             <span v-else class="text-gray-400">Liquidaciones</span>
+                            <Link v-if="item.initial_budget > 0"
+                                :href="route('project.document.index', {path: `${item.code}_${item.id}`, project_id: item.id})"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Archivos
+                            </Link>
+                            <span v-else class="text-gray-400">Archivos</span>
                             <div>
                                 <Link v-if="item.initial_budget > 0 && item.preproject.customer_id == 3"
                                 :href="route('huawei.show', { project: item.id })"

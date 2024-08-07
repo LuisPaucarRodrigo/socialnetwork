@@ -45,7 +45,7 @@ class PreProjectController extends Controller
                     ->orderBy('created_at')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
-                'users' => User::all()
+                'users' => User::select('id','name')->get()
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -85,15 +85,18 @@ class PreProjectController extends Controller
     public function store(PreprojectRequest $request)
     {
         $data = $request->validated();
+		
         $data['code'] = $this->getCode($data['date'], $data['code']);
         $preproject = Preproject::create($data);
-        $dataCode = TitleCode::where('title_id', $data['title_id'])->get();
-        foreach ($dataCode as $codes) {
-            PreprojectCode::create([
-                'preproject_id' => $preproject->id,
-                'code_id' => $codes->code_id
-            ]);
-        }
+		if(isset($data['title_id'])){
+			$dataCode = TitleCode::where('title_id', $data['title_id'])->get();
+			foreach ($dataCode as $codes) {
+				PreprojectCode::create([
+					'preproject_id' => $preproject->id,
+					'code_id' => $codes->code_id
+				]);
+			}
+		}
         $preproject->contacts()->sync($data['contacts']);
     }
 
@@ -213,7 +216,6 @@ class PreProjectController extends Controller
         $data = $request->validated();
         if ($quote_id) {
             $quote = PreProjectQuote::find($quote_id);
-            // dd($data['observations']);
             $quote->update($data);
         } else {
             $preproject_quote = PreProjectQuote::create($data);

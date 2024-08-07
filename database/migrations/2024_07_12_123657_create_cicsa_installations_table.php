@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('cicsa_installations', function (Blueprint $table) {
             $table->id();
-            $table->date('pext_date');
-            $table->date('pint_date');
+            $table->date('pext_date')->nullable();
+            $table->date('pint_date')->nullable();
+            $table->double('projected_amount')->nullable();
             $table->string('conformity');
             $table->string('report');
-            $table->date('shipping_report_date');
+            $table->date('shipping_report_date')->nullable();
+            $table->string('coordinator');
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('cicsa_assignation_id')->constrained('cicsa_assignations')->onDelete('cascade');

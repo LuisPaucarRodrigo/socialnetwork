@@ -1,39 +1,40 @@
 <template>
     <Head title="Devoluciones Huawei" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="'huawei.inventory.show'">
       <template #header>
         {{ props.equipment ? 'Devolución de Equipos' : 'Devolución de Materiales' }}
       </template>
       <div class="min-w-full rounded-lg shadow">
-        <div class="flex gap-4 justify-between rounded-lg">
-            <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
-                <div class="flex gap-4 items-center">
-                    <div v-if="props.equipment">
-                        <Link :href="route('huawei.inventory.refunds')" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                            Materiales
-                        </Link>
-                    </div>
-                    <div v-else>
-                        <Link :href="route('huawei.inventory.refunds', { equipment: 1 })" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                            Equipos
-                        </Link>
-                    </div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
+            <!-- Sección de enlaces -->
+            <div class="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
+                <div v-if="props.equipment">
+                <Link :href="route('huawei.inventory.refunds')" type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-center text-white hover:bg-indigo-500">
+                    Materiales
+                </Link>
                 </div>
-
+                <div v-else>
+                <Link :href="route('huawei.inventory.refunds', { equipment: 1 })" type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-center text-white hover:bg-indigo-500">
+                    Equipos
+                </Link>
+                </div>
             </div>
-            <div class="flex items-center ml-auto sm:ml-0"> <!-- ml-auto para alinear a la derecha en pantallas grandes y sm:ml-0 para mantener en la izquierda en pantallas pequeñas -->
+
+            <!-- Sección de búsqueda -->
+            <div class="flex items-center mt-4 sm:mt-0 w-full sm:w-auto">
                 <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                    <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
-                    <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
-                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
+                <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2 flex-1" />
+                <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
+                        class="ml-2 rounded-md bg-indigo-600 px-3 py-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
                 </form>
             </div>
-        </div>
+            </div>
+
 
 
         <div>

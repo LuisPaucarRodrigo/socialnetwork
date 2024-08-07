@@ -70,7 +70,7 @@
 
             <h6 style="padding-top: 20px;">D. REPORTE FOTOGRÁFICO - Recorrido de Fibra</h6>
             @foreach ($codesWithStatus as $code)
-            <p class="centered-text">{{$code->code->code}}</p>
+            <p class="centered-text">Codigo: {{$code->code->code}}</p>
             
             @foreach ($code->imagecodepreprojet as $image)
             <div class="photo">

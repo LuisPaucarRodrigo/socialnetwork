@@ -14,9 +14,11 @@ class CicsaInstallation extends Model
     protected $fillable = [
         'pext_date',
         'pint_date',
+        'projected_amount',
         'conformity',
         'report',
         'shipping_report_date',
+        'coordinator',
         'user_name',
         'user_id',
         'cicsa_assignation_id'

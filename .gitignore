@@ -6,6 +6,7 @@
 /public/documents/curriculum_vitae
 /public/documents/permissions
 /public/documents/documents
+/public/documents/huawei
 /public/documents/schedules
 /public/documents/photoreports
 /public/documents/providers_quote
@@ -17,10 +18,12 @@
 /public/image/imagereportpreproject
 /public/uploads/huawei
 /storage/*.key
+/storage/app/Projects/
+/storage/app/LocalDrive/
 /vendor
 .env
 .env.backup
-.env.production 
+.env.production
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

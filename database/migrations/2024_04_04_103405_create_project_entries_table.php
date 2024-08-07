@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('entry_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('special_inventory_id')->nullable()->constrained()->onDelete('set null');
             $table->integer('quantity');
+            $table->string('area');
+            $table->string('zone');
             $table->text('observation')->nullable();
             $table->decimal('unitary_price')->nullable();
             $table->boolean('state')->nullable();

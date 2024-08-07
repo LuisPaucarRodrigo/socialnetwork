@@ -2,7 +2,7 @@
     <Head title="Recursos del Proyecto para Liquidar" />
     <AuthenticatedLayout :redirectRoute="'huawei.projects'">
       <template #header>
-        Recursos del Proyecto
+        Recursos del Proyecto {{ props.project_name }}
       </template>
       <div class="min-w-full rounded-lg shadow">
         <div class="flex gap-4 items-center justify-between">
@@ -120,6 +120,11 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-span-2">
+                    <InputLabel class="mb-1" for="instalation_date">Fecha de Instalación/Liquidación</InputLabel>
+                    <input type="date" v-model="form.instalation_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                    <InputError :message="form.errors.instalation_date" />
+                </div>
               </div>
 
               <!-- Botones de Acción -->
@@ -156,7 +161,8 @@
   const props = defineProps({
     equipments: Object,
     materials: Object,
-    huawei_project: String
+    huawei_project: String,
+    project_name: String
   });
 
   const liquidate_modal = ref(false);
@@ -169,6 +175,7 @@
   const form = useForm({
     liquidated_quantity: '',
     huawei_project_resource_id: '',
+    instalation_date: ''
   });
 
   const hasPermission = (permission) => {

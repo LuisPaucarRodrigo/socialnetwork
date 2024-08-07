@@ -4,34 +4,42 @@
       class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
       @change="handleChange"
       ref="input"
-      :accept="accept"
+      :accept="computedAccept"
     />
   </template>
 
-<script>
-import { ref } from 'vue';
+  <script>
+  import { ref, computed } from 'vue';
 
-export default {
-  props: {
-    accept: {
-      type: String,
-      default: '.pdf, .png, .jpeg, .jpg, .doc, .docx, .xls, .xlsx, .ppt, .pptx' // Valor por defecto si no se proporciona
-    }
-  },
-  setup(props, { emit }) {
-    const inputRef = ref(null);
+  export default {
+    props: {
+      accept: {
+        type: String,
+        default: '.pdf, .png, .jpeg, .jpg, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt' // Valor por defecto si no se proporciona
+      }
+    },
+    setup(props, { emit }) {
+      const inputRef = ref(null);
 
-    const handleChange = (event) => {
-      const file = event.target.files[0];
-      emit('update:modelValue', file);
-    };
+      const handleChange = (event) => {
+        const file = event.target.files[0];
+        emit('update:modelValue', file);
+      };
 
-    return {
-      handleChange,
-      inputRef,
-      accept: props.accept // Usar la propiedad aceptada
-    };
-  },
-  emits: ['update:modelValue'],
-};
-</script>
+      // Computed property to format the accept string correctly
+      const computedAccept = computed(() => {
+        if (props.accept === 'xls,xlsx') {
+          return '.xls,.xlsx'; // Or you could use 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+        return props.accept;
+      });
+
+      return {
+        handleChange,
+        inputRef,
+        computedAccept
+      };
+    },
+    emits: ['update:modelValue'],
+  };
+  </script>

@@ -130,7 +130,12 @@ class SpecialWarehouseController extends Controller
         $data = $request->validate([
             "state" => "required|boolean"
         ]);
-        ProjectEntry::find($project_entry_id)->update($data);
+        $projectEntry = ProjectEntry::find($project_entry_id);
+		$projectEntry->update($data);
+        ProjectEntryOutput::create([
+            "project_entry_id" => $projectEntry->id,
+            "quantity" => $projectEntry->quantity,
+        ]);
         return redirect()->back();
     }
 

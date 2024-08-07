@@ -21,21 +21,21 @@
                         <div v-if="props.huawei_project" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mb-4">
                             <div class="sm:col-span-3">
                                 <InputLabel class="font-medium leading-6 text-gray-900">
-                                    Nombre Proyecto
-                                </InputLabel>
-                                <div class="mt-2">
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    {{ props.huawei_project.name }}
-                                </InputLabel>
-                                </div>
-                            </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel class="font-medium leading-6 text-gray-900">
                                     Site
                                 </InputLabel>
                                 <div class="mt-2">
                                 <InputLabel class="font-medium leading-6 text-gray-900">
                                     {{ props.huawei_project.huawei_site.name }}
+                                </InputLabel>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    OT
+                                </InputLabel>
+                                <div class="mt-2">
+                                <InputLabel class="font-medium leading-6 text-gray-200">
+                                    {{ props.huawei_project.ot }}
                                 </InputLabel>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-                            <div v-if="!props.huawei_project" class="sm:col-span-3">
+                            <div class="sm:col-span-3">
                                 <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre
                                 </InputLabel>
                                 <div class="mt-2">
@@ -72,6 +72,51 @@
                                     </select>
                                 </div>
                                 <InputError :message="form.errors.huawei_site_id" />
+                            </div>
+
+                            <div v-if="!props.huawei_project" class="sm:col-span-3">
+                                <InputLabel for="ot" class="font-medium leading-6 text-gray-900">OT
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.ot" id="ot"
+                                        class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    <InputError :message="form.errors.ot" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <div class="flex gap-2">
+                                    <InputLabel for="pre_report" class="font-medium leading-6 text-gray-900">Reporte
+                                    </InputLabel>
+                                    <button @click.prevent="openPreviewPreReport(props.huawei_project?.id)" class="mt-1" v-if="props.huawei_project?.pre_report">
+                                        <EyeIcon class="text-green-500 h-5 w-5 " />
+                                    </button>
+                                </div>
+                                <div class="mt-2">
+                                    <InputFile type="file" v-model="form.pre_report" id="pre_report"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    <InputError :message="form.errors.pre_report" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <InputLabel for="initial_amount" class="font-medium leading-6 text-gray-900">Monto Inicial
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="number" step="0.01" v-model="form.initial_amount" id="initial_amount"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    <InputError :message="form.errors.initial_amount" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <InputLabel for="assigned_diu" class="font-medium leading-6 text-gray-900">DIU del Proyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.assigned_diu" id="assigned_diu"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    <InputError :message="form.errors.assigned_diu" />
+                                </div>
                             </div>
 
                             <div class="sm:col-span-6">
@@ -192,11 +237,12 @@ import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { UserPlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { UserPlusIcon, TrashIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import TextInput from '@/Components/TextInput.vue';
+import InputFile from '@/Components/InputFile.vue';
 
 const showModal = ref(false)
 const showUpdateModal = ref(false)
@@ -219,7 +265,11 @@ const initialState = {
     name: '',
     description: '',
     huawei_site_id: '',
-    employees: []
+    ot: '',
+    pre_report: null,
+    employees: [],
+    initial_amount: '',
+    assigned_diu: ''
 }
 
 const form = useForm(
@@ -230,6 +280,9 @@ if (props.huawei_project) {
     form.name = props.huawei_project.name || '';
     form.huawei_site_id = props.huawei_project.huawei_site_id || '';
     form.description = props.huawei_project.description || '';
+    form.ot = props.huawei_project.ot || '';
+    form.initial_amount = props.huawei_project.initial_amount || '';
+    form.assigned_diu = props.huawei_project.assigned_diu || '';
     form.employees = props.huawei_project.huawei_project_employees ? props.huawei_project.huawei_project_employees.map(employee => ({
         id: employee.id,
         employee: employee.employee,
@@ -249,7 +302,7 @@ const submit = () => {
             },
         })
     }else{
-        form.put(route('huawei.projects.update', {huawei_project: props.huawei_project.id}), {
+        form.post(route('huawei.projects.update', {huawei_project: props.huawei_project.id}), {
             onSuccess: () => {
                 showUpdateModal.value = true;
                 setTimeout(() => {
@@ -322,6 +375,11 @@ const add_employee = () => {
 }
 const delete_employee = (index) => {
     form.employees.splice(index, 1);
+}
+
+const openPreviewPreReport = (projectId) => {
+    const routeToShow = route('huawei.projects.prereport', {huawei_project: projectId});
+    window.open(routeToShow, '_blank');
 }
 
 const delete_already_employee = (pivot_id, index) => {
