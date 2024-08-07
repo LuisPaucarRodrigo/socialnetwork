@@ -8,6 +8,8 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
+                <!-- <a :href="route('cicsa.installation.export')"
+                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a> -->
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
                     <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
@@ -69,6 +71,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -101,7 +107,8 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_installation?.projected_amount ? 'S/' + item.cicsa_installation.projected_amount.toFixed() : '' }}
+                                    {{ item.cicsa_installation?.projected_amount ? 'S/' +
+        item.cicsa_installation.projected_amount.toFixed() : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -135,6 +142,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_installation?.coordinator }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.user_name }}
                                 </p>
                             </td>
@@ -155,7 +167,8 @@
                 </table>
             </div>
 
-            <div v-if="installations.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="installations.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="installations.links" />
             </div>
         </div>
@@ -168,6 +181,14 @@
                 <br>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                        <div class="sm:col-span-1">
+                            <InputLabel for="coordinator">Coordinador</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.coordinator" autocomplete="off" id="coordinator"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.coordinator" />
+                            </div>
+                        </div>
                         <div class="sm:col-span-1">
                             <InputLabel for="pext_date">Fecha de PEXT</InputLabel>
                             <div class="mt-2">
@@ -189,7 +210,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.projected_amount" autocomplete="off" id="projected_amount"
+                                <input type="number" v-model="form.projected_amount" autocomplete="off"
+                                    id="projected_amount"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
@@ -222,7 +244,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="shipping_report_date">Fecha de envío de Informe</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.shipping_report_date" autocomplete="off" id="shipping_report_date"
+                                <input type="date" v-model="form.shipping_report_date" autocomplete="off"
+                                    id="shipping_report_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.shipping_report_date" />
                             </div>
@@ -474,11 +497,12 @@ const { installation, auth } = defineProps({
     installation: Object,
     auth: Object
 })
-const installations= ref(installation)
+const installations = ref(installation)
 
 const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
+    coordinator: '',
     cicsa_assignation_id: '',
     pext_date: '',
     pint_date: '',

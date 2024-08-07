@@ -28,6 +28,7 @@ class StoreOrUpdateInstallationRequest extends FormRequest
             "conformity" => "required",
             "report" => "required",
             "shipping_report_date" => "nullable",
+            'coordinator' => 'required|string',
             "user_name" => "required",
             "user_id" => "required",
             "cicsa_assignation_id" => "required",

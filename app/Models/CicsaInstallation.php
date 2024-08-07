@@ -18,6 +18,7 @@ class CicsaInstallation extends Model
         'conformity',
         'report',
         'shipping_report_date',
+        'coordinator',
         'user_name',
         'user_id',
         'cicsa_assignation_id'

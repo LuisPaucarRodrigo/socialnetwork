@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers\Cicsa;
 
-use App\Exports\PurchaseOrderExport;
+use App\Exports\CicsaProcess\AssignationExport;
+use App\Exports\CicsaProcess\ChargeAreaExport;
+use App\Exports\CicsaProcess\FeasibilitiesExport;
+use App\Exports\CicsaProcess\InstallationExport;
+use App\Exports\CicsaProcess\MaterialExport;
+use App\Exports\CicsaProcess\OCValidationExport;
+use App\Exports\CicsaProcess\PurchaseOrderExport;
+use App\Exports\CicsaProcess\ServiceOrderExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cicsa\StoreOrUpdateAssigantionRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
@@ -194,6 +201,11 @@ class CicsaController extends Controller
         );
     }
 
+    public function exportAssignation()
+    {
+        return Excel::download(new AssignationExport, 'Asignación ' . date('m-Y') . '.xlsx');
+    }
+
     public function indexFeasibilities(Request $request)
     {
         if ($request->isMethod('get')) {
@@ -232,6 +244,11 @@ class CicsaController extends Controller
                 $material
             );
         }
+    }
+
+    public function exportFeasibilities()
+    {
+        return Excel::download(new FeasibilitiesExport, 'Factibilidad ' . date('m-Y') . '.xlsx');
     }
 
     public function indexMaterial(Request $request)
@@ -299,6 +316,11 @@ class CicsaController extends Controller
             return response()->json([
                 'materials' => $material
             ]);
+    }
+
+    public function exportMaterial()
+    {
+        return Excel::download(new MaterialExport, 'Materiales ' . date('m-Y') . '.xlsx');
     }
 
     public function importMaterial(Request $request)
@@ -414,6 +436,11 @@ class CicsaController extends Controller
         }
     }
 
+    public function exportInstallation()
+    {
+        return Excel::download(new InstallationExport, 'Instalación ' . date('m-Y') . '.xlsx');
+    }
+
 
     // CicsaPurchaseOrderValidations
 
@@ -468,6 +495,11 @@ class CicsaController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['message' => 'Error processing file', 'error' => $e->getMessage()]);
         }
+    }
+
+    public function exportOCValidation()
+    {
+        return Excel::download(new OCValidationExport, 'Validación de OC ' . date('m-Y') . '.xlsx');
     }
 
     // CicsaServiceOrder
@@ -536,6 +568,11 @@ class CicsaController extends Controller
         $cicsa_service_order_id->update(
             $validateData
         );
+    }
+
+    public function exportServiceOrder()
+    {
+        return Excel::download(new ServiceOrderExport, 'Orden de Servicio ' . date('m-Y') . '.xlsx');
     }
 
     //CicsaChargeArea
@@ -645,5 +682,10 @@ class CicsaController extends Controller
         return Inertia::render('Cicsa/CicsaChargeAreasAccepted', [
             'charge_areas' => $paginatedChargeAreas
         ]);
+    }
+
+    public function exportChargeArea()
+    {
+        return Excel::download(new ChargeAreaExport, 'Cobranza ' . date('m-Y') . '.xlsx');
     }
 }
