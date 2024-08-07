@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Huawei;
 
+use App\Exports\HuaweiInventoryExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,17 +17,18 @@ use App\Models\HuaweiRefund;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HuaweiManagementController extends Controller
 {
     public function show ($equipment = null)
     {
-        if ($equipment){
+            if ($equipment){
             return Inertia::render('Huawei/Materials', [
                 'equipments' => HuaweiEquipment::with('huawei_equipment_series', 'brand_model.brand')->paginate(10),
                 'brand_models' => BrandModel::all(),
                 'brands' => Brand::all(),
-                'equipment' => $equipment
+                'equipment' => $equipment,
             ]);
         } else {
             return Inertia::render('Huawei/Materials', [
@@ -270,6 +272,107 @@ class HuaweiManagementController extends Controller
         ]);
     }
 
+    public function getGeneralEquipments ()
+    {
+        $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
+            ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+            ->paginate(20);
+
+        return Inertia::render('Huawei/GeneralEquipments', [
+            'equipments' => $equipments
+        ]);
+    }
+
+    public function searchGeneralEquipments($request)
+    {
+        $searchTerm = strtolower($request);
+    
+        // Paso 1: Consulta inicial basada en parámetros de búsqueda específicos
+        $equipmentsQuery = HuaweiEntryDetail::whereNull('huawei_material_id');
+        $equipmentsQueryFilter = HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')->get();
+        // Resultados de todas las condiciones de búsqueda combinados
+        $equipments = collect();
+    
+        // Filtrar por assigned_diu
+        $equipments = $equipments->merge(
+            $equipmentsQuery->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
+                ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+                ->get()
+        );
+    
+        // Filtrar por claro_code y name en huawei_equipment
+        $equipments = $equipments->merge(
+            $equipmentsQuery->orWhereHas('huawei_equipment_serie.huawei_equipment', function ($subQuery) use ($searchTerm) {
+                $subQuery->whereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
+                         ->orWhereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+            })->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+              ->get()
+        );
+    
+        // Filtrar por serie_number en huawei_equipment_serie
+        $equipments = $equipments->merge(
+            $equipmentsQuery->orWhereHas('huawei_equipment_serie', function ($subQuery) use ($searchTerm) {
+                $subQuery->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
+            })->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+              ->get()
+        );
+    
+        // Filtrar por unit_price
+        $equipments = $equipments->merge(
+            $equipmentsQuery->orWhereRaw('LOWER(unit_price) LIKE ?', ["%{$searchTerm}%"])
+                ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+                ->get()
+        );
+    
+        // Filtrar por observation
+        $equipments = $equipments->merge(
+            $equipmentsQuery->orWhereRaw('LOWER(observation) LIKE ?', ["%{$searchTerm}%"])
+                ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+                ->get()
+        );
+    
+        $stateFilteredEquipments = $equipmentsQueryFilter->filter(function ($detail) use ($searchTerm) {
+            return str_contains(strtolower($detail->state), $searchTerm) || str_contains(strtolower($detail->instalation_state), $searchTerm);
+        });
+
+        $assignedSiteFilteredEquipments = $equipments->filter(function ($detail) use ($searchTerm) {
+            return str_contains(strtolower($detail->assigned_site), $searchTerm);
+        });
+   
+        $finalEquipments = $equipments
+            ->merge($stateFilteredEquipments)
+            ->merge($assignedSiteFilteredEquipments)
+            ->unique('id');   
+    
+        return Inertia::render('Huawei/GeneralEquipments', [
+            'equipments' => $finalEquipments,
+            'search' => $request
+        ]);
+    }
+    
+
+
+
+
+    public function detailsWithoutDiu ($id)
+    {
+        $entries = HuaweiEntryDetail::whereNull('assigned_diu')
+            ->whereHas('huawei_equipment_serie', function ($query) use ($id) {
+            $query->whereHas('huawei_equipment', function ($query) use ($id) {
+                $query->where('id', $id);
+            });
+        })
+        ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+        ->get();
+
+        return Inertia::render('Huawei/Details', [
+            'entries' => $entries,
+            'equipment' => 1,
+            'id' => $id,
+            'nodiu' => 1
+        ]);
+    }
+
     public function search($id, $request, $equipment = null)
     {
         $searchTerm = strtolower($request);
@@ -380,6 +483,9 @@ class HuaweiManagementController extends Controller
         ]);
 
         $entry_detail = HuaweiEntryDetail::find($request->huawei_entry_detail_id);
+        if ($entry_detail->state !== 'Disponible'){
+            abort(403, 'Acción no permitida.');
+        }
 
         $entry_detail->update([
             'assigned_diu' => $request->assigned_diu
@@ -496,6 +602,11 @@ class HuaweiManagementController extends Controller
             'equipment' => $equipment,
             'search' => $request
         ]);
+    }
+
+    public function exportInventory ()
+    {
+        return Excel::download(new HuaweiInventoryExport(), 'Inventario Huawei.xlsx');
     }
 
 }

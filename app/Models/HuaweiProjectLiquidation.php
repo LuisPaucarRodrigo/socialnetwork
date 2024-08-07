@@ -13,7 +13,8 @@ class HuaweiProjectLiquidation extends Model
 
     protected $fillable = [
         'huawei_project_resource_id',
-        'liquidated_quantity'
+        'liquidated_quantity',
+        'instalation_date'
     ];
 
     public function huawei_project_resource ()
