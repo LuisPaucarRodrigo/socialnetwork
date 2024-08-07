@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
+use App\Imports\CostsImport;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -51,45 +53,17 @@ class AdditionalCostsController extends Controller
                 ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-
-
-
-
         $result = $result->get();
         return response()->json($result, 200);
     }
 
-    public function store(Project $project_id, Request $request)
+    public function store(AdditionalCostsRequest $request, $project_id)
     {
-        $remaining_budget = $project_id->remaining_budget;
-
-        $data = $request->validate([
-            'expense_type' => 'required|string',
-            'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
-            'doc_number' => 'nullable|string',
-            'doc_date' => 'required|date',
-            'amount' => [
-                'required',
-                'numeric',
-                function ($attribute, $value, $fail) use ($request, $remaining_budget) {
-                    if ($value > $remaining_budget) {
-                        $fail(__('El monto del gasto excede el presupuesto restante. S/. ' . number_format($remaining_budget, 2)));
-                    }
-                }
-            ],
-            'zone' => 'required',
-            'provider_id' => 'nullable',
-            'description' => 'required|string',
-            'photo' => 'nullable',
-            'project_id' => 'required'
-        ]);
+        $data = $request->validated();
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
-
         AdditionalCost::create($data);
-        return redirect()->back();
     }
 
     public function download_ac_photo(AdditionalCost $additional_cost_id)
@@ -169,5 +143,12 @@ class AdditionalCostsController extends Controller
 
     public function export($project_id) {
         return Excel::download(new AdditionalCostsExport($project_id), 'Gastos_Variables.xlsx');
+    }
+
+    public function import(Request $request, $project_id) {
+        $request->validate([
+            'import_file' => 'required|mimes:xlsx,csv',
+        ]);
+        Excel::import(new CostsImport("App\\Models\\AdditionalCost" ,$project_id), $request->file('import_file'));
     }
 }

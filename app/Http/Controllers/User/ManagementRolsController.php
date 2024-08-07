@@ -20,7 +20,6 @@ class ManagementRolsController extends Controller
 
     public function store(CreateRolRequest $request)
     {   
-        dd($request->all());
         $role = Role::create([
             'name' => $request->name,
             'description' => $request->description,

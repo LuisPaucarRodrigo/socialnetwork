@@ -250,12 +250,10 @@ import { FolderIcon } from '@heroicons/vue/24/solid';
 import { DocumentTextIcon } from '@heroicons/vue/24/outline';
 
 
-const { folders_archives, folder, currentPath, previousPath, auth, areas } = defineProps({
+const { folders_archives, currentPath, previousPath, auth } = defineProps({
     folders_archives: Object,
-    folder: Object,
     currentPath: String,
     previousPath: String,
-    areas: Object,
     auth: Object
 })
 

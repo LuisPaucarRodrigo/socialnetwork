@@ -13,7 +13,7 @@
                 <div class='max-h-48 overflow-y-auto'>
                     <label v-for="option in options" :key="option" class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
                         <input type="checkbox" :value="option" v-model="selectedOptions" class="mr-2" /> 
-                        <p>
+                        <p class="text-left">
                             {{ option }}
                         </p>
                     </label>

@@ -115,15 +115,16 @@ class WarehousesController extends Controller
                         'entry_id' => $entry->id,
                         'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                     ]);
-    
-                    if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
-                        ProjectEntry::create([
-                            'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                            'entry_id' => $entry->id,
-                            'quantity' => $entry->quantity,
-                            'unitary_price' => $entry->unitary_price,
-                        ]);
-                    }
+
+                    // Assign projectentry based in a purchase    
+                    // if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                    //     ProjectEntry::create([
+                    //         'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                    //         'entry_id' => $entry->id,
+                    //         'quantity' => $entry->quantity,
+                    //         'unitary_price' => $entry->unitary_price,
+                    //     ]);
+                    // }
                 }
             }
         } else {
@@ -148,15 +149,16 @@ class WarehousesController extends Controller
                             'entry_id' => $entry->id,
                             'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                         ]);
-    
-                        if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
-                            ProjectEntry::create([
-                                'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                                'entry_id' => $entry->id,
-                                'quantity' => $entry->quantity,
-                                'unitary_price' => $entry->unitary_price,
-                            ]);
-                        }
+                        
+                        // Assign projectentry based in a purchase
+                        // if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                        //     ProjectEntry::create([
+                        //         'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                        //         'entry_id' => $entry->id,
+                        //         'quantity' => $entry->quantity,
+                        //         'unitary_price' => $entry->unitary_price,
+                        //     ]);
+                        // }
     
     
                     } else {
@@ -179,15 +181,16 @@ class WarehousesController extends Controller
                             'entry_id' => $entry->id,
                             'purchase_quotes_product_id' => $purchaseQuoteProduct->id,
                         ]);
-    
-                        if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
-                            ProjectEntry::create([
-                                'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
-                                'entry_id' => $entry->id,
-                                'quantity' => $entry->quantity,
-                                'unitary_price' => $entry->unitary_price,
-                            ]);
-                        }
+                        
+                        // Assign projectentry based in a purchase
+                        // if ( $purchase_order?->purchase_quote?->purchasing_requests?->project_id) {
+                        //     ProjectEntry::create([
+                        //         'project_id' => $purchase_order->purchase_quote->purchasing_requests->project_id,
+                        //         'entry_id' => $entry->id,
+                        //         'quantity' => $entry->quantity,
+                        //         'unitary_price' => $entry->unitary_price,
+                        //     ]);
+                        // }
                     }
                 }
             }

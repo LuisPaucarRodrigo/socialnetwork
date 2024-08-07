@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('huawei_project_earnings', function (Blueprint $table) {
             $table->id();
+            $table->string('code');
             $table->text('description')->nullable();
-            $table->double('amount');
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
+            $table->double('unit_price')->nullable();
+            $table->integer('quantity');
             $table->timestamps();
         });
     }

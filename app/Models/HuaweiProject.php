@@ -17,7 +17,8 @@ class HuaweiProject extends Model
         'ot',
         'pre_report',
         'status',
-        'initial_amount'
+        'initial_amount',
+        'assigned_diu'
     ];
 
     protected $appends = [
@@ -74,6 +75,17 @@ class HuaweiProject extends Model
 
         if (!$this->huawei_project_resources()) {
             return true;
+        }
+
+        $details = HuaweiEntryDetail::where('assigned_diu', $this->assigned_diu)
+                ->get();
+                
+        $detail = $details->first(function ($detail) {
+            return $detail->state === 'Disponible';
+        });
+
+        if ($detail){
+            return false;
         }
 
         foreach ($resources as $resource) {
@@ -149,6 +161,6 @@ class HuaweiProject extends Model
 
     public function getTotalProjectCostAttribute ()
     {
-        return $this->additional_cost_total + $this->materials_in_project + $this->materials_liquidated + $this->equipments_in_project + $this->equipments_liquidated;
+        return $this->additional_cost_total + $this->materials_in_project + $this->materials_liquidated;
     }
 }

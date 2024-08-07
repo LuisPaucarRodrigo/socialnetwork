@@ -138,29 +138,30 @@ class ProjectManagementController extends Controller
                 ->update(['project_id' => $project->id, 'preproject_id' => null]);
             $employees = $request->input('employees');
 
+
             //Automatic assignation products from warehouse
-            $preproject_entries = PreprojectEntry::where('preproject_id', $data["preproject_id"])
-                ->get();
-            foreach ($preproject_entries as $item) {
-                ProjectEntry::create([
-                    'project_id' => $project->id,
-                    'entry_id' => $item->entry_id,
-                    'quantity' => $item->quantity,
-                    'unitary_price' => $item->unitary_price
-                ]);
-            }
+            // $preproject_entries = PreprojectEntry::where('preproject_id', $data["preproject_id"])
+            //     ->get();
+            // foreach ($preproject_entries as $item) {
+            //     ProjectEntry::create([
+            //         'project_id' => $project->id,
+            //         'entry_id' => $item->entry_id,
+            //         'quantity' => $item->quantity,
+            //         'unitary_price' => $item->unitary_price
+            //     ]);
+            // }
 
             //Assignation with CPE
-            if ($preproject->cpe) {
-                $specialProducts = SpecialInventory::where('cpe', $preproject->cpe)->get();
-                foreach ($specialProducts as $sPro) {
-                    ProjectEntry::create([
-                        'project_id' => $project->id,
-                        'special_inventory_id' => $sPro->id,
-                        'quantity' => $sPro->quantity,
-                    ]);
-                }
-            }
+            // if ($preproject->cpe) {
+            //     $specialProducts = SpecialInventory::where('cpe', $preproject->cpe)->get();
+            //     foreach ($specialProducts as $sPro) {
+            //         ProjectEntry::create([
+            //             'project_id' => $project->id,
+            //             'special_inventory_id' => $sPro->id,
+            //             'quantity' => $sPro->quantity,
+            //         ]);
+            //     }
+            // }
 
 
             foreach ($employees as $employee) {
@@ -378,6 +379,9 @@ class ProjectManagementController extends Controller
             $products = SpecialInventory::with('purchase_product')
                 ->where('warehouse_id', $warehouse->id)
                 ->where('cpe', $project->preproject->cpe)->get();
+            $products = $products->filter(function($item){
+                return $item->quantity_available > 0;
+            })->values()->all();
             return response()->json(['products' => $products]);
         } else {
             $products = Inventory::with('entry', 'purchase_product')->where('warehouse_id', $warehouse->id)->get();
@@ -421,13 +425,19 @@ class ProjectManagementController extends Controller
             'project_id' => 'required|numeric',
             'special_inventory_id' => 'nullable|numeric',
             'quantity' => 'required|numeric',
+            'area' => 'required|string',
+            'zone' => 'required|string',
             'entry_id' => 'nullable|numeric'
         ]);
+
+        // dd($request->all());
 
         if ($request->special_inventory_id != null) {
             ProjectEntry::create([
                 'project_id' => $request->project_id,
                 'special_inventory_id' => $request->special_inventory_id,
+                'area' => $request->area,
+                'zone' => $request->zone,
                 'quantity' => $request->quantity
             ]);
         } else {
@@ -435,6 +445,8 @@ class ProjectManagementController extends Controller
             ProjectEntry::create([
                 'project_id' => $request->project_id,
                 'entry_id' => $request->entry_id,
+                'area' => $request->area,
+                'zone' => $request->zone,
                 'quantity' => $request->quantity,
                 'unitary_price' => $entry->unitary_price
             ]);

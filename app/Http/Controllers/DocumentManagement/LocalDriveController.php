@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use ZipArchive;
-use Response;
 
 
 class LocalDriveController extends Controller
@@ -22,7 +21,6 @@ class LocalDriveController extends Controller
     {
         $root = $request->input('root');
         $path = $request->input('path');
-
         $previousPath = '';
         if (!$root) {
             $lastSlashPosition = strrpos($path, '/');

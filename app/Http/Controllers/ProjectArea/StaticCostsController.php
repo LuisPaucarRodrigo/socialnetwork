@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Exports\StaticCostsExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CostsRequest\StaticCostsRequest;
 use App\Models\Provider;
 use App\Models\StaticCost;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class StaticCostsController extends Controller
         if (count($request->selectedZones) < 5) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 6) {
+        if (count($request->selectedExpenseTypes) < 7) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedDocTypes) < 5) {
@@ -51,31 +52,9 @@ class StaticCostsController extends Controller
         return response()->json($result, 200);
     }
 
-    public function store(Project $project_id, Request $request)
+    public function store(StaticCostsRequest $request, Project $project_id)
     {
-        $remaining_budget = $project_id->remaining_budget;
-
-        $data = $request->validate([
-            'expense_type' => 'required|string',
-            'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
-            'doc_number' => 'nullable|string',
-            'doc_date' => 'required|date',
-            'amount' => [
-                'required',
-                'numeric',
-                function ($attribute, $value, $fail) use ($request, $remaining_budget) {
-                    if ($value > $remaining_budget) {
-                        $fail(__('El monto del gasto excede el presupuesto restante. S/. ' . number_format($remaining_budget, 2)));
-                    }
-                }
-            ],
-            'zone' => 'required',
-            'provider_id' => 'nullable',
-            'description' => 'required|string',
-            'photo' => 'nullable',
-            'project_id' => 'required'
-        ]);
+        $data = $request->validated();
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
