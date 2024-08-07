@@ -24,10 +24,7 @@ Route::post('/documentGestion/archives/{archive}/upgrade', [ArchivesController::
 Route::get('/documentGestion/alarms', [ArchivesController::class, 'getAlarmPerUser'])->name('archives.alarms');
 Route::get('/documentGestion/archives/{archive}/pdf', [ArchivesController::class, 'getPDF'])->name('archives.get.pdf');
 
-
-
 Route::get('/serach_folder_test/{folder_id}', [FolderController::class, 'search_in_folder'])->name('search.folder.test');
-
 
 
 //Local Drive routes

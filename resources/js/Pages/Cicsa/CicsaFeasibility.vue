@@ -7,7 +7,9 @@
             Factibilidad PINT y PEXT
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
+            <div class="flex justify-between">
+                <a :href="route('feasibilities.export')"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
                     <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
@@ -38,6 +40,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Informe
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Coordinador
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -77,6 +83,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_feasibility?.coordinator }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
                                     {{ item.cicsa_feasibility?.user_name }}
                                 </p>
                             </td>
@@ -110,6 +121,14 @@
                 <br>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                        <div class="sm:col-span-1">
+                            <InputLabel for="coordinator">Coordinador</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.coordinator" autocomplete="off"
+                                    id="coordinator" />
+                                <InputError :message="form.errors.coordinator" />
+                            </div>
+                        </div>
                         <div class="sm:col-span-1">
                             <InputLabel for="feasibility_date">Fecha de Factibilidad</InputLabel>
                             <div class="mt-2">
@@ -268,7 +287,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -285,6 +304,7 @@ const feasibilitys = ref(feasibility)
 
 const initialState = {
     user_id: auth.user.id,
+    coordinator:'',
     feasibility_date: '',
     report: 'Pendiente',
     user_name: auth.user.name,
@@ -335,6 +355,7 @@ function submit() {
             confirmUpdateFeasibility.value = true
             setTimeout(() => {
                 confirmUpdateFeasibility.value = false
+                router.get(route('feasibilities.index'))
             }, 1500)
         },
         onError: (e) => {

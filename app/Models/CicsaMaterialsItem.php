@@ -12,6 +12,7 @@ class CicsaMaterialsItem extends Model
 
     protected $fillable = [
         'cicsa_material_id',
+        'code_ax',
         'name',
         'unit',
         'quantity',

@@ -28,6 +28,7 @@ class StoreOrUpdateAssigantionRequest extends FormRequest
             'project_code' => 'nullable|string',
             'cpe' => 'nullable|string',
             'project_deadline' => 'nullable|date|after:assignation_date',
+            'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
         ];

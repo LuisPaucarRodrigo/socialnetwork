@@ -3,7 +3,6 @@
 namespace App\Exports\Payroll;
 
 use App\Models\Contract;
-use App\Models\Employee;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;

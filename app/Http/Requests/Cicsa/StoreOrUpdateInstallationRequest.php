@@ -24,9 +24,11 @@ class StoreOrUpdateInstallationRequest extends FormRequest
         return [
             "pext_date" => "nullable",
             "pint_date" => "nullable",
+            "projected_amount" => "nullable|numeric",
             "conformity" => "required",
             "report" => "required",
             "shipping_report_date" => "nullable",
+            'coordinator' => 'required|string',
             "user_name" => "required",
             "user_id" => "required",
             "cicsa_assignation_id" => "required",

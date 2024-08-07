@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cicsa_materials_items', function (Blueprint $table) {
+        Schema::create('tools_gtds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cicsa_material_id')->constrained('cicsa_materials')->onDelete('cascade');
-            $table->string('code_ax');
-            $table->string('name');
-            $table->string('unit');
-            $table->integer('quantity');
+            $table->string('code_ax')->nullable();
+            $table->string('name')->nullable();
+            $table->string('internal_reference')->nullable();
+            $table->string('unit')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cicsa_materials_items');
+        Schema::dropIfExists('tools_gtds');
     }
 };

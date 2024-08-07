@@ -24,6 +24,7 @@ class StoreOrUpdateFeasibilitiesRequest extends FormRequest
         return [
             'feasibility_date' => 'nullable|date',
             'report' => 'required|string',
+            'coordinator' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
             'cicsa_feasibility_materials' => 'nullable|array'

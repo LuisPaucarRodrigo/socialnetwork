@@ -7,7 +7,10 @@
             Orden de Compra
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
+            <div class="flex justify-between">
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <a :href="route('purchase.order.export')" class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                </div>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
                     <SelectCicsaComponent currentSelect="Orden de Compra" />
@@ -124,7 +127,8 @@
                 </table>
             </div>
 
-            <div v-if="purchaseOrders.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="purchaseOrders.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="purchaseOrders.links" />
             </div>
         </div>
@@ -212,7 +216,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -268,6 +272,7 @@ function submit() {
             confirmUpdatePuchaseOrder.value = true
             setTimeout(() => {
                 confirmUpdatePuchaseOrder.value = false
+                router.get(route('purchase.order.index'))
             }, 1500)
         },
         onError: (e) => {
@@ -284,5 +289,4 @@ const search = async ($search) => {
         console.error('Error searching:', error);
     }
 };
-
 </script>

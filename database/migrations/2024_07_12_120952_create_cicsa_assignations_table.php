@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('project_code')->nullable();
             $table->string('cpe')->nullable();
             $table->date('project_deadline')->nullable();
+            $table->string('manager');
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();

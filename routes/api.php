@@ -4,11 +4,13 @@
     use Illuminate\Support\Facades\Route;
 
     Route::post('/login', [ApiController::class, 'login']);
+
+    Route::get('/preproject/{id}', [ApiController::class, 'preproject']);
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/users/{id}', [ApiController::class, 'users']);
 
         //Preprojects
-        Route::get('/preproject/{id}', [ApiController::class, 'preproject']);
+        
         Route::get('/codephotospecific/{id}', [ApiController::class, 'codephotospecific']);
         Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
         Route::get('/preproject/code/{id}', [ApiController::class, 'preprojectcodephoto']);
@@ -24,4 +26,9 @@
         //ProjectHuawei
         Route::get('/huaweiproject/index', [ApiController::class, 'indexHuaweiProjectGeneral']);
         Route::post('/huaweiproject/store', [ApiController::class, 'storeHuaweiProjectGeneral']);
+
+        //ProcessManuals
+        Route::post('/processmanuals/index', [ApiController::class, 'localDriveIndex']);
+        Route::post('/processmanuals/folder_archive_download', [ApiController::class, 'localDriveDownload']);
+
     });
