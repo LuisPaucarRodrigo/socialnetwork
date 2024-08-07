@@ -56,10 +56,10 @@
                 </div>
             </div>
             <br />
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table
                     :class="[
-                        'w-full min-h-[50vh]',
+                        'w-full '
                     ]"
                 >
                     <thead class="sticky top-0 z-40">
