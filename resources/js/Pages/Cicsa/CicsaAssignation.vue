@@ -8,20 +8,29 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <PrimaryButton @click="openAddAssignationModal" type="button">
-                    + Agregar
-                </PrimaryButton>
-                <SelectCicsaComponent currentSelect="Asignación" />
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <PrimaryButton @click="openAddAssignationModal" type="button">
+                        + Agregar
+                    </PrimaryButton>
+                    <a :href="route('assignation.export')"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                </div>
+
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
+                    <SelectCicsaComponent currentSelect="Asignación" />
+                </div>
+
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre del Proyecto
+                                Nombre de Proyecto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -45,6 +54,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Gestor
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
                             <th
@@ -53,43 +66,48 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in assignation.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="item in assignations.data ?? assignations" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.assignation_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.customer }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_code }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.project_deadline) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.manager }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900" @click="openEditSotModal(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -104,8 +122,8 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="assignations.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="assignation.links" />
             </div>
         </div>
@@ -113,15 +131,24 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{form.id ? 'Editar Asignación' : 'Nueva Asignación'}}
+                    {{ form.id ? 'Editar Asignación' : 'Nueva Asignación' }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="">
+                            <InputLabel for="manager">Gestor</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.manager" autocomplete="off" id="manager"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.manager" />
+                            </div>
+                        </div>
+                        <div class="">
                             <InputLabel for="assignation_date">Fecha de Asignación</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.assignation_date" autocomplete="off" id="assignation_date"
+                                <input type="date" v-model="form.assignation_date" autocomplete="off"
+                                    id="assignation_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.assignation_date" />
                             </div>
@@ -139,7 +166,7 @@
                             <InputLabel for="customer">Cliente</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.customer" autocomplete="off" id="customer"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.customer" />
                             </div>
                         </div>
@@ -147,7 +174,7 @@
                             <InputLabel for="project_code">Codigo de Proyecto</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.project_code" autocomplete="off" id="project_code"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.project_code" />
                             </div>
                         </div>
@@ -155,15 +182,16 @@
                             <InputLabel for="cpe">CPE</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.cpe" autocomplete="off" id="cpe"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.cpe" />
                             </div>
                         </div>
                         <div class="">
                             <InputLabel for="project_deadline">Fecha Limite del Proyecto</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.project_deadline" autocomplete="off" id="project_deadline"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <input type="date" v-model="form.project_deadline" autocomplete="off"
+                                    id="project_deadline"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.project_deadline" />
                             </div>
                         </div>
@@ -193,17 +221,20 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import {formattedDate} from '@/utils/utils.js';
+import { formattedDate } from '@/utils/utils.js';
+import TextInput from '@/Components/TextInput.vue';
 
 const { assignation, auth } = defineProps({
     assignation: Object,
     auth: Object
 })
+
+const assignations = ref(assignation);
 
 const initialState = {
     id: null,
@@ -214,6 +245,7 @@ const initialState = {
     project_code: '',
     cpe: '',
     project_deadline: '',
+    manager: '',
     user_name: auth.user.name,
 }
 
@@ -228,7 +260,7 @@ function openAddAssignationModal() {
 }
 function closeAddAssignationModal() {
     showAddEditModal.value = false
-    form.defaults({...initialState})
+    form.defaults({ ...initialState })
     form.reset()
 }
 function submitStore() {
@@ -239,6 +271,7 @@ function submitStore() {
             confirmAssignation.value = true
             setTimeout(() => {
                 confirmAssignation.value = false
+                router.get(route('assignation.index'))
             }, 1500)
         },
         onError: (e) => {
@@ -249,21 +282,25 @@ function submitStore() {
 
 const confirmUpdateAssignation = ref(false);
 
-function openEditSotModal (item) {
-    form.defaults({...item})
+function openEditSotModal(item) {
+    form.defaults({ ...item })
     form.reset()
     showAddEditModal.value = true
 }
 
 function submitUpdate() {
-    let url = route('assignation.storeOrUpdate', {cicsa_assignation_id:form.id})
+    let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
     form.put(url, {
         onSuccess: () => {
             closeAddAssignationModal()
             confirmUpdateAssignation.value = true
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
+                router.get(route('assignation.index'))
             }, 1500)
+        },
+        onError: (e) => {
+            console.log(e)
         }
     })
 }
@@ -272,4 +309,13 @@ function submit() {
     form.id ? submitUpdate() : submitStore()
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('assignation.index'), { searchQuery: $search });
+        assignations.value = response.data.assignation;
+
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

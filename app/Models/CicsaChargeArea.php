@@ -15,7 +15,7 @@ class CicsaChargeArea extends Model
     protected $fillable = [
         'invoice_number',
         'invoice_date',
-        'payment_date',
+        'credit_to',
         'deposit_date',
         'amount',
         'user_name',
@@ -24,7 +24,7 @@ class CicsaChargeArea extends Model
     ];
 
     protected $appends = [
-        'credit',
+        'payment_date',
         'days_late',
         'state'
     ];
@@ -39,26 +39,32 @@ class CicsaChargeArea extends Model
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
     }
 
-    public function getCreditAttribute()
+    public function getPaymentDateAttribute()
     {
-        $paymentDate = new \DateTime($this->payment_date);
-        $invoiceDate = new \DateTime($this->invoice_date);
-            
-        $interval = $paymentDate->diff($invoiceDate);
-    
-        return $interval->days;
+        if (!empty($this->invoice_date) && !empty($this->credit_to)) {
+            $invoiceDate = Carbon::parse($this->invoice_date);
+
+            $invoiceDate->addDays($this->credit_to);
+
+            return $invoiceDate->toDateString();
+        }
+
+        return null;
     }
+
 
     public function getDaysLateAttribute()
     {
-        $paymentDate = Carbon::parse($this->payment_date);
-        $currentDate = Carbon::now();
-    
-        // Calcula la diferencia en días
-        $daysLate = $paymentDate->diffInDays($currentDate, false);
-    
-        // Si la diferencia es negativa, retorna 0
-        return $daysLate > 0 ? $daysLate : 0;
+        if ($this->payment_date) {
+            $paymentDate = Carbon::parse($this->payment_date);
+            $currentDate = Carbon::now();
+
+            $daysLate = $paymentDate->diffInDays($currentDate, false);
+
+            return $daysLate > 0 ? $daysLate : 0;
+        }
+
+        return 0;
     }
 
     public function getStateAttribute ()

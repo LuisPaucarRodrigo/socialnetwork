@@ -64,11 +64,11 @@ class LiquidationController extends Controller
     public function history($project_id){
         $liquidations = ProjectEntryLiquidation::whereHas('project_entry.project', function ($query) use ($project_id) {
             $query->where('project_id', $project_id);
-        })->with('project_entry.entry.inventory.purchase_product', 'project_entry.special_inventory.purchase_product')->paginate(5);
+        })->with('project_entry.entry.inventory.purchase_product', 'project_entry.special_inventory.purchase_product')->paginate(20);
     
         return Inertia::render('ProjectArea/ProjectManagement/LiquidationsHistory', [
             'liquidations' => $liquidations,
-            'project_id' => $project_id
+            'project_id' => $project_id,
         ]);
     }
 

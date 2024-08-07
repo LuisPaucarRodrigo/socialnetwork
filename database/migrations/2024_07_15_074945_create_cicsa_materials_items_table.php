@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('cicsa_materials_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cicsa_material_id')->constrained('cicsa_materials')->onDelete('cascade');
+            $table->string('code_ax');
             $table->string('name');
             $table->string('unit');
             $table->integer('quantity');

@@ -5,15 +5,28 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\Imagespreproject;
+use App\Models\Preproject;
 use App\Models\PreprojectCode;
+use App\Models\PreReportHuaweiGeneral;
 use App\Models\Project;
 use App\Models\Projectimage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function Pest\Laravel\json;
+
 class ApiController extends Controller
 {
+
+    // protected $main_directory;
+
+    // public function __construct()
+    // {
+    //     $this->main_directory = 'LocalDrive';
+    // }
+
     public function login(LoginMobileRequest $request)
     {
         if (Auth::attempt($request->validated())) {
@@ -32,9 +45,9 @@ class ApiController extends Controller
         }
     }
 
-    public function users(Request $request)
+    public function users($id)
     {
-        $user = $request->user();
+        $user = User::select('name', 'dni', 'email')->find($id);
         if ($user) {
             return response()->json($user);
         } else {
@@ -43,13 +56,14 @@ class ApiController extends Controller
     }
 
     //PreProject
-    public function preproject(Request $request)
+    public function preproject($id)
     {
-        $user = $request->user();
-        $preprojects = $user->preprojects()->where('status', null)->get();
+        $user = User::find($id);
+        $preprojects = $user->preprojects()
+            ->where('status', null)->get();
         $data = [];
         foreach ($preprojects as $preproject) {
-            if (!$preproject->preproject_code_approve){
+            if (!$preproject->preproject_code_approve) {
                 $data[] = [
                     'id' => $preproject->id,
                     'code' => $preproject->code,
@@ -59,7 +73,7 @@ class ApiController extends Controller
                 ];
             }
         }
-        
+
         return response()->json($preprojects);
     }
 
@@ -79,7 +93,7 @@ class ApiController extends Controller
     }
 
     public function codephotospecific($id)
-    {   
+    {
         $data = PreprojectCode::with('code', 'preproject')->find($id);
         $codesWith = [
             'id' => $data->id,
@@ -184,5 +198,106 @@ class ApiController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
+    }
+
+    public function indexHuaweiProjectGeneral()
+    {
+        $data = PreReportHuaweiGeneral::all();
+        return response()->json($data);
+    }
+
+    public function storeHuaweiProjectGeneral(Request $request)
+    {
+        $validateData = $request->validate([
+            'site' => 'required',
+            'elaborated' => 'required',
+            'code' => 'required',
+            'name' => 'required',
+            'address' => 'required',
+            'reference' => 'required',
+            'access' => 'required',
+        ]);
+        PreReportHuaweiGeneral::create($validateData);
+        return response()->json([], 200);
+    }
+
+    // public function localDriveIndex(Request $request)
+    // {
+    //     $root = $request->input('root');
+    //     $path = $request->input('path');
+    //     try {
+    //         $previousPath = '';
+    //         if (!$root) {
+    //             $lastSlashPosition = strrpos($path, '/');
+    //             if ($lastSlashPosition !== false) {
+    //                 $previousPath = substr($path, 0, $lastSlashPosition) !== $this->main_directory
+    //                     ? substr($path, 0, $lastSlashPosition)
+    //                     : '';
+    //             }
+    //         }
+    //         $currentPath = $root ? $this->main_directory : $path;
+    //         $folders_archives = $this->scanFolder(storage_path('app/' . $currentPath));
+    //         return response()->json([
+    //             'folders_archives' => $folders_archives,
+    //             'currentPath' => $currentPath,
+    //             'previousPath' => $previousPath,
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'error' => 'Ocurrió un error al procesar la solicitud',
+    //             'message' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+    // private function scanFolder($folderPath)
+    // {
+    //     $folders = [];
+    //     $files = [];
+    //     $contents = scandir($folderPath);
+    //     foreach ($contents as $item) {
+    //         if ($item[0] !== '.') {
+    //             $itemPath = $folderPath . '/' . $item;
+    //             if (is_dir($itemPath)) {
+    //                 $folders[] = [
+    //                     'name' => $item,
+    //                     'type' => 'folder',
+    //                     'path' => str_replace(storage_path('app/'), '', $itemPath),
+    //                     'size' => '',
+    //                 ];
+    //             } else {
+    //                 $files[] = [
+    //                     'name' => $item,
+    //                     'type' => 'archive',
+    //                     'path' => str_replace(storage_path('app/'), '', $itemPath),
+    //                     'size' => round(filesize($itemPath) / 1024, 2) . " KB",
+    //                 ];
+    //             }
+    //         }
+    //     }
+    //     return array_merge($folders, $files);
+    // }
+
+    // public function localDriveDownload(Request $request)
+    // {
+    //     $path = $request->input('path');
+    //     $storagePath = storage_path('app/' . $path);
+
+    //     if (is_file($storagePath)) {
+    //         ob_end_clean();
+    //         return $this->downloadFile($path);
+    //     } else {
+    //         return abort(404, 'El recurso solicitado no existe.');
+    //     }
+    // }
+
+    private function downloadFile($path)
+    {
+        $filePath = storage_path('app/' . $path);
+
+        if (!file_exists($filePath)) {
+            return abort(404, 'El archivo no existe.');
+        }
+        return response()->download($filePath);
     }
 }

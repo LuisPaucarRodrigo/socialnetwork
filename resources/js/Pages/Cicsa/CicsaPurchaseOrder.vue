@@ -7,18 +7,32 @@
             Orden de Compra
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Orden de Compra" />
+            <div class="flex justify-between">
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <a :href="route('purchase.order.export')" class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                </div>
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
+                    <SelectCicsaComponent currentSelect="Orden de Compra" />
+                </div>
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Proyecto
+                                Nombre de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Codigo de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                CPE
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -50,45 +64,56 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in purchaseOrder.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="item in purchaseOrders.data ?? purchaseOrders" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.project_code }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cpe }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_purchase_order?.oc_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_purchase_order?.oc_number }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_purchase_order?.master_format }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_purchase_order?.item3456 }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_purchase_order?.budget }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_purchase_order?.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900" @click="openEditSotModal(item.id,item.cicsa_purchase_order)">
+                                    <button class="text-blue-900"
+                                        @click="openEditSotModal(item.id, item.cicsa_purchase_order)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -102,21 +127,22 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="purchaseOrder.links" />
+            <div v-if="purchaseOrders.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <pagination :links="purchaseOrders.links" />
             </div>
         </div>
 
         <Modal :show="showAddEditModal" @close="closeAddPuchaseOrderModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{form.id ? 'Editar Orden de Compra' : 'Nueva Orden de Compra'}}
+                    {{ form.id ? 'Editar Orden de Compra' : 'Nueva Orden de Compra' }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="sm:col-span-1">
-                            <InputLabel for="oc_date">Fecha de Recojo</InputLabel>
+                            <InputLabel for="oc_date">Fecha de OC</InputLabel>
                             <div class="mt-2">
                                 <input type="date" v-model="form.oc_date" autocomplete="off" id="oc_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -124,7 +150,7 @@
                             </div>
                         </div>
                         <div class="sm:col-span-1">
-                            <InputLabel for="oc_number">Numero de Guia</InputLabel>
+                            <InputLabel for="oc_number">Numero de OC</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.oc_number" autocomplete="off" id="oc_number"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -190,17 +216,20 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import {formattedDate} from '@/utils/utils.js';
+import { formattedDate } from '@/utils/utils.js';
+import TextInput from '@/Components/TextInput.vue';
 
 const { purchaseOrder, auth } = defineProps({
     purchaseOrder: Object,
     auth: Object
 })
+
+const purchaseOrders = ref(purchaseOrder)
 
 const initialState = {
     user_id: auth.user.id,
@@ -222,27 +251,28 @@ const cicsa_assignation_id = ref(null);
 
 function closeAddPuchaseOrderModal() {
     showAddEditModal.value = false
-    form.defaults({...initialState})
+    form.defaults({ ...initialState })
     form.reset()
 }
 
 const confirmUpdatePuchaseOrder = ref(false);
 
-function openEditSotModal (id, item) {
+function openEditSotModal(id, item) {
     cicsa_assignation_id.value = id;
-    form.defaults({...item})
+    form.defaults({ ...item })
     form.reset()
     showAddEditModal.value = true
 }
 
 function submit() {
-    let url = route('purchaseOrder.storeOrUpdate', {cicsa_assignation_id:cicsa_assignation_id.value})
+    let url = route('purchaseOrder.storeOrUpdate', { cicsa_assignation_id: cicsa_assignation_id.value })
     form.put(url, {
         onSuccess: () => {
             closeAddPuchaseOrderModal()
             confirmUpdatePuchaseOrder.value = true
             setTimeout(() => {
                 confirmUpdatePuchaseOrder.value = false
+                router.get(route('purchase.order.index'))
             }, 1500)
         },
         onError: (e) => {
@@ -251,4 +281,12 @@ function submit() {
     })
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('purchase.order.index'), { searchQuery: $search });
+        purchaseOrders.value = response.data.purchaseOrder;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

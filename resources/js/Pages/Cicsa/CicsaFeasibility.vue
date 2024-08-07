@@ -7,18 +7,31 @@
             Factibilidad PINT y PEXT
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
+            <div class="flex justify-between">
+                <a :href="route('feasibilities.export')"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
+                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
+                </div>
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Codigo de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                CPE
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -30,6 +43,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Coordinador
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
                             <th
@@ -38,28 +55,43 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in feasibility.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="item in feasibilitys.data ?? feasibilitys" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.project_code }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cpe }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_feasibility?.feasibility_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_feasibility?.report }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_feasibility?.coordinator }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_feasibility?.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
                                         @click="openEditFeasibilityModal(item.id, item.cicsa_feasibility)">
@@ -76,8 +108,8 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="feasibility.links" />
+            <div v-if="feasibilitys.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <pagination :links="feasibilitys.links" />
             </div>
         </div>
 
@@ -89,6 +121,14 @@
                 <br>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                        <div class="sm:col-span-1">
+                            <InputLabel for="coordinator">Coordinador</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.coordinator" autocomplete="off"
+                                    id="coordinator" />
+                                <InputError :message="form.errors.coordinator" />
+                            </div>
+                        </div>
                         <div class="sm:col-span-1">
                             <InputLabel for="feasibility_date">Fecha de Factibilidad</InputLabel>
                             <div class="mt-2">
@@ -109,7 +149,7 @@
                                 <InputError :message="form.errors.report" />
                             </div>
                         </div>
-                        
+
                         <div class="sm:col-span-1">
                             <br>
                             <div class="flex gap-2 items-center">
@@ -151,23 +191,24 @@
                                 <tbody>
                                     <tr v-for="item in form.cicsa_feasibility_materials" :key="item.id"
                                         class="text-gray-700">
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.unit }}
                                             </p>
                                         </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="text-gray-900 text-center">
+                                        <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                            <TextInput class="text-center" type="number" min="0"
+                                                @change="modifyQuantity(item.id, $event)" :value="item.quantity" />
+                                            <!-- <p class="text-gray-900 text-center">
                                                 {{ item.quantity }}
-                                            </p>
+                                            </p> -->
                                         </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <button v-if="!item.id" type="button" @click="delete_material(item.name)"
                                                 class="text-blue-900 whitespace-no-wrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -186,7 +227,6 @@
                     <br>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeAddFeasibilityModal"> Cancelar </SecondaryButton>
-
                         <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
                             Guardar
@@ -219,7 +259,8 @@
                         <InputLabel for="quantity">Cantidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity" />
+                            <TextInput required type="number" v-model="feasibilityObject.quantity" id="quantity"
+                                min="0" />
                         </div>
                     </div>
                 </div>
@@ -246,7 +287,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -259,8 +300,11 @@ const { feasibility, auth } = defineProps({
     auth: Object
 })
 
+const feasibilitys = ref(feasibility)
+
 const initialState = {
     user_id: auth.user.id,
+    coordinator:'',
     feasibility_date: '',
     report: 'Pendiente',
     user_name: auth.user.name,
@@ -311,6 +355,7 @@ function submit() {
             confirmUpdateFeasibility.value = true
             setTimeout(() => {
                 confirmUpdateFeasibility.value = false
+                router.get(route('feasibilities.index'))
             }, 1500)
         },
         onError: (e) => {
@@ -343,4 +388,22 @@ function delete_material(materialName) {
         console.error(`No se encontró ningún material con el nombre '${materialName}'.`);
     }
 }
+
+function modifyQuantity(id, event) {
+    form.cicsa_feasibility_materials = form.cicsa_feasibility_materials.map(item => {
+        if (item.id === id) {
+            return { ...item, quantity: event.target.value };
+        }
+        return item;
+    });
+}
+
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('feasibilities.index'), { searchQuery: $search });
+        feasibilitys.value = response.data.feasibility;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

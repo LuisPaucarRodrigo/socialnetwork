@@ -7,18 +7,35 @@
             Orden de Servicio
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Orden de Servicio" />
+            <div class="flex justify-between">
+                <a :href="route('cicsa.service_orders.export')"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
+                    <SelectCicsaComponent currentSelect="Orden de Servicio" />
+                </div>
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Codigo de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                CPE
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Numero de OC
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -54,48 +71,63 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in service_orders.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="item in service_orders.data ?? service_orders" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.project_code }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cpe }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_purchase_order?.oc_number }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_service_order?.service_order_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_service_order?.service_order }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_service_order?.estimate_sheet }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_service_order?.purchase_order }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_service_order?.pdf_invoice }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_service_order?.zip_invoice }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_service_order?.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
                                         @click="openEditFeasibilityModal(item.id, item.cicsa_service_order)">
@@ -112,7 +144,7 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="service_orders.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="service_orders.links" />
             </div>
         </div>
@@ -129,7 +161,7 @@
                             <InputLabel for="service_order_date">Fecha de Orden de Servicio</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.service_order_date" autocomplete="off"
-                                    id="service_order_date"/>
+                                    id="service_order_date" />
                                 <InputError :message="form.errors.service_order_date" />
                             </div>
                         </div>
@@ -137,8 +169,13 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="service_order">Orden de Servicio</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.service_order" autocomplete="off"
-                                    id="service_order"/>
+                                <select v-model="form.service_order" id="service_order"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccione una opción</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
+                                    <option value="Completado">Completado</option>
+                                </select>
                                 <InputError :message="form.errors.service_order" />
                             </div>
                         </div>
@@ -150,6 +187,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccione una opción</option>
                                     <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
                                     <option value="Completado">Completado</option>
                                 </select>
                                 <InputError :message="form.errors.estimate_sheet" />
@@ -163,6 +201,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccione una opción</option>
                                     <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
                                     <option value="Completado">Completado</option>
                                 </select>
                                 <InputError :message="form.errors.purchase_order" />
@@ -176,6 +215,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccione una opción</option>
                                     <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
                                     <option value="Completado">Completado</option>
                                 </select>
                                 <InputError :message="form.errors.pdf_invoice" />
@@ -189,6 +229,7 @@
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccione una opción</option>
                                     <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
                                     <option value="Completado">Completado</option>
                                 </select>
                                 <InputError :message="form.errors.zip_invoice" />
@@ -222,7 +263,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -230,10 +271,12 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
-const { service_orders, auth } = defineProps({
-    service_orders: Object,
+const { service_order, auth } = defineProps({
+    service_order: Object,
     auth: Object
 })
+
+const service_orders = ref(service_order)
 
 const initialState = {
     id: null,
@@ -271,13 +314,14 @@ function openEditFeasibilityModal(cicsa_assignation_id, item) {
 }
 
 function submit() {
-    let url = form.id ? route('cicsa.service_orders.update', {cicsa_service_order_id: form.id}) : route('cicsa.service_orders.store', { cicsa_assignation_id: form.cicsa_assignation_id });
+    let url = form.id ? route('cicsa.service_orders.update', { cicsa_service_order_id: form.id }) : route('cicsa.service_orders.store', { cicsa_assignation_id: form.cicsa_assignation_id });
     form.post(url, {
         onSuccess: () => {
             closeAddAssignationModal()
             confirmUpdateAssignation.value = true
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
+                router.get(route('cicsa.service_orders'))
             }, 1500)
         },
         onError: (e) => {
@@ -286,4 +330,12 @@ function submit() {
     })
 }
 
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('cicsa.service_orders'), { searchQuery: $search });
+        service_orders.value = response.data.service_order;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

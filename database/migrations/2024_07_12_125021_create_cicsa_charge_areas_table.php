@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('cicsa_charge_areas', function (Blueprint $table) {
             $table->id();
-            $table->string('invoice_number');
-            $table->date('invoice_date');
-            $table->date('payment_date');
+            $table->string('invoice_number')->nullable();
+            $table->date('invoice_date')->nullable();
+            $table->integer('credit_to')->nullable();
             $table->date('deposit_date')->nullable();
-            $table->double('amount');
+            $table->double('amount')->nullable();
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('cicsa_assignation_id')->constrained('cicsa_assignations')->onDelete('cascade');

@@ -15,6 +15,7 @@ use App\Models\Employee;
 use App\Models\Family;
 use App\Models\Health;
 use App\Models\Pension;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +45,8 @@ class ManagementEmployees extends Controller
     }
 
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $searchTerm = strtolower($request->query('searchTerm'));
         $isActive = $request->query('isActive');
 
@@ -57,15 +59,15 @@ class ManagementEmployees extends Controller
             $employees = Employee::with('contract')
                 ->whereHas('contract', function ($query) {
                     $query->where('state', 'Inactive');
-                });        
+                });
         }
         $employees = $employees->where(function ($query) use ($searchTerm) {
             $query->where('name', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('phone1', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('dni', 'like', '%' . $searchTerm . '%');
+                ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
+                ->orWhere('phone1', 'like', '%' . $searchTerm . '%')
+                ->orWhere('dni', 'like', '%' . $searchTerm . '%');
         })
-        ->get();
+            ->get();
         $employees->each(function ($employee) {
             $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
@@ -371,6 +373,28 @@ class ManagementEmployees extends Controller
             'fired_date' => null,
             'days_taken' => 0,
             'state' => 'Active'
+        ]);
+    }
+
+    public function happy_birthday()
+    {
+        $now = Carbon::now();
+        $startDate = $now->copy();
+        $endDate = $now->copy()->addDays(3);
+
+        $dates = [];
+        for ($date = $startDate; $date <= $endDate; $date->addDay()) {
+            $dates[] = $date->format('m-d');
+        }
+
+        $employees = Employee::all();
+
+        $data = $employees->filter(function ($employee) use ($dates) {
+            return in_array(Carbon::parse($employee->birthdate)->format('m-d'), $dates);
+        });
+
+        return response()->json([
+            'happyBirthday' => $data->values()
         ]);
     }
 }

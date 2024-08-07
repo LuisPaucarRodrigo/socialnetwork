@@ -22,12 +22,13 @@ class StoreOrUpdateAssigantionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'assignation_date' => 'required|date',
+            'assignation_date' => 'nullable|date',
             'project_name' => 'required|string',
-            'customer' => 'required|string',
-            'project_code' => 'required|string',
+            'customer' => 'nullable|string',
+            'project_code' => 'nullable|string',
             'cpe' => 'nullable|string',
-            'project_deadline' => 'string|date|after:assignation_date',
+            'project_deadline' => 'nullable|date|after:assignation_date',
+            'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
         ];

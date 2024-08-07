@@ -22,15 +22,17 @@ class StoreOrUpdateInstallationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "pext_date" => "required",
-            "pint_date" => "required",
+            "pext_date" => "nullable",
+            "pint_date" => "nullable",
+            "projected_amount" => "nullable|numeric",
             "conformity" => "required",
             "report" => "required",
-            "shipping_report_date" => "required",
+            "shipping_report_date" => "nullable",
+            'coordinator' => 'required|string',
             "user_name" => "required",
             "user_id" => "required",
             "cicsa_assignation_id" => "required",
-            "total_materials" => "required|array",
+            "total_materials" => "nullable|array",
         ];
     }
 }

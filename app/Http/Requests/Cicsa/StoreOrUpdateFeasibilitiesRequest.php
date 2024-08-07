@@ -22,11 +22,12 @@ class StoreOrUpdateFeasibilitiesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'feasibility_date' => 'required|date',
+            'feasibility_date' => 'nullable|date',
             'report' => 'required|string',
+            'coordinator' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
-            'cicsa_feasibility_materials' => 'required|array'
+            'cicsa_feasibility_materials' => 'nullable|array'
         ];
     }
 }

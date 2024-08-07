@@ -8,17 +8,30 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
+                <!-- <a :href="route('cicsa.installation.export')"
+                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a> -->
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
+                    <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
+                </div>
             </div>
             <br>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Codigo de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                CPE
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -27,6 +40,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha PINT
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto Proyectado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -50,6 +67,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Coordinador
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
                             <th
@@ -58,60 +79,78 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in installations.data" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="item in installations.data ?? installations" :key="item.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.project_code }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cpe }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_installation?.pext_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_installation?.pint_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_installation?.projected_amount ? 'S/' +
+        item.cicsa_installation.projected_amount.toFixed() : '' }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.conformity }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.report }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
 
-                                <button v-if="item?.total_materials?.length > 0" type="button" @click="openMaterialsModal(item.total_materials)">
+                                <button v-if="item?.total_materials?.length > 0" type="button"
+                                    @click="openMaterialsModal(item.total_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
-                                <p v-else class="text-gray-900 text-center">
-                                    -
-                                </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"  type="button" @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
+                                <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"
+                                    type="button"
+                                    @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
-                                <p v-else class="text-gray-900 text-center">
-                                    -
-                                </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.cicsa_installation?.shipping_report_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_installation?.coordinator }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
                                         @click="openEditFeasibilityModal(item.id, item.cicsa_installation, item.total_materials, item?.cicsa_installation?.cicsa_installation_materials)">
@@ -128,7 +167,8 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="installations.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="installations.links" />
             </div>
         </div>
@@ -142,27 +182,45 @@
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="sm:col-span-1">
-                            <InputLabel for="feasibility_date">Fecha de PEXT</InputLabel>
+                            <InputLabel for="coordinator">Coordinador</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.pext_date" autocomplete="off"
+                                <input type="text" v-model="form.coordinator" autocomplete="off" id="coordinator"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.coordinator" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="pext_date">Fecha de PEXT</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.pext_date" autocomplete="off" id="pext_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.pext_date" />
                             </div>
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="feasibility_date">Fecha de PINT</InputLabel>
+                            <InputLabel for="pint_date">Fecha de PINT</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.pint_date" autocomplete="off"
+                                <input type="date" v-model="form.pint_date" autocomplete="off" id="pint_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.pint_date" />
+                                <InputError :message="form.errors.projected_amount" />
                             </div>
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="feasibility_date">Acta de Conformidad</InputLabel>
+                            <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.conformity" autocomplete="off"
+                                <input type="number" v-model="form.projected_amount" autocomplete="off"
+                                    id="projected_amount"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.projected_amount" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <InputLabel for="conformity">Acta de Conformidad</InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.conformity" autocomplete="off" id="conformity"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option>Pendiente</option>
                                     <option>Completado</option>
@@ -171,9 +229,9 @@
                             </div>
                         </div>
                         <div class="sm:col-span-1">
-                            <InputLabel for="feasibility_date">Informe</InputLabel>
+                            <InputLabel for="report">Informe</InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.report" autocomplete="off"
+                                <select v-model="form.report" autocomplete="off" id="report"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option>Pendiente</option>
                                     <option>En Proceso</option>
@@ -184,9 +242,10 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="feasibility_date">Fecha de envío de Informe</InputLabel>
+                            <InputLabel for="shipping_report_date">Fecha de envío de Informe</InputLabel>
                             <div class="mt-2">
                                 <input type="date" v-model="form.shipping_report_date" autocomplete="off"
+                                    id="shipping_report_date"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.shipping_report_date" />
                             </div>
@@ -210,13 +269,16 @@
                                             <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                                 Material
                                             </th>
-                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Recibidos
                                             </th>
-                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Usados
                                             </th>
-                                            <th class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Resto
                                             </th>
                                         </tr>
@@ -231,7 +293,8 @@
                                                 {{ item?.quantity }}
                                             </td>
                                             <td class="border-b border-slate-300  px-2 py-4">
-                                                <input required type="number" min="0" v-model="form.total_materials[i]['used_quantity']"
+                                                <input required type="number" min="0"
+                                                    v-model="form.total_materials[i]['used_quantity']"
                                                     autocomplete="off" :max="item.quantity"
                                                     class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                             </td>
@@ -253,7 +316,6 @@
                     <br>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
-
                         <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
                             Guardar
@@ -298,13 +360,10 @@
 
 
         </Modal>
-
-
-
         <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    Materiales en Acta
+                    Total Materiales Recibidos
                 </h2>
                 <br>
                 <div class="mt-2">
@@ -313,6 +372,9 @@
                             <thead>
                                 <tr
                                     class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        N° Guía
+                                    </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Material
                                     </th>
@@ -326,6 +388,9 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.guide_number }}
+                                    </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.name }}
                                     </td>
@@ -350,7 +415,7 @@
                 </div>
             </div>
         </Modal>
-        
+
         <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" max-width="md" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
@@ -401,14 +466,10 @@
                     <br>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton type="button" @click="closeInstMaterialsModal"> Cerrar </SecondaryButton>
-
                     </div>
                 </div>
             </div>
-        </Modal> 
-        
-
-
+        </Modal>
         <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
             :message="'La Asignacion fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Instalación PINT y PEXT Actualizada'"
@@ -423,7 +484,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -432,18 +493,20 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { installations, auth } = defineProps({
-    installations: Object,
+const { installation, auth } = defineProps({
+    installation: Object,
     auth: Object
 })
-
+const installations = ref(installation)
 
 const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
+    coordinator: '',
     cicsa_assignation_id: '',
     pext_date: '',
     pint_date: '',
+    projected_amount: '',
     conformity: 'Pendiente',
     report: 'Pendiente',
     shipping_report_date: '',
@@ -479,15 +542,14 @@ function closeAddAssignationModal() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(ca_id, item, total_materials, cicsa_installation_materials) {
+    total_materials = cicsa_installation_materials?.length > 0 ? cicsa_installation_materials
+        : total_materials.map(item => ({ ...item, used_quantity: 0 }))
     if (item) {
-        total_materials = cicsa_installation_materials
-        form.defaults({ ...item, total_materials})
-        form.reset()
+        form.defaults({ ...item, total_materials })
     } else {
-        total_materials = total_materials.map(item=>({...item, used_quantity:0}))
         form.defaults({ ...initialState, total_materials, cicsa_assignation_id: ca_id })
-        form.reset()
     }
+    form.reset()
     showAddEditModal.value = true
 }
 
@@ -499,6 +561,7 @@ function submit() {
             confirmUpdateAssignation.value = true
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
+                router.get(route('cicsa.installation.index'))
             }, 1500)
         },
         onError: (e) => {
@@ -550,5 +613,12 @@ function closeInstMaterialsModal() {
     showInstMaterials.value = false
 }
 
-
+const search = async ($search) => {
+    try {
+        const response = await axios.post(route('cicsa.installation.index'), { searchQuery: $search });
+        installations.value = response.data.installation;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>

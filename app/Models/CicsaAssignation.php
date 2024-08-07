@@ -19,6 +19,7 @@ class CicsaAssignation extends Model
         'project_code',
         'cpe',
         'project_deadline',
+        'manager',
         'user_name',
         'user_id'
     ];
@@ -46,7 +47,7 @@ class CicsaAssignation extends Model
 
     public function cicsa_materials ()
     {
-        return $this->hasOne(CicsaMaterial::class, 'cicsa_assignation_id');
+        return $this->hasMany(CicsaMaterial::class, 'cicsa_assignation_id');
     }
 
     public function cicsa_purchase_order ()
@@ -95,13 +96,16 @@ class CicsaAssignation extends Model
         return true;
     }
     public function checkMaterials() {
-        $feasibility = $this->cicsa_materials()->first();
-        if (!$feasibility) {return false;}
+        $materials = $this->cicsa_materials()->first();
+        if (!$materials) {return false;}
         $fieldsToCheck = ['pick_date',
         'guide_number',
         'received_materials',];
         foreach ($fieldsToCheck as $field) {
-            if (is_null($feasibility->$field)) {return false;}
+            if (is_null($materials->$field)) {return false;}
+        }
+        if ($materials->cicsa_material_items()->count() === 0) {
+            return false;
         }
         return true;
     }
@@ -127,21 +131,34 @@ class CicsaAssignation extends Model
     }
 
 
+    public function checkPSP(){
+        $feasibility = $this->cicsa_feasibility()->first();
+        if ($feasibility) {return true;}
+        $materials = $this->cicsa_materials()->first();
+        if ($materials) {return true;}
+        $installation = $this->cicsa_installation()->first();
+        if ($installation) {return true;}
+        return false;
+    }
+
+
     public function getCicsaProjectStatusAttribute () {
-        if (
-            $this->checkAssignation()
-            && $this->checkFeasibility()
-            && $this->checkMaterials()
-            && $this->checkInstallation()
+        if ( $this->getCicsaChargeStatusAttribute() === 'Completado'
+                || ( $this->checkAssignation()
+                    && $this->checkFeasibility()
+                    && $this->checkMaterials()
+                    && $this->checkInstallation()
+            )
         ) {
             return 'Completado';
         }
-        if ($this->checkAssignation()) {
+
+        if ($this->checkPSP() || $this->checkAssignation()) {
             return 'En Proceso';
         }
         if (!$this->checkAssignation()) {
             return 'Pendiente';
-        }  
+        }
     }
 
 
@@ -217,16 +234,28 @@ class CicsaAssignation extends Model
         return true;
     }
 
+    public function checkCSP(){
+        $purchaseOrder = $this->cicsa_purchase_order()->first();
+        if ($purchaseOrder) {return true;}
+        $validationOrder = $this->cicsa_purchase_order_validation()->first();
+        if ($validationOrder) {return true;}
+        $serviceOrder = $this->cicsa_service_order()->first();
+        if ($serviceOrder) {return true;}
+        $chargeArea = $this->cicsa_charge_area()->first();
+        if ($chargeArea) {return true;}
+        return false;
+    }
+
     public function getCicsaChargeStatusAttribute () {
         if (
-            $this->checkPurchaseOrder()
-            && $this->checkValidationOrder()
-            && $this->checkServiceOrder()
-            && $this->checkCicsaChargeArea()
+            $this->checkCicsaChargeArea()
+            // && $this->checkValidationOrder()
+            // && $this->checkServiceOrder()
+            // && $this->checkPurchaseOrder()
         ) {
             return 'Completado';
         }
-        if ($this->checkPurchaseOrder()) {
+        if ($this->checkCSP()) {
             return 'En Proceso';
         }
         if (!$this->checkPurchaseOrder()) {
@@ -242,15 +271,17 @@ class CicsaAssignation extends Model
             $list = $guide->cicsa_material_items;
             foreach($list as $item){
                 $name = $item->name;
-                Log::info($name);
                 $key = array_search($name, array_column($total_materials, 'name'));
                 if($key !== false){
                     $newQuantity = $total_materials[$key]["quantity"] + $item->quantity;
+                    $newGuideNumber = $total_materials[$key]["guide_number"].', '.$guide->guide_number;
                     $total_materials[$key]["quantity"] = $newQuantity;
+                    $total_materials[$key]["guide_number"] = $newGuideNumber;
                 } else {
                     array_push($total_materials,[
                         'name'=> $item->name,
                         'unit'=> $item->unit,
+                        'guide_number' => $guide->guide_number,
                         'quantity'=> $item->quantity,
                     ]);
                 }

@@ -34,7 +34,6 @@ class HuaweiProductsImport implements ToCollection
             
             
             $annex2 = HuaweiAnexe2::where('name', $an_sanitize)->get();
-            // dd($annex2);
             if ($annex1->count() > 1 || $annex2->count() > 1 ){
                 abort(403, "Error: Más de un nombre coincide");
             }
