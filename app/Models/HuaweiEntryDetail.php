@@ -27,7 +27,9 @@ class HuaweiEntryDetail extends Model
         'refund_quantity',
         'project_quantity',
         'available_quantity',
-        'antiquation_state'
+        'assigned_site',
+        'antiquation_state',
+        'instalation_state'
     ];
 
     public function huawei_entry()
@@ -84,6 +86,18 @@ class HuaweiEntryDetail extends Model
             return 'Disponible';
         }
     }
+
+    public function getInstalationStateAttribute()
+    {
+        $latestResource = $this->latest_huawei_project_resource;
+
+        if ($latestResource && $latestResource->huawei_project_liquidation) {
+            return 'Instalado';
+        }
+
+        return null;
+    }
+
 
     public function getRefundQuantityAttribute ()
     {
@@ -142,5 +156,16 @@ class HuaweiEntryDetail extends Model
         } else {
             return 'Red'; // Mayor de 9 meses
         }
+    }
+
+    public function getAssignedSiteAttribute ()
+    {
+        $project = HuaweiProject::where('assigned_diu', $this->assigned_diu)->first();
+
+        if ($project) {
+            return $project->huawei_site ? $project->huawei_site->name : null;
+        }
+
+        return null;
     }
 }

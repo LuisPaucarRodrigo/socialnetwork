@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Huawei;
 
+use App\Exports\HuaweiProjectEarningsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\HuaweiProject;
@@ -17,6 +18,10 @@ use App\Models\HuaweiProjectEarning;
 use App\Models\HuaweiProjectLiquidation;
 use App\Models\HuaweiProjectResource;
 use Illuminate\Validation\Rule;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Models\HuaweiPriceGuide;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class HuaweiProjectController extends Controller
 {
@@ -94,7 +99,7 @@ class HuaweiProjectController extends Controller
 
     public function liquidateProject (HuaweiProject $huawei_project)
     {
-        if (!$huawei_project->status){
+        if (!$huawei_project->status || !$huawei_project->pre_report){
             abort(403, 'Acción no permitida');
         }
 
@@ -164,11 +169,6 @@ class HuaweiProjectController extends Controller
 
     public function projectBalance (HuaweiProject $huawei_project)
     {
-        if (!$huawei_project->pre_report)
-        {
-            abort(403, 'Acción no permitida');
-        }
-
         return Inertia::render('Huawei/ProjectBalance', [
             'huawei_project' => $huawei_project
         ]);
@@ -180,10 +180,10 @@ class HuaweiProjectController extends Controller
             'name' => 'required',
             'huawei_site_id' => 'required',
             'description' => 'nullable',
-            'ot' => 'required',
+            'ot' => 'nullable',
             'pre_report' => 'nullable',
             'employees' => 'nullable',
-            'initial_amount' => 'required',
+            'initial_amount' => 'nullable',
             'assigned_diu' => 'required'
         ]);
 
@@ -236,9 +236,9 @@ class HuaweiProjectController extends Controller
             'name' => 'required',
             'huawei_site_id' => 'required',
             'description' => 'nullable',
-            'ot' => 'required',
+            'ot' => 'nullable',
             'pre_report' => 'nullable',
-            'initial_amount' => 'required',
+            'initial_amount' => 'nullable',
             'assigned_diu' => 'required'
         ]);
 
@@ -416,9 +416,6 @@ class HuaweiProjectController extends Controller
 
     public function getAdditionalCosts (HuaweiProject $huawei_project)
     {
-        if (!$huawei_project->pre_report){
-            abort(403, 'Acción no permitida');
-        }
         $additional_costs = HuaweiAdditionalCost::where('huawei_project_id', $huawei_project->id)->paginate(10);
         return Inertia::render('Huawei/AdditionalCosts', [
             'additional_costs' => $additional_costs,
@@ -475,7 +472,7 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($huawei_project);
 
-        if (!$found_project->status || !$found_project->pre_report){
+        if (!$found_project->status){
             abort(403, 'Acción no permitida');
         }
 
@@ -510,7 +507,7 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($huawei_project);
 
-        if (!$found_project->status || !$found_project->pre_report){
+        if (!$found_project->status){
             abort(403, 'Acción no permitida');
         }
 
@@ -520,10 +517,6 @@ class HuaweiProjectController extends Controller
 
     public function searchAdditionalCosts (HuaweiProject $huawei_project, $request)
     {
-        if (!$huawei_project->pre_report){
-            abort(403, 'Acción no permitida');
-        }
-
         $searchTerm = strtolower($request);
 
         $query = HuaweiAdditionalCost::query();
@@ -546,9 +539,6 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($huawei_project);
 
-        if (!$found_project->pre_report){
-            abort(403, 'Acción no permitida');
-        }
         // Construir la consulta inicial
         $query = HuaweiProjectResource::where('huawei_project_id', $huawei_project)->with('huawei_project_liquidation');
         $project_state = HuaweiProject::find($huawei_project)->status;
@@ -568,13 +558,31 @@ class HuaweiProjectController extends Controller
                 ->filter(function ($detail) {
                     return $detail->state === 'Disponible';
                 });
-                $equipments = HuaweiEquipment::whereHas('huawei_equipment_series.huawei_entry_detail', function ($query) use ($found_project) {
+
+
+                $equipments = HuaweiEquipment::with(['huawei_equipment_series.huawei_entry_detail' => function ($query) use ($found_project) {
                     $query->where('assigned_diu', $found_project->assigned_diu);
-                })->get();
+                }])->get();
+
+                $filteredEquipments = $equipments->filter(function ($equipment) {
+                    // Verifica la relación `huawei_equipment_series`
+                    if ($equipment->huawei_equipment_series) {
+                        foreach ($equipment->huawei_equipment_series as $serie) {
+                            // Verifica la relación `huawei_entry_detail`
+                            if ($serie->huawei_entry_detail) {
+                                if ($serie->huawei_entry_detail->state === 'Disponible'){
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                });
+
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'equipments' => $equipments,
+                'equipments' => $filteredEquipments,
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
@@ -610,10 +618,6 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($huawei_project);
 
-        if (!$found_project->pre_report){
-            abort(403, 'Acción no permitida');
-        }
-
         $searchTerm = strtolower($request);
         $query = HuaweiProjectResource::where('huawei_project_id', $huawei_project);
         $project_state = HuaweiProject::find($huawei_project)->status;
@@ -640,13 +644,28 @@ class HuaweiProjectController extends Controller
                 ->filter(function ($detail) {
                     return $detail->state === 'Disponible';
                 });
-                $equipments = HuaweiEquipment::whereHas('huawei_equipment_series.huawei_entry_detail', function ($query) use ($found_project) {
+                $equipments = HuaweiEquipment::with(['huawei_equipment_series.huawei_entry_detail' => function ($query) use ($found_project) {
                     $query->where('assigned_diu', $found_project->assigned_diu);
-                })->get();
+                }])->get();
+
+                $filteredEquipments = $equipments->filter(function ($equipment) {
+                    // Verifica la relación `huawei_equipment_series`
+                    if ($equipment->huawei_equipment_series) {
+                        foreach ($equipment->huawei_equipment_series as $serie) {
+                            // Verifica la relación `huawei_entry_detail`
+                            if ($serie->huawei_entry_detail) {
+                                if ($serie->huawei_entry_detail->state === 'Disponible'){
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                });
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'equipments' => $equipments,
+                'equipments' => $filteredEquipments,
                 'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
@@ -686,27 +705,33 @@ class HuaweiProjectController extends Controller
     public function storeProjectResource ($huawei_project, Request $request, $equipment = null)
     {
         $found_project = HuaweiProject::find($huawei_project);
-        $found_detail = HuaweiEntryDetail::find($request->huawei_entry_detail_id);
 
-        if (!$found_project->status || !$found_project->pre_report){
+        if (!$found_project->status){
             abort(403, 'Acción no permitida');
         }
 
         if ($equipment){
 
             $request->validate([
-                'huawei_entry_detail_id' => 'required',
+                'huawei_entry_detail_ids' => 'required',
             ]);
 
-            if ($found_detail->assigned_diu !== $found_project->assigned_diu){
-                abort(403, 'Equipo no asignado al proyecto');
+            DB::beginTransaction();
+
+            foreach ($request->huawei_entry_detail_ids as $detail){
+                $foundDetail = HuaweiEntryDetail::find($detail);
+                if ($foundDetail->assigned_diu !== $found_project->assigned_diu){
+                    DB::rollBack();
+                    abort(403, 'Acción no permitida.');
+                }
+                HuaweiProjectResource::create([
+                    'huawei_project_id' => $huawei_project,
+                    'huawei_entry_detail_id' => $detail,
+                    'quantity' => 1
+                ]);
             }
 
-            HuaweiProjectResource::create([
-                'huawei_project_id' => $huawei_project,
-                'huawei_entry_detail_id' => $request->huawei_entry_detail_id,
-                'quantity' => 1
-            ]);
+            DB::commit();
 
         } else{
             $entry_detail = HuaweiEntryDetail::find($request->huawei_entry_detail_id);
@@ -738,7 +763,7 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($huawei_resource->huawei_project_id);
 
-        if (!$found_project->status || !$found_project->pre_report){
+        if (!$found_project->status){
             abort(403, 'Acción no permitida');
         }
 
@@ -768,12 +793,8 @@ class HuaweiProjectController extends Controller
 
     public function geResourcesToLiquidate ($huawei_project)
     {
-        $found_project = HuaweiProject::find($huawei_project);
-
-        if (!$found_project->pre_report){
-            abort(403, 'Acción no permitida');
-        }
-
+        $project = HuaweiProject::find($huawei_project);
+        $project_name = $project->name . ' / ' . $project->code;
         $equipments = HuaweiProjectResource::where('huawei_project_id', $huawei_project)
             ->where('quantity', '!=', 0)
             ->whereDoesntHave('huawei_project_liquidation')
@@ -795,13 +816,14 @@ class HuaweiProjectController extends Controller
         return Inertia::render('Huawei/Liquidations', [
             'equipments' => $equipments,
             'materials' => $materials,
-            'huawei_project' => $huawei_project
+            'huawei_project' => $huawei_project,
+            'project_name' => $project_name
         ]);
     }
 
     public function liquidate (HuaweiProject $huawei_project, Request $request, $equipment = null) {
 
-        if (!$huawei_project->status || !$huawei_project->pre_report){
+        if (!$huawei_project->status){
             abort(403, 'Acción no permitida');
         }
 
@@ -813,6 +835,7 @@ class HuaweiProjectController extends Controller
 
         $data = $request->validate([
             'huawei_project_resource_id' => 'required',
+            'instalation_date' => 'nullable',
             'liquidated_quantity' => [
                 'nullable',
                 function ($attribute, $value, $fail) use ($huawei_project_resource) {
@@ -826,11 +849,13 @@ class HuaweiProjectController extends Controller
         if ($equipment){
             HuaweiProjectLiquidation::create([
                 'huawei_project_resource_id' => $request->huawei_project_resource_id,
+                'instalation_date' => $request->instalation_date,
                 'liquidated_quantity' => 1
             ]);
         }else{
             HuaweiProjectLiquidation::create([
                 'huawei_project_resource_id' => $request->huawei_project_resource_id,
+                'instalation_date' => $request->instalation_date,
                 'liquidated_quantity' => $request->liquidated_quantity
             ]);
         }
@@ -838,12 +863,8 @@ class HuaweiProjectController extends Controller
 
     public function liquidationsHistory ($huawei_project, $equipment = null)
     {
-        $found_project = HuaweiProject::find($huawei_project);
-
-        if (!$found_project->pre_report){
-            abort(403, 'Acción no permitida');
-        }
-
+        $project = HuaweiProject::find($huawei_project);
+        $project_name = $project->name . ' / ' . $project->code;
         if ($equipment){
             $liquidations = HuaweiProjectLiquidation::whereHas('huawei_project_resource.huawei_entry_detail', function ($query) {
                 $query->whereNull('huawei_material_id');
@@ -867,7 +888,8 @@ class HuaweiProjectController extends Controller
         return Inertia::render('Huawei/LiquidationsHistory', [
             'liquidations' => $liquidations,
             'huawei_project' => $huawei_project,
-            'equipment' => $equipment
+            'equipment' => $equipment,
+            'project_name' => $project_name
         ]);
     }
 
@@ -875,36 +897,39 @@ class HuaweiProjectController extends Controller
 
     public function getEarnings (HuaweiProject $huawei_project)
     {
-        if (!$huawei_project->pre_report) {
-            return abort(403, 'Acción no permitida');
-        }
+        $earnings = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->orderBy('updated_at', 'desc')->paginate(10);
+        $total = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->get()->reduce(function ($carry, $item) {
+            return $carry + ($item->unit_price * $item->quantity);
+        }, 0);
 
-        $earnings = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->paginate(10);
         return Inertia::render('Huawei/ProjectEarnings', [
             'earnings' => $earnings,
+            'total' => $total,
             'huawei_project' => $huawei_project
         ]);
     }
 
     public function searchEarnings (HuaweiProject $huawei_project, $request)
     {
-        if (!$huawei_project->pre_report) {
-            return abort(403, 'Acción no permitida');
-        }
-
         $searchTerm = strtolower($request);
         $query = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id);
 
             $query->where(function ($q) use ($searchTerm) {
-                $q->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"]);
+                $q->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(code) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(unit_price) LIKE ?', ["%{$searchTerm}%"]);
             });
 
-        $earnings = $query->get();
+        $earnings = $query->orderBy('updated_at', 'desc')->get();
+        $total = $earnings->reduce(function ($carry, $item) {
+            return $carry + ($item->unit_price * $item->quantity);
+        }, 0);
 
         return Inertia::render('Huawei/ProjectEarnings', [
             'earnings' => $earnings,
             'huawei_project' => $huawei_project,
-            'search' => $request
+            'search' => $request,
+            'total' => $total
         ]);
     }
 
@@ -912,16 +937,20 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($request->huawei_project_id);
 
-        if (!$found_project->pre_report || !$found_project->status) {
+        if (!$found_project->status) {
             return abort(403, 'Acción no permitida');
         }
 
         $data = $request->validate([
-            'description' => 'nullable',
-            'amount' => 'required',
+            'description' => 'required',
+            'quantity' => 'required',
+            'unit_price' => 'required',
             'huawei_project_id' => 'required'
         ]);
 
+        $count = HuaweiProjectEarning::where('huawei_project_id', $request->huawei_project_id)->count();
+        $nextNumber = $count + 1;
+        $data['code'] = sprintf('COE-%04d', $nextNumber);
         HuaweiProjectEarning::create($data);
         return redirect()->back();
     }
@@ -930,13 +959,14 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($request->huawei_project_id);
 
-        if (!$found_project->pre_report || !$found_project->status) {
+        if (!$found_project->status) {
             return abort(403, 'Acción no permitida');
         }
 
         $data = $request->validate([
-            'description' => 'nullable',
-            'amount' => 'required',
+            'description' => 'required',
+            'quantity' => 'required',
+            'unit_price' => 'required',
             'huawei_project_id' => 'required'
         ]);
 
@@ -949,11 +979,84 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($huawei_project_earning->huawei_project_id);
 
-        if (!$found_project->pre_report || !$found_project->status) {
+        if (!$found_project->status) {
             return abort(403, 'Acción no permitida');
         }
 
         $huawei_project_earning->delete();
         return redirect()->back();
+    }
+
+    public function importEarnings ($huawei_project, Request $request)
+    {
+        $found_project = HuaweiProject::find($huawei_project);
+
+        if (!$found_project->status) {
+            return abort(403, 'Acción no permitida');
+        }
+
+        // Validar que el archivo es un Excel
+        $data = $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+            'zone' => 'required'
+        ]);
+
+        // Manejar la carga del archivo
+        $document = $request->file('file');
+
+        // Leer el archivo Excel directamente desde el stream
+        $spreadsheet = IOFactory::load($document->getRealPath());
+
+        // Obtener la primera hoja
+        /** @var Worksheet $sheet */
+        $sheet = $spreadsheet->getSheet(0);
+
+        // Definir el rango de lectura: A1 hasta la última fila en la columna C
+        $startCell = 'A1';
+        $endCell = 'C' . $sheet->getHighestRow();
+        $range = "$startCell:$endCell";
+
+        // Leer el rango especificado
+        $data = $sheet->rangeToArray($range, null, true, true, true);
+
+        // Array para almacenar los objetos
+        $rowsAsObjects = [];
+
+        // Recorrer las filas y convertir a objetos
+        foreach ($data as $index => $row) {
+            // Saltar la primera fila si es el encabezado
+            if ($index == 1) continue;
+
+            $rowObject = (object)[
+                'code' => $row['A'],
+                'description' => $row['B'],
+                'quantity' => $row['C'],
+            ];
+
+            $rowsAsObjects[] = $rowObject;
+        }
+
+        foreach ($rowsAsObjects as $item) {
+            $priceGuide = HuaweiPriceGuide::where('code', $item->code)->first();
+            if ($priceGuide) {
+                $unitPriceField = 'b' . $request->zone;
+                $unitPrice = $priceGuide->$unitPriceField;
+
+                HuaweiProjectEarning::create([
+                    'code' => $item->code,
+                    'description' => $item->description,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $unitPrice,
+                    'huawei_project_id' => $huawei_project
+                ]);
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    public function exportEarnings (HuaweiProject $huawei_project)
+    {
+        return Excel::download(new HuaweiProjectEarningsExport($huawei_project->id), 'Trabajos_de_'. $huawei_project->assigned_diu .'.xlsx');
     }
 }

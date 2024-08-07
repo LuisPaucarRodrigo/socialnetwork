@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('huawei_project_resource_id')->constrained('huawei_project_resources')->onDelete('cascade');
             $table->integer('liquidated_quantity');
+            $table->date('instalation_date')->nullable();
             $table->timestamps();
         });
     }
