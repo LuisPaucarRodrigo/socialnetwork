@@ -246,9 +246,6 @@ Usuarios
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('warehouses.warehouses')">Almacenes</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('huawei.loads')">Huawei</Link>
-                </MyTransition>
             </template>
 
             <template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
@@ -427,7 +424,7 @@ Usuarios
                     </div>
                 </template>
             </template>
-            
+
 
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
@@ -559,7 +556,7 @@ Usuarios
                         <Link class="w-full" :href="route('documment.management.folders')">CCIP</Link>
                     </div>
                 </MyTransition>
-                
+
                 <template v-if="showArchivesAlarms">
                     <div class="mb-4">
                         <MyTransition v-for="item in archiveAlarms" :key="item.id" class="ml-4"
