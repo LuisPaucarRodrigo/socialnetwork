@@ -153,6 +153,38 @@
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
 
                     <div class="sm:col-span-3">
+                        <InputLabel for="warehouse">Área</InputLabel>
+                        <div class="mt-2">
+                            <select 
+                                disabled
+                                v-model="form.area"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled selected value="">Seleccione un área</option>
+                                <option>PINT</option>
+                                <option>PEXT</option>
+                            </select>
+                            <InputError :message="form.errors.area" />
+                        </div>
+                    </div>
+                    <div class="sm:col-span-3">
+                        <InputLabel for="warehouse">Zona</InputLabel>
+                        <div class="mt-2">
+                            <select 
+                                required
+                                v-model="form.zone"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled selected value="">Seleccione una zona</option>
+                                <option>Arequipa</option>
+                                <option>Chala</option>
+                                <option>Moquegua</option>
+                                <option>Tacna</option>
+                                <option>MDD</option>
+                            </select>
+                            <InputError :message="form.errors.zone" />
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-3">
                         <InputLabel for="warehouse">Almacenes</InputLabel>
                         <div class="mt-2">
                             <select required id="warehouse" @change="product_warehouse($event.target.value)"
@@ -209,6 +241,7 @@
                                     S/ {{ item.unitary_price }}
                                 </option>
                             </select>
+                            <InputError :message="form.errors.entry_id" />
                         </div>
                     </div>
 
@@ -218,6 +251,7 @@
                             <TextInput id="quantity" type="number" min="1" v-model="form.quantity"
                                 :max="form.entry_id ? warehouseInventory?.find(i => i.id === form.entry_id)?.quantity_available : warehouseProducts?.find(i => i.id === form.special_inventory_id)?.quantity_available" />
                             </div>
+                            <InputError :message="form.errors.quantity" />
                     </div>
 
                 </div>
@@ -256,6 +290,7 @@ import Modal from '@/Components/Modal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import InputError from '@/Components/InputError.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
 
@@ -298,7 +333,9 @@ const warehouseProductsfirst = ref(null);
 const warehouseProducts = ref([])
 const warehouseInventory = ref([])
 const product_warehouse = async (warehouse) => {
-    form.reset();
+    form.special_inventory_id = null
+    form.entry_id = null
+    form.normal_inventory_id = null
     warehouseProducts.value = []
     warehouseInventory.value = []
     const res = await axios.get(route('projectmanagement.warehouse_products', { project: project_id, warehouse: warehouse }))
@@ -321,6 +358,8 @@ const form = useForm({
     quantity: null,
     unitary_price: null,
     entry_id: null,
+    zone: "",
+    area: "PINT",
     normal_inventory_id: null
 });
 
