@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\CicsaProcess;
 
 use App\Models\CicsaAssignation;
 use Illuminate\Contracts\View\View;
-
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 
@@ -22,7 +21,7 @@ class PurchaseOrderExport implements FromView, WithColumnWidths
     public function columnWidths(): array
     {
         return [
-            'A' => 50,
+            'A' => 100,
             'B' => 17,
             'C' => 17,
             'D' => 17,

@@ -8,9 +8,14 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <PrimaryButton @click="openAddAssignationModal" type="button">
-                    + Agregar
-                </PrimaryButton>
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <PrimaryButton @click="openAddAssignationModal" type="button">
+                        + Agregar
+                    </PrimaryButton>
+                    <a :href="route('assignation.export')"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                </div>
+
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
                     <SelectCicsaComponent currentSelect="Asignación" />
@@ -53,6 +58,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Encargado
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -90,6 +99,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
+                                    {{ item.manager }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
                                     {{ item.user_name }}
                                 </p>
                             </td>
@@ -122,6 +136,14 @@
                 <br>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                        <div class="">
+                            <InputLabel for="manager">Gestor</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.manager" autocomplete="off" id="manager"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.manager" />
+                            </div>
+                        </div>
                         <div class="">
                             <InputLabel for="assignation_date">Fecha de Asignación</InputLabel>
                             <div class="mt-2">
@@ -223,6 +245,7 @@ const initialState = {
     project_code: '',
     cpe: '',
     project_deadline: '',
+    manager: '',
     user_name: auth.user.name,
 }
 
