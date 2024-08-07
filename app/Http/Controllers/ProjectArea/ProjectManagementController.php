@@ -430,6 +430,8 @@ class ProjectManagementController extends Controller
             'entry_id' => 'nullable|numeric'
         ]);
 
+        // dd($request->all());
+
         if ($request->special_inventory_id != null) {
             ProjectEntry::create([
                 'project_id' => $request->project_id,
