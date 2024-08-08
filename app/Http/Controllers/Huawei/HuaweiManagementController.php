@@ -186,16 +186,16 @@ class HuaweiManagementController extends Controller
 
                         $new_serie = HuaweiEquipmentSerie::create([
                             'huawei_equipment_id' => $equipment['equipment_id'], // Asegúrate de usar 'huawei_equipment_id' aquí
-                            'serie_number' => $serie
+                            'serie_number' => $serie['serie']
                         ]);
 
                         $huawei_entry_detail = HuaweiEntryDetail::create([
                             'huawei_entry_id' => $huawei_entry->id,
                             'huawei_equipment_serie_id' => $new_serie->id,
                             'quantity' => 1,
-                            'unit_price' => $equipment['unit_price'],
-                            'assigned_diu' => $equipment['assigned_diu'],
-                            'observation' => $equipment['observation']
+                            'unit_price' => $serie['unit_price'],
+                            'assigned_diu' => $serie['assigned_diu'],
+                            'observation' => $serie['observation']
                         ]);
                     }
 
@@ -211,16 +211,16 @@ class HuaweiManagementController extends Controller
                     foreach ($equipment['series'] as $serie) {
                         $new_serie = HuaweiEquipmentSerie::create([
                             'huawei_equipment_id' => $new_equipment->id, // Usar el ID del nuevo equipo creado
-                            'serie_number' => $serie
+                            'serie_number' => $serie['serie']
                         ]);
 
                         $huawei_entry_detail = HuaweiEntryDetail::create([
                             'huawei_entry_id' => $huawei_entry->id,
                             'huawei_equipment_serie_id' => $new_serie->id,
                             'quantity' => 1,
-                            'unit_price' => $equipment['unit_price'],
-                            'assigned_diu' => $equipment['assigned_diu'],
-                            'observation' => $equipment['observation']
+                            'unit_price' => $serie['unit_price'],
+                            'assigned_diu' => $serie['assigned_diu'],
+                            'observation' => $serie['observation']
                         ]);
                     }
                 }
@@ -617,6 +617,23 @@ class HuaweiManagementController extends Controller
         ]);
     }
 
+    public function searchSpecialRefunds($request)
+    {
+        $searchTerm = strtolower($request);
+
+        $refunds = HuaweiSpecialRefund::query()
+            ->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+            ->orWhereRaw('LOWER(diu) LIKE ?', ["%{$searchTerm}%"])
+            ->orWhereRaw('LOWER(observation) LIKE ?', ["%{$searchTerm}%"])
+            ->orWhereRaw('CAST(quantity AS CHAR) LIKE ?', ["%{$searchTerm}%"])
+            ->get();
+
+        return Inertia::render('Huawei/SpecialRefunds', [
+            'refunds' => $refunds,
+            'search' => $request
+        ]);
+    }
+
     public function storeSpecialRefund (Request $request)
     {
         $data = $request->validate([
@@ -627,6 +644,7 @@ class HuaweiManagementController extends Controller
         ]);
 
         HuaweiSpecialRefund::create($data);
+
         return redirect()->back();
     }
 

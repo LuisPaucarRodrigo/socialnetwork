@@ -74,7 +74,7 @@
                   <div>
                     <InputLabel for="name">{{ isCreateModalOpen ? 'Agregar nuevo Site:' : 'Actualizar Site' }}</InputLabel>
                     <div class="mt-2">
-                      <TextInput type="text" v-model="form.name" id="name" autocomplete="address-level1" />
+                      <TextInput type="text" v-model="form.name" id="name" autocomplete="off" />
                       <InputError :message="form.errors.name" />
                     </div>
                   </div>

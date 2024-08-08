@@ -87,6 +87,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
 
     //SpecialRefunds
     Route::get('huawei/special_refunds/get', [HuaweiManagementController::class, 'getSpecialRefunds'])->name('huawei.specialrefunds');
+    Route::get('huawei/speacial_refunds/search/{request}', [HuaweiManagementController::class, 'searchSpecialRefunds'])->name('huawei.specialrefunds.search');
     Route::post('huawei/special_refunds/post', [HuaweiManagementController::class, 'storeSpecialRefund'])->name('huawei.specialrefunds.store');
     Route::put('huawei/special_refunds/{id}/put', [HuaweiManagementController::class, 'updateSpecialRefund'])->name('huawei.specialrefunds.update');
     Route::delete('huawei/special_refunds/{id}/delete', [HuaweiManagementController::class, 'deleteSpecialRefund'])->name('huawei.specialrefunds.delete');
