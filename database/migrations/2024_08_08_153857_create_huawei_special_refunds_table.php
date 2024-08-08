@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('description');
             $table->string('diu');
-            $table->string('quantity')->nullable();
+            $table->double('quantity');
             $table->text('observation')->nullable();
             $table->timestamps();
         });
