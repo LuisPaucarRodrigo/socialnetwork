@@ -746,7 +746,7 @@ class PreProjectController extends Controller
     public function delete_image($id)
     {
         $image = Imagespreproject::find($id);
-        if ($image->image != null) {
+        if ($image?->image != null) {
             $filePath = "image/imagereportpreproject/{$image->image}";
             $path = public_path($filePath);
             if (file_exists($path)) {

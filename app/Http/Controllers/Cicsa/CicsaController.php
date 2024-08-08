@@ -7,6 +7,7 @@ use App\Exports\CicsaProcess\ChargeAreaExport;
 use App\Exports\CicsaProcess\FeasibilitiesExport;
 use App\Exports\CicsaProcess\InstallationExport;
 use App\Exports\CicsaProcess\MaterialExport;
+use App\Exports\CicsaProcess\MaterialsSummary;
 use App\Exports\CicsaProcess\OCValidationExport;
 use App\Exports\CicsaProcess\PurchaseOrderExport;
 use App\Exports\CicsaProcess\ServiceOrderExport;
@@ -34,6 +35,7 @@ use Inertia\Inertia;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 class CicsaController extends Controller
 {
@@ -45,16 +47,16 @@ class CicsaController extends Controller
                 // Registros que no tienen la relación cicsa_charge_area
                 $query->whereDoesntHave('cicsa_charge_area')
                     ->orWhere(function ($query) {
-                        // Registros que tienen la relación cicsa_charge_area pero al menos uno de los campos invoice_number, invoice_date o amount es NULL
-                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                            $subQuery->where(function ($subQuery) {
-                                $subQuery->whereNull('invoice_number')
-                                    ->orWhereNull('invoice_date')
-                                    ->orWhereNull('amount');
-                            })
-                                ->whereNull('deposit_date'); // Asegura que deposit_date sea NULL
-                        });
+                    // Registros que tienen la relación cicsa_charge_area pero al menos uno de los campos invoice_number, invoice_date o amount es NULL
+                    $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                        $subQuery->where(function ($subQuery) {
+                            $subQuery->whereNull('invoice_number')
+                                ->orWhereNull('invoice_date')
+                                ->orWhereNull('amount');
+                        })
+                            ->whereNull('deposit_date'); // Asegura que deposit_date sea NULL
                     });
+                });
             })
 
             ->with(
@@ -307,13 +309,13 @@ class CicsaController extends Controller
     public function searchMaterial(Request $request)
     {
         $material = ToolsGtd::orWhere('code_ax', 'like', "%$request->searchQuery%")
-                ->orWhere('name', 'like', "%$request->searchQuery%")
-                ->orWhere('internal_reference', 'like', "%$request->searchQuery%")
-                ->orWhere('unit', 'like', "%$request->searchQuery%")
-                ->get();
-            return response()->json([
-                'materials' => $material
-            ]);
+            ->orWhere('name', 'like', "%$request->searchQuery%")
+            ->orWhere('internal_reference', 'like', "%$request->searchQuery%")
+            ->orWhere('unit', 'like', "%$request->searchQuery%")
+            ->get();
+        return response()->json([
+            'materials' => $material
+        ]);
     }
 
     public function exportMaterial()
@@ -506,7 +508,7 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_service_order','cicsa_purchase_order')
+                ->with('cicsa_service_order', 'cicsa_purchase_order')
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaServiceOrder', [
@@ -515,7 +517,7 @@ class CicsaController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
             $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_service_order','cicsa_purchase_order')
+                ->with('cicsa_service_order', 'cicsa_purchase_order')
                 ->orWhere('project_name', 'like', "%$searchQuery%")
                 ->orWhere('project_code', 'like', "%$searchQuery%")
                 ->orWhere('cpe', 'like', "%$searchQuery%")
@@ -579,7 +581,7 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_charge_area','cicsa_purchase_order')
+                ->with('cicsa_charge_area', 'cicsa_purchase_order')
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaChargeArea', [
@@ -588,7 +590,7 @@ class CicsaController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
             $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_charge_area','cicsa_purchase_order')
+                ->with('cicsa_charge_area', 'cicsa_purchase_order')
                 ->orWhere('project_name', 'like', "%$searchQuery%")
                 ->orWhere('project_code', 'like', "%$searchQuery%")
                 ->orWhere('cpe', 'like', "%$searchQuery%")
@@ -686,4 +688,13 @@ class CicsaController extends Controller
     {
         return Excel::download(new ChargeAreaExport, 'Cobranza ' . date('m-Y') . '.xlsx');
     }
+
+
+
+    public function exportMaterialsSummary($ca_id)
+    {
+        return Excel::download(new MaterialsSummary($ca_id), 'ResumenMateriales.xlsx');
+
+    }
+
 }
