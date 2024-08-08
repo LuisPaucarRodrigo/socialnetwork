@@ -84,6 +84,12 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/projects/{huawei_project}/liquidations/get_resources', [HuaweiProjectController::class, 'geResourcesToLiquidate'])->name('huawei.projects.liquidations');
     Route::get('huawei/projects/{huawei_project}/liquidations/history/{equipment?}', [HuaweiProjectController::class, 'liquidationsHistory'])->name('huawei.projects.liquidations.history');
     Route::post('huawei/projects/{huawei_project}/liquidations/store_liquidation/{equipment?}', [HuaweiProjectController::class, 'liquidate'])->name('huawei.projects.liquidations.post');
+
+    //SpecialRefunds
+    Route::get('huawei/special_refunds/get', [HuaweiManagementController::class, 'getSpecialRefunds'])->name('huawei.specialrefunds');
+    Route::post('huawei/special_refunds/post', [HuaweiManagementController::class, 'storeSpecialRefund'])->name('huawei.specialrefunds.store');
+    Route::put('huawei/special_refunds/{id}/put', [HuaweiManagementController::class, 'updateSpecialRefund'])->name('huawei.specialrefunds.update');
+    Route::delete('huawei/special_refunds/{id}/delete', [HuaweiManagementController::class, 'deleteSpecialRefund'])->name('huawei.specialrefunds.delete');
 });
 
 
