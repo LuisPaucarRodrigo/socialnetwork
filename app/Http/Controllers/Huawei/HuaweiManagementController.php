@@ -16,6 +16,7 @@ use App\Models\Brand;
 use App\Models\HuaweiRefund;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
+use App\Models\HuaweiSpecialRefund;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -609,4 +610,43 @@ class HuaweiManagementController extends Controller
         return Excel::download(new HuaweiInventoryExport(), 'Inventario Huawei.xlsx');
     }
 
+    public function getSpecialRefunds ()
+    {
+        return Inertia::render('Huawei/SpecialRefunds', [
+            'refunds' => HuaweiSpecialRefund::orderBy('created_at', 'desc')->paginate(15)
+        ]);
+    }
+
+    public function storeSpecialRefund (Request $request)
+    {
+        $data = $request->validate([
+            'description' => 'required',
+            'diu' => 'required',
+            'quantity' => 'nullable',
+            'observation' => 'nullable'
+        ]);
+
+        HuaweiSpecialRefund::create($data);
+        return redirect()->back();
+    }
+
+    public function updateSpecialRefund (HuaweiSpecialRefund $id, Request $request)
+    {
+        $data = $request->validate([
+            'description' => 'required',
+            'diu' => 'required',
+            'quantity' => 'required',
+            'observation' => 'required'
+        ]);
+
+        $id->update($data);
+        return redirect()->back();
+    }
+
+    public function deleteSpecialRefund (HuaweiSpecialRefund $id)
+    {
+        $id->delete();
+
+        return redirect()->back();
+    }
 }
