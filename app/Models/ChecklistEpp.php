@@ -36,5 +36,8 @@ class ChecklistEpp extends Model
         'carabiners',
         'ascenders',
         'sunscreen',
+        'ccip',
+        'claro',
+        'vericom',
     ];
 }
