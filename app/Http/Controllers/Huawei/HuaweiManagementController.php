@@ -639,7 +639,7 @@ class HuaweiManagementController extends Controller
         $data = $request->validate([
             'description' => 'required',
             'diu' => 'required',
-            'quantity' => 'nullable',
+            'quantity' => 'required',
             'observation' => 'nullable'
         ]);
 

@@ -2,7 +2,7 @@
     <Head title="Liquidaciones" />
     <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects.liquidations', params: {huawei_project: props.huawei_project}}">
       <template #header>
-        LIquidaciones del Proyecto {{ props.project_name }}
+        Liquidaciones del Proyecto {{ props.project_name }}
       </template>
       <div class="min-w-full rounded-lg shadow">
         <div class="flex gap-4 items-center justify-between">
