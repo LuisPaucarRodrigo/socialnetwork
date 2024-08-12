@@ -15,58 +15,55 @@ return new class extends Migration
             $table->id();
             $table->text('reason');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->string('personal_2')->nullable();
+            $table->string('additionalEmployees')->nullable();
             $table->string('zone');
-            //CAR DOCS
+            
             $table->string('plate');
-            $table->string('circulation_doc');
-            $table->string('technical_doc');
+            $table->string('circulation');
+            $table->string('technique');
             $table->string('soat');
-            //CAR STATES
-            $table->string('horn');
-            $table->string('brakes');
-            $table->string('highlowlights');
-            $table->string('flashing');
-            $table->string('directional');
-            $table->string('mirrors');
-            $table->string('tires');
-            $table->string('bumper');
-            $table->string('temperature');
-            $table->string('oil');
-            $table->string('fuel');
-            $table->string('cleanstate');
-            $table->string('doors');
-            $table->string('windshield');
-            $table->string('engine');
-            $table->string('battery');
-            //CAR TOOLS
+            $table->string('hornState');
+            $table->string('brakesState');
+            $table->string('headlightsState');
+            $table->string('indicatorsState');
+            $table->string('mirrorsState');
+            $table->string('tiresState');
+            $table->string('bumpersState');
+            $table->string('temperatureGauge');
+            $table->string('oilGauge');
+            $table->string('fuelGauge');
+            $table->string('vehicleCleanliness');
+            $table->string('doorsState');
+            $table->string('windshieldState');
+            $table->string('engineState');
+            $table->string('batteryState');
             $table->string('extinguisher');
-            $table->string('medical_kit');
+            $table->string('firstAidKit');
             $table->string('cones');
-            $table->string('car_jack');
-            $table->string('tire');
-            $table->string('trailer_cable');
-            $table->string('battery_cable');
-            $table->string('reflective');
-            $table->string('tool_kit');
+            $table->string('jack');
+            $table->string('spareTire');
+            $table->string('towCable');
+            $table->string('batteryCable');
+            $table->string('reflector');
+            $table->string('emergencyKit');
             $table->string('alarm');
             $table->string('gps');
             $table->string('chocks');
-            $table->string('internal_cab');
-            $table->string('anti_roll_cab');
-            $table->string('ladder_rack');
-            $table->string('lateral_plate');
-            //CAR PHOTOS
-            $table->string('photo_left');
-            $table->string('photo_right');
-            $table->string('photo_back');
-            $table->string('photo_front');
-            $table->string('photo_first_tire');
-            $table->string('photo_second_tire');
-            $table->string('photo_third_tire');
-            $table->string('photo_fourth_tire');
+            $table->string('interiorLight');
+            $table->string('rolloverProtection');
+            $table->string('ladderHolder');
+            $table->string('sidePlate');
+            $table->string('front');
+            $table->string('leftSide');
+            $table->string('rightSide');
+            $table->string('interior');
+            $table->string('rearLeftTire');
+            $table->string('rearRightTire');
+            $table->string('frontRightTire');
+            $table->string('frontLeftTire');
+            
 
-            $table->text('observations')->nullable();
+            $table->text('observation')->nullable();
             $table->timestamps();
         });
     }
