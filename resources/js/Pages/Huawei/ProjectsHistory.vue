@@ -73,7 +73,11 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Productos
                             </Link>
-
+                            <Link
+                                :href="route('huawei.projects.earnings', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Ingresos
+                            </Link>
                             <Link
                                 :href="route('huawei.projects.liquidations', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
