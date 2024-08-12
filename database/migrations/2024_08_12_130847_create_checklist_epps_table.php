@@ -42,6 +42,9 @@ return new class extends Migration
             $table->string('carabiners');
             $table->string('ascenders');
             $table->string('sunscreen');
+            $table->string('ccip');
+            $table->string('claro');
+            $table->string('vericom');
 
             $table->timestamps();
         });

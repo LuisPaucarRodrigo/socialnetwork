@@ -4,7 +4,7 @@ namespace App\Http\Requests\ChecklistRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChecklistCartRequest extends FormRequest
+class ChecklistCarRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

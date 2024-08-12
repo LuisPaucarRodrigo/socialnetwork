@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('reason');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->string('personal_2');
+            $table->string('personal_2')->nullable();
             $table->string('zone');
             //KIT TOOLS
             $table->string('mosqueton');
@@ -73,7 +73,7 @@ return new class extends Migration
             $table->string('cableconsolared');
             $table->string('adaptadorred');
 
-            $table->text('observations');
+            $table->text('observations')->nullable();
             $table->timestamps();
         });
     }

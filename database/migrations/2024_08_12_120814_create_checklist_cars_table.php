@@ -66,7 +66,7 @@ return new class extends Migration
             $table->string('photo_third_tire');
             $table->string('photo_fourth_tire');
 
-            $table->text('observations');
+            $table->text('observations')->nullable();
             $table->timestamps();
         });
     }
