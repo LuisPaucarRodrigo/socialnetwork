@@ -88,9 +88,10 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Balance del Proyecto
                             </Link>
-                            <a class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
+                            <a v-if="item.pre_report" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
                                 Reporte
                             </a>
+                            <span v-else class="text-gray-400">Archivos</span>
                         </div>
                     </div>
                 </div>
