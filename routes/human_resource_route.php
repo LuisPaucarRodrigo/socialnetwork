@@ -7,6 +7,7 @@ use App\Http\Controllers\HumanResource\ScheduleController;
 use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\HumanResource\VacationController;
+use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('permission:HumanResourceManager')->group(function () {
@@ -118,7 +119,9 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
     Route::get('/documents/index', [DocumentController::class, 'index'])->name('documents.index');
     Route::get('/documents/{document}/download', [DocumentController::class, 'downloadDocument'])->name('documents.download');
     Route::get('/documents/{document}/preview', [DocumentController::class, 'showDocument'])->name('documents.show');
-
+    Route::get('/documents/filter/{section}/section/{request?}', [DocumentController::class, 'sectionFilter'])->name('documents.filter.section');
+    Route::get('/documents/filter/{section}/section/{subdivision}/subdivision/{request?}', [DocumentController::class, 'subdivisionFilter'])->name('documents.filter.subdivision');
+    Route::get('/documents/search/{section}/{subdivision}/{request}/get', [DocumentController::class, 'search'])->name('documents.search');
     //SubSections
     Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
     Route::get('/subSections/show/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
