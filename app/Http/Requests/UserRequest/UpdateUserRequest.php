@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
     {
         $userId = $this->input('user_id');
 
-        return [
+        $rules = [
             'name' =>  [
                 'required',
                 'string',
@@ -54,5 +54,12 @@ class UpdateUserRequest extends FormRequest
             ],
             'role_id' => 'nullable|numeric',
         ];
+
+        if ($this->input('platform') !== 'Movil'){
+            $rules['area_id'] = 'required';
+            $rules['role_id'] = 'required';
+        }
+
+        return $rules;
     }
 }

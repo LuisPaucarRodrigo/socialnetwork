@@ -55,7 +55,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="platform" value="Plataforma" class="font-medium leading-6 text-gray-900" />
                             <div class="mt-2">
-                                <select id="platform"
+                                <select id="platform" @change="change_platform"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     v-model="form.platform" required autocomplete="off">
                                     <option disabled>Seleccionar Plataforma</option>
@@ -81,11 +81,11 @@
                                         @input="handleCompany"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
-                                
+
                             </div>
                         </div>
 
-                        <div class="sm:col-span-2">
+                        <div  v-if="form.platform !== 'Movil'" class="sm:col-span-2">
                             <InputLabel class="font-medium leading-6 text-gray-900" value="Área" />
                             <div class="mt-2">
                                 <select :disabled="form.company === 'CCIP' ? false : true"
@@ -98,7 +98,7 @@
                                 <InputError class="mt-2" :message="form.errors.area_id" />
                             </div>
                         </div>
-                        <div class="sm:col-span-3">
+                        <div v-if="form.platform !== 'Movil'" class="sm:col-span-3">
                             <InputLabel for="rols" class="font-medium leading-6 text-gray-900">Roles</InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.rol" id="rols"
@@ -254,5 +254,12 @@ const togglePasswordVisibility = () => {
 const togglePasswordConfirmationVisibility = () => {
     passwordConfirmationVisible.value = !passwordConfirmationVisible.value;
 };
+
+const change_platform = (e) => {
+    if (e.target.value == 'Movil'){
+        form.area_id = '';
+        form.rol = '';
+    }
+}
 
 </script>
