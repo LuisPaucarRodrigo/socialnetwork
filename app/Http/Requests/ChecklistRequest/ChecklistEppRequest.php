@@ -11,7 +11,7 @@ class ChecklistEppRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,35 @@ class ChecklistEppRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'helmet' => 'required',
+            'chin_strap' => 'required',
+            'windbreaker' => 'required',
+            'vest' => 'required',
+            'safety_shoes' => 'required',
+            'tshirt_ls' => 'required',
+            'shirt_ls' => 'required',
+            'jeans' => 'required',
+            'coveralls' => 'required',
+            'jacket' => 'required',
+            'dark_glasses' => 'required',
+            'clear_glasses' => 'required',
+            'overglasses' => 'required',
+            'dust_mask' => 'required',
+            'earplugs' => 'required',
+            'latex_oil_gloves' => 'required',
+            'nitrile_oil_gloves' => 'required',
+            'split_leather_gloves' => 'required',
+            'precision_gloves' => 'required',
+            'cut_resistant_gloves' => 'required',
+            'double_lanyard' => 'required',
+            'harness' => 'required',
+            'positioning_lanyard' => 'required',
+            'carabiners' => 'required',
+            'ascenders' => 'required',
+            'sunscreen' => 'required',
+            'ccip' => 'required',
+            'claro' => 'required',
+            'vericom' => 'required',
         ];
     }
 }
