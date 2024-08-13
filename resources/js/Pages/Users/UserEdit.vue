@@ -14,7 +14,7 @@
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Plataforma</dt>
-                        <select v-model="form.platform" id="platform"
+                        <select @change="select_platform" v-model="form.platform" id="platform"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500">
                             <option disabled> {{ props.users.platform }}</option>
                             <option>Web</option>
@@ -40,7 +40,7 @@
                         <InputError :message="form.errors.phone" />
                     </div>
 
-                    <div v-if="props.users.role_id != 1" class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
+                    <div v-if="props.users.role_id != 1 && form.platform !== 'Movil'" class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
                         <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Rol</dt>
                         <select v-model="form.role_id" id="rol"
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500">
@@ -50,6 +50,18 @@
                             </option>
                         </select>
                         <InputError :message="form.errors.role_id" />
+                    </div>
+
+                    <div v-if="props.users.role_id != 1 && form.platform !== 'Movil'" class="px-4 py-6 sm:grid sm:grid-cols-6 sm:gap-4 sm:px-0">
+                        <dt class="text-sm font-medium leading-6 text-gray-900 sm:col-span-2">Área</dt>
+                        <select v-model="form.area_id" id="area_id"
+                            class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-4 sm:mt-0 border-gray-300 bg-transparent focus:outline-none focus:border-indigo-500">
+                            <option value="" disabled>Seleccione un área</option>
+                            <option v-for="area in props.areas" :key="area.id" :value="area.id">
+                                {{ area.name }}
+                            </option>
+                        </select>
+                        <InputError :message="form.errors.area_id" />
                     </div>
                 </dl>
             </div>
@@ -79,7 +91,8 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    rols: Object
+    rols: Object,
+    areas: Object
 });
 
 const errorModal = ref(false);
@@ -92,7 +105,8 @@ const form = useForm({
     email: props.users.email,
     dni: props.users.dni,
     phone: props.users.phone,
-    role_id: props.users.role?.id
+    role_id: props.users.role?.id,
+    area_id: props.users.area?.id
 });
 
 const submit = () => {
@@ -113,4 +127,12 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     })
 }
+
+const select_platform = (e) => {
+    if (e.target.value === 'Movil'){
+        form.role_id = '';
+        form.area_id = '';
+    }
+}
+
 </script>
