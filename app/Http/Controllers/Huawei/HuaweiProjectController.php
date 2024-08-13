@@ -1049,6 +1049,13 @@ class HuaweiProjectController extends Controller
                     'unit_price' => $unitPrice,
                     'huawei_project_id' => $huawei_project
                 ]);
+            }else{
+                HuaweiProjectEarning::create([
+                    'code' => $item->code,
+                    'description' => $item->description,
+                    'quantity' => $item->quantity,
+                    'huawei_project_id' => $huawei_project
+                ]);
             }
         }
 
