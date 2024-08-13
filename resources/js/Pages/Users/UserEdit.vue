@@ -105,8 +105,8 @@ const form = useForm({
     email: props.users.email,
     dni: props.users.dni,
     phone: props.users.phone,
-    role_id: props.users.role?.id,
-    area_id: props.users.area?.id
+    role_id: props.users.role ? props.users.role.id : '',
+    area_id: props.users.area ? props.users.area.id : ''
 });
 
 const submit = () => {
