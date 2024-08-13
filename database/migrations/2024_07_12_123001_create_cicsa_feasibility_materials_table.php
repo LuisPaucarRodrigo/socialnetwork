@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('cicsa_feasibility_materials', function (Blueprint $table) {
             $table->id();
+            $table->string('code_ax');
             $table->string('name');
             $table->string('unit');
             $table->integer('quantity');

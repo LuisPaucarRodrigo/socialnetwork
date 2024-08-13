@@ -15,17 +15,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-use function Pest\Laravel\json;
-
 class ApiController extends Controller
 {
 
-    // protected $main_directory;
+    protected $main_directory;
 
-    // public function __construct()
-    // {
-    //     $this->main_directory = 'LocalDrive';
-    // }
+    public function __construct()
+    {
+        $this->main_directory = 'LocalDrive';
+    }
 
     public function login(LoginMobileRequest $request)
     {
@@ -143,7 +141,6 @@ class ApiController extends Controller
     }
 
     //Project
-
     public function project_index()
     {
         try {
@@ -221,75 +218,75 @@ class ApiController extends Controller
         return response()->json([], 200);
     }
 
-    // public function localDriveIndex(Request $request)
-    // {
-    //     $root = $request->input('root');
-    //     $path = $request->input('path');
-    //     try {
-    //         $previousPath = '';
-    //         if (!$root) {
-    //             $lastSlashPosition = strrpos($path, '/');
-    //             if ($lastSlashPosition !== false) {
-    //                 $previousPath = substr($path, 0, $lastSlashPosition) !== $this->main_directory
-    //                     ? substr($path, 0, $lastSlashPosition)
-    //                     : '';
-    //             }
-    //         }
-    //         $currentPath = $root ? $this->main_directory : $path;
-    //         $folders_archives = $this->scanFolder(storage_path('app/' . $currentPath));
-    //         return response()->json([
-    //             'folders_archives' => $folders_archives,
-    //             'currentPath' => $currentPath,
-    //             'previousPath' => $previousPath,
-    //         ], 200);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'error' => 'Ocurrió un error al procesar la solicitud',
-    //             'message' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+    public function localDriveIndex(Request $request)
+    {
+        $root = $request->input('root');
+        $path = $request->input('path');
+        try {
+            $previousPath = '';
+            if (!$root) {
+                $lastSlashPosition = strrpos($path, '/');
+                if ($lastSlashPosition !== false) {
+                    $previousPath = substr($path, 0, $lastSlashPosition) !== $this->main_directory
+                        ? substr($path, 0, $lastSlashPosition)
+                        : '';
+                }
+            }
+            $currentPath = $root ? $this->main_directory : $path;
+            $folders_archives = $this->scanFolder(storage_path('app/' . $currentPath));
+            return response()->json([
+                'folders_archives' => $folders_archives,
+                'currentPath' => $currentPath,
+                'previousPath' => $previousPath,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Ocurrió un error al procesar la solicitud',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
-    // private function scanFolder($folderPath)
-    // {
-    //     $folders = [];
-    //     $files = [];
-    //     $contents = scandir($folderPath);
-    //     foreach ($contents as $item) {
-    //         if ($item[0] !== '.') {
-    //             $itemPath = $folderPath . '/' . $item;
-    //             if (is_dir($itemPath)) {
-    //                 $folders[] = [
-    //                     'name' => $item,
-    //                     'type' => 'folder',
-    //                     'path' => str_replace(storage_path('app/'), '', $itemPath),
-    //                     'size' => '',
-    //                 ];
-    //             } else {
-    //                 $files[] = [
-    //                     'name' => $item,
-    //                     'type' => 'archive',
-    //                     'path' => str_replace(storage_path('app/'), '', $itemPath),
-    //                     'size' => round(filesize($itemPath) / 1024, 2) . " KB",
-    //                 ];
-    //             }
-    //         }
-    //     }
-    //     return array_merge($folders, $files);
-    // }
+    private function scanFolder($folderPath)
+    {
+        $folders = [];
+        $files = [];
+        $contents = scandir($folderPath);
+        foreach ($contents as $item) {
+            if ($item[0] !== '.') {
+                $itemPath = $folderPath . '/' . $item;
+                if (is_dir($itemPath)) {
+                    $folders[] = [
+                        'name' => $item,
+                        'type' => 'folder',
+                        'path' => str_replace(storage_path('app/'), '', $itemPath),
+                        'size' => '',
+                    ];
+                } else {
+                    $files[] = [
+                        'name' => $item,
+                        'type' => 'archive',
+                        'path' => str_replace(storage_path('app/'), '', $itemPath),
+                        'size' => round(filesize($itemPath) / 1024, 2) . " KB",
+                    ];
+                }
+            }
+        }
+        return array_merge($folders, $files);
+    }
 
-    // public function localDriveDownload(Request $request)
-    // {
-    //     $path = $request->input('path');
-    //     $storagePath = storage_path('app/' . $path);
+    public function localDriveDownload(Request $request)
+    {
+        $path = $request->input('path');
+        $storagePath = storage_path('app/' . $path);
 
-    //     if (is_file($storagePath)) {
-    //         ob_end_clean();
-    //         return $this->downloadFile($path);
-    //     } else {
-    //         return abort(404, 'El recurso solicitado no existe.');
-    //     }
-    // }
+        if (is_file($storagePath)) {
+            ob_end_clean();
+            return $this->downloadFile($path);
+        } else {
+            return abort(404, 'El recurso solicitado no existe.');
+        }
+    }
 
     private function downloadFile($path)
     {
