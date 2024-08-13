@@ -107,9 +107,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
-import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({

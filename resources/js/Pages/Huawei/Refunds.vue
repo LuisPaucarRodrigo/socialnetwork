@@ -133,10 +133,8 @@
 
   import { Head, Link, useForm, router } from '@inertiajs/vue3';
   import Pagination from '@/Components/Pagination.vue';
-  import { EyeIcon } from '@heroicons/vue/24/outline';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import TextInput from '@/Components/TextInput.vue';
-  import Dropdown from '@/Components/Dropdown.vue';
   import { formattedDate } from '@/utils/utils'
 
   const props = defineProps({

@@ -6,12 +6,12 @@ use App\Http\Controllers\Huawei\HuaweiManagementController;
 use App\Http\Controllers\Huawei\HuaweiProjectController;
 
 Route::middleware('permission:HuaweiManager')->group(function () {
-    Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
-    Route::post('/huaweiLoads/import', [HuaweiController::class, 'import'])->name('huawei.loads.import');
-    Route::get('/huaweiLoads/{loadId}/products/{noPg?}', [HuaweiController::class, 'renderByLoad'])->name('huawei.loads.products');
-    Route::get('/huaweiLoads/products/{huawei_product}/similarity', [HuaweiController::class, 'searchSimilarities'])->name('huawei.loads.products.similarities');
-    Route::put('/huaweiLoads/{loadId}/products/associate/{huawei_product}', [HuaweiController::class, 'associate'])->name('huawei.loads.products.associate');
-    Route::get('/huaweiLoads/{loadId}/exportpdf', [HuaweiController::class, 'exportHuaweiProducts'])->name('huawei.loads.exportpdf');
+    // Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
+    // Route::post('/huaweiLoads/import', [HuaweiController::class, 'import'])->name('huawei.loads.import');
+    // Route::get('/huaweiLoads/{loadId}/products/{noPg?}', [HuaweiController::class, 'renderByLoad'])->name('huawei.loads.products');
+    // Route::get('/huaweiLoads/products/{huawei_product}/similarity', [HuaweiController::class, 'searchSimilarities'])->name('huawei.loads.products.similarities');
+    // Route::put('/huaweiLoads/{loadId}/products/associate/{huawei_product}', [HuaweiController::class, 'associate'])->name('huawei.loads.products.associate');
+    // Route::get('/huaweiLoads/{loadId}/exportpdf', [HuaweiController::class, 'exportHuaweiProducts'])->name('huawei.loads.exportpdf');
 
     //Inventory
     Route::get('/huawei/inventory/{equipment?}', [HuaweiManagementController::class, 'show'])->name('huawei.inventory.show');

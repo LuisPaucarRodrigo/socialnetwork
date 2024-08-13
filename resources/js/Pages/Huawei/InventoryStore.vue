@@ -497,7 +497,6 @@
     import Modal from '@/Components/Modal.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
-    import Pagination from '@/Components/Pagination.vue';
     import InputLabel from '@/Components/InputLabel.vue';
     import TextInput from '@/Components/TextInput.vue';
     import axios from 'axios';

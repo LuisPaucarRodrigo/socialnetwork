@@ -239,8 +239,6 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
-import { formattedDate } from '@/utils/utils';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';
