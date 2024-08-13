@@ -4,14 +4,25 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChecklistRequest\ChecklistCarRequest;
+use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
+use App\Http\Requests\ChecklistRequest\ChecklistEppRequest;
+use App\Http\Requests\ChecklistRequest\ChecklistToolkitRequest;
 use App\Models\ChecklistCar;
+use App\Models\ChecklistDailytoolkit;
+use App\Models\ChecklistEpp;
+use App\Models\ChecklistToolkit;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class ChecklistsController extends Controller
 {
-    public function cars_store (ChecklistCarRequest $request){
+
+    public function car_index(){
+        $checklistscar = ChecklistCar::all();
+        return response()->json($checklistscar, 200);
+    }
+    public function car_store (ChecklistCarRequest $request){
         $data = $request->validated();
 
         $data['front'] = $this->storeBase64Image($data['front'], 'checklistcar');
@@ -26,18 +37,34 @@ class ChecklistsController extends Controller
 
         ChecklistCar::create($data);
         return response()->json([], 201);
-
     }
 
-    public function toolkit_store (ChecklistCarRequest $request){
 
-    }
-    public function dailytoolkit_store (ChecklistCarRequest $request){
 
+    public function toolkit_store (ChecklistToolkitRequest $request){
+        $data = $request->validated();
+        if ($data['badTools']){
+            $data['badTools'] = $this->storeBase64Image($data['badTools'], 'checklisttoolkit');
+        }
+        $data['user_id'] = Auth::user()->id;
+        ChecklistToolkit::create($data);
+        return response()->json([], 201);
     }
-    public function epp_store (ChecklistCarRequest $request){
 
+    public function dailytoolkit_store (ChecklistDailytoolkitRequest $request){
+        $data = $request->validated();
+        $data['user_id'] = Auth::user()->id;
+        ChecklistDailytoolkit::create($data);
+        return response()->json([], 201);
     }
+
+    public function epp_store (ChecklistEppRequest $request){
+        $data = $request->validated();
+        $data['user_id'] = Auth::user()->id;
+        ChecklistEpp::create($data);
+        return response()->json([], 201);
+    }
+
 
     private function storeBase64Image($photo, $path){
         try{

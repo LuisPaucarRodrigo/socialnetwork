@@ -203,7 +203,7 @@ class ApiController extends Controller
     public function indexHuaweiProjectGeneral()
     {
         $data = PreReportHuaweiGeneral::all();
-        return response()->json($data);
+        return response()->json(['message'=>'hola'],201);
     }
 
     public function storeHuaweiProjectGeneral(Request $request)

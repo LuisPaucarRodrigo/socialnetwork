@@ -139,10 +139,6 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project-document-gestion/folder_archive_delete', [ProjectDocumentController::class, 'project_doc_delete'])->name('project.folder.delete');
     Route::get('/project-document-gestion/folder_archive_dowload', [ProjectDocumentController::class, 'project_doc_download'])->name('project.folder.download');
 
-
-
-
-
     Route::get('/project-backlog', [BacklogController::class, 'index'])->name('project.backlog.index');
     Route::get('/project-backlog/autcomplete', [BacklogController::class, 'autocomplete'])->name('project.backlog.autocomplete');
     Route::post('/project-backlog/store', [BacklogController::class, 'store'])->name('project.backlog.store');
