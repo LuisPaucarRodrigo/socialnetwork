@@ -23,7 +23,7 @@ class StaticCostsRequest extends FormRequest
     public function rules(): array
     {   
 
-        $project = Project::finde($this->input('project_id'));
+        $project = Project::find($this->input('project_id'));
         $remaining_budget = $project->remaining_budget;
         $rules = [
             'expense_type' => 'required|string',
