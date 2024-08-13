@@ -132,15 +132,7 @@
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Modelo
                       </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Precio Unitario
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        DIU Asignada
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Observación
-                      </th>
+
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Series
                       </th>
@@ -154,9 +146,7 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.claro_code }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brands.find(brand => brand.id == item.brand)?.name }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brand_models.find(model => model.id == item.brand_model)?.name }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit_price ? item.unit_price : '-' }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.assigned_diu }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
+
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openSerieModal(item)" class="text-green-600 hover:underline mr-2"><EyeIcon class="h-5 w-5" /></button></td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
@@ -375,13 +365,25 @@
                         Serie
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        DIU
                       </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        Precio Unitario
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        Observación
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(item, index) in equipmentForm.series" :key="index" class="text-gray-700">
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ index + 1 }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.serie }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.assigned_diu }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.observation }}</td>
                       <div class="flex items-center">
                           <button @click.prevent="removeSerie(index)" class="text-red-600 hover:underline mr-2 py-5"><TrashIcon class="h-5 w-5" /></button>
                         </div>
@@ -412,12 +414,24 @@
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Serie
                       </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        DIU
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        Precio Unitario
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        Observación
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(item, index) in selectedEquipment.series" :key="index" class="text-gray-700">
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ index + 1 }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.serie }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.assigned_diu }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.observation }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -483,7 +497,6 @@
     import Modal from '@/Components/Modal.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
-    import Pagination from '@/Components/Pagination.vue';
     import InputLabel from '@/Components/InputLabel.vue';
     import TextInput from '@/Components/TextInput.vue';
     import axios from 'axios';
@@ -579,7 +592,12 @@
                     existingSerie.value = false;
                 }, 2000);
             } else {
-                equipmentForm.series.push(newSerie.value);
+                equipmentForm.series.push({
+                    serie: newSerie.value,
+                    assigned_diu: equipmentForm.assigned_diu,
+                    unit_price: equipmentForm.unit_price,
+                    observation: equipmentForm.observation
+                });
                 newSerie.value = '';
             }
         } else {
@@ -591,7 +609,12 @@
                     existingSerie.value = false;
                 }, 2000);
             }else{
-                equipmentForm.series.push(newSerie.value);
+                equipmentForm.series.push({
+                    serie: newSerie.value,
+                    assigned_diu: equipmentForm.assigned_diu,
+                    unit_price: equipmentForm.unit_price,
+                    observation: equipmentForm.observation
+                });
                 newSerie.value = '';
             }
         }
@@ -679,11 +702,8 @@
                     claro_code: equipmentForm.claro_code,
                     brand: equipmentForm.brand,
                     brand_model: equipmentForm.brand_model,
-                    unit_price: equipmentForm.unit_price,
                     series: equipmentForm.series ,
                     equipment_id: equipmentForm.equipment_id,
-                    assigned_diu: equipmentForm.assigned_diu,
-                    observation: equipmentForm.observation
                 });
 
                 equipmentForm.reset();

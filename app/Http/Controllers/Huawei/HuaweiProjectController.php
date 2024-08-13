@@ -28,14 +28,14 @@ class HuaweiProjectController extends Controller
     public function show ()
     {
         return Inertia::render('Huawei/Projects', [
-            'projects' => HuaweiProject::where('status', 1)->with('huawei_site')->orderBy('updated_at', 'desc')->paginate(10),
+            'projects' => HuaweiProject::where('status', 1)->with('huawei_site')->orderBy('created_at', 'desc')->paginate(10),
         ]);
     }
 
     public function projectHistory ()
     {
         return Inertia::render('Huawei/ProjectsHistory', [
-            'projects' => HuaweiProject::where('status', 0)->with('huawei_site')->orderBy('updated_at', 'desc')->paginate(10),
+            'projects' => HuaweiProject::where('status', 0)->with('huawei_site')->orderBy('created_at', 'desc')->paginate(10),
         ]);
     }
 
@@ -50,7 +50,7 @@ class HuaweiProjectController extends Controller
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                 });
-        })->with('huawei_site')->orderBy('updated_at', 'desc')->get();
+        })->with('huawei_site')->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Huawei/ProjectsHistory', [
             'projects' => $projects,
@@ -69,7 +69,7 @@ class HuaweiProjectController extends Controller
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                   });
-        })->with('huawei_site')->orderBy('updated_at', 'desc')->get();
+        })->with('huawei_site')->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Huawei/Projects', [
             'projects' => $projects,
@@ -129,7 +129,7 @@ class HuaweiProjectController extends Controller
 
     public function showStoppedProjects()
     {
-        $projects = HuaweiProject::whereNull('status')->with('huawei_site')->orderBy('updated_at', 'desc')->paginate(10);
+        $projects = HuaweiProject::whereNull('status')->with('huawei_site')->orderBy('created_at', 'desc')->paginate(10);
         return Inertia::render('Huawei/StoppedProjects', [
             'projects' => $projects
         ]);
@@ -146,7 +146,7 @@ class HuaweiProjectController extends Controller
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                   });
-        })->with('huawei_site')->orderBy('updated_at', 'desc')->get();
+        })->with('huawei_site')->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Huawei/StoppedProjects', [
             'projects' => $projects,
@@ -427,7 +427,7 @@ class HuaweiProjectController extends Controller
     {
         $found_project = HuaweiProject::find($huawei_project);
 
-        if (!$found_project->status || !$found_project->pre_report){
+        if (!$found_project->status){
             abort(403, 'Acción no permitida');
         }
 
@@ -1047,6 +1047,13 @@ class HuaweiProjectController extends Controller
                     'description' => $item->description,
                     'quantity' => $item->quantity,
                     'unit_price' => $unitPrice,
+                    'huawei_project_id' => $huawei_project
+                ]);
+            }else{
+                HuaweiProjectEarning::create([
+                    'code' => $item->code,
+                    'description' => $item->description,
+                    'quantity' => $item->quantity,
                     'huawei_project_id' => $huawei_project
                 ]);
             }

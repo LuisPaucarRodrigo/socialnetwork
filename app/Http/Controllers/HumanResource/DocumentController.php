@@ -87,32 +87,96 @@ class DocumentController extends Controller
 
     //Documents
 
-    public function index(Request $request) {
-
-    // Obtén el término de búsqueda de la consulta y conviértelo a minúsculas
-    $searchTerm = strtolower($request->query('searchTerm', '')); // Agregamos un valor por defecto de cadena vacía
-
-    // Inicia una consulta de Eloquent para los documentos
-    $documentsQuery = Document::query();
-
-    // Si hay un término de búsqueda, agrega una condición WHERE
-    if ($searchTerm !== '') {
-        $documentsQuery->where('title', 'like', '%' . $searchTerm . '%');
-    }
-
-    // Ejecuta la consulta y obtiene los resultados
-    $documents = $documentsQuery->get();
-
-    // Obtiene todas las secciones y subdivisiones
-    $sections = DocumentSection::all();
-    $subdivisions = Subdivision::all();
+    public function index() {
         return Inertia::render('HumanResource/Documents/Document', [
-            'documents' => $documents->load('subdivision.section'),
-            'sections' => $sections,
-            'subdivisions' => $subdivisions,
-            'search' => $searchTerm,
+            'documents' => Document::with('subdivision.section')->paginate(15),
+            'sections' => DocumentSection::all(),
+            'subdivisions' => Subdivision::all(),
+            'section' => '',
+            'subdivision' => '',
+            'search' => ''
         ]);
     }
+
+    public function search ($section, $subdivision, $request)
+    {
+        $searchTerm = strtolower($request);
+        $query = Document::with('subdivision.section')->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
+
+        if ($section !== 'no'){
+            $query->whereHas('subdivision', function ($query) use ($section){
+                $query->where('section_id', $section);
+            });
+        }
+
+        if ($subdivision !== 'no'){
+            $query->where('subdivision_id', $subdivision);
+        }
+
+        $documents = $query->get();
+
+        return Inertia::render('HumanResource/Documents/Document', [
+            'documents' => $documents,
+            'sections' => DocumentSection::all(),
+            'subdivisions' => Subdivision::all(),
+            'section' => $section == 'no' ? '' : $section,
+            'subdivision' => $subdivision == 'no' ? '' : $subdivision,
+            'search' => $request
+        ]);
+    }
+
+    public function sectionFilter($section, $request = null)
+    {
+        // Construir la consulta base con el filtro de sección
+        $query = Document::whereHas('subdivision', function ($query) use ($section) {
+            $query->where('section_id', $section);
+        });
+
+        // Si hay un término de búsqueda, aplicarlo a la consulta
+        if ($request) {
+            $searchTerm = strtolower($request);
+            $query->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
+        }
+
+        // Ejecutar la consulta para obtener los documentos
+        $documents = $query->get();
+
+        // Retornar la vista con los datos necesarios
+        return Inertia::render('HumanResource/Documents/Document', [
+            'documents' => $documents->load('subdivision.section'),
+            'sections' => DocumentSection::all(),
+            'subdivisions' => Subdivision::all(),
+            'section' => $section,
+            'subdivision' => '',
+            'search' => $request
+        ]);
+    }
+
+    public function subdivisionFilter($section, $subdivision, $request = null)
+{
+    // Construir la consulta base con el filtro de sección
+    $query = Document::where('subdivision_id', $subdivision);
+
+    // Si hay un término de búsqueda, aplicarlo a la consulta
+    if ($request) {
+        $searchTerm = strtolower($request);
+        $query->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
+    }
+
+    // Ejecutar la consulta para obtener los documentos
+    $documents = $query->get();
+
+    // Retornar la vista con los datos necesarios
+    return Inertia::render('HumanResource/Documents/Document', [
+        'documents' => $documents->load('subdivision.section'),
+        'sections' => DocumentSection::all(),
+        'subdivisions' => Subdivision::all(),
+        'section' => $section,
+        'subdivision' => $subdivision,
+        'search' => $request
+    ]);
+}
+
 
     public function create(Request $request)
     {
