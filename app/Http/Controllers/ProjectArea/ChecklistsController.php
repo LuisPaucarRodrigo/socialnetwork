@@ -13,10 +13,15 @@ use App\Models\ChecklistEpp;
 use App\Models\ChecklistToolkit;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 
 class ChecklistsController extends Controller
 {
+
+    public function index() {
+        return Inertia::render('ProjectArea/Checklist/Index');
+    }
 
     public function car_index(){
         $checklistscar = ChecklistCar::all();

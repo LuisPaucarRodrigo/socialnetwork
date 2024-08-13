@@ -4,6 +4,7 @@ use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
 use App\Http\Controllers\ProjectArea\BacklogController;
 use App\Http\Controllers\ProjectArea\CalendarController;
+use App\Http\Controllers\ProjectArea\ChecklistsController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
@@ -143,6 +144,9 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::get('/project-backlog/autcomplete', [BacklogController::class, 'autocomplete'])->name('project.backlog.autocomplete');
     Route::post('/project-backlog/store', [BacklogController::class, 'store'])->name('project.backlog.store');
     Route::delete('/project-backlog/delete/{backlog_id}', [BacklogController::class, 'destroy'])->name('project.backlog.destroy');
+
+
+    Route::get('/checklist', [ChecklistsController::class, 'index'])->name('checklist.index');
 
 
     
