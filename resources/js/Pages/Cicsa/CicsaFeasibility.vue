@@ -9,7 +9,7 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <a :href="route('feasibilities.export')"
-                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
                     <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
@@ -108,7 +108,8 @@
                 </table>
             </div>
 
-            <div v-if="feasibilitys.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="feasibilitys.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="feasibilitys.links" />
             </div>
         </div>
@@ -124,8 +125,7 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="coordinator">Coordinador</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.coordinator" autocomplete="off"
-                                    id="coordinator" />
+                                <TextInput type="text" v-model="form.coordinator" autocomplete="off" id="coordinator" />
                                 <InputError :message="form.errors.coordinator" />
                             </div>
                         </div>
@@ -171,6 +171,9 @@
                                 <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                        <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                            Codigo AX
+                                        </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Nombre
@@ -191,6 +194,11 @@
                                 <tbody>
                                     <tr v-for="item in form.cicsa_feasibility_materials" :key="item.id"
                                         class="text-gray-700">
+                                        <td class="border-b border-slate-300  px-4 py-4">
+                                            <p class="text-gray-900 text-center">
+                                                {{ item?.code_ax }}
+                                            </p>
+                                        </td>
                                         <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
@@ -204,9 +212,6 @@
                                         <td class="w-1/3 border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <TextInput class="text-center" type="number" min="0"
                                                 @change="modifyQuantity(item.id, $event)" :value="item.quantity" />
-                                            <!-- <p class="text-gray-900 text-center">
-                                                {{ item.quantity }}
-                                            </p> -->
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <button v-if="!item.id" type="button" @click="delete_material(item.name)"
@@ -245,14 +250,34 @@
                     <div class="sm:col-span-1">
                         <InputLabel for="name">Nombre</InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="text" v-model="feasibilityObject.name" id="name" />
+                            <TextInput required type="text" list="names" v-model="feasibilityObject.name"
+                                placeholder="Codigo AX" @input="searchMaterial($event.target.value)"
+                                @change="updateMaterialItem($event.target.value)" id="name" />
+                            <datalist id="names">
+                                <option v-for="item in arrayFeasibilitys" :key="item.id" :value="item.code_ax">
+                                    {{ item.code_ax }} || {{ item.name }} || {{ item.internal_reference }}
+                                </option>
+                            </datalist>
                         </div>
                     </div>
                     <div class="sm:col-span-1">
                         <InputLabel for="unit">Unidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="text" v-model="feasibilityObject.unit" id="unit" />
+                            <select id="unit" v-model="feasibilityObject.unit" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccionar Unidad</option>
+                                <option>UNIDAD</option>
+                                <option>METROS</option>
+                                <option>CAJA</option>
+                                <option>GLB</option>
+                                <option>METROS 2</option>
+                                <option>METROS 3</option>
+                                <option>PIEZA</option>
+                                <option>LATA</option>
+                                <option>PAQUETE</option>
+                                <option>ROLLO</option>
+                            </select>
                         </div>
                     </div>
                     <div class="sm:col-span-1">
@@ -301,10 +326,11 @@ const { feasibility, auth } = defineProps({
 })
 
 const feasibilitys = ref(feasibility)
+const arrayFeasibilitys = ref([])
 
 const initialState = {
     user_id: auth.user.id,
-    coordinator:'',
+    coordinator: '',
     feasibility_date: '',
     report: 'Pendiente',
     user_name: auth.user.name,
@@ -317,6 +343,7 @@ const form = useForm(
 
 const feasibilityObject = ref({
     id: '',
+    code_ax: '',
     name: '',
     unit: '',
     quantity: 0,
@@ -367,11 +394,13 @@ function submit() {
 function addFeasibility() {
     if (feasibilityObject.value.name && feasibilityObject.value.unit && feasibilityObject.value.quantity) {
         const newFeasibility = {
+            code_ax: feasibilityObject.value.code_ax,
             name: feasibilityObject.value.name,
             unit: feasibilityObject.value.unit,
             quantity: feasibilityObject.value.quantity
         };
         form.cicsa_feasibility_materials.push(newFeasibility);
+        feasibilityObject.value.code_ax = '';
         feasibilityObject.value.name = '';
         feasibilityObject.value.unit = '';
         feasibilityObject.value.quantity = '';
@@ -406,4 +435,22 @@ const search = async ($search) => {
         console.error('Error searching:', error);
     }
 };
+
+const searchMaterial = async ($search) => {
+    try {
+        const response = await axios.post(route('material.search.material'), { searchQuery: $search });
+        arrayFeasibilitys.value = response.data.materials;
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
+
+function updateMaterialItem(e) {
+    const selectedItem = arrayFeasibilitys.value.find(item => item.code_ax === e);
+    if (selectedItem) {
+        feasibilityObject.value.code_ax = selectedItem.code_ax
+        feasibilityObject.value.name = selectedItem.name
+        feasibilityObject.value.unit = selectedItem.unit
+    }
+}
 </script>
