@@ -26,8 +26,8 @@
                 <tbody>
                   <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Monto Inicial</td>
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          huawei_project.initial_amount ? huawei_project.initial_amount.toFixed(2) : '' }}</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">{{
+          huawei_project.initial_amount ? "S/. " + huawei_project.initial_amount.toFixed(2) : '-' }}</td>
                   </tr>
                   <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Ingresos</td>
