@@ -7,6 +7,9 @@
     Route::post('/login', [ApiController::class, 'login']);
 
     Route::get('/preproject/{id}', [ApiController::class, 'preproject']);
+
+    Route::get('/checklistcar', [ChecklistsController::class, 'car_index']);
+    
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/users/{id}', [ApiController::class, 'users']);
 
@@ -37,11 +40,11 @@
 
 
 
-        Route::post('checklistcar', [ChecklistsController::class, 'car_store']);
-        Route::post('checklisttoolkit', [ChecklistsController::class, 'toolkit_store']);
-        Route::post('checklistdailytoolkit', [ChecklistsController::class, 'dailytoolkit_store']);
-        Route::post('checklistepp', [ChecklistsController::class, 'epp_store']);
+        Route::post('/checklistcar', [ChecklistsController::class, 'car_store']);
+        Route::post('/checklisttoolkit', [ChecklistsController::class, 'toolkit_store']);
+        Route::post('/checklistdailytoolkit', [ChecklistsController::class, 'dailytoolkit_store']);
+        Route::post('/checklistepp', [ChecklistsController::class, 'epp_store']);
 
-        Route::get('checklistcar', [ChecklistsController::class, 'car_index']);
+        
 
     });
