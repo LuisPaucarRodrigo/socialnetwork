@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\ChecklistRequest;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
 
 class ChecklistCarRequest extends FormRequest
 {
@@ -70,5 +73,16 @@ class ChecklistCarRequest extends FormRequest
             'frontLeftTire'=> 'required',
             'observation'=> 'nullable',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = (new ValidationException($validator))->errors();
+        throw new HttpResponseException(
+            response()->json([
+                'status' => 'fail',
+                'error' => $errors
+            ], 422)
+        );
     }
 }

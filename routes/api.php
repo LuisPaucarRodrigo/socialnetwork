@@ -35,16 +35,12 @@
         Route::post('/processmanuals/index', [ApiController::class, 'localDriveIndex']);
         Route::post('/processmanuals/folder_archive_download', [ApiController::class, 'localDriveDownload']);
 
-
-
-
-
-
+        //CheckList
         Route::post('/checklistcar', [ChecklistsController::class, 'car_store']);
         Route::post('/checklisttoolkit', [ChecklistsController::class, 'toolkit_store']);
         Route::post('/checklistdailytoolkit', [ChecklistsController::class, 'dailytoolkit_store']);
         Route::post('/checklistepp', [ChecklistsController::class, 'epp_store']);
 
+        Route::get('/checklistHistory', [ChecklistsController::class, 'checklist_history']);
         
-
     });

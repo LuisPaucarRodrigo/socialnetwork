@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\ChecklistRequest;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
 
 class ChecklistDailytoolkitRequest extends FormRequest
 {
@@ -13,7 +16,7 @@ class ChecklistDailytoolkitRequest extends FormRequest
     {
         return true;
     }
-
+    // 2|WdbGZmqlbe9pMrFkFpGcKLCa5EpqQ8JaE1jOZb5ibff8a74b
     /**
      * Get the validation rules that apply to the request.
      *
@@ -43,5 +46,16 @@ class ChecklistDailytoolkitRequest extends FormRequest
             'network_adapter' => 'required',
             'observations' => 'nullable',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = (new ValidationException($validator))->errors();
+        throw new HttpResponseException(
+            response()->json([
+                'status' => 'fail',
+                'error' => $errors
+            ], 422)
+        );
     }
 }
