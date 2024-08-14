@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('terminalCrimper');
             $table->string('files');
             $table->string('allenKeys');
+            $table->string('braveDices');
             $table->string('readlineKit');
             $table->string('impactWrench');
             $table->string('dielectricTools');
@@ -46,8 +47,6 @@ return new class extends Migration
             $table->string('largeToolBag');
             $table->string('mediumToolBag');
             $table->string('fallProtectionCar');
-            $table->string('lifeline');
-            $table->string('positioningLanyard');
             $table->string('harness');
             $table->string('pressureWasher');
             $table->string('blower');
@@ -81,6 +80,7 @@ return new class extends Migration
             
             $table->text('observation')->nullable();
             $table->string('badTools')->nullable();
+            $table->string('goodTools')->nullable();
             $table->timestamps();
         });
     }

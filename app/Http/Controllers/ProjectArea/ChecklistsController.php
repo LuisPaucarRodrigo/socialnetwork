@@ -52,6 +52,13 @@ class ChecklistsController extends Controller
         );
     }
 
+    public function toolkit_index(){
+        $checklisttoolkit = ChecklistToolkit::with('user')->paginate(20);
+        return Inertia::render('ProjectArea/Checklist/ChecklistToolkit', 
+            ['checklists' => $checklisttoolkit]
+        );
+    }
+
     public function car_store (ChecklistCarRequest $request){
         $data = $request->validated();
         $data['front'] = $this->storeBase64Image($data['front'], 'checklistcar');

@@ -36,8 +36,7 @@
                         </div>
                     </button>
                 </Link>
-                <Link href="#">
-                    <!-- :href=""route('tu.ruta') -->
+                <Link :href="route('checklist.toolkit.index')">
                     <button
                         class="bg-white p-4 rounded-md shadow-md text-left h-full w-full"
                     >

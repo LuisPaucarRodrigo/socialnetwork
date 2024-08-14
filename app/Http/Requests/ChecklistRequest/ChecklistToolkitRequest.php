@@ -31,6 +31,7 @@ class ChecklistToolkitRequest extends FormRequest
             'terminalCrimper'=> 'required',
             'files'=> 'required',
             'allenKeys'=> 'required',
+            'braveDices'=> 'required',
             'readlineKit'=> 'required',
             'impactWrench'=> 'required',
             'dielectricTools'=> 'required',
@@ -53,8 +54,6 @@ class ChecklistToolkitRequest extends FormRequest
             'largeToolBag'=> 'required',
             'mediumToolBag'=> 'required',
             'fallProtectionCar'=> 'required',
-            'lifeline'=> 'required',
-            'positioningLanyard'=> 'required',
             'harness'=> 'required',
             'pressureWasher'=> 'required',
             'blower'=> 'required',
@@ -87,6 +86,7 @@ class ChecklistToolkitRequest extends FormRequest
             'corporatePhone'=> 'required',
             'observation'=> 'nullable',
             'badTools'=> 'nullable',
+            'goodTools'=> 'nullable',
         ];
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <Head title="ChecklistVehicular" />
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
-        <template #header> Checklist Vehicular </template>
+        <template #header> Checklist Herramientas </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="min-w-full overflow-x-auto">
                 <table class="w-full table-auto">
@@ -42,7 +42,12 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
                             >
-                                Fotos
+                                Herramientas Buenas
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Herramientas Malas
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
@@ -105,12 +110,20 @@
                                 <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
-                                    <button
-                                        type="button"
-                                        @click="openPhotosModal(item.id)"
+                                    <a
+                                        href="#"
                                     >
                                         <EyeIcon class="text-teal-500 w-5" />
-                                    </button>
+                                    </a>
+                                </td>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                                >
+                                    <a
+                                        href="#"
+                                    >
+                                        <EyeIcon class="text-teal-500 w-5" />
+                                    </a>
                                 </td>
                                 <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
@@ -132,84 +145,6 @@
         </div>
 
         <Modal
-            :show="showPhotosModal"
-            @close="closePhotosModal"
-            max-width="md"
-            :closeable="true"
-        >
-            <div class="p-6">
-                <h2
-                    class="text-lg font-medium text-gray-800 border-b-2 border-gray-100"
-                >
-                    Fotos
-                </h2>
-                <br />
-                <div class="mt-2">
-                    <div class="overflow-auto">
-                        <table
-                            class="w-full whitespace-no-wrap border-collapse border border-slate-300"
-                        >
-                            <thead>
-                                <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
-                                >
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
-                                    >
-                                        Nombre
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
-                                    >
-                                        Foto
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(item, i) in itemPhotos.photos"
-                                    :key="i"
-                                    class="text-gray-700 bg-white text-sm"
-                                >
-                                    <td
-                                        class="border-b border-slate-300 px-4 py-4"
-                                    >
-                                        {{ item?.name }}
-                                    </td>
-                                    <td
-                                        class="border-b border-slate-300 px-4 py-4"
-                                    >
-                                        <a
-                                            :href="
-                                                route('checklist.car.photo', {
-                                                    id: itemPhotos.id,
-                                                    photoProp: item.value,
-                                                })
-                                            "
-                                            target="_blank"
-                                            class="text-indigo-600 hover:underline"
-                                        >
-                                            Ver
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <br />
-                    <div class="mt-6 flex justify-end">
-                        <SecondaryButton
-                            type="button"
-                            @click="closePhotosModal"
-                        >
-                            Cerrar
-                        </SecondaryButton>
-                    </div>
-                </div>
-            </div>
-        </Modal>
-
-        <Modal
             :show="showChecklistModal"
             @close="closeChecklistModal"
             max-width="2xl"
@@ -219,7 +154,7 @@
                 <h2
                     class="text-lg font-medium text-gray-800 border-b-2 border-gray-100"
                 >
-                    Checklist Vehicular
+                    Checklist de Herramientas
                 </h2>
                 <br />
                 <div class="mt-2">
@@ -237,7 +172,7 @@
                                                 colspan="2"
                                                 class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-gray-600"
                                             >
-                                                Documentación
+                                                Control EPPS
                                             </th>
                                         </tr>
                                     </thead>
@@ -245,7 +180,7 @@
                                         <tr
                                             v-for="(
                                                 item, i
-                                            ) in itemArrays.docArray"
+                                            ) in itemArrays.eppArray"
                                             :key="i"
                                             class="text-gray-700 bg-white text-xs"
                                         >
@@ -275,7 +210,7 @@
                                                 colspan="2"
                                                 class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-gray-600"
                                             >
-                                                Equipamiento del vehículo
+                                                Kit de herramientas
                                             </th>
                                         </tr>
                                     </thead>
@@ -283,7 +218,7 @@
                                         <tr
                                             v-for="(
                                                 item, i
-                                            ) in itemArrays.equipementArray"
+                                            ) in itemArrays.toolkitArray"
                                             :key="i"
                                             class="text-gray-700 bg-white text-xs"
                                         >
@@ -314,7 +249,7 @@
                                             colspan="2"
                                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-gray-600"
                                         >
-                                            Estado del vehículo
+                                            Control de equipos
                                         </th>
                                     </tr>
                                 </thead>
@@ -322,7 +257,7 @@
                                     <tr
                                         v-for="(
                                             item, i
-                                        ) in itemArrays.stateArray"
+                                        ) in itemArrays.equipmentArray"
                                         :key="i"
                                         class="text-gray-700 bg-white text-xs"
                                     >
@@ -365,7 +300,7 @@ import Modal from "@/Components/Modal.vue";
 import { Head, router } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+
 import { formattedDate } from "@/utils/utils";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 
@@ -376,47 +311,76 @@ const { checklists } = defineProps({
 });
 
 const showChecklistModal = ref(false);
-const itemArrays = ref({ docArray: [], stateArray: [], equipementArray: [] });
+const itemArrays = ref({ eppArray: [], toolkitArray: [], equipmentArray: [] });
 
 function openChecklistModal(item) {
-    itemArrays.value.docArray = [
-        { name: "Kilometraje", value: item.km },
-        { name: "Permiso de circulación", value: item.circulation },
-        { name: "Revisión técnica", value: item.technique },
-        { name: "SOAT", value: item.soat },
+    itemArrays.value.eppArray = [
+        { name: "Carro anticaídas", value: item.km },
+        { name: "Línea de vida", value: item.circulation },
+        { name: "Lína de posicionamiento", value: item.technique },
+        { name: "Arnés", value: item.soat },
     ];
-    itemArrays.value.stateArray = [
-        { name: "Bocinas", value: item.hornState },
-        { name: "Frenos", value: item.brakesState },
-        { name: "Luces altas y bajas", value: item.headlightsState },
-        { name: "Luces intermitentes", value: item.intermitentlightState },
-        { name: "Direccionales", value: item.indicatorsState },
-        { name: "Retrovisores", value: item.mirrorsState },
-        { name: "Estado de neúmaticos", value: item.tiresState },
-        { name: "Parachoques", value: item.bumpersState },
-        { name: "Marcadores de temperatura", value: item.temperatureGauge },
-        { name: "Marcador de aceite", value: item.oilGauge },
-        { name: "Marcador de combustible", value: item.fuelGauge },
-        { name: "Aseo general de vehículo", value: item.vehicleCleanliness },
-        { name: "Estado de puertas", value: item.doorsState },
-        { name: "Estado del parabrisas", value: item.windshieldState },
-        { name: "Estado del motor", value: item.engineState },
-        { name: "Estado de la batería", value: item.batteryState },
+    itemArrays.value.toolkitArray = [
+        { name: "Mosquetón", value: item.hornState },
+        { name: "Pelacable", value: item.brakesState },
+        { name: "Crimpeador de RJ45", value: item.headlightsState },
+        { name: "Crimpeador de terminales", value: item.intermitentlightState },
+        { name: "Limas", value: item.indicatorsState },
+        { name: "Llaves allen", value: item.mirrorsState },
+        { name: "Kit redline", value: item.tiresState },
+        { name: "Desarmadores de impacto", value: item.bumpersState },
+        { name: "Desarmadores dieléctrico", value: item.temperatureGauge },
+        { name: "Alicate de corte", value: item.oilGauge },
+        { name: "Alicate de fuerza", value: item.fuelGauge },
+        { name: "Alicate recto", value: item.vehicleCleanliness },
+        { name: "Llaves francesas", value: item.doorsState },
+        { name: "Sierra", value: item.windshieldState },
+        { name: "Aplicador de silicona", value: item.engineState },
+        { name: "Polea", value: item.batteryState },
+        { name: "Wincha", value: item.batteryState },
+        { name: "Eslinga", value: item.batteryState },
+        { name: "Botiquín", value: item.batteryState },
+        { name: "Juego de brocas", value: item.batteryState },
+        { name: "Sacabocado", value: item.batteryState },
+        { name: "Extractor de aceite", value: item.batteryState },
+        { name: "Juego de llaves", value: item.batteryState },
+        { name: "Juego de dados", value: item.batteryState },
+        { name: "Cutter", value: item.batteryState },
+        { name: "Llave thor", value: item.batteryState },
+        { name: "Maleta grande", value: item.batteryState },
+        { name: "Maleta mediana", value: item.batteryState },
     ];
-    itemArrays.value.equipementArray = [
-        { name: "Extintor", value: item.extinguisher },
-        { name: "Botiquín", value: item.firstAidKit },
-        { name: "Conos", value: item.cones },
-        { name: "Gata", value: item.jack },
-        { name: "Neumático de respuesto", value: item.spareTire },
-        { name: "Cable de remolque", value: item.towCable },
-        { name: "Cable de batería", value: item.batteryCable },
-        { name: "Cinta reflectante", value: item.reflector },
-        { name: "Kit de herramientas", value: item.emergencyKit },
-        { name: "Alarma de seguridad", value: item.alarm },
-        { name: "Tacos", value: item.chocks },
-        { name: "Porta escalera", value: item.ladderHolder },
-        { name: "Placa impresa laterales", value: item.sidePlate },
+    itemArrays.value.equipmentArray = [
+        { name: "Hidrolavadora", value: item.extinguisher },
+        { name: "Sopladora", value: item.extinguisher },
+        { name: "Megómetro", value: item.extinguisher },
+        { name: "Telurómetro", value: item.extinguisher },
+        { name: "Pinza amperimétrica", value: item.extinguisher },
+        { name: "Manómetro", value: item.extinguisher },
+        { name: "Pirómetro", value: item.extinguisher },
+        { name: "Laptop", value: item.extinguisher },
+        { name: "Taladro", value: item.extinguisher },
+        { name: "Brújula", value: item.extinguisher },
+        { name: "Inclinometro", value: item.extinguisher },
+        { name: "Linterna", value: item.extinguisher },
+        { name: "Power Meter", value: item.extinguisher },
+        { name: "Pistola de calor", value: item.extinguisher },
+        { name: "Pistola de Estaño", value: item.extinguisher },
+        { name: "Escalera tijera", value: item.extinguisher },
+        { name: "Pulverizadora", value: item.extinguisher },
+        { name: "Testeador RJ45", value: item.extinguisher },
+        { name: "Cables de consola y red", value: item.extinguisher },
+        { name: "Adaptador de red", value: item.extinguisher },
+        { name: "Pértiga", value: item.extinguisher },
+        { name: "Soga 75m", value: item.extinguisher },
+        { name: "Escalera", value: item.extinguisher },
+        { name: "Extensión", value: item.extinguisher },
+        { name: "Cable largo", value: item.extinguisher },
+        { name: "Candado", value: item.extinguisher },
+        { name: "Cadenas", value: item.extinguisher },
+        { name: "Manguera", value: item.extinguisher },
+        { name: "Celular corporativo", value: item.extinguisher },
+        
     ];
     showChecklistModal.value = true;
 }
@@ -424,26 +388,4 @@ function closeChecklistModal() {
     showChecklistModal.value = false;
 }
 
-//photos modal
-const showPhotosModal = ref(false);
-const itemPhotos = ref({
-    id: null,
-    photos: [
-        { name: "Frontal", value: "front" },
-        { name: "Lateral Izquierdo", value: "leftSide" },
-        { name: "Lateral Derecho", value: "rightSide" },
-        { name: "Interior", value: "interior" },
-        { name: "Llanta Trasera Izquierda", value: "rearLeftTire" },
-        { name: "Llanta Trasera Derecha", value: "rearRightTire" },
-        { name: "LLanta Frontal Derecha", value: "frontRightTire" },
-        { name: "Llanta Frontal Izquierda", value: "frontLeftTire" },
-    ],
-});
-function openPhotosModal(id) {
-    itemPhotos.value.id = id;
-    showPhotosModal.value = true;
-}
-function closePhotosModal() {
-    showPhotosModal.value = false;
-}
 </script>
