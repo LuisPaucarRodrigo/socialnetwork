@@ -39,6 +39,13 @@ class ChecklistsController extends Controller
         );        
     }
 
+    public function dailytoolkit_index(){
+        $checklistdailytoolkit = ChecklistDailytoolkit::with('user')->paginate(20);
+        return Inertia::render('ProjectArea/Checklist/ChecklistDailytoolkit', 
+            ['checklists' => $checklistdailytoolkit]
+        );
+    }
+
     public function car_store (ChecklistCarRequest $request){
         $data = $request->validated();
         $data['front'] = $this->storeBase64Image($data['front'], 'checklistcar');
