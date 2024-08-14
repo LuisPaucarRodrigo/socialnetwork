@@ -13,6 +13,7 @@ class ChecklistToolkit extends Model
         'user_id',
         'additionalEmployees',
         'zone',
+
         'carabiner',
         'wireStripper',
         'crimper',
@@ -36,14 +37,14 @@ class ChecklistToolkit extends Model
         'punch',
         'extractor',
         'wrenchSet',
+        'braveDices',
         'cutter',
         'hammer',
         'largeToolBag',
         'mediumToolBag',
         'fallProtectionCar',
-        'lifeline',
-        'positioningLanyard',
         'harness',
+        
         'pressureWasher',
         'blower',
         'megommeter',
@@ -75,6 +76,7 @@ class ChecklistToolkit extends Model
         'corporatePhone',
         'observation',
         'badTools',
+        'goodTools',
     ];
 
     public function user() {
