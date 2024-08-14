@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('hornState');
             $table->string('brakesState');
             $table->string('headlightsState');
+            $table->string('intermitentlightState');
             $table->string('indicatorsState');
             $table->string('mirrorsState');
             $table->string('tiresState');
