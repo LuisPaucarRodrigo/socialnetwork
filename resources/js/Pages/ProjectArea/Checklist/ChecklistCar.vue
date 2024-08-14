@@ -8,72 +8,86 @@
         <div class="min-w-full p-3 rounded-lg shadow">
             
 
-            <div class="min-w-full overflow-x-auto rounded-lg shadow">
+            <div class="min-w-full overflow-x-auto">
                 <table class="w-full table-auto">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Código del Proyecto
+                                Fecha de Registro
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Almacén
+                                Zona
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Producto
+                                Personal 1
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Precio Unitario
+                                Personal 2
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Cantidad Solicitada
+                                Razón
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Checklist
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fotos
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Observaciones
                             </th>
-                            <th v-if="hasPermission('InventoryManager')"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="item in props.project_entries.data" :key="item.id">
+                        <template v-for="item in checklists.data" :key="item.id">
 
                             <tr class="text-gray-700 border-b">
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ item.project.code }}</p>
-                                </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ item.entry.inventory.warehouse.name
-                                        }}</p>
-                                </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">
-                                        {{ item.entry.inventory.purchase_product.name }}
+                                        {{ formattedDate(item.created_at) }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">
-                                        S/. {{ item.unitary_price }}
+                                        {{ item.zone }}
+                                        </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.user.name }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ item.quantity }}</p>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.additionalEmployees }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.reason }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <EyeIcon class="text-indigo-600 w-5"/>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <button @click="openChecklistModal" >
+                                        <EyeIcon class="text-teal-500 w-5"/>
+                                    </button>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">
                                         {{ item.observation }}
                                     </p>
-                                </td>
-
-                                <td v-if="hasPermission('InventoryManager')" class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
-                                    v
                                 </td>
                             </tr>
                         </template>
@@ -81,7 +95,7 @@
                 </table>
             </div>
             <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="project_entries.links" />
+                <pagination :links="checklists.links" />
             </div>
         </div>
 
@@ -98,21 +112,21 @@ import { Head, router } from '@inertiajs/vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { formattedDate } from '@/utils/utils';
+import { EyeIcon } from "@heroicons/vue/24/outline";
 
-const props = defineProps({
-    project_entries: Object,
-    warehouseId: Number,
+const { checklists } = defineProps({
+    checklists: Object,
     auth: Object,
     userPermissions:Array
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
+
+
+const showChecklistModal = ref(false)
+function openChecklistModal () {
+    showChecklistModal.value = true
 }
-
-
-
-
 
 
 

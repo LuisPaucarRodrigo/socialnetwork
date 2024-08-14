@@ -59,4 +59,9 @@ class ChecklistCar extends Model
         'frontLeftTire',
         'observation',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');    
+    }
+    
 }

@@ -76,4 +76,8 @@ class ChecklistToolkit extends Model
         'observation',
         'badTools',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');    
+    }
 }

@@ -31,4 +31,8 @@ class ChecklistDailytoolkit extends Model
         'network_adapter',
         'observations'
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');    
+    }
 }
