@@ -54,7 +54,7 @@
                         </div>
                     </button>
                 </Link>
-                <Link href="#">
+                <Link :href="route('checklist.dailytoolkit.index')">
                     <button
                         class="bg-white p-4 rounded-md shadow-md text-left h-full w-full"
                     >
