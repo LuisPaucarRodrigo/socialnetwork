@@ -517,6 +517,7 @@ class CicsaController extends Controller
         $validateData = $request->validate([
             'validation_date' => 'required',
             'materials_control' => 'required',
+            'file_validation' => 'required',
             'supervisor' => 'required',
             'warehouse' => 'required',
             'boss' => 'required',
