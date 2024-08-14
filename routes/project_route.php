@@ -148,6 +148,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     Route::get('/checklist', [ChecklistsController::class, 'index'])->name('checklist.index');
     Route::get('/checklist/car', [ChecklistsController::class, 'car_index'])->name('checklist.car.index');
+    Route::get('/checklist/car/{id}/{photoProp}', [ChecklistsController::class, 'car_photo'])->name('checklist.car.photo');
 
 
     

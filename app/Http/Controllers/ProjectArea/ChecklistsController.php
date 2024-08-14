@@ -13,6 +13,7 @@ use App\Models\ChecklistEpp;
 use App\Models\ChecklistToolkit;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
@@ -28,6 +29,14 @@ class ChecklistsController extends Controller
         return Inertia::render('ProjectArea/Checklist/ChecklistCar', 
             ['checklists' => $checklistcar]
         );
+    }
+
+    public function car_photo($id, $photoProp) {
+        $checklistcar = ChecklistCar::find($id);
+        return $this->openNewWindowArchive(
+            '/image/checklist/checklistcar/',
+            $checklistcar->$photoProp
+        );        
     }
 
     public function car_store (ChecklistCarRequest $request){
@@ -86,5 +95,19 @@ class ChecklistsController extends Controller
         }
     }
 
+
+
+
+    
+    private function openNewWindowArchive($path, $file)
+    {
+        $filePath = $path.$file;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            ob_end_clean();
+            return response()->file($path);
+        }
+        abort(404, 'Documento no encontrado');
+    }
    
 }
