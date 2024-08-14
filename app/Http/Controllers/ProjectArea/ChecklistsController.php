@@ -45,6 +45,12 @@ class ChecklistsController extends Controller
             ['checklists' => $checklistdailytoolkit]
         );
     }
+    public function epp_index(){
+        $checklistepp = ChecklistEpp::with('user')->paginate(20);
+        return Inertia::render('ProjectArea/Checklist/ChecklistEpp', 
+            ['checklists' => $checklistepp]
+        );
+    }
 
     public function car_store (ChecklistCarRequest $request){
         $data = $request->validated();
