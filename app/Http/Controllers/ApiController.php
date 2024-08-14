@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
+use App\Models\ChecklistDailytoolkit;
 use App\Models\Imagespreproject;
 use App\Models\Preproject;
 use App\Models\PreprojectCode;
@@ -11,6 +13,7 @@ use App\Models\PreReportHuaweiGeneral;
 use App\Models\Project;
 use App\Models\Projectimage;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -200,7 +203,7 @@ class ApiController extends Controller
     public function indexHuaweiProjectGeneral()
     {
         $data = PreReportHuaweiGeneral::all();
-        return response()->json($data);
+        return response()->json(['message' => 'hola'], 201);
     }
 
     public function storeHuaweiProjectGeneral(Request $request)
@@ -296,5 +299,22 @@ class ApiController extends Controller
             return abort(404, 'El archivo no existe.');
         }
         return response()->download($filePath);
+    }
+
+    public function dailytoolkit_store (ChecklistDailytoolkitRequest $request){
+        $data = $request->validated();
+        DB::beginTransaction();
+        try{
+            $data['user_id'] = Auth::user()->id;
+            ChecklistDailytoolkit::create($data);
+            DB::commit();
+            return response()->json([], 201);
+        }catch(Exception $e){
+            return response()->json([
+                'error' => 'Ocurrió un error al procesar la solicitud',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+        
     }
 }

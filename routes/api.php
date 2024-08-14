@@ -1,6 +1,7 @@
     <?php
 
     use App\Http\Controllers\ApiController;
+    use App\Http\Controllers\ProjectArea\ChecklistsController;
     use Illuminate\Support\Facades\Route;
 
     Route::post('/login', [ApiController::class, 'login']);
@@ -30,5 +31,17 @@
         //ProcessManuals
         Route::post('/processmanuals/index', [ApiController::class, 'localDriveIndex']);
         Route::post('/processmanuals/folder_archive_download', [ApiController::class, 'localDriveDownload']);
+
+
+
+
+
+
+        Route::post('/checklistcar', [ChecklistsController::class, 'car_store']);
+        Route::post('/checklisttoolkit', [ChecklistsController::class, 'toolkit_store']);
+        Route::post('/checklistdailytoolkit', [ChecklistsController::class, 'dailytoolkit_store']);
+        Route::post('/checklistepp', [ChecklistsController::class, 'epp_store']);
+
+        Route::get('/checklistcar', [ChecklistsController::class, 'car_index']);
 
     });
