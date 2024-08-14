@@ -41,13 +41,9 @@ class CicsaController extends Controller
 {
     public function index()
     {
-        $projects = CicsaAssignation::join('cicsa_purchase_orders', 'cicsa_assignations.id', '=', 'cicsa_purchase_orders.cicsa_assignation_id')
-
-            ->where(function ($query) {
-                // Registros que no tienen la relación cicsa_charge_area
-                $query->whereDoesntHave('cicsa_charge_area')
-                    ->orWhere(function ($query) {
-                    // Registros que tienen la relación cicsa_charge_area pero al menos uno de los campos invoice_number, invoice_date o amount es NULL
+        $projects = CicsaAssignation::where(function ($query) {
+            $query->whereDoesntHave('cicsa_charge_area')
+                ->orWhere(function ($query) {
                     $query->whereHas('cicsa_charge_area', function ($subQuery) {
                         $subQuery->where(function ($subQuery) {
                             $subQuery->whereNull('invoice_number')
@@ -57,8 +53,7 @@ class CicsaController extends Controller
                             ->whereNull('deposit_date'); // Asegura que deposit_date sea NULL
                     });
                 });
-            })
-
+        })
             ->with(
                 'cicsa_feasibility.cicsa_feasibility_materials',
                 'cicsa_materials.cicsa_material_items',
@@ -68,11 +63,8 @@ class CicsaController extends Controller
                 'cicsa_service_order',
                 'cicsa_charge_area'
             )
-            // ->orderBy('cicsa_purchase_order.oc_number', 'desc')
-            // ->leftJoin('cicsa_purchase_orders', 'cicsa_assignations.id', '=', 'cicsa_purchase_orders.cicsa_assignation_id')
 
             ->paginate(10);
-
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects
         ]);
@@ -103,8 +95,6 @@ class CicsaController extends Controller
                 'cicsa_service_order',
                 'cicsa_charge_area'
             );
-        // ->leftJoin('cicsa_purchase_orders', 'cicsa_assignations.id', '=', 'cicsa_purchase_orders.cicsa_assignation_id')
-        // ->orderBy('cicsa_purchase_orders.oc_number', 'desc');
 
         if (!empty($request->assignation_date)) {
             $assignationDate = $request->assignation_date;
@@ -438,9 +428,57 @@ class CicsaController extends Controller
 
     public function exportInstallation()
     {
-        return Excel::download(new InstallationExport, 'Instalación ' . date('m-Y') . '.xlsx');
-    }
+        $id = 2;
 
+        // Obtener la asignación junto con la instalación y sus materiales
+        $cicsaAssignation = CicsaAssignation::with(
+            'cicsa_installation.cicsa_installation_materials',
+            'cicsa_installation.user'
+        )->where('id', $id)->first();
+
+        if (!$cicsaAssignation) {
+            // Manejar el caso en que no se encuentra la asignación
+            dd('Asignación no encontrada');
+        }
+
+        $installation = $cicsaAssignation->cicsa_installation;
+        $materialsSummary = [];
+
+        // Recorrer los materiales de la instalación
+        foreach ($installation->cicsa_installation_materials as $material) {
+            $code_ax = $material->code_ax;
+
+            // Inicializar el resumen del material si no existe
+            if (!isset($materialsSummary[$code_ax])) {
+                $materialsSummary[$code_ax] = [
+                    'code_ax' => $material->code_ax,
+                    'name' => $material->name,
+                    'unit' => $material->unit,
+                    'quantities' => []
+                ];
+            }
+
+            // Agregar la cantidad del material a la guía correspondiente
+            $guideNumber = $installation->guide_number;
+            $materialsSummary[$code_ax]['quantities'][$guideNumber - 1] = $material->quantity;
+        }
+
+        // Convertir el resumen a una estructura de visualización adecuada
+        $formattedSummary = [];
+        foreach ($materialsSummary as $materialData) {
+            $formattedSummary[] = array_merge(
+                [
+                    'code_ax' => $materialData['code_ax'],
+                    'name' => $materialData['name'],
+                    'unit' => $materialData['unit']
+                ],
+                $materialData['quantities']
+            );
+        }
+
+        // Mostrar el resumen
+        dd($formattedSummary);
+    }
 
     // CicsaPurchaseOrderValidations
 
@@ -694,7 +732,6 @@ class CicsaController extends Controller
     public function exportMaterialsSummary($ca_id)
     {
         return Excel::download(new MaterialsSummary($ca_id), 'ResumenMateriales.xlsx');
-
     }
 
 }

@@ -635,7 +635,7 @@ function submitImportExcel() {
         .then(response => {
             if (response.status === 200) {
                 form.cicsa_material_items = response.data;
-                modalImportMaterial();
+                modalImportMaterial();       
             }
         })
         .catch(error => {
@@ -652,7 +652,7 @@ const search = async ($search) => {
     try {
         const response = await axios.post(route('material.index'), { searchQuery: $search });
         materials.value = response.data.material;
-
+        
     } catch (error) {
         console.error('Error searching:', error);
     }

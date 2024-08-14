@@ -16,27 +16,32 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ChecklistsController extends Controller
 {
 
-    public function index() {
+    public function index()
+    {
         return Inertia::render('ProjectArea/Checklist/Index');
     }
 
-    public function car_index(){
+    public function car_index()
+    {
         $checklistcar = ChecklistCar::with('user')->paginate(20);
-        return Inertia::render('ProjectArea/Checklist/ChecklistCar', 
+        return Inertia::render(
+            'ProjectArea/Checklist/ChecklistCar',
             ['checklists' => $checklistcar]
         );
     }
 
-    public function car_photo($id, $photoProp) {
+    public function car_photo($id, $photoProp)
+    {
         $checklistcar = ChecklistCar::find($id);
         return $this->openNewWindowArchive(
             '/image/checklist/checklistcar/',
             $checklistcar->$photoProp
-        );        
+        );
     }
 
     public function dailytoolkit_index(){
@@ -58,70 +63,126 @@ class ChecklistsController extends Controller
             ['checklists' => $checklisttoolkit]
         );
     }
-
-    public function car_store (ChecklistCarRequest $request){
+    public function car_store(ChecklistCarRequest $request)
+    {
         $data = $request->validated();
-        $data['front'] = $this->storeBase64Image($data['front'], 'checklistcar');
-        $data['leftSide'] = $this->storeBase64Image($data['leftSide'], 'checklistcar');
-        $data['rightSide'] = $this->storeBase64Image($data['rightSide'], 'checklistcar');
-        $data['interior'] = $this->storeBase64Image($data['interior'], 'checklistcar');
-        $data['rearLeftTire'] = $this->storeBase64Image($data['rearLeftTire'], 'checklistcar');
-        $data['rearRightTire'] = $this->storeBase64Image($data['rearRightTire'], 'checklistcar');
-        $data['frontRightTire'] = $this->storeBase64Image($data['frontRightTire'], 'checklistcar');
-        $data['frontLeftTire'] = $this->storeBase64Image($data['frontLeftTire'], 'checklistcar');
-        $data['user_id'] = Auth::user()->id;
+        try {
+            $data['front'] = $this->storeBase64Image($data['front'], 'checklistcar', 'front');
+            $data['leftSide'] = $this->storeBase64Image($data['leftSide'], 'checklistcar', 'leftSide');
+            $data['rightSide'] = $this->storeBase64Image($data['rightSide'], 'checklistcar', 'rightSide');
+            $data['interior'] = $this->storeBase64Image($data['interior'], 'checklistcar', 'interior');
+            $data['rearLeftTire'] = $this->storeBase64Image($data['rearLeftTire'], 'checklistcar', 'rearLeftTire');
+            $data['rearRightTire'] = $this->storeBase64Image($data['rearRightTire'], 'checklistcar', 'rearRightTire');
+            $data['frontRightTire'] = $this->storeBase64Image($data['frontRightTire'], 'checklistcar', 'frontRightTire');
+            $data['frontLeftTire'] = $this->storeBase64Image($data['frontLeftTire'], 'checklistcar', 'frontLeftTire');
+            $data['user_id'] = Auth::user()->id;
 
-        ChecklistCar::create($data);
-        return response()->json([], 201);
-    }
-
-
-
-    public function toolkit_store (ChecklistToolkitRequest $request){
-        $data = $request->validated();
-        if ($data['badTools']){
-            $data['badTools'] = $this->storeBase64Image($data['badTools'], 'checklisttoolkit');
+            ChecklistCar::create($data);
+            return response()->json([], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => $e->getMessage()
+            ], 500);
         }
-        $data['user_id'] = Auth::user()->id;
-        ChecklistToolkit::create($data);
-        return response()->json([], 201);
     }
 
-    public function dailytoolkit_store (ChecklistDailytoolkitRequest $request){
+    public function toolkit_store(ChecklistToolkitRequest $request)
+    {
         $data = $request->validated();
-        $data['user_id'] = Auth::user()->id;
-        ChecklistDailytoolkit::create($data);
-        return response()->json([], 201);
+        try {
+            if ($data['badTools']) {
+                $data['badTools'] = $this->storeBase64Image($data['badTools'], 'checklisttoolkit', 'badTools');
+            }
+            if ($data['goodTools']) {
+                $data['goodTools'] = $this->storeBase64Image($data['goodTools'], 'checklisttoolkit', 'goodTools');
+            }
+            $data['user_id'] = Auth::user()->id;
+            ChecklistToolkit::create($data);
+            return response()->json([], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'Ocurrió un error al procesar la solicitud',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function epp_store (ChecklistEppRequest $request){
+    public function dailytoolkit_store(ChecklistDailytoolkitRequest $request)
+    {
+        $data = $request->validated();
+        try {
+            $data['user_id'] = Auth::user()->id;
+            ChecklistDailytoolkit::create($data);
+            return response()->json([], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'Ocurrió un error al procesar la solicitud',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function epp_store(ChecklistEppRequest $request)
+    {
         $data = $request->validated();
         $data['user_id'] = Auth::user()->id;
         ChecklistEpp::create($data);
         return response()->json([], 201);
     }
 
-
-    private function storeBase64Image($photo, $path){
-        try{
+    private function storeBase64Image($photo, $path, $name)
+    {
+        try {
             $image = str_replace('data:image/png;base64,', '', $photo);
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
-            $imagename = time() . '.png';
-            file_put_contents(public_path('image/checklist/'.$path.'/') . $imagename, $imageContent);
+            $imagename = time() . $name . '.png';
+            file_put_contents(public_path('image/checklist/') . $path . "/" . $imagename, $imageContent);
             return $imagename;
-        }catch(Exception $e){
+        } catch (Exception $e) {
             abort(500, 'something went wrong');
         }
     }
 
+    public function checklist_history()
+    {
+        $userId = Auth::user()->id;
 
+        $cars = ChecklistCar::where('user_id', $userId)->get();
+        $toolkits = ChecklistToolkit::where('user_id', $userId)->get();
+        $dailytoolkits = ChecklistDailytoolkit::where('user_id', $userId)->get();
+        $epps = ChecklistEpp::where('user_id', $userId)->get();
 
+        $cars = $cars->map(function ($item) {
+            $item->model_type = 'ChecklistCar';
+            return $item;
+        });
 
-    
+        $toolkits = $toolkits->map(function ($item) {
+            $item->model_type = 'ChecklistToolkit';
+            return $item;
+        });
+
+        $dailytoolkits = $dailytoolkits->map(function ($item) {
+            $item->model_type = 'ChecklistDailytoolkit';
+            return $item;
+        });
+
+        $epps = $epps->map(function ($item) {
+            $item->model_type = 'ChecklistEpp';
+            return $item;
+        });
+
+        $combined = $cars->merge($toolkits)->merge($dailytoolkits)->merge($epps);
+        $sorted = $combined->sortByDesc('created_at');
+
+        return response()->json($sorted->values()->all());
+    }
+
     private function openNewWindowArchive($path, $file)
     {
-        $filePath = $path.$file;
+        $filePath = $path . $file;
         $path = public_path($filePath);
         if (file_exists($path)) {
             ob_end_clean();
@@ -129,5 +190,4 @@ class ChecklistsController extends Controller
         }
         abort(404, 'Documento no encontrado');
     }
-   
 }
