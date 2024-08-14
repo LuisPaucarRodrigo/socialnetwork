@@ -74,7 +74,7 @@
                   <div>
                     <InputLabel for="name">{{ isCreateModalOpen ? 'Agregar nuevo Site:' : 'Actualizar Site' }}</InputLabel>
                     <div class="mt-2">
-                      <TextInput type="text" v-model="form.name" id="name" autocomplete="address-level1" />
+                      <TextInput type="text" v-model="form.name" id="name" autocomplete="off" />
                       <InputError :message="form.errors.name" />
                     </div>
                   </div>
@@ -119,14 +119,13 @@
   <script setup>
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-  import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
   import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import TextInput from '@/Components/TextInput.vue';
   import InputError from '@/Components/InputError.vue';
   import { Head, useForm, router } from '@inertiajs/vue3';
-  import { TrashIcon, PencilSquareIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
+  import { PencilSquareIcon } from '@heroicons/vue/24/outline';
   import { ref } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';

@@ -108,7 +108,7 @@
   const form = useForm({
     liquidated_quantity: null,
     refund_quantity: null,  
-    devolution_value: null,
+    devolution_value: 0,
     observations: ''
   });
   

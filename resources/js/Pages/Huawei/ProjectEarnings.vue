@@ -9,11 +9,11 @@
       <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
     <!-- Botones principales visibles en pantallas grandes -->
     <div class="flex flex-col sm:flex-row gap-4 items-center">
-        <button @click.prevent="openCreateAdditionalModal" type="button"
+        <button @click.prevent="openCreateAdditionalModal" type="button" v-if="props.huawei_project.status"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
             + Agregar
         </button>
-        <button @click.prevent="openImportModal" type="button"
+        <button @click.prevent="openImportModal" type="button" v-if="props.huawei_project.status"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Importar Datos
         </button>
@@ -119,7 +119,7 @@
       <Modal :show="create_additional || editAdditionalModal">
         <div class="p-6">
             <h2 class="text-base font-medium leading-7 text-gray-900">
-            {{ create_additional ? 'Agregar Costo Adicional' : 'Actualizar Costo Adicional' }}
+            {{ create_additional ? 'Agregar Ingreso' : 'Actualizar Ingreso' }}
             </h2>
             <form @submit.prevent="create_additional ? submit(false) : submit(true)">
             <div class="space-y-12">
@@ -239,8 +239,6 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
-import { formattedDate } from '@/utils/utils';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';

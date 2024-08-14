@@ -246,9 +246,6 @@ Usuarios
                 <MyTransition :transitiondemonstration="showingInventory">
                     <Link class="w-full" :href="route('warehouses.warehouses')">Almacenes</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingInventory">
-                    <Link class="w-full" :href="route('huawei.loads')">Huawei</Link>
-                </MyTransition>
             </template>
 
             <template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
@@ -377,6 +374,11 @@ Usuarios
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="route('checklist.index')">
+                        Checklist
+                    </Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('project.backlog.index')">
                         Backlog
                     </Link>
@@ -427,7 +429,7 @@ Usuarios
                     </div>
                 </template>
             </template>
-            
+
 
             <template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
@@ -456,7 +458,7 @@ Usuarios
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
                                 {{ financePurchases.length + financePurchases7.length }}</span>
                         </button>
-                        <Link class="w-full" :href="route('managementexpense.index')">Aprobacion de Compras</Link>
+                        <Link class="w-full" :href="route('managementexpense.index')">Aprobación de Compras</Link>
                     </div>
                 </MyTransition>
                 <template v-if="showFinancePurchaseQuoteAlarms">
@@ -559,7 +561,7 @@ Usuarios
                         <Link class="w-full" :href="route('documment.management.folders')">CCIP</Link>
                     </div>
                 </MyTransition>
-                
+
                 <template v-if="showArchivesAlarms">
                     <div class="mb-4">
                         <MyTransition v-for="item in archiveAlarms" :key="item.id" class="ml-4"
@@ -599,9 +601,9 @@ Usuarios
                         <Link class="w-full" :href="route('local.drive.index', {root: 1})">Local Drive</Link>
                     </div>
                 </MyTransition>
-                <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
+                <!-- <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="route('documment.management.folders.validation')">Aprobación</Link>
-                </MyTransition>
+                </MyTransition> -->
 
             </template>
 
@@ -665,8 +667,11 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.projects')">Proyectos de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.loads')">Cargas Excel</Link>
+                    <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>
                 </MyTransition>
+                <!-- <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.loads')">Cargas Excel</Link>
+                </MyTransition> -->
             </template>
 
         </nav>

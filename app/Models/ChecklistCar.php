@@ -14,6 +14,7 @@ class ChecklistCar extends Model
         'user_id',
         'additionalEmployees',
         'zone',
+        'km',
         'plate',
         'circulation',
         'technique',
@@ -43,9 +44,7 @@ class ChecklistCar extends Model
         'reflector',
         'emergencyKit',
         'alarm',
-        'gps',
         'chocks',
-        'interiorLight',
         'rolloverProtection',
         'ladderHolder',
         'sidePlate',
@@ -59,4 +58,9 @@ class ChecklistCar extends Model
         'frontLeftTire',
         'observation',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');    
+    }
+    
 }
