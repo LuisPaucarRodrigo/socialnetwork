@@ -111,7 +111,9 @@
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
                                     <a
-                                        href="#"
+                                        :href="route('checklist.toolkit.photo', {
+                                            id: item.id, photoProp: 'goodTools'
+                                        })"
                                     >
                                         <EyeIcon class="text-teal-500 w-5" />
                                     </a>
@@ -120,7 +122,9 @@
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
                                     <a
-                                        href="#"
+                                    :href="route('checklist.toolkit.photo', {
+                                            id: item.id, photoProp: 'badTools'
+                                        })"
                                     >
                                         <EyeIcon class="text-teal-500 w-5" />
                                     </a>
@@ -315,71 +319,69 @@ const itemArrays = ref({ eppArray: [], toolkitArray: [], equipmentArray: [] });
 
 function openChecklistModal(item) {
     itemArrays.value.eppArray = [
-        { name: "Carro anticaídas", value: item.km },
-        { name: "Línea de vida", value: item.circulation },
-        { name: "Lína de posicionamiento", value: item.technique },
-        { name: "Arnés", value: item.soat },
+        { name: "Carro anticaídas", value: item.fallProtectionCar },
+        { name: "Arnés", value: item.harness },
     ];
     itemArrays.value.toolkitArray = [
-        { name: "Mosquetón", value: item.hornState },
-        { name: "Pelacable", value: item.brakesState },
-        { name: "Crimpeador de RJ45", value: item.headlightsState },
-        { name: "Crimpeador de terminales", value: item.intermitentlightState },
-        { name: "Limas", value: item.indicatorsState },
-        { name: "Llaves allen", value: item.mirrorsState },
-        { name: "Kit redline", value: item.tiresState },
-        { name: "Desarmadores de impacto", value: item.bumpersState },
-        { name: "Desarmadores dieléctrico", value: item.temperatureGauge },
-        { name: "Alicate de corte", value: item.oilGauge },
-        { name: "Alicate de fuerza", value: item.fuelGauge },
-        { name: "Alicate recto", value: item.vehicleCleanliness },
-        { name: "Llaves francesas", value: item.doorsState },
-        { name: "Sierra", value: item.windshieldState },
-        { name: "Aplicador de silicona", value: item.engineState },
-        { name: "Polea", value: item.batteryState },
-        { name: "Wincha", value: item.batteryState },
-        { name: "Eslinga", value: item.batteryState },
-        { name: "Botiquín", value: item.batteryState },
-        { name: "Juego de brocas", value: item.batteryState },
-        { name: "Sacabocado", value: item.batteryState },
-        { name: "Extractor de aceite", value: item.batteryState },
-        { name: "Juego de llaves", value: item.batteryState },
-        { name: "Juego de dados", value: item.batteryState },
-        { name: "Cutter", value: item.batteryState },
-        { name: "Llave thor", value: item.batteryState },
-        { name: "Maleta grande", value: item.batteryState },
-        { name: "Maleta mediana", value: item.batteryState },
+        { name: "Mosquetón", value: item.carabiner },
+        { name: "Pelacable", value: item.wireStripper },
+        { name: "Crimpeador de RJ45", value: item.crimper },
+        { name: "Crimpeador de terminales", value: item.terminalCrimper },
+        { name: "Limas", value: item.files },
+        { name: "Llaves allen", value: item.allenKeys },
+        { name: "Kit redline", value: item.readlineKit },
+        { name: "Desarmadores de impacto", value: item.impactWrench },
+        { name: "Desarmadores dieléctrico", value: item.dielectricTools },
+        { name: "Alicate de corte", value: item.cuttingTools },
+        { name: "Alicate de fuerza", value: item.forceps },
+        { name: "Alicate recto", value: item.straightWrench },
+        { name: "Llaves francesas", value: item.frenchWrench },
+        { name: "Sierra", value: item.saw },
+        { name: "Aplicador de silicona", value: item.silicone },
+        { name: "Polea", value: item.pulley },
+        { name: "Wincha", value: item.tapeMeasure },
+        { name: "Eslinga", value: item.sling },
+        { name: "Botiquín", value: item.kit },
+        { name: "Juego de brocas", value: item.drillBits },
+        { name: "Sacabocado", value: item.punch },
+        { name: "Extractor de aceite", value: item.extractor },
+        { name: "Juego de llaves", value: item.wrenchSet },
+        { name: "Juego de dados", value: item.braveDices },
+        { name: "Cutter", value: item.cutter },
+        { name: "Llave thor", value: item.hammer },
+        { name: "Maleta grande", value: item.largeToolBag },
+        { name: "Maleta mediana", value: item.mediumToolBag },
     ];
     itemArrays.value.equipmentArray = [
-        { name: "Hidrolavadora", value: item.extinguisher },
-        { name: "Sopladora", value: item.extinguisher },
-        { name: "Megómetro", value: item.extinguisher },
-        { name: "Telurómetro", value: item.extinguisher },
-        { name: "Pinza amperimétrica", value: item.extinguisher },
-        { name: "Manómetro", value: item.extinguisher },
-        { name: "Pirómetro", value: item.extinguisher },
-        { name: "Laptop", value: item.extinguisher },
-        { name: "Taladro", value: item.extinguisher },
-        { name: "Brújula", value: item.extinguisher },
-        { name: "Inclinometro", value: item.extinguisher },
-        { name: "Linterna", value: item.extinguisher },
-        { name: "Power Meter", value: item.extinguisher },
-        { name: "Pistola de calor", value: item.extinguisher },
-        { name: "Pistola de Estaño", value: item.extinguisher },
-        { name: "Escalera tijera", value: item.extinguisher },
-        { name: "Pulverizadora", value: item.extinguisher },
-        { name: "Testeador RJ45", value: item.extinguisher },
-        { name: "Cables de consola y red", value: item.extinguisher },
-        { name: "Adaptador de red", value: item.extinguisher },
-        { name: "Pértiga", value: item.extinguisher },
-        { name: "Soga 75m", value: item.extinguisher },
-        { name: "Escalera", value: item.extinguisher },
-        { name: "Extensión", value: item.extinguisher },
-        { name: "Cable largo", value: item.extinguisher },
-        { name: "Candado", value: item.extinguisher },
-        { name: "Cadenas", value: item.extinguisher },
-        { name: "Manguera", value: item.extinguisher },
-        { name: "Celular corporativo", value: item.extinguisher },
+        { name: "Hidrolavadora", value: item.pressureWasher },
+        { name: "Sopladora", value: item.blower },
+        { name: "Megómetro", value: item.megommeter },
+        { name: "Telurómetro", value: item.earthTester },
+        { name: "Pinza amperimétrica", value: item.perimeterMeter },
+        { name: "Manómetro", value: item.manometer },
+        { name: "Pirómetro", value: item.pyrometer },
+        { name: "Laptop", value: item.laptop },
+        { name: "Taladro", value: item.drill },
+        { name: "Brújula", value: item.compass },
+        { name: "Inclinometro", value: item.inclinometer },
+        { name: "Linterna", value: item.flashlight },
+        { name: "Power Meter", value: item.powerMeter },
+        { name: "Pistola de calor", value: item.glueGun },
+        { name: "Pistola de Estaño", value: item.solderingGun },
+        { name: "Escalera tijera", value: item.stepLadder },
+        { name: "Pulverizadora", value: item.sprayer },
+        { name: "Testeador RJ45", value: item.rj45Connector },
+        { name: "Cables de consola y red", value: item.networkConsole },
+        { name: "Adaptador de red", value: item.networkAdapter },
+        { name: "Pértiga", value: item.hotStick },
+        { name: "Soga 75m", value: item.rope75 },
+        { name: "Escalera", value: item.ladder },
+        { name: "Extensión", value: item.extensionCord },
+        { name: "Cable largo", value: item.longCable },
+        { name: "Candado", value: item.padlock },
+        { name: "Cadenas", value: item.chains },
+        { name: "Manguera", value: item.hose },
+        { name: "Celular corporativo", value: item.corporatePhone },
         
     ];
     showChecklistModal.value = true;

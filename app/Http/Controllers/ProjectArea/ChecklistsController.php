@@ -63,6 +63,16 @@ class ChecklistsController extends Controller
             ['checklists' => $checklisttoolkit]
         );
     }
+
+    public function toolkit_photo($id, $photoProp)
+    {
+        $checklistcar = ChecklistToolkit::find($id);
+        return $this->openNewWindowArchive(
+            '/image/checklist/checklisttoolkit/',
+            $checklistcar->$photoProp
+        );
+    }
+
     public function car_store(ChecklistCarRequest $request)
     {
         $data = $request->validated();
