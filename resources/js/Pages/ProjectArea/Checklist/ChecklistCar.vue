@@ -1,6 +1,6 @@
 <template>
     <Head title="ChecklistVehicular" />
-    <AuthenticatedLayout :redirectRoute="'warehouses.warehouses'">
+    <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist Vehicular </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="min-w-full overflow-x-auto">
@@ -96,13 +96,19 @@
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
                                     <button type="button">
-                                        <EyeIcon class="text-indigo-600 w-5" />
+                                        <EyeIcon
+                                            @click="openChecklistModal(item)"
+                                            class="text-indigo-600 w-5"
+                                        />
                                     </button>
                                 </td>
                                 <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
-                                    <button type="button" @click="openPhotosModal(item.id)">
+                                    <button
+                                        type="button"
+                                        @click="openPhotosModal(item.id)"
+                                    >
                                         <EyeIcon class="text-teal-500 w-5" />
                                     </button>
                                 </td>
@@ -173,7 +179,16 @@
                                     <td
                                         class="border-b border-slate-300 px-4 py-4"
                                     >
-                                        <a :href="route('checklist.car.photo', {id:itemPhotos.id, photoProp:item.value})" target="_blank" class="text-indigo-600 hover:underline">
+                                        <a
+                                            :href="
+                                                route('checklist.car.photo', {
+                                                    id: itemPhotos.id,
+                                                    photoProp: item.value,
+                                                })
+                                            "
+                                            target="_blank"
+                                            class="text-indigo-600 hover:underline"
+                                        >
                                             Ver
                                         </a>
                                     </td>
@@ -186,6 +201,152 @@
                         <SecondaryButton
                             type="button"
                             @click="closePhotosModal"
+                        >
+                            Cerrar
+                        </SecondaryButton>
+                    </div>
+                </div>
+            </div>
+        </Modal>
+
+        <Modal
+            :show="showChecklistModal"
+            @close="closeChecklistModal"
+            max-width="2xl"
+            :closeable="true"
+        >
+            <div class="p-6">
+                <h2
+                    class="text-lg font-medium text-gray-800 border-b-2 border-gray-100"
+                >
+                    Checklist Vehicular
+                </h2>
+                <br />
+                <div class="mt-2">
+                    <div class="flex space-x-5 w-full">
+                        <div class="w-1/2 flex flex-col h-full space-y-5">
+                            <div>
+                                <table
+                                    class="w-full whitespace-no-wrap border-collapse border border-slate-300"
+                                >
+                                    <thead>
+                                        <tr
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                                        >
+                                            <th
+                                                colspan="2"
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-gray-600"
+                                            >
+                                                Documentación
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="(
+                                                item, i
+                                            ) in itemArrays.docArray"
+                                            :key="i"
+                                            class="text-gray-700 bg-white text-xs"
+                                        >
+                                            <td
+                                                class="border-b border-slate-300 px-2 py-2"
+                                            >
+                                                {{ item.name }}
+                                            </td>
+                                            <td
+                                                class="border-b border-slate-300 px-2 py-2"
+                                            >
+                                                {{ item.value }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <table
+                                    class="w-full whitespace-no-wrap border-collapse border border-slate-300"
+                                >
+                                    <thead>
+                                        <tr
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                                        >
+                                            <th
+                                                colspan="2"
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-gray-600"
+                                            >
+                                                Equipamiento del vehículo
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="(
+                                                item, i
+                                            ) in itemArrays.equipementArray"
+                                            :key="i"
+                                            class="text-gray-700 bg-white text-xs"
+                                        >
+                                            <td
+                                                class="border-b border-slate-300 px-2 py-2"
+                                            >
+                                                {{ item.name }}
+                                            </td>
+                                            <td
+                                                class="border-b border-slate-300 px-2 py-2"
+                                            >
+                                                {{ item.value }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="w-1/2">
+                            <table
+                                class="w-full whitespace-no-wrap border-collapse border border-slate-300"
+                            >
+                                <thead>
+                                    <tr
+                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                                    >
+                                        <th
+                                            colspan="2"
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-gray-600"
+                                        >
+                                            Estado del vehículo
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(
+                                            item, i
+                                        ) in itemArrays.stateArray"
+                                        :key="i"
+                                        class="text-gray-700 bg-white text-xs"
+                                    >
+                                        <td
+                                            class="border-b border-slate-300 px-2 py-2"
+                                        >
+                                            {{ item.name }}
+                                        </td>
+                                        <td
+                                            class="border-b border-slate-300 px-2 py-2"
+                                        >
+                                            {{ item.value }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton
+                            type="button"
+                            @click="closeChecklistModal"
                         >
                             Cerrar
                         </SecondaryButton>
@@ -215,8 +376,52 @@ const { checklists } = defineProps({
 });
 
 const showChecklistModal = ref(false);
-function openChecklistModal() {
+const itemArrays = ref({ docArray: [], stateArray: [], equipementArray: [] });
+
+function openChecklistModal(item) {
+    itemArrays.value.docArray = [
+        { name: "Kilometraje", value: item.km },
+        { name: "Permiso de circulación", value: item.circulation },
+        { name: "Revisión técnica", value: item.technique },
+        { name: "SOAT", value: item.soat },
+    ];
+    itemArrays.value.stateArray = [
+        { name: "Bocinas", value: item.hornState },
+        { name: "Frenos", value: item.brakesState },
+        { name: "Luces altas y bajas", value: item.headlightsState },
+        { name: "Luces intermitentes", value: item.intermitentlightState },
+        { name: "Direccionales", value: item.indicatorsState },
+        { name: "Retrovisores", value: item.mirrorsState },
+        { name: "Estado de neúmaticos", value: item.tiresState },
+        { name: "Parachoques", value: item.bumpersState },
+        { name: "Marcadores de temperatura", value: item.temperatureGauge },
+        { name: "Marcador de aceite", value: item.oilGauge },
+        { name: "Marcador de combustible", value: item.fuelGauge },
+        { name: "Aseo general de vehículo", value: item.vehicleCleanliness },
+        { name: "Estado de puertas", value: item.doorsState },
+        { name: "Estado del parabrisas", value: item.windshieldState },
+        { name: "Estado del motor", value: item.engineState },
+        { name: "Estado de la batería", value: item.batteryState },
+    ];
+    itemArrays.value.equipementArray = [
+        { name: "Extintor", value: item.extinguisher },
+        { name: "Botiquín", value: item.firstAidKit },
+        { name: "Conos", value: item.cones },
+        { name: "Gata", value: item.jack },
+        { name: "Neumático de respuesto", value: item.spareTire },
+        { name: "Cable de remolque", value: item.towCable },
+        { name: "Cable de batería", value: item.batteryCable },
+        { name: "Cinta reflectante", value: item.reflector },
+        { name: "Kit de herramientas", value: item.emergencyKit },
+        { name: "Alarma de seguridad", value: item.alarm },
+        { name: "Tacos", value: item.chocks },
+        { name: "Porta escalera", value: item.ladderHolder },
+        { name: "Placa impresa laterales", value: item.sidePlate },
+    ];
     showChecklistModal.value = true;
+}
+function closeChecklistModal() {
+    showChecklistModal.value = false;
 }
 
 //photos modal
@@ -235,7 +440,7 @@ const itemPhotos = ref({
     ],
 });
 function openPhotosModal(id) {
-    itemPhotos.value.id = id
+    itemPhotos.value.id = id;
     showPhotosModal.value = true;
 }
 function closePhotosModal() {

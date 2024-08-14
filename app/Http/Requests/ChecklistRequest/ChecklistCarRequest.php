@@ -33,6 +33,7 @@ class ChecklistCarRequest extends FormRequest
             'hornState'=> 'required',
             'brakesState'=> 'required',
             'headlightsState'=> 'required',
+            'intermitentlightState'=> 'required',
             'indicatorsState'=> 'required',
             'mirrorsState'=> 'required',
             'tiresState'=> 'required',
@@ -56,7 +57,6 @@ class ChecklistCarRequest extends FormRequest
             'emergencyKit'=> 'required',
             'alarm'=> 'required',
             'chocks'=> 'required',
-            'rolloverProtection'=> 'required',
             'ladderHolder'=> 'required',
             'sidePlate'=> 'required',
 
