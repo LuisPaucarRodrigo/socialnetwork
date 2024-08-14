@@ -73,7 +73,11 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Productos
                             </Link>
-
+                            <Link
+                                :href="route('huawei.projects.earnings', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Ingresos
+                            </Link>
                             <Link
                                 :href="route('huawei.projects.liquidations', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -84,9 +88,10 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Balance del Proyecto
                             </Link>
-                            <a class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
+                            <a v-if="item.pre_report" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
                                 Reporte
                             </a>
+                            <span v-else class="text-gray-400">Archivos</span>
                         </div>
                     </div>
                 </div>
@@ -102,9 +107,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
-import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({

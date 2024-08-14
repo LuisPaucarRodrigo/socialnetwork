@@ -143,15 +143,11 @@
 
   <script setup>
 
-  import { Head, Link, useForm, router } from '@inertiajs/vue3';
+  import { Head, Link, useForm } from '@inertiajs/vue3';
   import Pagination from '@/Components/Pagination.vue';
-  import { EyeIcon } from '@heroicons/vue/24/outline';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-  import TextInput from '@/Components/TextInput.vue';
-  import Dropdown from '@/Components/Dropdown.vue';
-  import { formattedDate } from '@/utils/utils'
   import Modal from '@/Components/Modal.vue';
-  import { ref, computed, watch } from 'vue';
+  import { ref, watch } from 'vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import InputError from '@/Components/InputError.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';

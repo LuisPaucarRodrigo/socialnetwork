@@ -40,4 +40,8 @@ class ChecklistEpp extends Model
         'claro',
         'vericom',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');    
+    }
 }

@@ -13,17 +13,37 @@ use App\Models\ChecklistEpp;
 use App\Models\ChecklistToolkit;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ChecklistsController extends Controller
 {
 
+    public function index()
+    {
+        return Inertia::render('ProjectArea/Checklist/Index');
+    }
+
     public function car_index()
     {
-        $checklistscar = ChecklistCar::all();
-        return response()->json($checklistscar, 200);
+        $checklistcar = ChecklistCar::with('user')->paginate(20);
+        return Inertia::render(
+            'ProjectArea/Checklist/ChecklistCar',
+            ['checklists' => $checklistcar]
+        );
     }
+
+    public function car_photo($id, $photoProp)
+    {
+        $checklistcar = ChecklistCar::find($id);
+        return $this->openNewWindowArchive(
+            '/image/checklist/checklistcar/',
+            $checklistcar->$photoProp
+        );
+    }
+
     public function car_store(ChecklistCarRequest $request)
     {
         $data = $request->validated();
@@ -101,5 +121,51 @@ class ChecklistsController extends Controller
         } catch (Exception $e) {
             abort(500, 'something went wrong');
         }
+    }
+
+    public function checklist_history()
+    {
+        $userId = Auth::user()->id;
+
+        $cars = ChecklistCar::where('user_id', $userId)->get();
+        $toolkits = ChecklistToolkit::where('user_id', $userId)->get();
+        $dailytoolkits = ChecklistDailytoolkit::where('user_id', $userId)->get();
+        $epps = ChecklistEpp::where('user_id', $userId)->get();
+
+        $cars = $cars->map(function ($item) {
+            $item->model_type = 'ChecklistCar';
+            return $item;
+        });
+
+        $toolkits = $toolkits->map(function ($item) {
+            $item->model_type = 'ChecklistToolkit';
+            return $item;
+        });
+
+        $dailytoolkits = $dailytoolkits->map(function ($item) {
+            $item->model_type = 'ChecklistDailytoolkit';
+            return $item;
+        });
+
+        $epps = $epps->map(function ($item) {
+            $item->model_type = 'ChecklistEpp';
+            return $item;
+        });
+
+        $combined = $cars->merge($toolkits)->merge($dailytoolkits)->merge($epps);
+        $sorted = $combined->sortByDesc('created_at');
+
+        return response()->json($sorted->values()->all());
+    }
+
+    private function openNewWindowArchive($path, $file)
+    {
+        $filePath = $path . $file;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            ob_end_clean();
+            return response()->file($path);
+        }
+        abort(404, 'Documento no encontrado');
     }
 }
