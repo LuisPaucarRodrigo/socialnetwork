@@ -112,7 +112,7 @@ class ChecklistsController extends Controller
             return response()->json([], 201);
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'Ocurrió un error al procesar la solicitud',
+                'error' => $e->getMessage(),
                 'message' => $e->getMessage()
             ], 500);
         }
