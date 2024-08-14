@@ -47,6 +47,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Validacion de expediente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Supervisor
                             </th>
                             <th
@@ -109,6 +113,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_purchase_order_validation?.file_validation }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
                                     {{ item.cicsa_purchase_order_validation?.supervisor }}
                                 </p>
                             </td>
@@ -140,7 +149,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
-                                        @click="openEditFeasibilityModal(item.id, item.cicsa_purchase_order_validation)">
+                                        @click="openEditFeasibilityModal(item.id, item.cicsa_purchase_order_validation, item.cicsa_purchase_order?.oc_number)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -163,7 +172,7 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Validación' : 'Nueva Validación' }}
+                    {{ form.id ? 'Editar Validación' : 'Nueva Validación' }} {{ oc_number ? ": " + oc_number : "" }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -188,6 +197,20 @@
                                     <option value="Completado">Completado</option>
                                 </select>
                                 <InputError :message="form.errors.materials_control" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <InputLabel for="file_validation">Validacion de expediente</InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.file_validation" id="file_validation"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccione una opción</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
+                                    <option value="Completado">Completado</option>
+                                </select>
+                                <InputError :message="form.errors.file_validation" />
                             </div>
                         </div>
 
@@ -302,12 +325,14 @@ const { purchase_validation, auth } = defineProps({
 })
 
 const purchase_validations = ref(purchase_validation)
+const oc_number = ref(null)
 
 const initialState = {
     id: null,
     user_id: auth.user.id,
     validation_date: '',
     materials_control: 'Pendiente',
+    file_validation: 'Pendiente',
     supervisor: 'Pendiente',
     warehouse: 'Pendiente',
     boss: 'Pendiente',
@@ -333,7 +358,8 @@ function closeAddAssignationModal() {
 
 const confirmUpdateAssignation = ref(false);
 
-function openEditFeasibilityModal(cicsa_assignation_id, item) {
+function openEditFeasibilityModal(cicsa_assignation_id, item, oc) {
+    oc_number.value = oc
     form.defaults({ cicsa_assignation_id: cicsa_assignation_id, ...item })
     form.reset()
     showAddEditModal.value = true
