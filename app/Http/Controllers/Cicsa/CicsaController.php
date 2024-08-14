@@ -7,6 +7,7 @@ use App\Exports\CicsaProcess\ChargeAreaExport;
 use App\Exports\CicsaProcess\FeasibilitiesExport;
 use App\Exports\CicsaProcess\InstallationExport;
 use App\Exports\CicsaProcess\MaterialExport;
+use App\Exports\CicsaProcess\MaterialsSummary;
 use App\Exports\CicsaProcess\OCValidationExport;
 use App\Exports\CicsaProcess\PurchaseOrderExport;
 use App\Exports\CicsaProcess\ServiceOrderExport;
@@ -34,6 +35,7 @@ use Inertia\Inertia;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 class CicsaController extends Controller
 {
@@ -724,4 +726,12 @@ class CicsaController extends Controller
     {
         return Excel::download(new ChargeAreaExport, 'Cobranza ' . date('m-Y') . '.xlsx');
     }
+
+
+
+    public function exportMaterialsSummary($ca_id)
+    {
+        return Excel::download(new MaterialsSummary($ca_id), 'ResumenMateriales.xlsx');
+    }
+
 }
