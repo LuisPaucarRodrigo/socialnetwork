@@ -24,12 +24,14 @@ class ChecklistsController extends Controller
     }
 
     public function car_index(){
-        $checklistscar = ChecklistCar::all();
-        return response()->json($checklistscar, 200);
+        $checklistcar = ChecklistCar::with('user')->paginate(20);
+        return Inertia::render('ProjectArea/Checklist/ChecklistCar', 
+            ['checklists' => $checklistcar]
+        );
     }
+
     public function car_store (ChecklistCarRequest $request){
         $data = $request->validated();
-
         $data['front'] = $this->storeBase64Image($data['front'], 'checklistcar');
         $data['leftSide'] = $this->storeBase64Image($data['leftSide'], 'checklistcar');
         $data['rightSide'] = $this->storeBase64Image($data['rightSide'], 'checklistcar');
