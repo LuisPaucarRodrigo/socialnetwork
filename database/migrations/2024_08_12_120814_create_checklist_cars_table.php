@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('additionalEmployees')->nullable();
             $table->string('zone');
+            $table->integer('km');
             
             $table->string('plate');
             $table->string('circulation');
@@ -47,9 +48,7 @@ return new class extends Migration
             $table->string('reflector');
             $table->string('emergencyKit');
             $table->string('alarm');
-            $table->string('gps');
             $table->string('chocks');
-            $table->string('interiorLight');
             $table->string('rolloverProtection');
             $table->string('ladderHolder');
             $table->string('sidePlate');
