@@ -8,9 +8,10 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <a :href="route('cicsa.charge_areas.export')"
-                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC,Numero de Factura" />
+                    <TextInput type="text" @input="search($event.target.value)"
+                        placeholder="Nombre,Codigo,CPE,OC,Numero de Factura" />
                     <SelectCicsaComponent currentSelect="Cobranza" />
                 </div>
             </div>
@@ -152,7 +153,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
-                                        @click="openEditFeasibilityModal(item.id, item.cicsa_charge_area)">
+                                        @click="openEditFeasibilityModal(item.id, item?.cicsa_charge_area)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -166,7 +167,8 @@
                 </table>
             </div>
 
-            <div v-if="charge_areas.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="charge_areas.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="charge_areas.links" />
             </div>
         </div>
@@ -174,7 +176,7 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }}
+                    {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number : "" }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -273,6 +275,7 @@ const { charge_area, auth } = defineProps({
 })
 
 const charge_areas = ref(charge_area)
+const invoice_number = ref(null)
 
 const initialState = {
     id: null,
@@ -304,6 +307,7 @@ function closeAddAssignationModal() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(cicsa_assignation_id, item) {
+    invoice_number.value = item?.invoice_number
     form.defaults({ cicsa_assignation_id: cicsa_assignation_id, ...item })
     form.reset()
     showAddEditModal.value = true

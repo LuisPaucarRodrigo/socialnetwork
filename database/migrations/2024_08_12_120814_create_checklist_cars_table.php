@@ -50,7 +50,6 @@ return new class extends Migration
             $table->string('emergencyKit');
             $table->string('alarm');
             $table->string('chocks');
-            $table->string('rolloverProtection');
             $table->string('ladderHolder');
             $table->string('sidePlate');
             $table->string('front');

@@ -14,6 +14,7 @@ class CicsaPurchaseOrderValidation extends Model
     protected $fillable = [
         'validation_date',
         'materials_control',
+        'file_validation',
         'supervisor',
         'warehouse',
         'boss',
