@@ -16,6 +16,7 @@ use App\Models\Brand;
 use App\Models\HuaweiRefund;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
+use App\Models\HuaweiSpecialRefund;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -185,16 +186,16 @@ class HuaweiManagementController extends Controller
 
                         $new_serie = HuaweiEquipmentSerie::create([
                             'huawei_equipment_id' => $equipment['equipment_id'], // Asegúrate de usar 'huawei_equipment_id' aquí
-                            'serie_number' => $serie
+                            'serie_number' => $serie['serie']
                         ]);
 
                         $huawei_entry_detail = HuaweiEntryDetail::create([
                             'huawei_entry_id' => $huawei_entry->id,
                             'huawei_equipment_serie_id' => $new_serie->id,
                             'quantity' => 1,
-                            'unit_price' => $equipment['unit_price'],
-                            'assigned_diu' => $equipment['assigned_diu'],
-                            'observation' => $equipment['observation']
+                            'unit_price' => $serie['unit_price'],
+                            'assigned_diu' => $serie['assigned_diu'],
+                            'observation' => $serie['observation']
                         ]);
                     }
 
@@ -210,16 +211,16 @@ class HuaweiManagementController extends Controller
                     foreach ($equipment['series'] as $serie) {
                         $new_serie = HuaweiEquipmentSerie::create([
                             'huawei_equipment_id' => $new_equipment->id, // Usar el ID del nuevo equipo creado
-                            'serie_number' => $serie
+                            'serie_number' => $serie['serie']
                         ]);
 
                         $huawei_entry_detail = HuaweiEntryDetail::create([
                             'huawei_entry_id' => $huawei_entry->id,
                             'huawei_equipment_serie_id' => $new_serie->id,
                             'quantity' => 1,
-                            'unit_price' => $equipment['unit_price'],
-                            'assigned_diu' => $equipment['assigned_diu'],
-                            'observation' => $equipment['observation']
+                            'unit_price' => $serie['unit_price'],
+                            'assigned_diu' => $serie['assigned_diu'],
+                            'observation' => $serie['observation']
                         ]);
                     }
                 }
@@ -286,20 +287,20 @@ class HuaweiManagementController extends Controller
     public function searchGeneralEquipments($request)
     {
         $searchTerm = strtolower($request);
-    
+
         // Paso 1: Consulta inicial basada en parámetros de búsqueda específicos
-        $equipmentsQuery = HuaweiEntryDetail::whereNull('huawei_material_id');
-        $equipmentsQueryFilter = HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')->get();
+        $equipmentsQuery = HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_entry');
+        $equipmentsQueryFilter = HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project', 'huawei_entry')->get();
         // Resultados de todas las condiciones de búsqueda combinados
         $equipments = collect();
-    
+
         // Filtrar por assigned_diu
         $equipments = $equipments->merge(
             $equipmentsQuery->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                 ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
                 ->get()
         );
-    
+
         // Filtrar por claro_code y name en huawei_equipment
         $equipments = $equipments->merge(
             $equipmentsQuery->orWhereHas('huawei_equipment_serie.huawei_equipment', function ($subQuery) use ($searchTerm) {
@@ -308,7 +309,7 @@ class HuaweiManagementController extends Controller
             })->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
               ->get()
         );
-    
+
         // Filtrar por serie_number en huawei_equipment_serie
         $equipments = $equipments->merge(
             $equipmentsQuery->orWhereHas('huawei_equipment_serie', function ($subQuery) use ($searchTerm) {
@@ -316,21 +317,21 @@ class HuaweiManagementController extends Controller
             })->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
               ->get()
         );
-    
+
         // Filtrar por unit_price
         $equipments = $equipments->merge(
             $equipmentsQuery->orWhereRaw('LOWER(unit_price) LIKE ?', ["%{$searchTerm}%"])
                 ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
                 ->get()
         );
-    
+
         // Filtrar por observation
         $equipments = $equipments->merge(
             $equipmentsQuery->orWhereRaw('LOWER(observation) LIKE ?', ["%{$searchTerm}%"])
                 ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
                 ->get()
         );
-    
+
         $stateFilteredEquipments = $equipmentsQueryFilter->filter(function ($detail) use ($searchTerm) {
             return str_contains(strtolower($detail->state), $searchTerm) || str_contains(strtolower($detail->instalation_state), $searchTerm);
         });
@@ -338,18 +339,18 @@ class HuaweiManagementController extends Controller
         $assignedSiteFilteredEquipments = $equipments->filter(function ($detail) use ($searchTerm) {
             return str_contains(strtolower($detail->assigned_site), $searchTerm);
         });
-   
+
         $finalEquipments = $equipments
             ->merge($stateFilteredEquipments)
             ->merge($assignedSiteFilteredEquipments)
-            ->unique('id');   
-    
+            ->unique('id');
+
         return Inertia::render('Huawei/GeneralEquipments', [
             'equipments' => $finalEquipments,
             'search' => $request
         ]);
     }
-    
+
 
 
 
@@ -609,4 +610,61 @@ class HuaweiManagementController extends Controller
         return Excel::download(new HuaweiInventoryExport(), 'Inventario Huawei.xlsx');
     }
 
+    public function getSpecialRefunds ()
+    {
+        return Inertia::render('Huawei/SpecialRefunds', [
+            'refunds' => HuaweiSpecialRefund::orderBy('created_at', 'desc')->paginate(15)
+        ]);
+    }
+
+    public function searchSpecialRefunds($request)
+    {
+        $searchTerm = strtolower($request);
+
+        $refunds = HuaweiSpecialRefund::query()
+            ->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+            ->orWhereRaw('LOWER(diu) LIKE ?', ["%{$searchTerm}%"])
+            ->orWhereRaw('LOWER(observation) LIKE ?', ["%{$searchTerm}%"])
+            ->orWhereRaw('CAST(quantity AS CHAR) LIKE ?', ["%{$searchTerm}%"])
+            ->get();
+
+        return Inertia::render('Huawei/SpecialRefunds', [
+            'refunds' => $refunds,
+            'search' => $request
+        ]);
+    }
+
+    public function storeSpecialRefund (Request $request)
+    {
+        $data = $request->validate([
+            'description' => 'required',
+            'diu' => 'required',
+            'quantity' => 'required',
+            'observation' => 'nullable'
+        ]);
+
+        HuaweiSpecialRefund::create($data);
+
+        return redirect()->back();
+    }
+
+    public function updateSpecialRefund (HuaweiSpecialRefund $id, Request $request)
+    {
+        $data = $request->validate([
+            'description' => 'required',
+            'diu' => 'required',
+            'quantity' => 'required',
+            'observation' => 'required'
+        ]);
+
+        $id->update($data);
+        return redirect()->back();
+    }
+
+    public function deleteSpecialRefund (HuaweiSpecialRefund $id)
+    {
+        $id->delete();
+
+        return redirect()->back();
+    }
 }

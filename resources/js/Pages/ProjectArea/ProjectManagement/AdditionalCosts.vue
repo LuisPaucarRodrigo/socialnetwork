@@ -632,6 +632,20 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
+                            <div v-if="form.type_doc==='Factura' && form.zone!=='MDD'">
+                                <InputLabel
+                                    for="amount"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Monto sin IGV</InputLabel
+                                >
+                                <div class="mt-2">
+                                    <InputLabel
+                                    for="amount"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >{{ form.amount ? (form.amount/1.18).toFixed(4) : 0 }}</InputLabel
+                                >
+                                </div>
+                            </div>
 
                             <div>
                                 <InputLabel
@@ -862,6 +876,20 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                     <InputError :message="form.errors.amount" />
+                                </div>
+                            </div>
+                            <div v-if="form.type_doc==='Factura' && form.zone!=='MDD'">
+                                <InputLabel
+                                    for="amount"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Monto sin IGV</InputLabel
+                                >
+                                <div class="mt-2">
+                                    <InputLabel
+                                    for="amount"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >{{ form.amount ? (form.amount/1.18).toFixed(4) : 0 }}</InputLabel
+                                >
                                 </div>
                             </div>
 

@@ -1,165 +1,282 @@
 <template>
-
     <Head title="CICSA Asignación" />
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
-        <template #header>
-            Instalación PINT y PEXT
-        </template>
+        <template #header> Instalación PINT y PEXT </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <!-- <a :href="route('cicsa.installation.export')"
-                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a> -->
+                <a :href="route('cicsa.installation.export')"
+                    class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
-                    <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
+                    <TextInput
+                        type="text"
+                        @input="search($event.target.value)"
+                        placeholder="Nombre,Codigo,CPE"
+                    />
+                    <SelectCicsaComponent
+                        currentSelect="Instalación PINT y PEXT"
+                    />
                 </div>
             </div>
-            <br>
+            <br />
             <div class="overflow-x-auto h-[70vh]">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
-                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                        >
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Nombre de Proyecto
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Codigo de Proyecto
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 CPE
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Fecha PEXT
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Fecha PINT
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Monto Proyectado
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Acta de Conformidad
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Informe
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Materiales Recibidos
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Materiales Liquidados
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Fecha de Envío de Informe
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Coordinador
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Encargado
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            ></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in installations.data ?? installations" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                        <tr
+                            v-for="item in installations.data ?? installations"
+                            :key="item.id"
+                            class="text-gray-700"
+                        >
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_code }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_installation?.pext_date) }}
+                                    {{
+                                        formattedDate(
+                                            item.cicsa_installation?.pext_date
+                                        )
+                                    }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_installation?.pint_date) }}
+                                    {{
+                                        formattedDate(
+                                            item.cicsa_installation?.pint_date
+                                        )
+                                    }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_installation?.projected_amount ? 'S/' +
-        item.cicsa_installation.projected_amount.toFixed() : '' }}
+                                    {{
+                                        item.cicsa_installation
+                                            ?.projected_amount
+                                            ? "S/" +
+                                              item.cicsa_installation.projected_amount.toFixed()
+                                            : ""
+                                    }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.conformity }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.report }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-
-                                <button v-if="item?.total_materials?.length > 0" type="button"
-                                    @click="openMaterialsModal(item.total_materials)">
-                                    <EyeIcon class="w-5 h-5 text-green-600" />
-                                </button>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-                                <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center"
+                            >
+                                <button
+                                    v-if="item?.total_materials?.length > 0"
                                     type="button"
-                                    @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
+                                    @click="
+                                        openMaterialsModal(item.total_materials)
+                                    "
+                                >
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center"
+                            >
+                                <button
+                                    v-if="
+                                        item?.cicsa_installation
+                                            ?.cicsa_installation_materials
+                                            ?.length > 0
+                                    "
+                                    type="button"
+                                    @click="
+                                        openInstMaterialsModal(
+                                            item.cicsa_installation
+                                                .cicsa_installation_materials
+                                        )
+                                    "
+                                >
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </button>
+                            </td>
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_installation?.shipping_report_date) }}
+                                    {{
+                                        formattedDate(
+                                            item.cicsa_installation
+                                                ?.shipping_report_date
+                                        )
+                                    }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.coordinator }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]"
+                            >
                                 <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900"
-                                        @click="openEditFeasibilityModal(item.id, item.cicsa_installation, item.total_materials, item?.cicsa_installation?.cicsa_installation_materials)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                    <button
+                                        class="text-blue-900"
+                                        @click="
+                                            openEditFeasibilityModal(
+                                                item.id,
+                                                item.cicsa_installation,
+                                                item.total_materials,
+                                                item?.cicsa_installation
+                                                    ?.cicsa_installation_materials
+                                            )
+                                        "
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-5 h-5 text-amber-400"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                                            />
                                         </svg>
                                     </button>
+                                    <a :href="route('cicsa.export.materials.summary', {ca_id: item.id})" class="w-5">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="size-5 text-green-500"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                                            />
+                                        </svg>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -167,61 +284,106 @@
                 </table>
             </div>
 
-            <div v-if="installations.data"
-                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div
+                v-if="installations.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
+            >
                 <pagination :links="installations.links" />
             </div>
         </div>
 
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Instalación' : 'Nueva Instalación' }}
+                <h2
+                    class="text-lg font-medium text-gray-800 border-b-2 border-gray-100"
+                >
+                    {{ form.id ? "Editar Instalación" : "Nueva Instalación" }}
                 </h2>
-                <br>
+                <br />
                 <form @submit.prevent="submit">
-                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                    <div
+                        class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2"
+                    >
                         <div class="sm:col-span-1">
-                            <InputLabel for="coordinator">Coordinador</InputLabel>
+                            <InputLabel for="coordinator"
+                                >Coordinador</InputLabel
+                            >
                             <div class="mt-2">
-                                <input type="text" v-model="form.coordinator" autocomplete="off" id="coordinator"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.coordinator" />
+                                <input
+                                    type="text"
+                                    v-model="form.coordinator"
+                                    autocomplete="off"
+                                    id="coordinator"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                                <InputError
+                                    :message="form.errors.coordinator"
+                                />
                             </div>
                         </div>
                         <div class="sm:col-span-1">
-                            <InputLabel for="pext_date">Fecha de PEXT</InputLabel>
+                            <InputLabel for="pext_date"
+                                >Fecha de PEXT</InputLabel
+                            >
                             <div class="mt-2">
-                                <input type="date" v-model="form.pext_date" autocomplete="off" id="pext_date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <input
+                                    type="date"
+                                    v-model="form.pext_date"
+                                    autocomplete="off"
+                                    id="pext_date"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
                                 <InputError :message="form.errors.pext_date" />
                             </div>
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="pint_date">Fecha de PINT</InputLabel>
+                            <InputLabel for="pint_date"
+                                >Fecha de PINT</InputLabel
+                            >
                             <div class="mt-2">
-                                <input type="date" v-model="form.pint_date" autocomplete="off" id="pint_date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.projected_amount" />
+                                <input
+                                    type="date"
+                                    v-model="form.pint_date"
+                                    autocomplete="off"
+                                    id="pint_date"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                                <InputError
+                                    :message="form.errors.projected_amount"
+                                />
                             </div>
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
+                            <InputLabel for="projected_amount"
+                                >Monto Proyectado</InputLabel
+                            >
                             <div class="mt-2">
-                                <input type="number" v-model="form.projected_amount" autocomplete="off"
+                                <input
+                                    type="number"
+                                    v-model="form.projected_amount"
+                                    autocomplete="off"
                                     id="projected_amount"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.projected_amount" />
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                                <InputError
+                                    :message="form.errors.projected_amount"
+                                />
                             </div>
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="conformity">Acta de Conformidad</InputLabel>
+                            <InputLabel for="conformity"
+                                >Acta de Conformidad</InputLabel
+                            >
                             <div class="mt-2">
-                                <select v-model="form.conformity" autocomplete="off" id="conformity"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <select
+                                    v-model="form.conformity"
+                                    autocomplete="off"
+                                    id="conformity"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                >
                                     <option>Pendiente</option>
                                     <option>Completado</option>
                                 </select>
@@ -231,8 +393,12 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="report">Informe</InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.report" autocomplete="off" id="report"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <select
+                                    v-model="form.report"
+                                    autocomplete="off"
+                                    id="report"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                >
                                     <option>Pendiente</option>
                                     <option>En Proceso</option>
                                     <option>Completado</option>
@@ -242,82 +408,133 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="shipping_report_date">Fecha de envío de Informe</InputLabel>
+                            <InputLabel for="shipping_report_date"
+                                >Fecha de envío de Informe</InputLabel
+                            >
                             <div class="mt-2">
-                                <input type="date" v-model="form.shipping_report_date" autocomplete="off"
+                                <input
+                                    type="date"
+                                    v-model="form.shipping_report_date"
+                                    autocomplete="off"
                                     id="shipping_report_date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.shipping_report_date" />
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                                <InputError
+                                    :message="form.errors.shipping_report_date"
+                                />
                             </div>
                         </div>
                     </div>
-                    <br>
-                    <br>
+                    <br />
+                    <br />
                     <template v-if="true">
-                        <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
-
-
+                        <div
+                            class="ring-1 p-3 text-sm ring-gray-300 rounded-md"
+                        >
                             <div class="flex gap-2 items-center">
                                 <b>Liquidación de Materiales</b>
                             </div>
-                            <br>
-                            <div v-if="form.total_materials.length > 0" class="overflow-auto">
-                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                            <br />
+                            <div
+                                v-if="form.total_materials.length > 0"
+                                class="overflow-auto"
+                            >
+                                <table
+                                    class="w-full whitespace-no-wrap border-collapse border border-slate-300"
+                                >
                                     <thead>
                                         <tr
-                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                                        >
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                            >
                                                 Material
                                             </th>
                                             <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600"
+                                            >
                                                 Recibidos
                                             </th>
                                             <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600"
+                                            >
                                                 Usados
                                             </th>
                                             <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600"
+                                            >
                                                 Resto
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(item, i) in form.total_materials" :key="i"
-                                            class="text-gray-700 bg-white text-sm">
-                                            <td class="border-b border-slate-300  px-2 py-4">
+                                        <tr
+                                            v-for="(
+                                                item, i
+                                            ) in form.total_materials"
+                                            :key="i"
+                                            class="text-gray-700 bg-white text-sm"
+                                        >
+                                            <td
+                                                class="border-b border-slate-300 px-2 py-4"
+                                            >
                                                 {{ item?.name }}
                                             </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            <td
+                                                class="border-b border-slate-300 text-center px-2 py-4"
+                                            >
                                                 {{ item?.quantity }}
                                             </td>
-                                            <td class="border-b border-slate-300  px-2 py-4">
-                                                <input required type="number" min="0"
-                                                    v-model="form.total_materials[i]['used_quantity']"
-                                                    autocomplete="off" :max="item.quantity"
-                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                            <td
+                                                class="border-b border-slate-300 px-2 py-4"
+                                            >
+                                                <input
+                                                    required
+                                                    type="number"
+                                                    min="0"
+                                                    v-model="
+                                                        form.total_materials[i][
+                                                            'used_quantity'
+                                                        ]
+                                                    "
+                                                    autocomplete="off"
+                                                    :max="item.quantity"
+                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                />
                                             </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item?.quantity - item.used_quantity }}
+                                            <td
+                                                class="border-b border-slate-300 text-center px-2 py-4"
+                                            >
+                                                {{
+                                                    item?.quantity -
+                                                    item.used_quantity
+                                                }}
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div v-else>
-                                No hay materiales por liquidar
-                            </div>
+                            <div v-else>No hay materiales por liquidar</div>
                         </div>
 
                         <InputError :message="form.errors.total_materials" />
                     </template>
 
-                    <br>
+                    <br />
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
-                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
-                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
+                        <SecondaryButton
+                            type="button"
+                            @click="closeAddAssignationModal"
+                        >
+                            Cancelar
+                        </SecondaryButton>
+                        <PrimaryButton
+                            class="ml-3 tracking-widest uppercase text-xs"
+                            :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing"
+                            type="submit"
+                        >
                             Guardar
                         </PrimaryButton>
                     </div>
@@ -334,291 +551,389 @@
                     <div class="sm:col-span-1">
                         <InputLabel for="name">Nombre</InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="text" v-model="mateiralObject.name" id="name" />
+                            <TextInput
+                                required
+                                type="text"
+                                v-model="mateiralObject.name"
+                                id="name"
+                            />
                         </div>
                     </div>
                     <div class="sm:col-span-1">
-                        <InputLabel for="unit">Unidad
-                        </InputLabel>
+                        <InputLabel for="unit">Unidad </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="text" v-model="mateiralObject.unit" id="unit" />
+                            <TextInput
+                                required
+                                type="text"
+                                v-model="mateiralObject.unit"
+                                id="unit"
+                            />
                         </div>
                     </div>
                     <div class="sm:col-span-1">
-                        <InputLabel for="quantity">Cantidad
-                        </InputLabel>
+                        <InputLabel for="quantity">Cantidad </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="number" v-model="mateiralObject.quantity" id="quantity" />
+                            <TextInput
+                                required
+                                type="number"
+                                v-model="mateiralObject.quantity"
+                                id="quantity"
+                            />
                         </div>
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <SecondaryButton type="button" @click="modalMaterial"> Cerrar </SecondaryButton>
-                    <PrimaryButton type="button" @click="addMaterial"> Agregar </PrimaryButton>
+                    <SecondaryButton type="button" @click="modalMaterial">
+                        Cerrar
+                    </SecondaryButton>
+                    <PrimaryButton type="button" @click="addMaterial">
+                        Agregar
+                    </PrimaryButton>
                 </div>
             </div>
-
-
         </Modal>
-        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+        <Modal
+            :show="showMaterials"
+            @close="closeMaterialsModal"
+            max-width="md"
+            :closeable="true"
+        >
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                <h2
+                    class="text-lg font-medium text-gray-800 border-b-2 border-gray-100"
+                >
                     Total Materiales Recibidos
                 </h2>
-                <br>
+                <br />
                 <div class="mt-2">
                     <div v-if="materials.length > 0" class="overflow-auto">
-                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                        <table
+                            class="w-full whitespace-no-wrap border-collapse border border-slate-300"
+                        >
                             <thead>
                                 <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                                >
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                    >
                                         N° Guía
                                     </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                    >
                                         Material
                                     </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                    >
                                         Unidad
                                     </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                    >
                                         Cantidad
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(item, i) in materials" :key="i" class="text-gray-700 bg-white text-sm">
-                                    <td class="border-b border-slate-300  px-4 py-4">
+                                <tr
+                                    v-for="(item, i) in materials"
+                                    :key="i"
+                                    class="text-gray-700 bg-white text-sm"
+                                >
+                                    <td
+                                        class="border-b border-slate-300 px-4 py-4"
+                                    >
                                         {{ item?.guide_number }}
                                     </td>
-                                    <td class="border-b border-slate-300  px-4 py-4">
+                                    <td
+                                        class="border-b border-slate-300 px-4 py-4"
+                                    >
                                         {{ item?.name }}
                                     </td>
-                                    <td class="border-b border-slate-300  px-4 py-4">
+                                    <td
+                                        class="border-b border-slate-300 px-4 py-4"
+                                    >
                                         {{ item?.unit }}
                                     </td>
-                                    <td class="border-b border-slate-300  px-4 py-4">
+                                    <td
+                                        class="border-b border-slate-300 px-4 py-4"
+                                    >
                                         {{ item?.quantity }}
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <p v-else>
-                        No hay materiales asignados
-                    </p>
-                    <br>
+                    <p v-else>No hay materiales asignados</p>
+                    <br />
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeMaterialsModal"> Cerrar </SecondaryButton>
-
+                        <SecondaryButton
+                            type="button"
+                            @click="closeMaterialsModal"
+                        >
+                            Cerrar
+                        </SecondaryButton>
                     </div>
                 </div>
             </div>
         </Modal>
 
-        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" max-width="md" :closeable="true">
+        <Modal
+            :show="showInstMaterials"
+            @close="closeInstMaterialsModal"
+            max-width="md"
+            :closeable="true"
+        >
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                <h2
+                    class="text-lg font-medium text-gray-800 border-b-2 border-gray-100"
+                >
                     Materiales Liquidados
                 </h2>
-                <br>
+                <br />
                 <div class="mt-2">
                     <div v-if="instMaterials.length > 0" class="overflow-auto">
-                        <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                        <table
+                            class="w-full whitespace-no-wrap border-collapse border border-slate-300"
+                        >
                             <thead>
                                 <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                                >
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                    >
                                         Material
                                     </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                    >
                                         Recibidos
                                     </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                    >
                                         Usados
                                     </th>
-                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600"
+                                    >
                                         Resto
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(item, i) in instMaterials" :key="i" class="text-gray-700 bg-white text-sm">
-                                    <td class="border-b border-slate-300  px-4 py-4">
+                                <tr
+                                    v-for="(item, i) in instMaterials"
+                                    :key="i"
+                                    class="text-gray-700 bg-white text-sm"
+                                >
+                                    <td
+                                        class="border-b border-slate-300 px-4 py-4"
+                                    >
                                         {{ item?.name }}
                                     </td>
-                                    <td class="border-b border-slate-300  px-4 py-4">
+                                    <td
+                                        class="border-b border-slate-300 px-4 py-4"
+                                    >
                                         {{ item?.quantity }}
                                     </td>
-                                    <td class="border-b border-slate-300  px-4 py-4">
+                                    <td
+                                        class="border-b border-slate-300 px-4 py-4"
+                                    >
                                         {{ item?.used_quantity }}
                                     </td>
-                                    <td class="border-b border-slate-300  px-4 py-4">
-                                        {{ item?.quantity - item?.used_quantity }}
+                                    <td
+                                        class="border-b border-slate-300 px-4 py-4"
+                                    >
+                                        {{
+                                            item?.quantity - item?.used_quantity
+                                        }}
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <p v-else>
-                        No hay materiales asignados
-                    </p>
-                    <br>
+                    <p v-else>No hay materiales asignados</p>
+                    <br />
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeInstMaterialsModal"> Cerrar </SecondaryButton>
+                        <SecondaryButton
+                            type="button"
+                            @click="closeInstMaterialsModal"
+                        >
+                            Cerrar
+                        </SecondaryButton>
                     </div>
                 </div>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
-            :message="'La Asignacion fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Instalación PINT y PEXT Actualizada'"
-            :message="'La Asignacion fue actualizada'" />
+        <SuccessOperationModal
+            :confirming="confirmAssignation"
+            :title="'Nueva Instalación PINT y PEXT creada'"
+            :message="'La Asignacion fue creada con éxito'"
+        />
+        <SuccessOperationModal
+            :confirming="confirmUpdateAssignation"
+            :title="'Instalación PINT y PEXT Actualizada'"
+            :message="'La Asignacion fue actualizada'"
+        />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { formattedDate } from '@/utils/utils.js';
-import TextInput from '@/Components/TextInput.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import Pagination from "@/Components/Pagination.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import InputError from "@/Components/InputError.vue";
+import Modal from "@/Components/Modal.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import { Head, useForm, router } from "@inertiajs/vue3";
+import { ref } from "vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
+import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
+import { formattedDate } from "@/utils/utils.js";
+import TextInput from "@/Components/TextInput.vue";
+import { EyeIcon } from "@heroicons/vue/24/outline";
 
 const { installation, auth } = defineProps({
     installation: Object,
-    auth: Object
-})
-const installations = ref(installation)
+    auth: Object,
+});
+const installations = ref(installation);
 
 const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
-    coordinator: '',
-    cicsa_assignation_id: '',
-    pext_date: '',
-    pint_date: '',
-    projected_amount: '',
-    conformity: 'Pendiente',
-    report: 'Pendiente',
-    shipping_report_date: '',
-}
+    coordinator: "",
+    cicsa_assignation_id: "",
+    pext_date: "",
+    pint_date: "",
+    projected_amount: "",
+    conformity: "Pendiente",
+    report: "Pendiente",
+    shipping_report_date: "",
+};
 
-const form = useForm(
-    { ...initialState }
-);
+const form = useForm({ ...initialState });
 
 const materialArray = ref([]);
 const mateiralObject = ref({
-    name: '',
-    unit: '',
+    name: "",
+    unit: "",
     quantity: 0,
-    cicsa_feasibility_id: ''
+    cicsa_feasibility_id: "",
 });
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
-const showModalMaterial = ref(false)
+const showModalMaterial = ref(false);
 
 function modalMaterial() {
-    showModalMaterial.value = !showModalMaterial.value
+    showModalMaterial.value = !showModalMaterial.value;
 }
 
-
 function closeAddAssignationModal() {
-    showAddEditModal.value = false
-    form.defaults({ ...initialState })
-    form.reset()
-    form.clearErrors()
+    showAddEditModal.value = false;
+    form.defaults({ ...initialState });
+    form.reset();
+    form.clearErrors();
 }
 
 const confirmUpdateAssignation = ref(false);
 
-function openEditFeasibilityModal(ca_id, item, total_materials, cicsa_installation_materials) {
-    total_materials = cicsa_installation_materials?.length > 0 ? cicsa_installation_materials
-        : total_materials.map(item => ({ ...item, used_quantity: 0 }))
+function openEditFeasibilityModal(
+    ca_id,
+    item,
+    total_materials,
+    cicsa_installation_materials
+) {
+    total_materials =
+        cicsa_installation_materials?.length > 0
+            ? cicsa_installation_materials
+            : total_materials.map((item) => ({ ...item, used_quantity: 0 }));
     if (item) {
-        form.defaults({ ...item, total_materials })
+        form.defaults({ ...item, total_materials });
     } else {
-        form.defaults({ ...initialState, total_materials, cicsa_assignation_id: ca_id })
+        form.defaults({
+            ...initialState,
+            total_materials,
+            cicsa_assignation_id: ca_id,
+        });
     }
-    form.reset()
-    showAddEditModal.value = true
+    form.reset();
+    showAddEditModal.value = true;
 }
 
 function submit() {
-    let url = route('cicsa.installation.store', { ci_id: form?.id })
+    let url = route("cicsa.installation.store", { ci_id: form?.id });
     form.post(url, {
         onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
+            closeAddAssignationModal();
+            confirmUpdateAssignation.value = true;
             setTimeout(() => {
-                confirmUpdateAssignation.value = false
-                router.get(route('cicsa.installation.index'))
-            }, 1500)
+                confirmUpdateAssignation.value = false;
+                router.get(route("cicsa.installation.index"));
+            }, 1500);
         },
         onError: (e) => {
-            console.error(e)
-        }
-    })
+            console.error(e);
+        },
+    });
 }
 
 function addMaterial() {
-    if (mateiralObject.value.name && mateiralObject.value.unit && mateiralObject.value.quantity) {
+    if (
+        mateiralObject.value.name &&
+        mateiralObject.value.unit &&
+        mateiralObject.value.quantity
+    ) {
         const newMaterial = {
             name: mateiralObject.value.name,
             unit: mateiralObject.value.unit,
-            quantity: mateiralObject.value.quantity
+            quantity: mateiralObject.value.quantity,
         };
         materialArray.value.push(newMaterial);
 
-        mateiralObject.value.name = '';
-        mateiralObject.value.unit = '';
-        mateiralObject.value.quantity = '';
-
+        mateiralObject.value.name = "";
+        mateiralObject.value.unit = "";
+        mateiralObject.value.quantity = "";
     } else {
-        console.error('Por favor completa todos los campos del formulario.');
+        console.error("Por favor completa todos los campos del formulario.");
     }
 }
 
-
 //materiasls
-const showMaterials = ref(false)
+const showMaterials = ref(false);
 const materials = ref([]);
 function openMaterialsModal(arrayMaterials) {
-    materials.value = arrayMaterials ? arrayMaterials : []
-    showMaterials.value = true
+    materials.value = arrayMaterials ? arrayMaterials : [];
+    showMaterials.value = true;
 }
 function closeMaterialsModal() {
-    showMaterials.value = false
+    showMaterials.value = false;
 }
-
-
 
 //installation materials
-const showInstMaterials = ref(false)
+const showInstMaterials = ref(false);
 const instMaterials = ref([]);
 function openInstMaterialsModal(arrayMaterials) {
-    instMaterials.value = arrayMaterials ? arrayMaterials : []
-    showInstMaterials.value = true
+    instMaterials.value = arrayMaterials ? arrayMaterials : [];
+    showInstMaterials.value = true;
 }
 function closeInstMaterialsModal() {
-    showInstMaterials.value = false
+    showInstMaterials.value = false;
 }
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('cicsa.installation.index'), { searchQuery: $search });
+        const response = await axios.post(route("cicsa.installation.index"), {
+            searchQuery: $search,
+        });
         installations.value = response.data.installation;
     } catch (error) {
-        console.error('Error searching:', error);
+        console.error("Error searching:", error);
     }
 };
 </script>

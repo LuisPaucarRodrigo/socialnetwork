@@ -66,23 +66,26 @@
                     Observación
                   </th>
                   <th class="border-b-2 border-gray-200 bg-gray-100 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                    
+
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(item, index) in (props.search ? props.equipments : equipments.data)" :key="item.id" class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ index + 1 }}</td>
-                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center whitespace-nowrap">{{ formattedDate(item.huawei_entry?.entry_date) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center whitespace-nowrap">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.huawei_equipment_serie.huawei_equipment.claro_code }}</td>
-                  <td class="border-b border-gray-200 px-2 py-1 text-xs text-center min-w-[200px]"
-                  :class="{
-                                        'bg-green-400': item.antiquation_state === 'Green',
-                                        'bg-yellow-400': item.antiquation_state === 'Yellow',
-                                        'bg-orange-400': item.antiquation_state === 'Orange',
-                                        'bg-red-400': item.antiquation_state === 'Red',
-                                        'bg-white': item.antiquation_state === 'none'
-                                    }">{{ item.huawei_equipment_serie.huawei_equipment.name }}</td>
+                  <td class="border-b border-gray-200 px-2 py-1 text-xs text-center min-w-[200px] box-border"
+    :class="{
+        'bg-green-400': item.antiquation_state === 'Green',
+        'bg-yellow-400': item.antiquation_state === 'Yellow',
+        'bg-orange-400': item.antiquation_state === 'Orange',
+        'bg-red-400': item.antiquation_state === 'Red',
+        'bg-white': item.antiquation_state === 'none'
+    }">
+    {{ item.huawei_equipment_serie.huawei_equipment.name }}
+</td>
+
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.huawei_equipment_serie.serie_number }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.assigned_site }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.instalation_state ? item.instalation_state : item.state }}</td>
@@ -252,7 +255,7 @@
             }
         })
     }
-  
+
   const searchForm = useForm({
     searchTerm: props.search ? props.search : '',
   });

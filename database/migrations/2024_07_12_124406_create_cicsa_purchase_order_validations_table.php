@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('validation_date')->nullable();
             $table->string('materials_control');
+            $table->string('file_validation');
             $table->string('supervisor');
             $table->string('warehouse');
             $table->string('boss');

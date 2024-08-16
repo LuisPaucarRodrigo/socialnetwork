@@ -5,9 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Liquidation;
 use App\Models\Project;
-use App\Models\Warehouse;
 use App\Models\ProjectEntry;
 use App\Models\Refund;
 use App\Models\Entry;
@@ -31,17 +29,17 @@ class LiquidationController extends Controller
             ->where('state', true)
             ->whereDoesntHave('project_entry_liquidation')
             ->get();
-    
+
         // Filtrar los registros por el atributo calculado outputs_state
         $filtered_entries = $project_entries->filter(function ($project_entry) {
             return $project_entry->outputs_state;
         });
-    
+
         // Paginar los resultados filtrados
         $perPage = 10;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $currentPageEntries = $filtered_entries->slice(($currentPage - 1) * $perPage, $perPage);
-    
+
         // Crear un paginador con los resultados filtrados
         $final_project_entries = new LengthAwarePaginator(
             $currentPageEntries,
@@ -50,7 +48,7 @@ class LiquidationController extends Controller
             $currentPage,
             ['path' => url()->current(), 'query' => []]
         );
-    
+
         // Renderizar la vista con los resultados paginados
         return Inertia::render('ProjectArea/ProjectManagement/Liquidations', [
             'project_entries' => $final_project_entries,
@@ -58,14 +56,14 @@ class LiquidationController extends Controller
             'project' => Project::find($project_id)
         ]);
     }
-    
+
 
 
     public function history($project_id){
         $liquidations = ProjectEntryLiquidation::whereHas('project_entry.project', function ($query) use ($project_id) {
             $query->where('project_id', $project_id);
         })->with('project_entry.entry.inventory.purchase_product', 'project_entry.special_inventory.purchase_product')->paginate(20);
-    
+
         return Inertia::render('ProjectArea/ProjectManagement/LiquidationsHistory', [
             'liquidations' => $liquidations,
             'project_id' => $project_id,
@@ -94,7 +92,7 @@ class LiquidationController extends Controller
             'observations' => $request->observations
         ]);
 
-        
+
 
         if($request->devolution_value == 1){
 
@@ -106,12 +104,13 @@ class LiquidationController extends Controller
             }else{
                 $warehouse_id = $project_entry_object->entry->inventory->warehouse_id;
             }
-
-            Refund::create([
-                'project_entry_liquidation_id' => $project_entry_liquidation->id,
-                'quantity' => $request->refund_quantity,
-                'warehouse_id' => $warehouse_id
-            ]);
+            if ($request->refund_quantity > 0){
+                Refund::create([
+                    'project_entry_liquidation_id' => $project_entry_liquidation->id,
+                    'quantity' => $request->refund_quantity,
+                    'warehouse_id' => $warehouse_id
+                ]);
+            }
 
         }else if ($request->devolution_value == 0){
 
@@ -125,19 +124,22 @@ class LiquidationController extends Controller
                 $purchase_product_id = $project_entry_liquidation->project_entry->special_inventory->purchase_product_id;
             }
 
-            $entry = Entry::create([
-                'quantity' => $request->refund_quantity,
-                'unitary_price' => $project_entry_liquidation->project_entry->unitary_price,
-                'entry_date' => $today,
-                'type' => 'retrieval'
-            ]);
+            if ($request->refund_quantity > 0){
+                $entry = Entry::create([
+                    'quantity' => $request->refund_quantity,
+                    'unitary_price' => $project_entry_liquidation->project_entry->unitary_price,
+                    'entry_date' => $today,
+                    'type' => 'retrieval'
+                ]);
 
-            RetrievalEntry::create([
-                'project_entry_liquidation_id' => $project_entry_liquidation->id,
-                'entry_id' => $entry->id,
-                'purchase_product_id' => $purchase_product_id
-            ]);
+                RetrievalEntry::create([
+                    'project_entry_liquidation_id' => $project_entry_liquidation->id,
+                    'entry_id' => $entry->id,
+                    'purchase_product_id' => $purchase_product_id
+                ]);
+            }
+
         }
     }
-    
+
 }

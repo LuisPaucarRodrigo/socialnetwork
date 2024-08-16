@@ -377,6 +377,7 @@
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
     import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+    import InputError from '@/Components/InputError.vue';
 
     const props = defineProps({
         entries: Object,

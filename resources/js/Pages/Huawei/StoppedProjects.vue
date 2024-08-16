@@ -95,9 +95,10 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Balance del Proyecto
                             </Link>
-                            <a class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
+                            <a v-if="item.pre_report" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
                                 Reporte
                             </a>
+                            <span v-else class="text-gray-400">Reporte</span>
                         </div>
                     </div>
                 </div>
@@ -130,14 +131,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
-import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline';
+import { PlayIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     projects: Object,
