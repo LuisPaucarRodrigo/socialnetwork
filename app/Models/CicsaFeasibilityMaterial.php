@@ -12,6 +12,7 @@ class CicsaFeasibilityMaterial extends Model
     protected $table = 'cicsa_feasibility_materials';
 
     protected $fillable = [
+        'code_ax',
         'name',
         'unit',
         'quantity',

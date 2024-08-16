@@ -55,6 +55,7 @@ class PermissionMiddleware
             'Administration' => '/management_employees',
             'DocumentGestion' => route('documment.management.folders'),
             'SocialNetwork' => route('socialnetwork.sot'),
+            'HuaweiManager' => route('huawei.inventory.show')
         ];
 
         foreach ($redirectRoutes as $permission => $route) {

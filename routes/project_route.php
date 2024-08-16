@@ -4,6 +4,7 @@ use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
 use App\Http\Controllers\ProjectArea\BacklogController;
 use App\Http\Controllers\ProjectArea\CalendarController;
+use App\Http\Controllers\ProjectArea\ChecklistsController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
@@ -139,14 +140,19 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project-document-gestion/folder_archive_delete', [ProjectDocumentController::class, 'project_doc_delete'])->name('project.folder.delete');
     Route::get('/project-document-gestion/folder_archive_dowload', [ProjectDocumentController::class, 'project_doc_download'])->name('project.folder.download');
 
-
-
-
-
     Route::get('/project-backlog', [BacklogController::class, 'index'])->name('project.backlog.index');
     Route::get('/project-backlog/autcomplete', [BacklogController::class, 'autocomplete'])->name('project.backlog.autocomplete');
     Route::post('/project-backlog/store', [BacklogController::class, 'store'])->name('project.backlog.store');
     Route::delete('/project-backlog/delete/{backlog_id}', [BacklogController::class, 'destroy'])->name('project.backlog.destroy');
+
+
+    Route::get('/checklist', [ChecklistsController::class, 'index'])->name('checklist.index');
+    Route::get('/checklist/car', [ChecklistsController::class, 'car_index'])->name('checklist.car.index');
+    Route::get('/checklist/car/{id}/{photoProp}', [ChecklistsController::class, 'car_photo'])->name('checklist.car.photo');
+    Route::get('/checklist/toolkit/{id}/{photoProp}', [ChecklistsController::class, 'toolkit_photo'])->name('checklist.toolkit.photo');
+    Route::get('/checklist/dailytoolkit', [ChecklistsController::class, 'dailytoolkit_index'])->name('checklist.dailytoolkit.index');
+    Route::get('/checklist/epp', [ChecklistsController::class, 'epp_index'])->name('checklist.epp.index');
+    Route::get('/checklist/toolkit', [ChecklistsController::class, 'toolkit_index'])->name('checklist.toolkit.index');
 
 
     

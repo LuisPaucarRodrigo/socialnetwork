@@ -66,3 +66,7 @@ Route::get('/cicsa_charge_areas/export', [CicsaController::class, 'exportChargeA
 //search
 
 Route::post('/cicsa_advance_search', [CicsaController::class, 'search'])->name('cicsa.advance.search');
+
+Route::get('/cicsa_export_materials_summary/{ca_id}', [CicsaController::class, 'exportMaterialsSummary'])->name('cicsa.export.materials.summary');
+
+
