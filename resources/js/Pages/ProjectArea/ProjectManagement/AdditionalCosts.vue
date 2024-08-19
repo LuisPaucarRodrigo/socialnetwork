@@ -632,7 +632,12 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
-                            <div v-if="form.type_doc==='Factura' && form.zone!=='MDD'">
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    form.zone !== 'MDD'
+                                "
+                            >
                                 <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
@@ -640,10 +645,16 @@
                                 >
                                 <div class="mt-2">
                                     <InputLabel
-                                    for="amount"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >{{ form.amount ? (form.amount/1.18).toFixed(4) : 0 }}</InputLabel
-                                >
+                                        for="amount"
+                                        class="font-medium leading-6 text-gray-900"
+                                        >{{
+                                            form.amount
+                                                ? (form.amount / 1.18).toFixed(
+                                                      4
+                                                  )
+                                                : 0
+                                        }}</InputLabel
+                                    >
                                 </div>
                             </div>
 
@@ -878,7 +889,12 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
-                            <div v-if="form.type_doc==='Factura' && form.zone!=='MDD'">
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    form.zone !== 'MDD'
+                                "
+                            >
                                 <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
@@ -886,10 +902,16 @@
                                 >
                                 <div class="mt-2">
                                     <InputLabel
-                                    for="amount"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >{{ form.amount ? (form.amount/1.18).toFixed(4) : 0 }}</InputLabel
-                                >
+                                        for="amount"
+                                        class="font-medium leading-6 text-gray-900"
+                                        >{{
+                                            form.amount
+                                                ? (form.amount / 1.18).toFixed(
+                                                      4
+                                                  )
+                                                : 0
+                                        }}</InputLabel
+                                    >
                                 </div>
                             </div>
 
@@ -1148,7 +1170,11 @@ const openEditAdditionalModal = (additional) => {
     form.type_doc = editingAdditional.value.type_doc;
     form.doc_number = editingAdditional.value.doc_number;
     form.doc_date = editingAdditional.value.doc_date;
-    form.amount = editingAdditional.value.amount;
+    form.amount =
+        editingAdditional.value.type_doc === "Factura" &&
+        editingAdditional.value.zone !== "MDD"
+            ? (editingAdditional.value.amount * 1.18).toFixed(2)
+            : editingAdditional.value.amount;
     form.description = editingAdditional.value.description;
     form.zone = editingAdditional.value.zone;
     form.provider_id = editingAdditional.value.provider_id;

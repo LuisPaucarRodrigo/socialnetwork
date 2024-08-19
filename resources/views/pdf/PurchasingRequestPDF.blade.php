@@ -24,7 +24,7 @@
 </head>
 
 <body>
-  <table style="width: 715px">
+  <table style="width: 715px; border-collapse: collapse;">
     <tbody>
       <tr>
         <td class="td-custom" colspan="1" style="height: 70px;"><img src="image/projectimage/logo_ccip.jpeg" width="80px" alt=""></td>
@@ -33,14 +33,37 @@
       </tr>
       <tr>
         <td class="td-custom" style="width: 82.5px">Elaborado por:</td>
-        <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold;">CCIP</td>
+        <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold;">
+		  Corporación de Contratistas y Proveedores Generales S.R.L.
+		  </td>
         <td class="td-custom" style="width: 130px">Fecha</td>
         <td class="td-custom" style="width: 110px" style="text-align: right">{{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d H:i:s', $purchasing_request->created_at)->format('d/m/Y') }}</td>
       </tr>
     </tbody>
   </table>
+	
+	
+	<table style="width: 715px; margin-top: 30px">
+		<tbody>
+			<tr>
+				<td style="font-size: 14px; border: 2px solid #000; padding: 5px; font-weight: bold">
+				EMPRESA
+			</td>
+      		<td style="font-size: 14px; border: 2px solid #000; padding: 5px;  text-align: center;">
+				Corporación de Contratistas y Proveedores Generales S.R.L.
+			</td>
+				<td style="font-size: 14px; border: 2px solid #000; padding: 5px; font-weight: bold">
+				RUC
+			</td>
+				<td style="font-size: 14px; border: 2px solid #000; padding: 5px;  text-align: center;">20559246272</td>
+		</tr>
+	</table>
+	 
 
-  <table class="table mt-3" style="width: 715px">
+      
+
+
+  <table class="table" style="width: 715px; margin-top: 30px">
     <thead>
       <tr>
         <th class="td-custom" scope="col" colspan="4" style="text-align: center; background: #2e75b5; font-weight: normal;">Productos</th>
@@ -65,17 +88,12 @@
     </tbody>
   </table>
 
-  <div style="padding-top: 15px">
-      <p style="font-size: 14px; font-weight: bold; line-height: 0.5;">Datos de la Empresa:</p>
-      <p style="font-size: 14px; line-height: 0.5;">CONPROCO S.R.L.</p>
-      <p style="font-size: 14px; line-height: 0.5;">RUC: 20559246272</p>
-  </div>
+ 
 
   <div style="padding-top: 15px">
       <p style="font-size: 14px; font-weight: bold; line-height: 0.5;">Persona de contacto:</p>
       <p style="font-size: 14px; line-height: 0.5;">Nombre: {{ $user->name }}</p>
       <p style="font-size: 14px; line-height: 0.5;">Email: {{ $user->email }}</p>
-      <p style="font-size: 14px; line-height: 0.5;">Teléfono: {{ $user->phone }}</p>
   </div>
 
 
