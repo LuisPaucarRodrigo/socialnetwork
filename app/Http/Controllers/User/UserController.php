@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
+use App\Models\Area;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,8 +23,9 @@ class UserController extends Controller
     public function edit($id)
     {
         return Inertia::render('Users/UserEdit', [
-            'users' => User::with('role')->find($id),
-            'rols' => Role::all()
+            'users' => User::with('role', 'area')->find($id),
+            'rols' => Role::all(),
+            'areas' => Area::all()
         ]);
     }
 
@@ -50,7 +52,7 @@ class UserController extends Controller
     public function details($id)
     {
         return Inertia::render('Users/UserDetails', [
-            'users' => User::with('role')->find($id)
+            'users' => User::with('role', 'area')->find($id)
         ]);
     }
 }
