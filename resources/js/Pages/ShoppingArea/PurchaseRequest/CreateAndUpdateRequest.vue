@@ -72,7 +72,9 @@
                                     Añadir {{ resorceOrProduct === true ? 'Producto' : 'Activo' }}
                                 </h2>
                                 <button v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null"
-                                    type="button" @click="showProductModal = !showProductModal">
+                                    type="button" @click="()=>{
+                                        product_selected = resorceOrProduct ? allProducts.filter(product => product.type_product !== null) : allProducts.filter(resource => resource.type === 'Activo')
+                                        showProductModal = true}">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="indigo" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -172,7 +174,7 @@
                     Añadir {{ resorceOrProduct ? 'Producto' : 'Activo' }}
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                    <div v-if="!form.products.length" class="sm:col-span-3">
+                    <!-- <div v-if="!form.products.length" class="sm:col-span-3">
                         <InputLabel for="type_product">Tipo de {{ resorceOrProduct ? 'Producto' : 'Activo' }}</InputLabel>
                         <div v-if="resorceOrProduct" class="mt-2">
                             <select required id="type_product" v-model="type_product"
@@ -195,7 +197,7 @@
                                 </option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="sm:col-span-3">
                         <InputLabel for="unit">{{ resorceOrProduct ? 'Producto' : 'Activo' }}</InputLabel>
