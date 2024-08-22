@@ -54,7 +54,7 @@
         </table>
 
         <section style="padding-top: 30px">
-            <h4 class="centered-text">IGH, AV. VILLA HERMOSA</h4>
+            <h4 class="centered-text">{{ $customer ? $customer->name : "Colocar cliente aqui" }}</h4>
             <h6 style="padding-top: 20px;">A. OBJETIVOS</h6>
             <p>Diseño de fibra óptica para poder atender a nuestro cliente IGH desde el punto de conexión hasta su sede.</p>
 
@@ -71,7 +71,7 @@
             <h6 style="padding-top: 20px;">D. REPORTE FOTOGRÁFICO - Recorrido de Fibra</h6>
             @foreach ($codesWithStatus as $code)
             <p class="centered-text">Codigo: {{$code->code->code}}</p>
-            
+
             @foreach ($code->imagecodepreprojet as $image)
             <div class="photo">
                 <img class="centered-text" src="image/imagereportpreproject/{{ $image->image }}" alt="{{ $image->description }}">

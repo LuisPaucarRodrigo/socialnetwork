@@ -24,6 +24,7 @@ use App\Models\Purchasing_requests_product;
 use App\Models\ResourceEntry;
 use App\Models\Service;
 use App\Models\Code;
+use App\Models\Customers_contact;
 use App\Models\PreprojectCode;
 use App\Models\Title;
 use App\Models\TitleCode;
@@ -45,7 +46,7 @@ class PreProjectController extends Controller
                     ->orderBy('created_at')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
-                'users' => User::select('id','name')->get()
+                'users' => User::select('id', 'name')->get()
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -66,7 +67,7 @@ class PreProjectController extends Controller
     public function create($preproject_id = null)
     {
         return Inertia::render('ProjectArea/PreProject/CreatePreProject', [
-            'preproject' => Preproject::with('project','customer', 'contacts')->find($preproject_id),
+            'preproject' => Preproject::with('project', 'customer', 'contacts')->find($preproject_id),
             'customers' => Customer::with('customer_contacts')->get(),
             'titles' => Title::all()
         ]);
@@ -85,18 +86,18 @@ class PreProjectController extends Controller
     public function store(PreprojectRequest $request)
     {
         $data = $request->validated();
-		
+
         $data['code'] = $this->getCode($data['date'], $data['code']);
         $preproject = Preproject::create($data);
-		if(isset($data['title_id'])){
-			$dataCode = TitleCode::where('title_id', $data['title_id'])->get();
-			foreach ($dataCode as $codes) {
-				PreprojectCode::create([
-					'preproject_id' => $preproject->id,
-					'code_id' => $codes->code_id
-				]);
-			}
-		}
+        if (isset($data['title_id'])) {
+            $dataCode = TitleCode::where('title_id', $data['title_id'])->get();
+            foreach ($dataCode as $codes) {
+                PreprojectCode::create([
+                    'preproject_id' => $preproject->id,
+                    'code_id' => $codes->code_id
+                ]);
+            }
+        }
         $preproject->contacts()->sync($data['contacts']);
     }
 
@@ -137,7 +138,8 @@ class PreProjectController extends Controller
         $allPurchasingRequest = Purchasing_request::with([
             'purchase_quotes' => function ($query) {
                 $query->where('preproject_state', true);
-            }, 'purchase_quotes.purchase_quote_products.purchase_product'
+            },
+            'purchase_quotes.purchase_quote_products.purchase_product'
         ])
             ->where('preproject_id', $preproject_id)
             ->get();
@@ -633,8 +635,8 @@ class PreProjectController extends Controller
     }
 
     public function index_image($preproject_id)
-    {   
-        $preprojects = PreprojectCode::with('code','imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
+    {
+        $preprojects = PreprojectCode::with('code', 'imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
         $codesWithStatus = [];
         foreach ($preprojects as $preprojectCode) {
             $code = $preprojectCode->code;
@@ -724,22 +726,10 @@ class PreProjectController extends Controller
 
     public function download_report($preproject_id)
     {
-        $codesWithStatus = PreprojectCode::with('code','imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
-        // dd($codesWithStatus);
-        // $codesWithStatus = $preprojects->map(function ($preprojectCode) {
-        //     $code = $preprojectCode->code;
-        //     $image = $preprojectCode->imagecodepreprojet;
-        //     $imagepreprojet = $image->each(function ($url) {
-        //         $url->image = 'image/imagereportpreproject/' . $url->image;
-        //     });
-        //     return [
-        //         'code' => $code->code,
-        //         'description' => $code->description,
-        //         'images' => $imagepreprojet
-        //     ];
-        // });
-        
-        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('codesWithStatus'));
+        $codesWithStatus = PreprojectCode::with('code', 'imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
+        $preproject = Preproject::find($preproject_id);
+        $customer = Customers_contact::find($preproject->subcustomer_id);
+        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('codesWithStatus','customer'));
         return $pdf->stream();
     }
 

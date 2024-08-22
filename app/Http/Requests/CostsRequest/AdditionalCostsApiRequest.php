@@ -4,8 +4,11 @@ namespace App\Http\Requests\CostsRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Project;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
 
-class AdditionalCostsRequest extends FormRequest
+class AdditionalCostsApiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +25,6 @@ class AdditionalCostsRequest extends FormRequest
      */
     public function rules(): array
     {
-
         // Inicializar variables
         $rules = [
             'expense_type' => 'required|string',
@@ -35,7 +37,6 @@ class AdditionalCostsRequest extends FormRequest
             'provider_id' => 'nullable',
             'description' => 'required|string',
             'photo' => 'nullable',
-            'project_id' => 'nullable' // Cambiar 'required' a 'nullable'
         ];
 
         if ($this->has('project_id')) {
@@ -53,7 +54,19 @@ class AdditionalCostsRequest extends FormRequest
                 ];
             }
         }
-
+        
         return $rules;
     }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = (new ValidationException($validator))->errors();
+        throw new HttpResponseException(
+            response()->json([
+                'status' => 'fail',
+                'error' => $errors
+            ], 422)
+        );
+    }
 }
+
