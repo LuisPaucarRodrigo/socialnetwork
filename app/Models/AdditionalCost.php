@@ -20,17 +20,23 @@ class AdditionalCost extends Model
         'amount',
         'project_id',
         'provider_id',
-        'photo'
+        'photo',
+        'is_accepted',
+        'user_id'
     ];
 
-    public function project(){
+    public function project()
+    {
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function provider () {
+    public function provider()
+    {
         return $this->belongsTo(Provider::class, 'provider_id');
     }
 
-
-
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
