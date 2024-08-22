@@ -133,12 +133,24 @@ class ChecklistsController extends Controller
         }
     }
 
-    public function epp_store(ChecklistEppRequest $request)
-    {
+    public function dailytoolkit_destroy($cdt_id){
+        $checklistdailytoolkit = ChecklistDailytoolkit::find($cdt_id);
+        $checklistdailytoolkit->delete();
+        return redirect()->back();
+    }
+
+
+    public function epp_store(ChecklistEppRequest $request){
         $data = $request->validated();
         $data['user_id'] = Auth::user()->id;
         ChecklistEpp::create($data);
         return response()->json([], 201);
+    }
+
+    public function epp_destroy($epp_id){
+        $checklistepp = ChecklistEpp::find($epp_id);
+        $checklistepp->delete();
+        return redirect()->back();
     }
 
     private function storeBase64Image($photo, $path, $name)
