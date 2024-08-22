@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 
 class AdditionalCostsController extends Controller
 {
-    public function index(Request $request, Project $project_id)
+    public function index(Project $project_id)
     {
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
         $searchQuery = '';

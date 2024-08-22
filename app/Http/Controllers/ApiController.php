@@ -33,6 +33,18 @@ class ApiController extends Controller
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             if ($request->hasMobileAccess($user)) {
+
+                // // Buscar si el usuario ya tiene un token
+                // $existingToken = $user->tokens()->first();
+
+                // // Si el usuario ya tiene un token, devolver el token existente
+                // if ($existingToken) {
+                //     return response()->json([
+                //         'id' => $user->id,
+                //         'token' => $existingToken->plainTextToken,
+                //     ]);
+                // }
+
                 $token = $user->createToken('MobileAppToken')->plainTextToken;
                 return response()->json([
                     'id' => $user->id,
@@ -301,20 +313,20 @@ class ApiController extends Controller
         return response()->download($filePath);
     }
 
-    public function dailytoolkit_store (ChecklistDailytoolkitRequest $request){
+    public function dailytoolkit_store(ChecklistDailytoolkitRequest $request)
+    {
         $data = $request->validated();
         DB::beginTransaction();
-        try{
+        try {
             $data['user_id'] = Auth::user()->id;
             ChecklistDailytoolkit::create($data);
             DB::commit();
             return response()->json([], 201);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Ocurrió un error al procesar la solicitud',
                 'message' => $e->getMessage()
             ], 500);
         }
-        
     }
 }

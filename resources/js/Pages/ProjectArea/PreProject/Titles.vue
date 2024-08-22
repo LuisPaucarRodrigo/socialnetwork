@@ -82,6 +82,19 @@
                                 </div>
                             </div>
 
+                            <div>
+                                <InputLabel for="type" class="font-medium leading-6 text-gray-900 mt-3">Tipo
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.type" id="type"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="">Seleccionar tipo</option>
+                                        <option>Factibilidad</option>
+                                        <option>Implementacion</option>
+                                    </select>
+                                    <InputError :message="form.errors.type" />
+                                </div>
+                            </div>
 
                             <div>
                                 <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Códigos</InputLabel>
