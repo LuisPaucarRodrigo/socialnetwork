@@ -75,6 +75,11 @@ class User extends Authenticatable
         return $this->belongsTo(Area::class, 'area_id');
     }
 
+    public function additionalCost()
+    {
+        return $this->hasMany(AdditionalCost::class);
+    }
+
     public function hasPermission($permission)
     {
         $role = $this->role; // Obtener el único rol del usuario

@@ -7,16 +7,18 @@ use App\Http\Requests\ChecklistRequest\ChecklistCarRequest;
 use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
 use App\Http\Requests\ChecklistRequest\ChecklistEppRequest;
 use App\Http\Requests\ChecklistRequest\ChecklistToolkitRequest;
+use App\Http\Requests\CostsRequest\AdditionalCostsApiRequest;
+use App\Models\AdditionalCost;
 use App\Models\ChecklistCar;
 use App\Models\ChecklistDailytoolkit;
 use App\Models\ChecklistEpp;
 use App\Models\ChecklistToolkit;
+use App\Models\Preproject;
+use App\Models\Project;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ChecklistsController extends Controller
 {
@@ -30,7 +32,7 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistCar::with('user')->paginate(20);
         return Inertia::render(
-            'ProjectArea/Checklist/ChecklistCar',
+            'ProjectArea/image/Checklist/ChecklistCar',
             ['checklists' => $checklistcar]
         );
     }
@@ -39,27 +41,33 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistCar::find($id);
         return $this->openNewWindowArchive(
-            '/image/checklist/checklistcar/',
+            '/image/image/checklist/checklistcar/',
             $checklistcar->$photoProp
         );
     }
 
-    public function dailytoolkit_index(){
+    public function dailytoolkit_index()
+    {
         $checklistdailytoolkit = ChecklistDailytoolkit::with('user')->paginate(20);
-        return Inertia::render('ProjectArea/Checklist/ChecklistDailytoolkit', 
+        return Inertia::render(
+            'ProjectArea/Checklist/ChecklistDailytoolkit',
             ['checklists' => $checklistdailytoolkit]
         );
     }
-    public function epp_index(){
+    public function epp_index()
+    {
         $checklistepp = ChecklistEpp::with('user')->paginate(20);
-        return Inertia::render('ProjectArea/Checklist/ChecklistEpp', 
+        return Inertia::render(
+            'ProjectArea/Checklist/ChecklistEpp',
             ['checklists' => $checklistepp]
         );
     }
 
-    public function toolkit_index(){
+    public function toolkit_index()
+    {
         $checklisttoolkit = ChecklistToolkit::with('user')->paginate(20);
-        return Inertia::render('ProjectArea/Checklist/ChecklistToolkit', 
+        return Inertia::render(
+            'ProjectArea/image/Checklist/ChecklistToolkit',
             ['checklists' => $checklisttoolkit]
         );
     }
@@ -68,7 +76,7 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistToolkit::find($id);
         return $this->openNewWindowArchive(
-            '/image/checklist/checklisttoolkit/',
+            '/image/image/checklist/checklisttoolkit/',
             $checklistcar->$photoProp
         );
     }
@@ -77,14 +85,14 @@ class ChecklistsController extends Controller
     {
         $data = $request->validated();
         try {
-            $data['front'] = $this->storeBase64Image($data['front'], 'checklistcar', 'front');
-            $data['leftSide'] = $this->storeBase64Image($data['leftSide'], 'checklistcar', 'leftSide');
-            $data['rightSide'] = $this->storeBase64Image($data['rightSide'], 'checklistcar', 'rightSide');
-            $data['interior'] = $this->storeBase64Image($data['interior'], 'checklistcar', 'interior');
-            $data['rearLeftTire'] = $this->storeBase64Image($data['rearLeftTire'], 'checklistcar', 'rearLeftTire');
-            $data['rearRightTire'] = $this->storeBase64Image($data['rearRightTire'], 'checklistcar', 'rearRightTire');
-            $data['frontRightTire'] = $this->storeBase64Image($data['frontRightTire'], 'checklistcar', 'frontRightTire');
-            $data['frontLeftTire'] = $this->storeBase64Image($data['frontLeftTire'], 'checklistcar', 'frontLeftTire');
+            $data['front'] = $this->storeBase64Image($data['front'], 'image/checklist/checklistcar', 'front');
+            $data['leftSide'] = $this->storeBase64Image($data['leftSide'], 'image/checklist/checklistcar', 'leftSide');
+            $data['rightSide'] = $this->storeBase64Image($data['rightSide'], 'image/checklist/checklistcar', 'rightSide');
+            $data['interior'] = $this->storeBase64Image($data['interior'], 'image/checklist/checklistcar', 'interior');
+            $data['rearLeftTire'] = $this->storeBase64Image($data['rearLeftTire'], 'image/checklist/checklistcar', 'rearLeftTire');
+            $data['rearRightTire'] = $this->storeBase64Image($data['rearRightTire'], 'image/checklist/checklistcar', 'rearRightTire');
+            $data['frontRightTire'] = $this->storeBase64Image($data['frontRightTire'], 'image/checklist/checklistcar', 'frontRightTire');
+            $data['frontLeftTire'] = $this->storeBase64Image($data['frontLeftTire'], 'image/checklist/checklistcar', 'frontLeftTire');
             $data['user_id'] = Auth::user()->id;
 
             ChecklistCar::create($data);
@@ -102,10 +110,10 @@ class ChecklistsController extends Controller
         $data = $request->validated();
         try {
             if ($data['badTools']) {
-                $data['badTools'] = $this->storeBase64Image($data['badTools'], 'checklisttoolkit', 'badTools');
+                $data['badTools'] = $this->storeBase64Image($data['badTools'], 'image/checklist/checklisttoolkit', 'badTools');
             }
             if ($data['goodTools']) {
-                $data['goodTools'] = $this->storeBase64Image($data['goodTools'], 'checklisttoolkit', 'goodTools');
+                $data['goodTools'] = $this->storeBase64Image($data['goodTools'], 'image/checklist/checklisttoolkit', 'goodTools');
             }
             $data['user_id'] = Auth::user()->id;
             ChecklistToolkit::create($data);
@@ -160,7 +168,7 @@ class ChecklistsController extends Controller
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
             $imagename = time() . $name . '.png';
-            file_put_contents(public_path('image/checklist/') . $path . "/" . $imagename, $imageContent);
+            file_put_contents(public_path($path) . "/" . $imagename, $imageContent);
             return $imagename;
         } catch (Exception $e) {
             abort(500, 'something went wrong');
@@ -171,32 +179,33 @@ class ChecklistsController extends Controller
     {
         $userId = Auth::user()->id;
 
-        $cars = ChecklistCar::where('user_id', $userId)->get();
-        $toolkits = ChecklistToolkit::where('user_id', $userId)->get();
-        $dailytoolkits = ChecklistDailytoolkit::where('user_id', $userId)->get();
-        $epps = ChecklistEpp::where('user_id', $userId)->get();
+        $cars = ChecklistCar::where('user_id', $userId)->select('created_at')->get();
+        $toolkits = ChecklistToolkit::where('user_id', $userId)->select('created_at')->get();
+        $dailytoolkits = ChecklistDailytoolkit::where('user_id', $userId)->select('created_at')->get();
+        $epps = ChecklistEpp::where('user_id', $userId)->select('created_at')->get();
 
         $cars = $cars->map(function ($item) {
-            $item->model_type = 'ChecklistCar';
+            $item->type = 'Vehiculo';
             return $item;
         });
 
         $toolkits = $toolkits->map(function ($item) {
-            $item->model_type = 'ChecklistToolkit';
+            $item->type = 'Herramientas';
             return $item;
         });
 
         $dailytoolkits = $dailytoolkits->map(function ($item) {
-            $item->model_type = 'ChecklistDailytoolkit';
+            $item->type = 'Diario';
             return $item;
         });
 
         $epps = $epps->map(function ($item) {
-            $item->model_type = 'ChecklistEpp';
+            $item->type = 'Epps';
             return $item;
         });
 
-        $combined = $cars->merge($toolkits)->merge($dailytoolkits)->merge($epps);
+        $combined = $cars->concat($toolkits)->concat($dailytoolkits)->concat($epps);
+
         $sorted = $combined->sortByDesc('created_at');
 
         return response()->json($sorted->values()->all());
@@ -211,5 +220,69 @@ class ChecklistsController extends Controller
             return response()->file($path);
         }
         abort(404, 'Documento no encontrado');
+    }
+
+    public function expenseStore(AdditionalCostsApiRequest $request)
+    {
+        $data = $request->validated();
+        try {
+            $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
+            $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+
+            $preprojectId = Preproject::where('date', '>=', $startOfMonth)
+                ->where('date', '<=', $endOfMonth)
+                ->where('customer_id', 1)
+                ->select('id')
+                ->first();
+            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            if (!$projectId) {
+                return response()->json([
+                    'error' => "No se encontraron preproyectos pint para este mes."
+                ], 404);
+            }
+            $data['project_id'] = $projectId->id;
+
+            $docDate = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
+            $data['doc_date'] = $docDate->format('Y-m-d');
+
+            if ($data['photo']) {
+                $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');
+            }
+            $data['user_id'] = Auth::user()->id;
+            AdditionalCost::create($data);
+            return response()->json([], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function expenseIndex()
+    {
+        try {
+            $startOfMonth = Carbon::now()->startOfMonth()->toDateString();
+            $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+
+            $preprojectId = Preproject::where('date', '>=', $startOfMonth)
+                ->where('date', '<=', $endOfMonth)
+                ->where('customer_id', 1)
+                ->select('id')
+                ->first();
+            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            if (!$projectId) {
+                return response()->json([
+                    'error' => $preprojectId
+                ], 404);
+            }
+            $userId = Auth::user()->id;
+            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount')->get();
+            return response()->json($expense, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
