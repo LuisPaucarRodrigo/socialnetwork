@@ -1,5 +1,5 @@
 <template>
-    <Head title="Gestion de Costos Adicionales" />
+    <Head title="Costos Fijos" />
     <AuthenticatedLayout
         :redirectRoute="{
             route: 'projectmanagement.purchases_request.index',
@@ -338,7 +338,7 @@
         <Modal :show="create_additional">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Agregar Costo adicional
+                    Agregar Costo Fijo
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
@@ -564,7 +564,7 @@
         <Modal :show="editAdditionalModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Editar Costo Adicional
+                    Editar Costo Fijo
                 </h2>
                 <form @submit.prevent="submitEdit">
                     <div class="space-y-12">

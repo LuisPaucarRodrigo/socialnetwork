@@ -22,6 +22,7 @@ class AdditionalCost extends Model
         'provider_id',
         'photo',
         'is_accepted',
+        'igv',
         'user_id'
     ];
 
