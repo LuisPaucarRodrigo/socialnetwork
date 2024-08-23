@@ -20,7 +20,8 @@ class HuaweiAdditionalCost extends Model
         'doc_date',
         'amount',
         'description',
-        'huawei_project_id'
+        'huawei_project_id',
+        'archive'
     ];
 
     public function huawei_project ()

@@ -37,6 +37,7 @@ class BacklogRequest extends FormRequest
             'c_start_date' => 'nullable',
             'c_end_date' => 'nullable',
             'responsible' => 'nullable',
+            'responsible_cicsa' => 'nullable',
             'criticity' => 'nullable',
             'conproco_area' => 'nullable',
             'origin_event' => 'nullable',

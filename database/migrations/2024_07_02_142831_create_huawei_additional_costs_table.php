@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('huawei_additional_costs', function (Blueprint $table) {
             $table->id();
             $table->string('expense_type');
-            $table->string('ruc')->unique();
+            $table->string('ruc');
             $table->string('zone');
             $table->string('type_doc');
             $table->string('doc_number')->unique();
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('amount');
             $table->string('description')->nullable();
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
+            $table->string('archive')->nullable();
             $table->timestamps();
         });
     }
