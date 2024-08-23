@@ -32,6 +32,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('projects')
                 ->onDelete('cascade');
+            $table->integer('igv')->default('0');
             $table->timestamps();
             $table->unique(['ruc', 'doc_number']);
         });

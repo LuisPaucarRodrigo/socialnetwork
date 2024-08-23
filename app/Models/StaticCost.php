@@ -21,6 +21,7 @@ class StaticCost extends Model
         'amount',
         'project_id',
         'provider_id',
+        'igv',
         'photo'
     ];
 
@@ -30,5 +31,9 @@ class StaticCost extends Model
 
     public function provider () {
         return $this->belongsTo(Provider::class, 'provider_id');
+    }
+
+    public function real_amount() {
+        
     }
 }

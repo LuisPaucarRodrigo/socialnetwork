@@ -58,7 +58,6 @@ class StaticCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
-
         StaticCost::create($data);
         return redirect()->back();
     }
