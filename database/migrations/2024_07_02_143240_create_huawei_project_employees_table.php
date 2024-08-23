@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->string('role');
+            $table->double('cost');
             $table->timestamps();
         });
     }
