@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProjectEntryOutput;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Warehouse;
@@ -307,7 +308,6 @@ class WarehousesController extends Controller
 
     public function acceptOrDeclineDispatch(Request $request)
     {
-        // dd('halo');
         $request->validate([
             'state' => 'required|boolean',
             'project_entry_id' => 'required|numeric'
@@ -316,6 +316,11 @@ class WarehousesController extends Controller
         $project_entry->update([
             'state' => $request->state
         ]);
+        ProjectEntryOutput::create([
+            "project_entry_id" => $project_entry->id,
+            "quantity" => $project_entry->quantity,
+        ]);
+
         return redirect()->back();
     }
 

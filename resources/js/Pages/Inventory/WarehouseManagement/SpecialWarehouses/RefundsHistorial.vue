@@ -3,7 +3,7 @@
     <Head title="Solicitudes del proyecto" />
     <AuthenticatedLayout :redirect-route="'warehouses.warehouses'">
         <template #header>
-            Devoluciones de {{ warehouse.name }}c
+            Devoluciones de {{ warehouse.name }}
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2 m-1 justify-end items-center">

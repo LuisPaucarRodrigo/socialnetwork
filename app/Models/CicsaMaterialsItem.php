@@ -19,6 +19,6 @@ class CicsaMaterialsItem extends Model
     ];
 
     public function cicsa_material() {
-        $this->belongsTo(CicsaMaterial::class, 'cicsa_material_id');
+        return $this->belongsTo(CicsaMaterial::class, 'cicsa_material_id');
     }
 }

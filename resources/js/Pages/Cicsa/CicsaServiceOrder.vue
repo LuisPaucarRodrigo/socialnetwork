@@ -130,7 +130,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900"
-                                        @click="openEditFeasibilityModal(item.id, item.cicsa_service_order)">
+                                        @click="openEditFeasibilityModal(item.id, item.cicsa_service_order, item.cicsa_purchase_order?.oc_number)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -152,7 +152,7 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Orden de Servicio' : 'Nueva Orden de Servicio' }}
+                    {{ form.id ? 'Editar Orden de Servicio' : 'Nueva Orden de Servicio' }} {{ oc_number ? ": " + oc_number : "" }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -277,6 +277,7 @@ const { service_order, auth } = defineProps({
 })
 
 const service_orders = ref(service_order)
+const oc_number = ref(null)
 
 const initialState = {
     id: null,
@@ -307,7 +308,8 @@ function closeAddAssignationModal() {
 
 const confirmUpdateAssignation = ref(false);
 
-function openEditFeasibilityModal(cicsa_assignation_id, item) {
+function openEditFeasibilityModal(cicsa_assignation_id, item, oc) {
+    oc_number.value = oc
     form.defaults({ cicsa_assignation_id: cicsa_assignation_id, ...item })
     form.reset()
     showAddEditModal.value = true
