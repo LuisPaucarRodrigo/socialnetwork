@@ -220,6 +220,7 @@ class HuaweiProjectController extends Controller
                     'employee_id' => $employeeData['employee']['id'],
                     'huawei_project_id' => $project->id,
                     'role' => $employeeData['charge'],
+                    'cost' => $employeeData['cost']
                 ]);
             }
         }
@@ -316,10 +317,28 @@ class HuaweiProjectController extends Controller
         HuaweiProjectEmployee::create([
             'huawei_project_id' => $huawei_project->id,
             'employee_id' => $request->employee['id'],
-            'role' => $request->charge
+            'role' => $request->charge,
+            'cost' => $request->cost
 
         ]);
         return redirect()->back();
+    }
+
+    public function edit_employee (HuaweiProject $huawei_project, HuaweiProjectEmployee $id, Request $request)
+    {
+        if (!$huawei_project->status){
+            abort(403, 'Acción no permitida');
+        }
+
+        $request->validate([
+            'charge' => 'required',
+            'cost' => 'required'
+        ]);
+
+        $id->update([
+            'role' => $request->charge,
+            'cost' => $request->cost
+        ]);
     }
 
     //Sites
@@ -417,8 +436,37 @@ class HuaweiProjectController extends Controller
 
     public function getCostSummary (HuaweiProject $huawei_project)
     {
+        $additionalCosts = $huawei_project->huawei_additional_costs->sum('amount');
+        $acArr = $huawei_project->huawei_additional_costs()
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $acExpensesAmounts = $acArr->map(function($cost){
+            return [
+                'expense_type' => $cost->expense_type,
+                'total_amount' => $cost->total_amount
+            ];
+        })->toArray();
+
+
+        $staticCosts = $huawei_project->huawei_static_costs->sum('amount');
+        $scArr = $huawei_project->huawei_static_costs()
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $scExpensesAmounts = $scArr->map(function($cost) {
+            return [
+                'expense_type' => $cost->expense_type,
+                'total_amount' => $cost->total_amount,
+            ];
+        })->toArray();
+
         return Inertia::render('Huawei/CostSummary', [
-            'huawei_project' => $huawei_project
+            'huawei_project' => $huawei_project,
+            'additionalCosts' => $additionalCosts,
+            'acExpensesAmounts' => $acExpensesAmounts,
+            'scExpensesAmounts' => $scExpensesAmounts,
+            'staticCosts' => $staticCosts,
         ]);
     }
 
@@ -694,7 +742,7 @@ class HuaweiProjectController extends Controller
         return redirect()->back();
     }
 
-    public function updateStaticCosts ($huawei_project, HuaweiStaticCost $huawei_static_cost, Request $request)
+    public function updateStaticCosts ($huawei_project, HuaweiStaticCost $static_additional_cost, Request $request)
     {
         $found_project = HuaweiProject::find($huawei_project);
 
@@ -707,7 +755,7 @@ class HuaweiProjectController extends Controller
             'ruc' => [
                 'required',
                 'digits:11',
-                Rule::unique('huawei_static_costs')->ignore($huawei_static_cost->id)->where(function ($query) use ($huawei_project) {
+                Rule::unique('huawei_static_costs')->ignore($static_additional_cost->id)->where(function ($query) use ($huawei_project) {
                     return $query->where('huawei_project_id', $huawei_project);
                 })
             ],
@@ -715,7 +763,7 @@ class HuaweiProjectController extends Controller
             'type_doc' => 'required',
             'ruc' => [
                 'required',
-                Rule::unique('huawei_static_costs')->ignore($huawei_static_cost->id)->where(function ($query) use ($huawei_project) {
+                Rule::unique('huawei_static_costs')->ignore($static_additional_cost->id)->where(function ($query) use ($huawei_project) {
                     return $query->where('huawei_project_id', $huawei_project);
                 })
             ],
@@ -727,8 +775,8 @@ class HuaweiProjectController extends Controller
 
         $documentName = null;
         if ($request->hasFile('archive')){
-            if ($huawei_static_cost->archive){
-                $fileName = $huawei_static_cost->archive;
+            if ($static_additional_cost->archive){
+                $fileName = $static_additional_cost->archive;
                 $filePath = "documents/huawei/static_costs/$fileName";
                 $path = public_path($filePath);
                 if (file_exists($path)){
@@ -740,7 +788,7 @@ class HuaweiProjectController extends Controller
             $document->move(public_path('documents/huawei/static_costs'), $documentName);
         }
 
-        $huawei_static_cost->update([
+        $static_additional_cost->update([
             'expense_type' => $request->expense_type,
             'ruc' => $request->ruc,
             'zone' => $request->zone,
@@ -750,7 +798,7 @@ class HuaweiProjectController extends Controller
             'amount' => $request->amount,
             'description' => $request->description,
             'huawei_project_id' => $huawei_project,
-            'archive' => $request->hasFile('archive') ? $documentName : $huawei_static_cost->archive
+            'archive' => $request->hasFile('archive') ? $documentName : $static_additional_cost->archive
         ]);
 
         return redirect()->back();
@@ -782,7 +830,7 @@ class HuaweiProjectController extends Controller
         return response()->json($result, 200);
     }
 
-    public function deleteStaticCost ($huawei_project, HuaweiStaticCost $huawei_static_cost)
+    public function deleteStaticCost ($huawei_project, HuaweiStaticCost $static_additional_cost)
     {
         $found_project = HuaweiProject::find($huawei_project);
 
@@ -790,8 +838,8 @@ class HuaweiProjectController extends Controller
             abort(403, 'Acción no permitida');
         }
 
-        if ($huawei_static_cost->archive){
-            $fileName = $huawei_static_cost->archive;
+        if ($static_additional_cost->archive){
+            $fileName = $static_additional_cost->archive;
             $filePath = "documents/huawei/static_costs/$fileName";
             $path = public_path($filePath);
             if (file_exists($path)){
@@ -799,14 +847,14 @@ class HuaweiProjectController extends Controller
             }
         }
 
-        $huawei_static_cost->delete();
+        $static_additional_cost->delete();
         return redirect()->back();
     }
 
-    public function showStaticArchive (HuaweiStaticCost $huawei_static_cost)
+    public function showStaticArchive (HuaweiStaticCost $static_additional_cost)
     {
-        if ($huawei_static_cost->archive){
-            $fileName = $huawei_static_cost->archive;
+        if ($static_additional_cost->archive){
+            $fileName = $static_additional_cost->archive;
             $filePath = '/documents/huawei/static_costs/' . $fileName;
             $path = public_path($filePath);
             if (file_exists($path)) {
@@ -831,7 +879,7 @@ class HuaweiProjectController extends Controller
                   ->orWhere('doc_number', 'like', '%' . $searchTerm . '%');
         });
         $filteredAdditionalCosts = $query->get();
-        return Inertia::render('Huawei/AdditionalCosts', [
+        return Inertia::render('Huawei/StaticCosts', [
             'additional_costs' => $filteredAdditionalCosts,
             'huawei_project' => $huawei_project,
             'search' => $request
