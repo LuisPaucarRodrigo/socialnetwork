@@ -124,7 +124,7 @@
                         class="text-gray-500 text-sm mt-1">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
-                                :href="route('huawei.projects.additionalcosts', { huawei_project: item.id })"
+                                :href="route('huawei.projects.additionalcosts.summary', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Costos Adicionales
                             </Link>
