@@ -32,7 +32,7 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistCar::with('user')->paginate(20);
         return Inertia::render(
-            'ProjectArea/image/Checklist/ChecklistCar',
+            'ProjectArea/Checklist/ChecklistCar',
             ['checklists' => $checklistcar]
         );
     }
@@ -41,7 +41,7 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistCar::find($id);
         return $this->openNewWindowArchive(
-            '/image/image/checklist/checklistcar/',
+            '/image/checklist/checklistcar/',
             $checklistcar->$photoProp
         );
     }
@@ -67,7 +67,7 @@ class ChecklistsController extends Controller
     {
         $checklisttoolkit = ChecklistToolkit::with('user')->paginate(20);
         return Inertia::render(
-            'ProjectArea/image/Checklist/ChecklistToolkit',
+            'ProjectArea/Checklist/ChecklistToolkit',
             ['checklists' => $checklisttoolkit]
         );
     }
@@ -76,7 +76,7 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistToolkit::find($id);
         return $this->openNewWindowArchive(
-            '/image/image/checklist/checklisttoolkit/',
+            '/image/checklist/checklisttoolkit/',
             $checklistcar->$photoProp
         );
     }
