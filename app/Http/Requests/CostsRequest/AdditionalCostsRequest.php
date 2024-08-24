@@ -35,6 +35,7 @@ class AdditionalCostsRequest extends FormRequest
             'provider_id' => 'nullable',
             'description' => 'required|string',
             'photo' => 'nullable',
+            'igv' => 'required',
             'project_id' => 'nullable' // Cambiar 'required' a 'nullable'
         ];
 

@@ -25,6 +25,7 @@
                         + Agregar
                     </PrimaryButton>
                     <PrimaryButton
+                        data-tooltip-target="update_data_tooltip"
                         type="button"
                         @click="
                             router.visit(
@@ -49,8 +50,17 @@
                             />
                         </svg>
                     </PrimaryButton>
+                    <div
+                        id="update_data_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Actualizar
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
 
                     <button
+                        data-tooltip-target="export_tooltip"
                         type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                         @click="openExportExcel"
@@ -69,6 +79,14 @@
                             />
                         </svg>
                     </button>
+                    <div
+                        id="export_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Exportar Excel
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
 
                     <button
                         type="button"
@@ -103,6 +121,14 @@
                             </g>
                         </svg>
                     </button>
+                    <div
+                        id="export_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Imporat Excel
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
 
                 <div class="sm:hidden">
@@ -287,6 +313,11 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
+                            Monto sin IGV
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
                             Archivo
                         </th>
                         <th
@@ -352,6 +383,11 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
                             S/. {{ item.amount.toFixed(2) }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                        >
+                            S/. {{ item.real_amount.toFixed(2) }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -429,6 +465,19 @@
                             }}
                         </td>
                         <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
+                        >
+                            S/.
+                            {{
+                                dataToRender
+                                    .reduce(
+                                        (a, item) => a + item.real_amount,
+                                        0
+                                    )
+                                    .toFixed(2)
+                            }}
+                        </td>
+                        <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
                         <td
@@ -482,7 +531,8 @@
                                         <option>Chala</option>
                                         <option>Moquegua</option>
                                         <option>Tacna</option>
-                                        <option>MDD</option>
+                                        <option>MDD1</option>
+                                        <option>MDD2</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -632,10 +682,39 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
+
                             <div
                                 v-if="
                                     form.type_doc === 'Factura' &&
-                                    form.zone !== 'MDD'
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
+                                "
+                            >
+                                <InputLabel
+                                    for="igv"
+                                    class="font-medium leading-6 text-gray-900"
+                                >
+                                    IGV (%)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div class="flex gap-3 items-center">
+                                        <input
+                                            type="number"
+                                            step="1"
+                                            max="100"
+                                            v-model="form.igv"
+                                            id="igv"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />%
+                                    </div>
+
+                                    <InputError :message="form.errors.igv" />
+                                </div>
+                            </div>
+
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
                                 "
                             >
                                 <InputLabel
@@ -649,9 +728,10 @@
                                         class="font-medium leading-6 text-gray-900"
                                         >{{
                                             form.amount
-                                                ? (form.amount / 1.18).toFixed(
-                                                      4
-                                                  )
+                                                ? (
+                                                      form.amount /
+                                                      (1 + form.igv / 100)
+                                                  ).toFixed(4)
                                                 : 0
                                         }}</InputLabel
                                     >
@@ -739,7 +819,8 @@
                                         <option>Chala</option>
                                         <option>Moquegua</option>
                                         <option>Tacna</option>
-                                        <option>MDD</option>
+                                        <option>MDD1</option>
+                                        <option>MDD2</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -892,7 +973,34 @@
                             <div
                                 v-if="
                                     form.type_doc === 'Factura' &&
-                                    form.zone !== 'MDD'
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
+                                "
+                            >
+                                <InputLabel
+                                    for="igv"
+                                    class="font-medium leading-6 text-gray-900"
+                                >
+                                    IGV (%)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div class="flex gap-3 items-center">
+                                        <input
+                                            type="number"
+                                            step="1"
+                                            max="100"
+                                            v-model="form.igv"
+                                            id="igv"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />%
+                                    </div>
+
+                                    <InputError :message="form.errors.igv" />
+                                </div>
+                            </div>
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
                                 "
                             >
                                 <InputLabel
@@ -906,9 +1014,10 @@
                                         class="font-medium leading-6 text-gray-900"
                                         >{{
                                             form.amount
-                                                ? (form.amount / 1.18).toFixed(
-                                                      4
-                                                  )
+                                                ? (
+                                                      form.amount /
+                                                      (1 + form.igv / 100)
+                                                  ).toFixed(4)
                                                 : 0
                                         }}</InputLabel
                                     >
@@ -1145,6 +1254,7 @@ const form = useForm({
     description: "",
     photo: "",
     amount: "",
+    igv: 0,
     photo_status: "stable",
 });
 
@@ -1170,11 +1280,8 @@ const openEditAdditionalModal = (additional) => {
     form.type_doc = editingAdditional.value.type_doc;
     form.doc_number = editingAdditional.value.doc_number;
     form.doc_date = editingAdditional.value.doc_date;
-    form.amount =
-        editingAdditional.value.type_doc === "Factura" &&
-        editingAdditional.value.zone !== "MDD"
-            ? (editingAdditional.value.amount * 1.18).toFixed(2)
-            : editingAdditional.value.amount;
+    form.amount = editingAdditional.value.amount;
+    form.igv = editingAdditional.value.igv;
     form.description = editingAdditional.value.description;
     form.zone = editingAdditional.value.zone;
     form.provider_id = editingAdditional.value.provider_id;
@@ -1290,7 +1397,7 @@ function handlerPreview(id) {
 
 const filterForm = ref({
     search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD"],
+    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"],
     selectedExpenseTypes: [
         "Hospedaje",
         "Movilidad",
@@ -1313,7 +1420,7 @@ const filterForm = ref({
     ],
 });
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD"];
+const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
 const expenseTypes = [
     "Hospedaje",
     "Movilidad",
@@ -1408,4 +1515,15 @@ function openExportExcel() {
         uniqueParam;
     window.location.href = url;
 }
+
+watch([() => form.type_doc, () => form.zone], () => {
+    if (
+        form.type_doc === "Factura" &&
+        !["", "MDD1", "MDD2"].includes(form.zone)
+    ) {
+        form.igv = form.igv ? form.igv : 18;
+    } else {
+        form.igv = 0;
+    }
+});
 </script>
