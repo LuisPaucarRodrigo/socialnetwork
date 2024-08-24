@@ -1,5 +1,5 @@
 <template>
-    <Head title="Editar Proveedor" />
+    <Head title="Editar Usuario" />
     <AuthenticatedLayout :redirectRoute="'users.index'">
         <template #header>
             Usuario
@@ -70,6 +70,10 @@
             </div>
         </form>
 
+        <div class="mt-2 shadow sm:rounded-lg">
+                    <UpdatePasswordForm class="max-w-xl" :user_id="props.users.id"/>
+                </div>
+
         <ConfirmUpdateModal :confirmingupdate="showModal" itemType="Usuario" />
         <ErrorOperationModal :showError="errorModal" :title="'Error'" :message="'Ha ocurrido un error'" />
 
@@ -85,6 +89,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import { ref } from 'vue';
+import UpdatePasswordForm from '../Profile/Partials/UpdatePasswordForm.vue';
 
 const props = defineProps({
     users: {

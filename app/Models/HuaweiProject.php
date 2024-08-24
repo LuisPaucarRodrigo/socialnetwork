@@ -30,7 +30,8 @@ class HuaweiProject extends Model
         'materials_liquidated',
         'equipments_liquidated',
         'total_earnings',
-        'total_project_cost'
+        'total_project_cost',
+        //'total_employee_costs'
     ];
 
     public function huawei_site ()
@@ -41,6 +42,11 @@ class HuaweiProject extends Model
     public function huawei_additional_costs ()
     {
         return $this->hasMany(HuaweiAdditionalCost::class, 'huawei_project_id');
+    }
+
+    public function huawei_static_costs ()
+    {
+        return $this->hasMany(HuaweiStaticCost::class, 'huawei_project_id');
     }
 
     public function huawei_project_employees ()
@@ -79,7 +85,7 @@ class HuaweiProject extends Model
 
         $details = HuaweiEntryDetail::where('assigned_diu', $this->assigned_diu)
                 ->get();
-                
+
         $detail = $details->first(function ($detail) {
             return $detail->state === 'Disponible';
         });
@@ -163,4 +169,45 @@ class HuaweiProject extends Model
     {
         return $this->additional_cost_total + $this->materials_in_project + $this->materials_liquidated;
     }
+
+
+    // public function getTotalEmployeeCostsAttribute()
+    // {
+    //     return [
+    //         [
+    //             'type' => 'Lider',
+    //             'total_payroll' => $this->employeeChargeCosts('Lider'),
+    //             'essalud' => $this->employeeChargeCosts('Lider') * 0.09
+    //         ],
+    //         [
+    //             'type' => 'Sublider' ,
+    //             'total_payroll' => $this->employeeChargeCosts('Sublider'),
+    //             'essalud' => $this->employeeChargeCosts('Sublider') * 0.09
+    //         ],
+    //         [
+    //             'type' => 'Supervisor' ,
+    //             'total_payroll' => $this->employeeChargeCosts('Supervisor'),
+    //             'essalud' => $this->employeeChargeCosts('Supervisor') * 0.09
+    //         ],
+    //         [
+    //             'type' => 'Trabajador' ,
+    //             'total_payroll' => $this->employeeChargeCosts('Trabajador'),
+    //             'essalud' => $this->employeeChargeCosts('Trabajador') * 0.09
+    //         ],
+    //     ];
+    // }
+
+    // public function employeeChargeCosts($type)
+    // {
+    //     $days = $this->getDaysAttribute();
+    //     $totalMonthSalary = $this->project_employee()->where('charge', $type)->get()->sum(function ($item) use ($days) {
+    //         return $item->salary_per_day * $days;
+    //     });
+    //     return $totalMonthSalary;
+    // }
+
+    // public function getDaysAttribute()
+    // {
+    //     return optional($this->preproject()->first()->quote)->deliverable_time;
+    // }
 }

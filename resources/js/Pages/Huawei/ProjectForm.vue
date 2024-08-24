@@ -144,11 +144,17 @@
                                     <div v-for="(member, index) in form.employees" :key="index"
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
-                                            member.employee.lastname }}: {{ member.charge }} </p>
-                                        <button v-if="hasPermission('UserManager')"  type="button" @click="delete_already_employee(member.id, index)"
-                                            class="col-span-1 flex justify-end">
-                                            <TrashIcon class=" text-red-500 h-4 w-4 " />
-                                        </button>
+                                            member.employee.lastname }}: {{ member.charge }} - S/. {{ member.cost.toFixed(2) }} </p>
+                                        <div class="flex gap-2">
+                                            <button type="button" @click="edit_employee(member)"
+                                                class="col-span-1 flex justify-end">
+                                                <PencilSquareIcon class=" text-yellow-500 h-5 w-5 " />
+                                            </button>
+                                            <button type="button" @click="delete_already_employee(member.id, index)"
+                                                class="col-span-1 flex justify-end">
+                                                <TrashIcon class=" text-red-500 h-5 w-5 " />
+                                            </button>
+                                        </div>
                                         <div class="border-b col-span-8 border-gray-900/10">
                                         </div>
                                     </div>
@@ -158,7 +164,7 @@
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
                                             member.employee.lastname }}: {{ member.charge }} </p>
-                                        <button v-if="hasPermission('UserManager')" type="button" @click="delete_employee(index)"
+                                        <button type="button" @click="delete_employee(index)"
                                             class="col-span-1 flex justify-end">
                                             <TrashIcon class=" text-red-500 h-4 w-4 " />
                                         </button>
@@ -207,9 +213,52 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel class="font-medium leading-6 text-gray-900">Costo de Planilla</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" min="0" step="0.01" v-model="employeeToAdd.cost" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            </div>
+                        </div>
                     </div>
                     <div class="mt-6 flex gap-3 justify-end">
                         <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
+                        <PrimaryButton type="submit"> Agregar </PrimaryButton>
+                    </div>
+                </form>
+            </Modal>
+
+            <Modal :show="edit_employee_modal">
+                <form class="p-6" @submit.prevent="submit_edit_employee">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        Editar miembro
+                    </h2>
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                        <div class="sm:col-span-3">
+                            <InputLabel class="font-medium leading-6 text-gray-900">Rol de la persona</InputLabel>
+                            <div class="mt-2">
+                                <select required id="type" v-model="edit_employee_form.charge"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccione uno</option>
+                                    <option value="lider">Lider</option>
+                                    <option value="sublider">Sublider</option>
+                                    <option value="supervisor">Supervisor</option>
+                                    <option value="trabajador">Trabajador</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <InputLabel class="font-medium leading-6 text-gray-900">Costo de Planilla</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" min="0" step="0.01" v-model="edit_employee_form.cost" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex gap-3 justify-end">
+                        <SecondaryButton type="button" @click="close_edit_employee"> Cerrar </SecondaryButton>
                         <PrimaryButton type="submit"> Agregar </PrimaryButton>
                     </div>
                 </form>
@@ -222,7 +271,8 @@
             :message="`El personal fue añadido.`" />
         <SuccessOperationModal :confirming="showPersonalRemoveModal" :title="`Personal removido.`"
             :message="`El personal fue removido.`"/>
-
+        <SuccessOperationModal :confirming="show_edit_employee" :title="`Personal actualizado.`"
+            :message="`El personal fue actualizado.`"/>
         <ErrorOperationModal :showError="alreadyEmployeeInProject" title="Empleado ya agregado" message="El empleado ya ha sido agregado al proyecto." />
 
   </AuthenticatedLayout>
@@ -237,7 +287,7 @@ import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { UserPlusIcon, TrashIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import { UserPlusIcon, TrashIcon, EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
@@ -287,6 +337,7 @@ if (props.huawei_project) {
         id: employee.id,
         employee: employee.employee,
         charge: employee.role,
+        cost: employee.cost
     })) : [];
 }
 
@@ -317,9 +368,11 @@ const submit = () => {
 const showModalMember = ref(false);
 const empInitState = { employee: '', charge: '' }
 const employeeToAdd = ref(JSON.parse(JSON.stringify(empInitState)))
-
+const edit_employee_modal = ref(false);
 const showPersonalAddModal = ref(false);
 const showPersonalRemoveModal = ref(false);
+const editingMember = ref(null);
+const show_edit_employee = ref(false);
 
 const showToAddEmployee = () => {
     showModalMember.value = true;
@@ -396,4 +449,37 @@ const delete_already_employee = (pivot_id, index) => {
         }
     })
 }
+
+const edit_employee_form = useForm({
+    id: '',
+    charge: '',
+    cost: ''
+});
+
+const edit_employee = (item) => {
+    editingMember.value = JSON.parse(JSON.stringify(item));
+    edit_employee_form.id = editingMember.value.id;
+    edit_employee_form.charge = editingMember.value.charge;
+    edit_employee_form.cost = editingMember.value.cost;
+    edit_employee_modal.value = true;
+}
+
+const close_edit_employee = () => {
+    editingMember.value = null;
+    edit_employee_form.reset();
+    edit_employee_form.clearErrors(),
+    edit_employee_modal.value = false;
+}
+const submit_edit_employee = () => {
+    edit_employee_form.put(route('huawei.projects.editemployee', {huawei_project: props.huawei_project.id, id: edit_employee_form.id}), {
+        onSuccess: () => {
+            close_edit_employee();
+            show_edit_employee.value = true;
+            setTimeout(() => {
+                show_edit_employee.value = false;
+            }, 2000);
+        }
+    })
+}
+
 </script>
