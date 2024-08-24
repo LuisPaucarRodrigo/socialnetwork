@@ -25,6 +25,10 @@ class StaticCost extends Model
         'photo'
     ];
 
+    protected $appends = [
+        'real_amount'
+    ];
+
     public function project(){
         return $this->belongsTo(Project::class, 'project_id');
     }
@@ -33,7 +37,7 @@ class StaticCost extends Model
         return $this->belongsTo(Provider::class, 'provider_id');
     }
 
-    public function real_amount() {
-        
+    public function getRealAmountAttribute() {
+        return $this->amount*(1+$this->igv/100);
     }
 }
