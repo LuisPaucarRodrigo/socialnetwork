@@ -245,6 +245,10 @@ class ChecklistsController extends Controller
             $docDate = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
             $data['doc_date'] = $docDate->format('Y-m-d');
 
+            if (($data['zone']!=='MDD1'&& $data['zone']!=='MDD2') && $data['type_doc'] === 'Factura' ) {
+                $data['igv'] = 18;
+            }
+
             if ($data['photo']) {
                 $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');
             }
