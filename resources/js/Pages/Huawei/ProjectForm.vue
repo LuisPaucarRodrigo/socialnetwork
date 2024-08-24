@@ -146,7 +146,7 @@
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
                                             member.employee.lastname }}: {{ member.charge }} - S/. {{ member.cost.toFixed(2) }} </p>
                                         <div class="flex gap-2">
-                                            <button type="button" @click="edit_employee(member)"
+                                            <button type="button" @click="edit_employee(member, index)"
                                                 class="col-span-1 flex justify-end">
                                                 <PencilSquareIcon class=" text-yellow-500 h-5 w-5 " />
                                             </button>
@@ -194,7 +194,7 @@
                                 <select required id="type" v-model="employeeToAdd.employee"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione uno</option>
-                                    <option v-for="item in props.employees" :key="item.id" :value="item">{{ item.name }} {{
+                                    <option v-for="item in available_employees" :key="item.id" :value="item">{{ item.name }} {{
                                         item.lastname }}</option>
                                 </select>
                             </div>
@@ -285,7 +285,7 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { UserPlusIcon, TrashIcon, EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -373,6 +373,27 @@ const showPersonalAddModal = ref(false);
 const showPersonalRemoveModal = ref(false);
 const editingMember = ref(null);
 const show_edit_employee = ref(false);
+const employee_edit_index = ref(null);
+const available_employees = ref([...props.employees]);
+
+const filterAvailableEmployees = () => {
+  // Filtra empleados que no tienen el mismo `id` que los empleados en `form.employees`
+  available_employees.value = props.employees.filter(employee =>
+  !form.employees.some(emp => emp.employee.id === employee.id)
+);
+};
+
+// Ejecutamos el filtro cuando se carga el componente
+filterAvailableEmployees();
+
+// Observamos los cambios en form.employees y actualizamos available_employees
+watch(
+  () => form.employees,
+  () => {
+    filterAvailableEmployees();
+  },
+  { deep: true }
+);
 
 const showToAddEmployee = () => {
     showModalMember.value = true;
@@ -456,8 +477,9 @@ const edit_employee_form = useForm({
     cost: ''
 });
 
-const edit_employee = (item) => {
+const edit_employee = (item, index) => {
     editingMember.value = JSON.parse(JSON.stringify(item));
+    employee_edit_index.value = index;
     edit_employee_form.id = editingMember.value.id;
     edit_employee_form.charge = editingMember.value.charge;
     edit_employee_form.cost = editingMember.value.cost;
@@ -473,6 +495,8 @@ const close_edit_employee = () => {
 const submit_edit_employee = () => {
     edit_employee_form.put(route('huawei.projects.editemployee', {huawei_project: props.huawei_project.id, id: edit_employee_form.id}), {
         onSuccess: () => {
+            form.employees[employee_edit_index.value].charge = edit_employee_form.charge
+            form.employees[employee_edit_index.value].cost = edit_employee_form.cost
             close_edit_employee();
             show_edit_employee.value = true;
             setTimeout(() => {
