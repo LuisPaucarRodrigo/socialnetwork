@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Huawei;
 
+use App\Exports\HuaweiAdditionalCostExport;
 use App\Exports\HuaweiProjectEarningsExport;
+use App\Exports\HuaweiStaticCostExport;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\HuaweiProject;
@@ -20,6 +22,7 @@ use App\Models\HuaweiProjectResource;
 use Illuminate\Validation\Rule;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\HuaweiPriceGuide;
+use App\Models\HuaweiProjectRealEarning;
 use App\Models\HuaweiStaticCost;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
@@ -312,6 +315,13 @@ class HuaweiProjectController extends Controller
     {
         if (!$huawei_project->status){
             abort(403, 'Acción no permitida');
+        }
+
+        $employeeId = $request->employee['id'];
+
+        // Verifica si el empleado ya está asociado al proyecto
+        if ($huawei_project->huawei_project_employees->contains('employee_id', $employeeId)) {
+            abort(403, 'El empleado ya está asociado a este proyecto');
         }
 
         HuaweiProjectEmployee::create([
@@ -677,6 +687,11 @@ class HuaweiProjectController extends Controller
         ]);
     }
 
+    public function exportAdditionalCosts (HuaweiProject $huawei_project)
+    {
+        return Excel::download(new HuaweiAdditionalCostExport($huawei_project->id), 'Gastos Variables de '. $huawei_project->assigned_diu .'.xlsx');
+    }
+
     //static costs
 
     public function getStaticCosts (HuaweiProject $huawei_project)
@@ -884,6 +899,11 @@ class HuaweiProjectController extends Controller
             'huawei_project' => $huawei_project,
             'search' => $request
         ]);
+    }
+
+    public function exportStaticCosts (HuaweiProject $huawei_project)
+    {
+        return Excel::download(new HuaweiStaticCostExport($huawei_project->id), 'Gastos Fijos de '. $huawei_project->assigned_diu .'.xlsx');
     }
 
     //resources
@@ -1250,7 +1270,7 @@ class HuaweiProjectController extends Controller
 
     public function getEarnings (HuaweiProject $huawei_project)
     {
-        $earnings = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->orderBy('updated_at', 'desc')->paginate(10);
+        $earnings = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->orderBy('created_at', 'desc')->paginate(10);
         $total = HuaweiProjectEarning::where('huawei_project_id', $huawei_project->id)->get()->reduce(function ($carry, $item) {
             return $carry + ($item->unit_price * $item->quantity);
         }, 0);
@@ -1418,5 +1438,95 @@ class HuaweiProjectController extends Controller
     public function exportEarnings (HuaweiProject $huawei_project)
     {
         return Excel::download(new HuaweiProjectEarningsExport($huawei_project->id), 'Trabajos_de_'. $huawei_project->assigned_diu .'.xlsx');
+    }
+
+    //real_earnings
+
+    public function getRealEarnings (HuaweiProject $huawei_project)
+    {
+        $real_earnings = HuaweiProjectRealEarning::where('huawei_project_id', $huawei_project->id)->orderBy('created_at', 'desc')->paginate(10);
+        $total = HuaweiProjectRealEarning::where('huawei_project_id', $huawei_project->id)->get()->reduce(function ($carry, $item) {
+            return $carry + ($item->amount);
+        }, 0);
+
+        return Inertia::render('Huawei/ProjectRealEarnings', [
+            'real_earnings' => $real_earnings,
+            'total' => $total,
+            'huawei_project' => $huawei_project
+        ]);
+    }
+
+    public function searchRealEarnings (HuaweiProject $huawei_project, $request)
+    {
+        $searchTerm = strtolower($request);
+        $query = HuaweiProjectRealEarning::where('huawei_project_id', $huawei_project->id);
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(invoice_number) LIKE ?', ["%{$searchTerm}%"]);
+            });
+
+        $earnings = $query->orderBy('updated_at', 'desc')->get();
+        $total = $earnings->reduce(function ($carry, $item) {
+            return $carry + ($item->unit_price * $item->quantity);
+        }, 0);
+
+        return Inertia::render('Huawei/ProjectEarnings', [
+            'earnings' => $earnings,
+            'huawei_project' => $huawei_project,
+            'search' => $request,
+            'total' => $total
+        ]);
+    }
+
+    public function storeRealEarning (Request $request)
+    {
+        $found_project = HuaweiProject::find($request->huawei_project_id);
+
+        if (!$found_project->status) {
+            return abort(403, 'Acción no permitida');
+        }
+
+        $data = $request->validate([
+            'invoice_number' => 'required',
+            'amount' => 'required',
+            'invoice_date' => 'required',
+            'deposit_date' => 'required'
+        ]);
+
+        $data['huawei_project_id'] = $request->huawei_project_id;
+        HuaweiProjectRealEarning::create($data);
+        return redirect()->back();
+    }
+
+    public function updateRealEarning (HuaweiProjectRealEarning $huawei_project_real_earning, Request $request)
+    {
+        $found_project = HuaweiProject::find($request->huawei_project_id);
+
+        if (!$found_project->status) {
+            return abort(403, 'Acción no permitida');
+        }
+
+        $data = $request->validate([
+            'invoice_number' => 'required',
+            'amount' => 'required',
+            'invoice_date' => 'required',
+            'deposit_date' => 'required'
+        ]);
+
+        $huawei_project_real_earning->update($data);
+
+        return redirect()->back();
+    }
+
+    public function deleteRealEarning (HuaweiProjectRealEarning $huawei_project_real_earning)
+    {
+        $found_project = HuaweiProject::find($huawei_project_real_earning->huawei_project_id);
+
+        if (!$found_project->status) {
+            return abort(403, 'Acción no permitida');
+        }
+
+        $huawei_project_real_earning->delete();
+        return redirect()->back();
     }
 }
