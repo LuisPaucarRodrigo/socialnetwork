@@ -38,6 +38,6 @@ class StaticCost extends Model
     }
 
     public function getRealAmountAttribute() {
-        return $this->amount*(1+$this->igv/100);
+        return $this->amount/(1+$this->igv/100);
     }
 }
