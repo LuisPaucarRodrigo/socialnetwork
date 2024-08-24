@@ -1280,7 +1280,6 @@ const openEditAdditionalModal = (additional) => {
     form.type_doc = editingAdditional.value.type_doc;
     form.doc_number = editingAdditional.value.doc_number;
     form.doc_date = editingAdditional.value.doc_date;
-    form.amount = editingAdditional.value.amount;
     form.igv = editingAdditional.value.igv;
     form.description = editingAdditional.value.description;
     form.zone = editingAdditional.value.zone;
