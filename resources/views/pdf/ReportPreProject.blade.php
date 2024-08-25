@@ -74,7 +74,7 @@
 
             @foreach ($code->imagecodepreprojet as $image)
             <div class="photo">
-                <img class="centered-text" src="image/imagereportpreproject/{{ $image->image }}" alt="{{ $image->description }}">
+                <img class="centered-text" style="width: 300px; height: 400px;" src="image/imagereportpreproject/{{ $image->image }}" alt="{{ $image->description }}">
                 <p class="centered-text" class="centered-text">Lat:{{ $image->lat }} Lon:{{ $image->lon }}</p>
                 <p class="centered-text" class="centered-text">Foto{{ $loop->iteration }}: {{ $image->description }}</p>
             </div>

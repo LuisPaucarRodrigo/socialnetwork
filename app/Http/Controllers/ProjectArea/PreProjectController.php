@@ -886,30 +886,29 @@ class PreProjectController extends Controller
 
     public function postTitle(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'title' => 'required',
-            'code_id_array' => 'required'
+            'type' => 'required',
+            'code_id_array' => 'required|array'
         ]);
 
-        $title = Title::create([
-            'title' => $request->title,
-        ]);
+        $title = Title::create($data);
 
-        $title->codes()->attach($request->code_id_array);
+        $title->codes()->attach($data['code_id_array']);
     }
 
-    public function putTitle(Request $request, Title $title)
+    public function putTitle(Request $request, $title_id)
     {
-        $request->validate([
+        $data = $request->validate([
             'title' => 'required',
-            'code_id_array' => 'required'
+            'type' => 'required',
+            'code_id_array' => 'required|array'
         ]);
 
-        $title->update([
-            'title' => $request->title,
-        ]);
+        $title = Title::find($title_id);
+        $title->update($data);
 
-        $title->codes()->sync($request->code_id_array, ['timestamps' => true]);
+        $title->codes()->sync($data['code_id_array'], ['timestamps' => true]);
     }
 
     public function deleteTitle(Title $title)
