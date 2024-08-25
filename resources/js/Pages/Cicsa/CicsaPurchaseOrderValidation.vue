@@ -187,20 +187,6 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="materials_control">Control de Materiales</InputLabel>
-                            <div class="mt-2">
-                                <select v-model="form.materials_control" id="materials_control"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="" disabled>Seleccione una opción</option>
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="En Proceso">En Proceso</option>
-                                    <option value="Completado">Completado</option>
-                                </select>
-                                <InputError :message="form.errors.materials_control" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
                             <InputLabel for="file_validation">Validacion de expediente</InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.file_validation" id="file_validation"
@@ -211,6 +197,20 @@
                                     <option value="Completado">Completado</option>
                                 </select>
                                 <InputError :message="form.errors.file_validation" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <InputLabel for="materials_control">Control de Materiales</InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.materials_control" id="materials_control"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccione una opción</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
+                                    <option value="Completado">Completado</option>
+                                </select>
+                                <InputError :message="form.errors.materials_control" />
                             </div>
                         </div>
 
