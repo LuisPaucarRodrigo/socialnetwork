@@ -179,6 +179,7 @@ const close_edit_title = () => {
 const form = useForm({
     id: '',
     title: '',
+    type:'',
     code_id_array: [],
 });
 
@@ -190,7 +191,7 @@ const submit = () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
-                router.visit(route('preprojects.titles'))
+                router.get(route('preprojects.titles'))
             }, 2000);
         },
     });
@@ -204,14 +205,8 @@ const submitEdit = () => {
             showModalEdit.value = true
             setTimeout(() => {
                 showModalEdit.value = false;
-                router.visit(route('preprojects.titles'))
+                router.get(route('preprojects.titles'))
             }, 2000);
-        },
-        onError: () => {
-            form.reset();
-        },
-        onFinish: () => {
-            form.reset();
         }
     });
 };
@@ -220,6 +215,7 @@ const openEditTitleModal = (title) => {
     editingTitle.value = JSON.parse(JSON.stringify(title));
     form.id = editingTitle.value.id;
     form.title = editingTitle.value.title;
+    form.type = editingTitle.value.type;
     form.code_id_array = editingTitle.value.codes.map((item) => item.id);
 
     edit_title.value = true;
