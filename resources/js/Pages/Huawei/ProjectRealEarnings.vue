@@ -4,7 +4,7 @@
     <AuthenticatedLayout
       :redirectRoute="{ route: 'huawei.projects'}">
       <template #header>
-        Ingresos del Proyecto {{ props.huawei_project.name }}
+        Ingresos Reales del Proyecto {{ props.huawei_project.name }}
       </template>
       <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
     <!-- Botones principales visibles en pantallas grandes -->
@@ -17,7 +17,7 @@
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Importar Datos
         </button>
-        <a :href="route('huawei.projects.earnings.export', {huawei_project: props.huawei_project})" type="button"
+        <a :href="route('huawei.projects.realearnings.export', {huawei_project: props.huawei_project})" type="button"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Exportar Datos
         </a>
@@ -42,7 +42,7 @@
                         <button @click.prevent="openImportModal" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Importar Datos
                         </button>
-                        <a :href="route('huawei.projects.earnings.export', {huawei_project: props.huawei_project})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <a :href="route('huawei.projects.realearnings.export', {huawei_project: props.huawei_project})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Exportar Datos
                         </a>
                     </div>
@@ -91,7 +91,7 @@
           <tbody>
             <tr v-for="item in (props.search ? props.real_earnings : real_earnings.data)" :key="item.id" class="text-gray-700">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.invoice_number }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.amount.toFixed(2) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">S/. {{ item.amount.toFixed(2) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.invoice_date) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ formattedDate(item.deposit_date) }}</td>
               <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -123,29 +123,38 @@
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 
                         <div class="col-span-1">
-                            <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
+                            <InputLabel for="invoice_number" class="font-medium leading-6 text-gray-900">Nª de Factura</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.quantity" id="quantity"
+                                <input type="text" v-model="form.invoice_number" id="invoice_number"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.quantity" />
+                                <InputError :message="form.errors.invoice_number" />
                             </div>
                         </div>
 
                         <div class="col-span-1">
-                            <InputLabel for="unit_price" class="font-medium leading-6 text-gray-900">Precio Unitario</InputLabel>
+                            <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
                             <div class="mt-2">
-                                <input type="number" step="0.01" v-model="form.unit_price" id="unit_price"
+                                <input type="number" step="0.01" v-model="form.amount" id="amount"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.unit_price" />
+                                <InputError :message="form.errors.amount" />
                             </div>
                         </div>
 
-                        <div class="col-span-1 sm:col-span-2">
-                            <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción del Ingreso</InputLabel>
+                        <div class="col-span-1">
+                            <InputLabel for="invoice_date" class="font-medium leading-6 text-gray-900">Fecha de Facturación</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.description" id="description"
+                                <input type="date" v-model="form.invoice_date" id="invoice_date"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.description" />
+                                <InputError :message="form.errors.invoice_date" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="deposit_date" class="font-medium leading-6 text-gray-900">Fecha de Depósito</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.deposit_date" id="deposit_date"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.deposit_date" />
                             </div>
                         </div>
 
@@ -181,20 +190,6 @@
                                     <InputFile type="file" accept="xls,xlsx" v-model="importForm.file" id="file"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="importForm.errors.file" />
-                                </div>
-                            </div>
-                            <div class="col-span-2">
-                                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="importForm.zone" id="zone"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="" disabled>Seleccione una opción</option>
-                                        <option value="1">B1</option>
-                                        <option value="2">B2</option>
-                                        <option value="3">B3</option>
-                                        <option value="4">B4</option>
-                                    </select>
-                                    <InputError :message="importForm.errors.zone" />
                                 </div>
                             </div>
                         </div>
@@ -238,6 +233,7 @@ import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import { formattedDate } from '@/utils/utils';
 
 const props = defineProps({
   real_earnings: Object,
@@ -254,9 +250,10 @@ const hasPermission = (permission) => {
 
 const form = useForm({
   id: '',
-  description: '',
-  quantity: '',
-  unit_price: '',
+  invoice_number: '',
+  amount: '',
+  invoice_date: '',
+  deposit_date: '',
   huawei_project_id: props.huawei_project.id,
 });
 
@@ -306,10 +303,10 @@ const openEditAdditionalModal = (additional) => {
   // Copia de los datos de la subsección existente al formulario
   editingAdditional.value = JSON.parse(JSON.stringify(additional));
   form.id = editingAdditional.value.id;
-  form.description = editingAdditional.value.description;
-  form.quantity = editingAdditional.value.quantity;
-  form.unit_price = editingAdditional.value.unit_price;
-  form.huawei_project_id = editingAdditional.value.huawei_project_id;
+  form.invoice_number = editingAdditional.value.invoice_number;
+  form.amount = editingAdditional.value.amount;
+  form.invoice_date = editingAdditional.value.invoice_date;
+  form.deposit_date = editingAdditional.value.deposit_date;
 
   editAdditionalModal.value = true;
 };
@@ -323,7 +320,7 @@ const closeModals = () => {
 
 const submit = (update) => {
     if (!update){
-        form.post(route('huawei.projects.earnings.store'), {
+        form.post(route('huawei.projects.realearnings.store'), {
             onSuccess: () => {
             closeCreateModal();
             form.reset();
@@ -334,7 +331,7 @@ const submit = (update) => {
             }
         });
     }else{
-        form.put(route('huawei.projects.earnings.update', { huawei_project_earning: form.id }), {
+        form.put(route('huawei.projects.realearnings.update', { huawei_project_real_earning: form.id }), {
             onSuccess: () => {
             closeEditModal();
             form.reset();
@@ -348,7 +345,7 @@ const submit = (update) => {
 };
 
 const importExcel = () => {
-    importForm.post(route('huawei.projects.earnings.import', {huawei_project: props.huawei_project}), {
+    importForm.post(route('huawei.projects.realearnings.import', {huawei_project: props.huawei_project}), {
         onSuccess: () => {
             closeImportModal();
             confirmImport.value = true;
@@ -374,7 +371,7 @@ const closeModalDoc = () => {
 const deleteAdditional = () => {
   const docId = docToDelete.value;
   if (docId) {
-    router.delete(route('huawei.projects.earnings.delete', { huawei_project_earning: docId }), {
+    router.delete(route('huawei.projects.realearnings.delete', { huawei_project_real_earning: docId }), {
       onSuccess: () => closeModalDoc()
     });
   }
@@ -386,9 +383,9 @@ const searchForm = useForm({
 
 const search = () => {
     if (searchForm.searchTerm == ''){
-        router.visit(route('huawei.projects.earnings', {huawei_project: props.huawei_project.id}));
+        router.visit(route('huawei.projects.realearnings', {huawei_project: props.huawei_project.id}));
     }else{
-        router.visit(route('huawei.projects.earnings.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
+        router.visit(route('huawei.projects.realearnings.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
     }
 }
 

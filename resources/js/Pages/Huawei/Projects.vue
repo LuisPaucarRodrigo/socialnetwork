@@ -139,6 +139,11 @@
                                 Ingresos Proyectados
                             </Link>
                             <Link
+                                :href="route('huawei.projects.realearnings', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Ingresos Reales
+                            </Link>
+                            <Link
                                 :href="route('huawei.projects.liquidations', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Liquidaciones
