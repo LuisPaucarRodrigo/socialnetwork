@@ -16,9 +16,20 @@ use Illuminate\Support\Facades\Log;
 
 class AdditionalCostsController extends Controller
 {
-    public function index(Project $project_id)
+    public function index(Project $project_id, $state)
     {
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)
+            ->where(function($query) use ($state){
+                if($state === 'rechazados'){
+                    $query->where('is_accepted',0);
+                } else {
+                    $query->where('is_accepted',1)
+                        ->orWhere('is_accepted', null);
+                }
+            })
+            ->with('project', 'provider')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(20);
         $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
@@ -150,5 +161,14 @@ class AdditionalCostsController extends Controller
             'import_file' => 'required|mimes:xlsx,csv',
         ]);
         Excel::import(new CostsImport("App\\Models\\AdditionalCost" ,$project_id), $request->file('import_file'));
+    }
+
+    public function validateRegister(Request $request, $ac_id){
+        $ac = AdditionalCost::with('project', 'provider')
+            ->find($ac_id);
+        $ac->update([
+            'is_accepted'=>$request->is_accepted
+        ]);
+        return response()->json(['additional_cost'=>$ac], 200);
     }
 }
