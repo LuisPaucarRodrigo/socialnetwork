@@ -31,6 +31,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('/huawei/inventory/export/get', [HuaweiManagementController::class, 'exportInventory'])->name('huawei.inventory.export');
     Route::get('/huawei/inventory/general_equipments/get', [HuaweiManagementController::class, 'getGeneralEquipments'])->name('huawei.inventory.general.equipments');
     Route::get('/huawei/inventory/general_equipments/search/{request}', [HuaweiManagementController::class, 'searchGeneralEquipments'])->name('huawei.inventory.general.equipments.search');
+    Route::put('huawei/inventory/update_entry_detail_date/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateEntryDate'])->name('huawei.inventory.update.entrydetail');
+
 
     //projects
     Route::get('huawei/projects/show', [HuaweiProjectController::class, 'show'])->name('huawei.projects');
@@ -102,6 +104,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('huawei/projects/real_earnings/post', [HuaweiProjectController::class, 'storeRealEarning'])->name('huawei.projects.realearnings.store');
     Route::put('huawei/projects/real_earnings/{huawei_project_real_earning}/put', [HuaweiProjectController::class, 'updateRealEarning'])->name('huawei.projects.realearnings.update');
     Route::delete('huawei/projects/real_earnings/{huawei_project_real_earning}/delete', [HuaweiProjectController::class, 'deleteRealEarning'])->name('huawei.projects.realearnings.delete');
+    Route::get('huawei/projects/{huawei_project}/real_earnings/export', [HuaweiProjectController::class, 'exportRealEarnings'])->name('huawei.projects.realearnings.export');
+    Route::post('huawei/projects/{huawei_project}/real_earnings/import', [HuaweiProjectController::class, 'importRealEarnings'])->name('huawei.projects.realearnings.import');
 
     //liquidations
     Route::get('huawei/projects/{huawei_project}/liquidations/get_resources', [HuaweiProjectController::class, 'geResourcesToLiquidate'])->name('huawei.projects.liquidations');
