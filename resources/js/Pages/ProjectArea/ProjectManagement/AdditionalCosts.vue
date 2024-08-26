@@ -341,6 +341,14 @@
                         v-for="item in dataToRender"
                         :key="item.id"
                         class="text-gray-700"
+                        :class="[
+                            'border-l-8',
+                            {
+                                'border-indigo-500': item.is_accepted === null,
+                                'border-green-500': item.is_accepted == true,
+                                'border-red-500': item.is_accepted == false,
+                            },
+                        ]"
                     >
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -414,19 +422,78 @@
                             "
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            <div class="flex items-center">
-                                <button
-                                    @click="openEditAdditionalModal(item)"
-                                    class="text-amber-600 hover:underline mr-2"
+                            <div class="flex items-center gap-3 w-full">
+                                <div
+                                    v-if="item.is_accepted === null"
+                                    class="flex gap-3 justify-center w-1/2"
                                 >
-                                    <PencilSquareIcon class="h-4 w-4 ml-1" />
-                                </button>
-                                <button
-                                    @click="confirmDeleteAdditional(item.id)"
-                                    class="text-red-600 hover:underline"
-                                >
-                                    <TrashIcon class="h-4 w-4" />
-                                </button>
+                                    <button
+                                        @click="
+                                            () =>
+                                                validateRegister(item.id, true)
+                                        "
+                                        class="flex items-center rounded-xl text-blue-500 hover:bg-green-200"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-5 h-5 text-green-500"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                            />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        @click="
+                                            () =>
+                                                validateRegister(item.id, false)
+                                        "
+                                        type="button"
+                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-5 h-5 text-red-500"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div v-else class="w-1/2">
+                                </div>
+
+                                <div class="flex gap-3 mr-3">
+                                    <button
+                                        @click="openEditAdditionalModal(item)"
+                                        class="text-amber-600 hover:underline"
+                                    >
+                                        <PencilSquareIcon
+                                            class="h-5 w-5 ml-1"
+                                        />
+                                    </button>
+                                    <button
+                                        @click="
+                                            confirmDeleteAdditional(item.id)
+                                        "
+                                        class="text-red-600 hover:underline"
+                                    >
+                                        <TrashIcon class="h-5 w-5" />
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -1198,6 +1265,11 @@
             :title="'Datos Importados'"
             :message="'Los datos fueron importados con éxito'"
         />
+        <SuccessOperationModal
+            :confirming="confirmValidation"
+            :title="'Validación'"
+            :message="'La validación del gasto fue exitosa.'"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -1525,4 +1597,34 @@ watch([() => form.type_doc, () => form.zone], () => {
         form.igv = 0;
     }
 });
+
+const confirmValidation = ref(false)
+
+async function validateRegister(ac_id, is_accepted) {
+    try {
+        const res = await axios.post(
+            route("projectmanagement.validateAdditionalCost", { ac_id }),
+            { is_accepted }
+        );
+        if (res?.data?.additional_cost?.is_accepted == true) {
+            console.log("siuu");
+            let index = dataToRender.value.findIndex(
+                (item) => item.id == res.data.additional_cost.id
+            );
+            dataToRender.value[index] = res.data.additional_cost;
+        } else if (res?.data?.additional_cost?.is_accepted == false) {
+            let index = dataToRender.value.findIndex(
+                (item) => item.id == res.data.additional_cost.id
+            );
+            dataToRender.value.splice(index, 1);
+        }
+        confirmValidation.value = true;
+                setTimeout(() => {
+                    confirmValidation.value = false;
+                }, 1000);
+
+    } catch (e) {
+        console.log(e);
+    }
+}
 </script>
