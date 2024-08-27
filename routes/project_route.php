@@ -39,6 +39,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     //Preproject images
     Route::put('/preprojects/{preproject_image_id}/report/image', [PreProjectController::class, 'approve_reject_image'])->name('preprojects.imagereport.approveReject');
     Route::get('/preprojects/{preproject_code_id}/codereport', [PreProjectController::class, 'approve_code'])->name('preprojects.codereport.approveCode');
+    Route::get('/preprojects/{preproject_title_id}/titlereport', [PreProjectController::class, 'approve_title'])->name('preprojects.codereport.approveTitle');
     Route::delete('/preprojects/{preproject_id}/report/delete', [PreProjectController::class, 'delete_image'])->name('preprojects.imagereport.delete');
 
     //Photographic report
@@ -176,7 +177,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/preprojects/{preproject_id}/report/code/image', [PreProjectController::class, 'filterCodePhoto'])->name('preprojects.report.images');
     Route::get('/preprojects/report/showimage/{image}', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
     Route::get('/preprojects/{preproject_id}/report/download_image', [PreProjectController::class, 'download_image'])->name('preprojects.imagereport.download');
-    Route::get('/preprojects/{preproject_id}/report/download_report', [PreProjectController::class, 'download_report'])->name('preprojects.report.download');
+    Route::get('/preprojects/{preproject_title_id}/report/download_report', [PreProjectController::class, 'download_report'])->name('preprojects.report.download');
 
     //Photographic report
     Route::get('/preprojects/{preproject_id}/photoreport', [PreProjectController::class, 'photoreport_index'])->name('preprojects.photoreport.index');

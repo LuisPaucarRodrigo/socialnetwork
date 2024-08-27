@@ -180,16 +180,30 @@
                             </div>
 
                             <div>
-                                <InputLabel for="title" class="font-medium leading-6 text-gray-900">Títulos</InputLabel>
+                                <InputLabel for="title_factibilidad_id" class="font-medium leading-6 text-gray-900">Título/Factibilidad</InputLabel>
                                 <div class="mt-2">
-                                    <select v-model="form.title_id" id="title_id"
+                                    <select v-model="form.title_factibilidad_id" id="title_factibilidad_id"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option value="">Selecciona un título</option>
                                         <option v-for="title in titles" :key="title.id" :value="title.id">{{ title.title
                                             }}
                                         </option>
                                     </select>
-                                    <InputError :message="form.errors.title_id" />
+                                    <InputError :message="form.errors.title_factibilidad_id" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="title_implementation_id" class="font-medium leading-6 text-gray-900">Título/Implementacion</InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.title_implementation_id" id="title_implementation_id"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="">Selecciona un título</option>
+                                        <option v-for="title in titles" :key="title.id" :value="title.id">{{ title.title
+                                            }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.title_implementation_id" />
                                 </div>
                             </div>
 
@@ -287,7 +301,8 @@ const initial_state = {
     description: '',
     date: '',
     observation: '',
-    title_id: '',
+    title_factibilidad_id: '',
+    title_implementation_id: '',
     contacts: [],
     hasSubcustomer: false,
     cpe: ''
