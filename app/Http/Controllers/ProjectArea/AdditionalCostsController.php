@@ -38,6 +38,28 @@ class AdditionalCostsController extends Controller
             'state' => $state
         ]);
     }
+    public function indexRejected(Project $project_id, $state = null)
+    {
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)
+            ->where(function($query) use ($state){
+                if($state === 'rechazados'){
+                    $query->where('is_accepted',0);
+                } else {
+                    $query->where('is_accepted',1)
+                        ->orWhere('is_accepted', null);
+                }
+            })
+            ->with('project', 'provider')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(20);
+        $providers = Provider::all();
+        return Inertia::render('ProjectArea/ProjectManagement/AdditionalCostsRejected', [
+            'additional_costs' => $additional_costs,
+            'project_id' => $project_id,
+            'providers' => $providers,
+            'state' => $state
+        ]);
+    }
 
     public function search_costs(Request $request, $project_id)
     {
