@@ -21,6 +21,10 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Checklist
                             </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Más
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,6 +47,14 @@
                                         <EyeIcon @click="openChecklistModal(item)" class="text-indigo-600 w-5" />
                                     </button>
                                 </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                    <button
+                                        @click.prevent="confirmDeleteAdditional(item.id)"
+                                        class="text-red-600 hover:underline mr-2"
+                                    >
+                                        <TrashIcon class="h-5 w-5" />
+                                    </button>
+                                </td>
                             </tr>
                         </template>
                     </tbody>
@@ -52,6 +64,12 @@
                 <pagination :links="checklists.links" />
             </div>
         </div>
+        <ConfirmDeleteModal
+            :confirmingDeletion="confirmingDocDeletion"
+            itemType="Checklist Unidad Móvil"
+            :deleteFunction="deleteAdditional"
+            @closeModal="closeModalDoc"
+        />
 
 
         <Modal :show="showChecklistModal" @close="closeChecklistModal" max-width="2xl" :closeable="true">
@@ -108,6 +126,8 @@ import { Head } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { formattedDate } from "@/utils/utils";
 import { EyeIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon } from "@heroicons/vue/24/outline";
+import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 
 const { checklists } = defineProps({
     checklists: Object,
@@ -157,5 +177,33 @@ function closeChecklistModal() {
 }
 
 //photos modal
+// delete
 
+const confirmingDocDeletion = ref(false);
+const docToDelete = ref(null);
+const confirmDeleteAdditional = (additionalId) => {
+    docToDelete.value = additionalId;
+    confirmingDocDeletion.value = true;
+};
+const closeModalDoc = () => {
+    confirmingDocDeletion.value = false;
+};
+const deleteAdditional = () => {
+    const docId = docToDelete.value;
+    if (docId) {
+        router.delete(
+            route("checklist.car.destroy", {
+                id: docId,
+            }),
+            {
+                onSuccess: () => {
+                    closeModalDoc();
+                },
+                onError: (e) => {
+                    console.log(e)
+                }
+            }
+        );
+    }
+};
 </script>

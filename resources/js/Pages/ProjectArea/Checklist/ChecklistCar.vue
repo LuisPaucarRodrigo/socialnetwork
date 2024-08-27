@@ -388,10 +388,10 @@ import { Head, router } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { formattedDate } from "@/utils/utils";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { TrashIcon } from "@heroicons/vue/24/outline";
+import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 
 const { checklists } = defineProps({
     checklists: Object,
@@ -484,7 +484,6 @@ const closeModalDoc = () => {
 };
 const deleteAdditional = () => {
     const docId = docToDelete.value;
-    console.log('hol')
     if (docId) {
         router.delete(
             route("checklist.car.destroy", {
