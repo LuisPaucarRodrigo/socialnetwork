@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('huawei_additional_costs', function (Blueprint $table) {
+        Schema::create('huawei_static_costs', function (Blueprint $table) {
             $table->id();
             $table->string('expense_type');
             $table->string('ruc');
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('huawei_additional_costs');
+        Schema::dropIfExists('huawei_static_costs');
     }
 };

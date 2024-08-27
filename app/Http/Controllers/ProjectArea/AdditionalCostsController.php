@@ -18,7 +18,7 @@ class AdditionalCostsController extends Controller
 {
     public function index(Project $project_id)
     {
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('doc_date')->paginate(20);
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
         $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
@@ -31,11 +31,9 @@ class AdditionalCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
-        $result = AdditionalCost::where('project_id', $project_id);
+        $result = AdditionalCost::where('project_id', $project_id)->with('project','provider');
         
-
-
-        if (count($request->selectedZones) < 5) {
+        if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
         if (count($request->selectedExpenseTypes) < 11) {
@@ -60,9 +58,6 @@ class AdditionalCostsController extends Controller
     public function store(AdditionalCostsRequest $request, $project_id)
     {
         $data = $request->validated();
-        if($data['type_doc']==='Factura'&&$data['zone']!=='MDD'){
-            $data['amount'] = round($data['amount']/1.18, 4);
-        }
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
@@ -94,11 +89,10 @@ class AdditionalCostsController extends Controller
             'zone' => 'required',
             'provider_id' => 'nullable',
             'photo' => 'nullable',
+            'igv' => 'required',
             'description' => 'required|string',
         ]);
-        if($data['type_doc']==='Factura'&&$data['zone']!=='MDD'){
-            $data['amount'] = round($data['amount']/1.18, 4);
-        }
+        
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;
             if ($filename) {

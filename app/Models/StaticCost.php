@@ -21,7 +21,12 @@ class StaticCost extends Model
         'amount',
         'project_id',
         'provider_id',
+        'igv',
         'photo'
+    ];
+
+    protected $appends = [
+        'real_amount'
     ];
 
     public function project(){
@@ -30,5 +35,9 @@ class StaticCost extends Model
 
     public function provider () {
         return $this->belongsTo(Provider::class, 'provider_id');
+    }
+
+    public function getRealAmountAttribute() {
+        return $this->amount/(1+$this->igv/100);
     }
 }

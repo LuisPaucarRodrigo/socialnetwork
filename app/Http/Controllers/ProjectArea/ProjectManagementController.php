@@ -291,9 +291,9 @@ class ProjectManagementController extends Controller
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
-        $additionalCosts = $project_id->additionalCosts->sum('amount');
+        $additionalCosts = $project_id->additionalCosts->sum('real_amount');
         $acArr = $project_id->additionalCosts()
-            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
             ->get();
         $acExpensesAmounts = $acArr->map(function($cost) {
@@ -303,9 +303,9 @@ class ProjectManagementController extends Controller
             ];
         })->toArray();
 
-        $staticCosts = $project_id->staticCosts->sum('amount');
+        $staticCosts = $project_id->staticCosts->sum('real_amount');
         $scArr = $project_id->staticCosts()
-            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
             ->get();
         $scExpensesAmounts = $scArr->map(function($cost) {

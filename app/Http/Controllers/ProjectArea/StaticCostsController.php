@@ -29,8 +29,8 @@ class StaticCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
-        $result = StaticCost::where('project_id', $project_id);
-        if (count($request->selectedZones) < 5) {
+        $result = StaticCost::with('project', 'provider')->where('project_id', $project_id);
+        if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
         if (count($request->selectedExpenseTypes) < 7) {
@@ -58,7 +58,6 @@ class StaticCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
-
         StaticCost::create($data);
         return redirect()->back();
     }
@@ -88,6 +87,7 @@ class StaticCostsController extends Controller
             'zone' => 'required',
             'provider_id' => 'nullable',
             'photo' => 'nullable',
+            'igv' => 'required',
             'description' => 'required|string',
         ]);
         if ($request->hasFile('photo')) {

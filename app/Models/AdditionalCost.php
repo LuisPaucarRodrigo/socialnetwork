@@ -22,7 +22,12 @@ class AdditionalCost extends Model
         'provider_id',
         'photo',
         'is_accepted',
+        'igv',
         'user_id'
+    ];
+
+    protected $appends = [
+        'real_amount'
     ];
 
     public function project()
@@ -38,5 +43,9 @@ class AdditionalCost extends Model
     public function users()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getRealAmountAttribute() {
+        return $this->amount/(1+$this->igv/100);
     }
 }

@@ -963,7 +963,7 @@ class PreProjectController extends Controller
         $data = $request->validate([
             'title' => 'required',
             'type' => 'required',
-            'code_id_array' => 'required'
+            'code_id_array' => 'required|array'
         ]);
 
         $title = Title::create($data);
@@ -971,14 +971,15 @@ class PreProjectController extends Controller
         $title->codes()->attach($data['code_id_array']);
     }
 
-    public function putTitle(Request $request, Title $title)
+    public function putTitle(Request $request, $title_id)
     {
         $data = $request->validate([
             'title' => 'required',
             'type' => 'required',
-            'code_id_array' => 'required'
+            'code_id_array' => 'required|array'
         ]);
 
+        $title = Title::find($title_id);
         $title->update($data);
 
         $title->codes()->sync($data['code_id_array'], ['timestamps' => true]);
