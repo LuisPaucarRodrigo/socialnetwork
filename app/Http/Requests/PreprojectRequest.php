@@ -37,7 +37,8 @@ class PreprojectRequest extends FormRequest
             $rules['subcustomer_id'] = 'nullable';
         }
         if ($this->input('customer_id') !== 1){
-            $rules['title_id'] = 'required';
+            $rules['title_factibilidad_id'] = 'required';
+            $rules['title_implementation_id'] = 'required';
         }
         return $rules;
     }
