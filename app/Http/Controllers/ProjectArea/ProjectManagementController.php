@@ -107,7 +107,7 @@ class ProjectManagementController extends Controller
         if ($project_id) {
             $project = Project::with('employees', 'preproject.quote')->find($project_id);
             return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
-                'employees' => Employee::select('id', 'name', 'lastname')->get(),
+                'employees' => Employee::select('id', 'name', 'lastname')->orderBy('name', 'asc')->get(),
                 'project' => $project,
                 'preprojects' => $preprojects,
             ]);
