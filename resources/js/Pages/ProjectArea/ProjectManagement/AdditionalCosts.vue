@@ -1,13 +1,20 @@
 <template>
     <Head title="Gestion de Costos Adicionales" />
     <AuthenticatedLayout
-        :redirectRoute="{
+        :redirectRoute=" state ? {
+            route: 'projectmanagement.additionalCosts',
+            params: { project_id: project_id.id },
+        } :  {
             route: 'projectmanagement.purchases_request.index',
             params: { id: project_id.id },
         }"
     >
         <template #header>
-            Gastos Variables del Proyecto {{ props.project_id.name }}
+            Gastos Variables 
+            <span class="text-red-600">
+                {{ state ? state : '' }} 
+                </span>
+            del Proyecto {{ props.project_id.name }}
         </template>
         <br />
         <div class="inline-block min-w-full mb-4">
@@ -121,14 +128,25 @@
                             </g>
                         </svg>
                     </button>
-                    <div
-                        id="export_tooltip"
-                        role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                    >
-                        Imporat Excel
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    
+                    <template v-if="state">
+                        <button
+                        data-tooltip-target="rejected_tooltip"
+                            type="button"
+                            class="rounded-md bg-gray-100 px-4 py-1 text-center text-lg text-red-600 font-bold ring-2 ring-red-400 hover:bg-gray-100/2"
+                            @click="() => router.visit(route('projectmanagement.additionalCosts', {project_id: project_id.id, state: 'rechazados'}))"
+                        >
+                            R
+                        </button>
+                        <div
+                            id="rejected_tooltip"
+                            role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                        >
+                            Rechazados
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </template>
                 </div>
 
                 <div class="sm:hidden">
@@ -473,8 +491,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <div v-else class="w-1/2">
-                                </div>
+                                <div v-else class="w-1/2"></div>
 
                                 <div class="flex gap-3 mr-3">
                                     <button
@@ -1304,6 +1321,7 @@ const props = defineProps({
     auth: Object,
     userPermissions: Array,
     searchQuery: String,
+    state: String,
 });
 
 const dataToRender = ref(props.additional_costs.data);
@@ -1598,7 +1616,7 @@ watch([() => form.type_doc, () => form.zone], () => {
     }
 });
 
-const confirmValidation = ref(false)
+const confirmValidation = ref(false);
 
 async function validateRegister(ac_id, is_accepted) {
     try {
@@ -1619,10 +1637,9 @@ async function validateRegister(ac_id, is_accepted) {
             dataToRender.value.splice(index, 1);
         }
         confirmValidation.value = true;
-                setTimeout(() => {
-                    confirmValidation.value = false;
-                }, 1000);
-
+        setTimeout(() => {
+            confirmValidation.value = false;
+        }, 1000);
     } catch (e) {
         console.log(e);
     }

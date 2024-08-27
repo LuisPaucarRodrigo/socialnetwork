@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 
 class AdditionalCostsController extends Controller
 {
-    public function index(Project $project_id, $state)
+    public function index(Project $project_id, $state = null)
     {
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
             ->where(function($query) use ($state){
@@ -30,13 +30,12 @@ class AdditionalCostsController extends Controller
             ->with('project', 'provider')
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
-        $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
-            'searchQuery' => $searchQuery
+            'state' => $state
         ]);
     }
 
