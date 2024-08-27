@@ -89,6 +89,11 @@
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
           huawei_project.total_real_earnings.toFixed(2) }}</td>
                   </tr>
+                  <tr class="text-gray-700">
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Ingresos Reales sin depósito</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+          huawei_project.total_real_earnings_without_deposit.toFixed(2) }}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -279,10 +284,10 @@ const updateBarChart2 = () => {
     const barChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Ingresos Proyectados', 'Ingresos Reales'], // Etiquetas de los datos en el eje x
+            labels: ['Ingresos Proyectados', 'Ingresos Actuales', 'Ingresos actuales sin depósito'], // Etiquetas de los datos en el eje x
             datasets: [{
                 label: 'Montos', // Etiqueta común para todos los datos
-                data: [huawei_project.total_earnings, huawei_project.total_real_earnings],
+                data: [huawei_project.total_earnings, huawei_project.total_real_earnings, huawei_project.total_real_earnings_without_deposit],
                 backgroundColor: [
                 'rgba(75, 192, 192, 0.2)',  // Azul para 'Monto Inicial'
                 'rgba(75, 192, 75, 0.2)',   // Verde para 'Total de Ingresos'

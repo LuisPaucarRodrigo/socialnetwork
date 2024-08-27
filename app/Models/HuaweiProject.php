@@ -32,6 +32,7 @@ class HuaweiProject extends Model
         'equipments_liquidated',
         'total_earnings',
         'total_real_earnings',
+        'total_real_earnings_without_deposit',
         'total_project_cost',
         'total_employee_costs',
         'total_essalud_employee_cost'
@@ -175,7 +176,12 @@ class HuaweiProject extends Model
 
     public function getTotalRealEarningsAttribute ()
     {
-        return $this->huawei_project_real_earnings->sum('amount');
+        return $this->huawei_project_real_earnings->whereNotNull('deposit_date')->sum('amount');
+    }
+
+    public function getTotalRealEarningsWithoutDepositAttribute()
+    {
+        return $this->huawei_project_real_earnings->whereNull('deposit_date')->sum('amount');
     }
 
     public function getTotalEarningsAttribute ()
