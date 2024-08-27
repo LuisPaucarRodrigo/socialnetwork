@@ -1,237 +1,19 @@
 <template>
     <Head title="Gestion de Costos Adicionales" />
     <AuthenticatedLayout
-        :redirectRoute=" state ? {
+        :redirectRoute="{
             route: 'projectmanagement.additionalCosts',
             params: { project_id: project_id.id },
-        } :  {
-            route: 'projectmanagement.purchases_request.index',
-            params: { id: project_id.id },
         }"
     >
         <template #header>
-            Gastos Variables 
-            <span class="text-red-600">
-                {{ state ? state : '' }} 
-                </span>
+            Gastos Variables
+            <span class="text-red-600"> Rechazados </span>
             del Proyecto {{ props.project_id.name }}
         </template>
         <br />
         <div class="inline-block min-w-full mb-4">
-            <div class="flex gap-4 justify-between">
-                <div class="hidden sm:flex sm:items-center space-x-3">
-                    <PrimaryButton
-                        v-if="
-                            project_id.status === null &&
-                            hasPermission('ProjectManager')
-                        "
-                        @click="openCreateAdditionalModal"
-                        type="button"
-                        class="whitespace-nowrap"
-                    >
-                        + Agregar
-                    </PrimaryButton>
-                    <PrimaryButton
-                        data-tooltip-target="update_data_tooltip"
-                        type="button"
-                        @click="
-                            router.visit(
-                                route('projectmanagement.additionalCosts', {
-                                    project_id: project_id.id,
-                                })
-                            )
-                        "
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="h-5 w-5 text-white"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                            />
-                        </svg>
-                    </PrimaryButton>
-                    <div
-                        id="update_data_tooltip"
-                        role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                    >
-                        Actualizar
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
-
-                    <button
-                        data-tooltip-target="export_tooltip"
-                        type="button"
-                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
-                        @click="openExportExcel"
-                    >
-                        <svg
-                            class="h-5 w-5"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V9C21 9.55228 20.5523 10 20 10C19.4477 10 19 9.55228 19 9V4C19 3.44772 18.5523 3 18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H7C7.55228 21 8 21.4477 8 22C8 22.5523 7.55228 23 7 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM6.41421 7H9V4.41421L6.41421 7ZM19 12C19.5523 12 20 12.4477 20 13V19H23C23.5523 19 24 19.4477 24 20C24 20.5523 23.5523 21 23 21H19C18.4477 21 18 20.5523 18 20V13C18 12.4477 18.4477 12 19 12ZM11.8137 12.4188C11.4927 11.9693 10.8682 11.8653 10.4188 12.1863C9.96935 12.5073 9.86526 13.1318 10.1863 13.5812L12.2711 16.5L10.1863 19.4188C9.86526 19.8682 9.96935 20.4927 10.4188 20.8137C10.8682 21.1347 11.4927 21.0307 11.8137 20.5812L13.5 18.2205L15.1863 20.5812C15.5073 21.0307 16.1318 21.1347 16.5812 20.8137C17.0307 20.4927 17.1347 19.8682 16.8137 19.4188L14.7289 16.5L16.8137 13.5812C17.1347 13.1318 17.0307 12.5073 16.5812 12.1863C16.1318 11.8653 15.5073 11.9693 15.1863 12.4188L13.5 14.7795L11.8137 12.4188Z"
-                                fill="#ffffff"
-                            />
-                        </svg>
-                    </button>
-                    <div
-                        id="export_tooltip"
-                        role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                    >
-                        Exportar Excel
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
-
-                    <button
-                        type="button"
-                        class="rounded-md bg-yellow-500 px-4 py-2 text-center text-sm text-white hover:bg-yellow-400"
-                        @click="openImportModal()"
-                    >
-                        <svg
-                            class="h-6 w-6 text-white"
-                            viewBox="0 0 512 512"
-                            version="1.1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                        >
-                            <title>upload-document-note</title>
-                            <g
-                                id="Page-1"
-                                stroke="none"
-                                stroke-width="1"
-                                fill="none"
-                                fill-rule="evenodd"
-                            >
-                                <g
-                                    id="icon"
-                                    fill="#ffffff"
-                                    transform="translate(64.000000, 42.666667)"
-                                >
-                                    <path
-                                        d="M298.642975,268.433404 L392.812864,362.603293 L362.642975,392.773183 L319.976085,350.117404 L319.976308,447.956959 L277.309641,447.956959 L277.309085,350.116404 L234.642975,392.773183 L204.473085,362.603293 L298.642975,268.433404 Z M234.666667,7.10542736e-15 L341.333333,106.666667 L341.333,280.469 L298.779055,237.915875 L298.666,238.028 L298.666667,124.339779 L216.993555,42.6666667 L42.6666667,42.6666667 L42.6666667,384 L196.184,384 L234.773299,422.589676 L256.093414,401.26939 L256.101,426.666 L1.42108547e-14,426.666667 L1.42108547e-14,7.10542736e-15 L234.666667,7.10542736e-15 Z M213.333333,298.666667 L213.333,323.361 L195.361,341.333 L64,341.333333 L64,298.666667 L213.333333,298.666667 Z M196,85.3333333 L256,145.333333 L124,277.333333 L64,277.333333 L64,217.333333 L196,85.3333333 Z M195.989333,130.581333 L96,230.570667 L96,245.333333 L110.72,245.333333 L210.730667,145.322667 L195.989333,130.581333 Z"
-                                        id="Combined-Shape"
-                                    ></path>
-                                </g>
-                            </g>
-                        </svg>
-                    </button>
-                    
-                    <template v-if="state">
-                        <button
-                        data-tooltip-target="rejected_tooltip"
-                            type="button"
-                            class="rounded-md bg-gray-100 px-4 py-1 text-center text-lg text-red-600 font-bold ring-2 ring-red-400 hover:bg-gray-100/2"
-                            @click="() => router.visit(route('projectmanagement.additionalCosts', {project_id: project_id.id, state: 'rechazados'}))"
-                        >
-                            R
-                        </button>
-                        <div
-                            id="rejected_tooltip"
-                            role="tooltip"
-                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                        >
-                            Rechazados
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div>
-                    </template>
-                </div>
-
-                <div class="sm:hidden">
-                    <dropdown align="left">
-                        <template #trigger>
-                            <button
-                                @click="dropdownOpen = !dropdownOpen"
-                                class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100"
-                            >
-                                <svg
-                                    width="25px"
-                                    height="25px"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M4 6H20M4 12H20M4 18H20"
-                                        stroke="#000000"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-                            </button>
-                        </template>
-
-                        <template #content class="origin-left">
-                            <div>
-                                <!-- Alineación a la derecha -->
-
-                                <div class="">
-                                    <button
-                                        @click="openCreateAdditionalModal"
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    >
-                                        Agregar
-                                    </button>
-                                </div>
-                                <div class="">
-                                    <button
-                                        @click="
-                                            router.visit(
-                                                route(
-                                                    'projectmanagement.additionalCosts',
-                                                    {
-                                                        project_id:
-                                                            project_id.id,
-                                                    }
-                                                )
-                                            )
-                                        "
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    >
-                                        Actualizar
-                                    </button>
-                                </div>
-                                <div class="">
-                                    <a
-                                        :href="
-                                            route(
-                                                'additionalcost.excel.export',
-                                                {
-                                                    project_id: project_id.id,
-                                                }
-                                            )
-                                        "
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    >
-                                        Exportar
-                                    </a>
-                                </div>
-                                <div class="">
-                                    <button
-                                        @click="openImportModal()"
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    >
-                                        Importar
-                                    </button>
-                                </div>
-                            </div>
-                        </template>
-                    </dropdown>
-                </div>
-
+            <div class="flex gap-4 justify-end">
                 <form
                     @submit.prevent="handleSearch"
                     class="flex items-center w-full sm:w-auto"
@@ -441,57 +223,39 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
                             <div class="flex items-center gap-3 w-full">
-                                <div
-                                    v-if="item.is_accepted === null"
-                                    class="flex gap-3 justify-center w-1/2"
+                                <button
+                                data-tooltip-target="tooltip-up-ac"
+                                    @click="
+                                        () => validateRegister(item.id, true)
+                                    "
+                                    class="flex items-center rounded-xl text-blue-700 hover:bg-green-200"
                                 >
-                                    <button
-                                        @click="
-                                            () =>
-                                                validateRegister(item.id, true)
-                                        "
-                                        class="flex items-center rounded-xl text-blue-500 hover:bg-green-200"
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5 text-green-500"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                    <button
-                                        @click="
-                                            () =>
-                                                validateRegister(item.id, false)
-                                        "
-                                        type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5 text-red-500"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        </svg>
-                                    </button>
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15"
+                                        />
+                                    </svg>
+                                </button>
+                                <div
+                                    id="tooltip-up-ac"
+                                    role="tooltip"
+                                    class="absolute z-50 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                                >
+                                    Pasar a aceptado
+                                    <div
+                                        class="tooltip-arrow"
+                                        data-popper-arrow
+                                    ></div>
                                 </div>
-                                <div v-else class="w-1/2"></div>
 
                                 <div class="flex gap-3 mr-3">
                                     <button
@@ -544,7 +308,7 @@
                             S/.
                             {{
                                 dataToRender
-                                    .reduce((a, item) => a + item.amount, 0)
+                                    ?.reduce((a, item) => a + item.amount, 0)
                                     .toFixed(2)
                             }}
                         </td>
@@ -554,7 +318,7 @@
                             S/.
                             {{
                                 dataToRender
-                                    .reduce(
+                                    ?.reduce(
                                         (a, item) => a + item.real_amount,
                                         0
                                     )
@@ -579,12 +343,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-        <div
-            v-if="!filterMode"
-            class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
-        >
-            <pagination :links="additional_costs.links" />
         </div>
         <Modal :show="create_additional">
             <div class="p-6">
@@ -1284,8 +1042,8 @@
         />
         <SuccessOperationModal
             :confirming="confirmValidation"
-            :title="'Validación'"
-            :message="'La validación del gasto fue exitosa.'"
+            :title="'Levantamiento'"
+            :message="'El gasto paso a ser aceptado'"
         />
     </AuthenticatedLayout>
 </template>
@@ -1324,7 +1082,7 @@ const props = defineProps({
     state: String,
 });
 
-const dataToRender = ref(props.additional_costs.data);
+const dataToRender = ref(props.additional_costs);
 const filterMode = ref(false);
 
 const hasPermission = (permission) => {
@@ -1401,7 +1159,7 @@ const submit = () => {
                 setTimeout(() => {
                     showModal.value = false;
                     router.visit(
-                        route("projectmanagement.additionalCosts", {
+                        route("projectmanagement.additionalCosts.rejected", {
                             project_id: props.project_id.id,
                         })
                     );
@@ -1423,7 +1181,7 @@ const submitEdit = () => {
                 setTimeout(() => {
                     showModalEdit.value = false;
                     router.visit(
-                        route("projectmanagement.additionalCosts", {
+                        route("projectmanagement.additionalCosts.rejected", {
                             project_id: props.project_id.id,
                         })
                     );
@@ -1457,7 +1215,7 @@ const deleteAdditional = () => {
                 onSuccess: () => {
                     closeModalDoc();
                     router.visit(
-                        route("projectmanagement.additionalCosts", {
+                        route("projectmanagement.additionalCosts.rejected", {
                             project_id: props.project_id.id,
                         })
                     );
@@ -1544,12 +1302,12 @@ watch(
     { deep: true }
 );
 
-async function search_advance($data) {
+async function search_advance(data) {
     let res = await axios.post(
         route("additionalcost.advance.search", {
             project_id: props.project_id.id,
         }),
-        $data
+        { ...data, state: false }
     );
     dataToRender.value = res.data;
 }
@@ -1584,7 +1342,7 @@ function submitImport() {
                 setTimeout(() => {
                     confirmImport.value = false;
                     router.visit(
-                        route("projectmanagement.additionalCosts", {
+                        route("projectmanagement.additionalCosts.rejected", {
                             project_id: props.project_id.id,
                         })
                     );
@@ -1624,13 +1382,7 @@ async function validateRegister(ac_id, is_accepted) {
             route("projectmanagement.validateAdditionalCost", { ac_id }),
             { is_accepted }
         );
-        if (res?.data?.additional_cost?.is_accepted == true) {
-            console.log("siuu");
-            let index = dataToRender.value.findIndex(
-                (item) => item.id == res.data.additional_cost.id
-            );
-            dataToRender.value[index] = res.data.additional_cost;
-        } else if (res?.data?.additional_cost?.is_accepted == false) {
+        if (res?.status === 200) {
             let index = dataToRender.value.findIndex(
                 (item) => item.id == res.data.additional_cost.id
             );
