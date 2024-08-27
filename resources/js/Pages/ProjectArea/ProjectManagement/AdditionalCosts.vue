@@ -50,14 +50,14 @@
                             />
                         </svg>
                     </PrimaryButton>
-                    <div
-                        id="update_data_tooltip"
-                        role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                    >
-                        Actualizar
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                        <div
+                            id="update_data_tooltip"
+                            role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                        >
+                            Actualizar
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
 
                     <button
                         data-tooltip-target="export_tooltip"
@@ -779,12 +779,7 @@
                                 </div>
                             </div>
 
-                            <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
-                            >
+                            <div>
                                 <InputLabel
                                     for="igv"
                                     class="font-medium leading-6 text-gray-900"
@@ -807,12 +802,7 @@
                                 </div>
                             </div>
 
-                            <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
-                            >
+                            <div>
                                 <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
@@ -1337,7 +1327,6 @@ const props = defineProps({
 });
 
 const dataToRender = ref(props.additional_costs.data);
-console.log(dataToRender.value, "hol");
 const filterMode = ref(false);
 
 const hasPermission = (permission) => {

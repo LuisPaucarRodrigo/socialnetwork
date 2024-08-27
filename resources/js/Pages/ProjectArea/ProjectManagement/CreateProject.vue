@@ -208,15 +208,11 @@
                                         <div
                                             v-for="(
                                                 member, index
-                                            ) in form.employees
-                                                .filter(
-                                                    (item) =>
-                                                        item.pivot.charge ===
-                                                        'Administrativo'
-                                                )
-                                                .sort((a, b) =>
-                                                    a.name.localeCompare(b.name)
-                                                )"
+                                            ) in form.employees.filter(
+                                                (item) =>
+                                                    item.pivot.charge ===
+                                                    'Administrativo'
+                                            )"
                                             :key="index"
                                             class="grid grid-cols-8 items-center my-2"
                                         >
@@ -256,15 +252,11 @@
                                         <div
                                             v-for="(
                                                 member, index
-                                            ) in form.employees
-                                                .filter(
-                                                    (item) =>
-                                                        item.pivot.charge ===
-                                                        'MOI - Mano de Obra Indirecta'
-                                                )
-                                                .sort((a, b) =>
-                                                    a.name.localeCompare(b.name)
-                                                )"
+                                            ) in form.employees.filter(
+                                                (item) =>
+                                                    item.pivot.charge ===
+                                                    'MOI - Mano de Obra Indirecta'
+                                            )"
                                             :key="index"
                                             class="grid grid-cols-8 items-center my-2"
                                         >
@@ -304,15 +296,11 @@
                                         <div
                                             v-for="(
                                                 member, index
-                                            ) in form.employees
-                                                .filter(
-                                                    (item) =>
-                                                        item.pivot.charge ===
-                                                        'MOD - Mano de Obra Directa'
-                                                )
-                                                .sort((a, b) =>
-                                                    a.name.localeCompare(b.name)
-                                                )"
+                                            ) in form.employees.filter(
+                                                (item) =>
+                                                    item.pivot.charge ===
+                                                    'MOD - Mano de Obra Directa'
+                                            )"
                                             :key="index"
                                             class="grid grid-cols-8 items-center my-2"
                                         >
