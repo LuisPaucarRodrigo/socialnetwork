@@ -146,6 +146,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project-backlog/store', [BacklogController::class, 'store'])->name('project.backlog.store');
     Route::delete('/project-backlog/delete/{backlog_id}', [BacklogController::class, 'destroy'])->name('project.backlog.destroy');
 
+    //Checklist
 
     Route::get('/checklist', [ChecklistsController::class, 'index'])->name('checklist.index');
     Route::get('/checklist/car', [ChecklistsController::class, 'car_index'])->name('checklist.car.index');
@@ -155,6 +156,10 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::get('/checklist/epp', [ChecklistsController::class, 'epp_index'])->name('checklist.epp.index');
     Route::get('/checklist/toolkit', [ChecklistsController::class, 'toolkit_index'])->name('checklist.toolkit.index');
 
+    Route::delete('/checklist/car/{id}/destroy', [ChecklistsController::class, 'car_destroy'])->name('checklist.car.destroy');
+    Route::delete('/checklist/toolkit/{id}/destroy', [ChecklistsController::class, 'toolkit_destroy'])->name('checklist.toolkit.destroy');
+    Route::delete('/checklist/dailytoolkit/{id}/destroy', [ChecklistsController::class, 'dailytoolkit_destroy'])->name('checklist.dailytoolkit.destroy');
+    Route::delete('/checklist/epp/{id}/destroy', [ChecklistsController::class, 'epp_destroy'])->name('checklist.epp.destroy');
 
 
 
