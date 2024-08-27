@@ -101,7 +101,7 @@
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button v-if="item.state === 'Disponible'" @click.prevent="openAssignModal(item.id)" class="font-black hover:underline" :class="{'text-blue-600': item.assigned_diu, 'text-red-600': !item.assigned_diu}">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button><p v-else>{{ item.assigned_diu }}</p></td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openEditDate(item.id)" class="text-blue-600 hover:underline font-black text-sm">{{ formattedDate(item.entry_date ? item.entry_date : item.huawei_entry.entry_date) }}</button></td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_equipment_serie?.serie_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
@@ -357,9 +357,36 @@
           </div>
         </Modal>
 
+        <Modal :show="updateDateModal">
+          <div class="p-6">
+            <h2 class="text-base font-medium leading-7 text-gray-900">Actualizar Fecha</h2>
+            <form @submit.prevent="updateDate" class="grid grid-cols-2 gap-3">
+
+              <!-- Tercera Fila -->
+              <div class="col-span-2 grid grid-cols-2 gap-3">
+
+                <div class="col-span-2">
+                    <InputLabel class="mb-1" for="observation">Fecha</InputLabel>
+                    <input type="date" v-model="updateDateForm.entry_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                    <InputError :message="updateDateForm.errors.entry_date" />
+                  </div>
+
+              </div>
+
+              <!-- Botones de Acción -->
+              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
+                <SecondaryButton @click="closeEditDate">Cancelar</SecondaryButton>
+                <PrimaryButton type="submit" :class="{ 'opacity-25': updateDateForm.processing }">Guardar</PrimaryButton>
+              </div>
+            </form>
+          </div>
+        </Modal>
+
+
         <SuccessOperationModal :confirming="showRefundConfirm" title="Éxito" message="La devolución se registró correctamente." />
         <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'La cantidad solicitada para devolución excede a la disponible.'" />
         <SuccessOperationModal :confirming="confirmAssign" title="Éxito" message="Se asignó la DIU correctamente." />
+        <SuccessOperationModal :confirming="confirmUpdateModal" title="Éxito" message="Se actualizó la fecha correctamente." />
 
     </AuthenticatedLayout>
 </template>
@@ -393,6 +420,36 @@
     const huaweiProject = ref(null);
     const assignModal = ref(false);
     const confirmAssign = ref(false);
+    const updateDateModal = ref (false);
+    const confirmUpdateModal = ref(false);
+
+    const updateDateForm = useForm({
+        id: '',
+        entry_date: ''
+    });
+
+    const openEditDate = (id) => {
+        updateDateForm.id = id;
+        updateDateModal.value = true;
+    }
+
+    const closeEditDate = () => {
+        updateDateForm.reset();
+        updateDateForm.cleearErrors();
+        updateDateModal.value = false;
+    }
+
+    const updateDate = () => {
+        updateDateForm.put(route('huawei.inventory.update.entrydetail', {huawei_entry_detail: updateDateForm.id}), {
+            onSuccess: () => {
+                confirmUpdateModal.value = true;
+                setTimeout(() => {
+                    closeEditDate();
+                    confirmUpdateModal.value = false;
+                }, 2000);
+            }
+        })
+    }
 
     const searchForm = useForm({
         searchTerm: props.search ? props.search : '',

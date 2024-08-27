@@ -30,16 +30,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- <tr class="text-gray-700">
+                  <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2) }}</td>
-                  </tr> -->
-                  <!-- <tr class="text-gray-700">
+          huawei_project.total_employee_costs.toFixed(2) }}</td>
+                  </tr>
+                  <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla (essalud)</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2) }}</td>
-                  </tr> -->
+          huawei_project.total_essalud_employee_cost.toFixed(2) }}</td>
+                  </tr>
                   <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Fijos</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
@@ -149,11 +149,11 @@
     if (chartInstance.value) {
       chartInstance.value.destroy();
     }
-    const dataWithRemainingBudget = [staticCosts, additionalCosts];
+    const dataWithRemainingBudget = [huawei_project.total_employee_costs, huawei_project.total_essalud_employee_cost, staticCosts, additionalCosts];
     chartInstance.value = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ['Costos Fijos' , 'Costos Variables'],
+        labels: ['Total de Planilla', 'Total de Essalud','Costos Fijos' , 'Costos Variables'],
         datasets: [{
           data: dataWithRemainingBudget,
           backgroundColor: Array(7).fill().map(() => getRandomColor()),
