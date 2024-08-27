@@ -4,7 +4,7 @@
     <AuthenticatedLayout
       :redirectRoute="{ route: 'huawei.projects'}">
       <template #header>
-        Ingresos Reales del Proyecto {{ props.huawei_project.name }}
+        Ingresos Actuales del Proyecto {{ props.huawei_project.name }}
       </template>
       <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
     <!-- Botones principales visibles en pantallas grandes -->
