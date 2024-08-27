@@ -78,13 +78,7 @@ class HuaweiManagementController extends Controller
             // Aplicar filtros de búsqueda para materiales
             $materialsQuery->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereHas('brand_model.brand', function ($query) use ($searchTerm) {
-                        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
-                    })
-                    ->orWhereHas('brand_model', function ($query) use ($searchTerm) {
-                        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
-                    });
+                    ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"]);
             });
 
             // Obtener los resultados de materiales
@@ -154,7 +148,6 @@ class HuaweiManagementController extends Controller
                     $new_material = HuaweiMaterial::create([
                         'name' => $material['name'],
                         'claro_code' => $material['claro_code'],
-                        'model_id' => $material['brand_model'],
                         'unit' => $material['unit']
                     ]);
 
@@ -169,10 +162,10 @@ class HuaweiManagementController extends Controller
             }
         }
 
-        if (!$request->guide_number || !$request->entry_date){
-            abort(403, 'Los equipos deben entrar con guía de remisión');
-        }else{
-            if ($request->equipments) {
+        if ($request->equipments) {
+            if (!$request->guide_number || !$request->entry_date){
+                abort(403, 'Los equipos deben entrar con guía de remisión');
+            }
                 foreach ($request->equipments as $equipment) {
                     if (isset($equipment['equipment_id']) && $equipment['equipment_id']) {
 
@@ -229,7 +222,7 @@ class HuaweiManagementController extends Controller
                             ]);
                         }
                     }
-                }
+
             }
         }
     }
@@ -677,6 +670,17 @@ class HuaweiManagementController extends Controller
     {
         $data = $request->validate([
             'entry_date' => 'required'
+        ]);
+
+        $huawei_entry_detail->update($data);
+
+        return redirect()->back();
+    }
+
+    public function updateSite (HuaweiEntryDetail $huawei_entry_detail, Request $request)
+    {
+        $data = $request->validate([
+            'new_site' => 'required'
         ]);
 
         $huawei_entry_detail->update($data);

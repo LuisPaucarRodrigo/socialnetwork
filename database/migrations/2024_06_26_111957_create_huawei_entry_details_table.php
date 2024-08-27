@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('assigned_diu')->nullable();
             $table->text('observation')->nullable();
             $table->date('entry_date')->nullable();
+            $table->string('new_site')->nullable();
             $table->timestamps();
         });
     }

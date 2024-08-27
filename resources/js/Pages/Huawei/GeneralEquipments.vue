@@ -87,7 +87,7 @@
                     </td>
 
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.huawei_equipment_serie.serie_number }}</td>
-                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.assigned_site }}</td>
+                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center"><button @click.prevent="openEditSite(item.id)" class="text-blue-600 hover:underline font-black text-sm">{{ item.new_site ? item.new_site : item.assigned_site }}</button></td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.instalation_state ? item.instalation_state : item.state }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.latest_huawei_project_resource ? formattedDate(item.latest_huawei_project_resource.huawei_project_liquidation?.instalation_date) : '' }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center"><button v-if="item.state === 'Disponible'" @click.prevent="openAssignModal(item.id)" class="font-black hover:underline" :class="{'text-blue-600': item.assigned_diu, 'text-red-600': !item.assigned_diu}">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button><p v-else>{{ item.assigned_diu }}</p></td>
@@ -186,9 +186,35 @@
           </div>
         </Modal>
 
+        <Modal :show="updateSiteModal">
+          <div class="p-6">
+            <h2 class="text-base font-medium leading-7 text-gray-900">Actualizar Site</h2>
+            <form @submit.prevent="updateSite" class="grid grid-cols-2 gap-3">
+
+              <!-- Tercera Fila -->
+              <div class="col-span-2 grid grid-cols-2 gap-3">
+
+                <div class="col-span-2">
+                    <InputLabel class="mb-1" for="observation">Site</InputLabel>
+                    <TextInput :to-uppercase="true" type="text" v-model="updateSiteForm.new_site" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                    <InputError :message="updateSiteForm.errors.new_site" />
+                  </div>
+
+              </div>
+
+              <!-- Botones de Acción -->
+              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
+                <SecondaryButton @click="closeEditSite">Cancelar</SecondaryButton>
+                <PrimaryButton type="submit" :class="{ 'opacity-25': updateSiteForm.processing }">Guardar</PrimaryButton>
+              </div>
+            </form>
+          </div>
+        </Modal>
+
         <SuccessOperationModal :confirming="confirmAssign" title="Éxito" message="Se asignó la DIU correctamente." />
         <SuccessOperationModal :confirming="showRefundConfirm" title="Éxito" message="La devolución se registró correctamente." />
         <SuccessOperationModal :confirming="confirmUpdateModal" title="Éxito" message="Se actualizó la fecha correctamente." />
+        <SuccessOperationModal :confirming="confirmUpdateSite" title="Éxito" message="Se actualizó el site correctamente." />
 
     </AuthenticatedLayout>
   </template>
@@ -218,6 +244,36 @@
   const showRefundConfirm = ref(false);
   const updateDateModal = ref (false);
   const confirmUpdateModal = ref(false);
+  const updateSiteModal = ref(false);
+  const confirmUpdateSite = ref(false);
+
+  const updateSiteForm = useForm({
+    id: '',
+    new_site: ''
+  });
+
+  const openEditSite = (id) => {
+    updateSiteForm.id = id;
+    updateSiteModal.value = true
+  }
+
+  const closeEditSite = () => {
+    updateSiteForm.reset();
+    updateSiteForm.clearErrors();
+    updateSiteModal.value = false;
+  }
+
+  const updateSite = () => {
+    updateSiteForm.put(route('huawei.inventory.update.entrydetail.site', {huawei_entry_detail: updateSiteForm.id}), {
+        onSuccess: () => {
+            closeEditSite();
+            confirmUpdateSite.value = true;
+            setTimeout(()=> {
+                confirmUpdateSite.value = false;
+            }, 2000)
+        }
+    })
+  }
 
   const assignForm = useForm({
     huawei_entry_detail_id: '',
