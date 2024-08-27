@@ -20,7 +20,8 @@ class HuaweiEntryDetail extends Model
         'unit_price',
         'assigned_diu',
         'observation',
-        'entry_date'
+        'entry_date',
+        'new_site'
     ];
 
     protected $appends = [
