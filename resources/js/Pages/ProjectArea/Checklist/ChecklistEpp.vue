@@ -192,7 +192,7 @@ const deleteAdditional = () => {
     const docId = docToDelete.value;
     if (docId) {
         router.delete(
-            route("checklist.car.destroy", {
+            route("checklist.epp.destroy", {
                 id: docId,
             }),
             {
