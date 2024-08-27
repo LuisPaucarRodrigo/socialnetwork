@@ -435,7 +435,7 @@
 
     const closeEditDate = () => {
         updateDateForm.reset();
-        updateDateForm.clearErrors();
+        updateDateForm.cleearErrors();
         updateDateModal.value = false;
     }
 
