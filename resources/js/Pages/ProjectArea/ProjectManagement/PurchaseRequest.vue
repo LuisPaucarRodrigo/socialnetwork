@@ -3,7 +3,7 @@
     <Head title="Solicitudes del proyecto" />
     <AuthenticatedLayout :redirect-route="backUrl">
         <template #header>
-            Lista de solicitudes
+            Lista de solicitudes {{ project.description }}
         </template>
 
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">

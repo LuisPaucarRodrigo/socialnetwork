@@ -80,7 +80,7 @@
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
                                     <p class="text-gray-900 whitespace-no-wrap">
-                                        {{ item.user.name }}
+                                        {{ item.user?.name }}
                                     </p>
                                 </td>
                                 <td
@@ -191,12 +191,12 @@
                                             <td
                                                 class="border-b border-slate-300 px-2 py-2"
                                             >
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </td>
                                             <td
                                                 class="border-b border-slate-300 px-2 py-2"
                                             >
-                                                {{ item.value }}
+                                                {{ item?.value }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -229,12 +229,12 @@
                                             <td
                                                 class="border-b border-slate-300 px-2 py-2"
                                             >
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </td>
                                             <td
                                                 class="border-b border-slate-300 px-2 py-2"
                                             >
-                                                {{ item.value }}
+                                                {{ item?.value }}
                                             </td>
                                         </tr>
                                     </tbody>

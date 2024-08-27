@@ -10,7 +10,8 @@
             <th>Proveedor</th>
             <th>Número de Documento</th>
             <th>Fecha de Documento</th>
-            <th>Monto</th>
+			<th>Monto</th>
+            <th>Monto sin IGV</th>
             <th>Descripción</th>
         </tr>
     </thead>
@@ -26,7 +27,8 @@
             <td>{{ $item->provider?->company_name }}</td>
             <td>{{ $item->doc_number }}</td>
             <td>{{ $item->doc_date }}</td>
-            <td>{{ $item->amount }}</td>
+			<td>{{ $item->amount }}</td>
+            <td>{{ $item->real_amount }}</td>
             <td>{{ $item->description }}</td>
         </tr>
         @endforeach

@@ -32,7 +32,7 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistCar::with('user')->paginate(20);
         return Inertia::render(
-            'ProjectArea/image/Checklist/ChecklistCar',
+            'ProjectArea/Checklist/ChecklistCar',
             ['checklists' => $checklistcar]
         );
     }
@@ -41,7 +41,7 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistCar::find($id);
         return $this->openNewWindowArchive(
-            '/image/image/checklist/checklistcar/',
+            '/image/checklist/checklistcar/',
             $checklistcar->$photoProp
         );
     }
@@ -67,7 +67,7 @@ class ChecklistsController extends Controller
     {
         $checklisttoolkit = ChecklistToolkit::with('user')->paginate(20);
         return Inertia::render(
-            'ProjectArea/image/Checklist/ChecklistToolkit',
+            'ProjectArea/Checklist/ChecklistToolkit',
             ['checklists' => $checklisttoolkit]
         );
     }
@@ -76,7 +76,7 @@ class ChecklistsController extends Controller
     {
         $checklistcar = ChecklistToolkit::find($id);
         return $this->openNewWindowArchive(
-            '/image/image/checklist/checklisttoolkit/',
+            '/image/checklist/checklisttoolkit/',
             $checklistcar->$photoProp
         );
     }
@@ -141,12 +141,24 @@ class ChecklistsController extends Controller
         }
     }
 
-    public function epp_store(ChecklistEppRequest $request)
-    {
+    public function dailytoolkit_destroy($cdt_id){
+        $checklistdailytoolkit = ChecklistDailytoolkit::find($cdt_id);
+        $checklistdailytoolkit->delete();
+        return redirect()->back();
+    }
+
+
+    public function epp_store(ChecklistEppRequest $request){
         $data = $request->validated();
         $data['user_id'] = Auth::user()->id;
         ChecklistEpp::create($data);
         return response()->json([], 201);
+    }
+
+    public function epp_destroy($epp_id){
+        $checklistepp = ChecklistEpp::find($epp_id);
+        $checklistepp->delete();
+        return redirect()->back();
     }
 
     private function storeBase64Image($photo, $path, $name)
@@ -232,6 +244,10 @@ class ChecklistsController extends Controller
 
             $docDate = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
             $data['doc_date'] = $docDate->format('Y-m-d');
+
+            if (($data['zone']!=='MDD1'&& $data['zone']!=='MDD2') && $data['type_doc'] === 'Factura' ) {
+                $data['igv'] = 18;
+            }
 
             if ($data['photo']) {
                 $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');

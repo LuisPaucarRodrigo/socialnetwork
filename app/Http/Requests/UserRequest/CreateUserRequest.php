@@ -50,12 +50,17 @@ class CreateUserRequest extends FormRequest
                 'string',
                 Rule::unique('users', 'phone')
             ],
-            'rol' => 'required|numeric',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ];
 
         if ($this->input('company') === 'CCIP') {
-            $rules['area_id'] = 'required';
+            if ($this->input('platform') !== 'Movil'){
+                $rules['area_id'] = 'required';
+            }
+        }
+
+        if ($this->input('platform') !== 'Movil'){
+            $rules['rol'] = 'required';
         }
 
         return $rules;

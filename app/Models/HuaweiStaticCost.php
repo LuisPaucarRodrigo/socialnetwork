@@ -5,23 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HuaweiProjectEmployee extends Model
+class HuaweiStaticCost extends Model
 {
     use HasFactory;
 
-    protected $table = 'huawei_project_employees';
+    protected $table = 'huawei_static_costs';
 
     protected $fillable = [
-        'employee_id',
+        'expense_type',
+        'ruc',
+        'zone',
+        'type_doc',
+        'doc_number',
+        'doc_date',
+        'amount',
+        'description',
         'huawei_project_id',
-        'role',
-        'cost'
+        'archive'
     ];
-
-    public function employee ()
-    {
-        return $this->belongsTo(Employee::class, 'employee_id');
-    }
 
     public function huawei_project ()
     {

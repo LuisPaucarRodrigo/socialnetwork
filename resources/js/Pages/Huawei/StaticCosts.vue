@@ -4,7 +4,7 @@
     <AuthenticatedLayout
       :redirectRoute="{ route: 'huawei.projects.additionalcosts.summary', params: {huawei_project: props.huawei_project.id}}">
       <template #header>
-        Costos variables del Proyecto {{ props.huawei_project.name }}
+        Costos Fijos del Proyecto {{ props.huawei_project.name }}
       </template>
       <div class="inline-block min-w-full overflow-hidden rounded-lg">
         <div class="flex items-center justify-end gap-4">
@@ -346,24 +346,26 @@ const closeModals = () => {
 
 const submit = (update) => {
     if (!update){
-        form.post(route('huawei.projects.additionalcosts.store', { huawei_project: props.huawei_project.id }), {
+        form.post(route('huawei.projects.staticcosts.store', { huawei_project: props.huawei_project.id }), {
             onSuccess: () => {
             closeCreateModal();
             form.reset();
             showModal.value = true;
             setTimeout(() => {
                 showModal.value = false;
+                router.visit(route('huawei.projects.staticcosts', {huawei_project: props.huawei_project.id}));
             }, 2000);
             }
         });
     }else{
-        form.post(route('huawei.projects.additionalcosts.update', { huawei_project: props.huawei_project.id, huawei_additional_cost: form.id }), {
+        form.post(route('huawei.projects.staticcosts.update', { huawei_project: props.huawei_project.id, static_additional_cost: form.id }), {
             onSuccess: () => {
             closeEditModal();
             form.reset();
             showModalEdit.value = true;
             setTimeout(() => {
                 showModalEdit.value = false;
+                router.visit(route('huawei.projects.staticcosts', {huawei_project: props.huawei_project.id}));
             }, 2000);
             }
         });
@@ -380,14 +382,14 @@ const closeModalDoc = () => {
 };
 
 const openArchive = (id) => {
-    const routeToShow = route('huawei.projects.additionalcosts.preview', {huawei_additional_cost: id});
+    const routeToShow = route('huawei.projects.staticcosts.preview', {static_additional_cost: id});
     window.open(routeToShow, '_blank');
 }
 
 const deleteAdditional = () => {
   const docId = docToDelete.value;
   if (docId) {
-    router.delete(route('huawei.projects.additionalcosts.delete', { huawei_project: props.huawei_project.id, huawei_additional_cost: docId }), {
+    router.delete(route('huawei.projects.staticcosts.delete', { huawei_project: props.huawei_project.id, static_additional_cost: docId }), {
       onSuccess: () => closeModalDoc()
     });
   }
@@ -399,9 +401,9 @@ const searchForm = useForm({
 
 const search = () => {
     if (searchForm.searchTerm == ''){
-        router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
+        router.visit(route('huawei.projects.staticcosts', {huawei_project: props.huawei_project.id}));
     }else{
-        router.visit(route('huawei.projects.additionalcosts.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
+        router.visit(route('huawei.projects.staticcosts.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
     }
 }
 
@@ -467,7 +469,7 @@ watch(
 
 async function search_advance($data) {
     let res = await axios.post(
-        route("huawei.projects.additionalcosts.advancedsearch", {
+        route("huawei.projects.staticcosts.advancedsearch", {
             huawei_project_id: props.huawei_project.id,
         }),
         $data

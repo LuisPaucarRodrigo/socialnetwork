@@ -44,6 +44,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('huawei/projects/update/{huawei_project}', [HuaweiProjectController::class, 'update'])->name('huawei.projects.update');
     Route::delete('huawei/projects/deleteemployee/{id}/delete', [HuaweiProjectController::class, 'deleteEmployee'])->name('huawei.projects.deleteemployee');
     Route::post('huawei/projects/addemployee/{huawei_project}/add', [HuaweiProjectController::class, 'add_employee'])->name('huawei.projects.addemployee');
+    Route::put('huawei/projects/editemployee/{huawei_project}/edit/{id}', [HuaweiProjectController::class, 'edit_employee'])->name('huawei.projects.editemployee');
     Route::put('huawei/projects/{huawei_project}/liquidate/put', [HuaweiProjectController::class, 'liquidateProject'])->name('huawei.projects.liquidateproject');
     Route::put('huawei/projects/{huawei_project}/cancel/put', [HuaweiProjectController::class, 'cancelProject'])->name('huawei.projects.cancelproject');
     Route::get('huawei/projects/balance/{huawei_project}/get', [HuaweiProjectController::class, 'projectBalance'])->name('huawei.projects.balance');
@@ -61,9 +62,22 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     //additional_costs
     Route::get('huawei/projects/{huawei_project}/additional_costs/get', [HuaweiProjectController::class, 'getAdditionalCosts'])->name('huawei.projects.additionalcosts');
     Route::post('huawei/projects/{huawei_project}/additional_costs/store', [HuaweiProjectController::class, 'storeAdditionalCosts'])->name('huawei.projects.additionalcosts.store');
-    Route::put('huawei/projects/{huawei_project}/additional_costs/update/{huawei_additional_cost}', [HuaweiProjectController::class, 'updateAdditionalCosts'])->name('huawei.projects.additionalcosts.update');
+    Route::post('huawei/projects/{huawei_project}/additional_costs/update/{huawei_additional_cost}', [HuaweiProjectController::class, 'updateAdditionalCosts'])->name('huawei.projects.additionalcosts.update');
     Route::delete('huawei/projects/{huawei_project}/additional_costs/delete/{huawei_additional_cost}', [HuaweiProjectController::class, 'deleteAdditionalCost'])->name('huawei.projects.additionalcosts.delete');
-    Route::get('huawei/projects/{huawei_project}/additional_costs/search/{request}', [HuaweiProjectController::class, 'searchAdditionalCosts'])->name('huawei.projects.additionalcosts.search');
+    Route::get('huawei/projects/{huawei_gitproject}/additional_costs/search/{request}', [HuaweiProjectController::class, 'searchAdditionalCosts'])->name('huawei.projects.additionalcosts.search');
+    Route::get('huawei/projects/{huawei_project}/addtitional_costs/summary', [HuaweiProjectController::class, 'getCostSummary'])->name('huawei.projects.additionalcosts.summary');
+    Route::get('huawei/projects/additional_costs/preview/{huawei_additional_cost}', [HuaweiProjectController::class, 'showAdditionalArchive'])->name('huawei.projects.additionalcosts.preview');
+    Route::post('huawei/projects/{huawei_project_id}/additional_cost/advanced_search', [HuaweiProjectController::class, 'search_costs'])->name('huawei.projects.additionalcosts.advancedsearch');
+
+    //static costs
+
+    Route::get('huawei/projects/{huawei_project}/static_costs/get', [HuaweiProjectController::class, 'getStaticCosts'])->name('huawei.projects.staticcosts');
+    Route::post('huawei/projects/{huawei_project}/static_costs/store', [HuaweiProjectController::class, 'storeStaticCosts'])->name('huawei.projects.staticcosts.store');
+    Route::post('huawei/projects/{huawei_project}/static_costs/update/{static_additional_cost}', [HuaweiProjectController::class, 'updateStaticCosts'])->name('huawei.projects.staticcosts.update');
+    Route::delete('huawei/projects/{huawei_project}/static_costs/delete/{static_additional_cost}', [HuaweiProjectController::class, 'deleteStaticCost'])->name('huawei.projects.staticcosts.delete');
+    Route::get('huawei/projects/{huawei_project}/static_costs/search/{request}', [HuaweiProjectController::class, 'searchStaticCosts'])->name('huawei.projects.staticcosts.search');
+    Route::get('huawei/projects/static_costs/preview/{static_additional_cost}', [HuaweiProjectController::class, 'showStaticArchive'])->name('huawei.projects.staticcosts.preview');
+    Route::post('huawei/projects/{huawei_project_id}/static_costs/advanced_search', [HuaweiProjectController::class, 'search_static_costs'])->name('huawei.projects.staticcosts.advancedsearch');
 
     //resources
     Route::get('huawei/projects/{huawei_project}/resources/get/{equipment?}', [HuaweiProjectController::class, 'getResources'])->name('huawei.projects.resources');

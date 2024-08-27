@@ -28,6 +28,7 @@ return new class extends Migration
             $table->date('c_start_date')->nullable();
             $table->date('c_end_date')->nullable();
             $table->string('responsible')->nullable();
+            $table->string('responsible_cicsa')->nullable();
             $table->string('criticity')->nullable();
             $table->string('conproco_area')->nullable();
             $table->string('origin_event')->nullable();
