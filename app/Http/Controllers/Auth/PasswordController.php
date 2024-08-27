@@ -18,14 +18,11 @@ class PasswordController extends Controller
         if ($user_id){
 
             $validated = $request->validate([
-                'current_password' => ['required'],
                 'password' => ['required', Password::defaults(), 'confirmed'],
             ]);
 
             $user = User::find($user_id);
-            if (!Hash::check($validated['current_password'], $user->password)) {
-                return back()->withErrors(['current_password' => 'La contraseña actual no coincide.']);
-            }
+
             $user->update([
                 'password' => Hash::make($validated['password'])
             ]);

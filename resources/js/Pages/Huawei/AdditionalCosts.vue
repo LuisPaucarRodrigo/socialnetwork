@@ -11,6 +11,10 @@
         <PrimaryButton v-if="props.huawei_project.status" @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
             + Agregar
         </PrimaryButton>
+        <a :href="route('huawei.projects.additionalcosts.export', {huawei_project: props.huawei_project})" type="button"
+            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
+            Exportar Datos
+        </a>
         <div class="flex items-center ml-auto"> <!-- Alinear elementos horizontalmente -->
             <form @submit.prevent="search" class="flex items-center">
                 <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
@@ -353,6 +357,7 @@ const submit = (update) => {
             showModal.value = true;
             setTimeout(() => {
                 showModal.value = false;
+                router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
             }, 2000);
             }
         });
@@ -364,6 +369,7 @@ const submit = (update) => {
             showModalEdit.value = true;
             setTimeout(() => {
                 showModalEdit.value = false;
+                router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
             }, 2000);
             }
         });

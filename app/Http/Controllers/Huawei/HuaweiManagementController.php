@@ -667,4 +667,15 @@ class HuaweiManagementController extends Controller
 
         return redirect()->back();
     }
+
+    public function updateEntryDate (HuaweiEntryDetail $huawei_entry_detail, Request $request)
+    {
+        $data = $request->validate([
+            'entry_date' => 'required'
+        ]);
+
+        $huawei_entry_detail->update($data);
+
+        return redirect()->back();
+    }
 }
