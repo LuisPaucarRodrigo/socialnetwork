@@ -26,6 +26,7 @@ use App\Models\Service;
 use App\Models\Code;
 use App\Models\Customers_contact;
 use App\Models\PreprojectCode;
+use App\Models\PreprojectTitle;
 use App\Models\Title;
 use App\Models\TitleCode;
 use App\Models\User;
@@ -86,14 +87,30 @@ class PreProjectController extends Controller
     public function store(PreprojectRequest $request)
     {
         $data = $request->validated();
-
         $data['code'] = $this->getCode($data['date'], $data['code']);
         $preproject = Preproject::create($data);
-        if (isset($data['title_id'])) {
-            $dataCode = TitleCode::where('title_id', $data['title_id'])->get();
+        if (isset($data['title_factibilidad_id'])) {
+            $dataCode = TitleCode::where('title_id', $data['title_factibilidad_id'])->get();
+            $preprojectTitle = PreprojectTitle::create([
+                'type' => 'Factibilidad',
+                'preproject_id' => $preproject->id
+            ]);
             foreach ($dataCode as $codes) {
                 PreprojectCode::create([
-                    'preproject_id' => $preproject->id,
+                    'preproject_title_id' => $preprojectTitle->id,
+                    'code_id' => $codes->code_id
+                ]);
+            }
+        }
+        if (isset($data['title_implementation_id'])) {
+            $dataCode = TitleCode::where('title_id', $data['title_implementation_id'])->get();
+            $preprojectTitle = PreprojectTitle::create([
+                'type' => 'Implementacion',
+                'preproject_id' => $preproject->id
+            ]);
+            foreach ($dataCode as $codes) {
+                PreprojectCode::create([
+                    'preproject_title_id' => $preprojectTitle->id,
                     'code_id' => $codes->code_id
                 ]);
             }
@@ -636,23 +653,33 @@ class PreProjectController extends Controller
 
     public function index_image($preproject_id)
     {
-        $preprojects = PreprojectCode::with('code', 'imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
-        $codesWithStatus = [];
-        foreach ($preprojects as $preprojectCode) {
-            $code = $preprojectCode->code;
-            $codesWithStatus[] = [
-                'id' => $preprojectCode->id,
-                'code' => $code->code,
-                'status' => $preprojectCode->status,
-                'description' => $code->description,
-            ];
-        }
+        $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet',)->where('preproject_id', $preproject_id)->get();
+        // $preprojects = PreprojectCode::with('code', 'imagecodepreprojet')->where('preproject_id', $preprojectTitle->id)->get();
+        // dd($preprojectTitles);
+        // $codesWithStatus = [];
+        // foreach ($preprojectTitles as $preprojectTitle) {
+        //     $code = $preprojectTitle->preprojectCodes->code;
+        //     $codesWithStatus[] = [
+        //         'id' => $preprojectTitle->id,
+        //         'code' => $code->code,
+        //         'status' => $preprojectTitle->status,
+        //         'description' => $code->description,
+        //     ];
+        // }
         $imagesCode = Imagespreproject::all();
         $imagesCode->each(function ($url) {
             $url->image = url('/image/imagereportpreproject/' . $url->image);
         });
+        $preprojectImages->each(function ($preprojectTitle) {
+            $preprojectTitle->preprojectCodes->each(function ($preprojectCode) {
+                $preprojectCode->imagecodepreprojet->each(function ($imagecodepreprojet) {
+                    $imagecodepreprojet->image = url('image/imagereportpreproject/' . $imagecodepreprojet->image);
+                });
+            });
+        });
         return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
-            'codesWithStatus' => $codesWithStatus,
+            // 'codesWithStatus' => $codesWithStatus,
+            'preprojectImages' => $preprojectImages,
             'imagesCode' => $imagesCode,
             'preproject' => Preproject::find($preproject_id),
         ]);
@@ -711,6 +738,18 @@ class PreProjectController extends Controller
         ]);
     }
 
+    public function approve_title($id)
+    {
+        $preproject_title_first = PreprojectTitle::find($id);
+        $preproject_title_next = PreprojectTitle::where('preproject_id', $preproject_title_first->preproject_id)->where('state', null)->first();
+        $preproject_title_first->update([
+            'state' => 1,
+        ]); 
+        $preproject_title_next->update([
+            'state' => 0,
+        ]);
+    }
+
     public function download_image($id)
     {
         $image = Imagespreproject::find($id);
@@ -724,12 +763,47 @@ class PreProjectController extends Controller
         abort(404, 'Imagen no encontrado');
     }
 
-    public function download_report($preproject_id)
+    // public function index_image($preproject_id)
+    // {   
+    //     $preprojectImages = PreprojectTitle::with('preprojectCodes.code','preprojectCodes.imagecodepreprojet',)->where('preproject_id',$preproject_id)->get();
+    //     // $preprojects = PreprojectCode::with('code', 'imagecodepreprojet')->where('preproject_id', $preprojectTitle->id)->get();
+    //     // dd($preprojectTitles);
+    //     // $codesWithStatus = [];
+    //     // foreach ($preprojectTitles as $preprojectTitle) {
+    //     //     $code = $preprojectTitle->preprojectCodes->code;
+    //     //     $codesWithStatus[] = [
+    //     //         'id' => $preprojectTitle->id,
+    //     //         'code' => $code->code,
+    //     //         'status' => $preprojectTitle->status,
+    //     //         'description' => $code->description,
+    //     //     ];
+    //     // }
+    //     $imagesCode = Imagespreproject::all();
+    //     $imagesCode->each(function ($url) {
+    //         $url->image = url('/image/imagereportpreproject/' . $url->image);
+    //     });
+    //     $preprojectImages->each(function ($preprojectTitle) {
+    //         $preprojectTitle->preprojectCodes->each(function ($preprojectCode) {
+    //             $preprojectCode->imagecodepreprojet->each(function ($imagecodepreprojet) {
+    //                 $imagecodepreprojet->image = url('image/imagereportpreproject/' . $imagecodepreprojet->image);
+    //             });
+    //         });
+    //     });
+    //     return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
+    //         // 'codesWithStatus' => $codesWithStatus,
+    //         'preprojectImages' => $preprojectImages,
+    //         'imagesCode' => $imagesCode,
+    //         'preproject' => Preproject::find($preproject_id),
+    //     ]);
+    // }
+
+    public function download_report($preproject_title_id)
     {
-        $codesWithStatus = PreprojectCode::with('code', 'imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
-        $preproject = Preproject::find($preproject_id);
+        $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->find($preproject_title_id);
+        // dd($preprojectImages);
+        $preproject = Preproject::find($preprojectImages->preproject_id);
         $customer = Customers_contact::find($preproject->subcustomer_id);
-        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('codesWithStatus','customer'));
+        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('preprojectImages', 'customer'));
         return $pdf->stream();
     }
 
@@ -886,30 +960,28 @@ class PreProjectController extends Controller
 
     public function postTitle(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'title' => 'required',
+            'type' => 'required',
             'code_id_array' => 'required'
         ]);
 
-        $title = Title::create([
-            'title' => $request->title,
-        ]);
+        $title = Title::create($data);
 
-        $title->codes()->attach($request->code_id_array);
+        $title->codes()->attach($data['code_id_array']);
     }
 
     public function putTitle(Request $request, Title $title)
     {
-        $request->validate([
+        $data = $request->validate([
             'title' => 'required',
+            'type' => 'required',
             'code_id_array' => 'required'
         ]);
 
-        $title->update([
-            'title' => $request->title,
-        ]);
+        $title->update($data);
 
-        $title->codes()->sync($request->code_id_array, ['timestamps' => true]);
+        $title->codes()->sync($data['code_id_array'], ['timestamps' => true]);
     }
 
     public function deleteTitle(Title $title)

@@ -6,72 +6,72 @@
             Imagenes para Reporte
         </template>
         <div class="min-w-full overflow-hidden rounded-lg">
-            <div class="mt-6 flex items-center justify-between gap-x-3">
-                <div class="mt-2 hidden sm:flex sm:items-center space-x-4">
-                    <a :href="route('preprojects.report.download', { preproject_id: preproject.id })"
+
+            <!-- <GoogleMaps :mapVisible="mapVisible" :origin="origin" :destination="destination" :waypoints="waypoints" /> -->
+            <div v-for="preprojectImage in preprojectImages" :key="preprojectImage.id">
+                <div class="mt-6 flex items-center justify-start gap-x-3">
+                    <h2 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
+                        {{ preprojectImage.type }}
+                    </h2>
+                    <PrimaryButton v-if="preprojectImage.state == false" @click="approveTitle(preprojectImage.id)">
+                        Terminar
+                    </PrimaryButton>
+                    <a :href="route('preprojects.report.download', { preproject_title_id: preprojectImage.id })"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Exportar
                     </a>
-                    <PrimaryButton v-if="filteredImages.length >= 3" @click="showMap">Mostrar Mapa</PrimaryButton>
                 </div>
-                <div class="mt-2">
-                    <select required id="code" @change="requestPhotos($event.target.value)"
-                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <option disabled>Seleccione Code</option>
-                        <option value="0">Todos</option>
-                        <option v-for="item in codesWithStatus" :key="item.id" :value="item.id"> {{ item.code }}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <GoogleMaps :mapVisible="mapVisible" :origin="origin" :destination="destination" :waypoints="waypoints" />
-            <div v-for="imageCode in codes" :key="imageCode.id" class="border">
-                <div class="flex items-center justify-between gap-x-6">
-                    <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
-                        {{ imageCode.code }} / {{ imageCode.description }}
-                    </h1>
-                    <template v-if="hasPermission('ProjectManager')">
-                        <PrimaryButton v-if="!imageCode.status" @click="approveCode(imageCode.id)" type="button">
-                            Aprobar
-                        </PrimaryButton>
-                        <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
-                    </template>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-5">
-                    <div v-for="image in photoCodeFiltrado(imageCode.id)" :key="image.id"
-                        class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
-                        <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ image.description }}
-                        </h2>
-                        <div class="grid grid-cols-1 gap-y-1 text-sm text-center">
-                            <img :src="image.image">
-                            <p>Lat:{{ image?.lat }} Lon:{{ image?.lon }}</p>
-                        </div>
-                        <div class="pt-3 flex space-x-3 justify-center item-center">
-                            <span v-if="image.state != null"
-                                :class="image.state == '1' ? 'text-green-600' : 'text-red-600'">
-                                {{ image.state == '1' ? 'Aprobado' : 'Rechazado' }}</span>
-                            <div v-else class="flex space-x-3">
-                                <button @click="approveImageModal(image.id)"
+                <div v-for="imageCode in preprojectImage.preproject_codes" :key="imageCode.id" class="border">
+                    <div class="flex items-center justify-between gap-x-6">
+                        <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
+                            {{ imageCode.code.code }} / {{ imageCode.code.description }}
+                        </h1>
+
+                        <template v-if="hasPermission('ProjectManager')">
+                            <PrimaryButton v-if="!imageCode.status" @click="approveCode(imageCode.id)" type="button">
+                                Aprobar
+                            </PrimaryButton>
+                            <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
+                        </template>
+                    </div>
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-5">
+                        <div v-for="image in imageCode.imagecodepreprojet" :key="image.id"
+                            class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
+                            <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
+                                {{ image.description }}
+                            </h2>
+                            <div class="grid grid-cols-1 gap-y-1 text-sm text-center">
+                                <img :src="image.image">
+                                <p>Lat:{{ image?.lat }} Lon:{{ image?.lon }}</p>
+                            </div>
+                            <div class="pt-3 flex space-x-3 justify-center item-center">
+                                <span v-if="image.state != null"
+                                    :class="image.state == '1' ? 'text-green-600' : 'text-red-600'">
+                                    {{ image.state == '1' ? 'Aprobado' : 'Rechazado' }}</span>
+                                <div v-else class="flex space-x-3">
+                                    <button @click="approveImageModal(image.id)"
+                                        class="flex items-center text-green-600 hover:underline">
+                                        <CheckCircleIcon class="h-4 w-4 ml-1" />
+                                    </button>
+                                    <button @click="rejectModal(image.id)"
+                                        class="flex items-center text-red-600 hover:underline">
+                                        <XCircleIcon class="h-4 w-4 ml-1" />
+                                    </button>
+                                </div>
+                                <button @click="openPreviewImagenModal(image.id)"
                                     class="flex items-center text-green-600 hover:underline">
-                                    <CheckCircleIcon class="h-4 w-4 ml-1" />
+                                    <EyeIcon class="h-4 w-4 ml-1" />
                                 </button>
-                                <button @click="rejectModal(image.id)"
+                                <button @click="downloadImagen(image.id)"
+                                    class="flex items-center text-blue-600 hover:underline">
+                                    <ArrowDownIcon class="h-4 w-4 ml-1" />
+                                </button>
+                                <button @click="confirmDeleteImagen(image.id)"
                                     class="flex items-center text-red-600 hover:underline">
-                                    <XCircleIcon class="h-4 w-4 ml-1" />
+                                    <TrashIcon class="h-4 w-4" />
                                 </button>
                             </div>
-                            <button @click="openPreviewImagenModal(image.id)"
-                                class="flex items-center text-green-600 hover:underline">
-                                <EyeIcon class="h-4 w-4 ml-1" />
-                            </button>
-                            <button @click="downloadImagen(image.id)"
-                                class="flex items-center text-blue-600 hover:underline">
-                                <ArrowDownIcon class="h-4 w-4 ml-1" />
-                            </button>
-                            <button @click="confirmDeleteImagen(image.id)"
-                                class="flex items-center text-red-600 hover:underline">
-                                <TrashIcon class="h-4 w-4" />
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -133,11 +133,14 @@ import GoogleMaps from '@/Components/GoogleMaps.vue';
 
 
 const props = defineProps({
-    codesWithStatus: Object,
+    // codesWithStatus: Object,
+    preprojectImages: Object,
     imagesCode: Object,
     preproject: Object,
     userPermissions: Array
 });
+
+console.log(props.preprojectImages);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -155,7 +158,7 @@ const imageToDelete = ref(null);
 const photoCode = ref(props.imagesCode);
 const showRejectModal = ref(false)
 const imageCodeId = ref('');
-const codes = ref(props.codesWithStatus);
+// const codes = ref(props.codesWithStatus);
 const mapVisible = ref(false);
 
 const filteredImages = ref(Object.values(props.imagesCode).filter(image => image.state == true));
@@ -281,34 +284,34 @@ function submitRejectImage() {
     })
 }
 
-function requestPhotos($e) {
-    if ($e === '0') {
-        router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-    } else {
-        axios.get(route('preprojects.report.images', $e))
-            .then(response => {
-                if (response.status === 200) {
-                    codes.value = response.data.codes;
-                    photoCode.value = response.data.images;
-                } else {
-                    throw new Error('Fallo en el servidor con imagenes ' + response.status)
-                }
-            })
-            .catch(error => {
-                console.error(error)
-            })
-    }
-}
+// function requestPhotos($e) {
+//     if ($e === '0') {
+//         router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+//     } else {
+//         axios.get(route('preprojects.report.images', $e))
+//             .then(response => {
+//                 if (response.status === 200) {
+//                     codes.value = response.data.codes;
+//                     photoCode.value = response.data.images;
+//                 } else {
+//                     throw new Error('Fallo en el servidor con imagenes ' + response.status)
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error(error)
+//             })
+//     }
+// }
 
-function photoCodeFiltrado($preproject_code_id) {
-    return photoCode.value.filter(image => image.preproject_code_id === $preproject_code_id);
-}
+// function photoCodeFiltrado($preproject_code_id) {
+//     return photoCode.value.filter(image => image.preproject_code_id === $preproject_code_id);
+// }
 
 function approveCode(preproject_code_id) {
     router.get(route('preprojects.codereport.approveCode', { preproject_code_id: preproject_code_id }), {
         onSuccess: () => {
             titleSuccessImage.value = "Code Aprobado"
-            messageSuccessImage.value = "El Codigo de aprobo correctamente"
+            messageSuccessImage.value = "El Codigo se aprobo correctamente"
             approve_reject_Image.value = true
             setTimeout(() => {
                 router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
@@ -317,7 +320,20 @@ function approveCode(preproject_code_id) {
     })
 }
 
-const showMap = () => {
-    mapVisible.value = true;
-};
+function approveTitle(preproject_title_id) {    
+    router.get(route('preprojects.codereport.approveTitle', { preproject_title_id: preproject_title_id }), {
+        onSuccess: () => {
+            titleSuccessImage.value = "Aprobado"
+            messageSuccessImage.value = "Se aprobo correctamente"
+            approve_reject_Image.value = true
+            setTimeout(() => {
+                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+            }, 2000)
+        }
+    })
+}
+
+// const showMap = () => {
+//     mapVisible.value = true;
+// };
 </script>
