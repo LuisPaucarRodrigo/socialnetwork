@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Huawei;
 
+use App\Exports\HuaweiGeneralCostsExport;
+use App\Exports\HuaweiGeneralEarningsExport;
 use App\Http\Controllers\Controller;
 use App\Models\HuaweiBalanceCost;
 use App\Models\HuaweiBalanceEarning;
@@ -14,6 +16,18 @@ use Illuminate\Support\Facades\DB;
 
 class HuaweiBalanceController extends Controller
 {
+    public function getGeneralSummary ()
+    {
+        $total_variable_costs = HuaweiBalanceCost::where('type', 1)->sum('amount');
+        $total_static_costs = HuaweiBalanceCost::where('type', 0)->sum('amount');
+        $total_earnings = HuaweiBalanceEarning::sum('amount');
+        return Inertia::render('Huawei/GeneralBalance', [
+            'total_variable_costs' => $total_variable_costs,
+            'total_static_costs' => $total_static_costs,
+            'total_earnings' => $total_earnings
+        ]);
+    }
+
     public function getSummary ()
     {
         $additionalCosts = HuaweiBalanceCost::where('type', 1)->sum('amount');
@@ -145,6 +159,80 @@ class HuaweiBalanceController extends Controller
         return response()->json($result, 200);
     }
 
+    public function importCosts(Request $request)
+    {
+        // Validar que el archivo es un Excel
+        $data = $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        // Manejar la carga del archivo
+        $document = $request->file('file');
+
+        // Leer el archivo Excel directamente desde el stream
+        $spreadsheet = IOFactory::load($document->getRealPath());
+
+        // Obtener la primera hoja
+        /** @var Worksheet $sheet */
+        $sheet = $spreadsheet->getSheet(0);
+
+        // Definir el rango de lectura: A1 hasta la última fila en la columna D
+        $startCell = 'A1';
+        $endCell = 'D' . $sheet->getHighestRow();
+        $range = "$startCell:$endCell";
+
+        // Leer el rango especificado
+        $data = $sheet->rangeToArray($range, null, true, true, true);
+
+        // Array para almacenar los objetos
+        $rowsAsObjects = [];
+
+        // Recorrer las filas y convertir a objetos
+
+        foreach ($data as $index => $row) {
+
+            $rowObject = (object)[
+                'zone' => $this->sanitizeText($row['A'], false),
+                'cost_date' => $this->sanitizeDate($row['B']),
+                'amount' => $this->sanitizeNumber($row['C']),
+                'expense_type' => $this->sanitizeText($row['D'], true)
+            ];
+
+            $rowsAsObjects[] = $rowObject;
+        }
+
+
+            foreach ($rowsAsObjects as $item) {
+                if (in_array(trim($item->expense_type), ['Planilla', 'Transporte', 'Fletes', 'Alimentacion', 'Consumibles', 'Hospedaje', 'Movilidad'], true)) {
+                    // Insert into HuaweiStaticCost
+                    HuaweiBalanceCost::create([
+                        'zone' => $item->zone,
+                        'cost_date' => $item->cost_date,
+                        'amount' => $item->amount,
+                        'expense_type' => $item->expense_type,
+                        'type' => 0
+                    ]);
+                } else {
+                    // Insert into HuaweiAdditionalCost
+                    HuaweiBalanceCost::create([
+                        'zone' => $item->zone,
+                        'cost_date' => $item->cost_date,
+                        'amount' => $item->amount,
+                        'expense_type' => $item->expense_type,
+                        'type' => 1
+                    ]);
+                }
+            }
+
+
+        return redirect()->back();
+    }
+
+    public function exportCosts ()
+    {
+        return Excel::download(new HuaweiGeneralCostsExport(), 'Gastos Generales.xlsx');
+    }
+
     //earnings
 
     public function getEarnings ()
@@ -263,6 +351,11 @@ class HuaweiBalanceController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function exportEarnings ()
+    {
+        return Excel::download(new HuaweiGeneralEarningsExport(), 'Ingresos Generales.xlsx');
     }
 
     //private functions

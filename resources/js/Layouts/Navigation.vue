@@ -669,9 +669,9 @@ Usuarios
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>
                 </MyTransition>
-                <!-- <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.loads')">Cargas Excel</Link>
-                </MyTransition> -->
+                <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.generalbalance')">Balance General</Link>
+                </MyTransition>
             </template>
 
         </nav>

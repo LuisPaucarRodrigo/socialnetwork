@@ -2,7 +2,7 @@
 
     <Head title="Gestion de Ingresos Reales" />
     <AuthenticatedLayout
-      :redirectRoute="{ route: 'huawei.projects'}">
+      :redirectRoute="{ route: 'huawei.generalbalance'}">
       <template #header>
         Ingresos Actuales Generales
       </template>
@@ -17,10 +17,10 @@
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Importar Datos
         </button>
-        <!-- <a :href="route('huawei.projects.realearnings.export', {huawei_project: props.huawei_project})" type="button"
+        <a :href="route('huawei.generalbalance.earnings.export')" type="button"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Exportar Datos
-        </a> -->
+        </a>
         <!-- Menú desplegable visible en pantallas pequeñas -->
         <div class="sm:hidden flex items-center">
             <dropdown align="left">
@@ -42,9 +42,9 @@
                         <button @click.prevent="openImportModal" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Importar Datos
                         </button>
-                        <!-- <a :href="route('huawei.projects.realearnings.export', {huawei_project: props.huawei_project})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <a :href="route('huawei.generalbalance.earnings.export')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Exportar Datos
-                        </a> -->
+                        </a>
                     </div>
                 </template>
             </dropdown>
