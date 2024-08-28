@@ -744,7 +744,7 @@ class PreProjectController extends Controller
         $preproject_title_next = PreprojectTitle::where('preproject_id', $preproject_title_first->preproject_id)->where('state', null)->first();
         $preproject_title_first->update([
             'state' => 1,
-        ]); 
+        ]);
         $preproject_title_next->update([
             'state' => 0,
         ]);

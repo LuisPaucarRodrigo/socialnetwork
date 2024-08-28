@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Empleados" />
-    <AuthenticatedLayout :redirectRoute="'management.employees'">
+    <AuthenticatedLayout :redirectRoute="'employees.external.index'">
         <template #header>
             Empleados Externos
         </template>
@@ -17,8 +17,8 @@
                 </div>
 
             </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full table-auto whitespace-no-wrap">
+            <div class="overflow-auto">
+                <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
@@ -67,14 +67,15 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Curriculum
                             </th>
+
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="employee, i in (props.search === undefined ? employees.data : employees)"
-                            :key="employee.id" class="text-gray-700">
+                        <tr v-for="employee in employees" :key="employee.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
+                                <img :src="employee.profile" alt="Empleado" class="w-12 h-13 rounded-full">
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
@@ -90,7 +91,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ employee.birthday }}
+                                    {{ employee.birthdate }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -115,13 +116,14 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ employee.sctr }}
+                                    {{ employee.sctr ? 'Si' : 'No' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    Curriculum
-                                </p>
+                                <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
+                                    <EyeIcon class="w-4 h-4 text-teal-600" />
+                                </button>
+                                <span v-else>-</span>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex space-x-3 justify-center">
@@ -129,9 +131,9 @@
                                         @click="modal_employees_external(employee)"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                         </svg>
                                     </button>
                                     <button v-if="hasPermission('HumanResourceManager')" type="button"
@@ -153,28 +155,43 @@
         <Modal :show="show_m_employee">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Agregar Empleado
+                    {{ form.id ? 'Actualizar Empleado' : 'Agregar Empleado' }}
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
+                        <div v-if="form.cropped_image" class="flex justify-center mt-6">
+                            <img :src="form.profile" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
+                        </div>
+                        <div class="mt-2">
+                            <InputLabel for="reentry_date">Foto de Usuario </InputLabel>
+                            <div class="mt-2">
+                                <ModalImage v-model="form.cropped_image" @imagenRecortada="handleImagenRecortada" />
+                                <InputError :message="form.errors.cropped_image" />
+                            </div>
+                        </div>
                         <div class="mt-2">
                             <InputLabel for="name">Nombre</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" id="name" v-model="form.name" required />
+                                <TextInput type="text" id="name" v-model="form.name" required />
                                 <InputError :message="form.errors.name" />
                             </div>
                         </div>
                         <div class="mt-2">
                             <InputLabel for="lastname">Apellido</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" id="lastname" v-model="form.lastname" required />
+                                <TextInput type="text" id="lastname" v-model="form.lastname" required />
                                 <InputError :message="form.errors.lastname" />
                             </div>
                         </div>
                         <div class="mt-2">
                             <InputLabel for="gender">Genero</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" id="gender" v-model="form.gender" required />
+                                <select id="gender" v-model="form.gender" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccionar Genero</option>
+                                    <option>Masculino</option>
+                                    <option>Femenino</option>
+                                </select>
                                 <InputError :message="form.errors.gender" />
                             </div>
                         </div>
@@ -195,7 +212,7 @@
                         <div class="mt-2">
                             <InputLabel for="dni">DNI</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" id="dni" v-model="form.dni" required />
+                                <TextInput type="text" id="dni" v-model="form.dni" maxlength="8" required />
                                 <InputError :message="form.errors.dni" />
                             </div>
                         </div>
@@ -209,28 +226,37 @@
                         <div class="mt-2">
                             <InputLabel for="email_company">Correo Electronico de Compañia</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="email" id="email_company" v-model="form.email_company" required />
+                                <TextInput type="email" id="email_company" v-model="form.email_company" />
                                 <InputError :message="form.errors.email_company" />
                             </div>
                         </div>
                         <div class="mt-2">
                             <InputLabel for="phone1">Telefono</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" id="phone1" v-model="form.phone1" required />
+                                <TextInput type="text" id="phone1" v-model="form.phone1" maxlength="9" required />
                                 <InputError :message="form.errors.phone1" />
                             </div>
                         </div>
                         <div class="mt-2">
                             <InputLabel for="salary">Salario</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="date" id="salary" v-model="form.salary" required />
+                                <TextInput type="number" id="salary" v-model="form.salary" required />
                                 <InputError :message="form.errors.salary" />
                             </div>
                         </div>
                         <div class="mt-2">
-                            <InputLabel for="sctr">SCTR</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" id="sctr" v-model="form.sctr" required />
+                            <InputLabel for="sctr">¿Tiene SCTR?</InputLabel>
+                            <div class="mt-2 class flex gap-4">
+                                <label class="flex gap-2 items-center">
+                                    Sí
+                                    <input type="radio" v-model="form.sctr" id="sctr" :value="1"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center">
+                                    No
+                                    <input type="radio" v-model="form.sctr" id="sctr" :value="0"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
                                 <InputError :message="form.errors.sctr" />
                             </div>
                         </div>
@@ -242,14 +268,8 @@
                                 <InputError :message="form.errors.curriculum_vitae" />
                             </div>
                         </div>
-                        <div class="mt-2">
-                            <InputLabel for="reentry_date">Foto de Usuario </InputLabel>
-                            <div class="mt-2">
-                                <ModalImage v-model="form.cropped_image" @imagenRecortada="handleImagenRecortada" />
-                                <InputError :message="form.errors.cropped_image" />
-                            </div>
-                        </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
+
+                        <div class="mt-6 flex items-center justify-end gap-x-3">
                             <SecondaryButton @click="modal_employees_external()"> Cancel </SecondaryButton>
                             <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }"> Guardar
                             </PrimaryButton>
@@ -258,6 +278,7 @@
                 </form>
             </div>
         </Modal>
+        <ConfirmCreateModal :confirmingcreation="showModalCreate" itemType="empleado externo" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado" deleteText="Eliminar"
             :deleteFunction="deleteEmployee" @closeModal="closeModal" />
     </AuthenticatedLayout>
@@ -269,6 +290,9 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
+import { EyeIcon } from "@heroicons/vue/24/outline";
+import ModalImage from '@/Layouts/ModalImage.vue';
+import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
@@ -280,6 +304,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const confirmingUserDeletion = ref(false);
 const employeeToDelete = ref(null);
 const show_m_employee = ref(false);
+const showModalCreate = ref(false);
 const props = defineProps({
     employees: Object,
     userPermissions: Array,
@@ -290,7 +315,7 @@ const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
 
-const form = useForm({
+const initialState = {
     id: null,
     name: '',
     lastname: '',
@@ -304,18 +329,26 @@ const form = useForm({
     salary: '',
     sctr: '',
     curriculum_vitae: null,
-    cropped_image: null
-})
+    cropped_image: null,
+    profile:''
+}
+
+const form = useForm({ ...initialState })
 
 
 const submit = () => {
     form.post(route('management.external.storeorupdate', { external_id: form.id }), {
         onSuccess: () => {
+            modalCreate()
             modal_employees_external();
-            router.visit(route('management.employees'));
-        },
-        onError: () => {
+            setTimeout(() => {
+                modalCreate()
+                router.visit(route('employees.external.index'));
+            }, 2000);
 
+        },
+        onError: (e) => {
+            console.log(e);
         }
     })
 }
@@ -341,8 +374,27 @@ const closeModal = () => {
 function modal_employees_external(employee) {
     if (employee != null) {
         form.defaults({ ...employee })
+        form.reset()
+    } else {
+        form.defaults({ ...initialState })
+        form.reset()
     }
     show_m_employee.value = !show_m_employee.value
 };
+
+function modalCreate() {
+    showModalCreate.value = !showModalCreate.value
+}
+
+const handleImagenRecortada = (imagenRecorted) => {
+    form.cropped_image = imagenRecorted;
+};
+
+function handlerPreview(id) {
+    window.open(
+        route("employees.external.preview.curriculum_vitae", { external_preview_id: id }),
+        '_blank'
+    );
+}
 
 </script>

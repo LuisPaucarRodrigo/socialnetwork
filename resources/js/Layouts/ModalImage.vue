@@ -67,7 +67,6 @@ export default {
     cropAndSave() {
       this.croppie.result('blob').then((blob) => {
         const file = new File([blob], 'imagen_recortada.jpg', { type: 'image/jpeg' });
-
         // Asigna el valor directamente a modelValue
         this.$emit('update:modelValue', file);
         //Cerrar modal
