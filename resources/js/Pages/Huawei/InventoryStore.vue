@@ -67,16 +67,13 @@
                         Código de Claro
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Marca
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Modelo
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Precio Unitario
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Cantidad
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                        Unidad
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Observación
@@ -89,10 +86,9 @@
                     <tr v-for="(item, index) in newMaterials" :key="index" class="text-gray-700">
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.name }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.claro_code }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brands.find(brand => brand.id == item.brand)?.name }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ props.brand_models.find(model => model.id == item.brand_model)?.name }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit_price ? item.unit_price : '-' }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
@@ -105,7 +101,7 @@
               </div>
             </div>
 
-            <div class="col-span-2">
+            <div v-if="form.guide_number && form.entry_date" class="col-span-2">
               <div class="flex items-center mb-4">
                   <h2 class="text-lg font-medium leading-7 text-gray-900 mr-4">Equipos</h2>
                   <button @click="openEquipmentModal" type="button" class="text-blue-500 hover:text-purple-500">
@@ -166,96 +162,63 @@
             </div>
         </div>
 
-        <Modal :show="materialModal">
-          <div class="p-6">
-            <h2 class="text-base font-medium leading-7 text-gray-900">Agregar Material</h2>
-            <form @submit.prevent="add_material" class="grid grid-cols-2 gap-3">
-              <!-- Primera Fila -->
-              <div class="col-span-2 grid grid-cols-2 gap-6">
-                <div>
-                  <InputLabel class="mb-1" for="claro_code">Nombre</InputLabel>
-                  <input v-model="materialForm.name"
-                        type="text"
-                        class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
-                        @input="(e) => handleAutocomplete(e, true)"
-                        autocomplete="off"
-                        list="material-list" />
+<Modal :show="materialModal">
+  <div class="p-6">
+    <h2 class="text-base font-medium leading-7 text-gray-900">Agregar Material</h2>
+    <form @submit.prevent="add_material" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Contenido del formulario en un solo contenedor con grid -->
+      <div>
+        <InputLabel class="mb-1" for="name">Nombre</InputLabel>
+        <input v-model="materialForm.name"
+               type="text"
+               class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
+               @input="(e) => handleAutocomplete(e, true)"
+               autocomplete="off"
+               list="material-list" />
 
-                  <datalist id="material-list">
-                    <option v-for="material in props.materials" :key="material.id" :value="material.name" :data-value="material"></option>
-                  </datalist>
-                </div>
-                <div>
-                  <InputLabel class="mb-1" for="claro_code">Código de Claro</InputLabel>
-                  <input type="text" :disabled="autoCompletement" v-model="materialForm.claro_code" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
-              </div>
+        <datalist id="material-list">
+          <option v-for="material in props.materials" :key="material.id" :value="material.name" :data-value="material"></option>
+        </datalist>
+      </div>
 
-              <!-- Segunda Fila -->
-              <div class="col-span-2 grid grid-cols-2 gap-6">
-                <div>
-                  <div class="flex items-center gap-2">
-                    <InputLabel for="brand" class="mb-1">Marca
-                    </InputLabel>
-                    <button type="button" @click="new_brand">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                          <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <select :disabled="autoCompletement" v-model="materialForm.brand" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
-                    <option value="" disabled>Seleccionar Marca</option>
-                    <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
-                  </select>
-                </div>
+      <div>
+        <InputLabel class="mb-1" for="claro_code">Código de Claro</InputLabel>
+        <input type="text" :disabled="autoCompletement" v-model="materialForm.claro_code" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+      </div>
 
-                <div>
-                  <div class="flex items-center gap-2">
-                    <InputLabel for="model" class="mb-1">Modelo
-                    </InputLabel>
-                    <button type="button" @click="new_brand_model">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                          <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                      </svg>
-                    </button>
-                  </div>
-                    <select :disabled="autoCompletement" v-model="materialForm.brand_model" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
-                    <option value="" disabled>Seleccionar Modelo</option>
-                    <option v-for="model in filteredModels" :key="model.id" :value="model.id">{{ model.name }}</option>
-                  </select>
-                </div>
-              </div>
+      <div>
+        <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
+        <input type="number" step="0.01" min="0" v-model="materialForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+      </div>
 
-              <!-- Tercera Fila -->
-              <div class="col-span-2 grid grid-cols-2 gap-6">
-                <div class="col-span-1">
-                    <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
-                    <input type="number" step="0.01" min="0" v-model="materialForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
+      <div>
+        <InputLabel class="mb-1" for="unit">Unidad</InputLabel>
+        <select :disabled="autoCompletement" v-model="materialForm.unit" class="block w-full py-1.5 rounded-md sm:text-sm form-select focus:border-indigo-600">
+          <option value="" disabled>Selecciona una unidad</option>
+          <option>Unidad</option>
+          <option>Metros</option>
+          <option>Kilogramos</option>
+        </select>
+      </div>
 
-                <div class="col-span-1">
-                    <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
-                    <input type="number" min="0" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
+      <div>
+        <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
+        <input type="number" min="0" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+      </div>
 
-                <div class="col-span-2">
-                    <InputLabel class="mb-1" for="unit_price">Observación</InputLabel>
-                    <textarea v-model="materialForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
-              </div>
+      <div>
+        <InputLabel class="mb-1" for="observation">Observación</InputLabel>
+        <textarea v-model="materialForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"></textarea>
+      </div>
 
-              <!-- Botones de Acción -->
-              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeMaterialModal">Cancelar</SecondaryButton>
-                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
-              </div>
-            </form>
-          </div>
-        </Modal>
+      <!-- Botones de Acción -->
+      <div class="col-span-1 md:col-span-2 mt-6 flex items-center justify-end gap-x-6">
+        <SecondaryButton @click="closeMaterialModal">Cancelar</SecondaryButton>
+        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
+      </div>
+    </form>
+  </div>
+</Modal>
 
         <Modal :show="equipmentModal">
           <div class="p-6">
@@ -335,9 +298,14 @@
 
               <div class="col-span-2 grid grid-cols-2 gap-6">
 
-                <div class="col-span-1">
-                    <InputLabel class="mb-1" for="unit_price">Observaciones del Equipo</InputLabel>
-                    <input type="text" v-model="equipmentForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                <div>
+                <InputLabel class="mb-1" for="claro_code">Unidad</InputLabel>
+                <select :disabled="autoCompletement" v-model="equipmentForm.unit" class="block w-full py-1.5 rounded-md sm:text-sm form-select focus:border-indigo-600">
+                    <option value="" disabled>Selecciona una unidad</option>
+                    <option>Unidad</option>
+                    <option>Metros</option>
+                    <option>Kilogramos</option>
+                </select>
                 </div>
                 <div class="col-span-1">
                     <InputLabel class="mb-1" for="quantity">Agregar Serie</InputLabel>
@@ -353,6 +321,11 @@
                     </div>
                 </div>
               </div>
+
+              <div class="col-span-2">
+                    <InputLabel class="mb-1" for="unit_price">Observaciones del Equipo</InputLabel>
+                    <textarea v-model="equipmentForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                </div>
 
               <div class="overflow-x-auto mt-3 col-span-2">
                 <table class="w-full whitespace-no-wrap">
@@ -481,7 +454,7 @@
           <SuccessOperationModal :confirming="addSuccess" title="" message="" />
           <SuccessOperationModal :confirming="showModal" title="Éxito" message="La entrada se registró correctamente." />
           <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'Debe proporcionar al menos un equipo o material'" />
-          <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos, excepto el precio unitario, diu y observación.'" />
+          <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos, excepto el precio unitario, código de claro, diu y observación.'" />
           <ErrorOperationModal :showError="existingSerie" :title="'Error'" :message="'El número de serie ya está registrado para este equipo.'" />
           <ErrorOperationModal :showError="newExistingResource" :title="'Error'" :message="'El material o equipo acaba de ser registrado.'" />
 
@@ -557,11 +530,10 @@
     const materialForm = useForm({
       name: '',
       claro_code: '',
-      brand: '',
-      brand_model: '',
       quantity: '',
       unit_price: '',
       material_id: '',
+      unit: '',
       observation: ''
     });
 
@@ -574,7 +546,8 @@
       series: [],
       equipment_id: '',
       assigned_diu: '',
-      observation: ''
+      observation: '',
+      unit: ''
     });
 
     const addSerie = () => {
@@ -648,7 +621,7 @@
 
     const add_material = () => {
 
-      if (!materialForm.name || !materialForm.claro_code || !materialForm.brand || !materialForm.brand_model || !materialForm.quantity){
+      if (!materialForm.name || !materialForm.quantity || !materialForm.unit){
         emptyModal.value = true;
         setTimeout(() => {
           emptyModal.value = false;
@@ -665,12 +638,11 @@
             newMaterials.value.push({
             name: materialForm.name,
             claro_code: materialForm.claro_code,
-            brand: materialForm.brand,
-            brand_model: materialForm.brand_model,
             quantity: materialForm.quantity,
             unit_price: materialForm.unit_price,
             material_id: materialForm.material_id,
-            observation: materialForm.observation
+            observation: materialForm.observation,
+            unit: materialForm.unit
             });
 
             materialForm.reset();
@@ -684,7 +656,7 @@
     }
 
     const add_equipment = () => {
-      if (!equipmentForm.name || !equipmentForm.claro_code || !equipmentForm.brand || !equipmentForm.brand_model || equipmentForm.series.length == 0){
+      if (!equipmentForm.name || !equipmentForm.brand || !equipmentForm.brand_model || equipmentForm.series.length == 0 || !equipmentForm.unit){
         emptyModal.value = true;
         setTimeout(() => {
           emptyModal.value = false;
@@ -704,6 +676,7 @@
                     brand_model: equipmentForm.brand_model,
                     series: equipmentForm.series ,
                     equipment_id: equipmentForm.equipment_id,
+                    unit: equipmentForm.unit
                 });
 
                 equipmentForm.reset();
@@ -805,15 +778,13 @@
         if (foundMaterial.value) {
         autoCompletement.value = true;
         materialForm.claro_code = foundMaterial.value.claro_code;
-        materialForm.brand = foundMaterial.value.brand_model.brand_id;
-        materialForm.brand_model = foundMaterial.value.model_id;
         materialForm.material_id = foundMaterial.value.id;
+        materialForm.unit = foundMaterial.value.unit;
         } else {
         autoCompletement.value = false;
         materialForm.claro_code = '';
-        materialForm.brand = '';
-        materialForm.brand_model = '';
         materialForm.material_id = '';
+        materialForm.unit = '';
         }
     } else {
         foundEquipment.value = props.equipments.find(equipment =>
@@ -826,12 +797,14 @@
         equipmentForm.brand = foundEquipment.value.brand_model.brand_id;
         equipmentForm.brand_model = foundEquipment.value.model_id;
         equipmentForm.equipment_id = foundEquipment.value.id;
+        equipmentForm.unit = foundEquipment.value.unit
         } else {
         autoCompletement.value = false;
         equipmentForm.claro_code = '';
         equipmentForm.brand = '';
         equipmentForm.brand_model = '';
         equipmentForm.equipment_id = '';
+        equipmentForm.unit = '';
         }
     }
     };

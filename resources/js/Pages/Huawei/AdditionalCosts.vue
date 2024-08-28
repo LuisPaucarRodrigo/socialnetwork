@@ -4,13 +4,18 @@
     <AuthenticatedLayout
       :redirectRoute="{ route: 'huawei.projects.additionalcosts.summary', params: {huawei_project: props.huawei_project.id}}">
       <template #header>
-        Costos variables del Proyecto {{ props.huawei_project.name }}
+        Costos Variables del Proyecto {{ props.huawei_project.name }}
       </template>
-      <div class="inline-block min-w-full overflow-hidden rounded-lg">
+      <div class="min-w-full rounded-lg">
         <div class="flex items-center justify-end gap-4">
         <PrimaryButton v-if="props.huawei_project.status" @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
             + Agregar
         </PrimaryButton>
+
+        <a :href="route('huawei.projects.staticcosts.export', {huawei_project: props.huawei_project})" type="button"
+            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
+            Exportar Datos
+        </a>
         <div class="flex items-center ml-auto"> <!-- Alinear elementos horizontalmente -->
             <form @submit.prevent="search" class="flex items-center">
                 <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
@@ -27,9 +32,7 @@
         </div>
     </div>
 
-
-      </div>
-      <div class="overflow-x-auto h-[85vh]">
+    <div class="overflow-x-auto h-[85vh]">
         <table class="w-full whitespace-no-wrap">
           <thead>
             <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -45,63 +48,26 @@
               </th>
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                RUC</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
 
-                <TableHeaderFilter
-                                labelClass="text-[11px]"
-                                label="Zona"
-                                :options="zones"
-                                v-model="filterForm.selectedZones"
-                                width="w-32"
-                            />
+                Cuadrilla
               </th>
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                <TableHeaderFilter
-                                labelClass="text-[11px]"
-                                label="Tipo de Documento"
-                                :options="docTypes"
-                                v-model="filterForm.selectedDocTypes"
-                                width="w-32"
-                            />
-              </th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Numero de Doc</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Fecha de Documento</th>
+                Fecha del Gasto</th>
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-8 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Monto</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-8 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Archivo</th>
-              <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Descripción</th>
               <th v-if="props.huawei_project.status"
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                Acciones</th>
+                </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in (props.search ? props.additional_costs : dataToRender)" :key="item.id" class="text-gray-700">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm min-w-[150px]">{{ item.expense_type }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.ruc }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.zone }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.type_doc }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.doc_number }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.doc_date) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.cost_date) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">{{ item.amount ? 'S/. ' + item.amount.toFixed(2) : '-' }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                <button v-if="item.archive" @click="openArchive(item.id)" class="text-green-600 hover:underline mr-2">
-                    <EyeIcon class="h-5 w-5 ml-1" />
-                  </button>
-              </td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.description }}</td>
               <td v-if="props.huawei_project.status"
                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
@@ -120,10 +86,12 @@
       <div v-if="!props.search" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
         <pagination :links="props.additional_costs.links" />
       </div>
+      </div>
+
       <Modal :show="create_additional || editAdditionalModal">
     <div class="p-6">
         <h2 class="text-base font-medium leading-7 text-gray-900">
-            {{ create_additional ? 'Agregar Costo Adicional' : 'Actualizar Costo Adicional' }}
+            {{ create_additional ? 'Agregar Costo Variable' : 'Actualizar Costo Variable' }}
         </h2>
         <form @submit.prevent="create_additional ? submit(false) : submit(true)">
             <div class="space-y-12">
@@ -136,74 +104,42 @@
                                 <select v-model="form.expense_type" id="expense_type"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Gasto</option>
-                                    <option>Hospedaje</option>
-                                    <option>Movilidad</option>
-                                    <option>Peaje</option>
-                                    <option>Seguros y Pólizas</option>
+                                    <option>Cochera</option>
+                                    <option>Combustible</option>
+                                    <option>Epps</option>
                                     <option>Herramientas</option>
-                                    <option>Fletes</option>
-                                    <option>EPPs</option>
-                                    <option>Gastos de Representación</option>
-                                    <option>Consumibles</option>
-                                    <option>Equipos</option>
-                                    <option>Otros</option>
+                                    <option>Materiales</option>
                                 </select>
                                 <InputError :message="form.errors.expense_type" />
                             </div>
                         </div>
                         <div>
-                            <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI</InputLabel>
-                            <div class="mt-2">
-                                <input type="text" v-model="form.ruc" id="ruc" minlength="11" maxlength="11"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.ruc" />
-                            </div>
-                        </div>
-                        <div>
-                            <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
+                            <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Cuadrilla</InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.zone" id="zone"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Zona</option>
-                                    <option>Arequipa</option>
-                                    <option>Chala</option>
-                                    <option>Moquegua</option>
-                                    <option>Tacna</option>
-                                    <option>MDD</option>
-                                    <option>Otros</option>
+                                    <option disabled value="">Seleccionar Cuadrilla</option>
+                                    <option>HUAWEI</option>
+                                        <option>HUAWEI-PUNO</option>
+                                        <option>HUAWEI-AQP</option>
+                                        <option>HUAWEI-CHALA</option>
+                                        <option>HUAWEI-ILO</option>
+                                        <option>HUAWEI-JULIACA</option>
+                                        <option>HUAWEI-CUSCO</option>
+                                        <option>HUAWEI-TACNA</option>
+                                        <option>HUAWEI-LAPUNTA</option>
+                                        <option>HUAWEI-ORCOPAMPA</option>
+                                        <option>HUAWEI-ABANCAY</option>
+                                        <option>HUAWEI-BANOSPAMPA</option>
+                                        <option>HUAWEI-ELPALOMAR</option>
+                                        <option>PDIAQP</option>
+                                        <option>PERAL</option>
+                                        <option>PUNO</option>
+                                        <option>TACNA</option>
+                                        <option>GUSTAVOHUAWEI</option>
+                                        <option>DESAGUADERO</option>
                                 </select>
                                 <InputError :message="form.errors.zone" />
-                            </div>
-                        </div>
-                        <div>
-                            <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento</InputLabel>
-                            <div class="mt-2">
-                                <select v-model="form.type_doc" id="type_doc"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Documento</option>
-                                    <option>Efectivo</option>
-                                    <option>Deposito</option>
-                                    <option>Factura</option>
-                                    <option>Boleta</option>
-                                    <option>Voucher de Pago</option>
-                                </select>
-                                <InputError :message="form.errors.type_doc" />
-                            </div>
-                        </div>
-                        <div>
-                            <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de Documento</InputLabel>
-                            <div class="mt-2">
-                                <input type="text" v-model="form.doc_number" id="doc_number"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.doc_number" />
-                            </div>
-                        </div>
-                        <div>
-                            <InputLabel for="doc_date" class="font-medium leading-6 text-gray-900">Fecha de Documento</InputLabel>
-                            <div class="mt-2">
-                                <input type="date" v-model="form.doc_date" id="doc_date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.doc_date" />
                             </div>
                         </div>
                         <div>
@@ -215,18 +151,11 @@
                             </div>
                         </div>
                         <div>
-                            <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción</InputLabel>
+                            <InputLabel for="cost_date" class="font-medium leading-6 text-gray-900">Fecha del Gasto</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.description" id="description"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
-                                <InputError :message="form.errors.description" />
-                            </div>
-                        </div>
-                        <div class="md:col-span-2">
-                            <InputLabel for="archive" class="font-medium leading-6 text-gray-900">Archivo</InputLabel>
-                            <div class="mt-2">
-                                <InputFile for="archive" v-model="form.archive" :accept="'.pdf'" class="font-medium leading-6 text-gray-900"/>
-                                <InputError :message="form.errors.archive" />
+                                <input type="date" v-model="form.cost_date" id="cost_date"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                <InputError :message="form.errors.cost_date" />
                             </div>
                         </div>
                     </div>
@@ -240,6 +169,7 @@
         </form>
     </div>
 </Modal>
+
 
 
       <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Costo Adicional"
@@ -257,16 +187,17 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import InputFile from '@/Components/InputFile.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { TrashIcon, PencilSquareIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import InputFile from '@/Components/InputFile.vue';
 
 const props = defineProps({
   additional_costs: Object,
@@ -287,13 +218,8 @@ const form = useForm({
   id: '',
   expense_type: '',
   zone: '',
-  ruc: '',
-  type_doc: '',
-  doc_number: '',
-  doc_date: '',
-  description: '',
+  cost_date: '',
   amount: null,
-  archive: ''
 });
 
 const create_additional = ref(false);
@@ -326,13 +252,8 @@ const openEditAdditionalModal = (additional) => {
   form.id = editingAdditional.value.id;
   form.expense_type = editingAdditional.value.expense_type;
   form.zone = editingAdditional.value.zone;
-  form.ruc = editingAdditional.value.ruc;
+  form.cost_date = editingAdditional.value.cost_date;
   form.amount = editingAdditional.value.amount;
-  form.type_doc = editingAdditional.value.type_doc;
-  form.doc_number = editingAdditional.value.doc_number;
-  form.doc_date = editingAdditional.value.doc_date;
-  form.amount = editingAdditional.value.amount;
-  form.description = editingAdditional.value.description;
 
   editAdditionalModal.value = true;
 };
@@ -353,6 +274,7 @@ const submit = (update) => {
             showModal.value = true;
             setTimeout(() => {
                 showModal.value = false;
+                router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
             }, 2000);
             }
         });
@@ -364,6 +286,7 @@ const submit = (update) => {
             showModalEdit.value = true;
             setTimeout(() => {
                 showModalEdit.value = false;
+                router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
             }, 2000);
             }
         });
@@ -379,16 +302,14 @@ const closeModalDoc = () => {
   confirmingDocDeletion.value = false;
 };
 
-const openArchive = (id) => {
-    const routeToShow = route('huawei.projects.additionalcosts.preview', {huawei_additional_cost: id});
-    window.open(routeToShow, '_blank');
-}
-
 const deleteAdditional = () => {
   const docId = docToDelete.value;
   if (docId) {
     router.delete(route('huawei.projects.additionalcosts.delete', { huawei_project: props.huawei_project.id, huawei_additional_cost: docId }), {
-      onSuccess: () => closeModalDoc()
+      onSuccess: () => {
+        closeModalDoc();
+        router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
+      }
     });
   }
 };
@@ -407,56 +328,48 @@ const search = () => {
 
 const filterForm = ref({
     search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD"],
+    // selectedZones: [
+    //     "HUAWEI",
+    //     "HUAWEI-PUNO",
+    //     "HUAWEI-AQP",
+    //     "HUAWEI-CHALA",
+    //     "HUAWEI-ILO",
+    //     "HUAWEI-JULIACA",
+    //     "HUAWEI-CUSCO",
+    //     "HUAWEI-TACNA",
+    //     "HUAWEI-LAPUNTA",
+    //     "HUAWEI-ORCOPAMPA",
+    //     "HUAWEI-ABANCAY",
+    //     "HUAWEI-BANOSPAMPA",
+    //     "HUAWEI-ELPALOMAR",
+    //     "PDIAQP",
+    //     "PERAL",
+    //     "PUNO",
+    //     "TACNA",
+    //     "GUSTAVOHUAWEI",
+    //     "DESAGUADERO"],
     selectedExpenseTypes: [
-        "Hospedaje",
-        "Movilidad",
-        "Peaje",
-        "Seguros y Pólizas",
-        "Herramientas",
-        "Fletes",
+        "Cochera",
+        "Combustible",
         "EPPs",
-        "Gastos de Representación",
-        "Consumibles",
-        "Equipos",
-        "Otros",
-    ],
-    selectedDocTypes: [
-        "Efectivo",
-        "Deposito",
-        "Factura",
-        "Boleta",
-        "Voucher de Pago",
+        "Herramientas",
+        "Materiales",
     ],
 });
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD"];
+// const zones = ["HUAWEI", "HUAWEI-PUNO", "HUAWEI-AQP", "HUAWEI-CHALA", "HUAWEI-ILO", "HUAWEI-JULIACA", "HUAWEI-CUSCO", "HUAWEI-TACNA", "HUAWEI-LAPUNTA", "HUAWEI-ORCOPAMPA", "HUAWEI-ABANCAY", "HUAWEI-BANOSPAMPA", "HUAWEI-ELPALOMAR", "PDIAQP", "PERAL", "PUNO", "TACNA", "GUSTAVOHUAWEI", "DESAGUADERO"];
 const expenseTypes = [
-    "Hospedaje",
-    "Movilidad",
-    "Peaje",
-    "Seguros y Pólizas",
+    "Cochera",
+    "Combustible",
+    "Epps",
     "Herramientas",
-    "Fletes",
-    "EPPs",
-    "Gastos de Representación",
-    "Consumibles",
-    "Equipos",
-    "Otros",
-];
-const docTypes = [
-    "Efectivo",
-    "Deposito",
-    "Factura",
-    "Boleta",
-    "Voucher de Pago",
+    "Materiales",
 ];
 
 watch(
     () => [
-        filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
-        filterForm.value.selectedDocTypes,
+        //filterForm.value.selectedZones,
     ],
     () => {
         filterMode.value = true;

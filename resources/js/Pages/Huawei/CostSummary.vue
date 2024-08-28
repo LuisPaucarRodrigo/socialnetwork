@@ -13,6 +13,10 @@
       <Link :href="route('huawei.projects.staticcosts', {huawei_project: huawei_project.id})" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
         Costos FIjos
       </Link>
+      <button @click.prevent="openImportModal" type="button" v-if="huawei_project.status"
+            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
+            Importar Datos
+        </button>
       </div>
       <div class="flex flex-col space-y-24">
         <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
@@ -30,16 +34,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- <tr class="text-gray-700">
+                  <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2) }}</td>
-                  </tr> -->
-                  <!-- <tr class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla (essalud)</td>
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2) }}</td>
-                  </tr> -->
+          huawei_project.total_employee_costs.toFixed(2) }}</td>
+                  </tr>
                   <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Fijos</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
@@ -123,7 +122,40 @@
 
       </div>
 
+      <Modal :show="importModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Importar Excel
+                </h2>
+                <form @submit.prevent="importExcel">
+                <div class="space-y-12">
+                    <div class="border-b border-gray-900/10 pb-12">
+                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 
+                            <div class="col-span-2">
+                                <InputLabel for="file" class="font-medium leading-6 text-gray-900">Archivo</InputLabel>
+                                <div class="mt-2">
+                                    <InputFile type="file" accept="xls,xlsx" v-model="importForm.file" id="file"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="importForm.errors.file" />
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="mt-6 flex items-center justify-end gap-x-6">
+                        <SecondaryButton @click="closeImportModal">
+                        Cancelar
+                        </SecondaryButton>
+                        <button type="submit" :class="{ 'opacity-25': importForm.processing }"
+                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                    </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </Modal>
+        <SuccessOperationModal :confirming="confirmImport" :title="'Éxito'"
+        :message="'Se importaron los datos correctamente.'" />
     </AuthenticatedLayout>
   </template>
 
@@ -131,7 +163,13 @@
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import { ref, onMounted } from 'vue';
   import { Chart, registerables } from 'chart.js/auto';
-  import { Head, Link } from '@inertiajs/vue3';
+  import { Head, Link, useForm, router } from '@inertiajs/vue3';
+  import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+  import InputFile from '@/Components/InputFile.vue';
+  import Modal from '@/Components/Modal.vue';
+  import SecondaryButton from '@/Components/SecondaryButton.vue';
+  import InputError from '@/Components/InputError.vue';
+  import InputLabel from '@/Components/InputLabel.vue';
 
   const { huawei_project, additionalCosts, staticCosts, acExpensesAmounts, scExpensesAmounts } = defineProps({
     huawei_project: Object,
@@ -149,11 +187,11 @@
     if (chartInstance.value) {
       chartInstance.value.destroy();
     }
-    const dataWithRemainingBudget = [staticCosts, additionalCosts];
+    const dataWithRemainingBudget = [huawei_project.total_employee_costs, staticCosts, additionalCosts];
     chartInstance.value = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ['Costos Fijos' , 'Costos Variables'],
+        labels: ['Total de Planilla', 'Costos Fijos' , 'Costos Variables'],
         datasets: [{
           data: dataWithRemainingBudget,
           backgroundColor: Array(7).fill().map(() => getRandomColor()),
@@ -273,7 +311,37 @@
   };
 
 
+const importForm = useForm({
+    file: null
+});
 
+const importModal = ref(false);
+const confirmImport = ref(false);
+
+const openImportModal = () => {
+    importModal.value = true;
+}
+
+const closeImportModal = () => {
+    importForm.reset();
+    importForm.clearErrors();
+    importModal.value = false;
+}
+
+const importExcel = () => {
+    importForm.post(route('huawei.projects.additionalcosts.import', {huawei_project: huawei_project.id}), {
+        onSuccess: () => {
+            closeImportModal();
+            confirmImport.value = true;
+            setTimeout(() => {
+                confirmImport.value = false;
+            }, 2000);
+        },
+        onError: (e) => {
+            console.error(e);
+        }
+    })
+}
 
 
   </script>

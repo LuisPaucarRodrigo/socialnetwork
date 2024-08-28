@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('huawei_static_costs', function (Blueprint $table) {
+        Schema::create('huawei_materials', function (Blueprint $table) {
             $table->id();
-            $table->string('expense_type');
-            $table->string('zone');
-            $table->date('cost_date');
-            $table->double('amount');
-            $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
+            $table->string('name')->unique();
+            $table->string('claro_code')->nullable();
+            $table->string('unit');
+            $table->foreignId('model_id')->nullable()->constrained('brand_models')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('huawei_static_costs');
+        Schema::dropIfExists('huawei_materials');
     }
 };
