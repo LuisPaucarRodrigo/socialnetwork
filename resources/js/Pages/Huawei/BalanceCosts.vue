@@ -1,21 +1,20 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout
-      :redirectRoute="{ route: 'huawei.projects.additionalcosts.summary', params: {huawei_project: props.huawei_project.id}}">
+    <AuthenticatedLayout>
       <template #header>
-        Costos Variables del Proyecto {{ props.huawei_project.name }}
+        Costos {{ props.type ? 'Variables' : 'Fijos' }} Generales
       </template>
       <div class="min-w-full rounded-lg">
         <div class="flex items-center justify-end gap-4">
-        <PrimaryButton v-if="props.huawei_project.status" @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
+        <PrimaryButton @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
             + Agregar
         </PrimaryButton>
 
-        <a :href="route('huawei.projects.staticcosts.export', {huawei_project: props.huawei_project})" type="button"
+        <!-- <a :href="route('huawei.projects.staticcosts.export', {huawei_project: props.huawei_project})" type="button"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Exportar Datos
-        </a>
+        </a> -->
         <div class="flex items-center ml-auto"> <!-- Alinear elementos horizontalmente -->
             <form @submit.prevent="search" class="flex items-center">
                 <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
@@ -41,7 +40,7 @@
                 <TableHeaderFilter
                                 labelClass="text-[11px]"
                                 label="Tipo de Gasto"
-                                :options="expenseTypes"
+                                :options="expenseTypesArray"
                                 v-model="filterForm.selectedExpenseTypes"
                                 width="w-48"
                             />
@@ -57,18 +56,18 @@
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-8 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Monto</th>
-              <th v-if="props.huawei_project.status"
+              <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in (props.search ? props.additional_costs : dataToRender)" :key="item.id" class="text-gray-700">
+            <tr v-for="item in (props.search ? props.costs : dataToRender)" :key="item.id" class="text-gray-700">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm min-w-[150px]">{{ item.expense_type }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.zone }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.cost_date) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">{{ item.amount ? 'S/. ' + item.amount.toFixed(2) : '-' }}</td>
-              <td v-if="props.huawei_project.status"
+              <td
                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
                   <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
@@ -84,14 +83,14 @@
         </table>
       </div>
       <div v-if="!props.search" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <pagination :links="props.additional_costs.links" />
+        <pagination :links="props.costs.links" />
       </div>
       </div>
 
       <Modal :show="create_additional || editAdditionalModal">
     <div class="p-6">
         <h2 class="text-base font-medium leading-7 text-gray-900">
-            {{ create_additional ? 'Agregar Costo Variable' : 'Actualizar Costo Variable' }}
+            {{ create_additional ? 'Agregar Costo' : 'Actualizar Costo' }}
         </h2>
         <form @submit.prevent="create_additional ? submit(false) : submit(true)">
             <div class="space-y-12">
@@ -104,11 +103,7 @@
                                 <select v-model="form.expense_type" id="expense_type"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Gasto</option>
-                                    <option>Cochera</option>
-                                    <option>Combustible</option>
-                                    <option>Epps</option>
-                                    <option>Herramientas</option>
-                                    <option>Materiales</option>
+                                    <option v-for="(item, index) in expenseTypesArray" :key="index">{{ item }}</option>
                                 </select>
                                 <InputError :message="form.errors.expense_type" />
                             </div>
@@ -196,17 +191,24 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import InputFile from '@/Components/InputFile.vue';
 
 const props = defineProps({
-  additional_costs: Object,
-  huawei_project: Object,
+  costs: Object,
   auth: Object,
   userPermissions: Array,
-  search: String
+  search: String,
+  type: String
 });
 
-const dataToRender = ref(props.additional_costs.data);
+const dataToRender = ref(props.costs.data);
 const filterMode = ref(false);
+const expenseTypesArray = props.type ? [
+    'Cochera', 'Combustible', 'Epps', 'Herramientas', 'Materiales'
+] : [
+    'Planilla', 'Transporte', 'Fletes', 'Alimentación', 'Consumibles', 'Hospedaje', 'Movilidad'
+];
 
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);
@@ -227,6 +229,7 @@ const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const editAdditionalModal = ref(false);
 const editingAdditional = ref(null);
+const backRoute = props.type ? route('huawei.generalbalance.costs', {type: 1}) : route('huawei.generalbalance.costs');
 
 const openCreateAdditionalModal = () => {
   create_additional.value = true;
@@ -265,26 +268,30 @@ const closeModals = () => {
 
 const submit = (update) => {
     if (!update){
-        form.post(route('huawei.projects.additionalcosts.store', { huawei_project: props.huawei_project.id }), {
+        const url = props.type ? route('huawei.generalbalance.costs.store', {type: 1}) : route('huawei.generalbalance.costs.store');
+        form.post(url, {
             onSuccess: () => {
             closeCreateModal();
             form.reset();
             showModal.value = true;
             setTimeout(() => {
                 showModal.value = false;
-                router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
+                router.visit(backRoute);
             }, 2000);
+            },
+            onError: (e) => {
+                console.error(e);
             }
         });
     }else{
-        form.post(route('huawei.projects.additionalcosts.update', { huawei_project: props.huawei_project.id, huawei_additional_cost: form.id }), {
+        form.put(route('huawei.generalbalance.costs.update', { huawei_balance_cost: form.id }), {
             onSuccess: () => {
             closeEditModal();
             form.reset();
             showModalEdit.value = true;
             setTimeout(() => {
                 showModalEdit.value = false;
-                router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
+                router.visit(backRoute);
             }, 2000);
             }
         });
@@ -303,10 +310,10 @@ const closeModalDoc = () => {
 const deleteAdditional = () => {
   const docId = docToDelete.value;
   if (docId) {
-    router.delete(route('huawei.projects.additionalcosts.delete', { huawei_project: props.huawei_project.id, huawei_additional_cost: docId }), {
+    router.delete(route('huawei.generalbalance.costs.delete', { huawei_balance_cost: docId }), {
       onSuccess: () => {
         closeModalDoc();
-        router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
+        router.visit(backRoute);
       }
     });
   }
@@ -318,51 +325,25 @@ const searchForm = useForm({
 
 const search = () => {
     if (searchForm.searchTerm == ''){
-        router.visit(route('huawei.projects.additionalcosts', {huawei_project: props.huawei_project.id}));
+        router.visit(backRoute);
     }else{
-        router.visit(route('huawei.projects.additionalcosts.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
+        const url = props.type ? route('huawei.generalbalance.costs.search', {request: searchForm.searchTerm, type: 1}) : route('huawei.generalbalance.costs.search', {request: searchForm.searchTerm});
+        router.visit(url);
     }
 }
 
 const filterForm = ref({
     search: "",
-    // selectedZones: [
-    //     "HUAWEI",
-    //     "HUAWEI-PUNO",
-    //     "HUAWEI-AQP",
-    //     "HUAWEI-CHALA",
-    //     "HUAWEI-ILO",
-    //     "HUAWEI-JULIACA",
-    //     "HUAWEI-CUSCO",
-    //     "HUAWEI-TACNA",
-    //     "HUAWEI-LAPUNTA",
-    //     "HUAWEI-ORCOPAMPA",
-    //     "HUAWEI-ABANCAY",
-    //     "HUAWEI-BANOSPAMPA",
-    //     "HUAWEI-ELPALOMAR",
-    //     "PDIAQP",
-    //     "PERAL",
-    //     "PUNO",
-    //     "TACNA",
-    //     "GUSTAVOHUAWEI",
-    //     "DESAGUADERO"],
-    selectedExpenseTypes: [
+    selectedExpenseTypes: props.type ? [
         "Cochera",
         "Combustible",
-        "EPPs",
+        "Epps",
         "Herramientas",
         "Materiales",
+    ] : [
+        'Planilla', 'Transporte', 'Fletes', 'Alimentación', 'Consumibles', 'Hospedaje', 'Movilidad'
     ],
 });
-
-// const zones = ["HUAWEI", "HUAWEI-PUNO", "HUAWEI-AQP", "HUAWEI-CHALA", "HUAWEI-ILO", "HUAWEI-JULIACA", "HUAWEI-CUSCO", "HUAWEI-TACNA", "HUAWEI-LAPUNTA", "HUAWEI-ORCOPAMPA", "HUAWEI-ABANCAY", "HUAWEI-BANOSPAMPA", "HUAWEI-ELPALOMAR", "PDIAQP", "PERAL", "PUNO", "TACNA", "GUSTAVOHUAWEI", "DESAGUADERO"];
-const expenseTypes = [
-    "Cochera",
-    "Combustible",
-    "Epps",
-    "Herramientas",
-    "Materiales",
-];
 
 watch(
     () => [
@@ -377,10 +358,9 @@ watch(
 );
 
 async function search_advance($data) {
+    const url = props.type ? route('huawei.generalbalance.costs.advancedsearch', {type: 1}) : route('huawei.generalbalance.costs.advancedsearch');
     let res = await axios.post(
-        route("huawei.projects.additionalcosts.advancedsearch", {
-            huawei_project_id: props.huawei_project.id,
-        }),
+        url,
         $data
     );
     dataToRender.value = res.data;

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Huawei\HuaweiBalanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Inventory\HuaweiController;
 use App\Http\Controllers\Huawei\HuaweiManagementController;
@@ -119,6 +120,22 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('huawei/special_refunds/post', [HuaweiManagementController::class, 'storeSpecialRefund'])->name('huawei.specialrefunds.store');
     Route::put('huawei/special_refunds/{id}/put', [HuaweiManagementController::class, 'updateSpecialRefund'])->name('huawei.specialrefunds.update');
     Route::delete('huawei/special_refunds/{id}/delete', [HuaweiManagementController::class, 'deleteSpecialRefund'])->name('huawei.specialrefunds.delete');
+
+    //huawei_balance
+    Route::get('huawei/general_balance/earnings/get', [HuaweiBalanceController::class, 'getEarnings'])->name('huawei.generalbalance.earnings');
+    Route::get('huawei/general_balance/earnings/{request}/search', [HuaweiBalanceController::class, 'searchEarnings'])->name('huawei.generalbalance.earnings.search');
+    Route::post('huawei/general_balance/earnings/post', [HuaweiBalanceController::class, 'storeEarnings'])->name('huawei.generalbalance.earnings.store');
+    Route::put('huawei/general_balance/earnings/{huawei_balance_earning}/put', [HuaweiBalanceController::class, 'updateEarning'])->name('huawei.generalbalance.earnings.update');
+    Route::delete('huawei/general_balance/earnings/{huawei_balance_earning}/delete', [HuaweiBalanceController::class, 'deleteEarning'])->name('huawei.generalbalance.earnings.delete');
+    Route::post('huawei/general_balance/earnings/import', [HuaweiBalanceController::class, 'importEarnings'])->name('huawei.generalbalance.earnings.import');
+
+    Route::get('huawei/general_balance/costs/get/{type?}', [HuaweiBalanceController::class, 'getCosts'])->name('huawei.generalbalance.costs');
+    Route::get('huawei/general_balance/costs/{request}/search/{type?}', [HuaweiBalanceController::class, 'searchCosts'])->name('huawei.generalbalance.costs.search');
+    Route::post('huawei/general_balance/costs/post/{type?}', [HuaweiBalanceController::class, 'storeCosts'])->name('huawei.generalbalance.costs.store');
+    Route::put('huawei/general_balance/costs/{huawei_balance_cost}/put', [HuaweiBalanceController::class, 'updateCost'])->name('huawei.generalbalance.costs.update');
+    Route::delete('huawei/general_balance/costs/{huawei_balance_cost}/delete', [HuaweiBalanceController::class, 'deleteCost'])->name('huawei.generalbalance.costs.delete');
+    Route::post('huawei/general_balance/costs/advanced_search/{type?}', [HuaweiBalanceController::class, 'search_costs'])->name('huawei.generalbalance.costs.advancedsearch');
+    Route::get('huawei/general_balance/costs/summary/get', [HuaweiBalanceController::class, 'getSummary'])->name('huawei.generalbalance.costs.summary');
 });
 
 
