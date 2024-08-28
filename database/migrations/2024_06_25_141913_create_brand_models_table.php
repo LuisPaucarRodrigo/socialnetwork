@@ -13,11 +13,10 @@ return new class extends Migration
     {
             //buena paucar
 
-        Schema::create('huawei_entries', function (Blueprint $table) {
+        Schema::create('brand_models', function (Blueprint $table) {
             $table->id();
-            $table->string('guide_number')->nullable();
-            $table->date('entry_date')->nullable();
-            $table->text('observation')->nullable();
+            $table->string('name');
+            $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('huawei_entries');
+        Schema::dropIfExists('model');
     }
 };
