@@ -73,21 +73,21 @@
               <tbody>
                 <tr v-for="(item, index) in (props.search ? props.equipments : equipments.data)" :key="item.id" class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ index + 1 }}</td>
-                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center whitespace-nowrap">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center whitespace-nowrap"><button @click.prevent="openEditDate(item.id)" class="text-blue-600 hover:underline font-black text-sm">{{ formattedDate(item.entry_date ? item.entry_date : item.huawei_entry.entry_date) }}</button></td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.huawei_equipment_serie.huawei_equipment.claro_code }}</td>
                   <td class="border-b border-gray-200 px-2 py-1 text-xs text-center min-w-[200px] box-border"
-    :class="{
-        'bg-green-400': item.antiquation_state === 'Green',
-        'bg-yellow-400': item.antiquation_state === 'Yellow',
-        'bg-orange-400': item.antiquation_state === 'Orange',
-        'bg-red-400': item.antiquation_state === 'Red',
-        'bg-white': item.antiquation_state === 'none'
-    }">
-    {{ item.huawei_equipment_serie.huawei_equipment.name }}
-</td>
+                        :class="{
+                            'bg-green-400': item.antiquation_state === 'Green',
+                            'bg-yellow-400': item.antiquation_state === 'Yellow',
+                            'bg-orange-400': item.antiquation_state === 'Orange',
+                            'bg-red-400': item.antiquation_state === 'Red',
+                            'bg-white': item.antiquation_state === 'none'
+                        }">
+                        {{ item.huawei_equipment_serie.huawei_equipment.name }}
+                    </td>
 
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.huawei_equipment_serie.serie_number }}</td>
-                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.assigned_site }}</td>
+                  <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center"><button @click.prevent="openEditSite(item.id)" class="text-blue-600 hover:underline font-black text-sm">{{ item.new_site ? item.new_site : item.assigned_site }}</button></td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.instalation_state ? item.instalation_state : item.state }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center">{{ item.latest_huawei_project_resource ? formattedDate(item.latest_huawei_project_resource.huawei_project_liquidation?.instalation_date) : '' }}</td>
                   <td class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center"><button v-if="item.state === 'Disponible'" @click.prevent="openAssignModal(item.id)" class="font-black hover:underline" :class="{'text-blue-600': item.assigned_diu, 'text-red-600': !item.assigned_diu}">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button><p v-else>{{ item.assigned_diu }}</p></td>
@@ -161,8 +161,60 @@
           </div>
         </Modal>
 
+        <Modal :show="updateDateModal">
+          <div class="p-6">
+            <h2 class="text-base font-medium leading-7 text-gray-900">Actualizar Fecha</h2>
+            <form @submit.prevent="updateDate" class="grid grid-cols-2 gap-3">
+
+              <!-- Tercera Fila -->
+              <div class="col-span-2 grid grid-cols-2 gap-3">
+
+                <div class="col-span-2">
+                    <InputLabel class="mb-1" for="observation">Fecha</InputLabel>
+                    <input type="date" v-model="updateDateForm.entry_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                    <InputError :message="updateDateForm.errors.entry_date" />
+                  </div>
+
+              </div>
+
+              <!-- Botones de Acción -->
+              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
+                <SecondaryButton @click="closeEditDate">Cancelar</SecondaryButton>
+                <PrimaryButton type="submit" :class="{ 'opacity-25': updateDateForm.processing }">Guardar</PrimaryButton>
+              </div>
+            </form>
+          </div>
+        </Modal>
+
+        <Modal :show="updateSiteModal">
+          <div class="p-6">
+            <h2 class="text-base font-medium leading-7 text-gray-900">Actualizar Site</h2>
+            <form @submit.prevent="updateSite" class="grid grid-cols-2 gap-3">
+
+              <!-- Tercera Fila -->
+              <div class="col-span-2 grid grid-cols-2 gap-3">
+
+                <div class="col-span-2">
+                    <InputLabel class="mb-1" for="observation">Site</InputLabel>
+                    <TextInput :to-uppercase="true" type="text" v-model="updateSiteForm.new_site" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                    <InputError :message="updateSiteForm.errors.new_site" />
+                  </div>
+
+              </div>
+
+              <!-- Botones de Acción -->
+              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
+                <SecondaryButton @click="closeEditSite">Cancelar</SecondaryButton>
+                <PrimaryButton type="submit" :class="{ 'opacity-25': updateSiteForm.processing }">Guardar</PrimaryButton>
+              </div>
+            </form>
+          </div>
+        </Modal>
+
         <SuccessOperationModal :confirming="confirmAssign" title="Éxito" message="Se asignó la DIU correctamente." />
         <SuccessOperationModal :confirming="showRefundConfirm" title="Éxito" message="La devolución se registró correctamente." />
+        <SuccessOperationModal :confirming="confirmUpdateModal" title="Éxito" message="Se actualizó la fecha correctamente." />
+        <SuccessOperationModal :confirming="confirmUpdateSite" title="Éxito" message="Se actualizó el site correctamente." />
 
     </AuthenticatedLayout>
   </template>
@@ -190,11 +242,71 @@
   const confirmAssign = ref(false);
   const refundModal = ref(false);
   const showRefundConfirm = ref(false);
+  const updateDateModal = ref (false);
+  const confirmUpdateModal = ref(false);
+  const updateSiteModal = ref(false);
+  const confirmUpdateSite = ref(false);
+
+  const updateSiteForm = useForm({
+    id: '',
+    new_site: ''
+  });
+
+  const openEditSite = (id) => {
+    updateSiteForm.id = id;
+    updateSiteModal.value = true
+  }
+
+  const closeEditSite = () => {
+    updateSiteForm.reset();
+    updateSiteForm.clearErrors();
+    updateSiteModal.value = false;
+  }
+
+  const updateSite = () => {
+    updateSiteForm.put(route('huawei.inventory.update.entrydetail.site', {huawei_entry_detail: updateSiteForm.id}), {
+        onSuccess: () => {
+            closeEditSite();
+            confirmUpdateSite.value = true;
+            setTimeout(()=> {
+                confirmUpdateSite.value = false;
+            }, 2000)
+        }
+    })
+  }
 
   const assignForm = useForm({
     huawei_entry_detail_id: '',
     assigned_diu: ''
   })
+
+  const updateDateForm = useForm({
+    id: '',
+    entry_date: ''
+  });
+
+  const openEditDate = (id) => {
+    updateDateForm.id = id;
+    updateDateModal.value = true;
+  }
+
+  const closeEditDate = () => {
+    updateDateForm.reset();
+    updateDateForm.clearErrors();
+    updateDateModal.value = false;
+  }
+
+  const updateDate = () => {
+    updateDateForm.put(route('huawei.inventory.update.entrydetail', {huawei_entry_detail: updateDateForm.id}), {
+        onSuccess: () => {
+            confirmUpdateModal.value = true;
+            setTimeout(() => {
+                closeEditDate();
+                confirmUpdateModal.value = false;
+            }, 2000);
+        }
+    })
+  }
 
   const refundForm = useForm({
         huawei_entry_detail_id: '',
@@ -227,9 +339,9 @@
   const assignDiu = () => {
         assignForm.post(route('huawei.inventory.details.assigndiu'), {
             onSuccess: () => {
-                closeAssignModal();
                 confirmAssign.value = true;
                 setTimeout(() => {
+                    closeAssignModal();
                     confirmAssign.value = false;
                 }, 2000);
             }
@@ -239,9 +351,9 @@
         const url = route('huawei.inventory.details.refund', {equipment: 1});
         refundForm.post(url, {
             onSuccess: () => {
-                closeRefundModal();
                 showRefundConfirm.value = true;
                 setTimeout(() => {
+                    closeRefundModal();
                     showRefundConfirm.value = false;
                 }, 2000);
             },

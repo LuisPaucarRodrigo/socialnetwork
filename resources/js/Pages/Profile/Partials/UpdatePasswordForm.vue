@@ -51,7 +51,7 @@ const updatePassword = () => {
         </header>
 
         <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
-            <div>
+            <div v-if="!props.user_id">
                 <InputLabel for="current_password" value="Actual Contraseña" />
 
                 <TextInput

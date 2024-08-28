@@ -31,6 +31,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('/huawei/inventory/export/get', [HuaweiManagementController::class, 'exportInventory'])->name('huawei.inventory.export');
     Route::get('/huawei/inventory/general_equipments/get', [HuaweiManagementController::class, 'getGeneralEquipments'])->name('huawei.inventory.general.equipments');
     Route::get('/huawei/inventory/general_equipments/search/{request}', [HuaweiManagementController::class, 'searchGeneralEquipments'])->name('huawei.inventory.general.equipments.search');
+    Route::put('huawei/inventory/update_entry_detail_date/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateEntryDate'])->name('huawei.inventory.update.entrydetail');
+    Route::put('huawei/inventory/update_entry_detail_site/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateSite'])->name('huawei.inventory.update.entrydetail.site');
 
     //projects
     Route::get('huawei/projects/show', [HuaweiProjectController::class, 'show'])->name('huawei.projects');
@@ -64,10 +66,12 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('huawei/projects/{huawei_project}/additional_costs/store', [HuaweiProjectController::class, 'storeAdditionalCosts'])->name('huawei.projects.additionalcosts.store');
     Route::post('huawei/projects/{huawei_project}/additional_costs/update/{huawei_additional_cost}', [HuaweiProjectController::class, 'updateAdditionalCosts'])->name('huawei.projects.additionalcosts.update');
     Route::delete('huawei/projects/{huawei_project}/additional_costs/delete/{huawei_additional_cost}', [HuaweiProjectController::class, 'deleteAdditionalCost'])->name('huawei.projects.additionalcosts.delete');
-    Route::get('huawei/projects/{huawei_gitproject}/additional_costs/search/{request}', [HuaweiProjectController::class, 'searchAdditionalCosts'])->name('huawei.projects.additionalcosts.search');
+    Route::get('huawei/projects/{huawei_project}/additional_costs/search/{request}', [HuaweiProjectController::class, 'searchAdditionalCosts'])->name('huawei.projects.additionalcosts.search');
     Route::get('huawei/projects/{huawei_project}/addtitional_costs/summary', [HuaweiProjectController::class, 'getCostSummary'])->name('huawei.projects.additionalcosts.summary');
     Route::get('huawei/projects/additional_costs/preview/{huawei_additional_cost}', [HuaweiProjectController::class, 'showAdditionalArchive'])->name('huawei.projects.additionalcosts.preview');
     Route::post('huawei/projects/{huawei_project_id}/additional_cost/advanced_search', [HuaweiProjectController::class, 'search_costs'])->name('huawei.projects.additionalcosts.advancedsearch');
+    Route::get('huawei/projects/{huawei_project}/additional_costs/export', [HuaweiProjectController::class, 'exportAdditionalCosts'])->name('huawei.projects.additionalcosts.export');
+    Route::post('huawei/projects/{huawei_project}/additional_costs/import/post', [HuaweiProjectController::class, 'importCosts'])->name('huawei.projects.additionalcosts.import');
 
     //static costs
 
@@ -78,6 +82,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/projects/{huawei_project}/static_costs/search/{request}', [HuaweiProjectController::class, 'searchStaticCosts'])->name('huawei.projects.staticcosts.search');
     Route::get('huawei/projects/static_costs/preview/{static_additional_cost}', [HuaweiProjectController::class, 'showStaticArchive'])->name('huawei.projects.staticcosts.preview');
     Route::post('huawei/projects/{huawei_project_id}/static_costs/advanced_search', [HuaweiProjectController::class, 'search_static_costs'])->name('huawei.projects.staticcosts.advancedsearch');
+    Route::get('huawei/projects/{huawei_project}/static_costs/export', [HuaweiProjectController::class, 'exportStaticCosts'])->name('huawei.projects.staticcosts.export');
 
     //resources
     Route::get('huawei/projects/{huawei_project}/resources/get/{equipment?}', [HuaweiProjectController::class, 'getResources'])->name('huawei.projects.resources');
@@ -93,6 +98,15 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/projects/earnings/{huawei_project_earning}/delete', [HuaweiProjectController::class, 'deleteEarning'])->name('huawei.projects.earnings.delete');
     Route::post('huawei/projects/{huawei_project}/earnings/import', [HuaweiProjectController::class, 'importEarnings'])->name('huawei.projects.earnings.import');
     Route::get('huawei/projects/{huawei_project}/earnings/export', [HuaweiProjectController::class, 'exportEarnings'])->name('huawei.projects.earnings.export');
+
+    //real_earnings
+    Route::get('huawei/projects/{huawei_project}/real_earnings/get', [HuaweiProjectController::class, 'getRealEarnings'])->name('huawei.projects.realearnings');
+    Route::get('huawei/projects/{huawei_project}/real_earnings/search/{request}', [HuaweiProjectController::class, 'searchRealEarnings'])->name('huawei.projects.realearnings.search');
+    Route::post('huawei/projects/real_earnings/post', [HuaweiProjectController::class, 'storeRealEarning'])->name('huawei.projects.realearnings.store');
+    Route::put('huawei/projects/real_earnings/{huawei_project_real_earning}/put', [HuaweiProjectController::class, 'updateRealEarning'])->name('huawei.projects.realearnings.update');
+    Route::delete('huawei/projects/real_earnings/{huawei_project_real_earning}/delete', [HuaweiProjectController::class, 'deleteRealEarning'])->name('huawei.projects.realearnings.delete');
+    Route::get('huawei/projects/{huawei_project}/real_earnings/export', [HuaweiProjectController::class, 'exportRealEarnings'])->name('huawei.projects.realearnings.export');
+    Route::post('huawei/projects/{huawei_project}/real_earnings/import', [HuaweiProjectController::class, 'importRealEarnings'])->name('huawei.projects.realearnings.import');
 
     //liquidations
     Route::get('huawei/projects/{huawei_project}/liquidations/get_resources', [HuaweiProjectController::class, 'geResourcesToLiquidate'])->name('huawei.projects.liquidations');
