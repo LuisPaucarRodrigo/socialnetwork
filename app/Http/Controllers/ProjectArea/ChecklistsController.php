@@ -141,6 +141,30 @@ class ChecklistsController extends Controller
         }
     }
 
+
+    public function car_destroy ($id) {
+        $checklistCar = ChecklistCar::findOrFail($id);
+        $checklistCar->front && $this->file_delete($checklistCar->front, 'image/checklist/checklistcar');
+        $checklistCar->leftSide && $this->file_delete($checklistCar->leftSide, 'image/checklist/checklistcar');
+        $checklistCar->rightSide && $this->file_delete($checklistCar->rightSide, 'image/checklist/checklistcar');
+        $checklistCar->interior && $this->file_delete($checklistCar->interior, 'image/checklist/checklistcar');
+        $checklistCar->rearLeftTire && $this->file_delete($checklistCar->rearLeftTire, 'image/checklist/checklistcar');
+        $checklistCar->rearRightTire && $this->file_delete($checklistCar->rearRightTire, 'image/checklist/checklistcar');
+        $checklistCar->frontRightTire && $this->file_delete($checklistCar->frontRightTire, 'image/checklist/checklistcar');
+        $checklistCar->frontLeftTire && $this->file_delete($checklistCar->frontLeftTire, 'image/checklist/checklistcar');
+        $checklistCar->delete();
+        return redirect()->back();
+    }
+
+    public function toolkit_destroy ($id) {
+        $checklistToolkit = ChecklistCar::findOrFail($id);
+        $checklistToolkit->badTools && $this->file_delete($checklistToolkit->badTools, 'image/checklist/checklisttoolkit');
+        $checklistToolkit->goodTools && $this->file_delete($checklistToolkit->goodTools, 'image/checklist/checklisttoolkit');
+        $checklistToolkit->delete();
+        return redirect()->back();
+    }
+
+
     public function dailytoolkit_destroy($cdt_id){
         $checklistdailytoolkit = ChecklistDailytoolkit::find($cdt_id);
         $checklistdailytoolkit->delete();
@@ -174,6 +198,15 @@ class ChecklistsController extends Controller
             abort(500, 'something went wrong');
         }
     }
+
+    public function file_delete($filename, $path)
+    {
+        $file_path = $path . $filename;
+        $path = public_path($file_path);
+        if (file_exists($path))
+            unlink($path);
+    }
+    
 
     public function checklist_history()
     {
@@ -289,4 +322,7 @@ class ChecklistsController extends Controller
             ], 500);
         }
     }
+
+
+
 }
