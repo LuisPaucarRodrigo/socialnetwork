@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class HuaweiSite extends Model
 {
     use HasFactory;
+        //buena paucar
+
     protected $table = 'huawei_sites';
-    
+
     protected $fillable = [
         'name'
     ];

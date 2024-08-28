@@ -10,6 +10,7 @@ class HuaweiPriceGuide extends Model
     use HasFactory;
 
     protected $table = 'huawei_price_guides';
+    //buena paucar
 
     protected $fillable = [
         'code',
