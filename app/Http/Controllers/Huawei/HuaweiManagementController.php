@@ -203,7 +203,7 @@ class HuaweiManagementController extends Controller
                             'name' => $equipment['name'],
                             'claro_code' => $equipment['claro_code'],
                             'model_id' => $equipment['brand_model'],
-                            'unit' => $equipment['unit']
+                            'unit' => 'Unidad'
                         ]);
 
                         foreach ($equipment['series'] as $serie) {
