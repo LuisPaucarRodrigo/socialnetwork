@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-            //buena paucar
-
-        Schema::create('brand_models', function (Blueprint $table) {
+        Schema::create('huawei_balance_earnings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade');
+            $table->string('invoice_number');
+            $table->double('amount');
+            $table->date('invoice_date');
+            $table->date('deposit_date')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('model');
+        Schema::dropIfExists('huawei_balance_earnings');
     }
 };

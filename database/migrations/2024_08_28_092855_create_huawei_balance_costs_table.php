@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-            //buena paucar
-
-        Schema::create('brand_models', function (Blueprint $table) {
+        Schema::create('huawei_balance_costs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade');
+            $table->string('expense_type');
+            $table->string('zone');
+            $table->date('cost_date');
+            $table->double('amount');
+            $table->boolean('type');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('model');
+        Schema::dropIfExists('huawei_balance_costs');
     }
 };
