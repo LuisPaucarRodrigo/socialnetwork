@@ -12,6 +12,7 @@ use App\Models\Contract;
 use App\Models\Education;
 use App\Models\Emergency;
 use App\Models\Employee;
+use App\Models\ExternalEmployee;
 use App\Models\Family;
 use App\Models\Health;
 use App\Models\Pension;
@@ -396,5 +397,40 @@ class ManagementEmployees extends Controller
         return response()->json([
             'happyBirthday' => $data->values()
         ]);
+    }
+
+    public function external_index()
+    {
+        $employees = ExternalEmployee::all();
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesExternal', [
+            'employees' => $employees
+        ]);
+    }
+
+    public function storeorupdate(Request $request, $external_id = null)
+    {
+        try {
+            $data = $request->validate([
+                'name' => 'required|string',
+                'lastname' => 'required|string',
+                'cropped_image' => 'nullable',
+                'gender' => 'required|in:Masculino,Femenino',
+                'address' => 'required|string',
+                'birthdate' => 'required|date',
+                'dni' => 'required|number',
+                'email' => 'required|email',
+                'email_company' => 'nullable|email',
+                'phone1' => 'required|number',
+                'salary' => 'required|number',
+                'sctr' => 'required',
+                'curriculum_vitae' => 'nullable'
+            ]);
+            ExternalEmployee::updateOrCreate(
+                ['id', $external_id],
+                $data
+            );
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['message' => 'Error al ingresar empleado externo']);
+        }
     }
 }

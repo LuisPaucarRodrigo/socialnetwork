@@ -87,7 +87,9 @@ Usuarios
                         </Link>
                     </MyTransition>
                 </template>
-
+                <MyTransition :transitiondemonstration="showingHumanResource">
+                    <Link class="w-full" :href="route('employees.external.index')">Empleados Externos</Link>
+                </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
                 </MyTransition>

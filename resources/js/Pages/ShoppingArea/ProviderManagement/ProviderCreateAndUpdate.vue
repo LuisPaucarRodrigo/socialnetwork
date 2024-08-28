@@ -14,8 +14,8 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.ruc" id="ruc" pattern="\d*"
-                                    autocomplete="off" maxlength="11"
+                                <TextInput type="text" v-model="form.ruc" id="ruc" pattern="\d*" autocomplete="off"
+                                    maxlength="11"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.ruc" />
                             </div>
@@ -102,7 +102,7 @@
                                     class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
                                     <option disabled value="">Seleccione</option>
                                     <option v-for="item in props.category" :key="item.id" :value="item.name">
-                                    {{ item.name }}
+                                        {{ item.name }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.category" />
