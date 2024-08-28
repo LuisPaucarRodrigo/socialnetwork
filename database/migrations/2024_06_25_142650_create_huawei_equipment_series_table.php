@@ -13,11 +13,10 @@ return new class extends Migration
     {
             //buena paucar
 
-        Schema::create('huawei_entries', function (Blueprint $table) {
+        Schema::create('huawei_equipment_series', function (Blueprint $table) {
             $table->id();
-            $table->string('guide_number')->nullable();
-            $table->date('entry_date')->nullable();
-            $table->text('observation')->nullable();
+            $table->foreignId('huawei_equipment_id')->constrained('huawei_equipments')->onDelete('cascade');
+            $table->string('serie_number');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('huawei_entries');
+        Schema::dropIfExists('huawei_equipment_series');
     }
 };
