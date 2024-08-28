@@ -10,6 +10,7 @@ class HuaweiRefund extends Model
     use HasFactory;
 
     protected $table = 'huawei_refunds';
+    //buena paucar
 
     protected $fillable = [
         'huawei_entry_detail_id',
