@@ -2,23 +2,26 @@
 
     <Head title="Gestion de Gastos" />
     <AuthenticatedLayout
-      :redirectRoute="{ route: 'huawei.projects' }">
+      :redirectRoute="{ route: 'huawei.generalbalance' }">
       <template #header>
         Resumen de Gastos
       </template>
       <div class="flex gap-2 mb-5">
-        <Link :href="route('huawei.projects.additionalcosts', {huawei_project: huawei_project.id})" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+        <Link :href="route('huawei.generalbalance.costs', {type: 1})" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
         Costos Variables
       </Link>
-      <Link :href="route('huawei.projects.staticcosts', {huawei_project: huawei_project.id})" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
-        Costos FIjos
+      <Link :href="route('huawei.generalbalance.costs')" type="button" class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+        Costos Fijos
       </Link>
-      <button @click.prevent="openImportModal" type="button" v-if="huawei_project.status"
+      <button @click.prevent="openImportModal" type="button"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Importar Datos
         </button>
+        <a :href="route('huawei.generalbalance.costs.export')" type="button"
+            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
+            Exportar Datos
+        </a>
       </div>
-
       <div class="sm:hidden mb-5">
                             <dropdown align="left">
                                 <template #trigger>
@@ -35,22 +38,25 @@
                                 <div>
                                     <div class="dropdown">
                                     <div class="dropdown-menu">
-                                        <Link :href="route('huawei.projects.additionalcosts', {huawei_project: huawei_project.id})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        <Link :href="route('huawei.generalbalance.costs', {type: 1})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Costos variables
                                         </Link>
-                                        <Link :href="route('huawei.projects.staticcosts', {huawei_project: huawei_project.id})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        <Link :href="route('huawei.generalbalance.costs')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Costos Fijos
                                         </Link>
                                         <button @click.prevent="openImportModal" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Importar Datos
                                         </button>
+                                        <Link :href="route('huawei.generalbalance.costs.export')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Exportar Datos
+                                        </Link>
                                     </div>
                                     </div>
 
                                 </div>
                                 </template>
                             </dropdown>
-                </div>
+                        </div>
       <div class="flex flex-col space-y-24">
         <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
           <div class="w-full lg:w-1/2">
@@ -68,11 +74,6 @@
                 </thead>
                 <tbody>
                   <tr class="text-gray-700">
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla</td>
-                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-          huawei_project.total_employee_costs.toFixed(2) }}</td>
-                  </tr>
-                  <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Fijos</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
           staticCosts.toFixed(2) }}</td>
@@ -81,6 +82,11 @@
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Variables</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
           additionalCosts.toFixed(2) }}</td>
+                  </tr>
+                  <tr class="text-gray-700 bg-blue-400">
+                    <td class="border-b border-gray-200 px-3 py-3 font-black text-black text-sm">TOTAL</td>
+                    <td class="border-b border-gray-200 px-3 py-3 font-black text-black text-sm whitespace-nowrap text-right">S/. {{
+          (additionalCosts + staticCosts).toFixed(2) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -205,9 +211,7 @@
   import InputLabel from '@/Components/InputLabel.vue';
   import Dropdown from '@/Components/Dropdown.vue';
 
-  const { huawei_project, additionalCosts, staticCosts, acExpensesAmounts, scExpensesAmounts } = defineProps({
-    huawei_project: Object,
-    current_budget: Number,
+  const { additionalCosts, staticCosts, acExpensesAmounts, scExpensesAmounts } = defineProps({
     additionalCosts: Number,
     staticCosts: Number,
     acExpensesAmounts: Array,
@@ -221,11 +225,11 @@
     if (chartInstance.value) {
       chartInstance.value.destroy();
     }
-    const dataWithRemainingBudget = [huawei_project.total_employee_costs, staticCosts, additionalCosts];
+    const dataWithRemainingBudget = [staticCosts, additionalCosts];
     chartInstance.value = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ['Total de Planilla', 'Costos Fijos' , 'Costos Variables'],
+        labels: ['Costos Fijos' , 'Costos Variables'],
         datasets: [{
           data: dataWithRemainingBudget,
           backgroundColor: Array(7).fill().map(() => getRandomColor()),
@@ -363,7 +367,7 @@ const closeImportModal = () => {
 }
 
 const importExcel = () => {
-    importForm.post(route('huawei.projects.additionalcosts.import', {huawei_project: huawei_project.id}), {
+    importForm.post(route('huawei.generalbalance.costs.import'), {
         onSuccess: () => {
             closeImportModal();
             confirmImport.value = true;
