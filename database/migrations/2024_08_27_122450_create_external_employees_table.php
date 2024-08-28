@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string("email")->unique();
             $table->string("email_company")->unique()->nullable();
             $table->string("salary");
-            $table->string("sctr");
-            $table->string('curriculum_vitae');
+            $table->boolean("sctr");
+            $table->string('curriculum_vitae')->nullable();
             $table->timestamps();
         });
     }

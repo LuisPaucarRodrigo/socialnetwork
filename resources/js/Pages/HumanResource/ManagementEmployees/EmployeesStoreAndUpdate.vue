@@ -724,8 +724,8 @@ const removeEmergency = (index) => {
     form.emergencyContacts.splice(index, 1);
 }
 
-const handleImagenRecortada = (imagenRecortada) => {
-    form.cropped_image = imagenRecortada;
+const handleImagenRecortada = (imagenRecorted) => {
+    form.cropped_image = imagenRecorted;
 };
 
 const submit = () => {

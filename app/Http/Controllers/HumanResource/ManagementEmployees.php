@@ -6,6 +6,7 @@ use App\Actions\Jetstream\UpdateTeamName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\CreateManagementEmployees;
 use App\Http\Requests\HumanResource\FiredContractEmployees;
+use App\Http\Requests\HumanResource\StoreOrUpdateEmployeesExternal;
 use App\Http\Requests\HumanResource\UpdateManagementEmployees;
 use App\Models\Address;
 use App\Models\Contract;
@@ -402,35 +403,59 @@ class ManagementEmployees extends Controller
     public function external_index()
     {
         $employees = ExternalEmployee::all();
+        $employees->each(function ($employee) {
+            $employee->profile = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
+        });
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesExternal', [
             'employees' => $employees
         ]);
     }
 
-    public function storeorupdate(Request $request, $external_id = null)
-    {
+    public function storeorupdate(StoreOrUpdateEmployeesExternal $request, $external_id = null)
+    {   
+        
+        $data = $request->validated();
+        
         try {
-            $data = $request->validate([
-                'name' => 'required|string',
-                'lastname' => 'required|string',
-                'cropped_image' => 'nullable',
-                'gender' => 'required|in:Masculino,Femenino',
-                'address' => 'required|string',
-                'birthdate' => 'required|date',
-                'dni' => 'required|number',
-                'email' => 'required|email',
-                'email_company' => 'nullable|email',
-                'phone1' => 'required|number',
-                'salary' => 'required|number',
-                'sctr' => 'required',
-                'curriculum_vitae' => 'nullable'
-            ]);
+            $employeesExternal = $external_id ? ExternalEmployee::findOrFail($external_id) : null;
+            if ($request->hasFile('curriculum_vitae')) {
+                if ($employeesExternal) {
+                    $existingImagePath = public_path('documents/curriculum_vitae/') . $employeesExternal->curriculum_vitae;
+                    unlink($existingImagePath);
+                }
+                $document = $request->file('curriculum_vitae');
+                $documentName = time() . '._' . $document->getClientOriginalName();
+                $document->move(public_path('documents/curriculum_vitae/'), $documentName);
+                $data['curriculum_vitae'] = $documentName;
+            }
+
+            if ($request->hasFile('cropped_image')) {
+                if ($employeesExternal) {
+                    $existingImagePath = public_path('image/profile/') . $employeesExternal->cropped_image;
+                    unlink($existingImagePath);
+                }
+                $croppedImage = $request->file('cropped_image');
+                $imageUrl = time() . '._' . $croppedImage->getClientOriginalName();
+                $croppedImage->move(public_path('image/profile/'), $imageUrl);
+                $data['cropped_image'] = $imageUrl;
+            }
             ExternalEmployee::updateOrCreate(
-                ['id', $external_id],
+                ['id' => $external_id],
                 $data
             );
         } catch (Exception $e) {
-            return redirect()->back()->withErrors(['message' => 'Error al ingresar empleado externo']);
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
         }
+    }
+
+    public function preview_curriculum_vitae (ExternalEmployee $external_preview_id){
+        $fileName = $external_preview_id->curriculum_vitae;
+        $filePath = '/documents/curriculum_vitae/' . $fileName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            ob_end_clean();
+            return response()->file($path);
+        }
+        abort(404, 'Documento no encontrado');
     }
 }

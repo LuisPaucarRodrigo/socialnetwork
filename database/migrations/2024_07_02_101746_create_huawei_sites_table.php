@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('preproject_titles', function (Blueprint $table) {
+        Schema::create('huawei_sites', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
-            $table->boolean('state')->nullable();
-            $table->foreignId('preproject_id')->nullable()->onDelete('cascade');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('preproject_titles');
+        Schema::dropIfExists('huawei_sites');
     }
 };

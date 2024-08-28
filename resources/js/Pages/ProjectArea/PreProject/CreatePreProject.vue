@@ -179,7 +179,8 @@
                                 <InputError :message="form.errors.cpe" />
                             </div>
 
-                            <div>
+                            <template v-if="!preproject">
+                                <div>
                                 <InputLabel for="title_factibilidad_id" class="font-medium leading-6 text-gray-900">Título/Factibilidad</InputLabel>
                                 <div class="mt-2">
                                     <select v-model="form.title_factibilidad_id" id="title_factibilidad_id"
@@ -206,6 +207,7 @@
                                     <InputError :message="form.errors.title_implementation_id" />
                                 </div>
                             </div>
+                            </template>
 
 
                             <div>
@@ -285,7 +287,6 @@ const { preproject, customers, titles } = defineProps({
     customers: Object,
     titles: Object
 })
-
 
 let backUrls = preproject?.status === undefined
     ? 'preprojects.index'
