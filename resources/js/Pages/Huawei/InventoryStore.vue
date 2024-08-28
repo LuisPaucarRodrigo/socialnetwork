@@ -298,15 +298,11 @@
 
               <div class="col-span-2 grid grid-cols-2 gap-6">
 
-                <div>
-                <InputLabel class="mb-1" for="claro_code">Unidad</InputLabel>
-                <select :disabled="autoCompletement" v-model="equipmentForm.unit" class="block w-full py-1.5 rounded-md sm:text-sm form-select focus:border-indigo-600">
-                    <option value="" disabled>Selecciona una unidad</option>
-                    <option>Unidad</option>
-                    <option>Metros</option>
-                    <option>Kilogramos</option>
-                </select>
+                <div class="col-span-1">
+                    <InputLabel class="mb-1" for="unit_price">Observaciones del Equipo</InputLabel>
+                    <input v-model="equipmentForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
                 </div>
+
                 <div class="col-span-1">
                     <InputLabel class="mb-1" for="quantity">Agregar Serie</InputLabel>
                     <div class="flex items-center">
@@ -322,10 +318,7 @@
                 </div>
               </div>
 
-              <div class="col-span-2">
-                    <InputLabel class="mb-1" for="unit_price">Observaciones del Equipo</InputLabel>
-                    <textarea v-model="equipmentForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
+
 
               <div class="overflow-x-auto mt-3 col-span-2">
                 <table class="w-full whitespace-no-wrap">
@@ -547,7 +540,6 @@
       equipment_id: '',
       assigned_diu: '',
       observation: '',
-      unit: ''
     });
 
     const addSerie = () => {
@@ -646,6 +638,7 @@
             });
 
             materialForm.reset();
+            autoCompletement.value = false;
             closeMaterialModal();
         }
         }
@@ -656,7 +649,7 @@
     }
 
     const add_equipment = () => {
-      if (!equipmentForm.name || !equipmentForm.brand || !equipmentForm.brand_model || equipmentForm.series.length == 0 || !equipmentForm.unit){
+      if (!equipmentForm.name || !equipmentForm.brand || !equipmentForm.brand_model || equipmentForm.series.length == 0){
         emptyModal.value = true;
         setTimeout(() => {
           emptyModal.value = false;
@@ -680,6 +673,8 @@
                 });
 
                 equipmentForm.reset();
+                autoCompletement.value = false;
+
                 closeEquipmentModal();
             }
 
