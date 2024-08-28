@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('price_guide2', function (Blueprint $table) {
+        Schema::create('preproject_titles', function (Blueprint $table) {
             $table->id();
-            $table->string('bidding_area');
-            $table->double('unit_price');
-            $table->foreignId('ha2_id')->constrained('huawei_anexes2')->onDelete('cascade');
+            $table->string('type');
+            $table->boolean('state')->nullable();
+            $table->foreignId('preproject_id')->nullable()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('price_guide2');
+        Schema::dropIfExists('preproject_titles');
     }
 };

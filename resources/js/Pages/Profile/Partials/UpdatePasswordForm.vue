@@ -9,6 +9,10 @@ import { ref } from 'vue';
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
 
+const props = defineProps({
+    user_id: [Number, null]
+})
+
 const form = useForm({
     current_password: '',
     password: '',
@@ -16,10 +20,12 @@ const form = useForm({
 });
 
 const updatePassword = () => {
-    form.put(route('password.update'), {
+    const url = props.user_id ? route('password.update', {user_id: props.user_id}) : route('password.update');
+    form.put(url, {
         preserveScroll: true,
         onSuccess: () => form.reset(),
-        onError: () => {
+        onError: (e) => {
+            console.error(e);
             if (form.errors.password) {
                 form.reset('password', 'password_confirmation');
                 passwordInput.value.focus();
@@ -45,7 +51,7 @@ const updatePassword = () => {
         </header>
 
         <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
-            <div>
+            <div v-if="!props.user_id">
                 <InputLabel for="current_password" value="Actual Contraseña" />
 
                 <TextInput

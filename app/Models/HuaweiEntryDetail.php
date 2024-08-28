@@ -19,7 +19,9 @@ class HuaweiEntryDetail extends Model
         'quantity',
         'unit_price',
         'assigned_diu',
-        'observation'
+        'observation',
+        'entry_date',
+        'new_site'
     ];
 
     protected $appends = [
@@ -138,7 +140,7 @@ class HuaweiEntryDetail extends Model
         if ($this->state == 'En Proyecto' || $this->state == 'Devuelto'){
             return 'none';
         }
-        $entryDate = Carbon::parse($this->huawei_entry->entry_date);
+        $entryDate = Carbon::parse($this->entry_date ? $this->entry_date : $this->huawei_entry->entry_date);
 
         // Obtener la fecha actual
         $now = Carbon::now();

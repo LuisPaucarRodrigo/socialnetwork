@@ -23,30 +23,37 @@ class AdditionalCostsRequest extends FormRequest
     public function rules(): array
     {
 
-        $project = Project::find($this->input('project_id'));
-        $remaining_budget = $project->getRemainingBudgetAttribute();
-
+        // Inicializar variables
         $rules = [
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => 'nullable|string',
-            'doc_date' => 'required|date',
-            'amount' => [
-                'required',
-                'numeric',
-                function ($attribute, $value, $fail) use ($remaining_budget) {
-                    if ($value > $remaining_budget) {
-                        $fail(__('El monto del gasto excede el presupuesto restante. S/. ' . number_format($remaining_budget, 2)));
-                    }
-                }
-            ],
+            'doc_date' => 'sometimes|required|string',
+            'amount' => 'required|numeric',
             'zone' => 'required',
             'provider_id' => 'nullable',
             'description' => 'required|string',
             'photo' => 'nullable',
-            'project_id' => 'required'
+            'igv' => 'required',
+            'project_id' => 'nullable' // Cambiar 'required' a 'nullable'
         ];
+
+        if ($this->has('project_id')) {
+            $project = Project::find($this->input('project_id'));
+            if ($project) {
+                $remaining_budget = $project->getRemainingBudgetAttribute();
+                $rules['amount'] = [
+                    'required',
+                    'numeric',
+                    function ($attribute, $value, $fail) use ($remaining_budget) {
+                        if ($value > $remaining_budget) {
+                            $fail(__('El monto del gasto excede el presupuesto restante. S/. ' . number_format($remaining_budget, 2)));
+                        }
+                    }
+                ];
+            }
+        }
 
         return $rules;
     }

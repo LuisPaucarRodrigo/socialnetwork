@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('huawei_materials', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('claro_code');
-            $table->foreignId('model_id')->constrained('brand_models')->onDelete('cascade');
+            $table->string('claro_code')->nullable();
+            $table->string('unit');
+            $table->foreignId('model_id')->nullable()->constrained('brand_models')->onDelete('cascade');
             $table->timestamps();
         });
     }

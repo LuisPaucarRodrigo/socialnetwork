@@ -9,6 +9,7 @@ use App\Models\ChecklistDailytoolkit;
 use App\Models\Imagespreproject;
 use App\Models\Preproject;
 use App\Models\PreprojectCode;
+use App\Models\PreprojectTitle;
 use App\Models\PreReportHuaweiGeneral;
 use App\Models\Project;
 use App\Models\Projectimage;
@@ -33,6 +34,18 @@ class ApiController extends Controller
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             if ($request->hasMobileAccess($user)) {
+
+                // // Buscar si el usuario ya tiene un token
+                // $existingToken = $user->tokens()->first();
+
+                // // Si el usuario ya tiene un token, devolver el token existente
+                // if ($existingToken) {
+                //     return response()->json([
+                //         'id' => $user->id,
+                //         'token' => $existingToken->plainTextToken,
+                //     ]);
+                // }
+
                 $token = $user->createToken('MobileAppToken')->plainTextToken;
                 return response()->json([
                     'id' => $user->id,
@@ -80,25 +93,32 @@ class ApiController extends Controller
 
     public function preprojectcodephoto($id)
     {
-        $preproject = PreprojectCode::with('code')->where('preproject_id', $id)->get();
-        $codesWithStatus = [];
-        foreach ($preproject as $preprojectCode) {
-            $code = $preprojectCode->code;
-            $codesWithStatus[] = [
-                'id' => $preprojectCode->id,
-                'code' => $code->code,
-                'status' => $preprojectCode->status ?? $preprojectCode->replaceable_status
-            ];
+        try {
+            $preprojectTitle = PreprojectTitle::with('preprojectCodes')->where('state', false)->where('preproject_id', $id)->first();
+            $preproject = PreprojectCode::with('code')->where('preproject_title_id', $preprojectTitle->id)->get();
+            $codesWithStatus = [];
+            foreach ($preproject as $preprojectCode) {
+                $code = $preprojectCode->code;
+                $codesWithStatus[] = [
+                    'id' => $preprojectCode->id,
+                    'code' => $code->code,
+                    'status' => $preprojectCode->status ?? $preprojectCode->replaceable_status
+                ];
+            }
+            return response()->json($codesWithStatus);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
         }
-        return response()->json($codesWithStatus);
     }
 
     public function codephotospecific($id)
     {
-        $data = PreprojectCode::with('code', 'preproject')->find($id);
+        $data = PreprojectCode::with('code', 'preprojectTitle.preproject')->find($id);
         $codesWith = [
             'id' => $data->id,
-            'codePreproject' => $data->preproject->code,
+            'codePreproject' => $data->preprojectTitle->preproject->code,
             'code' => $data->code->code,
             'description' => $data->code->description,
             'status' => $data->status ?? $data->replaceable_status
@@ -301,20 +321,20 @@ class ApiController extends Controller
         return response()->download($filePath);
     }
 
-    public function dailytoolkit_store (ChecklistDailytoolkitRequest $request){
+    public function dailytoolkit_store(ChecklistDailytoolkitRequest $request)
+    {
         $data = $request->validated();
         DB::beginTransaction();
-        try{
+        try {
             $data['user_id'] = Auth::user()->id;
             ChecklistDailytoolkit::create($data);
             DB::commit();
             return response()->json([], 201);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Ocurrió un error al procesar la solicitud',
                 'message' => $e->getMessage()
             ], 500);
         }
-        
     }
 }

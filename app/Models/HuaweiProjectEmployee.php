@@ -14,7 +14,8 @@ class HuaweiProjectEmployee extends Model
     protected $fillable = [
         'employee_id',
         'huawei_project_id',
-        'role'
+        'role',
+        'cost'
     ];
 
     public function employee ()

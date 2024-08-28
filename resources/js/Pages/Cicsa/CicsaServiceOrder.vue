@@ -283,7 +283,7 @@ const initialState = {
     id: null,
     user_id: auth.user.id,
     service_order_date: '',
-    service_order: '',
+    service_order: 'Pendiente',
     estimate_sheet: 'Pendiente',
     purchase_order: 'Pendiente',
     pdf_invoice: 'Pendiente',

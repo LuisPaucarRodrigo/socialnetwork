@@ -9,7 +9,7 @@ class PreprojectCode extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'preproject_id',
+        'preproject_title_id',
         'code_id',
         'status',
     ];
@@ -30,9 +30,9 @@ class PreprojectCode extends Model
     //RELATIONS
 
     // Relación con el modelo Preproject
-    public function preproject()
+    public function preprojectTitle()
     {
-        return $this->belongsTo(Preproject::class, 'preproject_id');
+        return $this->belongsTo(PreprojectTitle::class, 'preproject_title_id');
     }
 
     // Relación con el modelo Code

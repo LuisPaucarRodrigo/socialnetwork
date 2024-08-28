@@ -74,7 +74,7 @@
                             <th
                                 v-if="checkVisibility('Asignación')"
                                 class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="7"
+                                colspan="8"
                             >
                                 Asignación
                             </th>
@@ -83,7 +83,7 @@
                                     checkVisibility('Factibilidad PINT y PEXT')
                                 "
                                 class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="4"
+                                colspan="5"
                             >
                                 Factibilidad PINT y PEXT
                             </th>
@@ -99,7 +99,7 @@
                                     checkVisibility('Instalación PINT y PEXT')
                                 "
                                 class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="7"
+                                colspan="8"
                             >
                                 Instalación PINT y PEXT
                             </th>
@@ -220,6 +220,12 @@
                             </th>
                             <th
                                 v-if="checkVisibility('Asignación')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                <div class="w-[150px]">Gestor</div>
+                            </th>
+                            <th
+                                v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                             >
                                 <div class="w-[150px]">Encargado</div>
@@ -247,6 +253,14 @@
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                             >
                                 Lista de Materiales de Factibilidad
+                            </th>
+                            <th
+                                v-if="
+                                    checkVisibility('Factibilidad PINT y PEXT')
+                                "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Coordinador
                             </th>
                             <th
                                 v-if="
@@ -332,6 +346,14 @@
                                 v-if="
                                     checkVisibility('Instalación PINT y PEXT')
                                 "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Coordinador
+                            </th>
+                            <th
+                                v-if="
+                                    checkVisibility('Instalación PINT y PEXT')
+                                "
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                             >
                                 <div class="w-[150px]">Encargado</div>
@@ -390,6 +412,12 @@
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                             >
                                 Fecha de Inicio de Validación
+                            </th>
+                            <th
+                                v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Validacion de expediente
                             </th>
                             <th
                                 v-if="checkVisibility('Validación de OC')"
@@ -616,6 +644,15 @@
                                 </p>
                             </td>
                             <td
+                                :class="stateClass(item.manager)"
+                                v-if="checkVisibility('Asignación')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px]"
+                            >
+                                <p class="text-gray-900 text-center">
+                                    {{ item.manager }}
+                                </p>
+                            </td>
+                            <td
                                 :class="stateClass(item.user_name)"
                                 v-if="checkVisibility('Asignación')"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]"
@@ -689,6 +726,22 @@
                                     </button>
                                 </div>
                             </td>
+                            <td
+                                :class="
+                                    stateClass(
+                                        item?.cicsa_feasibility?.coordinator
+                                    )
+                                "
+                                v-if="
+                                    checkVisibility('Factibilidad PINT y PEXT')
+                                "
+                                class="border-b border-gray-200 px-2 py-2 text-[13px]"
+                            >
+                                <p class="text-gray-900 text-center">
+                                    {{ item?.cicsa_feasibility?.coordinator }}
+                                </p>
+                            </td>
+
                             <td
                                 :class="
                                     stateClass(
@@ -924,6 +977,24 @@
                             <td
                                 :class="
                                     stateClass(
+                                        item?.cicsa_installation
+                                            ?.coordinator
+                                    )
+                                "
+                                v-if="
+                                    checkVisibility('Instalación PINT y PEXT')
+                                "
+                                class="border-b border-gray-200 px-2 py-2 text-[13px]"
+                            >
+                                <p class="text-gray-900 text-center">
+                                    {{
+                                     item?.cicsa_installation?.coordinator 
+                                    }}
+                                </p>
+                            </td>
+                            <td
+                                :class="
+                                    stateClass(
                                         item?.cicsa_installation?.user_name
                                     )
                                 "
@@ -1051,6 +1122,23 @@
                                             item.cicsa_purchase_order_validation
                                                 ?.validation_date
                                         )
+                                    }}
+                                </p>
+                            </td>
+                            <td
+                                :class="
+                                    stateClass(
+                                        item?.cicsa_purchase_order_validation
+                                            ?.file_validation
+                                    )
+                                "
+                                v-if="checkVisibility('Validación de OC')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px]"
+                            >
+                                <p class="text-center">
+                                    {{
+                                        item?.cicsa_purchase_order_validation
+                                            ?.file_validation
                                     }}
                                 </p>
                             </td>

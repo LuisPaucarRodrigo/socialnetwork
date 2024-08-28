@@ -39,6 +39,11 @@
                             >
                                 Observaciones
                             </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Más
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -92,18 +97,35 @@
                                         {{ item.observations }}
                                     </p>
                                 </td>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                                >
+                                    <button
+                                        @click.prevent="
+                                            confirmDeleteAdditional(item.id)
+                                        "
+                                        class="text-red-600 hover:underline mr-2"
+                                    >
+                                        <TrashIcon class="h-5 w-5" />
+                                    </button>
+                                </td>
                             </tr>
                         </template>
                     </tbody>
                 </table>
             </div>
+            <ConfirmDeleteModal
+                :confirmingDeletion="confirmingDocDeletion"
+                itemType="Checklist Unidad Móvil"
+                :deleteFunction="deleteAdditional"
+                @closeModal="closeModalDoc"
+            />
             <div
                 class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between"
             >
                 <pagination :links="checklists.links" />
             </div>
         </div>
-
 
         <Modal
             :show="showChecklistModal"
@@ -120,42 +142,40 @@
                 <br />
                 <div class="mt-2">
                     <div class="overflow-auto">
-                            <table
-                                class="w-full whitespace-no-wrap border-collapse border border-slate-300"
-                            >
-                                <thead>
-                                    <tr
-                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                        <table
+                            class="w-full whitespace-no-wrap border-collapse border border-slate-300"
+                        >
+                            <thead>
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500"
+                                >
+                                    <th
+                                        colspan="2"
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-gray-600"
                                     >
-                                        <th
-                                            colspan="2"
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-gray-600"
-                                        >
-                                            Estado de las Herramientas
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        v-for="(
-                                            item, i
-                                        ) in itemArrays.stateArray"
-                                        :key="i"
-                                        class="text-gray-700 bg-white text-xs"
+                                        Estado de las Herramientas
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(item, i) in itemArrays.stateArray"
+                                    :key="i"
+                                    class="text-gray-700 bg-white text-xs"
+                                >
+                                    <td
+                                        class="border-b border-slate-300 px-2 py-2"
                                     >
-                                        <td
-                                            class="border-b border-slate-300 px-2 py-2"
-                                        >
-                                            {{ item.name }}
-                                        </td>
-                                        <td
-                                            class="border-b border-slate-300 px-2 py-2"
-                                        >
-                                            {{ item.value }}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        {{ item.name }}
+                                    </td>
+                                    <td
+                                        class="border-b border-slate-300 px-2 py-2"
+                                    >
+                                        {{ item.value }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                     <br />
@@ -182,6 +202,8 @@ import { Head } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { formattedDate } from "@/utils/utils";
 import { EyeIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon } from "@heroicons/vue/24/outline";
+import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 
 const { checklists } = defineProps({
     checklists: Object,
@@ -194,7 +216,10 @@ const itemArrays = ref({ stateArray: [] });
 
 function openChecklistModal(item) {
     itemArrays.value.stateArray = [
-        { name: "Medidor Potencia p-series power meter", value: item.power_meter },
+        {
+            name: "Medidor Potencia p-series power meter",
+            value: item.power_meter,
+        },
         { name: "Pinza amperimétrica metrel", value: item.ammeter_clamp },
         { name: "Alicate de corte", value: item.cutting_pliers },
         { name: "Alicate de punta", value: item.nose_pliers },
@@ -202,8 +227,14 @@ function openChecklistModal(item) {
         { name: "Cinta métrica 5m (wincha)", value: item.tape },
         { name: "Cutter", value: item.cutter },
         { name: "Desarmador perillero (6 piezas)", value: item.knob_driver },
-        { name: "Juego de desarmadores 1000v (7 piezas)", value: item.screwdriver_set },
-        { name: "Juego 7 llaves allen standard en estuche", value: item.allenkeys_set },
+        {
+            name: "Juego de desarmadores 1000v (7 piezas)",
+            value: item.screwdriver_set,
+        },
+        {
+            name: "Juego 7 llaves allen standard en estuche",
+            value: item.allenkeys_set,
+        },
         { name: "Juego desarmador thor", value: item.thor_screwboard },
         { name: "Linterna p/casco 3AAA led", value: item.helmet_flashlight },
         { name: "Llave francesa de 6''", value: item.freanch_key },
@@ -220,4 +251,32 @@ function closeChecklistModal() {
 
 //photos modal
 
+
+const confirmingDocDeletion = ref(false);
+const docToDelete = ref(null);
+const confirmDeleteAdditional = (additionalId) => {
+    docToDelete.value = additionalId;
+    confirmingDocDeletion.value = true;
+};
+const closeModalDoc = () => {
+    confirmingDocDeletion.value = false;
+};
+const deleteAdditional = () => {
+    const docId = docToDelete.value;
+    if (docId) {
+        router.delete(
+            route("checklist.dailytoolkit.destroy", {
+                id: docId,
+            }),
+            {
+                onSuccess: () => {
+                    closeModalDoc();
+                },
+                onError: (e) => {
+                    console.log(e)
+                }
+            }
+        );
+    }
+};
 </script>

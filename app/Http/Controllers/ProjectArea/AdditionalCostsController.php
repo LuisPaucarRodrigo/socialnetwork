@@ -16,26 +16,48 @@ use Illuminate\Support\Facades\Log;
 
 class AdditionalCostsController extends Controller
 {
-    public function index(Request $request, Project $project_id)
+    public function index(Project $project_id)
     {
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('doc_date')->paginate(20);
-        $searchQuery = '';
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->with('project', 'provider')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(20);
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
-            'searchQuery' => $searchQuery
+        ]);
+    }
+    public function indexRejected(Project $project_id)
+    {
+        $additional_costs = AdditionalCost::where('project_id', $project_id->id)
+            ->where('is_accepted', 0)
+            ->with('project', 'provider')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        $providers = Provider::all();
+        return Inertia::render('ProjectArea/ProjectManagement/AdditionalCostsRejected', [
+            'additional_costs' => $additional_costs,
+            'project_id' => $project_id,
+            'providers' => $providers,
         ]);
     }
 
     public function search_costs(Request $request, $project_id)
     {
-        $result = AdditionalCost::where('project_id', $project_id);
-        
+        $result = AdditionalCost::where('project_id', $project_id)->with('project', 'provider');
+        $result = $request->state === false ? $result->where('is_accepted', 0)
+            : $result->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            });
 
-
-        if (count($request->selectedZones) < 5) {
+        if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
         if (count($request->selectedExpenseTypes) < 11) {
@@ -46,11 +68,11 @@ class AdditionalCostsController extends Controller
         }
         if ($request->search) {
             $searchTerms = $request->input('search');
-            $result = $result->where(function($query) use ($searchTerms){
+            $result = $result->where(function ($query) use ($searchTerms) {
                 $query->where('ruc', 'like', "%$searchTerms%")
-                ->orWhere('doc_date', 'like', "%$searchTerms%")
-                ->orWhere('description', 'like', "%$searchTerms%")
-                ->orWhere('amount', 'like', "%$searchTerms%");
+                    ->orWhere('doc_date', 'like', "%$searchTerms%")
+                    ->orWhere('description', 'like', "%$searchTerms%")
+                    ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
         $result = $result->get();
@@ -60,9 +82,6 @@ class AdditionalCostsController extends Controller
     public function store(AdditionalCostsRequest $request, $project_id)
     {
         $data = $request->validated();
-        if($data['type_doc']==='Factura'&&$data['zone']!=='MDD'){
-            $data['amount'] = round($data['amount']/1.18, 4);
-        }
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
@@ -94,11 +113,10 @@ class AdditionalCostsController extends Controller
             'zone' => 'required',
             'provider_id' => 'nullable',
             'photo' => 'nullable',
+            'igv' => 'required',
             'description' => 'required|string',
         ]);
-        if($data['type_doc']==='Factura'&&$data['zone']!=='MDD'){
-            $data['amount'] = round($data['amount']/1.18, 4);
-        }
+
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;
             if ($filename) {
@@ -147,14 +165,26 @@ class AdditionalCostsController extends Controller
             unlink($path);
     }
 
-    public function export($project_id) {
+    public function export($project_id)
+    {
         return Excel::download(new AdditionalCostsExport($project_id), 'Gastos_Variables.xlsx');
     }
 
-    public function import(Request $request, $project_id) {
+    public function import(Request $request, $project_id)
+    {
         $request->validate([
             'import_file' => 'required|mimes:xlsx,csv',
         ]);
-        Excel::import(new CostsImport("App\\Models\\AdditionalCost" ,$project_id), $request->file('import_file'));
+        Excel::import(new CostsImport("App\\Models\\AdditionalCost", $project_id), $request->file('import_file'));
+    }
+
+    public function validateRegister(Request $request, $ac_id)
+    {
+        $ac = AdditionalCost::with('project', 'provider')
+            ->find($ac_id);
+        $ac->update([
+            'is_accepted' => $request->is_accepted
+        ]);
+        return response()->json(['additional_cost' => $ac], 200);
     }
 }

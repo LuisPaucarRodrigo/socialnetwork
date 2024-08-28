@@ -210,6 +210,7 @@ class DocumentController extends Controller
         $path = public_path($filePath);
         if (file_exists($path)) {
             unlink($path);
+        }
             $documentName = null;
             if ($request->hasFile('document')) {
                 $document = $request->file('document');
@@ -221,9 +222,7 @@ class DocumentController extends Controller
                 'title' => $documentName,
                 'subdivision_id' => $request->subdivision_id,
             ]);
-        } else {
-            dd("El archivo no existe en la ruta: $filePath");
-        }
+
         return redirect()->back();
     }
 

@@ -20,12 +20,12 @@
         @foreach ($equipments as $index => $item)
         <tr>
             <td>{{ $index + 1 }}</td>
-            <td>{{ $item->huawei_entry_detail->huawei_entry->entry_date }}</td>
+            <td>{{ $item->huawei_entry_detail->entry_date ? $item->huawei_entry_detail->entry_date : $item->huawei_entry_detail->huawei_entry->entry_date }}</td>
             <td>{{ $item->huawei_equipment->claro_code }}</td>
             <td>{{ $item->huawei_equipment->name }}</td>
             <td>{{ $item->serie_number }}</td>
             <td>CCIP</td>
-            <td>{{ $item->huawei_entry_detail->assigned_site }}</td>
+            <td>{{ $item->huawei_entry_detail->new_site ? $item->huawei_entry_detail->new_site : $item->huawei_entry_detail->assigned_site }}</td>
             <td>{{ $item->huawei_entry_detail->instalation_state ? 'INSTALADO' :
                   ($item->huawei_entry_detail->state == 'En Proyecto' ? 'EN SITE' :
                    ($item->huawei_entry_detail->state == 'Disponible' ? 'EN ALMACÉN' : 'DEVUELTO')) }}</td>

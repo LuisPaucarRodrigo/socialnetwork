@@ -20,17 +20,32 @@ class AdditionalCost extends Model
         'amount',
         'project_id',
         'provider_id',
-        'photo'
+        'photo',
+        'is_accepted',
+        'igv',
+        'user_id'
     ];
 
-    public function project(){
+    protected $appends = [
+        'real_amount'
+    ];
+
+    public function project()
+    {
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function provider () {
+    public function provider()
+    {
         return $this->belongsTo(Provider::class, 'provider_id');
     }
 
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
-
+    public function getRealAmountAttribute() {
+        return $this->amount/(1+$this->igv/100);
+    }
 }

@@ -14,7 +14,8 @@ class HuaweiEquipment extends Model
     protected $fillable = [
         'name',
         'claro_code',
-        'model_id'
+        'model_id',
+        'unit'
     ];
 
     protected $appends = [

@@ -10,6 +10,7 @@ class HuaweiEntry extends Model
     use HasFactory;
 
     protected $table = 'huawei_entries';
+    //buena paucar
 
     protected $fillable = [
         'guide_number',

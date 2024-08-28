@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('huawei_anexes1', function (Blueprint $table) {
+        Schema::create('huawei_balance_earnings', function (Blueprint $table) {
             $table->id();
-            $table->string('original_name');
-            $table->string('name');
-            $table->string('uom');
-            $table->string('payment_terms');
+            $table->string('invoice_number');
+            $table->double('amount');
+            $table->date('invoice_date');
+            $table->date('deposit_date')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('huawei_anexes1');
+        Schema::dropIfExists('huawei_balance_earnings');
     }
 };

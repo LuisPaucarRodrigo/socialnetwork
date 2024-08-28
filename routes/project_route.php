@@ -39,6 +39,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     //Preproject images
     Route::put('/preprojects/{preproject_image_id}/report/image', [PreProjectController::class, 'approve_reject_image'])->name('preprojects.imagereport.approveReject');
     Route::get('/preprojects/{preproject_code_id}/codereport', [PreProjectController::class, 'approve_code'])->name('preprojects.codereport.approveCode');
+    Route::get('/preprojects/{preproject_title_id}/titlereport', [PreProjectController::class, 'approve_title'])->name('preprojects.codereport.approveTitle');
     Route::delete('/preprojects/{preproject_id}/report/delete', [PreProjectController::class, 'delete_image'])->name('preprojects.imagereport.delete');
 
     //Photographic report
@@ -94,10 +95,11 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::get('/project/{project_id?}/purchases_request/edit/{id}', [ProjectManagementController::class, 'project_purchases_request_edit'])->name('projectmanagement.purchases_request.edit');
 
 
-    //AdditionalCosts
+    //AdditionalCosts && StaticCosts
     Route::post('/project/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'store'])->name('projectmanagement.storeAdditionalCost');
     Route::post('/project/additional_costs/import/{project_id}', [AdditionalCostsController::class, 'import'])->name('projectmanagement.importAdditionalCost');
     Route::post('/project/purchases_request/{project_id}/static_costs', [StaticCostsController::class, 'store'])->name('projectmanagement.storeStaticCost');
+    Route::post('/project/additional_cost/validate/{ac_id}', [AdditionalCostsController::class, 'validateRegister'])->name('projectmanagement.validateAdditionalCost');
 
     
 
@@ -145,6 +147,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project-backlog/store', [BacklogController::class, 'store'])->name('project.backlog.store');
     Route::delete('/project-backlog/delete/{backlog_id}', [BacklogController::class, 'destroy'])->name('project.backlog.destroy');
 
+    //Checklist
 
     Route::get('/checklist', [ChecklistsController::class, 'index'])->name('checklist.index');
     Route::get('/checklist/car', [ChecklistsController::class, 'car_index'])->name('checklist.car.index');
@@ -153,6 +156,12 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::get('/checklist/dailytoolkit', [ChecklistsController::class, 'dailytoolkit_index'])->name('checklist.dailytoolkit.index');
     Route::get('/checklist/epp', [ChecklistsController::class, 'epp_index'])->name('checklist.epp.index');
     Route::get('/checklist/toolkit', [ChecklistsController::class, 'toolkit_index'])->name('checklist.toolkit.index');
+
+    Route::delete('/checklist/car/{id}/destroy', [ChecklistsController::class, 'car_destroy'])->name('checklist.car.destroy');
+    Route::delete('/checklist/toolkit/{id}/destroy', [ChecklistsController::class, 'toolkit_destroy'])->name('checklist.toolkit.destroy');
+    Route::delete('/checklist/dailytoolkit/{id}/destroy', [ChecklistsController::class, 'dailytoolkit_destroy'])->name('checklist.dailytoolkit.destroy');
+    Route::delete('/checklist/epp/{id}/destroy', [ChecklistsController::class, 'epp_destroy'])->name('checklist.epp.destroy');
+
 
 
     
@@ -176,7 +185,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/preprojects/{preproject_id}/report/code/image', [PreProjectController::class, 'filterCodePhoto'])->name('preprojects.report.images');
     Route::get('/preprojects/report/showimage/{image}', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
     Route::get('/preprojects/{preproject_id}/report/download_image', [PreProjectController::class, 'download_image'])->name('preprojects.imagereport.download');
-    Route::get('/preprojects/{preproject_id}/report/download_report', [PreProjectController::class, 'download_report'])->name('preprojects.report.download');
+    Route::get('/preprojects/{preproject_title_id}/report/download_report', [PreProjectController::class, 'download_report'])->name('preprojects.report.download');
 
     //Photographic report
     Route::get('/preprojects/{preproject_id}/photoreport', [PreProjectController::class, 'photoreport_index'])->name('preprojects.photoreport.index');
@@ -217,8 +226,8 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     
     
-    Route::get('/project/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
     Route::get('/project/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'index'])->name('projectmanagement.additionalCosts');
+    Route::get('/project/purchases_request/{project_id}/additional_costs/rejected', [AdditionalCostsController::class, 'indexRejected'])->name('projectmanagement.additionalCosts.rejected');
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
     Route::post('/additionalcost_advancesearch/{project_id}', [AdditionalCostsController::class, 'search_costs'])->name('additionalcost.advance.search');
 
@@ -252,7 +261,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     //pint auto
     Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
     Route::post('/preproject/auto-store/pint', [ProjectPintController::class, 'pint_store_project'])->name('project.auto_store.pint');
-    Route::post('/product-CPE/', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
+    Route::post('/product-CPE', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
 
 
     //Costs Export
