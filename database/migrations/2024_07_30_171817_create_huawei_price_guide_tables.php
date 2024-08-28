@@ -21,6 +21,8 @@ return new class extends Migration
             $table->double('b4');
             $table->timestamps();
         });
+            //buena paucar
+
     }
 
     /**

@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HuaweiProductLoad extends Model
+class HuaweiBalanceEarning extends Model
 {
     use HasFactory;
 
-    protected $tables = "huawei_product_loads";
+    protected $table = 'huawei_balance_earnings';
 
     protected $fillable = [
-        'name',
-        'path'
+        'invoice_number',
+        'amount',
+        'invoice_date',
+        'deposit_date'
     ];
 }

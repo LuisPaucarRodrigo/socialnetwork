@@ -7,22 +7,36 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-
+use App\Models\User;
 class PasswordController extends Controller
 {
     /**
      * Update the user's password.
      */
-    public function update(Request $request): RedirectResponse
+    public function update(Request $request, $user_id = null): RedirectResponse
     {
-        $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
-        ]);
+        if ($user_id){
 
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
+            $validated = $request->validate([
+                'password' => ['required', Password::defaults(), 'confirmed'],
+            ]);
+
+            $user = User::find($user_id);
+
+            $user->update([
+                'password' => Hash::make($validated['password'])
+            ]);
+        }else{
+
+            $validated = $request->validate([
+                'current_password' => ['required', 'current_password'],
+                'password' => ['required', Password::defaults(), 'confirmed'],
+            ]);
+
+            $request->user()->update([
+                'password' => Hash::make($validated['password']),
+            ]);
+        }
 
         return back();
     }

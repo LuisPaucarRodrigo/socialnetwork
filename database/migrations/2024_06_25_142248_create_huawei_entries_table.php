@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+            //buena paucar
+
         Schema::create('huawei_entries', function (Blueprint $table) {
             $table->id();
-            $table->string('guide_number');
-            $table->date('entry_date');
+            $table->string('guide_number')->nullable();
+            $table->date('entry_date')->nullable();
             $table->text('observation')->nullable();
             $table->timestamps();
         });

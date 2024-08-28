@@ -13,14 +13,10 @@ class HuaweiAdditionalCost extends Model
 
     protected $fillable = [
         'expense_type',
-        'ruc',
         'zone',
-        'type_doc',
-        'doc_number',
-        'doc_date',
+        'cost_date',
         'amount',
-        'description',
-        'huawei_project_id'
+        'huawei_project_id',
     ];
 
     public function huawei_project ()

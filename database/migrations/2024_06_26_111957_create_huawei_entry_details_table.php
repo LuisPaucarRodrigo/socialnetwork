@@ -20,6 +20,8 @@ return new class extends Migration
             $table->double('unit_price')->nullable();
             $table->string('assigned_diu')->nullable();
             $table->text('observation')->nullable();
+            $table->date('entry_date')->nullable();
+            $table->string('new_site')->nullable();
             $table->timestamps();
         });
     }

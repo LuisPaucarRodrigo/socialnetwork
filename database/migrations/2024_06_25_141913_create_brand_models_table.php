@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+            //buena paucar
+
         Schema::create('brand_models', function (Blueprint $table) {
             $table->id();
             $table->string('name');

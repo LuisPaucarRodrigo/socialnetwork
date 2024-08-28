@@ -22,6 +22,8 @@ return new class extends Migration
             $table->double('amount');
             $table->text('description')->nullable();
             $table->string('photo')->nullable();
+            $table->boolean('is_accepted')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('provider_id')
                 ->nullable()
                 ->constrained('providers')
@@ -30,8 +32,9 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('projects')
                 ->onDelete('cascade');
+            $table->integer('igv')->default('0');
             $table->timestamps();
-            // $table->unique(['ruc', 'doc_number']);
+            $table->unique(['ruc', 'doc_number']);
         });
     }
 

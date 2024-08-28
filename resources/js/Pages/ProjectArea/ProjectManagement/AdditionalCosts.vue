@@ -25,6 +25,7 @@
                         + Agregar
                     </PrimaryButton>
                     <PrimaryButton
+                        data-tooltip-target="update_data_tooltip"
                         type="button"
                         @click="
                             router.visit(
@@ -49,8 +50,17 @@
                             />
                         </svg>
                     </PrimaryButton>
+                        <div
+                            id="update_data_tooltip"
+                            role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                        >
+                            Actualizar
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
 
                     <button
+                        data-tooltip-target="export_tooltip"
                         type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                         @click="openExportExcel"
@@ -69,6 +79,14 @@
                             />
                         </svg>
                     </button>
+                    <div
+                        id="export_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Exportar Excel
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
 
                     <button
                         type="button"
@@ -103,6 +121,31 @@
                             </g>
                         </svg>
                     </button>
+
+                    <button
+                        data-tooltip-target="rejected_tooltip"
+                        type="button"
+                        class="rounded-md bg-gray-100 px-4 py-1 text-center text-lg text-red-600 font-bold ring-2 ring-red-400 hover:bg-gray-100/2"
+                        @click="
+                            () =>
+                                router.visit(
+                                    route(
+                                        'projectmanagement.additionalCosts.rejected',
+                                        { project_id: project_id.id }
+                                    )
+                                )
+                        "
+                    >
+                        R
+                    </button>
+                    <div
+                        id="rejected_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Rechazados
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
 
                 <div class="sm:hidden">
@@ -182,6 +225,19 @@
                                     >
                                         Importar
                                     </button>
+                                </div>
+                                <div class="">
+                                    <a
+                                        :href="
+                                            route(
+                                                'projectmanagement.additionalCosts.rejected',
+                                                { project_id: project_id.id }
+                                            )
+                                        "
+                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                    >
+                                        Exportar
+                                    </a>
                                 </div>
                             </div>
                         </template>
@@ -287,6 +343,11 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
+                            Monto sin IGV
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
                             Archivo
                         </th>
                         <th
@@ -310,6 +371,14 @@
                         v-for="item in dataToRender"
                         :key="item.id"
                         class="text-gray-700"
+                        :class="[
+                            'border-l-8',
+                            {
+                                'border-indigo-500': item.is_accepted === null,
+                                'border-green-500': item.is_accepted == true,
+                                'border-red-500': item.is_accepted == false,
+                            },
+                        ]"
                     >
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -354,6 +423,11 @@
                             S/. {{ item.amount.toFixed(2) }}
                         </td>
                         <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                        >
+                            S/. {{ item.real_amount.toFixed(2) }}
+                        </td>
+                        <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
                             <button
@@ -378,19 +452,77 @@
                             "
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            <div class="flex items-center">
-                                <button
-                                    @click="openEditAdditionalModal(item)"
-                                    class="text-amber-600 hover:underline mr-2"
+                            <div class="flex items-center gap-3 w-full">
+                                <div
+                                    v-if="item.is_accepted === null"
+                                    class="flex gap-3 justify-center w-1/2"
                                 >
-                                    <PencilSquareIcon class="h-4 w-4 ml-1" />
-                                </button>
-                                <button
-                                    @click="confirmDeleteAdditional(item.id)"
-                                    class="text-red-600 hover:underline"
-                                >
-                                    <TrashIcon class="h-4 w-4" />
-                                </button>
+                                    <button
+                                        @click="
+                                            () =>
+                                                validateRegister(item.id, true)
+                                        "
+                                        class="flex items-center rounded-xl text-blue-500 hover:bg-green-200"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-5 h-5 text-green-500"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                            />
+                                        </svg>
+                                    </button>
+                                    <button
+                                        @click="
+                                            () =>
+                                                validateRegister(item.id, false)
+                                        "
+                                        type="button"
+                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-5 h-5 text-red-500"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div v-else class="w-1/2"></div>
+
+                                <div class="flex gap-3 mr-3">
+                                    <button
+                                        @click="openEditAdditionalModal(item)"
+                                        class="text-amber-600 hover:underline"
+                                    >
+                                        <PencilSquareIcon
+                                            class="h-5 w-5 ml-1"
+                                        />
+                                    </button>
+                                    <button
+                                        @click="
+                                            confirmDeleteAdditional(item.id)
+                                        "
+                                        class="text-red-600 hover:underline"
+                                    >
+                                        <TrashIcon class="h-5 w-5" />
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -424,7 +556,20 @@
                             S/.
                             {{
                                 dataToRender
-                                    .reduce((a, item) => a + item.amount, 0)
+                                    ?.reduce((a, item) => a + item.amount, 0)
+                                    .toFixed(2)
+                            }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
+                        >
+                            S/.
+                            {{
+                                dataToRender
+                                    .reduce(
+                                        (a, item) => a + item.real_amount,
+                                        0
+                                    )
                                     .toFixed(2)
                             }}
                         </td>
@@ -482,7 +627,8 @@
                                         <option>Chala</option>
                                         <option>Moquegua</option>
                                         <option>Tacna</option>
-                                        <option>MDD</option>
+                                        <option>MDD1</option>
+                                        <option>MDD2</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -632,7 +778,31 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
-                            <div v-if="form.type_doc==='Factura' && form.zone!=='MDD'">
+
+                            <div>
+                                <InputLabel
+                                    for="igv"
+                                    class="font-medium leading-6 text-gray-900"
+                                >
+                                    IGV (%)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div class="flex gap-3 items-center">
+                                        <input
+                                            type="number"
+                                            step="1"
+                                            max="100"
+                                            v-model="form.igv"
+                                            id="igv"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />%
+                                    </div>
+
+                                    <InputError :message="form.errors.igv" />
+                                </div>
+                            </div>
+
+                            <div>
                                 <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
@@ -640,10 +810,17 @@
                                 >
                                 <div class="mt-2">
                                     <InputLabel
-                                    for="amount"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >{{ form.amount ? (form.amount/1.18).toFixed(4) : 0 }}</InputLabel
-                                >
+                                        for="amount"
+                                        class="font-medium leading-6 text-gray-900"
+                                        >{{
+                                            form.amount
+                                                ? (
+                                                      form.amount /
+                                                      (1 + form.igv / 100)
+                                                  ).toFixed(4)
+                                                : 0
+                                        }}</InputLabel
+                                    >
                                 </div>
                             </div>
 
@@ -728,7 +905,8 @@
                                         <option>Chala</option>
                                         <option>Moquegua</option>
                                         <option>Tacna</option>
-                                        <option>MDD</option>
+                                        <option>MDD1</option>
+                                        <option>MDD2</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -878,7 +1056,39 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
-                            <div v-if="form.type_doc==='Factura' && form.zone!=='MDD'">
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
+                                "
+                            >
+                                <InputLabel
+                                    for="igv"
+                                    class="font-medium leading-6 text-gray-900"
+                                >
+                                    IGV (%)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div class="flex gap-3 items-center">
+                                        <input
+                                            type="number"
+                                            step="1"
+                                            max="100"
+                                            v-model="form.igv"
+                                            id="igv"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />%
+                                    </div>
+
+                                    <InputError :message="form.errors.igv" />
+                                </div>
+                            </div>
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
+                                "
+                            >
                                 <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
@@ -886,10 +1096,17 @@
                                 >
                                 <div class="mt-2">
                                     <InputLabel
-                                    for="amount"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >{{ form.amount ? (form.amount/1.18).toFixed(4) : 0 }}</InputLabel
-                                >
+                                        for="amount"
+                                        class="font-medium leading-6 text-gray-900"
+                                        >{{
+                                            form.amount
+                                                ? (
+                                                      form.amount /
+                                                      (1 + form.igv / 100)
+                                                  ).toFixed(4)
+                                                : 0
+                                        }}</InputLabel
+                                    >
                                 </div>
                             </div>
 
@@ -1067,6 +1284,11 @@
             :title="'Datos Importados'"
             :message="'Los datos fueron importados con éxito'"
         />
+        <SuccessOperationModal
+            :confirming="confirmValidation"
+            :title="'Validación'"
+            :message="'La validación del gasto fue exitosa.'"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -1101,6 +1323,7 @@ const props = defineProps({
     auth: Object,
     userPermissions: Array,
     searchQuery: String,
+    state: String,
 });
 
 const dataToRender = ref(props.additional_costs.data);
@@ -1123,6 +1346,7 @@ const form = useForm({
     description: "",
     photo: "",
     amount: "",
+    igv: 0,
     photo_status: "stable",
 });
 
@@ -1148,7 +1372,7 @@ const openEditAdditionalModal = (additional) => {
     form.type_doc = editingAdditional.value.type_doc;
     form.doc_number = editingAdditional.value.doc_number;
     form.doc_date = editingAdditional.value.doc_date;
-    form.amount = editingAdditional.value.amount;
+    form.igv = editingAdditional.value.igv;
     form.description = editingAdditional.value.description;
     form.zone = editingAdditional.value.zone;
     form.provider_id = editingAdditional.value.provider_id;
@@ -1264,7 +1488,7 @@ function handlerPreview(id) {
 
 const filterForm = ref({
     search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD"],
+    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"],
     selectedExpenseTypes: [
         "Hospedaje",
         "Movilidad",
@@ -1287,7 +1511,7 @@ const filterForm = ref({
     ],
 });
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD"];
+const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
 const expenseTypes = [
     "Hospedaje",
     "Movilidad",
@@ -1381,5 +1605,45 @@ function openExportExcel() {
         "?" +
         uniqueParam;
     window.location.href = url;
+}
+
+watch([() => form.type_doc, () => form.zone], () => {
+    if (
+        form.type_doc === "Factura" &&
+        !["", "MDD1", "MDD2"].includes(form.zone)
+    ) {
+        form.igv = form.igv ? form.igv : 18;
+    } else {
+        form.igv = 0;
+    }
+});
+
+const confirmValidation = ref(false);
+
+async function validateRegister(ac_id, is_accepted) {
+    try {
+        const res = await axios.post(
+            route("projectmanagement.validateAdditionalCost", { ac_id }),
+            { is_accepted }
+        );
+        if (res?.data?.additional_cost?.is_accepted == true) {
+            console.log("siuu");
+            let index = dataToRender.value.findIndex(
+                (item) => item.id == res.data.additional_cost.id
+            );
+            dataToRender.value[index] = res.data.additional_cost;
+        } else if (res?.data?.additional_cost?.is_accepted == false) {
+            let index = dataToRender.value.findIndex(
+                (item) => item.id == res.data.additional_cost.id
+            );
+            dataToRender.value.splice(index, 1);
+        }
+        confirmValidation.value = true;
+        setTimeout(() => {
+            confirmValidation.value = false;
+        }, 1000);
+    } catch (e) {
+        console.log(e);
+    }
 }
 </script>

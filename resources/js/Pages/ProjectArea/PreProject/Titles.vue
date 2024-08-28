@@ -26,6 +26,10 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Tìpo
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Códigos
                         </th>
                         <th v-if="hasPermission('ProjectManager')"
@@ -37,6 +41,9 @@
                     <tr v-for="title in titles.data" :key="title.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900 whitespace-no-wrap">{{ title.title }}</p>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <p class="text-gray-900 whitespace-no-wrap">{{ title.type }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <p class="text-gray-900">{{ title.codes.map((item) => item.code).join(', ') }}</p>
@@ -82,6 +89,19 @@
                                 </div>
                             </div>
 
+                            <div>
+                                <InputLabel for="type" class="font-medium leading-6 text-gray-900 mt-3">Tipo
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.type" id="type"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="">Seleccionar tipo</option>
+                                        <option>Factibilidad</option>
+                                        <option>Implementacion</option>
+                                    </select>
+                                    <InputError :message="form.errors.type" />
+                                </div>
+                            </div>
 
                             <div>
                                 <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Códigos</InputLabel>
@@ -166,6 +186,7 @@ const close_edit_title = () => {
 const form = useForm({
     id: '',
     title: '',
+    type:'',
     code_id_array: [],
 });
 
@@ -177,7 +198,7 @@ const submit = () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
-                router.visit(route('preprojects.titles'))
+                router.get(route('preprojects.titles'))
             }, 2000);
         },
     });
@@ -191,14 +212,8 @@ const submitEdit = () => {
             showModalEdit.value = true
             setTimeout(() => {
                 showModalEdit.value = false;
-                router.visit(route('preprojects.titles'))
+                router.get(route('preprojects.titles'))
             }, 2000);
-        },
-        onError: () => {
-            form.reset();
-        },
-        onFinish: () => {
-            form.reset();
         }
     });
 };
@@ -207,6 +222,7 @@ const openEditTitleModal = (title) => {
     editingTitle.value = JSON.parse(JSON.stringify(title));
     form.id = editingTitle.value.id;
     form.title = editingTitle.value.title;
+    form.type = editingTitle.value.type;
     form.code_id_array = editingTitle.value.codes.map((item) => item.id);
 
     edit_title.value = true;

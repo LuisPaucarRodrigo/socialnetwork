@@ -54,6 +54,11 @@
                             >
                                 Observaciones
                             </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Más
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,7 +85,7 @@
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
                                     <p class="text-gray-900 whitespace-no-wrap">
-                                        {{ item.user.name }}
+                                        {{ item.user?.name }}
                                     </p>
                                 </td>
                                 <td
@@ -135,6 +140,16 @@
                                     <p class="text-gray-900 whitespace-no-wrap">
                                         {{ item.observation }}
                                     </p>
+                                </td>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                                >
+                                <button
+                                        @click.prevent="confirmDeleteAdditional(item.id)"
+                                        class="text-red-600 hover:underline mr-2"
+                                    >
+                                        <TrashIcon class="h-5 w-5" />
+                                    </button>
                                 </td>
                             </tr>
                         </template>
@@ -191,12 +206,12 @@
                                             <td
                                                 class="border-b border-slate-300 px-2 py-2"
                                             >
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </td>
                                             <td
                                                 class="border-b border-slate-300 px-2 py-2"
                                             >
-                                                {{ item.value }}
+                                                {{ item?.value }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -229,12 +244,12 @@
                                             <td
                                                 class="border-b border-slate-300 px-2 py-2"
                                             >
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </td>
                                             <td
                                                 class="border-b border-slate-300 px-2 py-2"
                                             >
-                                                {{ item.value }}
+                                                {{ item?.value }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -293,6 +308,12 @@
                 </div>
             </div>
         </Modal>
+        <ConfirmDeleteModal
+            :confirmingDeletion="confirmingDocDeletion"
+            itemType="Checklist Unidad Móvil"
+            :deleteFunction="deleteAdditional"
+            @closeModal="closeModalDoc"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -304,7 +325,8 @@ import Modal from "@/Components/Modal.vue";
 import { Head, router } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
-
+import { TrashIcon } from "@heroicons/vue/24/outline";
+import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { formattedDate } from "@/utils/utils";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 
@@ -390,4 +412,33 @@ function closeChecklistModal() {
     showChecklistModal.value = false;
 }
 
+// delete
+const confirmingDocDeletion = ref(false);
+const docToDelete = ref(null);
+const confirmDeleteAdditional = (additionalId) => {
+    docToDelete.value = additionalId;
+    confirmingDocDeletion.value = true;
+};
+const closeModalDoc = () => {
+    confirmingDocDeletion.value = false;
+};
+const deleteAdditional = () => {
+    const docId = docToDelete.value;
+    console.log('hol')
+    if (docId) {
+        router.delete(
+            route("checklist.toolkit.destroy", {
+                id: docId,
+            }),
+            {
+                onSuccess: () => {
+                    closeModalDoc();
+                },
+                onError: (e) => {
+                    console.log(e)
+                }
+            }
+        );
+    }
+};
 </script>

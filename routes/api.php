@@ -43,4 +43,7 @@
 
         Route::get('/checklistHistory', [ChecklistsController::class, 'checklist_history']);
         
+        Route::post('/expense/store', [ChecklistsController::class, 'expenseStore']);
+
+        Route::get('/expense/index', [ChecklistsController::class, 'expenseIndex']);
     });

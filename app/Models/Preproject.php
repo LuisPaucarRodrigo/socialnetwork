@@ -72,9 +72,14 @@ class Preproject extends Model
         return $this->hasMany(PreprojectEntry::class);
     }
 
-    public function preprojectCodes()
+    // public function preprojectCodes()
+    // {
+    //     return $this->hasMany(PreprojectCode::class);
+    // }
+
+    public function preprojectTitles()
     {
-        return $this->hasMany(PreprojectCode::class);
+        return $this->hasMany(PreprojectTitle::class);
     }
 
     public function codes()
@@ -134,10 +139,18 @@ class Preproject extends Model
 
     public function getPreprojectCodeApproveAttribute()
     {
-        $preprojectCodes = $this->preprojectCodes;
+        // $preprojectTitles = $this->preprojectTitles;
 
-        $allStatusFilled = $preprojectCodes->every(function ($preprojectCode) {
-            return !empty($preprojectCode->status);
+        // $allStatusFilled = $preprojectTitles->preprojectCodes->every(function ($preprojectCode) {
+        //     return !empty($preprojectCode->status);
+        // });
+
+        $preprojectTitles = $this->preprojectTitles;
+
+        $allStatusFilled = $preprojectTitles->every(function ($preprojectTitle) {
+            return $preprojectTitle->preprojectCodes->every(function ($preprojectCode) {
+                return !empty($preprojectCode->status);
+            });
         });
 
         return $allStatusFilled;

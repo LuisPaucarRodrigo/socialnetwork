@@ -4,7 +4,7 @@
   <AuthenticatedLayout
     :redirectRoute="{ route: 'projectmanagement.purchases_request.index', params: { id: project.id } }">
     <template #header>
-      Resumen de Gastos
+      Resumen de Gastos {{ project.description }}
     </template>
     <br>
     <div class="flex flex-col space-y-24">

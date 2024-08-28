@@ -10,6 +10,7 @@ class HuaweiEquipmentSerie extends Model
     use HasFactory;
 
     protected $table = 'huawei_equipment_series';
+    //buena paucar
 
     protected $fillable = [
         'huawei_equipment_id',

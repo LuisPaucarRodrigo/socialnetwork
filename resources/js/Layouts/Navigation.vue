@@ -87,7 +87,9 @@ Usuarios
                         </Link>
                     </MyTransition>
                 </template>
-
+                <MyTransition :transitiondemonstration="showingHumanResource">
+                    <Link class="w-full" :href="route('employees.external.index')">Empleados Externos</Link>
+                </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
                 </MyTransition>
@@ -669,9 +671,9 @@ Usuarios
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>
                 </MyTransition>
-                <!-- <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.loads')">Cargas Excel</Link>
-                </MyTransition> -->
+                <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.generalbalance')">Balance General</Link>
+                </MyTransition>
             </template>
 
         </nav>

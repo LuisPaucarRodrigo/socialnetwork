@@ -186,12 +186,6 @@ const submitEdit = () => {
                 showModalEdit.value = false;
                 router.visit(route('preprojects.codes'))
             }, 2000);
-        },
-        onError: () => {
-            form.reset();
-        },
-        onFinish: () => {
-            form.reset();
         }
     });
 };

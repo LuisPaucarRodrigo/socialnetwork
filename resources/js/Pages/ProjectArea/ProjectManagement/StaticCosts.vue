@@ -1,5 +1,5 @@
 <template>
-    <Head title="Gestion de Costos Adicionales" />
+    <Head title="Costos Fijos" />
     <AuthenticatedLayout
         :redirectRoute="{
             route: 'projectmanagement.purchases_request.index',
@@ -169,6 +169,11 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
+                            Monto sin IGV
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
                             Archivo
                         </th>
                         <th
@@ -234,6 +239,11 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
                             S/. {{ item.amount.toFixed(2) }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                        >
+                            S/. {{ item.real_amount.toFixed(2) }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -311,6 +321,19 @@
                             }}
                         </td>
                         <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
+                        >
+                            S/.
+                            {{
+                                dataToRender
+                                    .reduce(
+                                        (a, item) => a + item.real_amount,
+                                        0
+                                    )
+                                    .toFixed(2)
+                            }}
+                        </td>
+                        <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
                         <td
@@ -338,7 +361,7 @@
         <Modal :show="create_additional">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Agregar Costo adicional
+                    Agregar Costo Fijo
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
@@ -364,7 +387,8 @@
                                         <option>Chala</option>
                                         <option>Moquegua</option>
                                         <option>Tacna</option>
-                                        <option>MDD</option>
+                                        <option>MDD1</option>
+                                        <option>MDD2</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -509,6 +533,61 @@
                                 </div>
                             </div>
 
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
+                                "
+                            >
+                                <InputLabel
+                                    for="igv"
+                                    class="font-medium leading-6 text-gray-900"
+                                >
+                                    IGV (%)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div class="flex gap-3 items-center">
+                                        <input
+                                            type="number"
+                                            step="1"
+                                            max="100"
+                                            v-model="form.igv"
+                                            id="igv"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />%
+                                    </div>
+
+                                    <InputError :message="form.errors.igv" />
+                                </div>
+                            </div>
+
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
+                                "
+                            >
+                                <InputLabel
+                                    for="amount"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Monto sin IGV</InputLabel
+                                >
+                                <div class="mt-2">
+                                    <InputLabel
+                                        for="amount"
+                                        class="font-medium leading-6 text-gray-900"
+                                        >{{
+                                            form.amount
+                                                ? (
+                                                      form.amount /
+                                                      (1 + form.igv / 100)
+                                                  ).toFixed(4)
+                                                : 0
+                                        }}</InputLabel
+                                    >
+                                </div>
+                            </div>
+
                             <div>
                                 <InputLabel
                                     for="description"
@@ -564,7 +643,7 @@
         <Modal :show="editAdditionalModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Editar Costo Adicional
+                    Editar Costo Fijo
                 </h2>
                 <form @submit.prevent="submitEdit">
                     <div class="space-y-12">
@@ -590,7 +669,8 @@
                                         <option>Chala</option>
                                         <option>Moquegua</option>
                                         <option>Tacna</option>
-                                        <option>MDD</option>
+                                        <option>MDD1</option>
+                                        <option>MDD2</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -732,6 +812,60 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                     <InputError :message="form.errors.amount" />
+                                </div>
+                            </div>
+
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
+                                "
+                            >
+                                <InputLabel
+                                    for="igv"
+                                    class="font-medium leading-6 text-gray-900"
+                                >
+                                    IGV (%)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div class="flex gap-3 items-center">
+                                        <input
+                                            type="number"
+                                            step="1"
+                                            max="100"
+                                            v-model="form.igv"
+                                            id="igv"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />%
+                                    </div>
+
+                                    <InputError :message="form.errors.igv" />
+                                </div>
+                            </div>
+                            <div
+                                v-if="
+                                    form.type_doc === 'Factura' &&
+                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
+                                "
+                            >
+                                <InputLabel
+                                    for="amount"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Monto sin IGV</InputLabel
+                                >
+                                <div class="mt-2">
+                                    <InputLabel
+                                        for="amount"
+                                        class="font-medium leading-6 text-gray-900"
+                                        >{{
+                                            form.amount
+                                                ? (
+                                                      form.amount /
+                                                      (1 + form.igv / 100)
+                                                  ).toFixed(4)
+                                                : 0
+                                        }}</InputLabel
+                                    >
                                 </div>
                             </div>
 
@@ -907,6 +1041,7 @@ const form = useForm({
     description: "",
     photo: "",
     amount: "",
+    igv: 0,
     photo_status: "stable",
 });
 
@@ -929,10 +1064,10 @@ const openEditAdditionalModal = (additional) => {
     form.expense_type = editingAdditional.value.expense_type;
     form.ruc = editingAdditional.value.ruc;
     form.amount = editingAdditional.value.amount;
+    form.igv = editingAdditional.value.igv;
     form.type_doc = editingAdditional.value.type_doc;
     form.doc_number = editingAdditional.value.doc_number;
     form.doc_date = editingAdditional.value.doc_date;
-    form.amount = editingAdditional.value.amount;
     form.description = editingAdditional.value.description;
     form.zone = editingAdditional.value.zone;
     form.provider_id = editingAdditional.value.provider_id;
@@ -1048,7 +1183,7 @@ function handlerPreview(id) {
 
 const filterForm = ref({
     search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD"],
+    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"],
     selectedExpenseTypes: [
         "Camionetas",
         "Combustible",
@@ -1067,7 +1202,7 @@ const filterForm = ref({
     ],
 });
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD"];
+const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
 const expenseTypes = [
     "Camionetas",
     "Combustible",
@@ -1123,4 +1258,15 @@ function openExportExcel() {
         uniqueParam;
     window.location.href = url;
 }
+
+watch([() => form.type_doc, () => form.zone], () => {
+    if (
+        form.type_doc === "Factura" &&
+        !["", "MDD1", "MDD2"].includes(form.zone)
+    ) {
+        form.igv = form.igv ? form.igv : 18;
+    } else {
+        form.igv = 0;
+    }
+});
 </script>

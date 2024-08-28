@@ -25,12 +25,17 @@ class HuaweiProject extends Model
         'code',
         'state',
         'additional_cost_total',
+        'static_cost_total',
         'materials_in_project',
         'equipments_in_project',
         'materials_liquidated',
         'equipments_liquidated',
         'total_earnings',
-        'total_project_cost'
+        'total_real_earnings',
+        'total_real_earnings_without_deposit',
+        'total_project_cost',
+        'total_employee_costs',
+        'total_essalud_employee_cost'
     ];
 
     public function huawei_site ()
@@ -41,6 +46,11 @@ class HuaweiProject extends Model
     public function huawei_additional_costs ()
     {
         return $this->hasMany(HuaweiAdditionalCost::class, 'huawei_project_id');
+    }
+
+    public function huawei_static_costs ()
+    {
+        return $this->hasMany(HuaweiStaticCost::class, 'huawei_project_id');
     }
 
     public function huawei_project_employees ()
@@ -56,6 +66,11 @@ class HuaweiProject extends Model
     public function huawei_project_earnings ()
     {
         return $this->hasMany(HuaweiProjectEarning::class, 'huawei_project_id');
+    }
+
+    public function huawei_project_real_earnings ()
+    {
+        return $this->hasMany(HuaweiProjectRealEarning::class, 'huawei_project_id');
     }
 
     public function getCodeAttribute()
@@ -79,7 +94,7 @@ class HuaweiProject extends Model
 
         $details = HuaweiEntryDetail::where('assigned_diu', $this->assigned_diu)
                 ->get();
-                
+
         $detail = $details->first(function ($detail) {
             return $detail->state === 'Disponible';
         });
@@ -101,6 +116,11 @@ class HuaweiProject extends Model
     public function getAdditionalCostTotalAttribute()
     {
         return $this->huawei_additional_costs->sum('amount');
+    }
+
+    public function getStaticCostTotalAttribute()
+    {
+        return $this->huawei_static_costs->sum('amount');
     }
 
     public function getMaterialsInProjectAttribute ()
@@ -154,6 +174,16 @@ class HuaweiProject extends Model
             });
     }
 
+    public function getTotalRealEarningsAttribute ()
+    {
+        return $this->huawei_project_real_earnings->whereNotNull('deposit_date')->sum('amount');
+    }
+
+    public function getTotalRealEarningsWithoutDepositAttribute()
+    {
+        return $this->huawei_project_real_earnings->whereNull('deposit_date')->sum('amount');
+    }
+
     public function getTotalEarningsAttribute ()
     {
         return $this->huawei_project_earnings->sum('amount');
@@ -161,6 +191,19 @@ class HuaweiProject extends Model
 
     public function getTotalProjectCostAttribute ()
     {
-        return $this->additional_cost_total + $this->materials_in_project + $this->materials_liquidated;
+        return $this->additional_cost_total + $this->static_cost_total + $this->materials_in_project + $this->materials_liquidated;
+    }
+
+
+    public function getTotalEmployeeCostsAttribute()
+    {
+        return $this->huawei_project_employees->sum('cost');
+    }
+
+    public function getTotalEssaludEmployeeCostAttribute()
+    {
+        return $this->huawei_project_employees->sum(function ($employee) {
+            return $employee->cost * 0.09;
+        });
     }
 }
