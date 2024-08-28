@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.generalbalance.costs.summary'}">
       <template #header>
         Costos {{ props.type ? 'Variables' : 'Fijos' }} Generales
       </template>
@@ -11,10 +11,6 @@
             + Agregar
         </PrimaryButton>
 
-        <!-- <a :href="route('huawei.projects.staticcosts.export', {huawei_project: props.huawei_project})" type="button"
-            class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
-            Exportar Datos
-        </a> -->
         <div class="flex items-center ml-auto"> <!-- Alinear elementos horizontalmente -->
             <form @submit.prevent="search" class="flex items-center">
                 <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
