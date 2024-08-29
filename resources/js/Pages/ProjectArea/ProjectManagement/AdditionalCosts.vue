@@ -1056,12 +1056,7 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
-                            <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
-                            >
+                            <div>
                                 <InputLabel
                                     for="igv"
                                     class="font-medium leading-6 text-gray-900"
@@ -1083,12 +1078,7 @@
                                     <InputError :message="form.errors.igv" />
                                 </div>
                             </div>
-                            <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
-                            >
+                            <div>
                                 <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
