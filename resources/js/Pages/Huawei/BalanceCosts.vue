@@ -201,7 +201,7 @@ const props = defineProps({
 const dataToRender = ref(props.costs.data);
 const filterMode = ref(false);
 const expenseTypesArray = props.type ? [
-    'Cochera', 'Combustible', 'Epps', 'Herramientas', 'Materiales'
+    'Cochera', 'Combustible', 'Epps', 'Herramientas', 'Materiales', 'Otros'
 ] : [
     'Planilla', 'Transporte', 'Fletes', 'Alimentación', 'Consumibles', 'Hospedaje', 'Movilidad'
 ];
@@ -336,6 +336,7 @@ const filterForm = ref({
         "Epps",
         "Herramientas",
         "Materiales",
+        "Otros"
     ] : [
         'Planilla', 'Transporte', 'Fletes', 'Alimentación', 'Consumibles', 'Hospedaje', 'Movilidad'
     ],
