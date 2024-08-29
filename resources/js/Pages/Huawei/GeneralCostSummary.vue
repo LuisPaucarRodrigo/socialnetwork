@@ -195,6 +195,8 @@
         </Modal>
         <SuccessOperationModal :confirming="confirmImport" :title="'Éxito'"
         :message="'Se importaron los datos correctamente.'" />
+        <ErrorOperationModal :showError="errorexcel" :title="'Error'" :message="'Hay un error en el excel a importar, revise que los tipos de gasto sean los correctos.'" />
+
     </AuthenticatedLayout>
   </template>
 
@@ -210,6 +212,7 @@
   import InputError from '@/Components/InputError.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import Dropdown from '@/Components/Dropdown.vue';
+  import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
   const { additionalCosts, staticCosts, acExpensesAmounts, scExpensesAmounts } = defineProps({
     additionalCosts: Number,
@@ -220,6 +223,8 @@
 
 
   const chartInstance = ref(null);
+  const errorexcel = ref(false);
+
   const updateChart = () => {
     const ctx = document.getElementById('pieChart').getContext('2d');
     if (chartInstance.value) {
@@ -376,7 +381,12 @@ const importExcel = () => {
             }, 2000);
         },
         onError: (e) => {
-            console.error(e);
+            if (e.excel_error){
+                errorexcel.value = true;
+                setTimeout(() => {
+                    errorexcel.value = false;
+                }, 3000);
+            }
         }
     })
 }
