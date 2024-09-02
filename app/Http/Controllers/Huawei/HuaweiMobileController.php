@@ -108,6 +108,7 @@ class HuaweiMobileController extends Controller
     {
         return Inertia::render('Huawei/ProjectStages', [
             'stages' => HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)->get(),
+            'titles' => HuaweiTitle::with('huawei_codes')->get(),
             'huawei_project' => $huawei_project
         ]);
     }
@@ -129,6 +130,7 @@ class HuaweiMobileController extends Controller
         return Inertia::render('Huawei/ProjectStages', [
             'stages' => HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)->get(),
             'codes' => $codes,
+            'titles' => HuaweiTitle::with('huawei_codes')->get(),
             'huawei_project' => $huawei_project,
             'selectedStage' => $stage->id
         ]);
@@ -190,6 +192,61 @@ class HuaweiMobileController extends Controller
         ]);
 
         $image->update($data);
+
+        return redirect()->back();
+    }
+
+    public function approveCode (HuaweiProjectCode $code)
+    {
+        $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
+            ->where('state', '!=', true)
+            ->orWhereNull('state')
+            ->get();
+
+        foreach ($images as $item){
+            $fileName = $item->image;
+            $filePath = "documents/huawei/photoreports/$fileName";
+            $path = public_path($filePath);
+            if (file_exists($path)) {
+                unlink($path);
+                $item->delete();
+            } else {
+                dd("El archivo no existe en la ruta: $filePath");
+            }
+        }
+
+        $code->update([
+            'status' => 1
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function addStage (HuaweiProject $huawei_project, Request $request)
+    {
+        if (!$huawei_project->status){
+            abort(403, 'Acción no permitida.');
+        }
+
+        $request->validate([
+            'description' => 'required',
+            'title' => 'required'
+        ]);
+
+        $title = HuaweiTitle::find($request->title);
+        $codes = $title->huawei_codes;
+
+        $huawei_project_stage = HuaweiProjectStage::create([
+            'description' => $request->description,
+            'huawei_project_id' => $huawei_project->id
+        ]);
+
+        foreach ($codes as $item){
+            HuaweiProjectCode::create([
+                'huawei_project_stage_id' => $huawei_project_stage->id,
+                'huawei_code_id' => $item->id
+            ]);
+        }
 
         return redirect()->back();
     }

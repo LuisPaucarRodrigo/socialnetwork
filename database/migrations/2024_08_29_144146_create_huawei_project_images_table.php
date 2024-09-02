@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('observation')->nullable();
             $table->string('lat');
             $table->string('lon');
+            $table->string('site');
             $table->boolean('state')->nullable();
             $table->timestamps();
         });
