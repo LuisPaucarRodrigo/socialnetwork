@@ -13,8 +13,8 @@
                     <h2 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ preprojectImage.type }}
                     </h2>
-                    <PrimaryButton v-if="preprojectImage.state == false" @click="approveTitle(preprojectImage.id)">
-                        Terminar
+                    <PrimaryButton @click="approveTitle(preprojectImage.id)">
+                        {{ preprojectImage.state ? 'Desabilitar' : 'Habilitar' }}
                     </PrimaryButton>
                     <a :href="route('preprojects.report.download', { preproject_title_id: preprojectImage.id })"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
@@ -28,7 +28,8 @@
                         </h1>
 
                         <template v-if="hasPermission('ProjectManager')">
-                            <PrimaryButton v-if="!imageCode.status" @click="approveCode(imageCode.id)" type="button">
+                            <PrimaryButton v-if="!imageCode.status" @click="verifyApproveModal(imageCode.id)"
+                                type="button">
                                 Aprobar
                             </PrimaryButton>
                             <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
@@ -108,7 +109,9 @@
                 </form>
             </div>
         </Modal>
-
+        <ConfirmateModal :showConfirm="showApproveCode" tittle="Aprobacion de Codigo"
+            text="Las fotos asociadas a este código serán eliminadas si no han sido aprobadas. ¿Desea continuar con la aprobación?"
+            :actionFunction="approveCode" @closeModal="verifyApproveModal" />
         <SuccessOperationModal :confirming="approve_reject_Image" :title="titleSuccessImage"
             :message="messageSuccessImage" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingImageDeletion" itemType="imagen"
@@ -119,6 +122,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
@@ -129,9 +133,11 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import GoogleMaps from '@/Components/GoogleMaps.vue';
+// import GoogleMaps from '@/Components/GoogleMaps.vue';
 
 
+const showApproveCode = ref(false);
+const title_code_id = ref(null);
 const props = defineProps({
     // codesWithStatus: Object,
     preprojectImages: Object,
@@ -139,8 +145,6 @@ const props = defineProps({
     preproject: Object,
     userPermissions: Array
 });
-
-console.log(props.preprojectImages);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -155,30 +159,30 @@ let backUrl = props.preproject.status === null
 const confirmingImageDeletion = ref(false);
 const approve_reject_Image = ref(false);
 const imageToDelete = ref(null);
-const photoCode = ref(props.imagesCode);
+// const photoCode = ref(props.imagesCode);
 const showRejectModal = ref(false)
 const imageCodeId = ref('');
 // const codes = ref(props.codesWithStatus);
-const mapVisible = ref(false);
+// const mapVisible = ref(false);
 
-const filteredImages = ref(Object.values(props.imagesCode).filter(image => image.state == true));
+// const filteredImages = ref(Object.values(props.imagesCode).filter(image => image.state == true));
 
-const origin = {
-    lat: Number(filteredImages.value[0]?.lat),
-    lng: Number(filteredImages.value[0]?.lon)
-};
+// const origin = {
+//     lat: Number(filteredImages.value[0]?.lat),
+//     lng: Number(filteredImages.value[0]?.lon)
+// };
 
-const destination = {
-    lat: Number(filteredImages.value[filteredImages.value.length - 1]?.lat),
-    lng: Number(filteredImages.value[filteredImages.value.length - 1]?.lon)
-};
-const waypoints = filteredImages.value.slice(1, -1).map(item => ({
-    location: {
-        lat: Number(item?.lat),
-        lng: Number(item?.lon)
-    },
-    stopover: true
-}));
+// const destination = {
+//     lat: Number(filteredImages.value[filteredImages.value.length - 1]?.lat),
+//     lng: Number(filteredImages.value[filteredImages.value.length - 1]?.lon)
+// };
+// const waypoints = filteredImages.value.slice(1, -1).map(item => ({
+//     location: {
+//         lat: Number(item?.lat),
+//         lng: Number(item?.lon)
+//     },
+//     stopover: true
+// }));
 const titleSuccessImage = ref('')
 const messageSuccessImage = ref('')
 
@@ -307,8 +311,8 @@ function submitRejectImage() {
 //     return photoCode.value.filter(image => image.preproject_code_id === $preproject_code_id);
 // }
 
-function approveCode(preproject_code_id) {
-    router.get(route('preprojects.codereport.approveCode', { preproject_code_id: preproject_code_id }), {
+function approveCode() {
+    router.get(route('preprojects.codereport.approveCode', { preproject_code_id: title_code_id.value }), {
         onSuccess: () => {
             titleSuccessImage.value = "Code Aprobado"
             messageSuccessImage.value = "El Codigo se aprobo correctamente"
@@ -320,7 +324,7 @@ function approveCode(preproject_code_id) {
     })
 }
 
-function approveTitle(preproject_title_id) {    
+function approveTitle(preproject_title_id) {
     router.get(route('preprojects.codereport.approveTitle', { preproject_title_id: preproject_title_id }), {
         onSuccess: () => {
             titleSuccessImage.value = "Aprobado"
@@ -336,4 +340,12 @@ function approveTitle(preproject_title_id) {
 // const showMap = () => {
 //     mapVisible.value = true;
 // };
+
+
+// @click="approveCode(imageCode.id)"
+
+function verifyApproveModal(preproject_code_id) {
+    title_code_id.value = preproject_code_id
+    showApproveCode.value = !showApproveCode.value
+}
 </script>
