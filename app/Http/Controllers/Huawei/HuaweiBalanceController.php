@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class HuaweiBalanceController extends Controller
 {
@@ -272,7 +273,7 @@ class HuaweiBalanceController extends Controller
     public function storeEarnings (Request $request)
     {
         $data = $request->validate([
-            'invoice_number' => 'required',
+            'invoice_number' => ['required', Rule::unique('huawei_balance_earnings', 'invoice_number')],
             'amount' => 'required',
             'invoice_date' => 'required',
             'deposit_date' => 'nullable'
@@ -286,7 +287,7 @@ class HuaweiBalanceController extends Controller
     public function updateEarning (HuaweiBalanceEarning $huawei_balance_earning, Request $request)
     {
         $data = $request->validate([
-            'invoice_number' => 'required',
+            'invoice_number' => ['required', Rule::unique('huawei_balance_earnings', 'invoice_number')->ignore($huawei_balance_earning->id)],
             'amount' => 'required',
             'invoice_date' => 'required',
             'deposit_date' => 'nullable'
