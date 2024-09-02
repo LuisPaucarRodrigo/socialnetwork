@@ -72,40 +72,31 @@ class ApiController extends Controller
     //PreProject
     public function preproject($id)
     {
-        $user = User::find($id);
-        $preprojects = $user->preprojects()
-            ->where('status', null)->get();
-        $data = [];
-        foreach ($preprojects as $preproject) {
-            if (!$preproject->preproject_code_approve) {
-                $data[] = [
-                    'id' => $preproject->id,
-                    'code' => $preproject->code,
-                    'description' => $preproject->description,
-                    'date' => $preproject->date,
-                    'observation' => $preproject->observation,
-                ];
-            }
+        try {
+            $user = User::select('id')->find($id);
+            $preprojects = $user->preprojects()
+                ->select('preprojects.id as preproject_id', 'preproject_user.id as pivot_id', 'code', 'description', 'date', 'observation', 'status')
+                ->whereNull('status')
+                ->get();
+            return response()->json($preprojects);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
         }
-
-        return response()->json($preprojects);
     }
 
     public function preprojectcodephoto($id)
     {
         try {
-            $preprojectTitle = PreprojectTitle::with('preprojectCodes')->where('state', false)->where('preproject_id', $id)->first();
-            $preproject = PreprojectCode::with('code')->where('preproject_title_id', $preprojectTitle->id)->get();
-            $codesWithStatus = [];
-            foreach ($preproject as $preprojectCode) {
-                $code = $preprojectCode->code;
-                $codesWithStatus[] = [
-                    'id' => $preprojectCode->id,
-                    'code' => $code->code,
-                    'status' => $preprojectCode->status ?? $preprojectCode->replaceable_status
-                ];
-            }
-            return response()->json($codesWithStatus);
+            $preprojectTitle = PreprojectTitle::with(['preprojectCodes.code' => function ($query) {
+                $query->select('id', 'code');
+            }, 'preprojectCodes' => function ($query) {
+                $query->select('id', 'preproject_title_id', 'code_id', 'status');
+            }])
+                ->whereNotNull('state')->where('preproject_id', $id)
+                ->select('id', 'type')->get();
+            return response()->json($preprojectTitle);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -115,7 +106,14 @@ class ApiController extends Controller
 
     public function codephotospecific($id)
     {
-        $data = PreprojectCode::with('code', 'preprojectTitle.preproject')->find($id);
+        $data = PreprojectCode::with(['code' => function ($query) {
+            $query->select('id', 'code', 'description');
+        }, 'preprojectTitle' => function ($query) {
+            $query->select('id', 'preproject_id');
+            $query->with(['preproject' => function ($query) {
+                $query->select('id', 'code');
+            }]);
+        }])->select('id', 'preproject_title_id', 'code_id')->find($id);
         $codesWith = [
             'id' => $data->id,
             'codePreproject' => $data->preprojectTitle->preproject->code,

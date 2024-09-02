@@ -1,13 +1,13 @@
 <template>
 
-    <Head title="Clientes" />
+    <Head title="Títulos" />
 
-    <AuthenticatedLayout :redirectRoute="'preprojects.titles'">
+    <AuthenticatedLayout>
         <template #header>
-            Tìtulos
+            Tìtulos Huawei
         </template>
         <div class="mt-6 flex items-center justify-start gap-x-3">
-            <PrimaryButton v-if="hasPermission('ProjectManager')" @click="add_title" type="button">
+            <PrimaryButton @click="add_title" type="button">
                 + Agregar
             </PrimaryButton>
             <PrimaryButton @click="management_codes" type="button">
@@ -26,13 +26,9 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Tìpo
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Códigos
                         </th>
-                        <th v-if="hasPermission('ProjectManager')"
+                        <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         </th>
                     </tr>
@@ -40,15 +36,12 @@
                 <tbody>
                     <tr v-for="title in titles.data" :key="title.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ title.title }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ title.name }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ title.type }}</p>
+                            <p class="text-gray-900">{{ title.huawei_codes.map((item) => item.code).join(', ') }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900">{{ title.codes.map((item) => item.code).join(', ') }}</p>
-                        </td>
-                        <td v-if="hasPermission('ProjectManager')"
+                        <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex justify-center space-x-3">
                                 <button type="button" @click="openEditTitleModal(title)"
@@ -83,36 +76,23 @@
                                 <InputLabel for="title" class="font-medium leading-6 text-gray-900 mt-3">Título
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input v-model="form.title" id="title"
+                                    <input v-model="form.name" id="title"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.title" />
+                                    <InputError :message="form.errors.name" />
                                 </div>
                             </div>
 
-                            <div>
-                                <InputLabel for="type" class="font-medium leading-6 text-gray-900 mt-3">Tipo
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.type" id="type"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="">Selecciona etapa</option>
-                                        <option v-for="stage in stages" :key="stage.id" :value="stage.name">
-                                            {{ stage.name }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.type" />
-                                </div>
-                            </div>
 
                             <div>
                                 <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Códigos</InputLabel>
                                 <div class="mt-2">
-                                    <select multiple v-model="form.code_id_array" id="codes"
+                                    <select multiple v-model="form.codes" id="codes"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option v-for="code in props.codes" :key="code.id" :value="code.id">
                                             {{ code.code }}
                                         </option>
                                     </select>
+                                    <InputError :message="form.errors.codes" />
                                 </div>
                             </div>
 
@@ -129,7 +109,6 @@
                 </form>
             </div>
         </Modal>
-
 
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Título" />
         <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Título" />
@@ -164,8 +143,7 @@ const docToDelete = ref(null);
 const props = defineProps({
     titles: Object,
     codes: Object,
-    userPermissions: Array,
-    stages: Object,
+    userPermissions: Array
 })
 
 const hasPermission = (permission) => {
@@ -188,35 +166,40 @@ const close_edit_title = () => {
 
 const form = useForm({
     id: '',
-    title: '',
-    type: '',
-    code_id_array: [],
+    name: '',
+    codes: [],
 });
 
 const submit = () => {
-    form.post(route('preprojects.titles.post'), {
+    form.post(route('huawei.titles.store'), {
         onSuccess: () => {
             close_add_title();
             form.reset();
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
-                router.get(route('preprojects.titles'))
+                router.visit(route('huawei.titles'))
             }, 2000);
         },
     });
 };
 
 const submitEdit = () => {
-    form.put(route('preprojects.titles.put', { title: form.id }), {
+    form.put(route('huawei.titles.update', { huawei_title: form.id }), {
         onSuccess: () => {
             close_edit_title();
             form.reset();
             showModalEdit.value = true
             setTimeout(() => {
                 showModalEdit.value = false;
-                router.get(route('preprojects.titles'))
+                router.visit(route('huawei.titles'))
             }, 2000);
+        },
+        onError: () => {
+            form.reset();
+        },
+        onFinish: () => {
+            form.reset();
         }
     });
 };
@@ -224,9 +207,8 @@ const submitEdit = () => {
 const openEditTitleModal = (title) => {
     editingTitle.value = JSON.parse(JSON.stringify(title));
     form.id = editingTitle.value.id;
-    form.title = editingTitle.value.title;
-    form.type = editingTitle.value.type;
-    form.code_id_array = editingTitle.value.codes.map((item) => item.id);
+    form.name = editingTitle.value.name;
+    form.codes = editingTitle.value.huawei_codes.map((item) => item.id);
 
     edit_title.value = true;
 };
@@ -243,16 +225,16 @@ const closeModalDoc = () => {
 const deleteTitle = () => {
     const docId = docToDelete.value;
     if (docId) {
-        router.delete(route('preprojects.titles.delete', { title: docId }), {
+        router.delete(route('huawei.titles.delete', { huawei_title: docId }), {
             onSuccess: () => {
                 closeModalDoc(),
-                    router.visit(route('preprojects.titles'))
+                    router.visit(route('huawei.titles'))
             }
         });
     }
 };
 
 const management_codes = () => {
-    router.get(route('preprojects.codes'));
+    router.get(route('huawei.codes'));
 }
 </script>

@@ -49,10 +49,10 @@
                 <div v-for="(item, i) in preprojects.data" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
-                        <h2 class="text-sm font-semibold mb-3">
+                        <h2 class="text-sm font-semibold mb-3 sm:col-span-1">
                             N° {{ i }} {{ item.code }}
                         </h2>
-                        <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2">
+                        <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2 m:col-span-1">
                             <Link :href="route('preprojects.create', { preproject_id: item.id })"
                                 class="text-green-600 hover:underline mb-4 flex items-start">
                             <PencilIcon class="h-4 w-4" />
@@ -68,51 +68,57 @@
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
                         <div v-if="hasPermission('ProjectManager')">
                             <button @click="assignUser(item.id)"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Asignar
-                                Usuarios
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Asignar Usuarios
                             </button>
                         </div>
                         <div>
                             <Link :href="route('preprojects.imagereport.index', { preproject_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Descargar
-                            imagenes
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Descargar imagenes
                             </Link>
                         </div>
                         <div>
                             <Link :href="route('preprojects.photoreport.index', { preproject_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Informe
-                            fotográfico
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Informe fotográfico
                             </Link>
                         </div>
                         <div>
-                            <Link :href="route('preprojects.products', { preproject: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Productos de
-                            Almacén
+                            <Link v-if="item.customer_id != 2"
+                                :href="route('preprojects.products', { preproject: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Productos de Almacén
                             </Link>
+                            <span v-else class="text-gray-400">Productos de Almacen</span>
                         </div>
                         <div v-if="item.project == null && item.status === null">
-                            <Link :href="route('preprojects.request.index', { id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Solicitud de
-                            Compras
+                            <Link v-if="item.customer_id != 2"
+                                :href="route('preprojects.request.index', { id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Solicitud de Compras
                             </Link>
+                            <span v-else class="text-gray-400">Solicitud de Compras</span>
                         </div>
                         <div v-else>
-                            <span class="text-gray-600">
-                                Solicitud de Compras
-                            </span>
+                            <span class="text-gray-600"> Solicitud de Compras</span>
                         </div>
                         <div v-if="item.project == null && item.status === null">
-                            <Link :href="route('preprojects.purchase_quote', { id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotizaciones de
-                            Compras
+                            <Link v-if="item.customer_id != 2"
+                                :href="route('preprojects.purchase_quote', { id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Cotizaciones de Compras
                             </Link>
+                            <span v-else class="text-gray-400">Cotizaciones de Compras</span>
                         </div>
                         <div
                             v-if="item.has_photo_report && (item.status === null || item.status == true) && hasPermission('ProjectManager')">
-                            <Link :href="route('preprojects.quote', { preproject_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Cotización para
-                            proyecto
+                            <Link v-if="item.customer_id != 2"
+                                :href="route('preprojects.quote', { preproject_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Cotización para proyecto
                             </Link>
+                            <span v-else class="text-gray-400">Cotización para proyecto</span>
                         </div>
                     </div>
                 </div>
