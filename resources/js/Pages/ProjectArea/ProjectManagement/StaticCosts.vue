@@ -533,12 +533,7 @@
                                 </div>
                             </div>
 
-                            <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
-                            >
+                            <div>
                                 <InputLabel
                                     for="igv"
                                     class="font-medium leading-6 text-gray-900"
@@ -816,10 +811,6 @@
                             </div>
 
                             <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
                             >
                                 <InputLabel
                                     for="igv"
@@ -843,10 +834,6 @@
                                 </div>
                             </div>
                             <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
                             >
                                 <InputLabel
                                     for="amount"
