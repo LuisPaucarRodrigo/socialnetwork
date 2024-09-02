@@ -100,6 +100,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project/additional_costs/import/{project_id}', [AdditionalCostsController::class, 'import'])->name('projectmanagement.importAdditionalCost');
     Route::post('/project/purchases_request/{project_id}/static_costs', [StaticCostsController::class, 'store'])->name('projectmanagement.storeStaticCost');
     Route::post('/project/additional_cost/validate/{ac_id}', [AdditionalCostsController::class, 'validateRegister'])->name('projectmanagement.validateAdditionalCost');
+    Route::get('/project/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
 
     
 
