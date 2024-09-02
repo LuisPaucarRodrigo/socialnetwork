@@ -183,7 +183,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     //Preproject image
     Route::get('/preprojects/{preproject_id}/report/image', [PreProjectController::class, 'index_image'])->name('preprojects.imagereport.index');
-    Route::get('/preprojects/{preproject_id}/report/code/image', [PreProjectController::class, 'filterCodePhoto'])->name('preprojects.report.images');
+    // Route::get('/preprojects/{preproject_id}/report/code/image', [PreProjectController::class, 'filterCodePhoto'])->name('preprojects.report.images');
     Route::get('/preprojects/report/showimage/{image}', [PreProjectController::class, 'show_image'])->name('preprojects.imagereport.show');
     Route::get('/preprojects/{preproject_id}/report/download_image', [PreProjectController::class, 'download_image'])->name('preprojects.imagereport.download');
     Route::get('/preprojects/{preproject_title_id}/report/download_report', [PreProjectController::class, 'download_report'])->name('preprojects.report.download');

@@ -159,116 +159,117 @@
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
-                        <div v-if="form.cropped_image" class="flex justify-center mt-6">
-                            <img :src="form.profile" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="reentry_date">Foto de Usuario </InputLabel>
-                            <div class="mt-2">
-                                <ModalImage v-model="form.cropped_image" @imagenRecortada="handleImagenRecortada" />
-                                <InputError :message="form.errors.cropped_image" />
+                        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                            <div v-if="form.cropped_image" class="flex justify-center">
+                                <img :src="form.profile" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="reentry_date">Foto de Usuario</InputLabel>
+                                <div class="mt-2">
+                                    <ModalImage v-model="form.cropped_image" @imagenRecortada="handleImagenRecortada" />
+                                    <InputError :message="form.errors.cropped_image" />
+                                </div>
+                            </div>  
+                            <div class="sm:col-span-3 sm:col-start-1">
+                                <InputLabel for="name">Nombre</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" id="name" v-model="form.name" required />
+                                    <InputError :message="form.errors.name" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="lastname">Apellido</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" id="lastname" v-model="form.lastname" required />
+                                    <InputError :message="form.errors.lastname" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="gender">Genero</InputLabel>
+                                <div class="mt-2">
+                                    <select id="gender" v-model="form.gender" autocomplete="off"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">Seleccionar Genero</option>
+                                        <option>Masculino</option>
+                                        <option>Femenino</option>
+                                    </select>
+                                    <InputError :message="form.errors.gender" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="address">Direccion</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" id="address" v-model="form.address" required />
+                                    <InputError :message="form.errors.address" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="birthdate">Fecha de Nacimiento</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="date" id="birthdate" v-model="form.birthdate" required />
+                                    <InputError :message="form.errors.birthdate" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="dni">DNI</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" id="dni" v-model="form.dni" maxlength="8" required />
+                                    <InputError :message="form.errors.dni" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="email">Correo Electronico</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="email" id="email" v-model="form.email" required />
+                                    <InputError :message="form.errors.email" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="email_company">Correo Electronico de Compañia</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="email" id="email_company" v-model="form.email_company" />
+                                    <InputError :message="form.errors.email_company" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="phone1">Telefono</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" id="phone1" v-model="form.phone1" maxlength="9" required />
+                                    <InputError :message="form.errors.phone1" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="salary">Salario</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="number" id="salary" v-model="form.salary" required />
+                                    <InputError :message="form.errors.salary" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="sctr">¿Tiene SCTR?</InputLabel>
+                                <div class="mt-2 class flex gap-4">
+                                    <label class="flex gap-2 items-center">
+                                        Sí
+                                        <input type="radio" v-model="form.sctr" id="sctr" :value="1"
+                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                    </label>
+                                    <label class="flex gap-2 items-center">
+                                        No
+                                        <input type="radio" v-model="form.sctr" id="sctr" :value="0"
+                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                    </label>
+                                    <InputError :message="form.errors.sctr" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-5 mt-2">
+                                <InputLabel for="curriculum_vitae">Curriculum Vitae</InputLabel>
+                                <div class="mt-2">
+                                    <InputFile type="file" v-model="form.curriculum_vitae" id="curriculum_vitae"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.curriculum_vitae" />
+                                </div>
                             </div>
                         </div>
-                        <div class="mt-2">
-                            <InputLabel for="name">Nombre</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" id="name" v-model="form.name" required />
-                                <InputError :message="form.errors.name" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="lastname">Apellido</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" id="lastname" v-model="form.lastname" required />
-                                <InputError :message="form.errors.lastname" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="gender">Genero</InputLabel>
-                            <div class="mt-2">
-                                <select id="gender" v-model="form.gender" autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Genero</option>
-                                    <option>Masculino</option>
-                                    <option>Femenino</option>
-                                </select>
-                                <InputError :message="form.errors.gender" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="address">Direccion</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" id="address" v-model="form.address" required />
-                                <InputError :message="form.errors.address" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="birthdate">Fecha de Nacimiento</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" id="birthdate" v-model="form.birthdate" required />
-                                <InputError :message="form.errors.birthdate" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="dni">DNI</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" id="dni" v-model="form.dni" maxlength="8" required />
-                                <InputError :message="form.errors.dni" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="email">Correo Electronico</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="email" id="email" v-model="form.email" required />
-                                <InputError :message="form.errors.email" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="email_company">Correo Electronico de Compañia</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="email" id="email_company" v-model="form.email_company" />
-                                <InputError :message="form.errors.email_company" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="phone1">Telefono</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" id="phone1" v-model="form.phone1" maxlength="9" required />
-                                <InputError :message="form.errors.phone1" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="salary">Salario</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="number" id="salary" v-model="form.salary" required />
-                                <InputError :message="form.errors.salary" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="sctr">¿Tiene SCTR?</InputLabel>
-                            <div class="mt-2 class flex gap-4">
-                                <label class="flex gap-2 items-center">
-                                    Sí
-                                    <input type="radio" v-model="form.sctr" id="sctr" :value="1"
-                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                </label>
-                                <label class="flex gap-2 items-center">
-                                    No
-                                    <input type="radio" v-model="form.sctr" id="sctr" :value="0"
-                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                </label>
-                                <InputError :message="form.errors.sctr" />
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="curriculum_vitae">Curriculum Vitae</InputLabel>
-                            <div class="mt-2">
-                                <InputFile type="file" v-model="form.curriculum_vitae" id="curriculum_vitae"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.curriculum_vitae" />
-                            </div>
-                        </div>
-
                         <div class="mt-6 flex items-center justify-end gap-x-3">
                             <SecondaryButton @click="modal_employees_external()"> Cancel </SecondaryButton>
                             <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }"> Guardar
@@ -330,7 +331,7 @@ const initialState = {
     sctr: '',
     curriculum_vitae: null,
     cropped_image: null,
-    profile:''
+    profile: ''
 }
 
 const form = useForm({ ...initialState })

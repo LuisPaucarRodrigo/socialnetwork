@@ -6,7 +6,6 @@
 
     Route::post('/login', [ApiController::class, 'login']);
 
-    Route::get('/preproject/{id}', [ApiController::class, 'preproject']);
 
     Route::get('/checklistcar', [ChecklistsController::class, 'car_index']);
     
@@ -14,10 +13,12 @@
         Route::get('/users/{id}', [ApiController::class, 'users']);
 
         //Preprojects
-        
+        Route::get('/preproject/{id}', [ApiController::class, 'preproject']);
+
+        Route::get('/preproject/code/{id}', [ApiController::class, 'preprojectcodephoto']);
         Route::get('/codephotospecific/{id}', [ApiController::class, 'codephotospecific']);
         Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
-        Route::get('/preproject/code/{id}', [ApiController::class, 'preprojectcodephoto']);
+        
         Route::get('/register/photo/{id}', [ApiController::class, 'registerPhoto']);
 
         //Project

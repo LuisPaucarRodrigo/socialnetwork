@@ -4,6 +4,7 @@ use App\Http\Controllers\Huawei\HuaweiBalanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Inventory\HuaweiController;
 use App\Http\Controllers\Huawei\HuaweiManagementController;
+use App\Http\Controllers\Huawei\HuaweiMobileController;
 use App\Http\Controllers\Huawei\HuaweiProjectController;
 
 Route::middleware('permission:HuaweiManager')->group(function () {
@@ -141,6 +142,25 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/general_balance/costs/summary/get', [HuaweiBalanceController::class, 'getSummary'])->name('huawei.generalbalance.costs.summary');
     Route::post('huawei/general_balance/costs/import_excel', [HuaweiBalanceController::class, 'importCosts'])->name('huawei.generalbalance.costs.import');
     Route::get('huawei/general_balance/costs/export_excel', [HuaweiBalanceController::class, 'exportCosts'])->name('huawei.generalbalance.costs.export');
+
+    //mobile_section
+    Route::get('huawei/titles/get', [HuaweiMobileController::class, 'getTitles'])->name('huawei.titles');
+    Route::post('huawei/titles/post', [HuaweiMobileController::class, 'storeTitle'])->name('huawei.titles.store');
+    Route::put('huawei/titles/{huawei_title}/put', [HuaweiMobileController::class, 'updateTitle'])->name('huawei.titles.update');
+    Route::delete('huawei/titles/{huawei_title}/delete', [HuaweiMobileController::class, 'deleteTitle'])->name('huawei.titles.delete');
+
+    Route::get('huawei/codes/get', [HuaweiMobileController::class, 'getCodes'])->name('huawei.codes');
+    Route::post('huawei/codes/post', [HuaweiMobileController::class, 'storeCode'])->name('huawei.codes.store');
+    Route::put('huawei/codes/{huawei_code}/put', [HuaweiMobileController::class, 'updateCode'])->name('huawei.codes.update');
+    Route::delete('huawei/codes/{huawei_code}/delete', [HuaweiMobileController::class, 'deleteCode'])->name('huawei.codes.delete');
+
+    //mobile_section_projects
+    Route::get('huawei/projects/{huawei_project}/stages', [HuaweiMobileController::class, 'getProjectStages'])->name('huawei.projects.stages');
+    Route::get('huawei/projects/{huawei_project}/stages/{stage}/filter', [HuaweiMobileController::class, 'filterProjectStages'])->name('huawei.projects.stages.filter');
+    Route::get('huawei/projects/stages/view_image/{image}/get', [HuaweiMobileController::class, 'viewImage'])->name('huawei.projects.stages.viewimage');
+    Route::get('huawei/projects/stages/download_image/{image}/get', [HuaweiMobileController::class, 'downloadImage'])->name('huawei.projects.stages.downloadimage');
+    Route::delete('huawei/projects/stages/delete_image/{image}/delete', [HuaweiMobileController::class, 'deleteImage'])->name('huawei.projects.stages.deleteimage');
+    Route::put('huawei/projects/stages/approve_or_reject/{image}/put', [HuaweiMobileController::class, 'approveOrReject'])->name('huawei.projects.stages.approveReject');
 });
 
 

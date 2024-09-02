@@ -6,7 +6,7 @@
             Perfil
         </template>
         <form @submit.prevent="submit">
-            <div class="space-y-12">
+            <div class="space-y-6">
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion Personal</h2>
                     <div>
@@ -26,8 +26,7 @@
                             <InputLabel for="last_name">Apellido
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.lastname" id="last_name"
-                                    autocomplete="off" />
+                                <TextInput type="text" v-model="form.lastname" id="last_name" autocomplete="off" />
                                 <InputError :message="form.errors.lastname" />
                             </div>
                         </div>
@@ -151,14 +150,12 @@
                             <div class="mt-2 class flex gap-4">
                                 <label class="flex gap-2 items-center">
                                     Sí
-                                    <input type="radio" v-model="form.discount_sctr" id="discount_sctr"
-                                        :value="true"
+                                    <input type="radio" v-model="form.discount_sctr" id="discount_sctr" :value="true"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
                                 <label class="flex gap-2 items-center">
                                     No
-                                    <input type="radio" v-model="form.discount_sctr" id="discount_sctr"
-                                        :value="false"
+                                    <input type="radio" v-model="form.discount_sctr" id="discount_sctr" :value="false"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
                                 <InputError :message="form.errors.discount_sctr" />
@@ -205,8 +202,7 @@
                             <InputLabel for="hire_date">Fecha de Inicio
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="Date" v-model="form.hire_date" id="hire_date"
-                                    autocomplete="off" />
+                                <TextInput type="Date" v-model="form.hire_date" id="hire_date" autocomplete="off" />
                                 <InputError :message="form.errors.hire_date" />
                             </div>
                         </div>
@@ -228,8 +224,7 @@
                                 Educativo
                             </InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.education_level" id="education_level"
-                                    autocomplete="off"
+                                <select v-model="form.education_level" id="education_level" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Nivel Educativo</option>
                                     <option>Universidad</option>
@@ -244,8 +239,7 @@
                             <InputLabel for="education_status">Estato de
                                 Educacion</InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.education_status" id="education_status"
-                                    autocomplete="off"
+                                <select v-model="form.education_status" id="education_status" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Estado Educativo</option>
                                     <option>Completo</option>
@@ -287,8 +281,7 @@
                             <InputLabel for="address">Distrito
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.district" id="address"
-                                    autocomplete="off" />
+                                <TextInput type="text" v-model="form.district" id="address" autocomplete="off" />
                                 <InputError :message="form.errors.district" />
                             </div>
                         </div>
@@ -296,8 +289,7 @@
                             <InputLabel for="province">Provincia
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.province" id="province"
-                                    autocomplete="off" />
+                                <TextInput type="text" v-model="form.province" id="province" autocomplete="off" />
                                 <InputError :message="form.errors.province" />
                             </div>
                         </div>
@@ -305,8 +297,7 @@
                             <InputLabel for="department">Departamento
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.department" id="department"
-                                    autocomplete="off" />
+                                <TextInput type="text" v-model="form.department" id="department" autocomplete="off" />
                                 <InputError :message="form.errors.department" />
                             </div>
                         </div>
@@ -389,13 +380,15 @@
                     <div v-for="(dependent, index) in form.familyDependents" :key="index">
                         <div class="flex justify-end mt-10">
                             <button type="button" @click="removeDependent(index)"
-                                class="font-medium text-red-600 hover:text-indigo-500">Eliminar</button>
+                                class="font-medium text-red-600 hover:text-indigo-500">
+                                Eliminar
+                            </button>
                         </div>
                         <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div class="sm:col-span-3">
-                                <InputLabel for="family_dni">Documento
-                                    Nacional
-                                    de Identidad</InputLabel>
+                                <InputLabel for="family_dni">
+                                    Documento Nacional de Identidad
+                                </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="dependent.family_dni" id="family_dni"
                                         maxlength="8" />
@@ -500,8 +493,7 @@
                             <InputLabel for="shoe_size">Talla de Zapato
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.shoe_size" id="shoe_size"
-                                    autocomplete="off" />
+                                <TextInput type="text" v-model="form.shoe_size" id="shoe_size" autocomplete="off" />
                                 <InputError :message="form.errors.shoe_size" />
                             </div>
                         </div>
@@ -510,8 +502,7 @@
                             <InputLabel for="shirt_size">Talla de Polo
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.shirt_size" id="shirt_size"
-                                    autocomplete="off" />
+                                <TextInput type="text" v-model="form.shirt_size" id="shirt_size" autocomplete="off" />
                                 <InputError :message="form.errors.shirt_size" />
                             </div>
                         </div>
@@ -520,8 +511,7 @@
                             <InputLabel for="pants_size">Talla de Pantalones
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.pants_size" id="pants_size"
-                                    autocomplete="off" />
+                                <TextInput type="text" v-model="form.pants_size" id="pants_size" autocomplete="off" />
                                 <InputError :message="form.errors.pants_size" />
                             </div>
                         </div>
@@ -632,7 +622,7 @@ const form = useForm({
     discount_sctr: '',
     pension_system: '',
     basic_salary: '',
-    life_ley:'',
+    life_ley: '',
     hire_date: '',
     education_level: '',
     education_status: '',

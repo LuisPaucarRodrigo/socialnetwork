@@ -15,7 +15,9 @@ class PreprojectCode extends Model
     ];
 
     protected $appends = [
-        'replaceable_status'
+        'replaceable_status',
+        'rejected_quantity',
+        // 'code_name'
     ];
 
     //CALCULATED
@@ -25,6 +27,17 @@ class PreprojectCode extends Model
 
         return $hasImages ? "En proceso" : "Sin Trabajar";
     }
+
+    public function getRejectedQuantityAttribute()
+    {
+        return $this->imagecodepreprojet()->where('state', 0)->count();
+    }
+
+    // public function getCodeNameAttribute()
+    // {
+    //     $code = $this->code;
+    //     return $code->code;
+    // }
 
 
     //RELATIONS
