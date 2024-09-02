@@ -99,7 +99,7 @@
                                     checkVisibility('Instalación PINT y PEXT')
                                 "
                                 class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="8"
+                                colspan="9"
                             >
                                 Instalación PINT y PEXT
                             </th>
@@ -118,7 +118,7 @@
                             <th
                                 v-if="checkVisibility('Validación de OC')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="8"
+                                colspan="9"
                             >
                                 Validación de OC
                             </th>
@@ -348,6 +348,14 @@
                                 "
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                             >
+                                Monto Proyectado
+                            </th>
+                            <th
+                                v-if="
+                                    checkVisibility('Instalación PINT y PEXT')
+                                "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            >
                                 Coordinador
                             </th>
                             <th
@@ -541,14 +549,10 @@
                                 Fecha de Abono
                             </th>
                             <th
-                                :class="[
-                                    'border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
-                                    checkVisibility('Conbranza')
-                                        ? ''
-                                        : 'border-r-2',
-                                ]"
+                                v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                             >
-                                Monto
+                            Monto
                             </th>
                             <th
                                 v-if="checkVisibility('Cobranza')"
@@ -971,6 +975,25 @@
                                             item?.cicsa_installation
                                                 ?.shipping_report_date
                                         )
+                                    }}
+                                </p>
+                            </td>
+                            <td
+                                :class="
+                                    stateClass(
+                                        item?.cicsa_installation
+                                            ?.projected_amount
+                                    )
+                                "
+                                v-if="
+                                    checkVisibility('Instalación PINT y PEXT')
+                                "
+                                class="border-b border-gray-200 px-2 py-2 text-[13px]"
+                            >
+                                <p class="text-gray-900 text-center">
+                                    {{
+                                        item?.cicsa_installation
+                                        ?.projected_amount
                                     }}
                                 </p>
                             </td>

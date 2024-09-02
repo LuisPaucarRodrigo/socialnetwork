@@ -18,12 +18,11 @@
                         <h2 v-if="preproject" class="text-base font-semibold leading-7 text-gray-900">
                             {{ preproject.code }}
                         </h2>
-                        <h2 v-else class="text-base font-semibold leading-7 text-gray-900">Registrar nuevo Anteproyecto
+                        <h2 v-else class="text-base font-semibold leading-7 text-gray-900">
+                            Registrar nuevo Anteproyecto
                         </h2>
                         <br>
-                        <div
-                            class="border-b grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4  border-gray-900/10 pb-12">
-
+                        <div class="border-b grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4 border-gray-900/10 pb-12">
                             <div>
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
                                     Cliente
@@ -95,11 +94,9 @@
 
                                 <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
                                 </InputLabel>
-                                <InputLabel class="leading-6 text-gray-900">{{ customers.find(item =>
-        item.id == (form.hasSubcustomer
-            ? form.subcustomer_id
-            : form.customer_id)
-    )?.address }}
+                                <InputLabel class="leading-6 text-gray-900">
+                                    {{ customers.find(item => item.id == (form.hasSubcustomer
+        ? form.subcustomer_id : form.customer_id))?.address }}
                                 </InputLabel>
 
                             </div>
@@ -122,7 +119,6 @@
                                         class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">
                                             {{ item.name }}: {{ item.phone }} </p>
-                                        <!-- @click="delete_already_employee(member.pivot.id, index)" -->
                                         <button type="button" class="col-span-1 flex justify-end"
                                             @click="deleteContactItem(item.id)">
                                             <TrashIcon class=" text-red-500 h-4 w-4" />
@@ -139,7 +135,7 @@
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput  type="text" v-model="form.description" id="description"
+                                    <TextInput type="text" v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.description" />
                                 </div>
@@ -179,37 +175,6 @@
                                 <InputError :message="form.errors.cpe" />
                             </div>
 
-                            <template v-if="!preproject">
-                                <div>
-                                <InputLabel for="title_factibilidad_id" class="font-medium leading-6 text-gray-900">Título/Factibilidad</InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.title_factibilidad_id" id="title_factibilidad_id"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="">Selecciona un título</option>
-                                        <option v-for="title in titles" :key="title.id" :value="title.id">{{ title.title
-                                            }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.title_factibilidad_id" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="title_implementation_id" class="font-medium leading-6 text-gray-900">Título/Implementacion</InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.title_implementation_id" id="title_implementation_id"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="">Selecciona un título</option>
-                                        <option v-for="title in titles" :key="title.id" :value="title.id">{{ title.title
-                                            }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.title_implementation_id" />
-                                </div>
-                            </div>
-                            </template>
-
-
                             <div>
                                 <InputLabel for="observation" class="font-medium leading-6 text-gray-900">Observaciones
                                 </InputLabel>
@@ -219,6 +184,58 @@
                                     <InputError :message="form.errors.observation" />
                                 </div>
                             </div>
+                            <div class="col-span-1 border-t-2 border-gray-300 sm:col-span-2">
+                            </div>
+                            <template v-if="!preproject">
+                                <div class="flex space-x-3 justify-start sm:col-span-2">
+                                    <h2 class="text-base font-semibold leading-7 text-gray-900 items-center">
+                                        Agregar etapas de reporte
+                                    </h2>
+                                    <button type="button" @click="addReportStage"
+                                        class="font-medium text-indigo-600 hover:text-indigo-500 self-start sm:self-end items-center">Agregar
+                                        etapas</button>
+                                </div>
+
+                                <div v-for="(reportStage, index) in form.reportStages" :key="index">
+                                    <div class="flex justify-end mt-5">
+                                        <button type="button" @click="removeReportStage(index)"
+                                            class="font-medium text-red-600 hover:text-indigo-500">Eliminar</button>
+                                    </div>
+
+                                    <InputLabel for="stage">
+                                        Etapas
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <select v-model="reportStage.name" id="stage"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            <option value="">Selecciona etapa</option>
+                                            <option v-for="stage in stages" :key="stage.id" :value="stage.name">
+                                                {{ stage.name }}
+                                            </option>
+                                        </select>
+                                        <InputError :message="form.errors['reportStages.' + index + '.name']" />
+                                    </div>
+
+                                    <InputLabel for="emergency_lastname">
+                                        Titulo
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <select v-model="reportStage.title_id" id="title_id"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            <option value="">Selecciona un título</option>
+                                            <option v-for="title in titles" :key="title.id" :value="title.id">
+                                                {{ title.title }}
+                                            </option>
+                                        </select>
+                                        <InputError :message="form.errors['reportStages.' + index + '.title_id']" />
+                                    </div>
+                                </div>
+                                <InputError :message="form.errors.reportStages" />
+
+                            </template>
+
+
+
                         </div>
 
                     </div>
@@ -282,10 +299,11 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { preproject, customers, titles } = defineProps({
+const { preproject, customers, titles, stages } = defineProps({
     preproject: Object,
     customers: Object,
-    titles: Object
+    titles: Object,
+    stages: Object
 })
 
 let backUrls = preproject?.status === undefined
@@ -302,8 +320,9 @@ const initial_state = {
     description: '',
     date: '',
     observation: '',
-    title_factibilidad_id: '',
-    title_implementation_id: '',
+    reportStages: [],
+    // title_factibilidad_id: '',
+    // title_implementation_id: '',
     contacts: [],
     hasSubcustomer: false,
     cpe: ''
@@ -321,7 +340,7 @@ const form = useForm({
     ...(preproject ? update_state : initial_state)
 });
 
-const customerBusinnes = ref(preproject ? preproject.customer?.business_name: '')
+const customerBusinnes = ref(preproject ? preproject.customer?.business_name : '')
 
 const contactsList = ref([])
 const contactItem = ref("")
@@ -440,5 +459,16 @@ const updateProjectCode = () => {
 };
 
 watch(() => [customerBusinnes.value, form.description], updateProjectCode);
+
+const addReportStage = () => {
+    form.reportStages.push({
+        name: '',
+        title_id: '',
+    });
+}
+
+const removeReportStage = (index) => {
+    form.reportStages.splice(index, 1);
+}
 
 </script>

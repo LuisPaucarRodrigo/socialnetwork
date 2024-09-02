@@ -52,7 +52,7 @@ class LocalDriveController extends Controller
         }
         if ($request->type === 'Archivo') {
             $data = $request->validate([
-                'file' => 'required|file',
+                'file' => 'required|file|mimes:pdf|max:5120',
                 'path' => 'required',
                 'type' => 'required'
             ]);

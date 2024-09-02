@@ -666,6 +666,9 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.sites')">Sites de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.projects')">Proyectos de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">

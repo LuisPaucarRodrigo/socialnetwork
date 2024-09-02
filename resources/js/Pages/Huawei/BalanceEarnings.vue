@@ -213,6 +213,8 @@
       <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Ingreso" />
       <SuccessOperationModal :confirming="confirmImport" :title="'Éxito'"
       :message="'Se importaron los datos correctamente.'" />
+      <ErrorOperationModal :showError="error_earning" :title="'Error'" :message="'Hay un registro de N° de factura duplicado.'" />
+
     </AuthenticatedLayout>
   </template>
 
@@ -234,6 +236,7 @@ import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { formattedDate } from '@/utils/utils';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const props = defineProps({
   earnings: Object,
@@ -265,6 +268,7 @@ const editingAdditional = ref(null);
 const importModal = ref(false);
 const confirmImport = ref(false);
 const dropdownOpen = ref(false);
+const error_earning = ref(false);
 
 const openImportModal = () => {
     importModal.value = true;
@@ -347,7 +351,12 @@ const importExcel = () => {
             }, 2000);
         },
         onError: (e) => {
-            console.error(e);
+            if (e.earning_error){
+                error_earning.value = true;
+                setTimeout(() => {
+                    error_earning.value = false;
+                }, 3000);
+            }
         }
     })
 }
