@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class HuaweiBalanceController extends Controller
 {
@@ -20,7 +21,7 @@ class HuaweiBalanceController extends Controller
     {
         $total_variable_costs = HuaweiBalanceCost::where('type', 1)->sum('amount');
         $total_static_costs = HuaweiBalanceCost::where('type', 0)->sum('amount');
-        $total_earnings = HuaweiBalanceEarning::sum('amount');
+        $total_earnings = HuaweiBalanceEarning::whereNotNull('deposit_date')->sum('amount');
         return Inertia::render('Huawei/GeneralBalance', [
             'total_variable_costs' => $total_variable_costs,
             'total_static_costs' => $total_static_costs,
@@ -143,7 +144,7 @@ class HuaweiBalanceController extends Controller
     public function search_costs (Request $request, $type = null)
     {
         $result = $type ? HuaweiBalanceCost::where('type', 1) : HuaweiBalanceCost::where('type', 0);
-        $count = $type ? 5 : 7;
+        $count = $type ? 6 : 7;
         if (count($request->selectedExpenseTypes) < $count) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
@@ -201,6 +202,7 @@ class HuaweiBalanceController extends Controller
             $rowsAsObjects[] = $rowObject;
         }
 
+            DB::beginTransaction();
 
             foreach ($rowsAsObjects as $item) {
                 if (in_array(trim($item->expense_type), ['Planilla', 'Transporte', 'Fletes', 'Alimentacion', 'Consumibles', 'Hospedaje', 'Movilidad'], true)) {
@@ -212,8 +214,7 @@ class HuaweiBalanceController extends Controller
                         'expense_type' => $item->expense_type,
                         'type' => 0
                     ]);
-                } else {
-                    // Insert into HuaweiAdditionalCost
+                } elseif (in_array(trim($item->expense_type), ['Cochera', 'Combustible', 'Epps', 'Herramientas', 'Materiales', 'Otros'])) {
                     HuaweiBalanceCost::create([
                         'zone' => $item->zone,
                         'cost_date' => $item->cost_date,
@@ -221,9 +222,13 @@ class HuaweiBalanceController extends Controller
                         'expense_type' => $item->expense_type,
                         'type' => 1
                     ]);
+                }else{
+                    DB::rollBack();
+                    return back()->withErrors(['excel_error' => 'Error en los datos del Excel a importar.'])->withInput();
                 }
             }
 
+            DB::commit();
 
         return redirect()->back();
     }
@@ -258,7 +263,7 @@ class HuaweiBalanceController extends Controller
         $total = HuaweiBalanceEarning::whereNotNull('deposit_date')
         ->sum('amount');
 
-        return Inertia::render('Huawei/ProjectRealEarnings', [
+        return Inertia::render('Huawei/BalanceEarnings', [
             'earnings' => $earnings,
             'search' => $request,
             'total' => $total
@@ -268,7 +273,7 @@ class HuaweiBalanceController extends Controller
     public function storeEarnings (Request $request)
     {
         $data = $request->validate([
-            'invoice_number' => 'required',
+            'invoice_number' => ['required', Rule::unique('huawei_balance_earnings', 'invoice_number')],
             'amount' => 'required',
             'invoice_date' => 'required',
             'deposit_date' => 'nullable'
@@ -282,7 +287,7 @@ class HuaweiBalanceController extends Controller
     public function updateEarning (HuaweiBalanceEarning $huawei_balance_earning, Request $request)
     {
         $data = $request->validate([
-            'invoice_number' => 'required',
+            'invoice_number' => ['required', Rule::unique('huawei_balance_earnings', 'invoice_number')->ignore($huawei_balance_earning->id)],
             'amount' => 'required',
             'invoice_date' => 'required',
             'deposit_date' => 'nullable'
@@ -341,7 +346,14 @@ class HuaweiBalanceController extends Controller
             $rowsAsObjects[] = $rowObject;
         }
 
+        DB::beginTransaction();
+
         foreach ($rowsAsObjects as $item) {
+            $found_earning = HuaweiBalanceEarning::where('invoice_number', $item->invoice_number)->first();
+            if ($found_earning){
+                DB::rollBack();
+                return back()->withErrors(['earning_error' => 'Hay un registro de N° de factura duplicado.'])->withInput();
+            }
             HuaweiBalanceEarning::create([
                 'invoice_number' => $item->invoice_number,
                 'amount' => $item->amount,
@@ -349,6 +361,8 @@ class HuaweiBalanceController extends Controller
                 'deposit_date' => $item->deposit_date,
             ]);
         }
+
+        DB::commit();
 
         return redirect()->back();
     }
