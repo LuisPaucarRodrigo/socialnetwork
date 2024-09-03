@@ -121,7 +121,7 @@ class HuaweiMobileController extends Controller
                     ->map(function ($code) {
                         // Iteramos sobre cada código para modificar las imágenes
                         $code->huawei_project_images->transform(function ($image) {
-                            $image->image = url('documents/huawei/photoreports/' . $image->image);
+                            $image->image = asset('documents/huawei/photoreports/' . $image->image);
                             return $image;
                         });
                         return $code;
