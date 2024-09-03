@@ -11,6 +11,9 @@
                 <button @click="openAddStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                     Agregar Etapa
                 </button>
+                <button @click.prevent="updateStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                    {{ props.stages.find(item => item.id === props.selectedStage).status === 0 ? 'Habilitar': 'Deshabilitar' }}
+                </button>
                 </div>
                 <div class="mt-2">
                     <select v-model="selectedStage" required id="code" @change="filterStage($event.target.value)"
@@ -166,7 +169,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref } from 'vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm, Link } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -336,6 +339,19 @@ function approveCode() {
 function verifyApproveModal(preproject_code_id) {
     title_code_id.value = preproject_code_id
     showApproveCode.value = !showApproveCode.value
+}
+
+const updateStage = () => {
+    router.put(route('huawei.projects.stages.updatestage', {stage: props.selectedStage}), {
+        onSuccess: () => {
+            titleSuccessImage.value = "Etapa Actualizada"
+            messageSuccessImage.value = "La etapa se actualizó correctamente"
+            approve_reject_Image.value = true
+            setTimeout(() => {
+                approve_reject_Image.value = false
+            }, 2000)
+        }
+    });
 }
 
 </script>
