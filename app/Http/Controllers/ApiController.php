@@ -380,7 +380,7 @@ class ApiController extends Controller
 
     public function getSites ()
     {
-        return response()->json(['sites' => HuaweiSite::select('id', 'name')->get()]);
+        return response()->json(['sites' => HuaweiSite::select('id', 'name')->get()], 200);
     }
 
     private function scanFolder($folderPath)
