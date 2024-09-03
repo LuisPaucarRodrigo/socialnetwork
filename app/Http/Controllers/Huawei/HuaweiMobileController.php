@@ -162,6 +162,10 @@ class HuaweiMobileController extends Controller
 
     public function deleteImage (HuaweiProjectImage $image)
     {
+        $project = $image->huawei_project_code->huawei_project_stage->huawei_project;
+        if (!$project->status){
+            abort(403, 'Acción no permitida');
+        }
         $fileName = $image->image;
         $filePath = "documents/huawei/photoreports/$fileName";
         $path = public_path($filePath);
@@ -176,6 +180,11 @@ class HuaweiMobileController extends Controller
 
     public function approveOrReject (HuaweiProjectImage $image, Request $request)
     {
+        $project = $image->huawei_project_code->huawei_project_stage->huawei_project;
+        if (!$project->status){
+            abort(403, 'Acción no permitida');
+        }
+
         if ($image->state !== null){
             abort(403, 'Acción no permitida.');
         }
@@ -198,6 +207,10 @@ class HuaweiMobileController extends Controller
 
     public function approveCode (HuaweiProjectCode $code)
     {
+        $project = $code->huawei_project_stage->huawei_project;
+        if (!$project->status){
+            abort(403, 'Acción no permitida');
+        }
         $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
             ->where('state', '!=', true)
             ->orWhereNull('state')
@@ -253,6 +266,11 @@ class HuaweiMobileController extends Controller
 
     public function enableOrDisable (HuaweiProjectStage $stage)
     {
+        $project = $stage->huawei_project;
+        if (!$project->status){
+            abort(403, 'Acción no permitida');
+        }
+
         if ($stage->status === 1){
             $stage->update([
                 'status' => 0

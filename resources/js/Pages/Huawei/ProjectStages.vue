@@ -8,10 +8,10 @@
         <div class="min-w-full overflow-hidden rounded-lg">
             <div class="mt-6 flex items-center justify-between gap-x-3">
                 <div class="mt-2 sm:flex sm:items-center space-x-4">
-                <button @click="openAddStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                <button v-if="props.huawei_project.status" @click="openAddStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                     Agregar Etapa
                 </button>
-                <button v-if="props.selectedStage" @click.prevent="updateStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                <button v-if="props.selectedStage && props.huawei_project.status" @click.prevent="updateStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                     {{ props.stages.find(item => item.id === props.selectedStage).status === 0 ? 'Habilitar': 'Deshabilitar' }}
                 </button>
                 </div>
@@ -30,7 +30,7 @@
                     <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ imageCode.huawei_code.code }} / {{ imageCode.huawei_code.description }}
                     </h1>
-                    <PrimaryButton class="mr-5" v-if="!imageCode.status" @click="verifyApproveModal(imageCode.id)" type="button">
+                    <PrimaryButton class="mr-5" v-if="!imageCode.status && props.huawei_project.status" @click="verifyApproveModal(imageCode.id)" type="button">
                         Aprobar
                     </PrimaryButton>
                     <span v-if="imageCode.status" class="text-green-600 mr-5">Aprobado</span>
@@ -50,11 +50,11 @@
                                 :class="image.state == '1' ? 'text-green-600' : 'text-red-600'">
                                 {{ image.state == '1' ? 'Aprobado' : 'Rechazado' }}</span>
                             <div v-else class="flex space-x-3">
-                                <button @click="approveImageModal(image.id)"
+                                <button v-if="props.huawei_project.status" @click="approveImageModal(image.id)"
                                     class="flex items-center text-green-600 hover:underline">
                                     <CheckCircleIcon class="h-4 w-4 ml-1" />
                                 </button>
-                                <button @click="rejectModal(image.id)"
+                                <button v-if="props.huawei_project.status" @click="rejectModal(image.id)"
                                     class="flex items-center text-red-600 hover:underline">
                                     <XCircleIcon class="h-4 w-4 ml-1" />
                                 </button>
@@ -67,7 +67,7 @@
                                 class="flex items-center text-blue-600 hover:underline">
                                 <ArrowDownIcon class="h-4 w-4 ml-1" />
                             </button>
-                            <button @click="confirmDeleteImagen(image.id)"
+                            <button v-if="props.huawei_project.status" @click="confirmDeleteImagen(image.id)"
                                 class="flex items-center text-red-600 hover:underline">
                                 <TrashIcon class="h-4 w-4" />
                             </button>
