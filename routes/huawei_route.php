@@ -164,6 +164,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::put('huawei/projects/stages/approve_or_reject/{image}/put', [HuaweiMobileController::class, 'approveOrReject'])->name('huawei.projects.stages.approveReject');
     Route::put('huawei/projects/stages/approve_code/{code}/put', [HuaweiMobileController::class, 'approveCode'])->name('huawei.projects.stages.approveCode');
     Route::post('huawei/projects/{huawei_project}/add_stage/post', [HuaweiMobileController::class, 'addStage'])->name('huawei.projects.stages.addStage');
+    Route::put('huawei/projects/{stage}/update_stage/put', [HuaweiMobileController::class, 'enableOrDisable'])->name('huawei.projects.stages.updatestage');
 });
 
 

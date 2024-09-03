@@ -299,7 +299,7 @@ class ApiController extends Controller
 
     public function getStagesPerProject (HuaweiProject $huawei_project)
     {
-        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)->with(['huawei_project_codes' => function ($query){
+        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)->where('status', 1)->with(['huawei_project_codes' => function ($query){
             $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status');
         }, 'huawei_project_codes.huawei_code' => function ($query) {
             $query->select('id', 'code');

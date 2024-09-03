@@ -250,4 +250,19 @@ class HuaweiMobileController extends Controller
 
         return redirect()->back();
     }
+
+    public function enableOrDisable (HuaweiProjectStage $stage)
+    {
+        if ($stage->status === 1){
+            $stage->update([
+                'status' => 0
+            ]);
+        }else{
+            $stage->update([
+                'status' => 1
+            ]);
+        }
+
+        return redirect()->back();
+    }
 }
