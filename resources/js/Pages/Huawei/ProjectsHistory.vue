@@ -64,9 +64,14 @@
                         class="text-gray-500 text-sm mt-1">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
-                                :href="route('huawei.projects.additionalcosts', { huawei_project: item.id })"
+                                :href="route('huawei.projects.additionalcosts.summary', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Costos Adicionales
+                                Gestión de Gastos
+                            </Link>
+                            <Link
+                                :href="route('huawei.projects.stages', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Imágenes
                             </Link>
                             <Link
                                 :href="route('huawei.projects.resources', { huawei_project: item.id })"
@@ -76,7 +81,12 @@
                             <Link
                                 :href="route('huawei.projects.earnings', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Ingresos
+                                Ingresos Proyectados
+                            </Link>
+                            <Link
+                                :href="route('huawei.projects.realearnings', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Ingresos Reales
                             </Link>
                             <Link
                                 :href="route('huawei.projects.liquidations', { huawei_project: item.id })"
@@ -91,7 +101,7 @@
                             <a v-if="item.pre_report" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600" :href="route('huawei.projects.prereport', {huawei_project: item.id})" target="_blank">
                                 Reporte
                             </a>
-                            <span v-else class="text-gray-400">Archivos</span>
+                            <span v-else class="text-gray-400">Reporte</span>
                         </div>
                     </div>
                 </div>
