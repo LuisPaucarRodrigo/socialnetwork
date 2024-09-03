@@ -34,7 +34,7 @@
         Route::get('/huaweiproject/{huawei_project_id}/stages/get', [ApiController::class, 'getStagesPerProject']);
         Route::post('/huaweiproject/stages/codes/{code}/store_image', [ApiController::class, 'storeImagePerCode']);
         Route::get('/huaweiproject/{code}/images/get', [ApiController::class, 'getImageHistoryPerCode']);
-
+        Route::get('/huaweiproject/sites', [ApiController::class, 'getSites']);
         //ProcessManuals
         Route::post('/processmanuals/index', [ApiController::class, 'localDriveIndex']);
         Route::post('/processmanuals/folder_archive_download', [ApiController::class, 'localDriveDownload']);

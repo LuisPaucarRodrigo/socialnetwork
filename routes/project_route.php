@@ -41,6 +41,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::get('/preprojects/{preproject_code_id}/codereport', [PreProjectController::class, 'approve_code'])->name('preprojects.codereport.approveCode');
     Route::get('/preprojects/{preproject_title_id}/titlereport', [PreProjectController::class, 'approve_title'])->name('preprojects.codereport.approveTitle');
     Route::delete('/preprojects/{preproject_id}/report/delete', [PreProjectController::class, 'delete_image'])->name('preprojects.imagereport.delete');
+    Route::get('/preprojects/{preproject_title_id}/download/kmz', [PreProjectController::class, 'downloadKmz'])->name('preprojects.download.kmz');
 
     //Photographic report
     Route::post('/preprojects/photoreport_store', [PreProjectController::class, 'photoreport_store'])->name('preprojects.photoreport.store');

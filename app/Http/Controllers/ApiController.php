@@ -24,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function Pest\Laravel\call;
 use function Pest\Laravel\json;
 
 class ApiController extends Controller
@@ -231,11 +232,22 @@ class ApiController extends Controller
         $projects = HuaweiProject::where('status', 1)->with(['huawei_site' => function ($query) {
             $query->select('id', 'name'); // Selecciona campos específicos del modelo relacionado
         }])->select('id', 'assigned_diu', 'huawei_site_id')->get()
-        ->makeHidden(['total_earnings', 'total_real_earnings', 'total_real_earnings_without_deposit', 'total_project_cost',
-                     'total_employee_costs', 'total_essalud_employee_cost',
-                     'additional_cost_total', 'static_cost_total', 'materials_in_project',
-                     'equipments_in_project', 'materials_liquidated', 'equipments_liquidated',
-                     'huawei_project_resources', 'state']);;
+            ->makeHidden([
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost',
+                'additional_cost_total',
+                'static_cost_total',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'huawei_project_resources',
+                'state'
+            ]);;
 
         return response()->json($projects, 201);
     }
@@ -296,17 +308,23 @@ class ApiController extends Controller
         return $sanitizedText;
     }
 
-    public function getStagesPerProject (HuaweiProject $huawei_project_id)
+    public function getStagesPerProject(HuaweiProject $huawei_project_id)
     {
-        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project_id->id)->with(['huawei_project_codes' => function ($query){
-            $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status');
-        }, 'huawei_project_codes.huawei_code' => function ($query) {
-            $query->select('id', 'code');
-        }])->select('id', 'description')->get();
-        return response()->json($stages, 200);
+        try {
+            $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project_id->id)->where('status', 1)->with(['huawei_project_codes' => function ($query) {
+                $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status');
+            }, 'huawei_project_codes.huawei_code' => function ($query) {
+                $query->select('id', 'code');
+            }])->select('id', 'description')->get();
+            return response()->json($stages, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
-    public function storeImagePerCode (HuaweiProjectCode $code, Request $request)
+    public function storeImagePerCode(HuaweiProjectCode $code, Request $request)
     {
         $request->validate([
             'image' => 'required',
@@ -342,7 +360,7 @@ class ApiController extends Controller
         }
     }
 
-    public function getImageHistoryPerCode (HuaweiProjectCode $code)
+    public function getImageHistoryPerCode(HuaweiProjectCode $code)
     {
         $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)->select('id', 'huawei_project_code_id', 'description', 'observation', 'lat', 'lon', 'state')->get();
         return response()->json(['images' => $images], 200);
@@ -375,6 +393,11 @@ class ApiController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function getSites()
+    {
+        return response()->json(['sites' => HuaweiSite::select('id', 'name')->get()], 200);
     }
 
     private function scanFolder($folderPath)
