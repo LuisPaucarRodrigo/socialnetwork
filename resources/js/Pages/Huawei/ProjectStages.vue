@@ -11,7 +11,7 @@
                 <button @click="openAddStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                     Agregar Etapa
                 </button>
-                <button @click.prevent="updateStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                <button v-if="props.selectedStage" @click.prevent="updateStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                     {{ props.stages.find(item => item.id === props.selectedStage).status === 0 ? 'Habilitar': 'Deshabilitar' }}
                 </button>
                 </div>
@@ -188,8 +188,6 @@ const props = defineProps({
     selectedStage: Number,
     titles: Object
 });
-
-console.log(props)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
