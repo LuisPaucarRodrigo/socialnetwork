@@ -186,6 +186,8 @@ const props = defineProps({
     titles: Object
 });
 
+console.log(props)
+
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
@@ -249,7 +251,11 @@ const closeModalImage = () => {
 const deleteImage = () => {
     const docId = imageToDelete.value;
     if (docId) {
-        router.delete(route('huawei.projects.stages.deleteimage', { image: docId }));
+        router.delete(route('huawei.projects.stages.deleteimage', { image: docId }), {
+            onSuccess: () => {
+                confirmingImageDeletion.value = false;
+            }
+        });
     }
 };
 
