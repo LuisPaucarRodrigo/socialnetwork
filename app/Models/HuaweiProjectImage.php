@@ -18,6 +18,7 @@ class HuaweiProjectImage extends Model
         'observation',
         'lat',
         'lon',
+        'site',
         'state'
     ];
 
