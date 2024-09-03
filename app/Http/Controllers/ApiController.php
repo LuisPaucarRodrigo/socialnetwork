@@ -350,11 +350,38 @@ class ApiController extends Controller
         return response()->json(['images' => $images], 200);
     }
 
-    public function getCodesAndProjectCode (HuaweiProjectCode $code)
+    public function getCodesAndProjectCode ($code)
     {
-        $found_code = HuaweiCode::where('id', $code->huawei_code_id)->select('id', 'code', 'description')->first();
-        $huawei_project_code = $code->huawei_project_stage->huawei_project->code;
-        return response()->json(['code' => $found_code, 'project_code' => $huawei_project_code, 'code_status' => $code->status]);
+        $project_code = HuaweiProjectCode::where('id', $code)
+            ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
+            ->with([
+                'huawei_project_stage' => function ($query) {
+                    $query->select('id', 'huawei_project_id');
+                },
+                'huawei_project_stage.huawei_project' => function ($query) {
+                    $query->select('id');
+                }
+            ])
+            ->first()
+            ->makeHidden(['huawei_project_images']);
+
+        $project_code->huawei_project_stage->huawei_project->makeHidden(['additional_cost_total', 'static_cost_total', 'state', 'materials_in_project',
+        'equipments_in_project', 'materials_liquidated', 'equipments_liquidated', 'total_earnings', 'total_real_earnings', 'total_real_earnings_without_deposit',
+        'total_project_cost', 'total_employee_costs', 'total_essalud_employee_cost']);
+
+        $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
+            ->select('id', 'code', 'description')
+            ->first();
+
+        $data = [
+            'id' => $code,
+            'scenario' => $found_code->code,
+            'scenario_description' => $found_code->description,
+            'project_code' => $project_code->huawei_project_stage->huawei_project->code,
+            'project_code_state' => $project_code->state
+        ];
+
+        return response()->json($data);
     }
 
     public function localDriveIndex(Request $request)
