@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Huawei\HuaweiApiController;
 use App\Http\Controllers\Huawei\HuaweiBalanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Inventory\HuaweiController;
@@ -161,6 +162,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/projects/stages/download_image/{image}/get', [HuaweiMobileController::class, 'downloadImage'])->name('huawei.projects.stages.downloadimage');
     Route::delete('huawei/projects/stages/delete_image/{image}/delete', [HuaweiMobileController::class, 'deleteImage'])->name('huawei.projects.stages.deleteimage');
     Route::put('huawei/projects/stages/approve_or_reject/{image}/put', [HuaweiMobileController::class, 'approveOrReject'])->name('huawei.projects.stages.approveReject');
+    Route::put('huawei/projects/stages/approve_code/{code}/put', [HuaweiMobileController::class, 'approveCode'])->name('huawei.projects.stages.approveCode');
+    Route::post('huawei/projects/{huawei_project}/add_stage/post', [HuaweiMobileController::class, 'addStage'])->name('huawei.projects.stages.addStage');
 });
 
 

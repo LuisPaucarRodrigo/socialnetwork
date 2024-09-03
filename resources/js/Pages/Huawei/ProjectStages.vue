@@ -1,14 +1,16 @@
 <template>
 
     <Head title="Imagenes para Reporte" />
-    <AuthenticatedLayout :redirectRoute="backUrl">
+    <AuthenticatedLayout :redirectRoute="'huawei.projects'">
         <template #header>
             Imagenes para Reporte
         </template>
         <div class="min-w-full overflow-hidden rounded-lg">
             <div class="mt-6 flex items-center justify-between gap-x-3">
-                <div class="mt-2 hidden sm:flex sm:items-center space-x-4">
-
+                <div class="mt-2 sm:flex sm:items-center space-x-4">
+                <button @click="openAddStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                    Agregar Etapa
+                </button>
                 </div>
                 <div class="mt-2">
                     <select v-model="selectedStage" required id="code" @change="filterStage($event.target.value)"
@@ -20,15 +22,15 @@
                     </select>
                 </div>
             </div>
-            <div v-for="imageCode in props.codes" :key="imageCode.id" class="border">
+            <div v-for="imageCode in props.codes" :key="imageCode.id" class="border mt-2">
                 <div class="flex items-center justify-between gap-x-6">
                     <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ imageCode.huawei_code.code }} / {{ imageCode.huawei_code.description }}
                     </h1>
-                    <PrimaryButton class="mr-5" v-if="!imageCode.status" @click="approveCode(imageCode.id)" type="button">
+                    <PrimaryButton class="mr-5" v-if="!imageCode.status" @click="verifyApproveModal(imageCode.id)" type="button">
                         Aprobar
                     </PrimaryButton>
-                    <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
+                    <span v-if="imageCode.status" class="text-green-600 mr-5">Aprobado</span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-5">
@@ -103,6 +105,56 @@
             </div>
         </Modal>
 
+        <Modal :show="showAddStage">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Agregar Etapa
+                </h2>
+                <form @submit.prevent="submitAddStage">
+                    <div class="space-y-12">
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="description">Descripción
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="formStage.description" id="description" />
+                                    <InputError :message="formStage.errors.description" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="description">Título
+                                </InputLabel>
+                                <select v-model="formStage.title" required id="description"
+                                    class="block mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccione título</option>
+                                    <option v-for="item in props.titles" :key="item.id" :value="item.id"> {{ item.name }}
+                                    </option>
+                                </select>
+                                <span v-if="formStage.title" class="text-md text-gray-600">
+                                    {{
+                                    props.titles
+                                        .filter(item => item.id === formStage.title)
+                                        .flatMap(item => item.huawei_codes.map(code => code.code))
+                                        .join(', ')
+                                    }}
+                                </span>
+                            </div>
+                            <div class="mt-6 flex items-center justify-end gap-x-6">
+                                <SecondaryButton @click="closeAddStage"> Cancelar
+                                </SecondaryButton>
+                                <PrimaryButton type="submit" :class="{ 'opacity-25': formStage.processing }">
+                                    Guardar
+                                </PrimaryButton>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
+        <ConfirmateModal :showConfirm="showApproveCode" tittle="Aprobacion de Código"
+            text="Las fotos asociadas a este código serán eliminadas si no han sido aprobadas. ¿Desea continuar con la aprobación?"
+            :actionFunction="approveCode" @closeModal="verifyApproveModal" />
         <SuccessOperationModal :confirming="approve_reject_Image" :title="titleSuccessImage"
             :message="messageSuccessImage" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingImageDeletion" itemType="imagen"
@@ -123,13 +175,15 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 
 const props = defineProps({
     stages: Array,
     huawei_project: Object,
     userPermissions: Array,
     codes: [Object, null],
-    selectedStage: Number
+    selectedStage: Number,
+    titles: Object
 });
 
 console.log(props)
@@ -138,24 +192,52 @@ const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
 
-let backUrl = route('huawei.projects');
-
 const confirmingImageDeletion = ref(false);
 const approve_reject_Image = ref(false);
 const imageToDelete = ref(null);
-const photoCode = ref(props.imagesCode);
+const title_code_id = ref(null);
 const showRejectModal = ref(false)
 const imageCodeId = ref('');
-
+const showApproveCode = ref(false);
 const titleSuccessImage = ref('')
 const messageSuccessImage = ref('')
 const selectedStage = props.selectedStage ? props.selectedStage : '';
+const showAddStage = ref(false);
 
 const form = useForm({
     'id': '',
     'state': '',
     'observation': ''
 })
+
+const formStage = useForm({
+    description: '',
+    title: ''
+});
+
+const openAddStage = () => {
+    showAddStage.value = true;
+}
+
+const closeAddStage = () => {
+    formStage.clearErrors();
+    formStage.reset();
+    showAddStage.value = false
+}
+
+const submitAddStage = () => {
+    formStage.post(route('huawei.projects.stages.addStage', { huawei_project: props.huawei_project.id }), {
+        onSuccess: () => {
+            closeAddStage();
+            titleSuccessImage.value = "Etapa creada"
+            messageSuccessImage.value = "La etapa se creó correctamente"
+            approve_reject_Image.value = true
+            setTimeout(() => {
+                approve_reject_Image.value = false
+            }, 2000)
+        }
+    })
+}
 
 const confirmDeleteImagen = (imagenId) => {
     imageToDelete.value = imagenId;
@@ -169,7 +251,11 @@ const closeModalImage = () => {
 const deleteImage = () => {
     const docId = imageToDelete.value;
     if (docId) {
-        router.delete(route('huawei.projects.stages.deleteimage', { image: docId }));
+        router.delete(route('huawei.projects.stages.deleteimage', { image: docId }), {
+            onSuccess: () => {
+                confirmingImageDeletion.value = false;
+            }
+        });
     }
 };
 
@@ -201,7 +287,7 @@ function approveImageModal(imageId) {
     form.put(route('huawei.projects.stages.approveReject', { image: imageId }), {
         onSuccess: () => {
             titleSuccessImage.value = "Imagen Aprobada"
-            messageSuccessImage.value = "La imagen se aprovo correctamente"
+            messageSuccessImage.value = "La imagen se aprobó correctamente"
             approve_reject_Image.value = true
             setTimeout(() => {
                 approve_reject_Image.value = false
@@ -216,7 +302,7 @@ function submitRejectImage() {
         onSuccess: () => {
             showRejectModal.value = false
             titleSuccessImage.value = "Imagen Rechazada"
-            messageSuccessImage.value = "La imagen se rechazo correctamente"
+            messageSuccessImage.value = "La imagen se rechazó correctamente"
             approve_reject_Image.value = true
             setTimeout(() => {
                 approve_reject_Image.value = false
@@ -226,7 +312,6 @@ function submitRejectImage() {
 }
 
 function filterStage($e) {
-    console.log($e)
     if ($e === '') {
         router.visit(route('huawei.projects.stages', { huawei_project: props.huawei_project.id }))
     } else {
@@ -234,16 +319,23 @@ function filterStage($e) {
     }
 }
 
-function approveCode(preproject_code_id) {
-    router.get(route('preprojects.codereport.approveCode', { preproject_code_id: preproject_code_id }), {
+function approveCode() {
+    router.put(route('huawei.projects.stages.approveCode', { code: title_code_id.value }), {
         onSuccess: () => {
-            titleSuccessImage.value = "Code Aprobado"
-            messageSuccessImage.value = "El Codigo de aprobo correctamente"
+            titleSuccessImage.value = "Código Aprobado"
+            messageSuccessImage.value = "El Codigo de aprobó correctamente"
             approve_reject_Image.value = true
+            showApproveCode.value = false;
             setTimeout(() => {
-                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+                approve_reject_Image.value = false
             }, 2000)
         }
     })
 }
+
+function verifyApproveModal(preproject_code_id) {
+    title_code_id.value = preproject_code_id
+    showApproveCode.value = !showApproveCode.value
+}
+
 </script>
