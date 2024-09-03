@@ -140,6 +140,15 @@
                             </div>
                         </div>
 
+                        <div v-if="form.real_amount" class="col-span-1">
+                            <InputLabel for="real_amount" class="font-medium leading-6 text-gray-900">Monto con detracción</InputLabel>
+                            <div class="mt-2">
+                                <input disabled readonly type="number" step="0.01" v-model="form.real_amount" id="real_amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.real_amount" />
+                            </div>
+                        </div>
+
                         <div class="col-span-1">
                             <InputLabel for="invoice_date" class="font-medium leading-6 text-gray-900">Fecha de Facturación</InputLabel>
                             <div class="mt-2">
@@ -229,7 +238,7 @@ import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
@@ -250,14 +259,26 @@ const form = useForm({
   id: '',
   invoice_number: '',
   amount: '',
+  real_amount: '',
   invoice_date: '',
   deposit_date: '',
+});
+
+watch(() => form.amount, (newValue) => {
+  if (newValue && newValue > 700 && !form.id) {
+    form.real_amount = (newValue * 0.88).toFixed(2);
+  } else if (form.id && newValue !== originalAmount.value && newValue > 700) {
+    form.real_amount = (newValue * 0.88).toFixed(2);
+  } else {
+    form.real_amount = '';
+  }
 });
 
 const importForm = useForm({
   file: null,
 });
 
+const originalAmount = ref(null);
 const create_additional = ref(false);
 const showModal = ref(false);
 const showModalEdit = ref(false);
@@ -285,12 +306,14 @@ const openCreateAdditionalModal = () => {
 };
 
 const closeCreateModal = () => {
+    originalAmount.value = 0;
     form.reset();
     form.clearErrors();
     create_additional.value = false;
 }
 
 const closeEditModal = () => {
+    originalAmount.value = 0;
     form.reset();
     form.clearErrors();
     editAdditionalModal.value = false;
@@ -304,11 +327,12 @@ const openEditAdditionalModal = (additional) => {
   form.amount = editingAdditional.value.amount;
   form.invoice_date = editingAdditional.value.invoice_date;
   form.deposit_date = editingAdditional.value.deposit_date;
-
+  originalAmount.value = editingAdditional.value.amount;
   editAdditionalModal.value = true;
 };
 
 const closeModals = () => {
+  originalAmount.value = 0;
   form.clearErrors();
   form.reset();
   editAdditionalModal.value = false;

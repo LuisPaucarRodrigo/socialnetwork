@@ -6,6 +6,7 @@ use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\ChecklistDailytoolkit;
+use App\Models\HuaweiCode;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiProjectCode;
 use App\Models\HuaweiProjectImage;
@@ -347,6 +348,13 @@ class ApiController extends Controller
     {
         $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)->select('id', 'huawei_project_code_id', 'description', 'observation', 'lat', 'lon', 'state')->get();
         return response()->json(['images' => $images], 200);
+    }
+
+    public function getCodesAndProjectCode (HuaweiProjectCode $code)
+    {
+        $found_code = HuaweiCode::where('id', $code->huawei_code_id)->select('id', 'code', 'description')->first();
+        $huawei_project_code = $code->huawei_project_stage->huawei_project->code;
+        return response()->json(['code' => $found_code, 'project_code' => $huawei_project_code, 'code_status' => $code->status]);
     }
 
     public function localDriveIndex(Request $request)
