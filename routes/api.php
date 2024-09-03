@@ -1,7 +1,7 @@
     <?php
 
     use App\Http\Controllers\ApiController;
-    use App\Http\Controllers\ProjectArea\ChecklistsController;
+use App\Http\Controllers\ProjectArea\ChecklistsController;
     use Illuminate\Support\Facades\Route;
 
     Route::post('/login', [ApiController::class, 'login']);
@@ -35,6 +35,7 @@
         Route::post('/huaweiproject/stages/codes/{code}/store_image', [ApiController::class, 'storeImagePerCode']);
         Route::get('/huaweiproject/{code}/images/get', [ApiController::class, 'getImageHistoryPerCode']);
         Route::get('/huaweiproject/sites', [ApiController::class, 'getSites']);
+        Route::get('/huaweiproject/{code}/code/get', [ApiController::class, 'getCodesAndProjectCode']);
         //ProcessManuals
         Route::post('/processmanuals/index', [ApiController::class, 'localDriveIndex']);
         Route::post('/processmanuals/folder_archive_download', [ApiController::class, 'localDriveDownload']);

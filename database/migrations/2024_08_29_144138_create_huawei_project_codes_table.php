@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('huawei_project_stage_id')->constrained('huawei_project_stages')->onDelete('cascade');
             $table->foreignId('huawei_code_id')->constrained('huawei_codes')->onDelete('cascade');
-            $table->boolean('status')->nullable();
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }
