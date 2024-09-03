@@ -33,6 +33,7 @@
         Route::post('/huaweiproject/store', [ApiController::class, 'storeHuaweiProjectGeneral']);
         Route::get('/huaweiproject/{huawei_project}/stages/get', [ApiController::class, 'getStagesPerProject']);
         Route::post('/huaweiproject/{huawei_project}/stages/codes/{code}/store_image', [ApiController::class, 'storeImagePerCode']);
+        Route::get('/huaweiproject/{code}/images/get', [ApiController::class, 'getImageHistoryPerCode']);
 
         //ProcessManuals
         Route::post('/processmanuals/index', [ApiController::class, 'localDriveIndex']);
