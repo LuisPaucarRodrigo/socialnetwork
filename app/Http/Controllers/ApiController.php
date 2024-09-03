@@ -237,7 +237,7 @@ class ApiController extends Controller
                      'equipments_in_project', 'materials_liquidated', 'equipments_liquidated',
                      'huawei_project_resources', 'state']);;
 
-        return response()->json(['projects' => $projects], 201);
+        return response()->json($projects, 201);
     }
 
     public function storeHuaweiProjectGeneral(Request $request)
@@ -264,7 +264,6 @@ class ApiController extends Controller
                 $bestMatch = $site;
             }
         }
-
 
         if ($bestMatch) {
             // Found a similar site
@@ -297,14 +296,14 @@ class ApiController extends Controller
         return $sanitizedText;
     }
 
-    public function getStagesPerProject (HuaweiProject $huawei_project)
+    public function getStagesPerProject (HuaweiProject $huawei_project_id)
     {
-        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)->with(['huawei_project_codes' => function ($query){
+        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project_id->id)->with(['huawei_project_codes' => function ($query){
             $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status');
         }, 'huawei_project_codes.huawei_code' => function ($query) {
             $query->select('id', 'code');
         }])->select('id', 'description')->get();
-        return response()->json(['stages' => $stages], 200);
+        return response()->json($stages, 200);
     }
 
     public function storeImagePerCode (HuaweiProjectCode $code, Request $request)
