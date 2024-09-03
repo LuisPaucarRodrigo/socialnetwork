@@ -39,14 +39,10 @@ class HuaweiProjectCode extends Model
     public function getStateAttribute()
     {
         if ($this->huawei_project_images->isEmpty()) {
-            return null;
+            return 0;
         }
 
-        if ($this->status == 1) {
-            return 1;
-        }
-
-        return 0;
+        return 1;
     }
 
 }
