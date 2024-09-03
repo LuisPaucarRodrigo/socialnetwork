@@ -63,6 +63,9 @@
                         </select>
                         <InputError :message="form.errors.area_id" />
                     </div>
+                    <button @click.prevent="open_change_password" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                        Cambiar Contraseña
+                    </button>
                 </dl>
             </div>
             <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -70,9 +73,21 @@
             </div>
         </form>
 
-        <div class="mt-2 shadow sm:rounded-lg">
-                    <UpdatePasswordForm class="max-w-xl" :user_id="props.users.id"/>
-                </div>
+
+
+        <Modal :show="change_password">
+            <div class="relative shadow sm:rounded-lg px-5 py-5">
+                <!-- Botón de cierre -->
+                <button @click="close_change_password" class="absolute mt-2 mr-2 top-2 right-2 text-gray-500 hover:text-gray-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <!-- Contenido del modal -->
+                <UpdatePasswordForm class="max-w-xl" :user_id="props.users.id"/>
+            </div>
+        </Modal>
+
 
         <ConfirmUpdateModal :confirmingupdate="showModal" itemType="Usuario" />
         <ErrorOperationModal :showError="errorModal" :title="'Error'" :message="'Ha ocurrido un error'" />
@@ -90,6 +105,7 @@ import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import { ref } from 'vue';
 import UpdatePasswordForm from '../Profile/Partials/UpdatePasswordForm.vue';
+import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     users: {
@@ -102,6 +118,7 @@ const props = defineProps({
 
 const errorModal = ref(false);
 const showModal = ref(false);
+const change_password = ref(false);
 
 const form = useForm({
     user_id: props.users.id,
@@ -113,6 +130,14 @@ const form = useForm({
     role_id: props.users.role ? props.users.role.id : '',
     area_id: props.users.area ? props.users.area.id : ''
 });
+
+const open_change_password = () => {
+    change_password.value = true;
+}
+
+const close_change_password = () => {
+    change_password.value = false;
+}
 
 const submit = () => {
     form.put(route('users.update', {id: props.users.id}), {

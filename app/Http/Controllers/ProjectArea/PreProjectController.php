@@ -37,6 +37,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use ZipArchive;
 
 class PreProjectController extends Controller
 {
@@ -756,40 +757,6 @@ class PreProjectController extends Controller
         abort(404, 'Imagen no encontrado');
     }
 
-    // public function index_image($preproject_id)
-    // {   
-    //     $preprojectImages = PreprojectTitle::with('preprojectCodes.code','preprojectCodes.imagecodepreprojet',)->where('preproject_id',$preproject_id)->get();
-    //     // $preprojects = PreprojectCode::with('code', 'imagecodepreprojet')->where('preproject_id', $preprojectTitle->id)->get();
-    //     // dd($preprojectTitles);
-    //     // $codesWithStatus = [];
-    //     // foreach ($preprojectTitles as $preprojectTitle) {
-    //     //     $code = $preprojectTitle->preprojectCodes->code;
-    //     //     $codesWithStatus[] = [
-    //     //         'id' => $preprojectTitle->id,
-    //     //         'code' => $code->code,
-    //     //         'status' => $preprojectTitle->status,
-    //     //         'description' => $code->description,
-    //     //     ];
-    //     // }
-    //     $imagesCode = Imagespreproject::all();
-    //     $imagesCode->each(function ($url) {
-    //         $url->image = url('/image/imagereportpreproject/' . $url->image);
-    //     });
-    //     $preprojectImages->each(function ($preprojectTitle) {
-    //         $preprojectTitle->preprojectCodes->each(function ($preprojectCode) {
-    //             $preprojectCode->imagecodepreprojet->each(function ($imagecodepreprojet) {
-    //                 $imagecodepreprojet->image = url('image/imagereportpreproject/' . $imagecodepreprojet->image);
-    //             });
-    //         });
-    //     });
-    //     return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
-    //         // 'codesWithStatus' => $codesWithStatus,
-    //         'preprojectImages' => $preprojectImages,
-    //         'imagesCode' => $imagesCode,
-    //         'preproject' => Preproject::find($preproject_id),
-    //     ]);
-    // }
-
     public function download_report($preproject_title_id)
     {
         $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->find($preproject_title_id);
@@ -826,6 +793,62 @@ class PreProjectController extends Controller
             return response()->json(['url' => $url]);
         }
         abort(404, 'Imagen no encontrada');
+    }
+
+    public function downloadKmz($preproject_title_id)
+    {   
+        $coordinates = PreprojectCode::with('imagecodepreprojet')->where('preproject_title_id',$preproject_title_id)->get();
+        // $coordinates = [
+        //     ['latitude' => -12.0464, 'longitude' => -77.0428, 'name' => 'Location 1'],
+        //     ['latitude' => -13.5319, 'longitude' => -71.9675, 'name' => 'Location 2'],
+        //     ['latitude' => -15.7658, 'longitude' => -70.0219, 'name' => 'Location 3'],
+        //     // Agrega más coordenadas según sea necesario
+        // ];
+
+        $kmlPlacemarks = '';
+        foreach ($coordinates->imagecodepreprojet as $coord) {
+            $longitude = $coord['longitude'];
+            $latitude = $coord['latitude'];
+            $name = $coord['name'];
+            $kmlPlacemarks .= <<<KML
+        <Placemark>
+            <name>$name</name>
+            <Point>
+                <coordinates>$longitude,$latitude,0</coordinates>
+            </Point>
+        </Placemark>
+        KML;
+        }
+
+        $kmlContent = <<<KML
+        <kml xmlns="http://www.opengis.net/kml/2.2">
+            <Document>
+                $kmlPlacemarks
+            </Document>
+        </kml>
+        KML;
+        // Crear un archivo temporal para el KML
+        $kmlFile = tempnam(sys_get_temp_dir(), 'kml');
+        file_put_contents($kmlFile, $kmlContent);
+
+        // Comprimir el archivo KML en un archivo KMZ
+        $zip = new ZipArchive();
+        $kmzFile = tempnam(sys_get_temp_dir(), 'kmz') . '.kmz';
+        if ($zip->open($kmzFile, ZipArchive::CREATE) === TRUE) {
+            $zip->addFile($kmlFile, 'doc.kml');
+            $zip->close();
+        }
+
+        // Eliminar el archivo KML temporal
+        unlink($kmlFile);
+
+        // Preparar la descarga del archivo KMZ
+        header('Content-Type: application/vnd.google-earth.kmz');
+        header('Content-Disposition: attachment; filename="locations.kmz"');
+        readfile($kmzFile);
+
+        // Eliminar el archivo KMZ temporal después de la descarga
+        unlink($kmzFile);
     }
 
     public function acceptCotization(Request $request, $quote_id)
