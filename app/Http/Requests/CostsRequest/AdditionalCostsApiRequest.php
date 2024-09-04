@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\CostsRequest;
 
+use App\Models\AdditionalCost;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Project;
 use Illuminate\Contracts\Validation\Validator;
@@ -26,11 +27,19 @@ class AdditionalCostsApiRequest extends FormRequest
     public function rules(): array
     {
         // Inicializar variables
+        $project = Project::find($this->input('project_id'));
         $rules = [
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
-            'doc_number' => 'nullable|string',
+            'doc_number' => ['nullable', 'string', function($attribute, $value, $fail) {
+                if ($value != null && $value != '' ) {
+                    $numberOfElements = AdditionalCost::where('project_id', $this->input('project_id'))->where('doc_number', $value)->count();
+                    if ($numberOfElements > 0) {
+                        $fail(__('Número de documento repetido'));
+                    }
+                }
+            }],
             'doc_date' => 'sometimes|required|string',
             'amount' => 'required|numeric',
             'zone' => 'required',
@@ -40,7 +49,6 @@ class AdditionalCostsApiRequest extends FormRequest
         ];
 
         if ($this->has('project_id')) {
-            $project = Project::find($this->input('project_id'));
             if ($project) {
                 $remaining_budget = $project->getRemainingBudgetAttribute();
                 $rules['amount'] = [
