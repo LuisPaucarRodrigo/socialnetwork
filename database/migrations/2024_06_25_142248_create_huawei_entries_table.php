@@ -15,7 +15,7 @@ return new class extends Migration
 
         Schema::create('huawei_entries', function (Blueprint $table) {
             $table->id();
-            $table->string('guide_number')->nullable();
+            $table->string('guide_number')->nullable()->unique();
             $table->date('entry_date')->nullable();
             $table->text('observation')->nullable();
             $table->timestamps();
