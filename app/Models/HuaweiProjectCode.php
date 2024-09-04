@@ -19,6 +19,7 @@ class HuaweiProjectCode extends Model
 
     protected $appends = [
         'state',
+        'images_quantity'
     ];
 
     public function huawei_project_stage ()
@@ -45,4 +46,8 @@ class HuaweiProjectCode extends Model
         return 1;
     }
 
+    public function getImagesQuantityAttribute ()
+    {
+        return $this->huawei_project_images()->count();
+    }
 }

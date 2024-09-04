@@ -298,15 +298,36 @@ class ApiController extends Controller
         return $sanitizedText;
     }
 
-    public function getStagesPerProject (HuaweiProject $huawei_project)
+    public function getStagesPerProject(HuaweiProject $huawei_project)
     {
-        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)->where('status', 1)->with(['huawei_project_codes' => function ($query){
-            $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status');
-        }, 'huawei_project_codes.huawei_code' => function ($query) {
-            $query->select('id', 'code');
-        }])->select('id', 'description')->get();
+        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)
+            ->where('status', 1)
+            ->with([
+                'huawei_project_codes' => function ($query) {
+                    $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status')
+                          ->with([
+                              'huawei_code' => function ($query) {
+                                  $query->select('id', 'code');
+                              }
+                          ]);
+                },
+                'huawei_project_codes.huawei_code' => function ($query) {
+                    $query->select('id', 'code');
+                }
+            ])
+            ->select('id', 'description')
+            ->get();
+
+        // Ocultar los `huawei_project_images` en cada `huawei_project_code`
+        $stages->each(function ($stage) {
+            $stage->huawei_project_codes->each(function ($code) {
+                $code->makeHidden(['huawei_project_images']);
+            });
+        });
+
         return response()->json(['stages' => $stages], 200);
     }
+
 
     public function storeImagePerCode (HuaweiProjectCode $code, Request $request)
     {
