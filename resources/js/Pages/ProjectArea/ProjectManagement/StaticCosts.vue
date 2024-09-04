@@ -154,17 +154,17 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Numero de Doc
+                            Numero de Depósito
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Fecha de Documento
+                            Fecha de Depósito
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Monto
+                            Monto TOtal
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -174,7 +174,7 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Archivo
+                        Foto de Factura
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -387,8 +387,8 @@
                                         <option>Chala</option>
                                         <option>Moquegua</option>
                                         <option>Tacna</option>
-                                        <option>MDD1</option>
-                                        <option>MDD2</option>
+                                        <option>MDD1-PM</option>
+                                        <option>MDD2-MAZ</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -480,7 +480,7 @@
                                 <InputLabel
                                     for="doc_number"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Numero de Documento
+                                    >Numero de Depósito
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
@@ -500,7 +500,7 @@
                                 <InputLabel
                                     for="doc_date"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Fecha de Documento
+                                    >Fecha de Depósito
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
@@ -519,7 +519,7 @@
                                 <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Monto</InputLabel
+                                    >Monto Total</InputLabel
                                 >
                                 <div class="mt-2">
                                     <input
@@ -557,10 +557,6 @@
                             </div>
 
                             <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
                             >
                                 <InputLabel
                                     for="amount"
@@ -605,7 +601,7 @@
                                 <InputLabel
                                     class="font-medium leading-6 text-gray-900"
                                 >
-                                    Archivo
+                                Foto de Factura
                                 </InputLabel>
                                 <div class="mt-2">
                                     <InputFile
@@ -664,8 +660,8 @@
                                         <option>Chala</option>
                                         <option>Moquegua</option>
                                         <option>Tacna</option>
-                                        <option>MDD1</option>
-                                        <option>MDD2</option>
+                                        <option>MDD1-PM</option>
+                                        <option>MDD2-MAZ</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -878,7 +874,7 @@
                                 <InputLabel
                                     class="font-medium leading-6 text-gray-900"
                                 >
-                                    Archivo
+                                    Foto de Factura
                                 </InputLabel>
                                 <div class="mt-2">
                                     <InputFile
@@ -1170,7 +1166,7 @@ function handlerPreview(id) {
 
 const filterForm = ref({
     search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"],
+    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1-PM", "MDD2-MAZ"],
     selectedExpenseTypes: [
         "Camionetas",
         "Combustible",
@@ -1189,7 +1185,7 @@ const filterForm = ref({
     ],
 });
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
+const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1-PM", "MDD2-MAZ"];
 const expenseTypes = [
     "Camionetas",
     "Combustible",
@@ -1249,7 +1245,7 @@ function openExportExcel() {
 watch([() => form.type_doc, () => form.zone], () => {
     if (
         form.type_doc === "Factura" &&
-        !["", "MDD1", "MDD2"].includes(form.zone)
+        !["", "MDD1-PM", "MDD2-MAZ"].includes(form.zone)
     ) {
         form.igv = form.igv ? form.igv : 18;
     } else {
