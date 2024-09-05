@@ -367,7 +367,14 @@ class ApiController extends Controller
 
     public function getImageHistoryPerCode (HuaweiProjectCode $code)
     {
-        $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)->select('id', 'huawei_project_code_id', 'description', 'observation', 'lat', 'lon', 'state')->get();
+        $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
+            ->select('id', 'huawei_project_code_id', 'image', 'description', 'observation', 'lat', 'lon', 'state')
+            ->get()
+            ->map(function ($image) {
+                $image->image = asset('documents/huawei/photoreports/' . $image->image);
+                return $image;
+            });
+
         return response()->json(['images' => $images], 200);
     }
 
