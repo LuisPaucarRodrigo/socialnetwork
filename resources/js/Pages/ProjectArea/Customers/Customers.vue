@@ -65,7 +65,7 @@
                                     class="text-blue-600 whitespace-no-wrap">
                                     <DocumentArrowUpIcon class="h-5 w-5 ml-1" />
                                 </button>
-                                <button type="button" @click="confirmDeleteCustomer(customer.id)"
+                                <button v-if="customer.category !== 'Especial'" ype="button" @click="confirmDeleteCustomer(customer.id)"
                                     class="text-red-600 whitespace-no-wrap">
                                     <TrashIcon class="h-5 w-5 ml-1" />
                                 </button>
