@@ -424,7 +424,6 @@ const closeModalDoc = () => {
 };
 const deleteAdditional = () => {
     const docId = docToDelete.value;
-    console.log('hol')
     if (docId) {
         router.delete(
             route("checklist.toolkit.destroy", {

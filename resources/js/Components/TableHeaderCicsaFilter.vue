@@ -124,7 +124,6 @@ onUnmounted(() => {
 defineExpose({ checkAll });
 
 const handleInput = (event) => {
-    console.log(event.target.value)
     emit('update:modelValue', event.target.value);
   };
 

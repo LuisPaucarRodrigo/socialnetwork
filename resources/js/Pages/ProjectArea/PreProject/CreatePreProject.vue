@@ -306,7 +306,7 @@ const { preproject, customers, titles, stages } = defineProps({
     stages: Object
 })
 
-let backUrls = preproject?.status === undefined
+let backUrls = (preproject?.status === undefined || preproject?.status === null)
     ? 'preprojects.index'
     : preproject?.status == true
         ? { route: 'preprojects.index', params: { preprojects_status: 1 } }

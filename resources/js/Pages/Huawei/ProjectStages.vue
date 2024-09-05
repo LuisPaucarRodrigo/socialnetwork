@@ -132,7 +132,6 @@ const props = defineProps({
     selectedStage: Number
 });
 
-console.log(props)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
