@@ -50,7 +50,7 @@ class AdditionalCostsApiRequest extends FormRequest
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => ['nullable', 'string', function($attribute, $value, $fail) use ($projectId) {
-                if ($value != null && $value != '' ) {
+                if ($value != null && $value != '' && $value != 'S/N' ) {
                     $numberOfElements = AdditionalCost::where('project_id', $projectId->id)->where('doc_number', $value)->count();
                     if ($numberOfElements > 0) {
                         $fail(__('Número de documento repetido'));
