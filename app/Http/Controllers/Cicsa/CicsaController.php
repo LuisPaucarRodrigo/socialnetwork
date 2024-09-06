@@ -432,56 +432,6 @@ class CicsaController extends Controller
 
     public function exportInstallation()
     {
-        // $id = 2;
-
-        // // Obtener la asignación junto con la instalación y sus materiales
-        // $cicsaAssignation = CicsaAssignation::with(
-        //     'cicsa_installation.cicsa_installation_materials',
-        //     'cicsa_installation.user'
-        // )->where('id', $id)->first();
-
-        // if (!$cicsaAssignation) {
-        //     // Manejar el caso en que no se encuentra la asignación
-        //     dd('Asignación no encontrada');
-        // }
-
-        // $installation = $cicsaAssignation->cicsa_installation;
-        // $materialsSummary = [];
-
-        // // Recorrer los materiales de la instalación
-        // foreach ($installation->cicsa_installation_materials as $material) {
-        //     $code_ax = $material->code_ax;
-
-        //     // Inicializar el resumen del material si no existe
-        //     if (!isset($materialsSummary[$code_ax])) {
-        //         $materialsSummary[$code_ax] = [
-        //             'code_ax' => $material->code_ax,
-        //             'name' => $material->name,
-        //             'unit' => $material->unit,
-        //             'quantities' => []
-        //         ];
-        //     }
-
-        //     // Agregar la cantidad del material a la guía correspondiente
-        //     $guideNumber = $installation->guide_number;
-        //     $materialsSummary[$code_ax]['quantities'][$guideNumber - 1] = $material->quantity;
-        // }
-
-        // // Convertir el resumen a una estructura de visualización adecuada
-        // $formattedSummary = [];
-        // foreach ($materialsSummary as $materialData) {
-        //     $formattedSummary[] = array_merge(
-        //         [
-        //             'code_ax' => $materialData['code_ax'],
-        //             'name' => $materialData['name'],
-        //             'unit' => $materialData['unit']
-        //         ],
-        //         $materialData['quantities']
-        //     );
-        // }
-
-        // // Mostrar el resumen
-        // dd($formattedSummary);
         return Excel::download(new InstallationExport, 'Instalacion ' . date('m-Y') . '.xlsx');
 
     }
