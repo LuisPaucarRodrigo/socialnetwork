@@ -272,7 +272,7 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="amount">Monto Total de Factura</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" step="any" v-model="form.amount" autocomplete="off"
+                                <TextInput type="number" v-model="form.amount" autocomplete="off"
                                     id="amount" />
                                 <InputError :message="form.errors.amount" />
                             </div>
@@ -449,7 +449,8 @@ function sum() {
     if (form.checking_account_amount && form.amount_bank) {
         const checking_account_amount = parseFloat(form.checking_account_amount) || 0;
         const amount_bank = parseFloat(form.amount_bank) || 0;
-        if ((checking_account_amount + amount_bank) !== form.amount) {
+        console.log(checking_account_amount,amount_bank)
+        if ((checking_account_amount + amount_bank) !== parseFloat(form.amount)) {
             return false
         }
         return true
