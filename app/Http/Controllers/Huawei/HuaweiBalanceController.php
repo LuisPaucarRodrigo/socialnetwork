@@ -17,15 +17,30 @@ use Illuminate\Validation\Rule;
 
 class HuaweiBalanceController extends Controller
 {
+    protected $total;
+
+    public function __construct()
+    {
+        $total_main = HuaweiBalanceEarning::whereNotNull('deposit_date')
+        ->sum('main_amount');
+        $total_detraction = HuaweiBalanceEarning::whereNotNull('detraction_date')
+            ->sum('detraction_amount');
+        $this->total = $total_main + $total_detraction;
+    }
+
     public function getGeneralSummary ()
     {
         $total_variable_costs = HuaweiBalanceCost::where('type', 1)->sum('amount');
         $total_static_costs = HuaweiBalanceCost::where('type', 0)->sum('amount');
         $total_earnings = HuaweiBalanceEarning::whereNotNull('deposit_date')->sum('amount');
+        $total_main_earnings = HuaweiBalanceEarning::whereNotNull('deposit_date')->sum('main_amount');
+        $total_detraction_earnings = HuaweiBalanceEarning::whereNotNull('detraction_date')->sum('detraction_amount');
         return Inertia::render('Huawei/GeneralBalance', [
             'total_variable_costs' => $total_variable_costs,
             'total_static_costs' => $total_static_costs,
-            'total_earnings' => $total_earnings
+            'total_earnings' => $total_earnings,
+            'total_main_earnings' => $total_main_earnings,
+            'total_detraction' => $total_detraction_earnings
         ]);
     }
 
@@ -242,11 +257,9 @@ class HuaweiBalanceController extends Controller
 
     public function getEarnings ()
     {
-        $total = HuaweiBalanceEarning::whereNotNull('deposit_date')
-            ->sum('amount');
         return Inertia::render('Huawei/BalanceEarnings', [
             'earnings' => HuaweiBalanceEarning::orderBy('created_at', 'desc')->paginate(10),
-            'total' => $total
+            'total' => $this->total
         ]);
     }
 
@@ -262,13 +275,11 @@ class HuaweiBalanceController extends Controller
             });
 
         $earnings = $query->orderBy('created_at', 'desc')->get();
-        $total = HuaweiBalanceEarning::whereNotNull('deposit_date')
-        ->sum('amount');
 
         return Inertia::render('Huawei/BalanceEarnings', [
             'earnings' => $earnings,
             'search' => $request,
-            'total' => $total
+            'total' => $this->total
         ]);
     }
 

@@ -36,6 +36,16 @@
           props.total_earnings.toFixed(2) }}</td>
                   </tr>
                   <tr class="text-gray-700">
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Ingresos BCP</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+          props.total_main_earnings.toFixed(2) }}</td>
+                  </tr>
+                  <tr class="text-gray-700">
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Ingresos de Detracción</td>
+                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+          props.total_detraction.toFixed(2) }}</td>
+                  </tr>
+                  <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total de Gastos</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
           (props.total_variable_costs + props.total_static_costs).toFixed(2) }}</td>
@@ -118,7 +128,9 @@
   const props = defineProps({
     total_variable_costs: Number,
     total_static_costs: Number,
-    total_earnings: Number
+    total_earnings: Number,
+    total_main_earnings: Number,
+    total_detraction: Number
   });
 
   const chartInstance = ref(null);
@@ -162,18 +174,22 @@
     const barChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Ingresos Totales', 'Gastos Totales'], // Etiquetas de los datos en el eje x
+            labels: ['Ingresos Totales', 'Ingresos BCP', 'Ingresos de detracción', 'Gastos Totales'], // Etiquetas de los datos en el eje x
             datasets: [{
                 label: 'Montos', // Etiqueta común para todos los datos
-                data: [props.total_earnings, total_costs],
+                data: [props.total_earnings, props.total_main_earnings, props.total_detraction, total_costs],
                 backgroundColor: [
-                'rgba(75, 192, 75, 0.2)',   // Verde para 'Total de Ingresos'
-                'rgba(255, 99, 71, 0.2)'    // Rojo más intenso para 'Total de Gastos'
-                ],
-                borderColor: [
-                'rgba(75, 192, 75, 1)',   // Verde para 'Total de Ingresos'
-                'rgba(255, 99, 71, 1)'    // Rojo más intenso para 'Total de Gastos'
-                ],
+  'rgba(10, 161, 0, 0.2)',   // Verde claro (light green)
+  'rgba(12, 195, 0, 0.2)',     // Verde más oscuro (forest green)
+  'rgba(14, 230, 0, 0.2)',       // Verde oscuro intenso (dark green)
+  'rgba(255, 99, 71, 0.2)'      // Rojo para el cuarto registro (igual al segundo)
+],
+borderColor: [
+'rgba(10, 161, 0, 1)',   // Verde claro (light green)
+  'rgba(12, 195, 0, 1)',     // Verde más oscuro (forest green)
+  'rgba(14, 230, 0, 1)',        // Borde verde oscuro intenso (dark green)
+  'rgba(255, 99, 71, 1)'        // Borde rojo para el cuarto registro (igual al segundo)
+],
                 borderWidth: 2 // Grosor de las barras
             }]
         },
