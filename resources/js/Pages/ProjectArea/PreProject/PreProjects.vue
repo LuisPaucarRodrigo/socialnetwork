@@ -85,7 +85,7 @@
                             </Link>
                         </div>
                         <div>
-                            <Link v-if="item.customer_id != 2"
+                            <Link v-if="item.customer_id == 1"
                                 :href="route('preprojects.products', { preproject: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Productos de Almacén
@@ -93,7 +93,7 @@
                             <span v-else class="text-gray-400">Productos de Almacen</span>
                         </div>
                         <div v-if="item.project == null && item.status === null">
-                            <Link v-if="item.customer_id != 2"
+                            <Link v-if="item.customer_id == 1"
                                 :href="route('preprojects.request.index', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Solicitud de Compras
@@ -104,7 +104,7 @@
                             <span class="text-gray-600"> Solicitud de Compras</span>
                         </div>
                         <div v-if="item.project == null && item.status === null">
-                            <Link v-if="item.customer_id != 2"
+                            <Link v-if="item.customer_id == 1"
                                 :href="route('preprojects.purchase_quote', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Cotizaciones de Compras
@@ -113,7 +113,7 @@
                         </div>
                         <div
                             v-if="item.has_photo_report && (item.status === null || item.status == true) && hasPermission('ProjectManager')">
-                            <Link v-if="item.customer_id != 2"
+                            <Link v-if="item.customer_id == 1"
                                 :href="route('preprojects.quote', { preproject_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Cotización para proyecto

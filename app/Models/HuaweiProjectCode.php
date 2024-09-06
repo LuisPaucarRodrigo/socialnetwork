@@ -17,6 +17,10 @@ class HuaweiProjectCode extends Model
         'status'
     ];
 
+    protected $appends = [
+        'state',
+    ];
+
     public function huawei_project_stage ()
     {
         return $this->belongsTo(HuaweiProjectStage::class, 'huawei_project_stage_id');
@@ -31,4 +35,14 @@ class HuaweiProjectCode extends Model
     {
         return $this->hasMany(HuaweiProjectImage::class, 'huawei_project_code_id');
     }
+
+    public function getStateAttribute()
+    {
+        if ($this->huawei_project_images->isEmpty()) {
+            return 0;
+        }
+
+        return 1;
+    }
+
 }
