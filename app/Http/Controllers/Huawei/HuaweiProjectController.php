@@ -1351,7 +1351,9 @@ class HuaweiProjectController extends Controller
         $query = HuaweiProjectRealEarning::where('huawei_project_id', $huawei_project->id);
 
             $query->where(function ($q) use ($searchTerm) {
-                $q->whereRaw('LOWER(invoice_number) LIKE ?', ["%{$searchTerm}%"]);
+                $q->whereRaw('LOWER(invoice_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(main_op_number) LIKE ? ', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(detraction_op_number) LIKE ? ', ["%{$searchTerm}%"]);
             });
 
         $earnings = $query->orderBy('created_at', 'desc')->get();
@@ -1379,7 +1381,12 @@ class HuaweiProjectController extends Controller
             'invoice_number' => 'required',
             'amount' => 'required',
             'invoice_date' => 'required',
-            'deposit_date' => 'nullable'
+            'deposit_date' => 'nullable',
+            'main_amount' => 'nullable',
+            'main_op_number' => 'nullable',
+            'detraction_amount' => 'nullable',
+            'detraction_date' => 'nullable',
+            'detraction_op_number' => 'nullable'
         ]);
 
         $data['huawei_project_id'] = $request->huawei_project_id;
@@ -1399,7 +1406,12 @@ class HuaweiProjectController extends Controller
             'invoice_number' => 'required',
             'amount' => 'required',
             'invoice_date' => 'required',
-            'deposit_date' => 'nullable'
+            'deposit_date' => 'nullable',
+            'main_amount' => 'nullable',
+            'main_op_number' => 'nullable',
+            'detraction_amount' => 'nullable',
+            'detraction_date' => 'nullable',
+            'detraction_op_number' => 'nullable'
         ]);
 
         $huawei_project_real_earning->update($data);

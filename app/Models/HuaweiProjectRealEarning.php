@@ -16,6 +16,11 @@ class HuaweiProjectRealEarning extends Model
         'amount',
         'invoice_date',
         'deposit_date',
+        'main_amount',
+        'main_op_number',
+        'detraction_amount',
+        'detraction_op_number',
+        'detraction_date',
         'huawei_project_id'
     ];
 

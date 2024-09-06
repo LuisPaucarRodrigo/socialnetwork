@@ -256,7 +256,9 @@ class HuaweiBalanceController extends Controller
         $query = HuaweiBalanceEarning::query();
 
             $query->where(function ($q) use ($searchTerm) {
-                $q->whereRaw('LOWER(invoice_number) LIKE ?', ["%{$searchTerm}%"]);
+                $q->whereRaw('LOWER(invoice_number) LIKE ? ', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(main_op_number) LIKE ? ', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(detraction_op_number) LIKE ? ', ["%{$searchTerm}%"]);
             });
 
         $earnings = $query->orderBy('created_at', 'desc')->get();
@@ -276,7 +278,12 @@ class HuaweiBalanceController extends Controller
             'invoice_number' => ['required', Rule::unique('huawei_balance_earnings', 'invoice_number')],
             'amount' => 'required',
             'invoice_date' => 'required',
-            'deposit_date' => 'nullable'
+            'deposit_date' => 'nullable',
+            'main_amount' => 'nullable',
+            'main_op_number' => 'nullable',
+            'detraction_amount' => 'nullable',
+            'detraction_date' => 'nullable',
+            'detraction_op_number' => 'nullable'
         ]);
 
         HuaweiBalanceEarning::create($data);
@@ -290,7 +297,12 @@ class HuaweiBalanceController extends Controller
             'invoice_number' => ['required', Rule::unique('huawei_balance_earnings', 'invoice_number')->ignore($huawei_balance_earning->id)],
             'amount' => 'required',
             'invoice_date' => 'required',
-            'deposit_date' => 'nullable'
+            'deposit_date' => 'nullable',
+            'main_amount' => 'nullable',
+            'main_op_number' => 'nullable',
+            'detraction_amount' => 'nullable',
+            'detraction_date' => 'nullable',
+            'detraction_op_number' => 'nullable'
         ]);
 
         $huawei_balance_earning->update($data);
@@ -348,13 +360,13 @@ class HuaweiBalanceController extends Controller
             if ($found_earning){
                 return response()->json([
                     'message' => 'found'
-                ]);  
+                ]);
             }
         }
 
         return response()->json([
             'message' => 'notfound'
-        ]);    
+        ]);
     }
 
     public function importEarnings(Request $request)
@@ -362,32 +374,32 @@ class HuaweiBalanceController extends Controller
         $data = $request->validate([
             'file' => 'required|mimes:xls,xlsx',
         ]);
-    
+
         // Manejar la carga del archivo
         $document = $request->file('file');
-    
+
         // Leer el archivo Excel directamente desde el stream
         $spreadsheet = IOFactory::load($document->getRealPath());
-    
+
         // Obtener la primera hoja
         /** @var Worksheet $sheet */
         $sheet = $spreadsheet->getSheet(0);
-    
+
         // Definir el rango de lectura: A1 hasta la última fila en la columna I
         $startCell = 'A1';
         $endCell = 'I' . $sheet->getHighestRow();
         $range = "$startCell:$endCell";
-    
+
         // Leer el rango especificado
         $data = $sheet->rangeToArray($range, null, true, true, true);
-    
+
         // Array para almacenar los objetos agrupados por 'invoice_number'
         $groupedData = [];
-    
+
         // Recorrer las filas y agrupar los datos
         foreach ($data as $index => $row) {
             $invoice_number = $row['A'];
-    
+
             // Si no existe aún en groupedData, lo agregamos
             if (!isset($groupedData[$invoice_number])) {
                 $groupedData[$invoice_number] = (object) [
@@ -408,17 +420,17 @@ class HuaweiBalanceController extends Controller
                 $groupedData[$invoice_number]->detraction_amount += !empty($row['H']) ? $this->sanitizeNumber($row['H']) : 0;
             }
         }
-    
+
         // Convertimos el array asociativo a un array plano con los objetos únicos por invoice_number
         $rowsAsObjects = array_values($groupedData);
-    
+
         // Empezar la transacción
         DB::beginTransaction();
-    
+
         try {
             foreach ($rowsAsObjects as $item) {
                 $found_earning = HuaweiBalanceEarning::where('invoice_number', $item->invoice_number)->first();
-                
+
                 if ($found_earning) {
                     // Si el registro ya existe, actualizamos
                     $found_earning->update([
@@ -450,12 +462,12 @@ class HuaweiBalanceController extends Controller
             DB::rollBack();
             return back()->withErrors(['earning_error' => 'Hubo un problema al procesar los registros.'])->withInput();
         }
-    
+
         DB::commit();
-    
+
         return redirect()->back();
     }
-    
+
 
     public function exportEarnings ()
     {
