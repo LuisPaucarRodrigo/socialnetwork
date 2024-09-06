@@ -9,14 +9,14 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <PrimaryButton @click="openAddAssignationModal" type="button">
+                    <PrimaryButton @click="openModal" type="button">
                         + Agregar
                     </PrimaryButton>
                 </div>
 
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
-                    <SelectCicsaComponent currentSelect="Asignación" />
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,DNI" />
+                    <SelectControlEmployees currentSelect="Documentacion de Ingreso" />
                 </div>
 
             </div>
@@ -64,7 +64,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in entryDocumentations.data ?? entryDocumentations" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in entryDocuments.data ?? entryDocuments" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.employees }}
@@ -82,7 +82,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(tem.contract) }}
+                                    {{ formattedDate(item.contract) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -107,7 +107,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900" @click="openEditSotModal(item)">
+                                    <button class="text-blue-900" @click="openModal(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -120,13 +120,13 @@
                     </tbody>
                 </table>
             </div>
-            <div v-if="entryDocumentations.data"
+            <div v-if="entryDocuments.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="entryDocumentations.links" />
+                <pagination :links="entryDocuments.links" />
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
+        <Modal :show="showModal" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     {{ form.id ? 'Editar Asignación' : 'Nueva Asignación' }}
@@ -135,68 +135,79 @@
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="">
-                            <InputLabel for="manager">Gestor</InputLabel>
+                            <InputLabel for="registration_form">Ficha de Alta</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.manager" autocomplete="off" id="manager"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.manager" />
+                                <select id="registration_form" v-model="form.registration_form" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option>Pendiente</option>
+                                    <option>Proceso</option>
+                                    <option>Completado</option>
+                                </select>
+                                <InputError :message="form.errors.registration_form" />
                             </div>
                         </div>
                         <div class="">
-                            <InputLabel for="assignation_date">Fecha de Asignación</InputLabel>
+                            <InputLabel for="contract">Contrato</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.assignation_date" autocomplete="off"
-                                    id="assignation_date"
+                                <input type="date" v-model="form.contract" autocomplete="off"
+                                    id="contract"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.assignation_date" />
+                                <InputError :message="form.errors.contract" />
                             </div>
                         </div>
 
                         <div class="">
-                            <InputLabel for="project_name">Nombre del Proyecto</InputLabel>
+                            <InputLabel for="certificate_discharge">Constancia de Alta</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.project_name" autocomplete="off" id="project_name"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.project_name" />
+                                <select id="certificate_discharge" v-model="form.certificate_discharge" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option>Pendiente</option>
+                                    <option>Proceso</option>
+                                    <option>Completado</option>
+                                </select>
+                                <InputError :message="form.errors.certificate_discharge" />
                             </div>
                         </div>
                         <div class="">
-                            <InputLabel for="customer">Cliente</InputLabel>
+                            <InputLabel for="reading_sanctions">Lectura de Sanciones</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.customer" autocomplete="off" id="customer"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.customer" />
+                                <select id="reading_sanctions" v-model="form.reading_sanctions" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option>Pendiente</option>
+                                    <option>Proceso</option>
+                                    <option>Completado</option>
+                                </select>
+                                <InputError :message="form.errors.reading_sanctions" />
                             </div>
                         </div>
                         <div class="">
-                            <InputLabel for="project_code">Codigo de Proyecto</InputLabel>
+                            <InputLabel for="reading_procedures">Lectura de Procedimientos</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.project_code" autocomplete="off" id="project_code"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.project_code" />
+                                <select id="reading_procedures" v-model="form.reading_procedures" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option>Pendiente</option>
+                                    <option>Proceso</option>
+                                    <option>Completado</option>
+                                </select>
+                                <InputError :message="form.errors.reading_procedures" />
                             </div>
                         </div>
                         <div class="">
-                            <InputLabel for="cpe">CPE</InputLabel>
+                            <InputLabel for="annex_4_induction">Anexo 4 Induccion</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.cpe" autocomplete="off" id="cpe"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.cpe" />
-                            </div>
-                        </div>
-                        <div class="">
-                            <InputLabel for="project_deadline">Fecha Limite del Proyecto</InputLabel>
-                            <div class="mt-2">
-                                <input type="date" v-model="form.project_deadline" autocomplete="off"
-                                    id="project_deadline"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.project_deadline" />
+                                <select id="annex_4_induction" v-model="form.annex_4_induction" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option>Pendiente</option>
+                                    <option>Proceso</option>
+                                    <option>Completado</option>
+                                </select>
+                                <InputError :message="form.errors.annex_4_induction" />
                             </div>
                         </div>
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
+                        <SecondaryButton type="button" @click="closeModal"> Cancelar </SecondaryButton>
                         <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
                             Guardar
@@ -222,79 +233,56 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
+import SelectControlEmployees from '@/Components/SelectControlEmployees.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
-const { entryDocumentation, auth } = defineProps({
-    entryDocumentation: Object,
+const { entryDocument, auth } = defineProps({
+    entryDocument: Object,
     auth: Object
 })
 
-const entryDocumentations = ref(entryDocumentation);
+const entryDocuments = ref(entryDocument);
 
 const initialState = {
     id: null,
-    user_id: auth.user.id,
-    assignation_date: '',
-    project_name: '',
-    customer: '',
-    project_code: '',
-    cpe: '',
-    project_deadline: '',
-    manager: '',
-    user_name: auth.user.name,
+    registration_form: '',
+    contract: '',
+    certificate_discharge: '',
+    reading_sanctions: '',
+    reading_procedures: '',
+    annex_4_induction: '',
 }
 
 const form = useForm(
     { ...initialState }
 );
 
-const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
-function openAddAssignationModal() {
-    showAddEditModal.value = true
-}
-function closeAddAssignationModal() {
-    showAddEditModal.value = false
+const showModal = ref(false);
+
+function closeModal() {
+    showModal.value = false
     form.defaults({ ...initialState })
     form.reset()
 }
-function submitStore() {
-    let url = route('assignation.storeOrUpdate');
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmAssignation.value = true
-            setTimeout(() => {
-                confirmAssignation.value = false
-                router.get(route('assignation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
-        }
-    })
-}
-
 const confirmUpdateAssignation = ref(false);
 
-function openEditSotModal(item) {
+function openModal(item) {
     form.defaults({ ...item })
     form.reset()
-    showAddEditModal.value = true
+    showModal.value = true
 }
 
-function submitUpdate() {
-    let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
+function submit() {
+    let url = route('controlEmployees.entry.document.storeOrUpdate', { cicsa_assignation_id: form.id })
     form.put(url, {
         onSuccess: () => {
-            closeAddAssignationModal()
+            closeModal()
             confirmUpdateAssignation.value = true
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
-                router.get(route('assignation.index'))
+                router.get(route('controlEmployees.entry.document.index'))
             }, 1500)
         },
         onError: (e) => {
@@ -303,14 +291,10 @@ function submitUpdate() {
     })
 }
 
-function submit() {
-    form.id ? submitUpdate() : submitStore()
-}
-
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('assignation.index'), { searchQuery: $search });
-        assignations.value = response.data.assignation;
+        const response = await axios.post(route('controlEmployees.entry.document.index'), { searchQuery: $search });
+        entryDocuments.value = response.data.entryDocument;
 
     } catch (error) {
         console.error('Error searching:', error);

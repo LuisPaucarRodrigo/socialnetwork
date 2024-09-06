@@ -1,24 +1,17 @@
 <template>
 
-    <Head title="Documentacion Fija" />
+    <Head title="Control de Empleados" />
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
-            Documentacion Fija
+            Control de Empleados
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-between">
-                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <PrimaryButton @click="openModal" type="button">
-                        + Agregar
-                    </PrimaryButton>
-                </div>
-
+            <div class="flex justify-end">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,DNI" />
-                    <SelectControlEmployees currentSelect="Documentacion Fija" />
+                    <SelectControlEmployees currentSelect="Control de Empleados" />
                 </div>
-
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
@@ -76,11 +69,91 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Ficha de Alta
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Contrato
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Constancia de Alta
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Lectura de Sanciones
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Lectura de Procedimientos
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Anexo 4 Induccion
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Sctr
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Poliza
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Beneficiario Poliza
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha EMO-Anexo 16
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha EMO-Anexo 16 A
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Primeros Auxilios
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Riesgo Electrico
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Comite de Seguridad
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Trabajos de Altura
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Claro
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Ccip
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Vericom Anual
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Vericom
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Entrega de Epps
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in fixedDocumentations.data ?? fixedDocumentations" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in controlEmployees.data ?? controlEmployees" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.employees }}
@@ -141,6 +214,108 @@
                                     {{ item.vaccination_card }}
                                 </p>
                             </td>
+                            
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.entry_document.registration_form }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.entry_document.contract) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.entry_document.certificate_discharge }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.entry_document.reading_sanctions }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.entry_document.reading_procedures }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.entry_document.annex_4_induction }}
+                                </p>
+                            </td>
+
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.sctr) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.policy_date) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.issuance_documentation.policy_beneficiary }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.emo_anexo_16) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.emo_anexo_16_a) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.first_aid) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.electrical_risk) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.safety_committee) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.height_work) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.issuance_documentation.claro }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.issuance_documentation.ccip }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.vericom_annual) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.issuance_documentation.vericom) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.issuance_documentation.epps_delivery }}
+                                </p>
+                            </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900" @click="openEditSotModal(item)">
@@ -156,9 +331,9 @@
                     </tbody>
                 </table>
             </div>
-            <div v-if="fixedDocumentations.data"
+            <div v-if="controlEmployees.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="fixedDocumentations.links" />
+                <pagination :links="controlEmployees.links" />
             </div>
         </div>
 
@@ -314,100 +489,25 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectControlEmployees from '@/Components/SelectControlEmployees.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
-const { fixedDocumentation, auth } = defineProps({
-    fixedDocumentation: Object,
+const { controlEmployee, auth } = defineProps({
+    controlEmployee: Object,
     auth: Object
 })
 
-const fixedDocumentations = ref(fixedDocumentation);
-
-const initialState = {
-    id: null,
-    employees: '',
-    dni: '',
-    driver_license: '',
-    registration_form: '',
-    home_verification: '',
-    vericom_data_authorization: '',
-    dj_pension_system: '',
-    electricity_water_receipt: '',
-    curriculum: '',
-    digital_photo: '',
-    signature: '',
-    vaccination_card: '',
-}
-
-const form = useForm(
-    { ...initialState }
-);
-
-const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
-function openModal() {
-    showAddEditModal.value = true
-}
-function closeAddAssignationModal() {
-    showAddEditModal.value = false
-    form.defaults({ ...initialState })
-    form.reset()
-}
-function submitStore() {
-    let url = route('controlEmployees.fixed.documentation.store');
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmAssignation.value = true
-            setTimeout(() => {
-                confirmAssignation.value = false
-                router.get(route('controlEmployees.fixed.documentation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
-        }
-    })
-}
-
-const confirmUpdateAssignation = ref(false);
-
-function openEditSotModal(item) {
-    form.defaults({ ...item })
-    form.reset()
-    showAddEditModal.value = true
-}
-
-function submitUpdate() {
-    let url = route('controlEmployees.fixed.documentation.update', { cicsa_assignation_id: form.id })
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false
-                router.get(route('controlEmployees.fixed.documentation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.log(e)
-        }
-    })
-}
-
-function submit() {
-    form.id ? submitUpdate() : submitStore()
-}
+const controlEmployees = ref(controlEmployee);
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('controlEmployees.fixed.documentation.index'), { searchQuery: $search });
-        fixedDocumentations.value = response.data.fixedDocumentation;
+        const response = await axios.post(route('controlEmployees.index'), { searchQuery: $search });
+        controlEmployees.value = response.data.controlEmployee;
 
     } catch (error) {
         console.error('Error searching:', error);

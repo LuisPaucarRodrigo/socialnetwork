@@ -91,6 +91,9 @@ Usuarios
                     <Link class="w-full" :href="route('employees.external.index')">Empleados Externos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingHumanResource">
+                    <Link class="w-full" :href="route('controlEmployees.index')">Control de Empleados</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
                 </MyTransition>
 

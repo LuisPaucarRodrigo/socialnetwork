@@ -40,7 +40,7 @@
                         Anulados
                     </PrimaryButton>
 
-                    <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
+                    <input type="text" @input="search($event.target.value)" placeholder="Codigo,Descripcion" >
                 </div>
             </div>
 

@@ -328,7 +328,7 @@ class ApiController extends Controller
     public function storeImagePerCode(Request $request)
     {
         $data = $request->validate([
-            'id' => 'required|numeric', 
+            'id' => 'required|numeric',
             'photo' => 'required',
             'description' => 'nullable',
             'latitude' => 'required',
@@ -338,7 +338,7 @@ class ApiController extends Controller
 
         DB::beginTransaction();
         try {
-            $image = str_replace('data:image/png;base64,', '', $data['photo'] );
+            $image = str_replace('data:image/png;base64,', '', $data['photo']);
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
             $data['photo'] = time() . '.png';
@@ -364,7 +364,14 @@ class ApiController extends Controller
 
     public function getImageHistoryPerCode(HuaweiProjectCode $code)
     {
-        $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)->select('id', 'huawei_project_code_id', 'description', 'observation', 'lat', 'lon', 'state')->get();
+        $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
+            ->select('id','image', 'description', 'observation', 'state')
+            ->get()
+            ->map(function ($image) {
+                $image->image = url('documents/huawei/photoreports/' . $image->image);
+                return $image;
+            });
+
         return response()->json($images, 200);
     }
 
