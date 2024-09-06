@@ -82,6 +82,7 @@ class AdditionalCostsController extends Controller
     public function store(AdditionalCostsRequest $request, $project_id)
     {
         $data = $request->validated();
+        $data['is_accepted'] = true;
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
