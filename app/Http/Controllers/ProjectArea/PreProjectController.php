@@ -45,14 +45,10 @@ class PreProjectController extends Controller
     {
         if ($request->isMethod('get')) {
             $preprojects_status = $request->input('preprojects_status');
-            // dd(Preproject::with('project')
-            //     ->where('status', $preprojects_status)
-            //     ->orderBy('created_at')
-            //     ->paginate(12));
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
                 'preprojects' => Preproject::with('project')
                     ->where('status', $preprojects_status)
-                    ->orderBy('created_at')
+                    ->orderBy('created_at', 'desc')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
                 'users' => User::select('id', 'name')->get()
@@ -63,7 +59,7 @@ class PreProjectController extends Controller
             $preprojects = Preproject::with('project')
                 ->where('code', 'like', "%$searchQuery%")
                 ->where('status', $preprojects_status)
-                ->orderBy('created_at')
+                ->orderBy('created_at', 'desc')
                 ->paginate(12);
 
             return response()->json([
@@ -798,13 +794,6 @@ class PreProjectController extends Controller
     public function downloadKmz($preproject_title_id)
     {   
         $coordinates = PreprojectCode::with('imagecodepreprojet')->where('preproject_title_id',$preproject_title_id)->get();
-        // $coordinates = [
-        //     ['latitude' => -12.0464, 'longitude' => -77.0428, 'name' => 'Location 1'],
-        //     ['latitude' => -13.5319, 'longitude' => -71.9675, 'name' => 'Location 2'],
-        //     ['latitude' => -15.7658, 'longitude' => -70.0219, 'name' => 'Location 3'],
-        //     // Agrega más coordenadas según sea necesario
-        // ];
-
         $kmlPlacemarks = '';
         foreach ($coordinates->imagecodepreprojet as $coord) {
             $longitude = $coord['longitude'];

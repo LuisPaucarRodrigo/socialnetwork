@@ -17,7 +17,7 @@
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full whitespace-no-wrap">
+                <table class="w-full ">
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -59,15 +59,35 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Abono
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Estado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Monto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Abono de Cuenta Corriente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Numero de Transacción de Cuenta Corriente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto de Cuenta Corriente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Abono al Banco
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Numero de Transacción al Banco
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto al Banco
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -129,11 +149,6 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_charge_area?.deposit_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
         item.cicsa_charge_area?.state : '' }}
                                 </p>
@@ -142,6 +157,40 @@
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.amount ? 'S/. ' +
         item.cicsa_charge_area?.amount.toFixed(2) : ''
+                                    }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.cicsa_charge_area?.deposit_date) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_charge_area?.transaction_number_current }}
+                                </p>
+                            </td>
+                            <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_charge_area?.checking_account_amount ? 'S/. ' +
+        item.cicsa_charge_area?.checking_account_amount.toFixed(2) : ''
+                                    }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item.cicsa_charge_area?.deposit_date_bank) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_charge_area?.transaction_number_bank }}
+                                </p>
+                            </td>
+                            <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_charge_area?.amount_bank ? 'S/. ' +
+        item.cicsa_charge_area?.amount_bank.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
@@ -176,7 +225,8 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number : "" }}
+                    {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number : ""
+                    }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -217,8 +267,21 @@
                             </div>
                         </div>
 
+
+
                         <div class="sm:col-span-1">
-                            <InputLabel for="deposit_date">Fecha de Abono</InputLabel>
+                            <InputLabel for="amount">Monto Total de Factura</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" step="any" v-model="form.amount" autocomplete="off"
+                                    id="amount" />
+                                <InputError :message="form.errors.amount" />
+                            </div>
+                        </div>
+                        <h2 class="sm:col-span-full text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                            Pagos
+                        </h2>
+                        <div class="sm:col-span-1 sm:col-start-1">
+                            <InputLabel for="deposit_date">Fecha de Abono a cuenta corriente</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.deposit_date" autocomplete="off"
                                     id="deposit_date" />
@@ -227,11 +290,48 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="amount">Monto</InputLabel>
+                            <InputLabel for="transaction_number_current">Número de Transacción de cuenta corriente
+                            </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" step="any" v-model="form.amount" autocomplete="off"
-                                    id="amount" />
-                                <InputError :message="form.errors.amount" />
+                                <TextInput type="text" v-model="form.transaction_number_current" autocomplete="off"
+                                    id="transaction_number_current" />
+                                <InputError :message="form.errors.transaction_number_current" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <InputLabel for="checking_account_amount">Monto de cuenta corriente</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.checking_account_amount" autocomplete="off"
+                                    id="checking_account_amount" min="0" :max="form.amount" />
+                                <InputError :message="form.errors.checking_account_amount" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1 sm:col-start-1">
+                            <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de banco</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="date" v-model="form.deposit_date_bank" autocomplete="off"
+                                    id="deposit_date_bank" />
+                                <InputError :message="form.errors.deposit_date_bank" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <InputLabel for="transaction_number_bank">Número de Transacción a banco</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.transaction_number_bank" autocomplete="off"
+                                    id="transaction_number_bank" />
+                                <InputError :message="form.errors.transaction_number_bank" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <InputLabel for="amount_bank">Monto de banco</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.amount_bank" autocomplete="off" id="amount_bank"
+                                    min="0" :max="form.amount" />
+                                <InputError :message="form.errors.amount_bank" />
                             </div>
                         </div>
                     </div>
@@ -250,6 +350,8 @@
             :message="'La Cobranza fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Cobranza Actualizada'"
             :message="'La Cobranza fue actualizada'" />
+        <ErrorOperationModal :showError="errorAmount" title="Monto total"
+            message="La suma de ambas cantidades no es valida" />
     </AuthenticatedLayout>
 </template>
 
@@ -266,6 +368,7 @@ import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
@@ -276,7 +379,7 @@ const { charge_area, auth } = defineProps({
 
 const charge_areas = ref(charge_area)
 const invoice_number = ref(null)
-
+const errorAmount = ref(false)
 const initialState = {
     id: null,
     user_id: auth.user.id,
@@ -284,8 +387,13 @@ const initialState = {
     invoice_date: '',
     credit_to: '',
     payment_date: '',
-    deposit_date: '',
     amount: '',
+    deposit_date: '',
+    transaction_number_current: '',
+    checking_account_amount: null,
+    deposit_date_bank: '',
+    transaction_number_bank: '',
+    amount_bank: null,
     user_name: auth.user.name,
     cicsa_assignation_id: '',
 }
@@ -314,20 +422,39 @@ function openEditFeasibilityModal(cicsa_assignation_id, item) {
 }
 
 function submit() {
-    let url = form.id ? route('cicsa.charge_areas.update', { cicsa_charge_area: form.id }) : route('cicsa.charge_areas.store', { cicsa_assignation_id: form.cicsa_assignation_id });
-    form.post(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false
-                router.get(route('cicsa.charge_areas'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    if (sum()) {
+        let url = form.id ? route('cicsa.charge_areas.update', { cicsa_charge_area: form.id }) : route('cicsa.charge_areas.store', { cicsa_assignation_id: form.cicsa_assignation_id });
+        form.post(url, {
+            onSuccess: () => {
+                closeAddAssignationModal()
+                confirmUpdateAssignation.value = true
+                setTimeout(() => {
+                    confirmUpdateAssignation.value = false
+                    router.get(route('cicsa.charge_areas'))
+                }, 1500)
+            },
+            onError: (e) => {
+                console.error(e)
+            }
+        })
+    } else {
+        errorAmount.value = !errorAmount.value
+        setTimeout(() => {
+            errorAmount.value = !errorAmount.value
+        }, 1500)
+    }
+}
+
+function sum() {
+    if (form.checking_account_amount && form.amount_bank) {
+        const checking_account_amount = parseFloat(form.checking_account_amount) || 0;
+        const amount_bank = parseFloat(form.amount_bank) || 0;
+        if ((checking_account_amount + amount_bank) !== form.amount) {
+            return false
         }
-    })
+        return true
+    }
+    return true
 }
 
 watch(() => form.credit_to, (newCreditTo) => {

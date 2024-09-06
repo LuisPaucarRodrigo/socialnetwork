@@ -141,12 +141,12 @@ class ApiController extends Controller
             $image = str_replace('data:image/png;base64,', '', $data['photo']);
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
-            $imagename = time() . '.png';
-            file_put_contents(public_path('image/imagereportpreproject/') . $imagename, $imageContent);
+            $data['image'] = time() . '.png';
+            file_put_contents(public_path('image/imagereportpreproject/') . $data['image'], $imageContent);
 
             Imagespreproject::create([
                 'description' => $data['description'],
-                'image' => $imagename,
+                'image' => $data['image'],
                 'lat' => $data['latitude'],
                 'lon' => $data['longitude'],
                 'preproject_code_id' => $data['id'],
@@ -204,12 +204,12 @@ class ApiController extends Controller
             $image = str_replace('data:image/png;base64,', '', $validateData['photo']);
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
-            $imagename = time() . '.png';
-            file_put_contents(public_path('image/imagereportproject/') . $imagename, $imageContent);
+            $validateData['photo'] = time() . '.png';
+            file_put_contents(public_path('image/imagereportproject/') . $validateData['photo'], $imageContent);
 
             Projectimage::create([
                 'description' => $validateData['description'],
-                'image' => $imagename,
+                'image' => $validateData['photo'],
                 'project_id' => $validateData['id']
             ]);
             DB::commit();
@@ -325,31 +325,32 @@ class ApiController extends Controller
         }
     }
 
-    public function storeImagePerCode(HuaweiProjectCode $code, Request $request)
+    public function storeImagePerCode(Request $request)
     {
-        $request->validate([
-            'image' => 'required',
+        $data = $request->validate([
+            'id' => 'required|numeric', 
+            'photo' => 'required',
             'description' => 'nullable',
-            'lat' => 'required',
-            'lon' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
             'site' => 'required'
         ]);
 
         DB::beginTransaction();
         try {
-            $image = str_replace('data:image/png;base64,', '', $request->image);
+            $image = str_replace('data:image/png;base64,', '', $data['photo'] );
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
-            $imagename = time() . '.png';
-            file_put_contents(public_path('documents/huawei/photoreports/') . $imagename, $imageContent);
+            $data['photo'] = time() . '.png';
+            file_put_contents(public_path('documents/huawei/photoreports/') . $data['photo'], $imageContent);
 
             HuaweiProjectImage::create([
-                'description' => $request->description,
-                'image' => $imagename,
-                'lat' => $request->lat,
-                'lon' => $request->lon,
-                'site' => $request->site,
-                'huawei_project_code_id' => $code->id
+                'description' => $data['description'],
+                'image' => $data['photo'],
+                'lat' => $data['latitude'],
+                'lon' => $data['longitude'],
+                'site' => $data['site'],
+                'huawei_project_code_id' => $data['id'],
             ]);
             DB::commit();
             return response()->json([201]);
@@ -364,14 +365,59 @@ class ApiController extends Controller
     public function getImageHistoryPerCode(HuaweiProjectCode $code)
     {
         $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)->select('id', 'huawei_project_code_id', 'description', 'observation', 'lat', 'lon', 'state')->get();
-        return response()->json(['images' => $images], 200);
+        return response()->json($images, 200);
     }
 
-    public function getCodesAndProjectCode (HuaweiProjectCode $code)
+    public function getCodesAndProjectCode($code)
     {
-        $found_code = HuaweiCode::where('id', $code->huawei_code_id)->select('id', 'code', 'description')->first();
-        $huawei_project_code = $code->huawei_project_stage->huawei_project->code;
-        return response()->json(['code' => $found_code, 'project_code' => $huawei_project_code, 'code_status' => $code->status]);
+        try {
+            $project_code = HuaweiProjectCode::where('id', $code)
+                ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
+                ->with([
+                    'huawei_project_stage' => function ($query) {
+                        $query->select('id', 'huawei_project_id');
+                    },
+                    'huawei_project_stage.huawei_project' => function ($query) {
+                        $query->select('id');
+                    }
+                ])
+                ->first()
+                ->makeHidden(['huawei_project_images']);
+
+            $project_code->huawei_project_stage->huawei_project->makeHidden([
+                'additional_cost_total',
+                'static_cost_total',
+                'state',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost'
+            ]);
+
+            $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
+                ->select('id', 'code', 'description')
+                ->first();
+
+            $data = [
+                'id' => $code,
+                'code' => $found_code->code,
+                'description' => $found_code->description,
+                'project_code' => $project_code->huawei_project_stage->huawei_project->code,
+                'code_status' => $project_code->state
+            ];
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function localDriveIndex(Request $request)

@@ -16,8 +16,15 @@ class CicsaChargeArea extends Model
         'invoice_number',
         'invoice_date',
         'credit_to',
-        'deposit_date',
         'amount',
+
+        'deposit_date',
+        'transaction_number_current',
+        'checking_account_amount',
+        'deposit_date_bank',
+        'transaction_number_bank',
+        'amount_bank',
+
         'user_name',
         'user_id',
         'cicsa_assignation_id'

@@ -21,16 +21,15 @@ class InstallationExport implements FromView, WithColumnWidths
                 'CPE',
                 'Fecha PEXT',
                 'Fecha PINT',
-                'Monto Proyecto',
                 'Acta de Conformidad',
                 'Informe',
-                'Jefe',
-                'Liquidador',
-                'SuperIntendente',
+                'Fecha de Envio de Informe',
+                'Monto Proyecto',
+                'Coordinador',
                 'Encargado'
             ],
-            'cicsa_purchase_order_validations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-            ->with('cicsa_purchase_order_validation')
+            'assignations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
+            ->with('cicsa_installation')
             ->get()
         ]);
     }
@@ -45,6 +44,10 @@ class InstallationExport implements FromView, WithColumnWidths
             'E' => 17,
             'F' => 30,
             'G' => 30,
+            'H' => 30,
+            'I' => 30,
+            'J' => 30,
+            'K' => 30,
         ];
     }
 }
