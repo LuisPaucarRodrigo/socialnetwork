@@ -1617,7 +1617,6 @@ async function validateRegister(ac_id, is_accepted) {
             { is_accepted }
         );
         if (res?.data?.additional_cost?.is_accepted == true) {
-            console.log("siuu");
             let index = dataToRender.value.findIndex(
                 (item) => item.id == res.data.additional_cost.id
             );

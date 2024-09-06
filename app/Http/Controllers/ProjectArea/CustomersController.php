@@ -66,6 +66,7 @@ class CustomersController extends Controller
 
     public function destroy(Customer $customer)
     {
+        if($customer->category === 'Especial') return abort(404);
         $customer->delete();
         return redirect()->back();
     }
