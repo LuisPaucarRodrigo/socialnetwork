@@ -244,7 +244,7 @@
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Importar Excel
                 </h2>
-                <form @submit.prevent="importExcel">
+                <form @submit.prevent="verify">
                 <div class="space-y-12">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -269,6 +269,26 @@
                     </div>
                 </div>
                 </form>
+            </div>
+        </Modal>
+
+        <Modal :show="verifyModal" :maxWidth="'sm'">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 text-center">
+                    ¿Está seguro de importar el excel?
+                </h2>
+                <p class="mt-1 text-sm text-gray-600 text-wrap">
+                    Existen registros con el mismo N° Factura de los que se desean importar, los cuales se actualizarán con la nueva información.
+                </p>
+                <div class="space-y-12">
+                <div class="border-gray-900/10">
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                    <SecondaryButton @click="reject"> No </SecondaryButton>
+                    <PrimaryButton @click="importExcel"
+                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Si</PrimaryButton>
+                    </div>
+                </div>
+                </div>
             </div>
         </Modal>
 
@@ -299,6 +319,7 @@ import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { formattedDate } from '@/utils/utils';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
   real_earnings: Object,
@@ -343,6 +364,7 @@ const importModal = ref(false);
 const confirmImport = ref(false);
 const dropdownOpen = ref(false);
 const originalAmount = ref(null);
+const verifyModal = ref(false);
 
 watch(() => form.amount, (newValue) => {
   if (newValue && !form.id) {
@@ -354,6 +376,14 @@ watch(() => form.amount, (newValue) => {
     form.detraction_amount = (newValue * 0.12).toFixed(2);
   }
 });
+
+const reject = () => {
+    importForm.reset();
+    importForm.clearErrors();
+    verifyModal.value = false;
+    importModal.value = false;
+}
+
 
 const openImportModal = () => {
     importModal.value = true;
@@ -408,6 +438,27 @@ const closeModals = () => {
   create_additional.value = false;
 };
 
+const verify = () => {
+    let formData = new FormData();
+    formData.append('file', importForm.file); // Agrega el archivo al FormData
+
+    axios.post(route('huawei.projects.realearnings.verify', {huawei_project: props.huawei_project.id}), formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data', // Especifica que estás enviando un archivo
+        },
+    })
+    .then(res => {
+        if (res.data.message == 'found') {
+            verifyModal.value = true;
+        } else {
+            importExcel();
+        }
+    })
+    .catch(error => {
+        console.error('Error en la petición:', error);
+    });
+};
+
 const submit = (update) => {
     if (!update){
         form.post(route('huawei.projects.realearnings.store'), {
@@ -435,10 +486,11 @@ const submit = (update) => {
 };
 
 const importExcel = () => {
-    importForm.post(route('huawei.projects.realearnings.import', {huawei_project: props.huawei_project}), {
+    importForm.post(route('huawei.projects.realearnings.import', {huawei_project: props.huawei_project.id}), {
         onSuccess: () => {
             closeImportModal();
             confirmImport.value = true;
+            verifyModal.value = false;
             setTimeout(() => {
                 confirmImport.value = false;
             }, 2000);
