@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WaController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ScraperController;
@@ -20,7 +19,6 @@ Route::get('/scrape', [ScraperController::class, 'scrape']);
 Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
 
 
-    Route::get('/enviotest', [WaController::class, 'enviar']);
 
     
 
