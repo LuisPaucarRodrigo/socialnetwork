@@ -133,6 +133,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/general_balance/earnings/{huawei_balance_earning}/delete', [HuaweiBalanceController::class, 'deleteEarning'])->name('huawei.generalbalance.earnings.delete');
     Route::post('huawei/general_balance/earnings/import', [HuaweiBalanceController::class, 'importEarnings'])->name('huawei.generalbalance.earnings.import');
     Route::get('huawei/general_balance/earnings/export_excel', [HuaweiBalanceController::class, 'exportEarnings'])->name('huawei.generalbalance.earnings.export');
+    Route::post('huawei/general_balance/earnings/verify_import/post', [HuaweiBalanceController::class, 'verifyImportEarnings'])->name('huawei.generalbalance.earnings.verify');
 
     Route::get('huawei/general_balance/costs/get/{type?}', [HuaweiBalanceController::class, 'getCosts'])->name('huawei.generalbalance.costs');
     Route::get('huawei/general_balance/costs/{request}/search/{type?}', [HuaweiBalanceController::class, 'searchCosts'])->name('huawei.generalbalance.costs.search');
