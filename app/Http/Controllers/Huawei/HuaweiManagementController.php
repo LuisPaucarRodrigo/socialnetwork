@@ -19,6 +19,7 @@ use Illuminate\Support\Collection;
 use App\Models\HuaweiSpecialRefund;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class HuaweiManagementController extends Controller
 {
@@ -116,7 +117,7 @@ class HuaweiManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'guide_number' => 'nullable|unique',
+            'guide_number' => 'nullable|unique:huawei_entries,guide_number',
             'entry_date' => 'nullable',
             'observation' => 'nullable',
             'materials' => 'nullable|array',
@@ -128,104 +129,113 @@ class HuaweiManagementController extends Controller
             return back()->withErrors(['error_empty' => 'Debe agregar al menos un material o equipo.'])->withInput();
         }
 
+        // Crear entrada
         $huawei_entry = HuaweiEntry::create([
             'guide_number' => $request->guide_number,
             'entry_date' => $request->entry_date,
             'observation' => $request->observation
         ]);
 
-        if ($request->materials) {
-            foreach ($request->materials as $material) {
-                if (isset($material['material_id']) && $material['material_id']) {
-                    $huawei_entry_detail = HuaweiEntryDetail::create([
-                        'huawei_entry_id' => $huawei_entry->id,
-                        'huawei_material_id' => $material['material_id'], // Asegúrate de usar 'huawei_material_id' aquí
-                        'quantity' => $material['quantity'],
-                        'unit_price' => $material['unit_price'],
-                        'observation' => $material['observation']
-                    ]);
-                } else {
-                    $new_material = HuaweiMaterial::create([
-                        'name' => $material['name'],
-                        'claro_code' => $material['claro_code'],
-                        'unit' => $material['unit']
-                    ]);
+        DB::beginTransaction(); // Iniciar transacción
 
-                    $huawei_entry_detail = HuaweiEntryDetail::create([
-                        'huawei_entry_id' => $huawei_entry->id,
-                        'huawei_material_id' => $new_material->id, // Usar el ID del nuevo material creado
-                        'quantity' => $material['quantity'],
-                        'unit_price' => $material['unit_price'],
-                        'observation' => $material['observation']
-                    ]);
-                }
-            }
-        }
-
-        if ($request->equipments) {
-            if (!$request->guide_number || !$request->entry_date){
-                abort(403, 'Los equipos deben entrar con guía de remisión');
-            }
-                foreach ($request->equipments as $equipment) {
-                    if (isset($equipment['equipment_id']) && $equipment['equipment_id']) {
-
-                        DB::beginTransaction();
-
-                        foreach ($equipment['series'] as $serie) {
-                            $existing_serie = HuaweiEquipmentSerie::where('huawei_equipment_id', $equipment['equipment_id'])
-                                ->where('serie_number', $serie)
-                                ->first();
-
-                            if ($existing_serie){
-                                DB::rollBack();
-                                return response()->json(['error' => 'Ocurrió un error durante la inserción de datos o se encontraron duplicados'], 500);
-                            }
-
-                            $new_serie = HuaweiEquipmentSerie::create([
-                                'huawei_equipment_id' => $equipment['equipment_id'], // Asegúrate de usar 'huawei_equipment_id' aquí
-                                'serie_number' => $serie['serie']
-                            ]);
-
-                            $huawei_entry_detail = HuaweiEntryDetail::create([
-                                'huawei_entry_id' => $huawei_entry->id,
-                                'huawei_equipment_serie_id' => $new_serie->id,
-                                'quantity' => 1,
-                                'unit_price' => $serie['unit_price'],
-                                'assigned_diu' => $serie['assigned_diu'],
-                                'observation' => $serie['observation']
-                            ]);
-                        }
-
-                        DB::commit();
-
+        try {
+            // Manejar materiales
+            if ($request->materials) {
+                foreach ($request->materials as $material) {
+                    if (isset($material['material_id']) && $material['material_id']) {
+                        HuaweiEntryDetail::create([
+                            'huawei_entry_id' => $huawei_entry->id,
+                            'huawei_material_id' => $material['material_id'],
+                            'quantity' => $material['quantity'],
+                            'unit_price' => $material['unit_price'],
+                            'observation' => $material['observation']
+                        ]);
                     } else {
-                        $new_equipment = HuaweiEquipment::create([
-                            'name' => $equipment['name'],
-                            'claro_code' => $equipment['claro_code'],
-                            'model_id' => $equipment['brand_model'],
-                            'unit' => 'Unidad'
+                        $new_material = HuaweiMaterial::create([
+                            'name' => $material['name'],
+                            'claro_code' => $material['claro_code'],
+                            'unit' => $material['unit']
                         ]);
 
-                        foreach ($equipment['series'] as $serie) {
-                            $new_serie = HuaweiEquipmentSerie::create([
-                                'huawei_equipment_id' => $new_equipment->id, // Usar el ID del nuevo equipo creado
-                                'serie_number' => $serie['serie']
-                            ]);
-
-                            $huawei_entry_detail = HuaweiEntryDetail::create([
-                                'huawei_entry_id' => $huawei_entry->id,
-                                'huawei_equipment_serie_id' => $new_serie->id,
-                                'quantity' => 1,
-                                'unit_price' => $serie['unit_price'],
-                                'assigned_diu' => $serie['assigned_diu'],
-                                'observation' => $serie['observation']
-                            ]);
-                        }
+                        HuaweiEntryDetail::create([
+                            'huawei_entry_id' => $huawei_entry->id,
+                            'huawei_material_id' => $new_material->id,
+                            'quantity' => $material['quantity'],
+                            'unit_price' => $material['unit_price'],
+                            'observation' => $material['observation']
+                        ]);
                     }
-
+                }
             }
+
+            // Manejar equipos
+            if ($request->equipments) {
+                if (!$request->guide_number || !$request->entry_date) {
+                    abort(403, 'Los equipos deben entrar con guía de remisión');
+                }
+
+                foreach ($request->equipments as $equipment) {
+                        if (isset($equipment['equipment_id']) && $equipment['equipment_id']) {
+                            foreach ($equipment['series'] as $serie) {
+                                $existing_serie = HuaweiEquipmentSerie::where('huawei_equipment_id', $equipment['equipment_id'])
+                                    ->where('serie_number', $serie)
+                                    ->first();
+
+                                if ($existing_serie){
+                                    DB::rollBack();
+                                    return response()->json(['error' => 'Ocurrió un error durante la inserción de datos o se encontraron duplicados'], 500);
+                                }
+
+                                $new_serie = HuaweiEquipmentSerie::create([
+                                    'huawei_equipment_id' => $equipment['equipment_id'], // Asegúrate de usar 'huawei_equipment_id' aquí
+                                    'serie_number' => $serie['serie']
+                                ]);
+
+                                $huawei_entry_detail = HuaweiEntryDetail::create([
+                                    'huawei_entry_id' => $huawei_entry->id,
+                                    'huawei_equipment_serie_id' => $new_serie->id,
+                                    'quantity' => 1,
+                                    'unit_price' => $serie['unit_price'],
+                                    'assigned_diu' => $serie['assigned_diu'],
+                                    'observation' => $serie['observation']
+                                ]);
+                            }
+                        } else {
+                            // Crear nuevo equipo
+                            $new_equipment = HuaweiEquipment::create([
+                                'name' => $equipment['name'],
+                                'claro_code' => $equipment['claro_code'],
+                                'model_id' => $equipment['brand_model'],
+                                'unit' => 'Unidad'
+                            ]);
+
+                            foreach ($equipment['series'] as $serie) {
+                                $new_serie = HuaweiEquipmentSerie::create([
+                                    'huawei_equipment_id' => $new_equipment->id, // Usar el ID del nuevo equipo creado
+                                    'serie_number' => $serie['serie']
+                                ]);
+
+                                $huawei_entry_detail = HuaweiEntryDetail::create([
+                                    'huawei_entry_id' => $huawei_entry->id,
+                                    'huawei_equipment_serie_id' => $new_serie->id,
+                                    'quantity' => 1,
+                                    'unit_price' => $serie['unit_price'],
+                                    'assigned_diu' => $serie['assigned_diu'],
+                                    'observation' => $serie['observation']
+                                ]);
+                            }
+                        }
+                }
+            }
+
+            DB::commit(); // Confirmar la transacción si todo va bien
+
+        } catch (Throwable $e) {
+            DB::rollBack(); // Revertir transacción en caso de error
+            return response()->json(['error' => $e], 500);
         }
     }
+
 
     public function storeBrand (Request $request)
     {
