@@ -89,7 +89,7 @@
                                     </div>
                                 </div>
     
-                                <div class="sm:grid">
+                                <div>
                                     <InputLabel for="type" class="font-medium leading-6 text-gray-900">Tipo
                                     </InputLabel>
                                     <div class="mt-2">
