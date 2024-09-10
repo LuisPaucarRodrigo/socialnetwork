@@ -25,6 +25,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function Pest\Laravel\call;
+use function Pest\Laravel\json;
+
 class ApiController extends Controller
 {
 
@@ -306,38 +309,23 @@ class ApiController extends Controller
         return $sanitizedText;
     }
 
-    public function getStagesPerProject(HuaweiProject $huawei_project)
+    public function getStagesPerProject(HuaweiProject $huawei_project_id)
     {
-        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)
-            ->where('status', 1)
-            ->with([
-                'huawei_project_codes' => function ($query) {
-                    $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status')
-                          ->with([
-                              'huawei_code' => function ($query) {
-                                  $query->select('id', 'code');
-                              }
-                          ]);
-                },
-                'huawei_project_codes.huawei_code' => function ($query) {
-                    $query->select('id', 'code');
-                }
-            ])
-            ->select('id', 'description')
-            ->get();
-
-        // Ocultar los `huawei_project_images` en cada `huawei_project_code`
-        $stages->each(function ($stage) {
-            $stage->huawei_project_codes->each(function ($code) {
-                $code->makeHidden(['huawei_project_images']);
-            });
-        });
-
-        return response()->json(['stages' => $stages], 200);
+        try {
+            $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project_id->id)->where('status', 1)->with(['huawei_project_codes' => function ($query) {
+                $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status');
+            }, 'huawei_project_codes.huawei_code' => function ($query) {
+                $query->select('id', 'code');
+            }])->select('id', 'description')->get();
+            return response()->json($stages, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
-
-    public function storeImagePerCode (HuaweiProjectCode $code, Request $request)
+    public function storeImagePerCode(Request $request)
     {
         $data = $request->validate([
             'id' => 'required|numeric',
@@ -377,48 +365,66 @@ class ApiController extends Controller
     public function getImageHistoryPerCode(HuaweiProjectCode $code)
     {
         $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
-            ->select('id', 'huawei_project_code_id', 'image', 'description', 'observation', 'lat', 'lon', 'state')
+            ->select('id','image', 'description', 'observation', 'state')
             ->get()
             ->map(function ($image) {
-                $image->image = asset('documents/huawei/photoreports/' . $image->image);
+                $image->image = url('documents/huawei/photoreports/' . $image->image);
                 return $image;
             });
 
-        return response()->json(['images' => $images], 200);
+        return response()->json($images, 200);
     }
 
-    public function getCodesAndProjectCode ($code)
+    public function getCodesAndProjectCode($code)
     {
-        $project_code = HuaweiProjectCode::where('id', $code)
-            ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
-            ->with([
-                'huawei_project_stage' => function ($query) {
-                    $query->select('id', 'huawei_project_id');
-                },
-                'huawei_project_stage.huawei_project' => function ($query) {
-                    $query->select('id');
-                }
-            ])
-            ->first()
-            ->makeHidden(['huawei_project_images']);
+        try {
+            $project_code = HuaweiProjectCode::where('id', $code)
+                ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
+                ->with([
+                    'huawei_project_stage' => function ($query) {
+                        $query->select('id', 'huawei_project_id');
+                    },
+                    'huawei_project_stage.huawei_project' => function ($query) {
+                        $query->select('id');
+                    }
+                ])
+                ->first()
+                ->makeHidden(['huawei_project_images']);
 
-        $project_code->huawei_project_stage->huawei_project->makeHidden(['additional_cost_total', 'static_cost_total', 'state', 'materials_in_project',
-        'equipments_in_project', 'materials_liquidated', 'equipments_liquidated', 'total_earnings', 'total_real_earnings', 'total_real_earnings_without_deposit',
-        'total_project_cost', 'total_employee_costs', 'total_essalud_employee_cost']);
+            $project_code->huawei_project_stage->huawei_project->makeHidden([
+                'additional_cost_total',
+                'static_cost_total',
+                'state',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost'
+            ]);
 
-        $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
-            ->select('id', 'code', 'description')
-            ->first();
+            $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
+                ->select('id', 'code', 'description')
+                ->first();
 
-        $data = [
-            'id' => $code,
-            'scenario' => $found_code->code,
-            'scenario_description' => $found_code->description,
-            'project_code' => $project_code->huawei_project_stage->huawei_project->code,
-            'project_code_state' => $project_code->state
-        ];
+            $data = [
+                'id' => $code,
+                'code' => $found_code->code,
+                'description' => $found_code->description,
+                'project_code' => $project_code->huawei_project_stage->huawei_project->code,
+                'code_status' => $project_code->state
+            ];
 
-        return response()->json($data);
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function localDriveIndex(Request $request)

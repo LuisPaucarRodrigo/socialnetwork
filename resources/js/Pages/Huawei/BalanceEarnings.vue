@@ -161,6 +161,15 @@
                             </div>
                         </div>
 
+                        <div v-if="form.real_amount" class="col-span-1">
+                            <InputLabel for="real_amount" class="font-medium leading-6 text-gray-900">Monto con detracción</InputLabel>
+                            <div class="mt-2">
+                                <input disabled readonly type="number" step="0.01" v-model="form.real_amount" id="real_amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.real_amount" />
+                            </div>
+                        </div>
+
                         <div class="col-span-1">
                             <InputLabel for="main_amount" class="font-medium leading-6 text-gray-900">Monto BCP</InputLabel>
                             <div class="mt-2">
@@ -338,6 +347,7 @@ const form = useForm({
   id: '',
   invoice_number: '',
   amount: '',
+  real_amount: '',
   invoice_date: '',
   deposit_date: '',
   main_amount: '',
@@ -355,6 +365,16 @@ watch(() => form.amount, (newValue) => {
   if (form.id && newValue !== originalAmount.value) {
     form.main_amount = (newValue * 0.88).toFixed(2);
     form.detraction_amount = (newValue * 0.12).toFixed(2);
+  }
+});
+
+watch(() => form.amount, (newValue) => {
+  if (newValue && newValue > 700 && !form.id) {
+    form.real_amount = (newValue * 0.88).toFixed(2);
+  } else if (form.id && newValue !== originalAmount.value && newValue > 700) {
+    form.real_amount = (newValue * 0.88).toFixed(2);
+  } else {
+    form.real_amount = '';
   }
 });
 
