@@ -8,7 +8,6 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
 
 
     Route::get('/checklistcar', [ChecklistsController::class, 'car_index']);
-
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/users/{id}', [ApiController::class, 'users']);
 
@@ -18,7 +17,6 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
         Route::get('/preproject/code/{id}', [ApiController::class, 'preprojectcodephoto']);
         Route::get('/codephotospecific/{id}', [ApiController::class, 'codephotospecific']);
         Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
-
         Route::get('/register/photo/{id}', [ApiController::class, 'registerPhoto']);
 
         //Project
@@ -48,7 +46,6 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
         Route::post('/checklistepp', [ChecklistsController::class, 'epp_store']);
 
         Route::get('/checklistHistory', [ChecklistsController::class, 'checklist_history']);
-
         Route::post('/expense/store', [ChecklistsController::class, 'expenseStore']);
 
         Route::get('/expense/index', [ChecklistsController::class, 'expenseIndex']);

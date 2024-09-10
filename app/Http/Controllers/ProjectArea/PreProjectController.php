@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use ZipArchive;
 
+
 class PreProjectController extends Controller
 {
     public function index(Request $request)
@@ -66,6 +67,7 @@ class PreProjectController extends Controller
             ]);
         }
     }
+
 
     public function create($preproject_id = null)
     {
@@ -751,6 +753,7 @@ class PreProjectController extends Controller
         abort(404, 'Imagen no encontrado');
     }
 
+
     public function download_report($preproject_title_id)
     {
         $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->find($preproject_title_id);
@@ -837,6 +840,7 @@ class PreProjectController extends Controller
         // Eliminar el archivo KMZ temporal después de la descarga
         unlink($kmzFile);
     }
+
 
     public function acceptCotization(Request $request, $quote_id)
     {

@@ -468,7 +468,6 @@ class HuaweiBalanceController extends Controller
         return redirect()->back();
     }
 
-
     public function exportEarnings ()
     {
         return Excel::download(new HuaweiGeneralEarningsExport(), 'Ingresos Generales.xlsx');

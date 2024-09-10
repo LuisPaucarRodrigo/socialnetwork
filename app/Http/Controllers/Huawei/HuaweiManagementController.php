@@ -116,7 +116,11 @@ class HuaweiManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+<<<<<<< HEAD
             'guide_number' => 'nullable|unique',
+=======
+            'guide_number' => 'nullable',
+>>>>>>> origin/main
             'entry_date' => 'nullable',
             'observation' => 'nullable',
             'materials' => 'nullable|array',
@@ -285,6 +289,10 @@ class HuaweiManagementController extends Controller
     public function searchGeneralEquipments($request)
     {
         $searchTerm = strtolower($request);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
         // Paso 1: Consulta inicial basada en parámetros de búsqueda específicos
         $equipmentsQuery = HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_entry');
         $equipmentsQueryFilter = HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project', 'huawei_entry')->get();
@@ -294,7 +302,10 @@ class HuaweiManagementController extends Controller
         // Filtrar por assigned_diu
         $equipments = $equipments->merge(
             $equipmentsQuery->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
+<<<<<<< HEAD
                             ->orWhereRaw('LOWER(new_site) LIKE ?', ["%{$searchTerm}%"])
+=======
+>>>>>>> origin/main
                 ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
                 ->get()
         );
@@ -334,7 +345,11 @@ class HuaweiManagementController extends Controller
             return str_contains(strtolower($detail->state), $searchTerm) || str_contains(strtolower($detail->instalation_state), $searchTerm);
         });
 
+<<<<<<< HEAD
         $assignedSiteFilteredEquipments = $equipmentsQueryFilter->filter(function ($detail) use ($searchTerm) {
+=======
+        $assignedSiteFilteredEquipments = $equipments->filter(function ($detail) use ($searchTerm) {
+>>>>>>> origin/main
             return str_contains(strtolower($detail->assigned_site), $searchTerm);
         });
 

@@ -57,8 +57,12 @@ class MaterialsSummary implements FromView
                     'used_quantity'=>$used_quantity,
                     'total_quantity' => $item->quantity
                 ]);
+
+                
             }
         }
+
+
         return view('Export/MaterialSummary', [
             'materials' => $true_materials,
             'materials_guides' => $materials_guides,

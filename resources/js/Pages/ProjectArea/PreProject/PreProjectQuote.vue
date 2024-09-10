@@ -943,7 +943,6 @@ const submit = () => {
     })
 }
 
-
 const showModalMember = ref(false);
 const showConfirmAccept = ref(false);
 const showFinishAccept = ref(false);
