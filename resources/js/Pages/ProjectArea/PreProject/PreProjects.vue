@@ -49,7 +49,7 @@
                 <div v-for="(item, i) in preprojects.data" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
-                        <h2 class="text-sm font-semibold mb-3 sm:col-span-1">
+                        <h2 class="text-sm font-semibold sm:col-span-1">
                             N° {{ i }} {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2 m:col-span-1">
@@ -65,9 +65,10 @@
                     <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
                         {{ item.customer }}
                     </h3>
+                    <p class="text-sm font-semibold text-gray-700 mb-2">{{ item.description }}</p>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
                         <div v-if="hasPermission('ProjectManager')">
-                            <button @click="assignUser(item.id)"
+                            <button @click="assignUser(item.id,item.users)"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Usuarios
                             </button>
@@ -140,7 +141,7 @@
                         <div class="mt-2">
                             <select multiple v-model="assignUserForm.user_id_array" id="users"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option v-for="user in props.users" :key="user.id" :value="user.id">
+                                <option v-for="user in props.users" :key="user.id" :value="user.id" :selected="assignUserForm.user_id_array.includes(user.id)">
                                     {{ user.name }}
                                 </option>
                             </select>
@@ -197,8 +198,9 @@ const showModal = ref(false);
 const showModalEdit = ref(false);
 const preprojects = ref(props.preprojects)
 
-const assignUser = (id) => {
+const assignUser = (id,users) => {
     assignUserModal.value = true;
+    assignUserForm.user_id_array = users.map(user => user.id);
     assignUserForm.preproject_id = id;
 }
 

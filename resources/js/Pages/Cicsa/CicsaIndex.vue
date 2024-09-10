@@ -666,8 +666,12 @@
                                 </p>
                             </td>
 
-                            <td
-                                :class="stateClass(item.feasibility_date)"
+                            <td 
+                                :class="
+                                    stateClass(
+                                        item?.cicsa_feasibility.feasibility_date
+                                    )
+                                "
                                 v-if="
                                     checkVisibility('Factibilidad PINT y PEXT')
                                 "

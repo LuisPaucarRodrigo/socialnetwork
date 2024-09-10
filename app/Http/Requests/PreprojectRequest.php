@@ -37,13 +37,19 @@ class PreprojectRequest extends FormRequest
             $rules['subcustomer_id'] = 'nullable';
         }
 
-        if ($this->input('customer_id') !== 1) {
+        if ($this->input('customer_id') === 1) {
+            $rules['reportStages'] = 'nullable|array';
+            $rules['reportStages.*.name'] = 'nullable|string|max:255';
+            $rules['reportStages.*.title_id'] = 'nullable|numeric|max:255';
             if ($this->route('preproject')) {
                 $rules['reportStages'] = 'nullable';
-            } else {
-                $rules['reportStages'] = 'required|array';
-                $rules['reportStages.*.name'] = 'required|string|max:255';
-                $rules['reportStages.*.title_id'] = 'required|numeric|max:255';
+            }
+        } else {
+            $rules['reportStages'] = 'required|array';
+            $rules['reportStages.*.name'] = 'required|string|max:255';
+            $rules['reportStages.*.title_id'] = 'required|numeric|max:255';
+            if ($this->route('preproject')) {
+                $rules['reportStages'] = 'nullable';
             }
         }
         return $rules;

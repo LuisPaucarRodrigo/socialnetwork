@@ -29,7 +29,7 @@ Route::get('/cicsa_material/export', [CicsaController::class, 'exportMaterial'])
 Route::post('/cicsa_material/importmaterial', [CicsaController::class, 'importMaterial'])->name('material.import');
 
 Route::any('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
-Route::put('/cicsa_purchase_order/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
+Route::post('/cicsa_purchase_order/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
 Route::get('/cicsa_purchase_order/export', [CicsaController::class, 'exportPurchaseOrder'])->name('purchase.order.export');
 
 

@@ -158,10 +158,11 @@ class CicsaController extends Controller
                 $query->whereNotNull('invoice_number')
                     ->whereNotNull('invoice_date')
                     ->whereNotNull('amount');
-            })
-            ->paginate(20);
+            });
+        $dd = $charge_areas->get();
         return Inertia::render('Cicsa/CicsaCollect', [
-            'charge_areas' => $charge_areas,
+            'charge_areas' => $charge_areas->paginate(20),
+            'total_amount' => $dd->sum('cicsa_charge_area.amount')
         ]);
     }
 

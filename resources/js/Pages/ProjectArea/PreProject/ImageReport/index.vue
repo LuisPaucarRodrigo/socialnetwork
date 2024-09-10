@@ -22,16 +22,20 @@
                     </a>
                 </div>
                 <div v-for="imageCode in preprojectImage.preproject_codes" :key="imageCode.id" class="border">
-                    <div class="flex items-center justify-between gap-x-6">
+                    <div class="flex items-center justify-between">
                         <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                             {{ imageCode.code.code }} / {{ imageCode.code.description }}
                         </h1>
 
                         <template v-if="hasPermission('ProjectManager')">
-                            <PrimaryButton v-if="!imageCode.status" @click="verifyApproveModal(imageCode.id)"
-                                type="button">
-                                Aprobar
-                            </PrimaryButton>
+                            <div class="space-x-3" v-if="!imageCode.status">
+                                <PrimaryButton @click="approveImages(imageCode.id)" type="button">
+                                    Aprobar Imagenes
+                                </PrimaryButton>
+                                <PrimaryButton @click="verifyApproveModal(imageCode.id)" type="button">
+                                    Aprobar Codigo
+                                </PrimaryButton>
+                            </div>
                             <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
                         </template>
                     </div>
@@ -284,6 +288,9 @@ function submitRejectImage() {
                 approve_reject_Image.value = false
                 router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
             }, 2000)
+        },
+        onError: (e) => {
+            console.log(e)
         }
     })
 }
@@ -337,6 +344,19 @@ function approveTitle(preproject_title_id) {
     })
 }
 
+function approveImages(code_id) {
+    router.get(route('preprojects.codereport.approveImages', { code_id: code_id }), {
+        onSuccess: () => {
+            titleSuccessImage.value = "Aprobado"
+            messageSuccessImage.value = "Las imagenes se aprovaron Correctamente"
+            approve_reject_Image.value = true
+            setTimeout(() => {
+                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+            }, 2000)
+        }
+    })
+}
+
 // const showMap = () => {
 //     mapVisible.value = true;
 // };
@@ -348,4 +368,5 @@ function verifyApproveModal(preproject_code_id) {
     title_code_id.value = preproject_code_id
     showApproveCode.value = !showApproveCode.value
 }
+
 </script>

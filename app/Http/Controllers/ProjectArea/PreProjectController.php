@@ -47,6 +47,7 @@ class PreProjectController extends Controller
             $preprojects_status = $request->input('preprojects_status');
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
                 'preprojects' => Preproject::where('status', $preprojects_status)
+                    ->with('users')
                     ->orderBy('created_at', 'desc')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
@@ -738,6 +739,18 @@ class PreProjectController extends Controller
         }
     }
 
+    public function approve_images($code_id)
+    {
+        try{
+            $code_images = Imagespreproject::where('preproject_code_id',$code_id)->whereNull('state')->get();
+            $code_images->each(function ($image) {
+                $image->update(['state' => 1]);
+            });
+        }catch(Exception $e){
+            return redirect()->back()->withErrors(['message'=> $e->getMessage()]);
+        }
+    }
+
     public function download_image($id)
     {
         $image = Imagespreproject::find($id);
@@ -754,10 +767,9 @@ class PreProjectController extends Controller
     public function download_report($preproject_title_id)
     {
         $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->find($preproject_title_id);
-        // dd($preprojectImages);
         $preproject = Preproject::find($preprojectImages->preproject_id);
         $customer = Customers_contact::find($preproject->subcustomer_id);
-        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('preprojectImages', 'customer'));
+        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('preprojectImages','preproject', 'customer'));
         return $pdf->stream();
     }
 
@@ -906,9 +918,7 @@ class PreProjectController extends Controller
             'preproject_id' => 'required',
             'user_id_array' => 'required'
         ]);
-
         $preproject = Preproject::find($request->preproject_id);
-
         $preproject->users()->sync($request->user_id_array, ['timestamps' => true]);
     }
 

@@ -99,7 +99,7 @@
                                     {{ formattedDate(item.cicsa_charge_area?.payment_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="item.cicsa_charge_area.days_late <= 0 ? 'bg-red-200' :'bg-white'">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]" :class="item.cicsa_charge_area.days_late < 0 ? 'bg-red-200' :'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
                                         item.cicsa_charge_area.days_late + ' día(s)' : '' }}
@@ -129,6 +129,13 @@
                                 </p>
                             </td>
                         </tr>
+                        <tr class="sticky bottom-0 z-5">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap" colspan="10">Totales:
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="2">
+                                S/ {{ total_amount }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -147,8 +154,9 @@ import Pagination from '@/Components/Pagination.vue';
 import { Head } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils.js';
 
-const { charge_areas } = defineProps({
+const { charge_areas, total_amount } = defineProps({
     charge_areas: Object,
+    total_amount: Object
 })
 
 </script>

@@ -36,12 +36,12 @@ class CicsaChargeArea extends Model
         'state'
     ];
 
-    public function user ()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function cicsa_assignation ()
+    public function cicsa_assignation()
     {
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
     }
@@ -50,40 +50,39 @@ class CicsaChargeArea extends Model
     {
         if (!empty($this->invoice_date) && !empty($this->credit_to)) {
             $invoiceDate = Carbon::parse($this->invoice_date);
-
             $invoiceDate->addDays($this->credit_to);
-
             return $invoiceDate->toDateString();
         }
 
         return null;
     }
 
-
     public function getDaysLateAttribute()
     {
-        if ($this->payment_date) {
+        if (!empty($this->deposit_date) && !empty($this->payment_date)) {
+            $deposit_date = Carbon::parse($this->deposit_date);
+            $deposit_date = $deposit_date->diffInDays(Carbon::parse($this->payment_date), false);
+            return $deposit_date > 0 ? $deposit_date : 0;
+        } elseif ($this->payment_date) {
             $paymentDate = Carbon::parse($this->payment_date);
             $currentDate = Carbon::now();
-
             $daysLate = $paymentDate->diffInDays($currentDate, false);
-
             return $daysLate > 0 ? $daysLate : 0;
         }
-
         return 0;
     }
 
-    public function getStateAttribute ()
+    public function getStateAttribute()
     {
-        if (!$this->deposit_date && Carbon::now() < $this->payment_date){
+        if (!$this->deposit_date && Carbon::now() < $this->payment_date) {
             return 'A tiempo';
         }
-        if ($this->deposit_date){
+
+        if ($this->deposit_date) {
             return 'Pagado';
         }
 
-        if (!$this->deposit_date && Carbon::now() > $this->payment_date){
+        if (!$this->deposit_date && Carbon::now() > $this->payment_date) {
             return 'Con deuda';
         }
     }
