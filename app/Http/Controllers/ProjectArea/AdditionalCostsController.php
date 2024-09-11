@@ -12,7 +12,12 @@ use App\Models\Project;
 use App\Models\AdditionalCost;
 use App\Exports\AdditionalCostsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
+use ZipArchive;
 
 class AdditionalCostsController extends Controller
 {
@@ -188,4 +193,37 @@ class AdditionalCostsController extends Controller
         ]);
         return response()->json(['additional_cost' => $ac], 200);
     }
+
+
+    public function downloadImages($project_id)
+    {
+        try {
+            $additionalCosts = AdditionalCost::where('project_id', $project_id)->where('type_doc', 'Factura')->get();
+            $zipFileName = 'additionalCostsPhotos.zip';
+            $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
+            $zip = new ZipArchive;
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+                foreach ($additionalCosts as $cost) {
+                    if (!empty($cost->photo)) {
+                        $photoPath = public_path("/documents/additionalcosts/{$cost->photo}");
+                        if (file_exists($photoPath)) {
+                            $zip->addFile($photoPath, $cost->photo);
+                        } 
+                    }
+                }
+                $zip->close();
+                ob_end_clean();
+                return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    
+            } else {
+                Log::error('No se pudo abrir el archivo ZIP para escritura.');
+                return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al crear el archivo ZIP: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
+        }
+    }
+
+
 }
