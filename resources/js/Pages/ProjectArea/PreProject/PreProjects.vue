@@ -67,7 +67,7 @@
                     </h3>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
                         <div v-if="hasPermission('ProjectManager')">
-                            <button @click="assignUser(item.id)"
+                            <button @click="assignUser(item.id, item.users)"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Usuarios
                             </button>
@@ -135,7 +135,7 @@
                     Agregar usuarios
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                    <div class="sm:col-span-6">
+                    <div class="sm:col-span-3">
                         <InputLabel for="users" class="font-medium leading-6 text-gray-900">Usuarios</InputLabel>
                         <div class="mt-2">
                             <select multiple v-model="assignUserForm.user_id_array" id="users"
@@ -145,6 +145,16 @@
                                     {{ user.name }}
                                 </option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="sm:col-span-3">
+                        <InputLabel for="users" class="font-medium leading-6 text-gray-900">
+                            Usuarios Asginados
+                        </InputLabel>
+                        <div class="mt-2">
+                                <p v-for="user in props.users" :key="user.id" :value="user.id" class="text-xs">
+                                    - {{ user.name }}
+                                </p>
                         </div>
                     </div>
                 </div>
@@ -198,9 +208,10 @@ const showModal = ref(false);
 const showModalEdit = ref(false);
 const preprojects = ref(props.preprojects)
 
-const assignUser = (id) => {
+const assignUser = (id, users) => {
     assignUserModal.value = true;
     assignUserForm.preproject_id = id;
+    assignUserForm.user_id_array = users.map(item=>item.id);
 }
 
 const closeAssignUser = () => {

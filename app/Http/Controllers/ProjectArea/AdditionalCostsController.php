@@ -80,7 +80,7 @@ class AdditionalCostsController extends Controller
                     ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-        $result = $result->get();
+        $result = $result->orderBy('doc_date')->get();
         return response()->json($result, 200);
     }
 
@@ -197,6 +197,7 @@ class AdditionalCostsController extends Controller
 
     public function downloadImages($project_id)
     {
+        
         try {
             $additionalCosts = AdditionalCost::where('project_id', $project_id)->where('type_doc', 'Factura')->get();
             $zipFileName = 'additionalCostsPhotos.zip';

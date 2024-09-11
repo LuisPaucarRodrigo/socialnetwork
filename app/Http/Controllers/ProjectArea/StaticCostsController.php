@@ -48,7 +48,7 @@ class StaticCostsController extends Controller
                 ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-        $result = $result->get();
+        $result = $result->orderBy('doc_date')->get();
         return response()->json($result, 200);
     }
 

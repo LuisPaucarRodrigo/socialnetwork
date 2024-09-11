@@ -46,7 +46,7 @@ class PreProjectController extends Controller
         if ($request->isMethod('get')) {
             $preprojects_status = $request->input('preprojects_status');
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
-                'preprojects' => Preproject::where('status', $preprojects_status)
+                'preprojects' => Preproject::with('users')->where('status', $preprojects_status)
                     ->orderBy('created_at', 'desc')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
