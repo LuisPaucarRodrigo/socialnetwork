@@ -152,12 +152,13 @@
                             Usuarios Asginados
                         </InputLabel>
                         <div class="mt-2">
-                                <p v-for="user in props.users" :key="user.id" :value="user.id" class="text-xs">
-                                    - {{ user.name }}
+                                <p v-for="user in assignUserForm.user_id_array" :key="user"  class="text-sm">
+                                    - {{ users.find(item=>item.id==user).name }}
                                 </p>
                         </div>
                     </div>
                 </div>
+                <InputError :message="assignUserForm.errors.user_id_array" class="mt-2" />
                 <div class="mt-6 flex gap-3 justify-end">
                     <SecondaryButton type="button" @click="closeAssignUser">Cerrar</SecondaryButton>
                     <PrimaryButton type="submit">Asignar</PrimaryButton>
@@ -186,6 +187,7 @@ import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
     preprojects: Object,
