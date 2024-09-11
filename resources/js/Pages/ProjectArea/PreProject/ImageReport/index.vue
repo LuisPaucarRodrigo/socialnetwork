@@ -150,7 +150,7 @@ const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
 
-let backUrl = props.preproject.status === null
+let backUrl = (props.preproject?.status === undefined || props.preproject?.status === null)
     ? 'preprojects.index'
     : props.preproject.status == true
         ? { route: 'preprojects.index', params: { preprojects_status: 1 } }

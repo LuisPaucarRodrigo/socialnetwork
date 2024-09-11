@@ -667,7 +667,7 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
             'preprojectImages' => $preprojectImages,
             'imagesCode' => $imagesCode,
-            'preproject' => Preproject::select('id')->find($preproject_id),
+            'preproject' => Preproject::select('id', 'status')->find($preproject_id),
         ]);
     }
 
