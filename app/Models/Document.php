@@ -9,7 +9,11 @@ class Document extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'subdivision_id'];
+    protected $fillable = [
+        'title', 
+        'subdivision_id',
+        'exp_date'
+    ];
 
     protected $appends = [
         'extension'

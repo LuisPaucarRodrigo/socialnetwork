@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string("salary");
             $table->boolean("sctr");
             $table->string('curriculum_vitae')->nullable();
+            
+            $table->boolean('l_policy')->nullable();
             $table->date('sctr_exp_date')->nullable();
             $table->date('policy_exp_date')->nullable();
             $table->timestamps();

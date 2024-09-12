@@ -21,6 +21,9 @@ class ExternalEmployee extends Model
         'phone1',
         'salary',
         'sctr',
-        'curriculum_vitae'
+        'curriculum_vitae',
+        'l_policy',
+        'sctr_exp_date',
+        'policy_exp_date',
     ];
 }

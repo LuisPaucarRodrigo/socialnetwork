@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string("phone2",9)->unique()->nullable();
             $table->foreignId('life_policy_id')->nullable();
 
+            $table->boolean('l_policy')->nullable();
             $table->date('sctr_exp_date')->nullable();
             $table->date('policy_exp_date')->nullable();
             $table->timestamps();

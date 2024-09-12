@@ -20,6 +20,9 @@ class Employee extends Model
         'email_company',
         'phone1',
         'phone2',
+        'l_policy',
+        'sctr_exp_date',
+        'policy_exp_date',
     ];
 
     //RELATIONS

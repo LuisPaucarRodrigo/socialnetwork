@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->foreignId('subdivision_id')->constrained('subdivisions')->onDelete('cascade');
+            
             $table->date('exp_date')->nullable();
             $table->timestamps();
         });
