@@ -12,7 +12,18 @@ class DocumentSpreedSheetController extends Controller
 {
     public function index()
     {
-        $employees = Employee::with('document_registers')
+        $employees = Employee::with([
+            'document_registers',
+            'contract:id,state,employee_id,pension_id',
+            ])
+            ->select(
+                'id',
+                'phone1',
+                'email',
+                'dni',
+                'sctr_exp_date',
+                'policy_exp_date',
+            )
             ->get()
             ->map(function ($emp) {
                 $emp->document_registers = $emp->document_registers->map(
