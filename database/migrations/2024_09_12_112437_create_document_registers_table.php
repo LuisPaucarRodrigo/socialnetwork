@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('document_registers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('subdivision_id')->nullable()->constrained('subdivisions')->nullOnDelete();
-            $table->foreignId('document_id')->nullable()->constrained('documents')->nullOnDelete();
+            $table->foreignId('document_id')->nullable()->unique()->constrained('documents')->nullOnDelete();
             $table->foreignId('employee_id')->nullable()->constrained('employees')->cascadeOnDelete();
             $table->foreignId('e_employee_id')->nullable()->constrained('external_employees')->cascadeOnDelete();
             $table->date('exp_date')->nullable();

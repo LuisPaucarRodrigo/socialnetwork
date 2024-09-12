@@ -26,4 +26,9 @@ class ExternalEmployee extends Model
         'sctr_exp_date',
         'policy_exp_date',
     ];
+
+    public function documents_registers () {
+        return $this->hasMany(DocumentRegister::class, 'e_employee_id');
+    }
+
 }
