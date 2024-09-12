@@ -36,6 +36,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('/huawei/inventory/general_equipments/search/{request}', [HuaweiManagementController::class, 'searchGeneralEquipments'])->name('huawei.inventory.general.equipments.search');
     Route::put('huawei/inventory/update_entry_detail_date/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateEntryDate'])->name('huawei.inventory.update.entrydetail');
     Route::put('huawei/inventory/update_entry_detail_site/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateSite'])->name('huawei.inventory.update.entrydetail.site');
+    Route::post('huawei/inventory/create/{equipment}/verify_serie/post', [HuaweiManagementController::class, 'verifySerie'])->name('huawei.inventory.create.verifyserie');
 
     //projects
     Route::get('huawei/projects/show', [HuaweiProjectController::class, 'show'])->name('huawei.projects');

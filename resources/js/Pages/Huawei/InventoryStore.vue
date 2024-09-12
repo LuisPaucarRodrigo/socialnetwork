@@ -543,16 +543,28 @@
       observation: '',
     });
 
-    const addSerie = () => {
+    const addSerie = async () => {
         if (newSerie.value.trim() === '') {
             return; // No se permite serie vacía
         }
 
         if (autoCompletement.value && foundEquipment.value) {
-            const foundSerie = foundEquipment.value.huawei_equipment_series.find(seriesItem => seriesItem.serie_number === newSerie.value);
-            const foundSerie2 = equipmentForm.series.find(seriesItem => seriesItem === newSerie.value);
 
-            if (foundSerie || foundSerie2) {
+            const foundSerie = ref(null);
+
+            const res = await axios.post(route('huawei.inventory.create.verifyserie', { equipment: foundEquipment.value.id }), {
+                serie_number: newSerie.value // Envía el número de serie en el cuerpo de la petición
+            })
+
+            if (res.data.message == 'found') {
+                foundSerie.value = 1;
+            }else{
+                foundSerie.value = null;
+            }
+
+            const foundSerie2 = equipmentForm.series.find(seriesItem => seriesItem.serie === newSerie.value);
+
+            if (foundSerie.value || foundSerie2) {
                 existingSerie.value = true;
                 setTimeout(() => {
                     existingSerie.value = false;
@@ -566,9 +578,9 @@
                 });
                 newSerie.value = '';
             }
-        } else {
-            const foundSerie = equipmentForm.series.find(seriesItem => seriesItem === newSerie.value);
 
+        } else {
+            const foundSerie = equipmentForm.series.find(seriesItem => seriesItem.serie === newSerie.value);
             if (foundSerie) {
                 existingSerie.value = true;
                 setTimeout(() => {

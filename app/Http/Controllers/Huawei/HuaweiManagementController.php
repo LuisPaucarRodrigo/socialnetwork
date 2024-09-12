@@ -101,7 +101,7 @@ class HuaweiManagementController extends Controller
     {
         return Inertia::render('Huawei/InventoryStore', [
             'brand_models' => BrandModel::all(),
-            'equipments' => HuaweiEquipment::with('brand_model', 'huawei_equipment_series')->get(),
+            'equipments' => HuaweiEquipment::with('brand_model')->get(),
             'materials' => HuaweiMaterial::with('brand_model')->get(),
             'brands' => Brand::all(),
         ]);
@@ -235,6 +235,18 @@ class HuaweiManagementController extends Controller
             return response()->json(['error' => $e], 500);
         }
     }
+
+    public function verifySerie(Request $request, HuaweiEquipment $equipment)
+    {
+        $existingSeries = $equipment->huawei_equipment_series->pluck('serie_number')->toArray();
+
+        if (in_array($request->input('serie_number'), $existingSeries)) {
+            return response()->json(['message' => 'found'], 200);
+        }
+
+        return response()->json(['message' => 'notfound'], 200);
+    }
+
 
 
     public function storeBrand (Request $request)
