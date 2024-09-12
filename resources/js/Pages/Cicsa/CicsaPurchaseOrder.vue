@@ -152,7 +152,8 @@
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-                                        <button class="text-blue-900" @click="openEditModal(item.id, materialDetail)">
+                                        <button class="text-blue-900"
+                                            @click="openEditModal(materialDetail.id, materialDetail)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -242,10 +243,7 @@
                 </form>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmPuchaseOrder" :title="'Nueva Orden de Compra creada'"
-            :message="'La Orden de Compra fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdatePuchaseOrder" :title="'Orden de Compra Actualizada'"
-            :message="'La Orden de Compra fue actualizada'" />
+        <SuccessOperationModal :confirming="confirmPuchaseOrder" :title="title" :message="message" />
     </AuthenticatedLayout>
 </template>
 
@@ -272,7 +270,7 @@ const { purchaseOrder, auth } = defineProps({
 const purchaseOrders = ref(purchaseOrder)
 
 const initialState = {
-    id: null,
+    cicsa_assignation_id: null,
     user_id: auth.user.id,
     oc_date: '',
     oc_number: '',
@@ -290,6 +288,8 @@ const showAddEditModal = ref(false);
 const confirmPuchaseOrder = ref(false);
 const cicsa_purchase_order_id = ref(null)
 const purcahse_order_row = ref(0);
+const title = ref('Nueva Orden de Compra creada')
+const message = ref('La Orden de Compra fue creada con éxito')
 
 function closeAddPuchaseOrderModal() {
     showAddEditModal.value = false
@@ -297,10 +297,8 @@ function closeAddPuchaseOrderModal() {
     form.reset()
 }
 
-const confirmUpdatePuchaseOrder = ref(false);
-
-function openCreateModal(id) {
-    form.defaults({ ...initialState, id })
+function openCreateModal(cicsa_assignation_id) {
+    form.defaults({ ...initialState, cicsa_assignation_id })
     form.reset()
     showAddEditModal.value = true
 }
@@ -313,13 +311,17 @@ function openEditModal(id, item) {
 }
 
 function submit() {
-    let url = form.id ? route('purchaseOrder.storeOrUpdate') : route('purchaseOrder.storeOrUpdate', { cicsa_assignation_id: cicsa_purchase_order_id.value })
+    let url = cicsa_purchase_order_id.value ? route('purchaseOrder.storeOrUpdate', { cicsa_purchase_order_id: cicsa_purchase_order_id.value }) : route('purchaseOrder.storeOrUpdate')
     form.post(url, {
         onSuccess: () => {
             closeAddPuchaseOrderModal()
-            confirmUpdatePuchaseOrder.value = true
+            if (cicsa_purchase_order_id.value) {
+                title.value = 'Orden de Compra Actualizada'
+                message.value = 'La Orden de Compra fue actualizada'
+            }
+            confirmPuchaseOrder.value = true
             setTimeout(() => {
-                confirmUpdatePuchaseOrder.value = false
+                confirmPuchaseOrder.value = false
                 router.get(route('purchase.order.index'))
             }, 1500)
         },

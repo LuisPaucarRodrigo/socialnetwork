@@ -32,7 +32,8 @@
                                 <PrimaryButton @click="approveImages(imageCode.id)" type="button">
                                     Aprobar Imagenes
                                 </PrimaryButton>
-                                <PrimaryButton @click="verifyApproveModal(imageCode.id)" type="button">
+                                <PrimaryButton @click="verifyApproveModal(preprojectImage.id, imageCode.id)"
+                                    type="button">
                                     Aprobar Codigo
                                 </PrimaryButton>
                             </div>
@@ -55,11 +56,11 @@
                                     :class="image.state == '1' ? 'text-green-600' : 'text-red-600'">
                                     {{ image.state == '1' ? 'Aprobado' : 'Rechazado' }}</span>
                                 <div v-else class="flex space-x-3">
-                                    <button @click="approveImageModal(image.id)"
+                                    <button @click="approveImageModal(preprojectImage.id, imageCode.id, image.id)"
                                         class="flex items-center text-green-600 hover:underline">
                                         <CheckCircleIcon class="h-4 w-4 ml-1" />
                                     </button>
-                                    <button @click="rejectModal(image.id)"
+                                    <button @click="rejectModal(preprojectImage.id, imageCode.id, image.id)"
                                         class="flex items-center text-red-600 hover:underline">
                                         <XCircleIcon class="h-4 w-4 ml-1" />
                                     </button>
@@ -142,6 +143,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showApproveCode = ref(false);
 const title_code_id = ref(null);
+const preproject_image_id = ref(null);
+const imageCodeId = ref('');
 const props = defineProps({
     // codesWithStatus: Object,
     preprojectImages: Object,
@@ -165,7 +168,7 @@ const approve_reject_Image = ref(false);
 const imageToDelete = ref(null);
 // const photoCode = ref(props.imagesCode);
 const showRejectModal = ref(false)
-const imageCodeId = ref('');
+
 // const codes = ref(props.codesWithStatus);
 // const mapVisible = ref(false);
 
@@ -256,43 +259,61 @@ function closeRejectModal() {
     showRejectModal.value = false
 }
 
-function rejectModal(imageId) {
+function rejectModal(title_id, code_id, imageId) {
+    title_code_id.value = title_id
+    preproject_image_id.value = code_id
     imageCodeId.value = imageId
     showRejectModal.value = true
 }
 
-function approveImageModal(imageId) {
+async function approveImageModal(titleId, CodeId, imageId) {
     form.state = true
-    form.put(route('preprojects.imagereport.approveReject', { preproject_image_id: imageId }), {
-        onSuccess: () => {
-            titleSuccessImage.value = "Imagen Aprobada"
-            messageSuccessImage.value = "La imagen se aprovo correctamente"
-            approve_reject_Image.value = true
-            setTimeout(() => {
-                approve_reject_Image.value = false
-                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-            }, 2000)
-        }
-    })
+    try {
+        await axios.put(route('preprojects.imagereport.approveReject', { preproject_image_id: imageId }), form);
+        visuallyChangeImage(titleId, CodeId, imageId, 1)
+        titleSuccessImage.value = "Imagen Aprobada"
+        messageSuccessImage.value = "La imagen se aprovo correctamente"
+        approve_reject_Image.value = true
+        setTimeout(() => {
+            approve_reject_Image.value = false
+        }, 2000)
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-function submitRejectImage() {
+async function submitRejectImage() {
     form.state = false
-    form.put(route('preprojects.imagereport.approveReject', { preproject_image_id: imageCodeId.value }), {
-        onSuccess: () => {
-            showRejectModal.value = false
-            titleSuccessImage.value = "Imagen Rechazada"
-            messageSuccessImage.value = "La imagen se rechazo correctamente"
-            approve_reject_Image.value = true
-            setTimeout(() => {
-                approve_reject_Image.value = false
-                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-            }, 2000)
-        },
-        onError: (e) => {
-            console.log(e)
-        }
-    })
+    try {
+        await axios.put(route('preprojects.imagereport.approveReject', { preproject_image_id: imageCodeId.value }), form);
+        visuallyChangeImage(title_code_id.value, preproject_image_id.value, imageCodeId.value, 0)
+        showRejectModal.value = false
+        titleSuccessImage.value = "Imagen Rechazada"
+        messageSuccessImage.value = "La imagen se rechazo correctamente"
+        approve_reject_Image.value = true
+        setTimeout(() => {
+            approve_reject_Image.value = false
+        }, 2000)
+    } catch (error) {
+        console.error(error);
+    }
+
+    // form.state = false
+    // form.put(route('preprojects.imagereport.approveReject', { preproject_image_id: imageCodeId.value }), {
+    //     onSuccess: () => {
+    //         showRejectModal.value = false
+    //         titleSuccessImage.value = "Imagen Rechazada"
+    //         messageSuccessImage.value = "La imagen se rechazo correctamente"
+    //         approve_reject_Image.value = true
+    //         setTimeout(() => {
+    //             approve_reject_Image.value = false
+    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+    //         }, 2000)
+    //     },
+    //     onError: (e) => {
+    //         console.log(e)
+    //     }
+    // })
 }
 
 // function requestPhotos($e) {
@@ -318,17 +339,31 @@ function submitRejectImage() {
 //     return photoCode.value.filter(image => image.preproject_code_id === $preproject_code_id);
 // }
 
-function approveCode() {
-    router.get(route('preprojects.codereport.approveCode', { preproject_code_id: title_code_id.value }), {
-        onSuccess: () => {
-            titleSuccessImage.value = "Code Aprobado"
-            messageSuccessImage.value = "El Codigo se aprobo correctamente"
-            approve_reject_Image.value = true
-            setTimeout(() => {
-                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-            }, 2000)
-        }
-    })
+async function approveCode() {
+    try {
+        await axios.get(route('preprojects.codereport.approveCode', { preproject_code_id: title_code_id.value }));
+        showApproveCode.value = !showApproveCode.value
+        visuallyChangeCode(preproject_image_id.value, title_code_id.value)
+        titleSuccessImage.value = "Code Aprobado"
+        messageSuccessImage.value = "El Codigo se aprobo correctamente"
+        approve_reject_Image.value = true
+        setTimeout(() => {
+            approve_reject_Image.value = false
+        }, 2000)
+    } catch (error) {
+        console.error(error);
+    }
+
+    // router.get(, {
+    //     onSuccess: () => {
+    //         titleSuccessImage.value = "Code Aprobado"
+    //         messageSuccessImage.value = "El Codigo se aprobo correctamente"
+    //         approve_reject_Image.value = true
+    //         setTimeout(() => {
+    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+    //         }, 2000)
+    //     }
+    // })
 }
 
 function approveTitle(preproject_title_id) {
@@ -344,17 +379,29 @@ function approveTitle(preproject_title_id) {
     })
 }
 
-function approveImages(code_id) {
-    router.get(route('preprojects.codereport.approveImages', { code_id: code_id }), {
-        onSuccess: () => {
-            titleSuccessImage.value = "Aprobado"
-            messageSuccessImage.value = "Las imagenes se aprovaron Correctamente"
-            approve_reject_Image.value = true
-            setTimeout(() => {
-                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-            }, 2000)
-        }
-    })
+async function approveImages(code_id) {
+    try {
+        await axios.get(route('preprojects.codereport.approveImages', { code_id: code_id }));
+        titleSuccessImage.value = "Imagenes Aprobadas"
+        messageSuccessImage.value = "Las imagenes se aprovaron Correctamente"
+        approve_reject_Image.value = true
+        setTimeout(() => {
+            approve_reject_Image.value = false
+        }, 2000)
+    } catch (error) {
+        console.error(error);
+    }
+
+    // router.get(route('preprojects.codereport.approveImages', { code_id: code_id }), {
+    //     onSuccess: () => {
+    //         titleSuccessImage.value = "Aprobado"
+    //         messageSuccessImage.value = "Las imagenes se aprovaron Correctamente"
+    //         approve_reject_Image.value = true
+    //         setTimeout(() => {
+    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
+    //         }, 2000)
+    //     }
+    // })
 }
 
 // const showMap = () => {
@@ -364,9 +411,43 @@ function approveImages(code_id) {
 
 // @click="approveCode(imageCode.id)"
 
-function verifyApproveModal(preproject_code_id) {
+function verifyApproveModal(preprojectImageId, preproject_code_id) {
+    preproject_image_id.value = preprojectImageId
     title_code_id.value = preproject_code_id
     showApproveCode.value = !showApproveCode.value
 }
 
+function visuallyChangeCode(preprojectImageId, preprojectCodeId) {
+    const preprojectImage = props.preprojectImages.find(image => image.id === preprojectImageId);
+    if (preprojectImage) {
+        const preprojectCode = preprojectImage.preproject_codes.find(code => code.id === preprojectCodeId);
+        if (preprojectCode) {
+            preprojectCode.status = "Aprobado";
+        } else {
+            console.log('No se encontró el código especificado.');
+        }
+    } else {
+        console.log('No se encontró el preproject especificado.');
+    }
+}
+
+function visuallyChangeImage(preprojectTitleId, preprojectImageCodeId, preprojectImageId, state) {
+    const preprojectImage = props.preprojectImages.find(title => title.id === preprojectTitleId);
+    if (preprojectImage) {
+        const preprojectCode = preprojectImage.preproject_codes.find(code => code.id === preprojectImageCodeId);
+        if (preprojectCode) {
+            const preprojectCodeImage = preprojectCode.imagecodepreprojet.find(image => image.id === preprojectImageId);
+
+            if (preprojectCodeImage) {
+                preprojectCodeImage.state = state;
+            } else {
+                console.log('No se encontró el la imagen especificado.');
+            }
+        } else {
+            console.log('No se encontró el código especificado.');
+        }
+    } else {
+        console.log('No se encontró el preproject especificado.');
+    }
+}
 </script>

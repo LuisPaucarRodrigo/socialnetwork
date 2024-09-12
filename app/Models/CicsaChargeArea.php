@@ -27,7 +27,8 @@ class CicsaChargeArea extends Model
 
         'user_name',
         'user_id',
-        'cicsa_assignation_id'
+        'cicsa_assignation_id',
+        'cicsa_purchase_order_id'
     ];
 
     protected $appends = [
@@ -44,6 +45,11 @@ class CicsaChargeArea extends Model
     public function cicsa_assignation()
     {
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
+    }
+
+    public function cicsa_purchase_order ()
+    {
+        return $this->belongsTo(CicsaPurchaseOrder::class, 'cicsa_purchase_order_id');
     }
 
     public function getPaymentDateAttribute()
@@ -78,12 +84,15 @@ class CicsaChargeArea extends Model
             return 'A tiempo';
         }
 
-        if ($this->deposit_date) {
+        if ($this->checking_account_amount && $this->amount_bank) {
             return 'Pagado';
         }
 
         if (!$this->deposit_date && Carbon::now() > $this->payment_date) {
             return 'Con deuda';
         }
+
+        
+        return 'En Proceso';
     }
 }

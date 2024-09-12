@@ -22,7 +22,8 @@ class CicsaPurchaseOrderValidation extends Model
         'superintendent',
         'user_name',
         'user_id',
-        'cicsa_assignation_id'
+        'cicsa_assignation_id',
+        'cicsa_purchase_order_id'
     ];
 
     public function user ()
@@ -33,5 +34,10 @@ class CicsaPurchaseOrderValidation extends Model
     public function cicsa_assignation ()
     {
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
+    }
+
+    public function cicsa_purchase_order ()
+    {
+        return $this->belongsTo(CicsaPurchaseOrder::class, 'cicsa_purchase_order_id');
     }
 }

@@ -21,77 +21,17 @@
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
+                            <th colspan="5"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
                             </th>
-                            <th
+                            <th colspan="5"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Codigo de Proyecto
                             </th>
-                            <th
+                            <th colspan="5"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Numero de OC
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Número de Factura
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Factura
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Crédito a
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Pago
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Días Atrasados
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Estado
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Abono de Cuenta Corriente
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Numero de Transacción de Cuenta Corriente
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto de Cuenta Corriente
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Abono de la detraccion
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Numero de Transacción de la detraccion
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto de la detraccion
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -99,120 +39,219 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in charge_areas.data ?? charge_areas" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_code }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cpe }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_purchase_order?.oc_number }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.invoice_number }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_charge_area?.invoice_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.credit_to + ' día(s)'
-        : '' }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_charge_area?.payment_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
-        item.cicsa_charge_area.days_late + ' día(s)' : '' }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
-        item.cicsa_charge_area?.state : '' }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] whitespace-nowrap">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.amount ? 'S/. ' +
-        item.cicsa_charge_area?.amount.toFixed(2) : ''
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_charge_area?.deposit_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.transaction_number_current }}
-                                </p>
-                            </td>
-                            <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.checking_account_amount ? 'S/. ' +
-        item.cicsa_charge_area?.checking_account_amount.toFixed(2) : ''
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_charge_area?.deposit_date_bank) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.transaction_number_bank }}
-                                </p>
-                            </td>
-                            <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.amount_bank ? 'S/. ' +
-        item.cicsa_charge_area?.amount_bank.toFixed(2) : ''
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.user_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900"
-                                        @click="openEditFeasibilityModal(item.id, item?.cicsa_charge_area)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        
+                        <template v-for="item in charge_areas.data ?? charge_areas" :key="item.id">
+
+                            <tr class="text-gray-700">
+                                <td colspan="5" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.project_name }}
+                                    </p>
+                                </td>
+                                <td colspan="5" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.project_code }}
+                                    </p>
+                                </td>
+                                <td colspan="5" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.cpe }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <div class="flex space-x-3 justify-center">
+                                        <button v-if="item.cicsa_charge_area.length > 0" type="button"
+                                            @click="toggleDetails(item?.cicsa_charge_area)"
+                                            class="text-blue-900 whitespace-no-wrap">
+                                            <svg v-if="charge_area_row !== item.id" xmlns="http://www.w3.org/2000/svg"
+                                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <template v-if="charge_area_row == item.id">
+                                <tr
+                                    class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Numero de OC
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Número de Factura
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Fecha de Factura
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Crédito a
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Fecha de Pago
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Días Atrasados
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Estado
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Monto
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Fecha de Abono de Cuenta Corriente
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Numero de Transacción de Cuenta Corriente
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Monto de Cuenta Corriente
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Fecha de Abono de la detraccion
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Numero de Transacción de la detraccion
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Monto de la detraccion
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Encargado
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-2 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Acciones
+                                    </th>
+                                </tr>
+                                <tr v-for="materialDetail in item.cicsa_charge_area" :key="materialDetail.id"
+                                    class="bg-gray-100">
+                                    
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail.cicsa_purchase_order?.oc_number }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.invoice_number }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ formattedDate(materialDetail?.invoice_date) }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.credit_to ? materialDetail.credit_to + 'día(s)'
+                                            : '' }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ formattedDate(materialDetail?.payment_date) }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.invoice_date && materialDetail?.credit_to
+        ?
+        materialDetail.days_late + ' día(s)' : '' }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.invoice_date && materialDetail?.credit_to
+        ?
+        materialDetail?.state : '' }}
+                                        </p>
+                                    </td>
+                                    <td
+                                        class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] whitespace-nowrap">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.amount ? 'S/. ' +
+       materialDetail?.amount.toFixed(2) : ''
+                                            }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ formattedDate(materialDetail?.deposit_date) }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.transaction_number_current }}
+                                        </p>
+                                    </td>
+                                    <td
+                                        class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.checking_account_amount ? 'S/. ' +
+       materialDetail?.checking_account_amount.toFixed(2) : ''
+                                            }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ formattedDate(materialDetail?.deposit_date_bank) }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.transaction_number_bank }}
+                                        </p>
+                                    </td>
+                                    <td
+                                        class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.amount_bank ? 'S/. ' +
+        materialDetail?.amount_bank.toFixed(2) : ''
+                                            }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.user_name }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
+                                        <button class="text-blue-900"
+                                            @click="openEditModal(materialDetail)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </template>
                     </tbody>
                 </table>
             </div>
@@ -273,8 +312,7 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="amount">Monto Total de Factura</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" v-model="form.amount" autocomplete="off"
-                                    id="amount" />
+                                <TextInput type="number" v-model="form.amount" autocomplete="off" id="amount" />
                                 <InputError :message="form.errors.amount" />
                             </div>
                         </div>
@@ -310,7 +348,7 @@
                         </div>
 
                         <div class="sm:col-span-1 sm:col-start-1">
-                            <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de banco</InputLabel>
+                            <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de la detraccion</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.deposit_date_bank" autocomplete="off"
                                     id="deposit_date_bank" />
@@ -319,7 +357,7 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="transaction_number_bank">Número de Transacción a banco</InputLabel>
+                            <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.transaction_number_bank" autocomplete="off"
                                     id="transaction_number_bank" />
@@ -328,7 +366,7 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="amount_bank">Monto de banco</InputLabel>
+                            <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="number" v-model="form.amount_bank" autocomplete="off" id="amount_bank"
                                     min="0" :max="form.amount" />
@@ -347,8 +385,6 @@
                 </form>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Cobranza creada'"
-            :message="'La Cobranza fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Cobranza Actualizada'"
             :message="'La Cobranza fue actualizada'" />
         <ErrorOperationModal :showError="errorAmount" title="Monto total"
@@ -381,9 +417,11 @@ const { charge_area, auth } = defineProps({
 const charge_areas = ref(charge_area)
 const invoice_number = ref(null)
 const errorAmount = ref(false)
+const charge_area_row = ref(0)
+
 const initialState = {
     id: null,
-    user_id: auth.user.id,
+    user_id: '',
     invoice_number: '',
     invoice_date: '',
     credit_to: '',
@@ -395,8 +433,9 @@ const initialState = {
     deposit_date_bank: '',
     transaction_number_bank: '',
     amount_bank: null,
-    user_name: auth.user.name,
+    user_name: '',
     cicsa_assignation_id: '',
+    cicsa_purchase_order_id: '',
 }
 
 const form = useForm(
@@ -405,7 +444,6 @@ const form = useForm(
 
 
 const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
 
 function closeAddAssignationModal() {
     showAddEditModal.value = false
@@ -415,17 +453,17 @@ function closeAddAssignationModal() {
 
 const confirmUpdateAssignation = ref(false);
 
-function openEditFeasibilityModal(cicsa_assignation_id, item) {
+function openEditModal(item) {
     invoice_number.value = item?.invoice_number
-    form.defaults({ cicsa_assignation_id: cicsa_assignation_id, ...item })
+    form.defaults({...item, user_name: auth.user.name, user_id: auth.user.id})
     form.reset()
     showAddEditModal.value = true
 }
 
 function submit() {
     if (sum()) {
-        let url = form.id ? route('cicsa.charge_areas.update', { cicsa_charge_area: form.id }) : route('cicsa.charge_areas.store', { cicsa_assignation_id: form.cicsa_assignation_id });
-        form.post(url, {
+        let url = route('cicsa.charge_areas.update', { cicsa_charge_area_id: form.id }) ;
+        form.put(url, {
             onSuccess: () => {
                 closeAddAssignationModal()
                 confirmUpdateAssignation.value = true
@@ -450,7 +488,7 @@ function sum() {
     if (form.checking_account_amount && form.amount_bank) {
         const checking_account_amount = parseFloat(form.checking_account_amount) || 0;
         const amount_bank = parseFloat(form.amount_bank) || 0;
-        console.log(checking_account_amount,amount_bank)
+        console.log(checking_account_amount, amount_bank)
         if ((checking_account_amount + amount_bank) !== parseFloat(form.amount)) {
             return false
         }
@@ -495,4 +533,12 @@ const search = async ($search) => {
         console.error('Error searching:', error);
     }
 };
+
+const toggleDetails = (cicsa_charge_area) => {
+    if (charge_area_row.value === cicsa_charge_area[0].cicsa_assignation_id) {
+        charge_area_row.value = 0;
+    } else {
+        charge_area_row.value = cicsa_charge_area[0].cicsa_assignation_id;
+    }
+}
 </script>

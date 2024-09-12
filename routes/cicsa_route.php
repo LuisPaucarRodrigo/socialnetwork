@@ -29,7 +29,7 @@ Route::get('/cicsa_material/export', [CicsaController::class, 'exportMaterial'])
 Route::post('/cicsa_material/importmaterial', [CicsaController::class, 'importMaterial'])->name('material.import');
 
 Route::any('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
-Route::post('/cicsa_purchase_order/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
+Route::post('/cicsa_purchase_order/store/update/{cicsa_purchase_order_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
 Route::get('/cicsa_purchase_order/export', [CicsaController::class, 'exportPurchaseOrder'])->name('purchase.order.export');
 
 
@@ -42,7 +42,7 @@ Route::get('/cicsa_installation/export', [CicsaController::class, 'exportInstall
 // CicsaPurchaseOrderValidations
 
 Route::any('/cicsa_purchase_order_validation', [CicsaController::class, 'indexOCValidation'])->name('cicsa.purchase_orders.validation');
-Route::post('/cicsa_purchase_order_validation/store/{cicsa_assignation_id?}', [CicsaController::class, 'storeOrUpdateOCValidation'])->name('cicsa.purchase_orders.validation.storeOrUpdate');
+Route::put('/cicsa_purchase_order_validation/store/{cicsa_validation_order_id}', [CicsaController::class, 'storeOrUpdateOCValidation'])->name('cicsa.purchase_orders.validation.storeOrUpdate');
 Route::get('/cicsa_purchase_order_validation/export', [CicsaController::class, 'exportOCValidation'])->name('cicsa.purchase_orders.validation.export');
 
 // Route::post('/cicsa_purchase_order_validation/store/{cicsa_validation_id}', [CicsaController::class, 'updateOCValidation'])->name('cicsa.purchase_orders.validation.update');
@@ -50,15 +50,13 @@ Route::get('/cicsa_purchase_order_validation/export', [CicsaController::class, '
 // CicsaServiceOrders
 
 Route::any('/cicsa_service_orders', [CicsaController::class, 'indexServiceOrder'])->name('cicsa.service_orders');
-Route::post('/cicsa_service_orders/store/{cicsa_assignation_id?}', [CicsaController::class, 'storeServiceOrder'])->name('cicsa.service_orders.store');
-Route::post('/cicsa_service_orders/update/{cicsa_service_order_id}', [CicsaController::class, 'updateServiceOrder'])->name('cicsa.service_orders.update');
+Route::put('/cicsa_service_orders/update/{cicsa_service_order_id}', [CicsaController::class, 'updateServiceOrder'])->name('cicsa.service_orders.update');
 Route::get('/cicsa_service_orders/export', [CicsaController::class, 'exportServiceOrder'])->name('cicsa.service_orders.export');
 
 // CicsaChargeArea
 
 Route::any('/cicsa_charge_areas', [CicsaController::class, 'indexChargeArea'])->name('cicsa.charge_areas');
-Route::post('/cicsa_charge_areas/store/{cicsa_assignation_id?}', [CicsaController::class, 'storeChargeArea'])->name('cicsa.charge_areas.store');
-Route::post('/cicsa_charge_areas/update/{cicsa_charge_area}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
+Route::put('/cicsa_charge_areas/update/{cicsa_charge_area_id}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
 Route::get('/cicsa_charge_areas/accepted/get', [CicsaController::class, 'getChargeAreaAccepted'])->name('cicsa.charge_areas.accpeted');
 Route::get('/cicsa_charge_areas/export', [CicsaController::class, 'exportChargeArea'])->name('cicsa.charge_areas.export');
 
@@ -68,5 +66,3 @@ Route::get('/cicsa_charge_areas/export', [CicsaController::class, 'exportChargeA
 Route::post('/cicsa_advance_search', [CicsaController::class, 'search'])->name('cicsa.advance.search');
 
 Route::get('/cicsa_export_materials_summary/{ca_id}', [CicsaController::class, 'exportMaterialsSummary'])->name('cicsa.export.materials.summary');
-
-

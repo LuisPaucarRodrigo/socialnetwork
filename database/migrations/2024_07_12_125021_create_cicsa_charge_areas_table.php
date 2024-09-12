@@ -25,9 +25,10 @@ return new class extends Migration
             $table->string('transaction_number_bank')->nullable();
             $table->float('amount_bank')->nullable();
             
-            $table->string('user_name');
+            $table->string('user_name')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('cicsa_assignation_id')->constrained('cicsa_assignations')->onDelete('cascade');
+            $table->foreignId('cicsa_assignation_id')->nullable()->constrained('cicsa_assignations')->onDelete('cascade');
+            $table->foreignId('cicsa_purchase_order_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

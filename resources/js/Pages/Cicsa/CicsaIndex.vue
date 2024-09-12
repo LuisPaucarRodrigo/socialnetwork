@@ -669,7 +669,7 @@
                             <td 
                                 :class="
                                     stateClass(
-                                        item?.cicsa_feasibility.feasibility_date
+                                        item?.cicsa_feasibility?.feasibility_date
                                     )
                                 "
                                 v-if="
@@ -1055,10 +1055,10 @@
                                 v-if="checkVisibility('Orden de Compra')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="order in item?.cicsa_purchase_order" class="text-gray-900 text-center">
                                     {{
                                         formattedDate(
-                                            item?.cicsa_purchase_order?.oc_date
+                                            order?.oc_date
                                         )
                                     }}
                                 </p>
@@ -1072,8 +1072,8 @@
                                 v-if="checkVisibility('Orden de Compra')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_purchase_order?.oc_number }}
+                                <p v-for="order in item?.cicsa_purchase_order" class="text-gray-900 text-center">
+                                    {{ order?.oc_number }}
                                 </p>
                             </td>
                             <td
@@ -1086,9 +1086,9 @@
                                 v-if="checkVisibility('Orden de Compra')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="order in item?.cicsa_purchase_order" class="text-center">
                                     {{
-                                        item?.cicsa_purchase_order
+                                        order
                                             ?.master_format
                                     }}
                                 </p>
@@ -1102,8 +1102,8 @@
                                 v-if="checkVisibility('Orden de Compra')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
-                                    {{ item?.cicsa_purchase_order?.item3456 }}
+                                <p v-for="order in item?.cicsa_purchase_order" class="text-center">
+                                    {{ order?.item3456 }}
                                 </p>
                             </td>
                             <td
@@ -1115,8 +1115,8 @@
                                 v-if="checkVisibility('Orden de Compra')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
-                                    {{ item?.cicsa_purchase_order?.budget }}
+                                <p v-for="order in item?.cicsa_purchase_order" class="text-center">
+                                    {{ order?.budget }}
                                 </p>
                             </td>
                             <td
@@ -1128,8 +1128,8 @@
                                 v-if="checkVisibility('Orden de Compra')"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_purchase_order?.user_name }}
+                                <p v-for="order in item?.cicsa_purchase_order" class="text-gray-900 text-center">
+                                    {{ order?.user_name }}
                                 </p>
                             </td>
 
