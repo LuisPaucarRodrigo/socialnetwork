@@ -198,12 +198,13 @@
           <option>Unidad</option>
           <option>Metros</option>
           <option>Kilogramos</option>
+          <option>Paquete</option>
         </select>
       </div>
 
       <div>
         <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
-        <input type="number" min="0" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        <input type="number" min="0" step="0.01" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
 
       <div>

@@ -15,6 +15,11 @@ class HuaweiBalanceEarning extends Model
         'invoice_number',
         'amount',
         'invoice_date',
-        'deposit_date'
+        'deposit_date',
+        'main_amount',
+        'main_op_number',
+        'detraction_amount',
+        'detraction_op_number',
+        'detraction_date'
     ];
 }

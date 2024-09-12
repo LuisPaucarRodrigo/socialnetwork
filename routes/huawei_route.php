@@ -110,6 +110,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/projects/real_earnings/{huawei_project_real_earning}/delete', [HuaweiProjectController::class, 'deleteRealEarning'])->name('huawei.projects.realearnings.delete');
     Route::get('huawei/projects/{huawei_project}/real_earnings/export', [HuaweiProjectController::class, 'exportRealEarnings'])->name('huawei.projects.realearnings.export');
     Route::post('huawei/projects/{huawei_project}/real_earnings/import', [HuaweiProjectController::class, 'importRealEarnings'])->name('huawei.projects.realearnings.import');
+    Route::post('huawei/projects/{huawei_project}/real_earnings/verify_import', [HuaweiProjectController::class, 'verifyImportRealEarnings'])->name('huawei.projects.realearnings.verify');
 
     //liquidations
     Route::get('huawei/projects/{huawei_project}/liquidations/get_resources', [HuaweiProjectController::class, 'geResourcesToLiquidate'])->name('huawei.projects.liquidations');
@@ -133,6 +134,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/general_balance/earnings/{huawei_balance_earning}/delete', [HuaweiBalanceController::class, 'deleteEarning'])->name('huawei.generalbalance.earnings.delete');
     Route::post('huawei/general_balance/earnings/import', [HuaweiBalanceController::class, 'importEarnings'])->name('huawei.generalbalance.earnings.import');
     Route::get('huawei/general_balance/earnings/export_excel', [HuaweiBalanceController::class, 'exportEarnings'])->name('huawei.generalbalance.earnings.export');
+    Route::post('huawei/general_balance/earnings/verify_import/post', [HuaweiBalanceController::class, 'verifyImportEarnings'])->name('huawei.generalbalance.earnings.verify');
 
     Route::get('huawei/general_balance/costs/get/{type?}', [HuaweiBalanceController::class, 'getCosts'])->name('huawei.generalbalance.costs');
     Route::get('huawei/general_balance/costs/{request}/search/{type?}', [HuaweiBalanceController::class, 'searchCosts'])->name('huawei.generalbalance.costs.search');

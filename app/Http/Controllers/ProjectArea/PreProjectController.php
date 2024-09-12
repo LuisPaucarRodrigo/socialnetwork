@@ -46,12 +46,11 @@ class PreProjectController extends Controller
         if ($request->isMethod('get')) {
             $preprojects_status = $request->input('preprojects_status');
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
-                'preprojects' => Preproject::where('status', $preprojects_status)
-                    ->with('users')
+                'preprojects' => Preproject::with('users')->where('status', $preprojects_status)
                     ->orderBy('created_at', 'desc')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
-                'users' => User::select('id', 'name')->get()
+                'users' => User::select('id', 'name')->orderBy('name', 'asc')->get()
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -668,7 +667,7 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
             'preprojectImages' => $preprojectImages,
             'imagesCode' => $imagesCode,
-            'preproject' => Preproject::select('id')->find($preproject_id),
+            'preproject' => Preproject::select('id', 'status')->find($preproject_id),
         ]);
     }
 
@@ -933,7 +932,7 @@ class PreProjectController extends Controller
     public function showCodes()
     {
         return Inertia::render('ProjectArea/PreProject/Codes', [
-            'codes' => Code::paginate(10)
+            'codes' => Code::paginate(20)
         ]);
     }
 

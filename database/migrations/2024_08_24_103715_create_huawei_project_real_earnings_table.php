@@ -17,6 +17,11 @@ return new class extends Migration
             $table->double('amount');
             $table->date('invoice_date');
             $table->date('deposit_date')->nullable();
+            $table->double('main_amount')->nullable();
+            $table->string('main_op_number')->nullable();
+            $table->double('detraction_amount')->nullable();
+            $table->string('detraction_op_number')->nullable();
+            $table->string('detraction_date')->nullable();
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
             $table->timestamps();
         });

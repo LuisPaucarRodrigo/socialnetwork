@@ -104,7 +104,7 @@ class Project extends Model
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts->sum('real_amount');
-        $staticCosts = $this->staticCosts->where('expense_type', '!=', 'Combustible GEP')
+        $staticCosts = $this->staticCosts()->where('expense_type', '!=', 'Combustible GEP')->get()
         ->sum('real_amount');
 
         $currentBudget = $currentBudget

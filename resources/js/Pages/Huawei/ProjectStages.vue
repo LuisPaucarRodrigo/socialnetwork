@@ -321,7 +321,7 @@ function filterStage($e) {
 }
 
 function approveCode() {
-    router.put(route('huawei.projects.stages.approveCode', { code: title_code_id.value }), {
+    router.put(route('huawei.projects.stages.approveCode', { code: title_code_id.value }), null, {
         onSuccess: () => {
             titleSuccessImage.value = "Código Aprobado"
             messageSuccessImage.value = "El Codigo de aprobó correctamente"
@@ -340,7 +340,7 @@ function verifyApproveModal(preproject_code_id) {
 }
 
 const updateStage = () => {
-    router.put(route('huawei.projects.stages.updatestage', {stage: props.selectedStage}), {
+    router.put(route('huawei.projects.stages.updatestage', {stage: props.selectedStage}), null, {
         onSuccess: () => {
             titleSuccessImage.value = "Etapa Actualizada"
             messageSuccessImage.value = "La etapa se actualizó correctamente"

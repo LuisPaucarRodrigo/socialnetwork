@@ -695,8 +695,8 @@
                                 "
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
-                                    {{ item?.cicsa_feasibility?.report }}
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ feasibility?.report }}
                                 </p>
                             </td>
                             <td
@@ -912,8 +912,8 @@
                                 "
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
-                                    {{ item?.cicsa_installation?.conformity }}
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ installation?.conformity }}
                                 </p>
                             </td>
                             <td
@@ -925,8 +925,8 @@
                                 "
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
-                                    {{ item?.cicsa_installation?.report }}
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ installation?.report }}
                                 </p>
                             </td>
                             <td
@@ -1143,10 +1143,10 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center">
                                     {{
                                         formattedDate(
-                                            item.cicsa_purchase_order_validation
+                                            order_validation
                                                 ?.validation_date
                                         )
                                     }}
@@ -1162,9 +1162,9 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_purchase_order_validation
+                                        order_validation
                                             ?.file_validation
                                     }}
                                 </p>
@@ -1179,9 +1179,9 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_purchase_order_validation
+                                        order_validation
                                             ?.materials_control
                                     }}
                                 </p>
@@ -1196,9 +1196,9 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_purchase_order_validation
+                                        order_validation
                                             ?.supervisor
                                     }}
                                 </p>
@@ -1213,9 +1213,9 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_purchase_order_validation
+                                        order_validation
                                             ?.warehouse
                                     }}
                                 </p>
@@ -1230,9 +1230,9 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_purchase_order_validation
+                                        order_validation
                                             ?.boss
                                     }}
                                 </p>
@@ -1247,9 +1247,9 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_purchase_order_validation
+                                        order_validation
                                             ?.liquidator
                                     }}
                                 </p>
@@ -1264,9 +1264,9 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_purchase_order_validation
+                                        order_validation
                                             ?.superintendent
                                     }}
                                 </p>
@@ -1281,9 +1281,9 @@
                                 v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item.cicsa_purchase_order_validation
+                                        order_validation
                                             ?.user_name
                                     }}
                                 </p>
@@ -1298,10 +1298,10 @@
                                 v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
                                         formattedDate(
-                                            item?.cicsa_service_order
+                                            service_order
                                                 ?.service_order_date
                                         )
                                     }}
@@ -1316,9 +1316,9 @@
                                 v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_service_order?.service_order
+                                        service_order?.service_order
                                     }}
                                 </p>
                             </td>
@@ -1332,9 +1332,9 @@
                                 v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_service_order
+                                        service_order
                                             ?.estimate_sheet
                                     }}
                                 </p>
@@ -1349,9 +1349,9 @@
                                 v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_service_order
+                                        service_order
                                             ?.purchase_order
                                     }}
                                 </p>
@@ -1365,8 +1365,8 @@
                                 v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
-                                    {{ item?.cicsa_service_order?.pdf_invoice }}
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ service_order?.pdf_invoice }}
                                 </p>
                             </td>
                             <td
@@ -1378,8 +1378,8 @@
                                 v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-center">
-                                    {{ item?.cicsa_service_order?.zip_invoice }}
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ service_order?.zip_invoice }}
                                 </p>
                             </td>
                             <td
@@ -1389,8 +1389,8 @@
                                 v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_service_order?.user_name }}
+                                <p v-for="service_order in item?.cicsa_service_order" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ service_order?.user_name }}
                                 </p>
                             </td>
 
@@ -1403,7 +1403,7 @@
                                 v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
                                         item?.cicsa_charge_area?.invoice_number
                                     }}
@@ -1418,10 +1418,10 @@
                                 v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
                                         formattedDate(
-                                            item?.cicsa_charge_area
+                                            charge_area
                                                 ?.invoice_date
                                         )
                                     }}
@@ -1436,10 +1436,10 @@
                                 v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_charge_area?.credit_to }}
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ charge_area?.credit_to }}
                                     {{
-                                        item?.cicsa_charge_area?.credit_to
+                                        charge_area?.credit_to
                                             ? "días"
                                             : ""
                                     }}
@@ -1454,10 +1454,10 @@
                                 v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
                                         formattedDate(
-                                            item?.cicsa_charge_area
+                                            charge_area
                                                 ?.payment_date
                                         )
                                     }}
@@ -1472,10 +1472,10 @@
                                 v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_charge_area?.days_late }}
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ charge_area?.days_late }}
                                     {{
-                                        item?.cicsa_charge_area?.days_late
+                                        charge_area?.days_late
                                             ? "días"
                                             : ""
                                     }}
@@ -1490,10 +1490,10 @@
                                 v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
                                         formattedDate(
-                                            item?.cicsa_charge_area
+                                            charge_area
                                                 ?.deposit_date
                                         )
                                     }}
@@ -1505,13 +1505,13 @@
                                 "
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_charge_area?.amount
+                                        charge_area?.amount
                                             ? "S/."
                                             : ""
                                     }}
-                                    {{ item?.cicsa_charge_area?.amount }}
+                                    {{ charge_area?.amount }}
                                 </p>
                             </td>
                             <td
@@ -1521,8 +1521,8 @@
                                 v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_charge_area?.state }}
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ charge_area?.state }}
                                 </p>
                             </td>
                             <td
@@ -1534,8 +1534,8 @@
                                 v-if="checkVisibility('Cobranza')"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]"
                             >
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_charge_area?.user_name }}
+                                <p v-for="charge_area in item?.cicsa_charge_area" class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ charge_area?.user_name }}
                                 </p>
                             </td>
                             <td

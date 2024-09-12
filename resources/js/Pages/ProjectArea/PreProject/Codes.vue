@@ -33,14 +33,14 @@
                 </thead>
                 <tbody>
                     <tr v-for="code in codes.data" :key="code.id" class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ code.code }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ code.description }}</p>
                         </td>
                         <td v-if="hasPermission('ProjectManager')"
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <div class="flex justify-center space-x-3">
                                 <button type="button" @click="openEditCodeModal(code)"
                                     class="text-yellow-600 whitespace-no-wrap">
@@ -170,7 +170,6 @@ const submit = () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
-                router.visit(route('preprojects.codes'))
             }, 2000);
         },
     });
@@ -184,7 +183,6 @@ const submitEdit = () => {
             showModalEdit.value = true
             setTimeout(() => {
                 showModalEdit.value = false;
-                router.visit(route('preprojects.codes'))
             }, 2000);
         }
     });
@@ -213,8 +211,7 @@ const deleteCode = () => {
     if (docId) {
         router.delete(route('preprojects.codes.delete', { code: docId }), {
             onSuccess: () => {
-                closeModalDoc(),
-                    router.visit(route('preprojects.codes'))
+                closeModalDoc()
             }
         });
     }

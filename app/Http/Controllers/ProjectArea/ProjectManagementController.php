@@ -312,7 +312,8 @@ class ProjectManagementController extends Controller
             ];
         })->toArray();
 
-        $staticCosts = $project_id->staticCosts->sum('real_amount');
+        $staticCosts =  $this->staticCosts()->where('expense_type', '!=', 'Combustible GEP')->get()
+        ->sum('real_amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')

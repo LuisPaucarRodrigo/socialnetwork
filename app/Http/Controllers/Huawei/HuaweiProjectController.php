@@ -791,12 +791,6 @@ class HuaweiProjectController extends Controller
         }
     }
 
-    private function sanitizeNumber($text)
-    {
-        return preg_replace('/\D/', '', $text);
-    }
-
-
     //resources
 
     public function getResources($huawei_project, $equipment = null)
@@ -1351,7 +1345,9 @@ class HuaweiProjectController extends Controller
         $query = HuaweiProjectRealEarning::where('huawei_project_id', $huawei_project->id);
 
             $query->where(function ($q) use ($searchTerm) {
-                $q->whereRaw('LOWER(invoice_number) LIKE ?', ["%{$searchTerm}%"]);
+                $q->whereRaw('LOWER(invoice_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(main_op_number) LIKE ? ', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(detraction_op_number) LIKE ? ', ["%{$searchTerm}%"]);
             });
 
         $earnings = $query->orderBy('created_at', 'desc')->get();
@@ -1379,7 +1375,12 @@ class HuaweiProjectController extends Controller
             'invoice_number' => 'required',
             'amount' => 'required',
             'invoice_date' => 'required',
-            'deposit_date' => 'nullable'
+            'deposit_date' => 'nullable',
+            'main_amount' => 'nullable',
+            'main_op_number' => 'nullable',
+            'detraction_amount' => 'nullable',
+            'detraction_date' => 'nullable',
+            'detraction_op_number' => 'nullable'
         ]);
 
         $data['huawei_project_id'] = $request->huawei_project_id;
@@ -1399,7 +1400,12 @@ class HuaweiProjectController extends Controller
             'invoice_number' => 'required',
             'amount' => 'required',
             'invoice_date' => 'required',
-            'deposit_date' => 'nullable'
+            'deposit_date' => 'nullable',
+            'main_amount' => 'nullable',
+            'main_op_number' => 'nullable',
+            'detraction_amount' => 'nullable',
+            'detraction_date' => 'nullable',
+            'detraction_op_number' => 'nullable'
         ]);
 
         $huawei_project_real_earning->update($data);
@@ -1449,7 +1455,106 @@ class HuaweiProjectController extends Controller
 
         // Definir el rango de lectura: A1 hasta la última fila en la columna D
         $startCell = 'A1';
-        $endCell = 'D' . $sheet->getHighestRow();
+        $endCell = 'I' . $sheet->getHighestRow();
+        $range = "$startCell:$endCell";
+
+        // Leer el rango especificado
+        $data = $sheet->rangeToArray($range, null, true, true, true);
+
+        $groupedData = [];
+
+        // Recorrer las filas y agrupar los datos
+        foreach ($data as $index => $row) {
+            $invoice_number = $row['A'];
+
+            // Si no existe aún en groupedData, lo agregamos
+            if (!isset($groupedData[$invoice_number])) {
+                $groupedData[$invoice_number] = (object) [
+                    'invoice_number' => $row['A'],
+                    'amount' => $this->sanitizeNumber($row['B']),
+                    'invoice_date' => $this->sanitizeDate($row['C']),
+                    'deposit_date' => !empty($row['D']) ? $this->sanitizeDate($row['D']) : null,
+                    'main_op_number' => !empty($row['E']) ? $row['E'] : null,
+                    'main_amount' => !empty($row['F']) ? $this->sanitizeNumber($row['F']) : null,
+                    'detraction_date' => !empty($row['G']) ? $this->sanitizeDate($row['G']) : null,
+                    'detraction_amount' => !empty($row['H']) ? $this->sanitizeNumber($row['H']) : null,
+                    'detraction_op_number' => !empty($row['I']) ? $row['I'] : null,
+                ];
+            } else {
+                // Si ya existe, sumamos los valores de amount, main_amount y detraction_amount
+                $groupedData[$invoice_number]->amount += $this->sanitizeNumber($row['B']);
+                $groupedData[$invoice_number]->main_amount += !empty($row['F']) ? $this->sanitizeNumber($row['F']) : 0;
+                $groupedData[$invoice_number]->detraction_amount += !empty($row['H']) ? $this->sanitizeNumber($row['H']) : 0;
+            }
+        }
+
+        // Convertimos el array asociativo a un array plano con los objetos únicos por invoice_number
+        $rowsAsObjects = array_values($groupedData);
+
+        // Empezar la transacción
+        DB::beginTransaction();
+
+        try {
+            foreach ($rowsAsObjects as $item) {
+                $found_earning = HuaweiProjectRealEarning::where('invoice_number', $item->invoice_number)->where('huawei_project_id', $huawei_project)->first();
+
+                if ($found_earning) {
+                    // Si el registro ya existe, actualizamos
+                    $found_earning->update([
+                        'amount' => $item->amount,
+                        'invoice_date' => $item->invoice_date,
+                        'deposit_date' => $item->deposit_date,
+                        'main_amount' => $item->main_amount,
+                        'main_op_number' => $item->main_op_number,
+                        'detraction_amount' => $item->detraction_amount,
+                        'detraction_op_number' => $item->detraction_op_number,
+                        'detraction_date' => $item->detraction_date,
+                    ]);
+                } else {
+                    // Si no existe, creamos un nuevo registro
+                    HuaweiProjectRealEarning::create([
+                        'invoice_number' => $item->invoice_number,
+                        'amount' => $item->amount,
+                        'invoice_date' => $item->invoice_date,
+                        'deposit_date' => $item->deposit_date,
+                        'main_amount' => $item->main_amount,
+                        'main_op_number' => $item->main_op_number,
+                        'detraction_amount' => $item->detraction_amount,
+                        'detraction_op_number' => $item->detraction_op_number,
+                        'detraction_date' => $item->detraction_date,
+                        'huawei_project_id' => $huawei_project
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['earning_error' => 'Hubo un problema al procesar los registros.'])->withInput();
+        }
+
+        DB::commit();
+
+        return redirect()->back();
+    }
+
+    public function verifyImportRealEarnings ($huawei_project, Request $request)
+    {
+        $data = $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        // Manejar la carga del archivo
+        $document = $request->file('file');
+
+        // Leer el archivo Excel directamente desde el stream
+        $spreadsheet = IOFactory::load($document->getRealPath());
+
+        // Obtener la primera hoja
+        /** @var Worksheet $sheet */
+        $sheet = $spreadsheet->getSheet(0);
+
+        // Definir el rango de lectura: A1 hasta la última fila en la columna D
+        $startCell = 'A1';
+        $endCell = 'A' . $sheet->getHighestRow();
         $range = "$startCell:$endCell";
 
         // Leer el rango especificado
@@ -1464,44 +1569,71 @@ class HuaweiProjectController extends Controller
 
             $rowObject = (object)[
                 'invoice_number' => $row['A'],
-                'amount' => $row['B'],
-                'invoice_date' => $this->sanitizeDate($row['C']),
-                'deposit_date' => !empty($row['D']) ? $this->sanitizeDate($row['D']) : null
             ];
 
             $rowsAsObjects[] = $rowObject;
         }
 
         foreach ($rowsAsObjects as $item) {
-            HuaweiProjectRealEarning::create([
-                'invoice_number' => $item->invoice_number,
-                'amount' => $item->amount,
-                'invoice_date' => $item->invoice_date,
-                'deposit_date' => $item->deposit_date,
-                'huawei_project_id' => $huawei_project
-            ]);
+            $found_earning = HuaweiProjectRealEarning::where('invoice_number', $item->invoice_number)->where('huawei_project_id', $huawei_project)->first();
+            if ($found_earning){
+                return response()->json([
+                    'message' => 'found'
+                ]);
+            }
         }
 
-        return redirect()->back();
+        return response()->json([
+            'message' => 'notfound'
+        ]);
     }
+
+    //private functions
+
 
     private function sanitizeDate($date)
     {
-        // Intentar analizar la fecha con varios formatos posibles
-        try {
-            return Carbon::createFromFormat('d / m / Y', $date)->format('Y-m-d');
-        } catch (\Exception $e) {
+        // Definir los formatos de fecha esperados
+        $formats = [
+            'd / m / Y', // Ejemplo: 01 / 01 / 2024
+            'd/m/Y',     // Ejemplo: 01/01/2024
+            'Y-m-d',     // Ejemplo: 2024-01-01
+            'd-m-Y',     // Ejemplo: 01-01-2024
+            'd.m.Y',     // Ejemplo: 01.01.2024
+        ];
+
+        // Intentar analizar la fecha con los formatos definidos
+        foreach ($formats as $format) {
             try {
-                return Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+                return Carbon::createFromFormat($format, $date)->format('Y-m-d');
             } catch (\Exception $e) {
-                try {
-                    return Carbon::parse($date)->format('Y-m-d');
-                } catch (\Exception $e) {
-                    // En caso de error, puedes manejar el error o retornar un valor por defecto
-                    return null; // o cualquier valor por defecto que prefieras
-                }
+                // Continúa al siguiente formato si falla
+                continue;
             }
         }
+
+        // Si ninguno de los formatos funcionó, intentar un parseo general
+        try {
+            return Carbon::parse($date)->format('Y-m-d');
+        } catch (\Exception $e) {
+            // En caso de error, puedes manejar el error o retornar un valor por defecto
+            return null; // o cualquier valor por defecto que prefieras
+        }
+    }
+
+
+    private function sanitizeNumber($text)
+    {
+        // Remover todos los caracteres que no sean dígitos o puntos
+        $sanitized = preg_replace('/[^0-9.]/', '', $text);
+
+        // Si hay más de un punto, remover todos menos el último
+        if (substr_count($sanitized, '.') > 1) {
+            $parts = explode('.', $sanitized);
+            $sanitized = implode('', array_slice($parts, 0, -1)) . '.' . end($parts);
+        }
+
+        return $sanitized;
     }
 
 }

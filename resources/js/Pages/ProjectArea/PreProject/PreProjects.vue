@@ -136,10 +136,11 @@
                     Agregar usuarios
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                    <div class="sm:col-span-6">
+                    <div class="sm:col-span-3">
                         <InputLabel for="users" class="font-medium leading-6 text-gray-900">Usuarios</InputLabel>
                         <div class="mt-2">
                             <select multiple v-model="assignUserForm.user_id_array" id="users"
+                                size="20"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option v-for="user in props.users" :key="user.id" :value="user.id" :selected="assignUserForm.user_id_array.includes(user.id)">
                                     {{ user.name }}
@@ -147,7 +148,18 @@
                             </select>
                         </div>
                     </div>
+                    <div class="sm:col-span-3">
+                        <InputLabel for="users" class="font-medium leading-6 text-gray-900">
+                            Usuarios Asginados
+                        </InputLabel>
+                        <div class="mt-2">
+                                <p v-for="user in assignUserForm.user_id_array" :key="user"  class="text-sm">
+                                    - {{ users.find(item=>item.id==user).name }}
+                                </p>
+                        </div>
+                    </div>
                 </div>
+                <InputError :message="assignUserForm.errors.user_id_array" class="mt-2" />
                 <div class="mt-6 flex gap-3 justify-end">
                     <SecondaryButton type="button" @click="closeAssignUser">Cerrar</SecondaryButton>
                     <PrimaryButton type="submit">Asignar</PrimaryButton>
@@ -176,6 +188,7 @@ import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
     preprojects: Object,
