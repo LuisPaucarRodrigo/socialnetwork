@@ -95,8 +95,11 @@
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
   
-  const props = defineProps({
-
+  const {employees, e_employees, sections, test} = defineProps({
+    employees: Object, 
+    e_employees: Object, 
+    sections: Object,
+    test: Object
   });
   
 

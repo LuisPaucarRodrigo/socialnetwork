@@ -65,7 +65,7 @@ class Employee extends Model
         return $this->hasMany(EmployeeFormationProgram::class, 'employee_id');
     }
 
-    public function documents_registers () {
+    public function document_registers () {
         return $this->hasMany(DocumentRegister::class, 'employee_id');
     }
 

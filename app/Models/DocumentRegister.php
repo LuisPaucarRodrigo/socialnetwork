@@ -17,4 +17,5 @@ class DocumentRegister extends Model
         'state',
         'observations',
     ];
+    
 }
