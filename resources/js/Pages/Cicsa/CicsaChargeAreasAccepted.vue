@@ -1,13 +1,12 @@
 <template>
 
-    <Head title="CICSA Área de Cobranza" />
+    <Head title="Proyectos Completados" />
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header>
-            Proyectos Completados
+            Proyecto Completado
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <br>
-            <div class="overflow-x-auto h-[70vh]">
+            <div class="overflow-x-auto h-full">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr
@@ -38,15 +37,35 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Abono
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Estado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Monto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Abono de Cuenta Corriente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Numero de Transacción de Cuenta Corriente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto de Cuenta Corriente
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Fecha de Abono de la detraccion
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Numero de Transacción de la detraccion
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto de la detraccion
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -58,71 +77,115 @@
                         <tr v-for="item in charge_areas.data" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.project_name }}
+                                    {{ item.cicsa_assignation.project_name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.invoice_number }}
+                                    {{ item?.invoice_number }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_charge_area?.invoice_date) }}
+                                    {{ formattedDate(item?.invoice_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]"
+                                :class="!item.credit_to ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.credit_to ? item.cicsa_charge_area.credit_to + ' día(s)'
-        : '' }}
+                                    {{ item?.credit_to ? item.credit_to + ' día(s)' : '' }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]"
+                                :class="!item?.deposit_date ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_charge_area?.payment_date) }}
+                                    {{ formattedDate(item?.deposit_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]"
+                                :class="item.days_late > 0 ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
-        item.cicsa_charge_area.days_late + ' día(s)' : '' }}
+                                    {{ item?.invoice_date && item?.credit_to ?
+        item.days_late + ' día(s)' : '' }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]"
+                                :class="item?.state === 'Con deuda' && !item?.credit_to ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_charge_area?.deposit_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.invoice_date && item.cicsa_charge_area?.credit_to ?
-        item.cicsa_charge_area?.state : '' }}
+                                    {{ item?.invoice_date && item?.credit_to ?
+        item?.state : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.amount ? 'S/. ' +
-        item.cicsa_charge_area?.amount.toFixed(2) : ''
+                                    {{ item?.amount ? 'S/. ' +
+        item?.amount.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_charge_area?.user_name }}
+                                    {{ formattedDate(item?.deposit_date) }}
                                 </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item?.transaction_number_current }}
+                                </p>
+                            </td>
+                            <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item?.checking_account_amount ? 'S/. ' +
+        item?.checking_account_amount.toFixed(2) : ''
+                                    }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ formattedDate(item?.deposit_date_bank) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item?.transaction_number_bank }}
+                                </p>
+                            </td>
+                            <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item?.amount_bank ? 'S/. ' +
+        item?.amount_bank.toFixed(2) : ''
+                                    }}
+                                </p>
+                            </td>
+
+                            <td class="border-b border-gray-200 px-5 py-3 text-[13px]"
+                                :class="!item?.user_name ? 'bg-red-200' : 'bg-white'">
+                                <p class="text-gray-900 text-center">
+                                    {{ item?.user_name }}
+                                </p>
+                            </td>
+                        </tr>
+                        <tr class="sticky bottom-0 z-5">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="7">
+                                Totales:
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm " colspan="3">
+                                S/ {{ total_amount.toFixed(2) }}
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="3">
+                                S/ {{ total_checking_account_amount.toFixed(2) }}
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="2">
+                                S/ {{ total_amount_bank.toFixed(2) }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div v-if="charge_areas.links">
+            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="charge_areas.links" />
             </div>
-            <div v-else>
-
-            </div>
-
         </div>
     </AuthenticatedLayout>
 </template>
@@ -134,10 +197,11 @@ import Pagination from '@/Components/Pagination.vue';
 import { Head } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils.js';
 
-
-const { charge_areas, auth } = defineProps({
+const { charge_areas, total_checking_account_amount, total_amount_bank, total_amount } = defineProps({
     charge_areas: Object,
-    auth: Object
+    total_amount: Object,
+    total_checking_account_amount: Object,
+    total_amount_bank: Object
 })
 
 </script>

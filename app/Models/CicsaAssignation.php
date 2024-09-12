@@ -52,22 +52,22 @@ class CicsaAssignation extends Model
 
     public function cicsa_purchase_order ()
     {
-        return $this->hasOne(CicsaPurchaseOrder::class, 'cicsa_assignation_id');
+        return $this->hasMany(CicsaPurchaseOrder::class, 'cicsa_assignation_id');
     }
 
     public function cicsa_purchase_order_validation ()
     {
-        return $this->hasOne(CicsaPurchaseOrderValidation::class, 'cicsa_assignation_id');
+        return $this->hasMany(CicsaPurchaseOrderValidation::class, 'cicsa_assignation_id');
     }
 
     public function cicsa_service_order ()
     {
-        return $this->hasOne(CicsaServiceOrder::class, 'cicsa_assignation_id');
+        return $this->hasMany(CicsaServiceOrder::class, 'cicsa_assignation_id');
     }
 
     public function cicsa_charge_area ()
     {
-        return $this->hasOne(CicsaChargeArea::class, 'cicsa_assignation_id');
+        return $this->hasMany(CicsaChargeArea::class, 'cicsa_assignation_id');
     }
 
 

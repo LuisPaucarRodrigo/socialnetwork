@@ -693,15 +693,20 @@ class PreProjectController extends Controller
 
     public function approve_reject_image(Request $request, $id)
     {
-        $data = $request->validate([
-            'state' => 'required|boolean',
-            'observation' => 'nullable|string'
-        ]);
-        $image = Imagespreproject::find($id);
-        $image->update([
-            'observation' => $data['observation'],
-            'state' => $data['state']
-        ]);
+        try {
+            $data = $request->validate([
+                'state' => 'required|boolean',
+                'observation' => 'nullable|string'
+            ]);
+            $image = Imagespreproject::find($id);
+            $image->update([
+                'observation' => $data['observation'],
+                'state' => $data['state']
+            ]);
+            return response()->json([], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error al Aprobar multiples imagenes'], 401);
+        }
     }
 
     public function approve_code($id)
@@ -738,6 +743,19 @@ class PreProjectController extends Controller
         }
     }
 
+    public function approve_images($code_id)
+    {
+        try {
+            $code_images = Imagespreproject::where('preproject_code_id', $code_id)->whereNull('state')->get();
+            $code_images->each(function ($image) {
+                $image->update(['state' => 1]);
+            });
+            return response()->json([], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error al Aprobar multiples imagenes'], 401);
+        }
+    }
+
     public function download_image($id)
     {
         $image = Imagespreproject::find($id);
@@ -754,10 +772,9 @@ class PreProjectController extends Controller
     public function download_report($preproject_title_id)
     {
         $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->find($preproject_title_id);
-        // dd($preprojectImages);
         $preproject = Preproject::find($preprojectImages->preproject_id);
         $customer = Customers_contact::find($preproject->subcustomer_id);
-        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('preprojectImages', 'customer'));
+        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('preprojectImages', 'preproject', 'customer'));
         return $pdf->stream();
     }
 
@@ -790,8 +807,8 @@ class PreProjectController extends Controller
     }
 
     public function downloadKmz($preproject_title_id)
-    {   
-        $coordinates = PreprojectCode::with('imagecodepreprojet')->where('preproject_title_id',$preproject_title_id)->get();
+    {
+        $coordinates = PreprojectCode::with('imagecodepreprojet')->where('preproject_title_id', $preproject_title_id)->get();
         $kmlPlacemarks = '';
         foreach ($coordinates->imagecodepreprojet as $coord) {
             $longitude = $coord['longitude'];
@@ -906,9 +923,7 @@ class PreProjectController extends Controller
             'preproject_id' => 'required',
             'user_id_array' => 'required'
         ]);
-
         $preproject = Preproject::find($request->preproject_id);
-
         $preproject->users()->sync($request->user_id_array, ['timestamps' => true]);
     }
 
