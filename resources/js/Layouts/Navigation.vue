@@ -233,6 +233,10 @@ Usuarios
                         </MyTransition>
                     </div>
                 </template>
+
+                <MyTransition :transitiondemonstration="showingHumanResource">
+                    <Link class="w-full" :href="route('document.rrhh.status')">Estatus RRHH</Link>
+                </MyTransition>
             </template>
 
             <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">

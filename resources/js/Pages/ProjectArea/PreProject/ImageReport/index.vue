@@ -41,7 +41,7 @@
                             class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
                             <h2 :data-tooltip-target="`info-tooltip-${image.id}`"  class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
                                 {{ image.description }}
-                            </h2>
+                            </h2>   
                             <div
                                 :id="`info-tooltip-${image.id}`"
                                 role="tooltip"

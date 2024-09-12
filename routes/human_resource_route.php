@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentSpreedSheetController;
 use App\Http\Controllers\HumanResource\ControlEmployees;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
@@ -149,4 +150,9 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
 
     //Member Alarm
     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.alarm');
+
+
+
+    //Document Spreed Sheet
+    Route::get('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');
 });
