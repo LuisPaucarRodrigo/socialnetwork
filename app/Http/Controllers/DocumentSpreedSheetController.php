@@ -41,6 +41,7 @@ class DocumentSpreedSheetController extends Controller
                                 'exp_date' => $dr->exp_date,
                                 'state' => $dr->state,
                                 'observations' => $dr->observations,
+                                'sync_status' => $dr->sync_status,
 
                             ]
                         ];
@@ -76,6 +77,7 @@ class DocumentSpreedSheetController extends Controller
                                 'exp_date' => $dr->exp_date,
                                 'state' => $dr->state,
                                 'observations' => $dr->observations,
+                                'sync_status' => $dr->sync_status,
 
                             ]
                         ];

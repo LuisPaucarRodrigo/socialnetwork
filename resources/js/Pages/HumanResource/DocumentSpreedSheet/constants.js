@@ -1,13 +1,13 @@
 export const principalData = [
-    { title: 'Estado', propName: 'contract?.state', propAlign: 'text-center' },
-    { title: 'Personal', propName: ['lastname', 'name'], propAlign: 'text-left' },
+    { title: 'Estado', propName: 'contract?.state', propClass: 'text-center' },
+    { title: 'Personal', propName: ['lastname', 'name'], propClass: 'text-left sticky left-0 z-10 bg-yellow-100', titleClass: 'sticky left-0 z-10' },
 ]
 
 export const personalData = [
-    { title: 'DNI', propName: 'dni', propAlign: 'text-center' },
-    { title: 'Fecha de Ingreso', propName: 'contract?.hire_date', propAlign: 'text-center', propType: 'date' },
-    { title: 'Número de Celular', propName: 'phone1', propAlign: 'text-center' },
-    { title: 'Correo Personal', propName: 'email', propAlign: 'text-center' },
+    { title: 'DNI', propName: 'dni', propClass: 'text-center' },
+    { title: 'Fecha de Ingreso', propName: 'contract?.hire_date', propClass: 'text-center', propType: 'date' },
+    { title: 'Número de Celular', propName: 'phone1', propClass: 'text-center' },
+    { title: 'Correo Personal', propName: 'email', propClass: 'text-center' },
 ]
 
 

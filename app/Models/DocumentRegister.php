@@ -17,5 +17,19 @@ class DocumentRegister extends Model
         'state',
         'observations',
     ];
+
+    protected $appends = [
+        'sync_status'
+    ];
     
+    public function document () {
+        return $this->belongsTo(Document::class, 'document_id');
+    }
+
+    public function getSyncStatusAttribute () {
+        if ($this->document()){
+            return $this->exp_date === $this->document->exp_date;
+        }
+        return null;
+    }
 }
