@@ -14,13 +14,14 @@ class DocumentSpreedSheetController extends Controller
     {
         $employees = Employee::with([
             'document_registers',
-            'contract:id,state,employee_id,pension_id',
+            'contract:id,state,employee_id,discount_sctr,pension_id',
             ])
             ->select(
                 'id',
                 'phone1',
                 'email',
                 'dni',
+                'l_policy',
                 'sctr_exp_date',
                 'policy_exp_date',
             )
@@ -44,23 +45,42 @@ class DocumentSpreedSheetController extends Controller
                 );
                 return $emp;
             });
-        $e_employees = ExternalEmployee::with('document_registers')->get();
+        $e_employees = ExternalEmployee::with([
+            'document_registers',
+            ])
+            ->select(
+                'id',
+                'phone1',
+                'email',
+                'dni',
+                'sctr',
+                'l_policy',
+                'sctr_exp_date',
+                'policy_exp_date',
+            )
+            ->get()
+            ->map(function ($emp) {
+                $emp->document_registers = $emp->document_registers->map(
+                    function ($dr) {
+                        return [
+                            $dr->id => [
+                                'subdivision_id' => $dr->subdivision_id,
+                                'document_id' => $dr->document_id,
+                                'employee_id' => $dr->employee_id,
+                                'e_employee_id' => $dr->e_employee_id,
+                                'exp_date' => $dr->exp_date,
+                                'state' => $dr->state,
+                                'observations' => $dr->observations,
+
+                            ]
+                        ];
+                    }
+                );
+                return $emp;
+            });
         $sections = DocumentSection::with('subdivisions')->get();
 
 
-        // $e_employees->document_registers = $ $e_employees
-        //     ->document_registers
-        //     ->map(function($item): array{
-        //         return [
-        //             'subdivision_id'=> $item->subdivision_id,
-        //             'document_id'=> $item->document_id,
-        //             'employee_id'=> $item->employee_id,
-        //             'e_employee_id'=> $item->e_employee_id,
-        //             'exp_date'=> $item->exp_date,
-        //             'state'=> $item->state,
-        //             'observations'=> $item->observations,
-        //         ];
-        // });
         return Inertia::render(
             'HumanResource/DocumentSpreedSheet/Index',
             [
