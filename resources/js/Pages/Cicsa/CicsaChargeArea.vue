@@ -167,7 +167,7 @@
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.credit_to ? materialDetail.credit_to + 'día(s)'
+                                            {{ materialDetail?.credit_to ? materialDetail?.credit_to + 'día(s)'
                                             : '' }}
                                         </p>
                                     </td>
