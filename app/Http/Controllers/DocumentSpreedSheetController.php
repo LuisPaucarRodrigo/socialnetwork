@@ -14,10 +14,12 @@ class DocumentSpreedSheetController extends Controller
     {
         $employees = Employee::with([
             'document_registers',
-            'contract:id,state,employee_id,discount_sctr,pension_id',
+            'contract:id,state,employee_id,hire_date,discount_sctr,pension_id',
             ])
             ->select(
                 'id',
+                'name',
+                'lastname',
                 'phone1',
                 'email',
                 'dni',
@@ -25,6 +27,7 @@ class DocumentSpreedSheetController extends Controller
                 'sctr_exp_date',
                 'policy_exp_date',
             )
+            ->orderBy('lastname')
             ->get()
             ->map(function ($emp) {
                 $emp->document_registers = $emp->document_registers->map(
@@ -50,6 +53,8 @@ class DocumentSpreedSheetController extends Controller
             ])
             ->select(
                 'id',
+                'name',
+                'lastname',
                 'phone1',
                 'email',
                 'dni',
@@ -79,8 +84,6 @@ class DocumentSpreedSheetController extends Controller
                 return $emp;
             });
         $sections = DocumentSection::with('subdivisions')->get();
-
-
         return Inertia::render(
             'HumanResource/DocumentSpreedSheet/Index',
             [

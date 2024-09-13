@@ -7,45 +7,56 @@
             Estatus RRHH
         </template>
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-          <PrimaryButton>
-            Crear Nueva Subdivisión
-          </PrimaryButton>
-          <!-- <div class="overflow-x-auto">
+
+          <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
-                  <th scope="col"
-                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nombre
+                  <th scope="col" :colspan="principalData.length + 1"
+                    class="px-6 py-3 bg-gray-50 text-center text-xs border-2 font-medium text-gray-600 uppercase tracking-wider">
+                    Datos
                   </th>
+                  <th scope="col" :colspan="personalData.length"
+                    class="px-6 py-3 bg-gray-50 text-center text-xs border-2 font-medium text-gray-600 uppercase tracking-wider">
+                    Datos Personales
+                  </th>
+                </tr>
+                <tr>
                   <th scope="col"
-                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Acciones
+                    class="px-1 py-3 bg-gray-50 text-center text-xs border-2 font-medium text-gray-600 uppercase tracking-wider">
+                    Item
+                  </th>
+                  <th v-for="(da, i) in principalData" :key="i" scope="col"
+                    class="px-6 py-3 bg-gray-50 text-center text-xs border-2 font-medium text-gray-600 uppercase tracking-wider">
+                    {{ da.title }}
+                  </th>
+                  <th v-for="(pd, i) in personalData" :key="i" scope="col"
+                    class="px-6 py-3 bg-gray-50 text-center text-xs border-2 font-medium text-gray-600 uppercase tracking-wider">
+                    {{ pd.title }}
                   </th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="subdivision in subdivisions" :key="subdivision.id">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">{{ subdivision.name }}</div>
+                <tr v-for="emp,index in employees" :key="emp.id" class="whitespace-nowrap font-medium text-gray-900 text-sm">
+                  <td class="px-2 py-2 text-center">
+                    <div class="">
+                      {{ index + 1 }}
+                    </div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-left">
-                      <div class="flex space-x-2">
-                          <a :href="route('documents.zipSubdivision', { section: subdivision.section_id, subdivisionId: subdivision.id })" class="text-blue-600 hover:underline">
-                              <ArrowDownIcon class="h-5 w-5" />
-                          </a>
-                          <button @click="openUpdateSubdivisionModal(subdivision)" class="text-orange-400 hover:underline">
-                              <PencilSquareIcon class="h-5 w-5" />
-                          </button>
-                          <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
-                              <TrashIcon class="h-5 w-5" />
-                          </button>
-                      </div>
+                  <td v-for="da,i in principalData" :key="i" :class="`px-2 py-2 ${da.propAlign}`">
+                    <div class="">
+                      {{ getProp({obj:emp, path:da.propName, sep: ', '}) }}
+                    </div>
+                  </td>
+                  <td v-for="pd,i in personalData" :key="i" :class="`px-2 py-2 ${pd.propAlign}`">
+                    <div class="">
+                      {{  getProp({obj:emp, path:pd.propName, type:pd.propType}) }} 
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
-          </div> -->
+          </div>
   
         </div>
         <!-- <Modal :show="isCreateSubdivisionModalOpen || isUpdateSubdivisionModalOpen">
@@ -94,6 +105,9 @@
   import { ref } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
+  import { formattedDate } from '@/utils/utils';
+
+  import { principalData, personalData, getProp } from './constants';
   
   const {employees, e_employees, sections, test} = defineProps({
     employees: Object, 
