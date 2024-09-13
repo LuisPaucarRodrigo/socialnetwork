@@ -27,7 +27,7 @@ class DocumentRegister extends Model
     }
 
     public function getSyncStatusAttribute () {
-        if ($this->document()){
+        if ($this->document() && $this->exp_date){
             return $this->exp_date === $this->document->exp_date;
         }
         return null;

@@ -95,4 +95,9 @@ class DocumentSpreedSheetController extends Controller
             ]
         );
     }
+
+    public function store() {
+        
+    }
+
 }

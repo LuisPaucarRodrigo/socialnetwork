@@ -84,7 +84,20 @@
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
 
-                        <button type="button" @click="openDocModal">
+                        <button type="button" 
+                          @click="openDocModal(
+                            {
+                              emp_name: emp.name + ' ' + emp.lastname,
+                              doc_name:sub.name,
+                              subdivision_id: sub.id,
+                              document_id: emp[sub.id]?.document_id, 
+                              employee_id: emp.id, 
+                              exp_date: emp[sub.id]?.exp_date, 
+                              state: emp[sub.id]?.state ? emp[sub.id]?.state : '', 
+                              observations: emp[sub.id]?.observations, 
+                            }
+                          )"
+                        >
                           <InformationCircleIcon class="h-6 w-6 text-blue-700 hover:text-blue-400" style="stroke-width: 2;"/>
                         </button>
 
@@ -105,25 +118,48 @@
         <Modal :show="showDocModal" @close="closeDocModal">
           <div class="p-6">
             <h2 class="text-base font-medium leading-7 text-gray-900">
-              title
+              Documento: {{ docForm.doc_name }}
             </h2>
-            <form >
-              <div class="space-y-12">
-                <div class="border-b border-gray-900/10">
+            <h2 class="text-base font-medium leading-7 text-gray-900">
+              Colaborador: {{ docForm.emp_name }}
+            </h2>
+            <form @submit.prevent="submit" >
+              <div class="pb-6 pt-3 border-t border-b border-gray-900/10 ">
+                <div class=" grid sm:grid-cols-2 gap-6">
                   <div>
-                    <InputLabel for="name"></InputLabel>
+                    <InputLabel> Estado <span class="text-red-600 text-normal">*</span></InputLabel>
                     <div class="mt-2">
-                      <!-- <TextInput type="text" v-model="form.name" id="name" autocomplete="off" />
-                      <InputError :message="form.errors.name" /> -->
+                      <select v-model="docForm.state" id="rols"
+                          class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                          <option value="" disabled>Seleccionar Estado</option>
+                          <option>Pendiente</option>
+                          <option>En Proceso</option>
+                          <option>Completado</option>
+                      </select>
+                      <InputError :message="docForm.errors.state" />
+                    </div>
+                  </div>
+                  <div>
+                    <InputLabel> Fecha de Vencimiento</InputLabel>
+                    <div class="mt-2">
+                      <TextInput type="date" v-model="docForm.exp_date"  autocomplete="off" />
+                      <InputError :message="docForm.errors.exp_date" />
+                    </div>
+                  </div>
+                  <div class="sm:col-span-2">
+                    <InputLabel> Observaciones</InputLabel>
+                    <div class="mt-2">
+                      <textarea class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" rows="4" v-model="docForm.observations"  autocomplete="off" />
+                      <InputError :message="docForm.errors.observations" />
                     </div>
                   </div>
                 </div>
-                <div class=" flex items-center justify-end gap-x-6">
-                  <SecondaryButton @click="closeDocModal" > Cancelar </SecondaryButton>
-                  <PrimaryButton type="submit" class="text-xs uppercase tracking-wider">
-                    Guardar
-                  </PrimaryButton>
-                </div>
+              </div>
+              <div class="mt-3 flex items-center justify-end gap-x-6">
+                <SecondaryButton @click="closeDocModal" > Cancelar </SecondaryButton>
+                <PrimaryButton type="submit" class="text-xs uppercase tracking-wider">
+                  Guardar
+                </PrimaryButton>
               </div>
             </form>
           </div>
@@ -166,13 +202,18 @@
   const showDocModal = ref(false)
   const docForm = useForm({})
 
-  function openDocModal () {
+  function openDocModal (item) {
     showDocModal.value = true
+    docForm.defaults({...item})
+    docForm.reset()
   }
   function closeDocModal () {
     showDocModal.value = false
   }
   
+  function submit () {
+     console.log(docForm.data())
+  }
 
 
   
