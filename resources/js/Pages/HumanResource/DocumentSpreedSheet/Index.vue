@@ -81,8 +81,11 @@
                           </div>
                         </span>
                       </div>
-                      <p class="w-3/4">
-                        {{ emp.document_registers[sub.id]?.state }}
+                      <p :class="['w-3/4 text-sm', emp.document_registers[sub.id]?.display && 'text-red-600']">
+                        {{ emp.document_registers[sub.id]?.display 
+                            ? formattedDate(emp.document_registers[sub.id]?.exp_date )
+                            : ''
+                        }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
                         <button type="button" 
@@ -144,7 +147,7 @@
                   <div>
                     <InputLabel> Fecha de Vencimiento</InputLabel>
                     <div class="mt-2">
-                      <TextInput type="date" v-model="docForm.exp_date"  autocomplete="off" />
+                      <TextInput type="date" v-model="docForm.exp_date" :class="disabledExpDate&&'opacity-50'" :disabled="disabledExpDate" autocomplete="off" />
                       <InputError :message="docForm.errors.exp_date" />
                     </div>
                   </div>
@@ -186,7 +189,7 @@
   import InputError from '@/Components/InputError.vue';
   import { Head, useForm, router } from '@inertiajs/vue3';
   import { TrashIcon, PencilSquareIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
   import { formattedDate } from '@/utils/utils';
@@ -207,6 +210,8 @@
   const showDocModal = ref(false)
   const docForm = useForm({})
 
+
+  //Each cell post transaction
   function openDocModal (item) {
     showDocModal.value = true
     docForm.defaults({...item})
@@ -230,6 +235,17 @@
     }
     closeDocModal()
   }
+
+  //No Corresponde and maybe En proceso
+  const disabledExpDate = ref(false)
+  watch([()=>docForm.state], ()=>{
+    if(docForm.state==='No Corresponde'){
+      docForm.exp_date=undefined
+      disabledExpDate.value = true 
+    } else {
+      disabledExpDate.value = false
+    }
+  })
 
 
   

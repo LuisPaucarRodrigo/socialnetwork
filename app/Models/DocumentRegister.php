@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class DocumentRegister extends Model
 {
@@ -19,7 +20,8 @@ class DocumentRegister extends Model
     ];
 
     protected $appends = [
-        'sync_status'
+        'sync_status',
+        'display'
     ];
     
     public function document () {
@@ -35,5 +37,14 @@ class DocumentRegister extends Model
             return false;
         }
         return null;
+    }
+
+    public function getDisplayAttribute () {
+        if (is_null($this->exp_date)) {
+            return false;
+        }
+        $expDate = Carbon::parse($this->exp_date);
+        $now = Carbon::now();
+        return $expDate->lte($now->addWeek());
     }
 }
