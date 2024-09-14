@@ -102,6 +102,9 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::get('/sections', [SectionController::class, 'showSections'])->name('sections.sections');
     Route::post('/sections', [SectionController::class, 'storeSection'])->name('sections.storeSection');
     Route::delete('/sections/{section}', [SectionController::class, 'destroySection'])->name('sections.destroySection');
+
+
+    Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])->name('document.rrhh.status.store');
 });
 
 Route::middleware('permission:HumanResourceManager|HumanResource')->group(function () {

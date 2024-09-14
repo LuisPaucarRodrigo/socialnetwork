@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HumanResource\DocumentRegisterRequest;
+use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class DocumentSpreedSheetController extends Controller
@@ -31,9 +33,9 @@ class DocumentSpreedSheetController extends Controller
             ->orderBy('lastname')
             ->get()
             ->map(function ($emp) {
-                $emp->document_registers = $emp->document_registers->map(
+                $formattedDr = $emp->document_registers->mapWithKeys(
                     function ($dr) {
-                        return [
+                        $itemDr = [
                             $dr->subdivision_id => [
                                 'id' => $dr->id,
                                 'document_id' => $dr->document_id,
@@ -46,8 +48,10 @@ class DocumentSpreedSheetController extends Controller
 
                             ]
                         ];
+                        return $itemDr;
                     }
                 );
+                $emp->setRelation('document_registers', $formattedDr);
                 return $emp;
             });
         $e_employees = ExternalEmployee::with([
@@ -67,7 +71,8 @@ class DocumentSpreedSheetController extends Controller
             )
             ->get()
             ->map(function ($emp) {
-                $emp->document_registers = $emp->document_registers->map(
+                $formattedDr = (object) [];
+                $formattedDr = $emp->document_registers->mapWithKeys(
                     function ($dr) {
                         return [
                             $dr->subdivision_id => [
@@ -84,6 +89,7 @@ class DocumentSpreedSheetController extends Controller
                         ];
                     }
                 );
+                $emp->setRelation('document_registers', $formattedDr);
                 return $emp;
             });
         $sections = DocumentSection::with('subdivisions')->get();
@@ -97,8 +103,16 @@ class DocumentSpreedSheetController extends Controller
         );
     }
 
-    public function store(DocumentRegisterRequest $request, $dr_id) {
-        
+    public function store(DocumentRegisterRequest $request, $dr_id=null) {
+        $data = $request->validated();
+        $item = DocumentRegister::find($dr_id);
+        if ($item){
+            $item->update($data);
+        } else {
+            $item = DocumentRegister::create($data);
+        }
+        $item->without('document');
+        return response()->json([$item->subdivision_id=>$item], 200);
     }
 
 }

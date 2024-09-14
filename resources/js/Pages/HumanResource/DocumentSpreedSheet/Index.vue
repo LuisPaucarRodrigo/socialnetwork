@@ -47,7 +47,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="emp,index in employees" :key="emp.id" class="whitespace-nowrap font-medium text-gray-900 text-sm">
+                <tr v-for="emp,index in employeesData" :key="emp.id" class="whitespace-nowrap font-medium text-gray-900 text-sm">
                   <td class="px-2 py-2 text-center">
                     <div class="">
                       {{ index + 1 }}
@@ -67,35 +67,36 @@
                   </td>
                   <!-- All Sections -->
                   <template v-for="sec in sections">
-                    <td v-for="sub in sec.subdivisions" :key="sub.id" :class="['px-2 py-4', 'text-center border-2']">
-                    <div class="min-w-[150px] flex items-center">
-
-                      
-                      <div v-if="emp[sub.id]?.sync_status === false" class="relative group">
+                    <td v-for="sub in sec.subdivisions" :key="sub.id" :class="['px-2 py-4', 'text-center border-2',
+                        emp.document_registers[sub.id] === undefined && 'bg-red-100',
+                        emp.document_registers[sub.id]?.state === 'En Proceso' && 'bg-amber-100',
+                        emp.document_registers[sub.id]?.state === 'Completado' && 'bg-green-100',
+                        emp.document_registers[sub.id]?.state === 'No Corresponde' && 'bg-white-100',
+                    ]">
+                    <div class="min-w-[170px] flex items-center">
+                      <div v-if="emp.document_registers[sub.id]?.sync_status === false" class="relative group">
                         <span class="relative inline-flex rounded-full h-3 w-3 bg-fuchsia-500 cursor-pointer">
                           <div class="absolute -top-8 left-1/2 transform w-max -translate-x-1/2 p-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity duration-100 z-50 whitespace-normal">
                             Documento No Sincronizado
                           </div>
                         </span>
                       </div>
-        
                       <p class="w-3/4">
-                        s{{ emp[sub.id]?.id }} 
+                        {{ emp.document_registers[sub.id]?.state }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-
                         <button type="button" 
                           @click="openDocModal(
                             {
                               emp_name: emp.name + ' ' + emp.lastname,
                               doc_name:sub.name,
-                              id: emp[sub.id]?.id,
+                              id: emp.document_registers[sub.id]?.id,
                               subdivision_id: sub.id,
-                              document_id: emp[sub.id]?.document_id, 
+                              document_id: emp.document_registers[sub.id]?.document_id, 
                               employee_id: emp.id, 
-                              exp_date: emp[sub.id]?.exp_date, 
-                              state: emp[sub.id]?.state ? emp[sub.id]?.state : '', 
-                              observations: emp[sub.id]?.observations, 
+                              exp_date: emp.document_registers[sub.id]?.exp_date, 
+                              state: emp.document_registers[sub.id]?.state ? emp.document_registers[sub.id]?.state : '', 
+                              observations: emp.document_registers[sub.id]?.observations, 
                             }
                           )"
                         >
@@ -130,12 +131,12 @@
                   <div>
                     <InputLabel> Estado <span class="text-red-600 text-normal">*</span></InputLabel>
                     <div class="mt-2">
-                      <select v-model="docForm.state" id="rols"
+                      <select v-model="docForm.state" id="rols" required
                           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                           <option value="" disabled>Seleccionar Estado</option>
-                          <option>Pendiente</option>
                           <option>En Proceso</option>
                           <option>Completado</option>
+                          <option>No Corresponde</option>
                       </select>
                       <InputError :message="docForm.errors.state" />
                     </div>
@@ -200,6 +201,9 @@
     test: Object
   });
 
+  const employeesData = ref(employees)
+  const e_mployeesData = ref(e_employees)
+  
   const showDocModal = ref(false)
   const docForm = useForm({})
 
@@ -208,12 +212,23 @@
     docForm.defaults({...item})
     docForm.reset()
   }
+
   function closeDocModal () {
+    docForm.defaults({})
+    docForm.reset()
     showDocModal.value = false
   }
-  
-  function submit () {
-     console.log(docForm.data())
+
+  async function submit () {
+    let url = route('document.rrhh.status.store', {dr_id: docForm?.id})
+    const res = await axios.post(url, docForm)
+    let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
+    let emp = employeesData.value[index]
+    employeesData.value[index].document_registers = {
+      ...emp.document_registers,
+      ...res.data, 
+    }
+    closeDocModal()
   }
 
 
