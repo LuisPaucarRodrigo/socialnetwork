@@ -6,8 +6,8 @@
         <template #header>
             Estatus RRHH
         </template>
+        <Toaster richColors class="z-1000"/>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
-
           <div class="overflow-x-auto h-[80vh]">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="sticky z-20 top-0">
@@ -180,23 +180,21 @@
   
   <script setup>
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-  import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-  import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-  import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import TextInput from '@/Components/TextInput.vue';
   import InputError from '@/Components/InputError.vue';
-  import { Head, useForm, router } from '@inertiajs/vue3';
-  import { TrashIcon, PencilSquareIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
+  import { Head, useForm } from '@inertiajs/vue3';
   import { ref, watch } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
   import { formattedDate } from '@/utils/utils';
-
-  import { PencilIcon, InformationCircleIcon } from '@heroicons/vue/24/outline';
+  import { InformationCircleIcon } from '@heroicons/vue/24/outline';
   import { principalData, personalData, getProp } from './constants';
-  
+  import { Toaster } from 'vue-sonner';
+  import { notify, notifyError } from '@/Components/Notification';
+
+
   const {employees, e_employees, sections, test} = defineProps({
     employees: Object, 
     e_employees: Object, 
@@ -226,14 +224,24 @@
 
   async function submit () {
     let url = route('document.rrhh.status.store', {dr_id: docForm?.id})
-    const res = await axios.post(url, docForm)
-    let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
-    let emp = employeesData.value[index]
-    employeesData.value[index].document_registers = {
-      ...emp.document_registers,
-      ...res.data, 
+    try{
+      const res = await axios.post(url, docForm)
+      let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
+      let emp = employeesData.value[index]
+      employeesData.value[index].document_registers = {
+        ...emp.document_registers,
+        ...res.data, 
+      }
+      closeDocModal()
+      setTimeout(()=>{
+        notify('Registro Documentario Guardado')
+      }, 100)
+    }catch (e){
+      closeDocModal()
+      setTimeout(()=>{
+        notifyError('Server Error')
+      }, 100)
     }
-    closeDocModal()
   }
 
   //No Corresponde and maybe En proceso
