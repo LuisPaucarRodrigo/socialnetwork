@@ -67,7 +67,7 @@
                   </td>
                   <!-- All Sections -->
                   <template v-for="sec in sections">
-                    <td v-for="sub in sec.subdivisions" :key="sub.id" :class="['px-2 py-4', 'text-center border-2',
+                    <td v-for="sub in sec.subdivisions" :key="sub.id" :class="['px-2 py-2', 'text-center border-2',
                         emp.document_registers[sub.id] === undefined && 'bg-red-100',
                         emp.document_registers[sub.id]?.state === 'En Proceso' && 'bg-amber-100',
                         emp.document_registers[sub.id]?.state === 'Completado' && 'bg-green-100',
@@ -115,10 +115,6 @@
               </tbody>
             </table>
           </div>
-
-
-
-  
         </div>
         <Modal :show="showDocModal" @close="closeDocModal">
           <div class="p-6">
@@ -169,11 +165,6 @@
             </form>
           </div>
         </Modal>
-        <!-- 
-        <ConfirmCreateModal :confirmingcreation="showModal" itemType="Subdivisión de documentos" />
-        <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Subdivisión de documentos" />
-        <ConfirmDeleteModal :confirmingDeletion="create_subdivision" itemType="Subdivisión"
-          :deleteFunction="deleteSubdivision" @closeModal="closeModalSubdivision" /> -->
       </AuthenticatedLayout>
     </div>
   </template>
