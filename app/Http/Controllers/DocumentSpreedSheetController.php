@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HumanResource\DocumentRegisterRequest;
 use App\Models\DocumentSection;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
@@ -33,8 +34,8 @@ class DocumentSpreedSheetController extends Controller
                 $emp->document_registers = $emp->document_registers->map(
                     function ($dr) {
                         return [
-                            $dr->id => [
-                                'subdivision_id' => $dr->subdivision_id,
+                            $dr->subdivision_id => [
+                                'id' => $dr->id,
                                 'document_id' => $dr->document_id,
                                 'employee_id' => $dr->employee_id,
                                 'e_employee_id' => $dr->e_employee_id,
@@ -69,8 +70,8 @@ class DocumentSpreedSheetController extends Controller
                 $emp->document_registers = $emp->document_registers->map(
                     function ($dr) {
                         return [
-                            $dr->id => [
-                                'subdivision_id' => $dr->subdivision_id,
+                            $dr->subdivision_id => [
+                                'id' => $dr->id,
                                 'document_id' => $dr->document_id,
                                 'employee_id' => $dr->employee_id,
                                 'e_employee_id' => $dr->e_employee_id,
@@ -96,7 +97,7 @@ class DocumentSpreedSheetController extends Controller
         );
     }
 
-    public function store() {
+    public function store(DocumentRegisterRequest $request, $dr_id) {
         
     }
 

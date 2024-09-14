@@ -89,6 +89,7 @@
                             {
                               emp_name: emp.name + ' ' + emp.lastname,
                               doc_name:sub.name,
+                              id: emp[sub.id]?.id,
                               subdivision_id: sub.id,
                               document_id: emp[sub.id]?.document_id, 
                               employee_id: emp.id, 
