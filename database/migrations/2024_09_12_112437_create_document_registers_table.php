@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('observations')->nullable();
 
             $table->timestamps();
+            $table->unique(['subdivision_id', 'employee_id']);
         });
     }
 
