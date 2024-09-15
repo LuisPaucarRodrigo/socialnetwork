@@ -55,7 +55,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="emp,index in employeesData" :key="emp.id" class="whitespace-nowrap font-medium text-gray-900 text-sm">
+                <tr v-for="emp,index in employeesData" :key="emp.id" class="whitespace-nowrap font-medium text-gray-900 text-sm hover:opacity-60">
                   <td class="px-2 py-2 text-center">
                     <div class="">
                       {{ index + 1 }}
@@ -93,9 +93,9 @@
                         </span>
                       </div>
                       <p :class="['w-3/4 text-sm', emp.document_registers[sub.id]?.display && 'text-red-600']">
-                        {{ emp.document_registers[sub.id]?.display 
-                            ? formattedDate(emp.document_registers[sub.id]?.exp_date )
-                            : ''
+                        {{ 
+                             formattedDate(emp.document_registers[sub.id]?.exp_date )
+                            
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
@@ -172,7 +172,7 @@
                   Eliminar
                 </button>
                 <SecondaryButton @click="closeDocModal" > Cancelar </SecondaryButton>
-                <PrimaryButton type="submit" class="text-xs uppercase tracking-widest font-semibold">
+                <PrimaryButton type="submit" :disabled="isLoading" :class="['text-xs uppercase tracking-widest font-semibold',isLoading&&'opacity-25']">
                   Guardar
                 </PrimaryButton>
               </div>
@@ -223,10 +223,13 @@
   function closeDocModal () {
     docForm.defaults({})
     docForm.reset()
+    isLoading.value = false
     showDocModal.value = false
   }
 
+  const isLoading = ref(false)
   async function submit () {
+    isLoading.value = true
     let url = route('document.rrhh.status.store', {dr_id: docForm?.id})
     try{
       const res = await axios.post(url, docForm)

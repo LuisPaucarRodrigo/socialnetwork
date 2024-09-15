@@ -115,6 +115,11 @@ class DocumentSpreedSheetController extends Controller
         } else {
             $item = DocumentRegister::create($data);
         }
+        $docItem = Document::find($item->document_id);
+        if ($docItem && $docItem->exp_date === null){
+            $docItem->update(['exp_date'=>$item->exp_date]);
+        }
+
         $item->without('document');
         return response()->json([$item->subdivision_id=>$item], 200);
     }
