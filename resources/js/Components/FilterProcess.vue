@@ -1,5 +1,5 @@
 <template>
-    <div :class="['relative z-50 flex justify-between items-center']" ref="popup">
+    <div :class="['relative z-50 inline-block justify-between items-center']" ref="popup">
       <button class="p-2 bg-slate-900 rounded-md hover:bg-slate-500" @click="togglePopup">
         <Squares2X2Icon class="h-5 w-5 text-white" />
       </button>
@@ -90,6 +90,3 @@
   });
   </script>
   
-  <style scoped>
-  /* No additional styles needed since Tailwind CSS is being used */
-  </style>

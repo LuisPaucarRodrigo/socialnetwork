@@ -6,9 +6,15 @@
         <template #header>
             Estatus RRHH
         </template>
+        <FilterProcess
+          :options="sectionsArray"
+          v-model="selectedOptions"
+          :width="'w-[230px]'"
+        />
+        <br>
         <Toaster richColors class="z-1000"/>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
-          <div class="overflow-x-auto h-[80vh]">
+          <div class="overflow-x-auto h-[75vh]">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="sticky z-20 top-0">
                 <tr>
@@ -16,14 +22,16 @@
                     class="px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
                     Datos
                   </th>
-                  <th scope="col" :colspan="personalData.length"
+                  <th scope="col" :colspan="personalData.length" v-if="sectionIsVisible('Datos Personales')"
                     class="px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
                     Datos Personales
                   </th>
-                  <th v-for="sec in sections" :key="sec.id" scope="col" :colspan="sec.subdivisions.length"
-                    class="px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
-                    {{ sec.name }}
-                  </th>
+                  <template  v-for="sec in sections" :key="sec.id">
+                    <th v-if="sectionIsVisible(sec.name)" scope="col" :colspan="sec.subdivisions.length"
+                      class="px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
+                      {{ sec.name }}
+                    </th>
+                  </template>
                 </tr>
                 <tr>
                   <th scope="col"
@@ -34,12 +42,12 @@
                     :class="['px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider',da.titleClass]">
                     {{ da.title }}
                   </th>
-                  <th v-for="(pd, i) in personalData" :key="i" scope="col"
+                  <th v-if="sectionIsVisible('Datos Personales')" v-for="(pd, i) in personalData" :key="i" scope="col"
                     class="px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
                     {{ pd.title }}
                   </th>
                   <template v-for="sec in sections">
-                    <th v-for="(sub, i) in sec.subdivisions" :key="sub.id" scope="col"
+                    <th v-if="sectionIsVisible(sec.name)" v-for="(sub, i) in sec.subdivisions" :key="sub.id" scope="col"
                       :class="['px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider']">
                       {{ sub.name }}
                     </th>
@@ -60,14 +68,17 @@
                     </div>
                   </td>
                   <!-- personalData -->
-                  <td v-for="pd,i in personalData" :key="i" :class="['px-2 py-2', pd.propClass]">
+              
+                  <td v-if="sectionIsVisible('Datos Personales')" v-for="pd,i in personalData" :key="i" :class="['px-2 py-2', pd.propClass]">
                     <div class="">
                       {{  getProp({obj:emp, path:pd.propName, type:pd.propType}) }} 
                     </div>
                   </td>
+
+             
                   <!-- All Sections -->
                   <template v-for="sec in sections">
-                    <td v-for="sub in sec.subdivisions" :key="sub.id" :class="['px-2 py-2', 'text-center border-2',
+                    <td v-if="sectionIsVisible(sec.name)" v-for="sub in sec.subdivisions" :key="sub.id" :class="['px-2 py-2', 'text-center border-2',
                         emp.document_registers[sub.id] === undefined && 'bg-red-100',
                         emp.document_registers[sub.id]?.state === 'En Proceso' && 'bg-amber-100',
                         emp.document_registers[sub.id]?.state === 'Completado' && 'bg-green-100',
@@ -157,7 +168,7 @@
                 </div>
               </div>
               <div class="mt-3 flex items-center justify-end gap-x-6">
-                <button class="inline-flex items-center px-4 text-xs py-2 bg-transparent border border-red-400 rounded-md font-semibold text-red-500  uppercase tracking-widest hover:bg-red-100 transition ease-in-out duration-150" v-if="docForm.id" type="button" @click="destroy">
+                <button class="inline-flex items-center px-4 text-xs py-2 bg-transparent border border-red-400 rounded-md font-semibold text-red-500  uppercase tracking-widest hover:bg-red-100/50 transition ease-in-out duration-150" v-if="docForm.id" type="button" @click="destroy">
                   Eliminar
                 </button>
                 <SecondaryButton @click="closeDocModal" > Cancelar </SecondaryButton>
@@ -182,19 +193,17 @@
   import { ref, watch } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
-  import DangerButton from '@/Components/DangerButton.vue';
   import { formattedDate } from '@/utils/utils';
   import { InformationCircleIcon } from '@heroicons/vue/24/outline';
   import { principalData, personalData, getProp } from './constants';
   import { Toaster } from 'vue-sonner';
   import { notify, notifyError } from '@/Components/Notification';
+  import FilterProcess from '@/Components/FilterProcess.vue';
 
-
-  const {employees, e_employees, sections, test} = defineProps({
+  const { employees, e_employees, sections } = defineProps({
     employees: Object, 
     e_employees: Object, 
     sections: Object,
-    test: Object
   });
 
   const employeesData = ref(employees)
@@ -269,9 +278,12 @@
     }
   })
 
-
-  
-
+  //Section visible
+  let sectionsArray = ['Datos Personales',...sections.map(item=>item.name)]
+  const selectedOptions = ref(sectionsArray)
+  function sectionIsVisible (name) {
+    return selectedOptions.value.includes(name)
+  }
 
   
   </script>
