@@ -157,8 +157,11 @@
                 </div>
               </div>
               <div class="mt-3 flex items-center justify-end gap-x-6">
+                <button class="inline-flex items-center px-4 text-xs py-2 bg-transparent border border-red-400 rounded-md font-semibold text-red-500  uppercase tracking-widest hover:bg-red-100 transition ease-in-out duration-150" v-if="docForm.id" type="button" @click="destroy">
+                  Eliminar
+                </button>
                 <SecondaryButton @click="closeDocModal" > Cancelar </SecondaryButton>
-                <PrimaryButton type="submit" class="text-xs uppercase tracking-wider">
+                <PrimaryButton type="submit" class="text-xs uppercase tracking-widest font-semibold">
                   Guardar
                 </PrimaryButton>
               </div>
@@ -179,6 +182,7 @@
   import { ref, watch } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
+  import DangerButton from '@/Components/DangerButton.vue';
   import { formattedDate } from '@/utils/utils';
   import { InformationCircleIcon } from '@heroicons/vue/24/outline';
   import { principalData, personalData, getProp } from './constants';
@@ -226,6 +230,25 @@
       closeDocModal()
       setTimeout(()=>{
         notify('Registro Documentario Guardado')
+      }, 100)
+    }catch (e){
+      closeDocModal()
+      setTimeout(()=>{
+        notifyError('Server Error')
+      }, 100)
+    }
+  }
+
+  async function destroy () {
+    let url = route('document.rrhh.status.destroy', {dr_id: docForm?.id})
+    try{
+      const res = await axios.delete(url)
+      let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
+      let emp = employeesData.value[index]
+      delete emp.document_registers[docForm.subdivision_id]
+      closeDocModal()
+      setTimeout(()=>{
+        notify('Registro Documentario Eliminado')
       }, 100)
     }catch (e){
       closeDocModal()

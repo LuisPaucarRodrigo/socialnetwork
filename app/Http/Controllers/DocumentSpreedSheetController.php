@@ -120,6 +120,20 @@ class DocumentSpreedSheetController extends Controller
     }
 
 
+    public function destroy ($dr_id=null){
+        $item = DocumentRegister::find($dr_id);
+        $item->delete();
+        return response()->json(['msg'=>'Eliminado'], 200);
+    }
+
+
+
+
+
+
+
+
+
     // public function buildDocReg () {
     //     $string = 'jimmy';
     //     $emp = Employee::where('name', 'like', '%'.$string. '%');
