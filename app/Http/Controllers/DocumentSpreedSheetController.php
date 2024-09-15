@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HumanResource\DocumentRegisterRequest;
+use App\Models\Document;
 use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DocumentSpreedSheetController extends Controller
@@ -116,5 +118,34 @@ class DocumentSpreedSheetController extends Controller
         $item->without('document');
         return response()->json([$item->subdivision_id=>$item], 200);
     }
+
+
+    // public function buildDocReg () {
+    //     $string = 'jimmy';
+    //     $emp = Employee::where('name', 'like', '%'.$string. '%');
+    //     // $emp = Employee::where('lastname', 'like', '%'.$string. '%');
+    //     if($emp->get()->count()===0){dd('no hay registros');}
+    //     if ($emp->get()->count()>1){
+    //         dd('mas de un employee');
+    //     } 
+    //     $selEmp = $emp->first();
+    //     $documents = Document::where('title', 'like', '%'.$string.'%')->get();
+    //     DB::beginTransaction();
+    //     try{
+    //         foreach($documents as $item){
+    //             DocumentRegister::create([
+    //             'subdivision_id'=> $item->subdivision_id,
+    //             'document_id'=> $item->id,
+    //             'employee_id'=> $selEmp->id,
+    //             'state'=> 'Completado',
+    //             ]);
+    //         }
+    //         DB::commit();
+    //     } catch (e){
+    //         DB::rollBack();
+    //         dd('errrorr creando doc registers');
+    //     }
+        
+    // }
 
 }
