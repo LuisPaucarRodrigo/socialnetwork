@@ -27,7 +27,7 @@
                     Datos Personales
                   </th>
                   <template  v-for="sec in sections" :key="sec.id">
-                    <th v-if="sectionIsVisible(sec.name)" scope="col" :colspan="sec.subdivisions.length"
+                    <th v-if="sectionIsVisible(sec.name)" scope="col" :colspan="sec.id === 9 ? sec.subdivisions.length+2 : sec.subdivisions.length"
                       class="px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
                       {{ sec.name }}
                     </th>
@@ -47,6 +47,28 @@
                     {{ pd.title }}
                   </th>
                   <template v-for="sec in sections">
+                    <th v-if="sectionIsVisible(sec.name) && sec.id === 9" scope="col"
+                      :class="['relative px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider']">
+                        SCTR
+                        <button type="button" class="absolute top-2 right-4">
+                          <svg fill="#697475" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                            width="25px" height="25px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+                          <path d="M256,0C114.609,0,0,114.609,0,256s114.609,256,256,256s256-114.609,256-256S397.391,0,256,0z M256,472
+                            c-119.297,0-216-96.703-216-216S136.703,40,256,40s216,96.703,216,216S375.297,472,256,472z"/>
+                          <g>
+                            <rect x="144" y="336" width="224" height="32"/>
+                            <rect x="144" y="272" width="224" height="32"/>
+                            <rect x="144" y="208" width="224" height="32"/>
+                            <rect x="144" y="144" width="224" height="32"/>
+                          </g>
+                          </svg>
+                        </button>
+  
+                    </th>
+                    <th v-if="sectionIsVisible(sec.name) && sec.id === 9" scope="col"
+                      :class="['relative px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider']">
+                      Póliza
+                    </th>
                     <th v-if="sectionIsVisible(sec.name)" v-for="(sub, i) in sec.subdivisions" :key="sub.id" scope="col"
                       :class="['px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider']">
                       {{ sub.name }}
@@ -78,6 +100,34 @@
              
                   <!-- All Sections -->
                   <template v-for="sec in sections">
+                    <td v-if="sectionIsVisible(sec.name) && sec.id === 9" :class="['px-2 py-2', 'text-center border-2',
+                        (emp.contract?.discount_sctr && emp.sctr_exp_date === null) && 'bg-red-100'
+                    ]">
+                      <div class="min-w-[170px] flex items-center">
+                        
+                        <p :class="['w-3/4 text-sm', emp.sctr_about_to_expire && 'text-red-600']">
+                          {{ emp.sctr_exp_date ?
+                              formattedDate(emp.sctr_exp_date )
+                              : ''
+                          }}
+                        </p>
+                      </div>
+                    </td>
+                    <td v-if="sectionIsVisible(sec.name) && sec.id === 9" :class="['px-2 py-2', 'text-center border-2',
+                        (emp.contract?.discount_sctr && !emp.sctr_exp_date) && 'bg-red-100'
+                    ]">
+                      <div class="min-w-[170px] flex items-center">
+                        
+                        <p :class="['w-3/4 text-sm', emp.sctr_about_to_expire && 'text-red-600']">
+                          {{ emp.sctr_exp_date ?
+                              formattedDate(emp.sctr_exp_date )
+                              : ''
+                          }}
+                        </p>
+                      </div>
+                    </td>
+
+
                     <td v-if="sectionIsVisible(sec.name)" v-for="sub in sec.subdivisions" :key="sub.id" :class="['px-2 py-2', 'text-center border-2',
                         emp.document_registers[sub.id] === undefined && 'bg-red-100',
                         emp.document_registers[sub.id]?.state === 'En Proceso' && 'bg-amber-100',
@@ -288,6 +338,7 @@
     return selectedOptions.value.includes(name)
   }
 
+  console.log(employees)
   
   </script>
   

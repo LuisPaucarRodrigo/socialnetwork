@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Employee extends Model
 {
@@ -23,6 +24,10 @@ class Employee extends Model
         'l_policy',
         'sctr_exp_date',
         'policy_exp_date',
+    ];
+
+    protected $appends = [
+        'sctr_about_to_expire'
     ];
 
     //RELATIONS
@@ -83,5 +88,16 @@ class Employee extends Model
     public function salaryPerDay($days)
     {
         return $this->contract()->first()->basic_salary / $days;
+    }
+
+    public function getSctrAboutToExpireAttribute () {
+        if ($this->contract()->first()?->discount_sctr
+            && $this->sctr_exp_date
+        ){
+            $actual = Carbon::now()->addDays(7);
+            $exp_date = Carbon::parse($this->sctr_exp_date);
+            return $exp_date >= $actual;
+        }  
+        return null;
     }
 }
