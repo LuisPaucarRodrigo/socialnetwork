@@ -50,7 +50,7 @@
                     <th v-if="sectionIsVisible(sec.name) && sec.id === 9" scope="col"
                       :class="['relative px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider']">
                         SCTR
-                        <button @click="openInsuranceModal('SCTR')" type="button" class="absolute top-2 right-4">
+                        <button @click="openInsuranceModal('SCTR')" type="button" class="absolute top-50 right-4">
                           <svg fill="#697475" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                             width="25px" height="25px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
                           <path d="M256,0C114.609,0,0,114.609,0,256s114.609,256,256,256s256-114.609,256-256S397.391,0,256,0z M256,472
@@ -67,7 +67,7 @@
                     <th v-if="sectionIsVisible(sec.name) && sec.id === 9" scope="col"
                       :class="['relative px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider']">
                       Póliza
-                      <button @click="openInsuranceModal('Póliza')" type="button" class="absolute top-2 right-4">
+                      <button @click="openInsuranceModal('Póliza')" type="button" class="absolute top-50 right-4">
                           <svg fill="#697475" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                             width="25px" height="25px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
                           <path d="M256,0C114.609,0,0,114.609,0,256s114.609,256,256,256s256-114.609,256-256S397.391,0,256,0z M256,472
