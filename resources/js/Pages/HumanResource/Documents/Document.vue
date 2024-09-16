@@ -315,6 +315,7 @@ const openCreateDocumentModal = () => {
 
 const closeModal = () => {
   form.reset();
+  form.clearErrors()
   create_document.value = false;
 };
 
@@ -330,6 +331,7 @@ const openEditDocumentModal = (document) => {
 
 const closeEditModal = () => {
   form.reset();
+  form.clearErrors()
   update_document.value = false;
 };
 
@@ -337,7 +339,6 @@ const submit = () => {
   form.post(route('documents.create'), {
     onSuccess: () => {
       closeModal();
-      form.reset();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
@@ -354,7 +355,6 @@ const submitEdit = () => {
   form.post(route('documents.update', { id: form.id }), {
     onSuccess: () => {
       closeModal();
-      form.reset();
       showEditModal.value = true
       setTimeout(() => {
         showEditModal.value = false;

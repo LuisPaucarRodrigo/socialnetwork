@@ -180,6 +180,8 @@ class DocumentController extends Controller
         'documents' => $documents->load('subdivision.section'),
         'sections' => DocumentSection::all(),
         'subdivisions' => Subdivision::all(),
+        'employees' => Employee::orderBy('name')->get(),
+        'e_employees' => ExternalEmployee::orderBy('name')->get(),
         'section' => $section,
         'subdivision' => $subdivision,
         'search' => $request
@@ -197,7 +199,6 @@ class DocumentController extends Controller
             $data['document'] = time() . '_' . $document->getClientOriginalName();
             $document->move(public_path('documents/documents/'), $documentName);
         }
-
         Document::create($data);
         return redirect()->back();
     }
