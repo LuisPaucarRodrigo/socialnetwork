@@ -5,6 +5,8 @@ namespace App\Http\Controllers\HumanResource;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\DocumentSection;
+use App\Models\Employee;
+use App\Models\ExternalEmployee;
 use App\Models\Subdivision;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -92,6 +94,8 @@ class DocumentController extends Controller
             'documents' => Document::with('subdivision.section')->paginate(15),
             'sections' => DocumentSection::all(),
             'subdivisions' => Subdivision::all(),
+            'employees' => Employee::orderBy('name')->get(),
+            'e_employees' => ExternalEmployee::orderBy('name')->get(),
             'section' => '',
             'subdivision' => '',
             'search' => ''
@@ -119,6 +123,8 @@ class DocumentController extends Controller
             'documents' => $documents,
             'sections' => DocumentSection::all(),
             'subdivisions' => Subdivision::all(),
+            'employees' => Employee::orderBy('name')->get(),
+            'e_employees' => ExternalEmployee::orderBy('name')->get(),
             'section' => $section == 'no' ? '' : $section,
             'subdivision' => $subdivision == 'no' ? '' : $subdivision,
             'search' => $request
@@ -146,6 +152,8 @@ class DocumentController extends Controller
             'documents' => $documents->load('subdivision.section'),
             'sections' => DocumentSection::all(),
             'subdivisions' => Subdivision::all(),
+            'employees' => Employee::orderBy('name')->get(),
+            'e_employees' => ExternalEmployee::orderBy('name')->get(),
             'section' => $section,
             'subdivision' => '',
             'search' => $request

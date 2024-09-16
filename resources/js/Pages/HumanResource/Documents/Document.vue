@@ -173,6 +173,58 @@
             </div>
 
 
+            <div class="mt-4 flex gap-6">
+              <label class="flex gap-3 items-center" for="empTypePlanilla">
+                Planilla
+                <input id="empTypePlanilla" type="radio" :value="1" v-model="employeeType" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
+              </label>
+              <label class="flex gap-3 items-center" for="empTypeTerceros">
+                Terceros
+                <input id="empTypeTerceros" type="radio" :value="0" v-model="employeeType" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
+              </label>
+            </div>
+            <div v-if="employeeType" class="mt-2">
+                <select v-model="form.employee_id" id="docEmp"
+                  class="border rounded-md px-3 py-2 mb-3 w-full">
+                  <option value="">Seleccionar Colaborador</option>
+                  <option v-for="item in employees" :key="item.id" :value="item.id">
+                    {{ item.name }} {{ item.lastname }}
+                  </option>
+                </select>
+                <InputError :message="form.errors.employee_id" />
+            </div>
+            <div v-else class="mt-2">
+              <select v-model="form.employee_id" id="docEmp"
+                class="border rounded-md px-3 py-2 mb-3 w-full">
+                <option value="">Seleccionar Colaborador</option>
+                <option v-for="item in e_employees" :key="item.id" :value="item.id">
+                  {{ item.name }} {{ item.lastname }}
+                </option>
+              </select>
+              <InputError :message="form.errors.e_employee_id" />
+            </div>
+
+
+            <div class="mt-4 flex gap-4">
+              ¿Tiene Fecha de Vencimiento?
+              <label class="flex gap-2 items-center" for="hasExpDateYes">
+                Si
+                <input id="hasExpDateYes" type="radio" :value="1" v-model="form.has_exp_date" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
+              </label>
+              <label class="flex gap-2 items-center" for="hasExpDateNo">
+                No
+                <input id="hasExpDateNo" type="radio" :value="0" v-model="form.has_exp_date" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
+              </label>
+            </div>
+            <div v-if="form.has_exp_date" class="mt-2">
+              <TextInput id="phone" type="date" maxlength="9"
+                  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  v-model="form.exp_date" required autocomplete="off" />
+            </div>
+
+
+
+
             <div class="mt-6 flex items-center justify-end gap-x-6">
               <SecondaryButton @click="create_document ? closeModal() : closeEditModal()"> Cancelar </SecondaryButton>
               <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
@@ -209,11 +261,14 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import Dropdown from '@/Components/Dropdown.vue';
 import Pagination from '@/Components/Pagination.vue'
+import Employees from '../ManagementEmployees/Employees.vue';
 
 const props = defineProps({
   sections: Object,
   documents: Object,
   subdivisions: Object,
+  employees: Array,
+  e_employees: Array,
   userPermissions: Array,
   section: [String, null],
   subdivision: [String, null],
@@ -229,6 +284,10 @@ const form = useForm({
   document: null,
   section_id: '',
   subdivision_id: '',
+  employee_id: '',
+  e_employee_id: '',
+  has_exp_date: '',
+  exp_date: '',
 });
 
 const filteredSubdivisions = ref([]);
@@ -431,5 +490,16 @@ const filterSubdivision = (e) => {
     }
 
 }
+
+
+const employeeType = ref(1)
+watch(employeeType, ()=>{
+  form.employee_id = ''
+  form.e_employee_id = ''
+})
+watch(()=>form.has_exp_date, ()=>{
+  form.exp_date = ''
+  console.log('entre')
+})
 
 </script>
