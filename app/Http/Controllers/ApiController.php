@@ -83,7 +83,11 @@ class ApiController extends Controller
             $preprojects = $user->preprojects()
                 ->select('preprojects.id as preproject_id', 'preproject_user.id as pivot_id', 'code', 'description', 'date', 'observation', 'status')
                 ->whereNull('status')
+                ->whereHas('preprojectTitles', function ($query) {
+                    $query->where('state', 1);
+                })
                 ->get();
+            
             return response()->json($preprojects);
         } catch (\Exception $e) {
             return response()->json([

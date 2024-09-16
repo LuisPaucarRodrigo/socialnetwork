@@ -28,7 +28,7 @@ class Preproject extends Model
         'total_amount_entry',
         'total_amount_entry_not_margin',
         'total_services_cost',
-        'preproject_code_approve',
+        'preproject_code_approve'
     ];
 
     //RELATIONS
@@ -89,6 +89,11 @@ class Preproject extends Model
 
 
     // CALCULATED
+    public function getVerificationsStagesAttribute()
+    {
+        return $this->preprojectTitles()->where('state', 1)->exists();
+    }
+
     public function getStateAttribute()
     {
         foreach ($this->purchasing_request as $purchasingRequest) {
