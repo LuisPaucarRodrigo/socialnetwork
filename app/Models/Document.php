@@ -12,7 +12,9 @@ class Document extends Model
     protected $fillable = [
         'title', 
         'subdivision_id',
-        'exp_date'
+        'exp_date',
+        'e_employee_id',
+        'employee_id',
     ];
 
     protected $appends = [
