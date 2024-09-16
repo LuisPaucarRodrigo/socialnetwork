@@ -1203,7 +1203,12 @@ class HuaweiProjectController extends Controller
             'description' => 'required',
             'quantity' => 'required',
             'unit_price' => 'required',
-            'huawei_project_id' => 'required'
+            'huawei_project_id' => 'required',
+            'state' => [
+                'required',
+                'string',
+                'in:Pendiente,En Proceso,Completado,Cancelado'
+            ],
         ]);
 
         $count = HuaweiProjectEarning::where('huawei_project_id', $request->huawei_project_id)->count();
@@ -1225,7 +1230,12 @@ class HuaweiProjectController extends Controller
             'description' => 'required',
             'quantity' => 'required',
             'unit_price' => 'required',
-            'huawei_project_id' => 'required'
+            'huawei_project_id' => 'required',
+            'state' => [
+                'required',
+                'string',
+                'in:Pendiente,En Proceso,Completado,Cancelado'
+            ],
         ]);
 
         $huawei_project_earning->update($data);

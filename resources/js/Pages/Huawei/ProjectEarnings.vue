@@ -4,7 +4,7 @@
     <AuthenticatedLayout
       :redirectRoute="{ route: 'huawei.projects'}">
       <template #header>
-        Ingresos del Proyecto {{ props.huawei_project.name }}
+        Ingresos Proyectados del Proyecto {{ props.huawei_project.name }}
       </template>
       <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
     <!-- Botones principales visibles en pantallas grandes -->
@@ -13,7 +13,7 @@
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
             + Agregar
         </button>
-        <button @click.prevent="openImportModal" type="button" v-if="props.huawei_project.status"
+        <button @click.prevent="openImportModal" type="button" v-if="props.huawei_project.status && props.earnings.data.length == 0"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Importar Datos
         </button>
@@ -82,6 +82,9 @@
                 Cantidad</th>
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                Estado</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 Precio Unitario</th>
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
@@ -96,6 +99,7 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.code }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.description }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '-' }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + (item.unit_price * item.quantity).toFixed(2) : '-' }}</td>
               <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -144,7 +148,22 @@
                             </div>
                         </div>
 
-                        <div class="col-span-1 sm:col-span-2">
+                        <div class="col-span-1">
+                            <InputLabel for="state" class="font-medium leading-6 text-gray-900">Estado</InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.state" id="state"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Selecciona un estado</option>
+                                    <option>Pendiente</option>
+                                    <option>En Proceso</option>
+                                    <option>Completado</option>
+                                    <option>Cancelado</option>
+                                </select>
+                                <InputError :message="form.errors.state" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 sm:col-span-1">
                             <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción del Ingreso</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.description" id="description"
@@ -261,6 +280,7 @@ const form = useForm({
   description: '',
   quantity: '',
   unit_price: '',
+  state: '',
   huawei_project_id: props.huawei_project.id,
 });
 
@@ -314,7 +334,7 @@ const openEditAdditionalModal = (additional) => {
   form.quantity = editingAdditional.value.quantity;
   form.unit_price = editingAdditional.value.unit_price;
   form.huawei_project_id = editingAdditional.value.huawei_project_id;
-
+  form.state = editingAdditional.value.state;
   editAdditionalModal.value = true;
 };
 

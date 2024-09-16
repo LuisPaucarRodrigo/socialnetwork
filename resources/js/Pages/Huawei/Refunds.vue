@@ -1,6 +1,6 @@
 <template>
     <Head title="Devoluciones Huawei" />
-    <AuthenticatedLayout :redirectRoute="'huawei.inventory.show'">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 1}}">
       <template #header>
         {{ props.equipment ? 'Devolución de Equipos' : 'Devolución de Materiales' }}
       </template>
@@ -136,6 +136,7 @@
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import TextInput from '@/Components/TextInput.vue';
   import { formattedDate } from '@/utils/utils'
+import Warehouses from '../Inventory/WarehouseManagement/Warehouses.vue';
 
   const props = defineProps({
     refunds: Object,

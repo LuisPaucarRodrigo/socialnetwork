@@ -12,12 +12,12 @@
                 + Agregar
                 </Link>
                 <div v-if="props.equipment" class="hidden sm:block">
-                <Link :href="route('huawei.inventory.show')" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <Link :href="route('huawei.inventory.show', { warehouse: props.warehouse })" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     Materiales
                 </Link>
                 </div>
                 <div v-else class="hidden sm:block">
-                <Link :href="route('huawei.inventory.show', { equipment: 1 })" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                <Link :href="route('huawei.inventory.show', { warehouse: props.warehouse, equipment: 1 })" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     Equipos
                 </Link>
                 </div>
@@ -50,7 +50,7 @@
                         </div>
                         <div class="dropdown" v-if="props.equipment">
                         <div class="dropdown-menu">
-                            <Link :href="route('huawei.inventory.show')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            <Link :href="route('huawei.inventory.show', {warehouse: props.warehouse})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Materiales
                             </Link>
                             <Link :href="route('huawei.inventory.refunds', {equipment: 1})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
@@ -63,7 +63,7 @@
                         </div>
                         <div class="dropdown" v-else>
                         <div class="dropdown-menu">
-                            <Link :href="route('huawei.inventory.show', { equipment: 1 })" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            <Link :href="route('huawei.inventory.show', { warehouse: props.warehouse, equipment: 1 })" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Equipos
                             </Link>
                         </div>
@@ -84,6 +84,15 @@
 
             </div>
             </div>
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2">
+                <p>Almacén</p>
+                <select v-model="selectedWarehouse" id="code" @change="changeWarehouse($event.target.value)" class="block w-full min-w-[150px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option disabled>Seleccione Etapa</option>
+                    <option value="1">Claro</option>
+                    <option value="2">Entel</option>
+                </select>
+            </div>
             <div class="flex items-center ml-auto sm:ml-0">
                 <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
                     <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2 min-w-[100px] w-[200px]" />
@@ -96,6 +105,7 @@
                     </button>
                 </form>
                 </div>
+            </div>
         </div>
 
 
@@ -211,6 +221,7 @@
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import TextInput from '@/Components/TextInput.vue';
   import Dropdown from '@/Components/Dropdown.vue';
+  import { ref } from 'vue';
 
   const props = defineProps({
     materials: [Object, null],
@@ -219,7 +230,10 @@
     brands: Object,
     equipment: [String, null],
     search: String,
+    warehouse: String
   });
+
+  const selectedWarehouse = ref(props.warehouse);
 
   const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -232,15 +246,32 @@
     const search = () => {
         if (searchForm.searchTerm == '') {
             if (props.equipment){
-                router.visit(route('huawei.inventory.show', {equipment: 1}));
+                router.visit(route('huawei.inventory.show', {warehouse: props.warehouse, equipment: 1}));
             } else {
-                router.visit(route('huawei.inventory.show'));
+                router.visit(route('huawei.inventory.show', {warehouse: props.warehouse}));
             }
         } else {
             if (props.equipment){
-                router.visit(route('huawei.inventory.show.search', {request: searchForm.searchTerm, equipment: 1}));
+                router.visit(route('huawei.inventory.show.search', {warehouse: props.warehouse, request: searchForm.searchTerm, equipment: 1}));
             } else {
-                router.visit(route('huawei.inventory.show.search', {request: searchForm.searchTerm}));
+                router.visit(route('huawei.inventory.show.search', {warehouse: props.warehouse, request: searchForm.searchTerm}));
+            }
+        }
+    }
+
+    const changeWarehouse = (value) => {
+        selectedWarehouse.value = value;
+        if (props.search){
+            if (props.equipment){
+                router.visit(route('huawei.inventory.show.search', {warehouse: selectedWarehouse.value, request: props.search, equipment: 1}));
+            } else {
+                router.visit(route('huawei.inventory.show.search', {warehouse: selectedWarehouse.value, request: props.search}));
+            }
+        }else{
+            if (props.equipment){
+                router.visit(route('huawei.inventory.show', {warehouse: selectedWarehouse.value, equipment: 1}));
+            }else{
+                router.visit(route('huawei.inventory.show', {warehouse: selectedWarehouse.value}));
             }
         }
     }
