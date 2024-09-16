@@ -147,6 +147,27 @@ class DocumentSpreedSheetController extends Controller
     }
 
 
+    // public function updateDocReg () {
+    //     $items = DocumentRegister::all();
+
+    //     DB::beginTransaction();
+    //     try{
+    //         foreach($items as $dr){
+    //             if ($dr->document_id){
+    //                 Document::find($dr->document_id)->update([
+    //                     'employee_id'=> $dr->employee_id,
+    //                     'e_employee_id'=> $dr->e_employee_id,
+    //                 ]);
+    //             }
+                
+    //         }
+    //         DB::commit();
+    //     } catch (e) {
+    //         DB::rollBack();
+    //         dd('errrorr creando doc registers');
+    //     }
+    // }
+
 
 
 
