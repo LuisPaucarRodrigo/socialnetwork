@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HumanResource\DocumentRegisterRequest;
+use App\Http\Requests\HumanResource\InsuranceExpDateRequest;
 use App\Models\Document;
 use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
@@ -129,6 +130,20 @@ class DocumentSpreedSheetController extends Controller
         $item = DocumentRegister::find($dr_id);
         $item->delete();
         return response()->json(['msg'=>'Eliminado'], 200);
+    }
+
+
+    public function insurance_exp_date (InsuranceExpDateRequest  $request){
+        $data = $request->validated();
+        if($data['title']==='SCTR'){
+            Employee::whereHas('contract', function ($query) {
+                $query->where('discount_sctr', 1);
+            })->update(['sctr_exp_date'=>$data['exp_date']]);
+        }
+        if($data['title']==='Póliza'){
+            Employee::where('l_policy', '1')->update(['policy_exp_date'=>$data['exp_date']]);
+        }
+        return response()->json(['msg'=>'success'], 200);
     }
 
 

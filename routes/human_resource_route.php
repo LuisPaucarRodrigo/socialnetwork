@@ -106,6 +106,7 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
 
     Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])->name('document.rrhh.status.store');
     Route::delete('/document_rrhh_status/destroy/{dr_id}', [DocumentSpreedSheetController::class, 'destroy'])->name('document.rrhh.status.destroy');
+    Route::post('/document_rrhh_status/insurance_exp_date', [DocumentSpreedSheetController::class, 'insurance_exp_date'])->name('document.rrhh.status.in_expdate');
 });
 
 Route::middleware('permission:HumanResourceManager|HumanResource')->group(function () {

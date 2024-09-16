@@ -27,7 +27,8 @@ class Employee extends Model
     ];
 
     protected $appends = [
-        'sctr_about_to_expire'
+        'sctr_about_to_expire',
+        'policy_about_to_expire',
     ];
 
     //RELATIONS
@@ -96,7 +97,17 @@ class Employee extends Model
         ){
             $actual = Carbon::now()->addDays(7);
             $exp_date = Carbon::parse($this->sctr_exp_date);
-            return $exp_date >= $actual;
+            return $actual >= $exp_date;
+        }  
+        return null;
+    }
+
+    public function getPolicyAboutToExpireAttribute () {
+        if ($this->l_policy && $this->policy_exp_date
+        ){
+            $actual = Carbon::now()->addDays(7);
+            $exp_date = Carbon::parse($this->policy_exp_date);
+            return $actual >= $exp_date;
         }  
         return null;
     }
