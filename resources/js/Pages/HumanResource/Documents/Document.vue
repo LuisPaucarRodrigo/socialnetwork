@@ -282,8 +282,8 @@ const submit = () => {
         router.visit(route('documents.index'))
       }, 2000);
     },
-    onError: () => {
-      form.reset();
+    onError: (e) => {
+      console.log(e)
     },
     onFinish: () => {
       form.reset();
@@ -302,8 +302,8 @@ const submitEdit = () => {
         router.visit(route('documents.index'))
       }, 2000);
     },
-    onError: () => {
-      form.reset();
+    onError: (e) => {
+      console.log(e)
     },
     onFinish: () => {
       form.reset();
