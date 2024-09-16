@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HumanResource;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HumanResource\DocumentCreateRequest;
 use App\Models\Document;
 use App\Models\DocumentSection;
 use App\Models\Employee;
@@ -186,23 +187,18 @@ class DocumentController extends Controller
 }
 
 
-    public function create(Request $request)
+    public function create(DocumentCreateRequest $request)
     {
-        $request->validate([
-            'document' => 'required',
-            'subdivision_id' => 'required|numeric',
-        ]);
+        $data = $request->validated();
+        dd($data);
         $documentName = null;
         if ($request->hasFile('document')) {
             $document = $request->file('document');
-            $documentName = time() . '_' . $document->getClientOriginalName();
+            $data['document'] = time() . '_' . $document->getClientOriginalName();
             $document->move(public_path('documents/documents/'), $documentName);
         }
 
-        Document::create([
-            'title' => $documentName,
-            'subdivision_id' => $request->subdivision_id,
-        ]);
+        Document::create($data);
         return redirect()->back();
     }
 
