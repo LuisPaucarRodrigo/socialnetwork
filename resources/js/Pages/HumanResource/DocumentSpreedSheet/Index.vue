@@ -149,9 +149,6 @@
                     <div class="min-w-[170px] flex items-center">
                       <div v-if="emp.document_registers[sub.id]?.sync_status === false" class="relative group">
                         <span class="relative inline-flex rounded-full h-3 w-3 bg-fuchsia-500 cursor-pointer">
-                          <div class="absolute -top-8 left-1/2 transform w-max -translate-x-1/2 p-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity duration-100 z-50 whitespace-normal">
-                            Documento No Sincronizado
-                          </div>
                         </span>
                       </div>
                       <p :class="['w-3/4 text-sm', emp.document_registers[sub.id]?.display && 'text-red-600']">
@@ -228,6 +225,7 @@
                     </div>
                   </div>
                 </div>
+                <InputError :message="errMsg" />
               </div>
               <div class="mt-3 flex items-center justify-end gap-x-6">
                 <button class="inline-flex items-center px-4 text-xs py-2 bg-transparent border border-red-400 rounded-md font-semibold text-red-500  uppercase tracking-widest hover:bg-red-100/50 transition ease-in-out duration-150" v-if="docForm.id" type="button" @click="destroy">
@@ -315,6 +313,7 @@
     docForm.defaults({})
     docForm.reset()
     isLoading.value = false
+    errMsg.value = false
     showDocModal.value = false
   }
 
@@ -342,17 +341,22 @@
     }
   }
 
+  const errMsg = ref('')
   async function destroy () {
     let url = route('document.rrhh.status.destroy', {dr_id: docForm?.id})
     try{
-      await axios.delete(url)
-      let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
-      let emp = employeesData.value[index]
-      delete emp.document_registers[docForm.subdivision_id]
-      closeDocModal()
-      setTimeout(()=>{
-        notify('Registro Documentario Eliminado')
-      }, 100)
+      const res = await axios.delete(url)
+      if (res?.data?.msg === 'Eliminado'){
+        let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
+        let emp = employeesData.value[index]
+        delete emp.document_registers[docForm.subdivision_id]
+        closeDocModal()
+        setTimeout(()=>{
+          notify('Registro Documentario Eliminado')
+        }, 100)
+      } else {
+        errMsg.value = res.data.msg
+      }
     }catch (e){
       closeDocModal()
       setTimeout(()=>{

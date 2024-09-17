@@ -173,7 +173,7 @@
             </div>
 
 
-            <div class="mt-4 flex gap-6">
+            <div v-if="create_document" class="mt-4 flex gap-6">
               <label class="flex gap-3 items-center" for="empTypePlanilla">
                 Planilla
                 <input id="empTypePlanilla" type="radio" :value="1" v-model="form.employeeType" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
@@ -183,10 +183,15 @@
                 <input id="empTypeTerceros" type="radio" :value="0" v-model="form.employeeType" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
               </label>
             </div>
+            <div v-else >
+              <InputLabel class="flex gap-3 items-center" >
+                Empleado
+              </InputLabel>
+              </div>
             <div v-if="form.employeeType" class="mt-2">
                 <select v-model="form.employee_id" id="docEmp"
                   class="border rounded-md px-3 py-2 mb-3 w-full">
-                  <option value="">Seleccionar Colaborador</option>
+                  <option value="">Seleccionar Empleado</option>
                   <option v-for="item in employees" :key="item.id" :value="item.id">
                     {{ item.name }} {{ item.lastname }}
                   </option>
@@ -196,7 +201,7 @@
             <div v-else class="mt-2">
               <select v-model="form.employee_id" id="docEmp"
                 class="border rounded-md px-3 py-2 mb-3 w-full">
-                <option value="">Seleccionar Colaborador</option>
+                <option value="">Seleccionar Empleado</option>
                 <option v-for="item in e_employees" :key="item.id" :value="item.id">
                   {{ item.name }} {{ item.lastname }}
                 </option>
@@ -368,9 +373,6 @@ const submitEdit = () => {
     onError: (e) => {
       console.log(e)
     },
-    onFinish: () => {
-      form.reset();
-    }
   });
 };
 

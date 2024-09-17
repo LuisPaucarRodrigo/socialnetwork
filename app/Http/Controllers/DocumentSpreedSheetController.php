@@ -128,8 +128,12 @@ class DocumentSpreedSheetController extends Controller
 
     public function destroy ($dr_id=null){
         $item = DocumentRegister::find($dr_id);
-        $item->delete();
-        return response()->json(['msg'=>'Eliminado'], 200);
+        if ($item->document_id){
+            return response()->json(['msg'=>'El registro del documento ya esta asociado a un archivo en el aplicativo'], 200);
+        } else {
+            $item->delete();
+            return response()->json(['msg'=>'Eliminado'], 200);
+        }
     }
 
 

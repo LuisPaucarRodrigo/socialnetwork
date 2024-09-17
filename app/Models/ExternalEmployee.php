@@ -31,4 +31,7 @@ class ExternalEmployee extends Model
         return $this->hasMany(DocumentRegister::class, 'e_employee_id');
     }
 
+
+    
+
 }
