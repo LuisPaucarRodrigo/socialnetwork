@@ -31,10 +31,11 @@ use Carbon\Carbon;
 
 class HuaweiProjectController extends Controller
 {
-    public function show ()
+    public function show ($prefix)
     {
         return Inertia::render('Huawei/Projects', [
-            'projects' => HuaweiProject::where('status', 1)->with('huawei_site')->orderBy('created_at', 'desc')->paginate(10),
+            'projects' => HuaweiProject::where('status', 1)->where('prefix', $prefix)->with('huawei_site')->orderBy('created_at', 'desc')->paginate(10),
+            'prefix' => $prefix
         ]);
     }
 
@@ -64,10 +65,10 @@ class HuaweiProjectController extends Controller
         ]);
     }
 
-    public function searchProject ($request)
+    public function searchProject ($prefix, $request)
     {
         $searchTerm = strtolower($request);
-        $projects = HuaweiProject::where('status', 1)->where(function ($query) use ($searchTerm) {
+        $projects = HuaweiProject::where('status', 1)->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
@@ -80,6 +81,7 @@ class HuaweiProjectController extends Controller
         return Inertia::render('Huawei/Projects', [
             'projects' => $projects,
             'search' => $request,
+            'prefix' => $prefix
         ]);
     }
 
@@ -809,16 +811,8 @@ class HuaweiProjectController extends Controller
                             ->whereNull('huawei_material_id');
                   });
             $resources = $query->paginate(10);
-            $entryDetails = HuaweiEntryDetail::whereNull('huawei_material_id')
-                ->where('assigned_diu', $found_project->assigned_diu)
-                ->with('huawei_equipment_serie.huawei_equipment')
-                ->get()
-                ->filter(function ($detail) {
-                    return $detail->state === 'Disponible';
-                });
 
-
-                $equipments = HuaweiEquipment::with(['huawei_equipment_series.huawei_entry_detail' => function ($query) use ($found_project) {
+                $equipments = HuaweiEquipment::where('prefix', $found_project->prefix)->with(['huawei_equipment_series.huawei_entry_detail' => function ($query) use ($found_project) {
                     $query->where('assigned_diu', $found_project->assigned_diu);
                 }])->get();
 
@@ -835,13 +829,12 @@ class HuaweiProjectController extends Controller
                         }
                     }
                     return false;
-                });
+                })->values()->toArray();
 
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
                 'equipments' => $filteredEquipments,
-                'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
                 'project_state' => $project_state
@@ -854,22 +847,59 @@ class HuaweiProjectController extends Controller
                             ->whereNull('huawei_equipment_serie_id');
                   });
             $resources = $query->paginate(10);
-            $entryDetails = HuaweiEntryDetail::whereNull('huawei_equipment_serie_id')
-                ->with('huawei_material')
+
+            $materials =  HuaweiMaterial::where('prefix', $found_project->prefix)
                 ->get()
-                ->filter(function ($detail) {
-                    return $detail->state === 'Disponible';
-                });
+                ->makeHidden(['huawei_entry_details'])
+                ->filter(function ($material) {
+                    return $material->available_quantity > 0;
+                })
+                ->values()
+                ->toArray();
+
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'materials' => HuaweiMaterial::all(),
-                'entry_details' => $entryDetails,
+                'materials' => $materials,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
                 'project_state' => $project_state
             ]);
         }
+    }
+
+    public function searchEntryDetails (HuaweiProject $huawei_project, $id, $equipment = null)
+    {
+        if ($equipment){
+            $entry_details = HuaweiEntryDetail::whereNull('huawei_material_id')->where('assigned_diu', $huawei_project->assigned_diu)
+                ->whereHas('huawei_equipment_serie', function ($query) use ($id) {
+                    $query->where('huawei_equipment_id', $id);
+                })->with(['huawei_equipment_serie' => function ($query){
+                    $query->select('id', 'serie_number');
+                }])->get()
+                ->filter(function ($detail){
+                    return $detail->state = 'Disponible';
+                })->map(function ($detail){
+                    return [
+                        'id' => $detail->id,
+                        'serie_number' => $detail->huawei_equipment_serie->serie_number,
+                        'unit_price' => $detail->unit_price
+                    ];
+                });
+        }else{
+            $entry_details = HuaweiEntryDetail::whereNull('huawei_equipment_serie_id')->where('huawei_material_id', $id)
+                ->get()
+                ->filter(function ($detail){
+                    return $detail->state == 'Disponible';
+                })->map(function ($detail){
+                    return [
+                        'id' => $detail->id,
+                        'unit_price' => $detail->unit_price,
+                        'available_quantity' => $detail->available_quantity
+                    ];
+                });
+        }
+        return response()->json(['details' => $entry_details]);
     }
 
     public function searchResources ($huawei_project, $request, $equipment = null)
@@ -895,13 +925,6 @@ class HuaweiProjectController extends Controller
                       });
             });
             $resources = $query->get();
-            $entryDetails = HuaweiEntryDetail::whereNull('huawei_material_id')
-                ->where('assigned_diu', $found_project->assigned_diu)
-                ->with('huawei_equipment_serie.huawei_equipment')
-                ->get()
-                ->filter(function ($detail) {
-                    return $detail->state === 'Disponible';
-                });
                 $equipments = HuaweiEquipment::with(['huawei_equipment_series.huawei_entry_detail' => function ($query) use ($found_project) {
                     $query->where('assigned_diu', $found_project->assigned_diu);
                 }])->get();
@@ -919,12 +942,12 @@ class HuaweiProjectController extends Controller
                         }
                     }
                     return false;
-                });
+                })->values()->toArray();
+
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
                 'equipments' => $filteredEquipments,
-                'entry_details' => $entryDetails,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
                 'project_state' => $project_state,
@@ -941,17 +964,19 @@ class HuaweiProjectController extends Controller
                       });
             });
             $resources = $query->get();
-            $entryDetails = HuaweiEntryDetail::whereNull('huawei_equipment_serie_id')
-                ->with('huawei_material')
+            $materials =  HuaweiMaterial::where('prefix', $found_project->prefix)
                 ->get()
-                ->filter(function ($detail) {
-                    return $detail->state === 'Disponible';
-                });
+                ->makeHidden(['huawei_entry_details'])
+                ->filter(function ($material) {
+                    return $material->available_quantity > 0;
+                })
+                ->values()
+                ->toArray();
+
             return Inertia::render('Huawei/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
-                'materials' => HuaweiMaterial::all(),
-                'entry_details' => $entryDetails,
+                'materials' => $materials,
                 'huawei_project' => $huawei_project,
                 'huawei_project_name_code' => $huawei_project_name_code,
                 'project_state' => $project_state,

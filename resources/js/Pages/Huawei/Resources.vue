@@ -1,6 +1,6 @@
 <template>
     <Head title="Recursos del Proyecto"/>
-    <AuthenticatedLayout :redirectRoute="'huawei.projects'">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {prefix:1}}">
       <template #header>
         {{ props.equipment ? 'Equipos del Proyecto: ' : 'Materiales del Proyecto: ' }} {{ props.huawei_project_name_code }}
       </template>
@@ -153,44 +153,58 @@
             <form @submit.prevent="submit">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
-                <div class="grid grid-cols-2 gap-6">
-                    <div :class="{'col-span-2' : props.equipment, 'col-span-1' : !props.equipment}">
-                        <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">{{ props.equipment ? 'Equipo': 'Material' }}</InputLabel>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div :class="{'col-span-2': props.equipment, 'col-span-1': !props.equipment}">
+                        <InputLabel for="resource" class="font-medium leading-6 text-gray-900">
+                        {{ props.equipment ? 'Equipo' : 'Material' }}
+                        </InputLabel>
                         <div class="mt-2">
-                            <select v-model="form.resource" id="expense_type"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled value="">Seleccionar {{ props.equipment ? 'Equipo' : 'Material' }}</option>
-                                <option v-for="item in (props.equipment ? props.equipments : props.materials)" :key="item.id" :value="item.id">{{ props.equipment ? item.name : item.name + ' - ' + item.available_quantity }}</option>
-                            </select>
+                        <input
+                            list="resources"
+                            v-model="form.resource"
+                            id="resource"
+                            :placeholder="props.equipment ? 'Seleccionar Equipo' : 'Seleccionar Material'"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            @change="onInput($event.target.value)"
+                            required
+                            autocomplete="off"
+                        />
+                        <datalist id="resources">
+                            <option v-for="item in (props.equipment ? props.equipments : props.materials)" :key="item.id" :value="item.name">
+
+                            </option>
+                        </datalist>
                         </div>
                     </div>
-                    <div v-if="props.equipment" class="col-span-2">
-                        <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">{{ props.equipment ? 'Serie': 'Entrada' }}</InputLabel>
-                        <div class="mt-2">
-                            <select v-model="form.huawei_entry_detail_ids" id="expense_type"
-                                    :size="filteredEntryDetails.length + 1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" multiple>
-                                <option disabled value="">Seleccionar Entrada</option>
-                                <option v-for="item in filteredEntryDetails" :key="item.id" :value="item.id">
-                                    {{ (item.huawei_equipment_serie?.serie_number  + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
-                                </option>
-                            </select>
+                    <div v-if="entryDetails" :class="props.equipment ? 'col-span-2' : 'col-span-1'">
+                        <div v-if="props.equipment">
+                            <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">{{ props.equipment ? 'Serie': 'Entrada' }}</InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.huawei_entry_detail_ids" id="expense_type"
+                                        :size="entryDetails.length + 1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" multiple>
+                                    <option disabled value="">Seleccionar Entrada</option>
+                                    <option v-for="item in entryDetails" :key="item.id" :value="item.id">
+                                        {{ (item.serie_number  + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div v-else>
-                        <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">{{ props.equipment ? 'Serie': 'Entrada' }}</InputLabel>
-                        <div class="mt-2">
-                            <select v-model="form.huawei_entry_detail_id" id="expense_type"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled value="">Seleccionar Entrada</option>
-                                <option v-for="item in filteredEntryDetails" :key="item.id" :value="item.id">
-                                    {{ (item.huawei_material?.name + ' - ' + item.available_quantity + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
-                                </option>
-                            </select>
+                        <div v-else>
+                            <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">{{ props.equipment ? 'Serie': 'Entrada' }}</InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.huawei_entry_detail_id" id="expense_type"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccionar Entrada</option>
+                                    <option v-for="item in entryDetails" :key="item.id" :value="item.id">
+                                        {{ ( foundItem.name + ' - ' + item.available_quantity + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="col-span-1" v-if="!props.equipment">
                         <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
-                        <input type="number" min="1" v-model="form.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                        <input type="number" min="1" v-model="form.quantity" class="mt-3 block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
                         <InputError :message="form.errors.quantity" />
                     </div>
                 </div>
@@ -255,7 +269,7 @@
   import TextInput from '@/Components/TextInput.vue';
   import { formattedDate } from '@/utils/utils'
   import Modal from '@/Components/Modal.vue';
-  import { ref, computed } from 'vue';
+  import { ref } from 'vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import InputError from '@/Components/InputError.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -268,7 +282,6 @@
     huawei_project: String,
     equipments: [Object, null],
     materials: [Object, null],
-    entry_details: Object,
     search: String,
     huawei_project_name_code: String,
     project_state: Number,
@@ -279,6 +292,8 @@
   const refundId = ref(null);
   const refund_modal = ref(false);
   const showRefundConfirm = ref(false);
+  const entryDetails = ref(null);
+  const foundItem = ref(null);
 
   const form = useForm({
     resource: '',
@@ -312,31 +327,50 @@
     refundForm.reset();
   }
 
-  const filteredEntryDetails = computed(() => {
-    const entryDetailsArray = Object.values(props.entry_details);
-
-    if (props.equipment) {
-        return entryDetailsArray.filter(entry => entry.huawei_equipment_serie.huawei_equipment_id === form.resource);
-    } else {
-        return entryDetailsArray.filter(entry => entry.huawei_material_id === form.resource);
-    }
-  });
-
   const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
   }
 
+  const onInput = async (name) => {
+    entryDetails.value = null;
+    foundItem.value = null;
+    form.huawei_entry_detail_id = '';
+    form.huawei_entry_detail_ids = [];
+    let id = null;
+    if (props.equipment) {
+        foundItem.value = props.equipments.find(item => item.name === name);
+        if (foundItem.value) {
+            id = foundItem.value.id;
+            await axios.post(route('huawei.projects.resources.searchdetails', {huawei_project: props.huawei_project, id: id, equipment: 1}))
+                .then(res => {
+                    entryDetails.value = res.data.details;
+                })
+                .catch(e => {
+                    console.error(e);
+                })
+        } else {
+            form.resource = '';
+        }
+    } else {
+        foundItem.value = props.materials.find(item => item.name === name);
+        if (foundItem.value) {
+            id = foundItem.value.id;
+            await axios.post(route('huawei.projects.resources.searchdetails', {huawei_project: props.huawei_project, id: id}))
+                .then(res => {
+                    entryDetails.value = res.data.details;
+                })
+                .catch(e => {
+                    console.error(e);
+                })
+        } else {
+            form.resource = '';
+        }
+    }
+};
+
+
   const submit = () => {
-    const url = props.equipment ? route('huawei.projects.resources.store', {huawei_project: props.huawei_project, equipment: 1}) : route('huawei.projects.resources.store', {huawei_project: props.huawei_project});
-    form.post(url, {
-        onSuccess: () => {
-            close_create();
-            showModal.value = true;
-            setTimeout(() => {
-                showModal.value = false;
-            }, 2000);
-        },
-    });
+    console.log(form.resource);
   }
 
   const searchForm = useForm({

@@ -39,8 +39,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('huawei/inventory/create/{equipment}/verify_serie/post', [HuaweiManagementController::class, 'verifySerie'])->name('huawei.inventory.create.verifyserie');
     Route::get('huawei/inventory/create/{value}/get_inventory/get', [HuaweiManagementController::class, 'getInventoryPerWarehouse'])->name('huawei.inventory.create.getinventory');
     //projects
-    Route::get('huawei/projects/show', [HuaweiProjectController::class, 'show'])->name('huawei.projects');
-    Route::get('huawei/projects/search/{request}', [HuaweiProjectController::class, 'searchProject'])->name('huawei.projects.search');
+    Route::get('huawei/projects/show/{prefix}/get', [HuaweiProjectController::class, 'show'])->name('huawei.projects');
+    Route::get('huawei/projects/search/{prefix}/get/{request}', [HuaweiProjectController::class, 'searchProject'])->name('huawei.projects.search');
     Route::get('huawei/projects/prereport/{huawei_project}', [HuaweiProjectController::class, 'showPreReport'])->name('huawei.projects.prereport');
     Route::get('huawei/projects/history', [HuaweiProjectController::class, 'projectHistory'])->name('huawei.projects.history');
     Route::get('huawei/projects/history/search/{request}', [HuaweiProjectController::class, 'searchProjectHistory'])->name('huawei.projects.search.history');
@@ -93,7 +93,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/projects/{huawei_project}/resources/search/{request}/{equipment?}', [HuaweiProjectController::class, 'searchResources'])->name('huawei.projects.resources.search');
     Route::post('huawei/projects/{huawei_project}/resources/post/{equipment?}', [HuaweiProjectController::class, 'storeProjectResource'])->name('huawei.projects.resources.store');
     Route::put('huawei/projects/refund_resource/{huawei_resource}/{equipment?}', [HuaweiProjectController::class, 'refundResource'])->name('huawei.projects.refund');
-
+    Route::post('huawei/projects/{huawei_project}/resources/search_details/{id}/post/{equipment?}', [HuaweiProjectController::class, 'searchEntryDetails'])->name('huawei.projects.resources.searchdetails');
     //earnings
     Route::get('huawei/projects/{huawei_project}/earnings/get', [HuaweiProjectController::class, 'getEarnings'])->name('huawei.projects.earnings');
     Route::get('huawei/projects/{huawei_project}/earnings/search/{request}', [HuaweiProjectController::class, 'searchEarnings'])->name('huawei.projects.earnings.search');

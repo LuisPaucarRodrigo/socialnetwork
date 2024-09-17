@@ -40,16 +40,25 @@ class HuaweiManagementController extends Controller
         }
 
         if ($equipment){
+            $equipments = HuaweiEquipment::with('huawei_equipment_series', 'brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            foreach ($equipments as $item) {
+                $item->name = $this->sanitizeText2($item->name);
+            }
+
             return Inertia::render('Huawei/Materials', [
-                'equipments' => HuaweiEquipment::with('huawei_equipment_series', 'brand_model.brand')->where('prefix', $prefix)->paginate(10),
+                'equipments' => $equipments,
                 'brand_models' => BrandModel::all(),
                 'brands' => Brand::all(),
                 'equipment' => $equipment,
                 'warehouse' => $warehouse
             ]);
         } else {
+            $materials = HuaweiMaterial::with('brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            foreach ($materials as $material) {
+                $material->name = $this->sanitizeText2($material->name);
+            }
             return Inertia::render('Huawei/Materials', [
-                'materials' => HuaweiMaterial::with('brand_model.brand')->where('prefix', $prefix)->paginate(10),
+                'materials' => $materials,
                 'brand_models' => BrandModel::all(),
                 'brands' => Brand::all(),
                 'equipment' => $equipment,
