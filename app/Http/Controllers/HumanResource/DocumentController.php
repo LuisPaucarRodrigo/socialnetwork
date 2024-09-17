@@ -209,7 +209,7 @@ class DocumentController extends Controller
                 ->first()
             : ($docItem->e_employee_id
                 ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-                    ->where('employee_id', $docItem->e_employee_id)
+                    ->where('e_employee_id', $docItem->e_employee_id)
                     ->first()
                 : null
             );
@@ -265,7 +265,7 @@ class DocumentController extends Controller
                 ->first()
             : ($docItem->e_employee_id
                 ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-                    ->where('employee_id', $docItem->e_employee_id)
+                    ->where('e_employee_id', $docItem->e_employee_id)
                     ->first()
                 : null
             );

@@ -191,7 +191,7 @@
             <div v-if="form.employeeType" class="mt-2">
                 <select v-model="form.employee_id" id="docEmp"
                   class="border rounded-md px-3 py-2 mb-3 w-full">
-                  <option value="">Seleccionar Empleado</option>
+                  <option value="" disabled>Seleccionar Empleado</option>
                   <option v-for="item in employees" :key="item.id" :value="item.id">
                     {{ item.name }} {{ item.lastname }}
                   </option>
@@ -199,9 +199,9 @@
                 <InputError :message="form.errors.employee_id" />
             </div>
             <div v-else class="mt-2">
-              <select v-model="form.employee_id" id="docEmp"
+              <select v-model="form.e_employee_id" id="docEmp"
                 class="border rounded-md px-3 py-2 mb-3 w-full">
-                <option value="">Seleccionar Empleado</option>
+                <option value="" disabled>Seleccionar Empleado</option>
                 <option v-for="item in e_employees" :key="item.id" :value="item.id">
                   {{ item.name }} {{ item.lastname }}
                 </option>
@@ -325,6 +325,7 @@ const closeModal = () => {
 };
 
 const openEditDocumentModal = (document) => {
+  console.log(document.e_employee_id)
   // Copia de los datos de la subsección existente al formulario
   editingDocument.value = JSON.parse(JSON.stringify(document));
   form.id = editingDocument.value.id;
@@ -332,7 +333,7 @@ const openEditDocumentModal = (document) => {
   form.section_id = editingDocument.value.subdivision.section_id;
   form.subdivision_id = editingDocument.value.subdivision_id;
   form.employee_id = editingDocument.value.employee_id;
-  form.e_employee_id = editingDocument.value.e_employee_id;
+  form.e_employee_id = document.e_employee_id;
   form.has_exp_date = editingDocument.value.exp_date ? 1 : 0
   form.employeeType = editingDocument.value.employee_id ? 1 : 0;
   update_document.value = true;
@@ -347,7 +348,7 @@ const closeEditModal = () => {
 const submit = () => {
   form.post(route('documents.create'), {
     onSuccess: () => {
-      closeModal();
+      closeEditModal();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
@@ -499,12 +500,14 @@ const filterSubdivision = (e) => {
 
 
 watch(()=>form.employeeType, ()=>{
-  form.employee_id = ''
-  form.e_employee_id = ''
+  if(create_document.value){
+    form.employee_id = ''
+    form.e_employee_id = ''
+    console.log('entre')
+  }
 })
 watch(()=>form.has_exp_date, ()=>{
   form.exp_date = ''
-  console.log('entre')
 })
 
 </script>

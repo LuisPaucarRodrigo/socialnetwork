@@ -7,6 +7,7 @@ use App\Models\DocumentRegister;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class DocumentCreateRequest extends FormRequest
@@ -63,8 +64,8 @@ class DocumentCreateRequest extends FormRequest
         $docReg = $this->input('employee_id') ? DocumentRegister::where('subdivision_id', $this->input('subdivision_id'))
             ->where('employee_id', $this->input('employee_id'))->first() : 
              ($this->input('e_employee_id') ? DocumentRegister::where('subdivision_id', $this->input('subdivision_id'))
-            ->where('employee_id', $this->input('e_employee_id'))->first() : null);
-
+            ->where('e_employee_id', $this->input('e_employee_id'))->first() : null);
+        
         if ($docReg?->exp_date){
             array_push(
                 $rules['has_exp_date'],

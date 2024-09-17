@@ -182,6 +182,100 @@
                   </td>
                   </template>
                 </tr>
+
+                <tr v-for="emp,index in e_employeesData" :key="emp.id" class="whitespace-nowrap font-medium text-gray-900 text-sm hover:opacity-60">
+                  <td class="px-2 py-2 text-center">
+                    <div class="">
+                      {{ index + employeesData.length + 1 }}
+                    </div>
+                  </td>
+                  <!-- principalData -->
+                  <td v-for="da,i in principalData" :key="i" :class="['px-2 py-2 bg-blue-100', da.propClass]">
+                    <div class="">
+                      {{ getProp({obj:emp, path:da.propName, sep: ', '}) }}
+                    </div>
+                  </td>
+                  <!-- personalData -->
+              
+                  <td v-if="sectionIsVisible('Datos Personales')" v-for="pd,i in personalData" :key="i" :class="['px-2 py-2', pd.propClass]">
+                    <div class="">
+                      {{  getProp({obj:emp, path:pd.propName, type:pd.propType}) }} 
+                    </div>
+                  </td>
+
+             
+                  <!-- All Sections -->
+                  <template v-for="sec in sections">
+                    <td v-if="sectionIsVisible(sec.name) && sec.id === 9" :class="['px-2 py-2', 'text-center border-2',
+                        (emp.sctr && emp.sctr_exp_date === null) && 'bg-red-100'
+                    ]">
+                      <div class="min-w-[170px] flex items-center">
+                        
+                        <p :class="['w-3/4 text-sm', emp.sctr_about_to_expire && 'text-red-600']">
+                          {{ emp.sctr_exp_date ?
+                              formattedDate(emp.sctr_exp_date )
+                              : ''
+                          }}
+                        </p>
+                      </div>
+                    </td>
+                    <td v-if="sectionIsVisible(sec.name) && sec.id === 9" :class="['px-2 py-2', 'text-center border-2',
+                        (emp.l_policy && emp.policy_exp_date === null) && 'bg-red-100'
+                    ]">
+                      <div class="min-w-[170px] flex items-center">
+                        
+                        <p :class="['w-3/4 text-sm', emp.policy_about_to_expire && 'text-red-600']">
+                          {{ emp.policy_exp_date ?
+                              formattedDate(emp.policy_exp_date )
+                              : ''
+                          }}
+                        </p>
+                      </div>
+                    </td>
+
+
+                    <td v-if="sectionIsVisible(sec.name)" v-for="sub in sec.subdivisions" :key="sub.id" :class="['px-2 py-2', 'text-center border-2',
+                        emp.document_registers[sub.id] === undefined && 'bg-red-100',
+                        emp.document_registers[sub.id]?.state === 'En Proceso' && 'bg-amber-100',
+                        emp.document_registers[sub.id]?.state === 'Completado' && 'bg-green-100',
+                        emp.document_registers[sub.id]?.state === 'No Corresponde' && 'bg-white-100',
+                    ]">
+                    <div class="min-w-[170px] flex items-center">
+                      <div v-if="emp.document_registers[sub.id]?.sync_status === false" class="relative group">
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-fuchsia-500 cursor-pointer">
+                        </span>
+                      </div>
+                      <p :class="['w-3/4 text-sm', emp.document_registers[sub.id]?.display && 'text-red-600']">
+                        {{ 
+                             formattedDate(emp.document_registers[sub.id]?.exp_date )
+                            
+                        }}
+                      </p>
+                      <div class="w-1/4 justify-end flex gap-3">
+                        <button type="button" 
+                          @click="openDocModal(
+                            {
+                              emp_name: emp.name + ' ' + emp.lastname,
+                              doc_name:sub.name,
+                              id: emp.document_registers[sub.id]?.id,
+                              subdivision_id: sub.id,
+                              document_id: emp.document_registers[sub.id]?.document_id, 
+                              e_employee_id: emp.id, 
+                              exp_date: emp.document_registers[sub.id]?.exp_date, 
+                              state: emp.document_registers[sub.id]?.state ? emp.document_registers[sub.id]?.state : '', 
+                              observations: emp.document_registers[sub.id]?.observations, 
+                            }
+                          )"
+                        >
+                          <InformationCircleIcon class="h-6 w-6 text-blue-700 hover:text-blue-400" style="stroke-width: 2;"/>
+                        </button>
+
+                      </div>
+                        
+                    </div>
+                  </td>
+                  </template>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -291,12 +385,12 @@
 
   const { employees, e_employees, sections } = defineProps({
     employees: Object, 
-    e_employees: Object, 
+    e_employees: Object,
     sections: Object,
   });
 
   const employeesData = ref(employees)
-  const e_mployeesData = ref(e_employees)
+  const e_employeesData = ref(e_employees)
   
   const showDocModal = ref(false)
   const docForm = useForm({})
@@ -323,12 +417,23 @@
     let url = route('document.rrhh.status.store', {dr_id: docForm?.id})
     try{
       const res = await axios.post(url, docForm)
-      let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
-      let emp = employeesData.value[index]
-      employeesData.value[index].document_registers = {
-        ...emp.document_registers,
-        ...res.data, 
+      if (docForm.employee_id){
+        let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
+        let emp = employeesData.value[index]
+        employeesData.value[index].document_registers = {
+          ...emp.document_registers,
+          ...res.data, 
+        }
       }
+      if (docForm.e_employee_id){
+        let index = e_employeesData.value.findIndex(item=>item.id==docForm.e_employee_id)
+        let emp = e_employeesData.value[index]
+        e_employeesData.value[index].document_registers = {
+          ...emp.document_registers,
+          ...res.data, 
+        }
+      }
+
       closeDocModal()
       setTimeout(()=>{
         notify('Registro Documentario Guardado')
@@ -347,9 +452,16 @@
     try{
       const res = await axios.delete(url)
       if (res?.data?.msg === 'Eliminado'){
-        let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
-        let emp = employeesData.value[index]
-        delete emp.document_registers[docForm.subdivision_id]
+        if (docForm.employee_id){
+          let index = employeesData.value.findIndex(item=>item.id==docForm.employee_id)
+          let emp = employeesData.value[index]
+          delete emp.document_registers[docForm.subdivision_id]
+        }
+        if (docForm.e_employee_id){
+          let index = e_employeesData.value.findIndex(item=>item.id==docForm.e_employee_id)
+          let emp = e_employeesData.value[index]
+          delete emp.document_registers[docForm.subdivision_id]
+        }
         closeDocModal()
         setTimeout(()=>{
           notify('Registro Documentario Eliminado')
