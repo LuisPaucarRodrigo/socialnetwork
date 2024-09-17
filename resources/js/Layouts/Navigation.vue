@@ -669,7 +669,7 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.projects', {prefix: 'Claro'})">Proyectos de Huawei</Link>
+                    <Link class="w-full" :href="route('huawei.projects', {status: 1, prefix: 'Claro'})">Proyectos de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>

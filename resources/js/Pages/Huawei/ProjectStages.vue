@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Imagenes para Reporte" />
-    <AuthenticatedLayout :redirectRoute="'huawei.projects'">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {status: backStatus, prefix: 'Claro'}}">
         <template #header>
             Imagenes para Reporte
         </template>
@@ -188,6 +188,8 @@ const props = defineProps({
     selectedStage: Number,
     titles: Object
 });
+
+const backStatus = props.huawei_project.status == 1 ? '1' : (props.huawei_project.status == null ? '2' : '3');
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);

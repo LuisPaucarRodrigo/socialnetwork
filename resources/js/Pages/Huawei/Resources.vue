@@ -1,6 +1,6 @@
 <template>
     <Head title="Recursos del Proyecto"/>
-    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {prefix:1}}">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: { status: backStatus, prefix: 'Claro'}}">
       <template #header>
         {{ props.equipment ? 'Equipos del Proyecto: ' : 'Materiales del Proyecto: ' }} {{ props.huawei_project_name_code }}
       </template>
@@ -287,6 +287,8 @@
     project_state: Number,
   });
 
+  const backStatus = props.project_state == 1 ? '1' : (props.project_state == null ? '2' : '3');
+
   const create_modal = ref(false);
   const showModal = ref(false);
   const refundId = ref(null);
@@ -370,7 +372,16 @@
 
 
   const submit = () => {
-    console.log(form.resource);
+    const url = props.equipment ? route('huawei.projects.resources.store', {huawei_project: props.huawei_project, equipment: 1}) : route('huawei.projects.resources.store', {huawei_project: props.huawei_project});
+    form.post(url, {
+        onSuccess: () => {
+            close_create();
+            showModal.value = true;
+            setTimeout(() => {
+                showModal.value = false;
+            }, 2000);
+        },
+    });
   }
 
   const searchForm = useForm({

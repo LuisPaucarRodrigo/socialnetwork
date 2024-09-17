@@ -2,7 +2,7 @@
 
     <Head title="Gestion de Ingresos" />
     <AuthenticatedLayout
-      :redirectRoute="{ route: 'huawei.projects'}">
+      :redirectRoute="{ route: 'huawei.projects', params: {status: backStatus, prefix: 'Claro'}}">
       <template #header>
         Ingresos Proyectados del Proyecto {{ props.huawei_project.name }}
       </template>
@@ -270,6 +270,8 @@ const props = defineProps({
   search: String,
   total: Number
 });
+
+const backStatus = props.huawei_project.status == 1 ? '1' : (props.huawei_project.status == null ? '2' : '3');
 
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);

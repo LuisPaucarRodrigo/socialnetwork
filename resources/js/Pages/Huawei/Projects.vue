@@ -3,26 +3,30 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'huawei.projects'">
         <template #header>
-            Proyectos Huawei
+            Proyectos{{ props.status == '2' ? ' Detenidos de ' : (props.status == '3' ? ' Liquidados de ' : ' de ') }}Huawei
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex flex-col gap-4 justify-center sm:flex-row sm:justify-between rounded-lg items-center text-center sm:text-left">
     <div class="flex flex-col sm:flex-row gap-4 w-full justify-between items-center">
         <div class="flex gap-4 items-center justify-center sm:justify-start">
             <!-- Botones grandes visibles solo en pantallas sm y superiores -->
-            <Link :href="route('huawei.projects.create')" type="button"
+            <Link v-if="props.status== '1'" :href="route('huawei.projects.create')" type="button"
                 class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white whitespace-nowrap">
                 + Agregar
             </Link>
-            <Link :href="route('huawei.projects.history')" type="button"
+            <Link v-if="props.status == '1'" :href="route('huawei.projects', {status: '3', prefix: selectedPrefix})" type="button"
                 class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 Historial
             </Link>
-            <Link :href="route('huawei.projects.stopped')" type="button"
+            <Link v-if="props.status == '1'" :href="route('huawei.projects', {status: '2', prefix: selectedPrefix})" type="button"
                 class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                 Detenidos
             </Link>
-
+            <Link v-if="props.status !== '1'" :href="route('huawei.projects', {status: '1', prefix: selectedPrefix})" type="button"
+                class="hidden sm:block px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white whitespace-nowrap"
+                style="min-width: 80px; max-width: 120px;">
+                Proyectos
+            </Link>
             <!-- Menú desplegable visible en pantallas pequeñas -->
             <div class="sm:hidden">
                 <dropdown align="left">
@@ -39,15 +43,22 @@
                     <template #content class="origin-left">
                         <div class="dropdown">
                             <div class="dropdown-menu">
-                                <Link :href="route('huawei.projects.create')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                    + Agregar
-                                </Link>
-                                <Link :href="route('huawei.projects.history')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                    Historial
-                                </Link>
-                                <Link :href="route('huawei.projects.stopped')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                    Detenidos
-                                </Link>
+                                <div v-if="props.status == '1'">
+                                    <Link :href="route('huawei.projects.create')" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        + Agregar
+                                    </Link>
+                                    <Link :href="route('huawei.projects', {status: '3', prefix: selectedPrefix})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Historial
+                                    </Link>
+                                    <Link :href="route('huawei.projects', {status: '2', prefix: selectedPrefix})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Detenidos
+                                    </Link>
+                                </div>
+                                <div v-else>
+                                    <Link :href="route('huawei.projects', {status: '1', prefix: selectedPrefix})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Proyectos
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </template>
@@ -99,10 +110,14 @@
                             >
                                 Liquidar
                             </button>
-                            <Link :href="route('huawei.projects.toupdate', {huawei_project: item.id})"
+                            <Link v-if="item.status" :href="route('huawei.projects.toupdate', {huawei_project: item.id})"
                                 class="flex items-start">
                             <PencilIcon class="h-5 w-5 text-teal-600" />
                             </Link>
+                            <button @click.prevent="openResumeModal(item.id)" v-if="item.status == null"
+                                class="flex items-start">
+                                <PlayIcon class="h-5 w-5 text-green-600" />
+                            </button>
                             <button @click.prevent="openCancelModal(item.id)" v-if="item.status"
                                 class="flex items-start">
                                 <PauseIcon class="h-5 w-5 text-red-600" />
@@ -220,6 +235,24 @@
                 </div>
             </div>
         </Modal>
+        <Modal :show="resumeModal" :maxWidth="'md'">
+            <!-- Contenido del modal cuando no hay empleados -->
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Seguro de reanudar el proyecto?
+                </h2>
+                <!-- Puedes agregar más contenido o personalizar según tus necesidades -->
+                <p class="mt-2 text-sm text-gray-500">
+                    EL proyecto volverá a la vista principal y podrá ser manejado con normalidad.
+                </p>
+                <div class="mt-6 flex space-x-3 justify-end">
+                    <SecondaryButton type="button" @click="closeResumeModal"> Cancelar
+                    </SecondaryButton>
+                    <button class="rounded-md bg-indigo-600 px-2 py-2 whitespace-no-wrap text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-transparent"
+                     type="button" @click="resume_project()"> Aceptar </button>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -227,7 +260,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import Dropdown from '@/Components/Dropdown.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon, PauseIcon } from '@heroicons/vue/24/outline';
+import { PencilIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
@@ -239,13 +272,15 @@ const props = defineProps({
     auth: Object,
     userPermissions:Array,
     search: String,
-    prefix: String
+    prefix: String,
+    status: String
 })
 
 const selectedPrefix = ref(props.prefix);
 const liquidateModal = ref(false);
 const projectId = ref(null);
 const cancelModal = ref(false);
+const resumeModal = ref(false);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -257,9 +292,9 @@ const searchForm = useForm({
 
 const search = () => {
     if (searchForm.searchTerm == ''){
-        router.visit(route('huawei.projects', {prefix: selectedPrefix.value}))
+        router.visit(route('huawei.projects', {status: props.status, prefix: selectedPrefix.value}))
     }else{
-        router.visit(route('huawei.projects.search', { prefix: selectedPrefix.value, request: searchForm.searchTerm}));
+        router.visit(route('huawei.projects.search', { status: props.status, prefix: selectedPrefix.value, request: searchForm.searchTerm}));
     }
 }
 
@@ -287,7 +322,7 @@ const liquidate = () => {
     router.put(route('huawei.projects.liquidateproject', {huawei_project: projectId.value}), null,{
         onSuccess: () => {
             closeLiquidateModal();
-            router.visit(route('huawei.projects'));
+            router.visit(route('huawei.projects', {status: '3', prefix: selectedPrefix.value}));
         }
     })
 }
@@ -296,7 +331,7 @@ const cancel_project = () => {
     router.put(route('huawei.projects.cancelproject', {huawei_project: projectId.value}), null,{
         onSuccess: () => {
             closeCancelModal();
-            router.visit(route('huawei.projects'));
+            router.visit(route('huawei.projects', { status: '2', prefix: selectedPrefix.value }));
         }
     })
 }
@@ -304,10 +339,29 @@ const cancel_project = () => {
 const changePrefix = (value) => {
     selectedPrefix.value = value;
     if (props.search){
-        router.visit(route('huawei.projects.search', { prefix: selectedPrefix.value, request: searchForm.searchTerm}));
+        router.visit(route('huawei.projects.search', { status: props.status, prefix: selectedPrefix.value, request: searchForm.searchTerm}));
     }else{
-        router.visit(route('huawei.projects', {prefix: selectedPrefix.value}));
+        router.visit(route('huawei.projects', { status: props.status, prefix: selectedPrefix.value}));
     }
 };
+
+const openResumeModal = (id) => {
+    projectId.value = id;
+    resumeModal.value = true;
+}
+
+const closeResumeModal = () => {
+    projectId.value = null;
+    resumeModal.value = false;
+}
+
+const resume_project = () => {
+    router.put(route('huawei.projects.stopped.resume', {huawei_project: projectId.value}), null,{
+        onSuccess: () => {
+            closeResumeModal();
+            router.visit(route('huawei.projects', {status: 1, prefix: selectedPrefix.value}));
+        }
+    })
+}
 
 </script>

@@ -31,44 +31,67 @@ use Carbon\Carbon;
 
 class HuaweiProjectController extends Controller
 {
-    public function show ($prefix)
+    public function show ($status, $prefix)
     {
+        $state = null;
+        switch ($status){
+            case '1':
+                $state = 1;
+                break;
+            case '2':
+                $state = null;
+                break;
+            case '3':
+                $state = 0;
+                break;
+            default:
+                abort(403, 'Acción no permitida');
+        }
+
+        $projects = HuaweiProject::where('status', $state)
+            ->where('prefix', $prefix)
+            ->with('huawei_site') // Incluye la relación deseada
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+            $projects->getCollection()->transform(function ($project) {
+                return $project->makeHidden([
+                    'huawei_additional_costs',    // Reemplaza con los nombres de los campos que deseas ocultar
+                    'huawei_project_earnings',
+                    'huawei_project_employees',  // Reemplaza con los nombres de las relaciones que deseas ocultar
+                    'huawei_project_resources',
+                    'huawei_static_costs'
+                ])->setRelation('huawei_site', $project->huawei_site->makeHidden([
+                    'huawei_project',
+                ]));
+            });
+
         return Inertia::render('Huawei/Projects', [
-            'projects' => HuaweiProject::where('status', 1)->where('prefix', $prefix)->with('huawei_site')->orderBy('created_at', 'desc')->paginate(10),
-            'prefix' => $prefix
-        ]);
-    }
-
-    public function projectHistory ()
-    {
-        return Inertia::render('Huawei/ProjectsHistory', [
-            'projects' => HuaweiProject::where('status', 0)->with('huawei_site')->orderBy('created_at', 'desc')->paginate(10),
-        ]);
-    }
-
-    public function searchProjectHistory ($request)
-    {
-        $searchTerm = strtolower($request);
-        $projects = HuaweiProject::where('status', 0)->where(function ($query) use ($searchTerm) {
-            $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
-                  ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
-                  ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
-                  ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
-                  ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
-                    $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
-                });
-        })->with('huawei_site')->orderBy('created_at', 'desc')->get();
-
-        return Inertia::render('Huawei/ProjectsHistory', [
             'projects' => $projects,
-            'search' => $request,
+            'prefix' => $prefix,
+            'status' => $status
         ]);
     }
 
-    public function searchProject ($prefix, $request)
+    public function searchProject ($status, $prefix, $request)
     {
+        $state = null;
+        switch ($status){
+            case '1':
+                $state = 1;
+                break;
+            case '2':
+                $state = null;
+                break;
+            case '3':
+                $state = 0;
+                break;
+            default:
+                abort(403, 'Acción no permitida');
+        }
+
         $searchTerm = strtolower($request);
-        $projects = HuaweiProject::where('status', 1)->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
+        $projects = HuaweiProject::where('status', $state)->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
@@ -81,7 +104,8 @@ class HuaweiProjectController extends Controller
         return Inertia::render('Huawei/Projects', [
             'projects' => $projects,
             'search' => $request,
-            'prefix' => $prefix
+            'prefix' => $prefix,
+            'status' => $status
         ]);
     }
 
@@ -133,33 +157,6 @@ class HuaweiProjectController extends Controller
         ]);
 
         return redirect()->back();
-    }
-
-    public function showStoppedProjects()
-    {
-        $projects = HuaweiProject::whereNull('status')->with('huawei_site')->orderBy('created_at', 'desc')->paginate(10);
-        return Inertia::render('Huawei/StoppedProjects', [
-            'projects' => $projects
-        ]);
-    }
-
-    public function searchStoppedProjects ($request)
-    {
-        $searchTerm = strtolower($request);
-        $projects = HuaweiProject::where('status', null)->where(function ($query) use ($searchTerm) {
-            $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
-                  ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
-                  ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
-                  ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
-                  ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
-                    $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
-                  });
-        })->with('huawei_site')->orderBy('created_at', 'desc')->get();
-
-        return Inertia::render('Huawei/StoppedProjects', [
-            'projects' => $projects,
-            'search' => $request,
-        ]);
     }
 
     public function resumeProject (HuaweiProject $huawei_project)
@@ -1100,7 +1097,8 @@ class HuaweiProjectController extends Controller
             'equipments' => $equipments,
             'materials' => $materials,
             'huawei_project' => $huawei_project,
-            'project_name' => $project_name
+            'project_name' => $project_name,
+            'projectState' => $project->status
         ]);
     }
 
