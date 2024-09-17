@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\HumanResource;
 
+use App\Models\Document;
 use App\Models\DocumentRegister;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
@@ -34,7 +35,7 @@ class DocumentCreateRequest extends FormRequest
         
         if ($this->input('employeeType')){
             $rules['employee_id'] = ['required', function ($attribute, $value, $fail) {
-                 $cant = DocumentRegister::where('subdivision_id',$this->input('subdivision_id'))
+                 $cant = Document::where('subdivision_id',$this->input('subdivision_id'))
                  ->where('employee_id', $value)->count();
                  if ($cant===1) {
                     $fail('Este colaborador ya tiene un documento en esta subdivisión');
@@ -45,7 +46,7 @@ class DocumentCreateRequest extends FormRequest
             }];
         } else {
             $rules['e_employee_id'] = ['required', function ($attribute, $value, $fail) {
-                $cant = DocumentRegister::where('subdivision_id',$this->input('subdivision_id'))
+                $cant = Document::where('subdivision_id',$this->input('subdivision_id'))
                  ->where('e_employee_id', $value)->count();
                  if ($cant===1) {
                     $fail('Este colaborador ya tiene un documento en esta subdivisión');

@@ -108,7 +108,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mt-5">
       <div v-for="document in (props.search || props.section || props.subdivision ? props.documents : documents.data)" :key="document.id"
         class="bg-white p-4 rounded-md shadow md:col-span-2">
-        <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ getDocumentName(document.title) }}</h2>
+        <h2 class="text-sm font-semibold text-gray-700 line-clamp-1">{{ getDocumentName(document.title) }}</h2>
         <div class="flex space-x-3 item-center">
             <button v-if="document.title && /\.(pdf|png|jpe?g)$/.test(document.title)" @click="openPreviewDocumentModal(document.id)"
                 class="flex items-center text-green-600 hover:underline">
@@ -326,6 +326,10 @@ const openEditDocumentModal = (document) => {
   form.document = editingDocument.value.name;
   form.section_id = editingDocument.value.subdivision.section_id;
   form.subdivision_id = editingDocument.value.subdivision_id;
+  form.employee_id = editingDocument.value.employee_id;
+  form.e_employee_id = editingDocument.value.e_employee_id;
+  form.has_exp_date = editingDocument.value.exp_date ? 1 : 0
+  form.employeeType = editingDocument.value.employee_id ? 1 : 0;
   update_document.value = true;
 };
 

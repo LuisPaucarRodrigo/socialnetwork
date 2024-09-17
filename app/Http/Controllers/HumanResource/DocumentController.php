@@ -5,6 +5,7 @@ namespace App\Http\Controllers\HumanResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\DocumentCreateRequest;
 use App\Models\Document;
+use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
@@ -189,17 +190,33 @@ class DocumentController extends Controller
 }
 
 
-    public function create(DocumentCreateRequest $request)
-    {
+    public function create(DocumentCreateRequest $request){
         $data = $request->validated();
-        dd($data);
-        $documentName = null;
+        // dd($data);
         if ($request->hasFile('document')) {
             $document = $request->file('document');
-            $data['document'] = time() . '_' . $document->getClientOriginalName();
-            $document->move(public_path('documents/documents/'), $documentName);
+            $data['title'] = time() . '_' . $document->getClientOriginalName();
+            $document->move(public_path('documents/documents/'), $data['title']);
+        } 
+        $docItem = Document::create($data);
+        $docReg = $docItem->employee_id ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+            ->where('employee_id', $docItem->employee_id)->first() : null;
+        $docReg = $docItem->e_employee_id ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+            ->where('employee_id', $docItem->e_employee_id)->first() : null;
+
+        if ($docReg) {
+            $docReg->update(['document_id'=>$docItem->id]);
+        } else {
+            DocumentRegister::create([
+                'subdivision_id'->$docItem->subdivision_id,
+                'document_id'=> $docItem->id,
+                'employee_id'=> $docItem->employee_id,
+                'e_employee_id'=> $docItem->exp_de_employee_idate,
+                'exp_date' => $docItem->exp_date,
+                'state' => 'Completado',
+            ]);
         }
-        Document::create($data);
+
         return redirect()->back();
     }
 
