@@ -68,9 +68,11 @@ class DocumentCreateRequest extends FormRequest
         if ($docReg?->exp_date){
             array_push(
                 $rules['has_exp_date'],
-                function($attribute, $value, $fail) use($docReg){
-                    if($this->input('exp_date')!= $docReg?->exp_date){
-                        $fail('La fecha debe ser '.$docReg?->exp_date);
+                function($attribute, $value, $fail) use($docReg) {
+                    $expDateInput = Carbon::parse($this->input('exp_date'));
+                    $docRegExpDate = Carbon::parse($docReg?->exp_date);
+                    if ($expDateInput->lessThan($docRegExpDate)) {
+                        $fail('La fecha de vencimiento debe ser igual o mayor a ' . $docRegExpDate->format('d/m/Y'));
                     }
                 }
             );

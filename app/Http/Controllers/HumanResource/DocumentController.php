@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use ZipArchive;
+use Carbon\Carbon;
 
 class DocumentController extends Controller
 {
@@ -211,7 +212,15 @@ class DocumentController extends Controller
                 );
 
         if ($docReg) {
-            $docReg->update(['document_id'=>$docItem->id]);
+            $dataDocReg['document_id']=$docItem->id;
+            if($data['exp_date'] && $docReg->exp_date){
+                $newExpDate = Carbon::parse($data['exp_date']);
+                $pastExpDate = Carbon::parse($docReg->exp_date);
+                if($newExpDate>=$pastExpDate){
+                    $dataDocReg['exp_date']=$docItem->exp_date;
+                }
+            }
+            $docReg->update($dataDocReg);
         } else {
             DocumentRegister::create([
                 'subdivision_id'=>$docItem->subdivision_id,
