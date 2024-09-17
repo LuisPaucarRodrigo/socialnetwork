@@ -57,7 +57,7 @@ class PreProjectController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
             $preprojects_status = $request->input('preprojects_status');
-            $preprojects = Preproject::orWhere('code', 'like', "%$searchQuery%")
+            $preprojects = Preproject::with('users')->orWhere('code', 'like', "%$searchQuery%")
                 ->orWhere('description', 'like', "%$searchQuery%")
                 ->where('status', $preprojects_status)
                 ->orderBy('created_at', 'desc')
@@ -938,31 +938,34 @@ class PreProjectController extends Controller
         ]);
     }
 
-    public function postCode(Request $request)
-    {   
+    public function storeCode(Request $request)
+    {
         $validateData = $request->validate([
             'code' => 'required|string',
             'description' => 'required|string',
         ]);
+
         try {
-            Code::create([
-                $validateData
-            ]);
+            Code::create($validateData);
         } catch (Exception $e) {
             return redirect()->back()->withErrors(['message' => $e->getMessage()]);
         }
     }
 
-    public function putCode(Request $request, Code $code)
+    public function updateCode(Request $request, Code $code)
     {
         $validateData = $request->validate([
             'code' => 'required',
             'description' => 'required|string',
         ]);
 
-        $code->update([
-            $validateData
-        ]);
+        $code->update($validateData);
+    }
+
+    public function deleteCode(Code $code)
+    {
+        $code->delete();
+        return redirect()->back();
     }
 
     public function storeCodeImages(Request $request)
@@ -977,30 +980,46 @@ class PreProjectController extends Controller
             $uploadedImage = $image['image'];
             $image['image'] = time() . '._' . $uploadedImage->getClientOriginalName();
             CodeImage::create([
-                'code_id' => $validateData['code_id'] ,
+                'code_id' => $validateData['code_id'],
                 'image' => $image['image']
             ]);
             $uploadedImage->move(public_path('image/imageCode/'), $image['image']);
         }
     }
 
-    public function deleteCodeImages($id)
+    public function show_code_image($image_id)
     {
-        $codeImage = CodeImage::find($id);
-        $filePath = "image/imageCode/$codeImage->image";
+        $codeImage = CodeImage::find($image_id);
+        $fileName = $codeImage->image;
+        $filePath = 'image/imageCode/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
-            unlink($path);
-            $id->delete();
-        } else {
-            dd("La imagen no existe en la ruta: $filePath");
+            $url = url($filePath);
+            return response()->json(['url' => $url]);
         }
+        abort(404, 'Imagen no encontrada');
     }
 
-    public function deleteCode(Code $code)
+    public function deleteCodeImages($image_id)
     {
-        $code->delete();
-        return redirect()->back();
+        try {
+            $codeImage = CodeImage::find($image_id);
+            if ($codeImage) {
+                $filePath = "image/imageCode/{$codeImage->image}";
+                $path = public_path($filePath);
+                
+                if (file_exists($path)) {
+                    unlink($path); 
+                }
+                $codeImage->delete();
+                
+                return response()->json([],200);
+            } else {
+                return response()->json(['error' => 'Imagen no encontrada'], 404);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     //titles

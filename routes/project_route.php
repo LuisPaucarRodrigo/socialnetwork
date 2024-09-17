@@ -125,9 +125,13 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project/products/{project_id}/{project_entry}/liquidate', [LiquidationController::class, 'liquidate'])->name('projectmanagement.liquidate.post');
 
     //Codes
-    Route::post('/preprojects/codes/post', [PreProjectController::class, 'postCode'])->name('preprojects.codes.post');
-    Route::put('/preprojects/codes/{code}/put', [PreProjectController::class, 'putCode'])->name('preprojects.codes.put');
+    Route::post('/preprojects/codes/post', [PreProjectController::class, 'storeCode'])->name('preprojects.codes.post');
+    Route::put('/preprojects/codes/{code}/put', [PreProjectController::class, 'updateCode'])->name('preprojects.codes.put');
     Route::delete('/preprojects/codes/{code}/delete', [PreProjectController::class, 'deleteCode'])->name('preprojects.codes.delete');
+
+    Route::post('/preprojects/codes/images/store',[PreProjectController::class, 'storeCodeImages'])->name('preprojects.code.images.store');
+    Route::get('/preprojects/codes/images/{image_id}/show',[PreProjectController::class, 'show_code_image'])->name('preprojects.code.images.show');
+    Route::delete('/preprojects/codes/images/{image_id}/delete',[PreProjectController::class, 'deleteCodeImages'])->name('preprojects.code.images.delete');
 
     //Titles
     Route::post('/preprojects/titles/post', [PreProjectController::class, 'postTitle'])->name('preprojects.titles.post');
