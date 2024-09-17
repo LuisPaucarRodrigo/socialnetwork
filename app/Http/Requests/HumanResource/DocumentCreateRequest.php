@@ -7,6 +7,7 @@ use App\Models\DocumentRegister;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
 use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 
 class DocumentCreateRequest extends FormRequest
 {
@@ -25,11 +26,12 @@ class DocumentCreateRequest extends FormRequest
      */
     public function rules(): array
     {
+
         $rules = [
             'document' => 'required',
             'subdivision_id' => 'required|numeric',
             'employeeType' => 'required',
-            'has_exp_date' => 'required',
+            'has_exp_date' => ['required'],
         ];
         
         
@@ -56,6 +58,26 @@ class DocumentCreateRequest extends FormRequest
                  }
             }];
         }
+
+
+        $docReg = $this->input('employee_id') ? DocumentRegister::where('subdivision_id', $this->input('subdivision_id'))
+            ->where('employee_id', $this->input('employee_id'))->first() : 
+             ($this->input('e_employee_id') ? DocumentRegister::where('subdivision_id', $this->input('subdivision_id'))
+            ->where('employee_id', $this->input('e_employee_id'))->first() : null);
+
+        if ($docReg?->exp_date){
+            array_push(
+                $rules['has_exp_date'],
+                function($attribute, $value, $fail) use($docReg){
+                    if($this->input('exp_date')!= $docReg?->exp_date){
+                        $fail('La fecha debe ser '.$docReg?->exp_date);
+                    }
+                }
+            );
+        }
+
+
+
         if ($this->input('has_exp_date')){
             $rules['exp_date'] = 'required';
         }

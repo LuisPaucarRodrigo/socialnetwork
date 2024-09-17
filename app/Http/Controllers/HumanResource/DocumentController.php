@@ -199,16 +199,22 @@ class DocumentController extends Controller
             $document->move(public_path('documents/documents/'), $data['title']);
         } 
         $docItem = Document::create($data);
-        $docReg = $docItem->employee_id ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-            ->where('employee_id', $docItem->employee_id)->first() : null;
-        $docReg = $docItem->e_employee_id ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-            ->where('employee_id', $docItem->e_employee_id)->first() : null;
+        $docReg = $docItem->employee_id 
+            ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+                ->where('employee_id', $docItem->employee_id)
+                ->first() 
+            :  ($docItem->e_employee_id 
+                    ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+                        ->where('employee_id', $docItem->e_employee_id)
+                        ->first() 
+                    : null
+                );
 
         if ($docReg) {
             $docReg->update(['document_id'=>$docItem->id]);
         } else {
             DocumentRegister::create([
-                'subdivision_id'->$docItem->subdivision_id,
+                'subdivision_id'=>$docItem->subdivision_id,
                 'document_id'=> $docItem->id,
                 'employee_id'=> $docItem->employee_id,
                 'e_employee_id'=> $docItem->exp_de_employee_idate,
