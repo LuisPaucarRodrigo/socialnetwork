@@ -310,6 +310,7 @@
 
   const close_create = () => {
     form.reset();
+    entryDetails.value = null;
     create_modal.value = false;
   }
 

@@ -374,8 +374,15 @@ class HuaweiManagementController extends Controller
             })
             ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
             ->paginate(10);
+
+            foreach ($entries as $entry){
+                $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
+            }
         } else {
             $entries = HuaweiEntryDetail::where('huawei_material_id', $id)->with('huawei_entry', 'huawei_material', 'huawei_project_resources.huawei_project', 'huawei_project_resources.huawei_project_liquidation')->paginate(10);
+            foreach ($entries as $entry){
+                $entry->huawei_material->name = $this->sanitizeText2($entry->huawei_material->name);
+            }
         }
 
         return Inertia::render('Huawei/Details', [
@@ -390,6 +397,10 @@ class HuaweiManagementController extends Controller
         $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
             ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
             ->paginate(20);
+
+        foreach ($equipments as $equipment){
+            $equipment->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_equipment_serie->huawei_equipment->name);
+        }
 
         return Inertia::render('Huawei/GeneralEquipments', [
             'equipments' => $equipments
@@ -457,6 +468,10 @@ class HuaweiManagementController extends Controller
             ->merge($assignedSiteFilteredEquipments)
             ->unique('id');
 
+        foreach ($finalEquipments as $equipment){
+            $equipment->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_equipment_serie->huawei_equipment->name);
+        }
+
         return Inertia::render('Huawei/GeneralEquipments', [
             'equipments' => $finalEquipments,
             'search' => $request
@@ -477,6 +492,10 @@ class HuaweiManagementController extends Controller
         })
         ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
         ->get();
+
+        foreach ($entries as $entry){
+            $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
+        }
 
         return Inertia::render('Huawei/Details', [
             'entries' => $entries,
@@ -560,6 +579,10 @@ class HuaweiManagementController extends Controller
                 ->merge($projectQuery)
                 ->merge($queryByCode)
                 ->unique('id')
+                ->map(function ($detail) {
+                    $detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($detail->huawei_equipment_serie->huawei_equipment->name); // Aplica la función de sanitización al nombre
+                    return $detail;
+                })
                 ->values(); // Asegurarse de que las claves sean secuenciales
 
         } else {
@@ -575,7 +598,11 @@ class HuaweiManagementController extends Controller
             // Obtener los resultados finales para no equipos
             $mergedResults = $query->distinct()
                 ->with('huawei_entry', 'huawei_material',)
-                ->get();
+                ->get()
+                ->map(function ($detail) {
+                    $detail->huawei_material->name = $this->sanitizeText2($detail->huawei_material->name); // Aplica la función de sanitización al nombre
+                    return $detail;
+                });
         }
 
 
