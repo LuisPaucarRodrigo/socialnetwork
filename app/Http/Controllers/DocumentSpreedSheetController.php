@@ -156,10 +156,10 @@ class DocumentSpreedSheetController extends Controller
 
 
     public function employeesDocumentAlarms() {
-        $employees = Employee::all()->filter(function($item){
+        $employees = Employee::orderBy('lastname')->get()->filter(function($item){
             return $item->documents_about_to_expire > 0;
         });
-        $e_employees = ExternalEmployee::all()->filter(function($item){
+        $e_employees = ExternalEmployee::orderBy('lastname')->get()->filter(function($item){
             return $item->documents_about_to_expire > 0;
         });
         $employees->merge($e_employees);

@@ -160,5 +160,5 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
 
     //Document Spreed Sheet
     Route::get('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');
-    Route::get('/document_rrhh_status_alarm', [DocumentSpreedSheetController::class, 'employeesDocumentAlarms']);
+    Route::get('/document_rrhh_status_alarm', [DocumentSpreedSheetController::class, 'employeesDocumentAlarms'])->name('document.rrhh.status.alarms');
 });
