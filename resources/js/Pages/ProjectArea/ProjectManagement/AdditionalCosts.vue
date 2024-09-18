@@ -1440,7 +1440,14 @@ function handlerPreview(id) {
     );
 }
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
+const zones = [
+    "Arequipa", 
+    "Chala", 
+    "Moquegua", 
+    "Tacna", 
+    "MDD1", 
+    "MDD2"
+];
 const expenseTypes = [
     "Hospedaje",
     "Movilidad",

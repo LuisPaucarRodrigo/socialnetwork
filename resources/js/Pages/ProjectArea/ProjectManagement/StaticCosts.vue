@@ -1134,7 +1134,14 @@ function handlerPreview(id) {
     );
 }
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1-PM", "MDD2-MAZ"];
+const zones = [
+    "Arequipa", 
+    "Chala", 
+    "Moquegua", 
+    "Tacna", 
+    "MDD1-PM", 
+    "MDD2-MAZ"
+];
 const expenseTypes = [
     "Camionetas",
     "Combustible",
