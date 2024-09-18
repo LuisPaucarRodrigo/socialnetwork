@@ -60,7 +60,7 @@
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <div class="flex space-x-3 justify-center">
-                                        <button @click="openCreateModal(item.id)">
+                                        <button @click="openCreateModal(item)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -153,7 +153,7 @@
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
                                         <button class="text-blue-900"
-                                            @click="openEditModal(materialDetail.id, materialDetail)">
+                                            @click="openEditModal(materialDetail, item.project_name, item.cpe)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -177,7 +177,9 @@
         <Modal :show="showAddEditModal" @close="closeAddPuchaseOrderModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Orden de Compra' : 'Nueva Orden de Compra' }}
+                    {{ form.id ? 'Editar Orden de Compra' : 'Nueva Orden de Compra' }} {{ ': ' + dateModal.project_name
+        + ' - '
+        + dateModal.cpe }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -268,6 +270,7 @@ const { purchaseOrder, auth } = defineProps({
 })
 
 const purchaseOrders = ref(purchaseOrder)
+const dateModal = ref({})
 
 const initialState = {
     cicsa_assignation_id: null,
@@ -297,14 +300,16 @@ function closeAddPuchaseOrderModal() {
     form.reset()
 }
 
-function openCreateModal(cicsa_assignation_id) {
-    form.defaults({ ...initialState, cicsa_assignation_id })
+function openCreateModal(cicsa_assignation) {
+    dateModal.value = { 'project_name': cicsa_assignation.project_name, 'cpe': cicsa_assignation.cpe }
+    form.defaults({ ...initialState, cicsa_assignation_id: cicsa_assignation.id })
     form.reset()
     showAddEditModal.value = true
 }
 
-function openEditModal(id, item) {
-    cicsa_purchase_order_id.value = id;
+function openEditModal(item, project_name, cpe) {
+    dateModal.value = { 'project_name': project_name, 'cpe': cpe }
+    cicsa_purchase_order_id.value = item.id;
     form.defaults({ ...item })
     form.reset()
     showAddEditModal.value = true

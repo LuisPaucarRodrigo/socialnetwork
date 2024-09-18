@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('boss')->default('Pendiente');
             $table->string('liquidator')->default('Pendiente');
             $table->string('superintendent')->default('Pendiente');
+            $table->string('observations')->nullable();
             $table->string('user_name')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('cicsa_assignation_id')->nullable()->constrained('cicsa_assignations')->onDelete('cascade');

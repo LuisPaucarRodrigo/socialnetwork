@@ -25,6 +25,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function PHPSTORM_META\map;
+
 class ApiController extends Controller
 {
 
@@ -83,7 +85,11 @@ class ApiController extends Controller
             $preprojects = $user->preprojects()
                 ->select('preprojects.id as preproject_id', 'preproject_user.id as pivot_id', 'code', 'description', 'date', 'observation', 'status')
                 ->whereNull('status')
+                ->whereHas('preprojectTitles', function ($query) {
+                    $query->where('state', 1);
+                })
                 ->get();
+            
             return response()->json($preprojects);
         } catch (\Exception $e) {
             return response()->json([
@@ -113,19 +119,24 @@ class ApiController extends Controller
     public function codephotospecific($id)
     {
         $data = PreprojectCode::with(['code' => function ($query) {
-            $query->select('id', 'code', 'description');
+            $query->select('id', 'code', 'description')->with('code_images');;
         }, 'preprojectTitle' => function ($query) {
             $query->select('id', 'preproject_id');
             $query->with(['preproject' => function ($query) {
                 $query->select('id', 'code');
             }]);
         }])->select('id', 'preproject_title_id', 'code_id')->find($id);
+        $images = $data->code->code_images->map(function ($image) {
+            $image->image = url('/image/imageCode/' . $image->image);
+            return $image;
+        });
         $codesWith = [
             'id' => $data->id,
             'codePreproject' => $data->preprojectTitle->preproject->code,
             'code' => $data->code->code,
             'description' => $data->code->description,
-            'status' => $data->status ?? $data->replaceable_status
+            'status' => $data->status ?? $data->replaceable_status,
+            'images' => $images
         ];
         return response()->json($codesWith);
     }
@@ -314,11 +325,11 @@ class ApiController extends Controller
             ->with([
                 'huawei_project_codes' => function ($query) {
                     $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status')
-                          ->with([
-                              'huawei_code' => function ($query) {
-                                  $query->select('id', 'code');
-                              }
-                          ]);
+                        ->with([
+                            'huawei_code' => function ($query) {
+                                $query->select('id', 'code');
+                            }
+                        ]);
                 },
                 'huawei_project_codes.huawei_code' => function ($query) {
                     $query->select('id', 'code');
@@ -338,7 +349,7 @@ class ApiController extends Controller
     }
 
 
-    public function storeImagePerCode (HuaweiProjectCode $code, Request $request)
+    public function storeImagePerCode(HuaweiProjectCode $code, Request $request)
 
     {
         $data = $request->validate([
@@ -389,7 +400,7 @@ class ApiController extends Controller
         return response()->json(['images' => $images], 200);
     }
 
-    public function getCodesAndProjectCode ($code)
+    public function getCodesAndProjectCode($code)
     {
         $project_code = HuaweiProjectCode::where('id', $code)
             ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
@@ -404,9 +415,21 @@ class ApiController extends Controller
             ->first()
             ->makeHidden(['huawei_project_images']);
 
-        $project_code->huawei_project_stage->huawei_project->makeHidden(['additional_cost_total', 'static_cost_total', 'state', 'materials_in_project',
-        'equipments_in_project', 'materials_liquidated', 'equipments_liquidated', 'total_earnings', 'total_real_earnings', 'total_real_earnings_without_deposit',
-        'total_project_cost', 'total_employee_costs', 'total_essalud_employee_cost']);
+        $project_code->huawei_project_stage->huawei_project->makeHidden([
+            'additional_cost_total',
+            'static_cost_total',
+            'state',
+            'materials_in_project',
+            'equipments_in_project',
+            'materials_liquidated',
+            'equipments_liquidated',
+            'total_earnings',
+            'total_real_earnings',
+            'total_real_earnings_without_deposit',
+            'total_project_cost',
+            'total_employee_costs',
+            'total_essalud_employee_cost'
+        ]);
 
         $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
             ->select('id', 'code', 'description')

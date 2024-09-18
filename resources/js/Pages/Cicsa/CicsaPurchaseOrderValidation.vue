@@ -57,7 +57,7 @@
                                         {{ item.cpe }}
                                     </p>
                                 </td>
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <div class="flex space-x-3 justify-center">
                                         <button v-if="item.cicsa_purchase_order_validation.length > 0" type="button"
                                             @click="toggleDetails(item?.cicsa_purchase_order_validation)"
@@ -119,6 +119,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Observaciones
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Encargado
                                     </th>
                                     <th
@@ -131,7 +135,7 @@
                                     :key="materialDetail.id" class="bg-gray-100">
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.cicsa_purchase_order.oc_number }}
+                                            {{ materialDetail?.cicsa_purchase_order?.oc_number }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -172,6 +176,11 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.superintendent }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.observations }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -316,6 +325,14 @@
                             </div>
                         </div>
 
+                        <div class="sm:col-span-1">
+                            <InputLabel for="observations">Observaciones</InputLabel>
+                            <div class="mt-2">
+                                <textarea v-model="form.observations" id="observations" class="block w-full mt-1 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm rounded-md" />
+                                <InputError :message="form.errors.observations" />
+                            </div>
+                        </div>
+
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -370,6 +387,7 @@ const initialState = {
     boss: 'Pendiente',
     liquidator: 'Pendiente',
     superintendent: 'Pendiente',
+    observations: '',
     user_name: '',
     cicsa_assignation_id: '',
     cicsa_purchase_order_id: '',
@@ -388,7 +406,7 @@ function closeAddAssignationModal() {
 }
 
 function openUpdateModal(item) {
-    oc_number.value = item.cicsa_purchase_order.oc_number
+    oc_number.value = item.cicsa_purchase_order?.oc_number
     form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
     showAddEditModal.value = true

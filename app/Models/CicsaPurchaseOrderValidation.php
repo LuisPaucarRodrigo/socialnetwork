@@ -20,6 +20,7 @@ class CicsaPurchaseOrderValidation extends Model
         'boss',
         'liquidator',
         'superintendent',
+        'observations',
         'user_name',
         'user_id',
         'cicsa_assignation_id',

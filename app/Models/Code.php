@@ -31,4 +31,9 @@ class Code extends Model
     {
         return $this->belongsToMany(Preproject::class, 'preproject_codes')->withPivot('status');
     }
+
+    public function code_images()
+    {
+        return $this->hasMany(CodeImage::class);
+    }
 }

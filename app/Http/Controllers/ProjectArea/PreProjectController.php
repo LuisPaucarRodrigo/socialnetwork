@@ -24,6 +24,7 @@ use App\Models\Purchasing_requests_product;
 use App\Models\ResourceEntry;
 use App\Models\Service;
 use App\Models\Code;
+use App\Models\CodeImage;
 use App\Models\Customers_contact;
 use App\Models\PreprojectCode;
 use App\Models\PreprojectTitle;
@@ -37,6 +38,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use ZipArchive;
 
 class PreProjectController extends Controller
@@ -55,7 +57,7 @@ class PreProjectController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
             $preprojects_status = $request->input('preprojects_status');
-            $preprojects = Preproject::orWhere('code', 'like', "%$searchQuery%")
+            $preprojects = Preproject::with('users')->orWhere('code', 'like', "%$searchQuery%")
                 ->orWhere('description', 'like', "%$searchQuery%")
                 ->where('status', $preprojects_status)
                 ->orderBy('created_at', 'desc')
@@ -932,38 +934,92 @@ class PreProjectController extends Controller
     public function showCodes()
     {
         return Inertia::render('ProjectArea/PreProject/Codes', [
-            'codes' => Code::paginate(20)
+            'codes' => Code::with('code_images')->paginate(20)
         ]);
     }
 
-    public function postCode(Request $request)
+    public function storeCode(Request $request)
     {
-        $request->validate([
-            'code' => 'required'
+        $validateData = $request->validate([
+            'code' => 'required|string',
+            'description' => 'required|string',
         ]);
 
-        Code::create([
-            'code' => $request->code,
-            'description' => $request->description
-        ]);
+        try {
+            Code::create($validateData);
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
+        }
     }
 
-    public function putCode(Request $request, Code $code)
+    public function updateCode(Request $request, Code $code)
     {
-        $request->validate([
-            'code' => 'required'
+        $validateData = $request->validate([
+            'code' => 'required',
+            'description' => 'required|string',
         ]);
 
-        $code->update([
-            'code' => $request->code,
-            'description' => $request->description
-        ]);
+        $code->update($validateData);
     }
 
     public function deleteCode(Code $code)
     {
         $code->delete();
         return redirect()->back();
+    }
+
+    public function storeCodeImages(Request $request)
+    {
+        $validateData = $request->validate([
+            'code_id' => 'required|numeric',
+            'images' => 'required|array',
+            'images.*.image' => 'required|image|mimes:jpeg,jpg,png|max:2048'
+        ]);
+
+        foreach ($validateData['images'] as $image) {
+            $uploadedImage = $image['image'];
+            $image['image'] = time() . '._' . $uploadedImage->getClientOriginalName();
+            CodeImage::create([
+                'code_id' => $validateData['code_id'],
+                'image' => $image['image']
+            ]);
+            $uploadedImage->move(public_path('image/imageCode/'), $image['image']);
+        }
+    }
+
+    public function show_code_image($image_id)
+    {
+        $codeImage = CodeImage::find($image_id);
+        $fileName = $codeImage->image;
+        $filePath = 'image/imageCode/' . $fileName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            $url = url($filePath);
+            return response()->json(['url' => $url]);
+        }
+        abort(404, 'Imagen no encontrada');
+    }
+
+    public function deleteCodeImages($image_id)
+    {
+        try {
+            $codeImage = CodeImage::find($image_id);
+            if ($codeImage) {
+                // $filePath = "image/imageCode/{$codeImage->image}";
+                // $path = public_path($filePath);
+                
+                // if (file_exists($path)) {
+                //     unlink($path); 
+                // }
+                $codeImage->delete();
+                
+                return response()->json([],200);
+            } else {
+                return response()->json(['error' => 'Imagen no encontrada'], 404);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     //titles
