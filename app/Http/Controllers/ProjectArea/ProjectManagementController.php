@@ -191,7 +191,16 @@ class ProjectManagementController extends Controller
 
     public function project_add_employee(Request $request, $project_id)
     {
-        $project = Project::find($project_id);
+        $project = Project::with('employees')->find($project_id);
+        $request->validate([
+            'employee.id' => ['required', function($attribute, $value, $fail)  use ($project) {
+                foreach($project->employees as $emp) {
+                    if ($emp->id == $value) {
+                        $fail('El trabajador ya se encuentra en el proyecto' );
+                    }   
+                }
+            }]
+        ]);
         $employee = Employee::find($request->input('employee.id'));
         $project->employees()->attach($request->input('employee.id'), [
             'charge' => $request->input('charge'),
@@ -303,7 +312,8 @@ class ProjectManagementController extends Controller
             ];
         })->toArray();
 
-        $staticCosts = $project_id->staticCosts->sum('real_amount');
+        $staticCosts =  $this->staticCosts()->where('expense_type', '!=', 'Combustible GEP')->get()
+        ->sum('real_amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')

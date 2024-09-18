@@ -13,7 +13,8 @@ class HuaweiProjectStage extends Model
 
     protected $fillable = [
         'huawei_project_id',
-        'description'
+        'description',
+        'status'
     ];
 
     public function huawei_project ()

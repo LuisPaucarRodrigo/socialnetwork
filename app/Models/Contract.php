@@ -10,7 +10,18 @@ use Illuminate\Support\Facades\File;
 class Contract extends Model
 {
     use HasFactory;
-    protected $fillable = ['basic_salary', 'life_ley', 'discount_remuneration', 'discount_sctr', 'state', 'days_taken', 'hire_date', 'fired_date', 'employee_id', 'pension_id'];
+    protected $fillable = [
+        'basic_salary', 
+        'life_ley', 
+        'discount_remuneration', 
+        'discount_sctr', 
+        'state', 
+        'days_taken', 
+        'hire_date', 
+        'fired_date', 
+        'employee_id', 
+        'pension_id'
+    ];
 
     protected $appends = [
         'total_income',
@@ -166,5 +177,15 @@ class Contract extends Model
     public function getTotalContributionAttribute()
     {
         return $this->healths + $this->life_ley + $this->sctr_p + $this->sctr_s;
+    }
+
+
+
+    public function hideAllAppends()
+    {
+        // Obtén todos los atributos 'appends'
+        $appends = $this->getAppends();
+        // Oculta todos los atributos 'appends'
+        return $this->makeHidden($appends);
     }
 }

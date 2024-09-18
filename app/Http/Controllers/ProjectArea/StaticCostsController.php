@@ -16,7 +16,7 @@ class StaticCostsController extends Controller
 {
     public function index(Request $request, Project $project_id)
     {
-        $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at')->paginate(20);
+        $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
         $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/StaticCosts', [
@@ -48,7 +48,7 @@ class StaticCostsController extends Controller
                 ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-        $result = $result->get();
+        $result = $result->orderBy('doc_date')->get();
         return response()->json($result, 200);
     }
 

@@ -281,7 +281,8 @@ class ChecklistsController extends Controller
             if (($data['zone']!=='MDD1'&& $data['zone']!=='MDD2') && $data['type_doc'] === 'Factura' ) {
                 $data['igv'] = 18;
             }
-
+            $newDesc = Auth::user()->name.", ".$data['description'];
+            $data['description'] = $newDesc;
             if ($data['photo']) {
                 $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');
             }

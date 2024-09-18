@@ -17,6 +17,10 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            boxShadow: {
+                'header-gray-300': 'inset 1px 1px 1px rgba(209, 213, 219, 1), inset -1px -1px 0px rgba(209, 213, 219, 1)',
+        'header-custom': 'inset 1px 1px 1px rgba(0, 0, 0, 1), inset 0px -1px 0px rgba(0, 0, 0, 1)',
+              }
         },
     },
 

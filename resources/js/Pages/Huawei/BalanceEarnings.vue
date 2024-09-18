@@ -75,7 +75,7 @@
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 N° de Factura</th>
                 <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600 min-w-[300px]">
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 Monto</th>
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
@@ -83,6 +83,21 @@
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 Fecha de Depósito</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                Monto BCP</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                N° Operación BCP</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                Fecha de Detracción</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                Monto de Detracción</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                N° Operación Detracción</th>
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 </th>
@@ -91,9 +106,15 @@
           <tbody>
             <tr v-for="item in (props.search ? props.earnings : earnings.data)" :key="item.id" class="text-gray-700">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.invoice_number }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">S/. {{ item.amount.toFixed(2) }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.invoice_date) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">S/. {{ item.amount.toFixed(2) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ formattedDate(item.invoice_date) }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ formattedDate(item.deposit_date) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.main_amount ? "S/. " + item.main_amount.toFixed(2) : '' }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.main_op_number }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.detraction_date ? formattedDate(item.detraction_date) : ''}}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.detraction_amount ? "S/. " + item.detraction_amount.toFixed(2) : '' }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.detraction_op_number }}</td>
+
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <div class="flex justify-center items-center">
                     <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
@@ -141,6 +162,78 @@
                         </div>
 
                         <div class="col-span-1">
+                            <InputLabel for="main_amount" class="font-medium leading-6 text-gray-900">Monto BCP</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" step="0.01" v-model="form.main_amount" id="main_amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.main_amount" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="detraction_amount" class="font-medium leading-6 text-gray-900">Monto Detracción</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" step="0.01" v-model="form.detraction_amount" id="detraction_amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.detraction_amount" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="main_op_number" class="font-medium leading-6 text-gray-900">N° Operación BCP</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.main_op_number" id="main_op_number"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.main_op_number" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="detraction_op_number" class="font-medium leading-6 text-gray-900">N° Operación Detracción</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.detraction_op_number" id="detraction_op_number"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.detraction_op_number" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="main_amount" class="font-medium leading-6 text-gray-900">Monto BCP</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" step="0.01" v-model="form.main_amount" id="main_amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.main_amount" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="detraction_amount" class="font-medium leading-6 text-gray-900">Monto Detracción</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" step="0.01" v-model="form.detraction_amount" id="detraction_amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.detraction_amount" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="main_op_number" class="font-medium leading-6 text-gray-900">N° Operación BCP</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.main_op_number" id="main_op_number"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.main_op_number" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="detraction_op_number" class="font-medium leading-6 text-gray-900">N° Operación Detracción</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.detraction_op_number" id="detraction_op_number"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.detraction_op_number" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
                             <InputLabel for="invoice_date" class="font-medium leading-6 text-gray-900">Fecha de Facturación</InputLabel>
                             <div class="mt-2">
                                 <input type="date" v-model="form.invoice_date" id="invoice_date"
@@ -155,6 +248,15 @@
                                 <input type="date" v-model="form.deposit_date" id="deposit_date"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.deposit_date" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="detraction_date" class="font-medium leading-6 text-gray-900">Fecha de Detracción</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.detraction_date" id="detraction_date"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.detraction_date" />
                             </div>
                         </div>
 
@@ -179,7 +281,7 @@
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Importar Excel
                 </h2>
-                <form @submit.prevent="importExcel">
+                <form @submit.prevent="verify">
                 <div class="space-y-12">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -207,6 +309,27 @@
             </div>
         </Modal>
 
+        <Modal :show="verifyModal" :maxWidth="'sm'">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 text-center">
+                    ¿Está seguro de importar el excel?
+                </h2>
+                <p class="mt-1 text-sm text-gray-600 text-wrap">
+                    Existen registros con el mismo N° Factura de los que se desean importar, los cuales se actualizarán con la nueva información.
+                </p>
+                <div class="space-y-12">
+                <div class="border-gray-900/10">
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                    <SecondaryButton @click="reject"> No </SecondaryButton>
+                    <PrimaryButton @click="importExcel"
+                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Si</PrimaryButton>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </Modal>
+
+
       <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Ingreso"
         :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
       <ConfirmCreateModal :confirmingcreation="showModal" itemType="Ingreso" />
@@ -229,7 +352,7 @@ import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
@@ -237,6 +360,7 @@ import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { formattedDate } from '@/utils/utils';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
   earnings: Object,
@@ -252,12 +376,29 @@ const form = useForm({
   amount: '',
   invoice_date: '',
   deposit_date: '',
+  main_amount: '',
+  main_op_number: '',
+  detraction_amount: '',
+  detraction_date: '',
+  detraction_op_number: ''
+});
+
+watch(() => form.amount, (newValue) => {
+  if (newValue && !form.id) {
+    form.main_amount = (newValue * 0.88).toFixed(2);
+    form.detraction_amount = (newValue * 0.12).toFixed(2);
+  }
+  if (form.id && newValue !== originalAmount.value) {
+    form.main_amount = (newValue * 0.88).toFixed(2);
+    form.detraction_amount = (newValue * 0.12).toFixed(2);
+  }
 });
 
 const importForm = useForm({
   file: null,
 });
 
+const originalAmount = ref(null);
 const create_additional = ref(false);
 const showModal = ref(false);
 const showModalEdit = ref(false);
@@ -269,6 +410,7 @@ const importModal = ref(false);
 const confirmImport = ref(false);
 const dropdownOpen = ref(false);
 const error_earning = ref(false);
+const verifyModal = ref(false);
 
 const openImportModal = () => {
     importModal.value = true;
@@ -285,12 +427,14 @@ const openCreateAdditionalModal = () => {
 };
 
 const closeCreateModal = () => {
+    originalAmount.value = 0;
     form.reset();
     form.clearErrors();
     create_additional.value = false;
 }
 
 const closeEditModal = () => {
+    originalAmount.value = 0;
     form.reset();
     form.clearErrors();
     editAdditionalModal.value = false;
@@ -304,11 +448,17 @@ const openEditAdditionalModal = (additional) => {
   form.amount = editingAdditional.value.amount;
   form.invoice_date = editingAdditional.value.invoice_date;
   form.deposit_date = editingAdditional.value.deposit_date;
-
+  form.main_amount = editingAdditional.value.main_amount;
+  form.main_op_number = editingAdditional.value.main_op_number;
+  form.detraction_amount = editingAdditional.value.detraction_amount;
+  form.detraction_op_number = editingAdditional.value.detraction_op_number;
+  form.detraction_date = editingAdditional.value.detraction_date;
+  originalAmount.value = editingAdditional.value.amount;
   editAdditionalModal.value = true;
 };
 
 const closeModals = () => {
+  originalAmount.value = 0;
   form.clearErrors();
   form.reset();
   editAdditionalModal.value = false;
@@ -341,11 +491,41 @@ const submit = (update) => {
     }
 };
 
+const verify = () => {
+    let formData = new FormData();
+    formData.append('file', importForm.file); // Agrega el archivo al FormData
+
+    axios.post(route('huawei.generalbalance.earnings.verify'), formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data', // Especifica que estás enviando un archivo
+        },
+    })
+    .then(res => {
+        if (res.data.message == 'found') {
+            verifyModal.value = true;
+        } else {
+            importExcel();
+        }
+    })
+    .catch(error => {
+        console.error('Error en la petición:', error);
+    });
+};
+
+
+const reject = () => {
+    importForm.reset();
+    importForm.clearErrors();
+    verifyModal.value = false;
+    importModal.value = false;
+}
+
 const importExcel = () => {
     importForm.post(route('huawei.generalbalance.earnings.import'), {
         onSuccess: () => {
             closeImportModal();
             confirmImport.value = true;
+            verifyModal.value = false;
             setTimeout(() => {
                 confirmImport.value = false;
             }, 2000);

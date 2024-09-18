@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('cicsa_service_orders', function (Blueprint $table) {
             $table->id();
             $table->date('service_order_date')->nullable();
-            $table->string('service_order')->nullable();
-            $table->string('estimate_sheet');
-            $table->string('purchase_order');
-            $table->string('pdf_invoice');
-            $table->string('zip_invoice');
-            $table->string('user_name');
+            $table->string('service_order')->default('Pendiente');
+            $table->string('estimate_sheet')->default('Pendiente');
+            $table->string('purchase_order')->default('Pendiente');
+            $table->string('pdf_invoice')->default('Pendiente');
+            $table->string('zip_invoice')->default('Pendiente');
+            $table->string('user_name')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('cicsa_assignation_id')->constrained('cicsa_assignations')->onDelete('cascade');
+            $table->foreignId('cicsa_assignation_id')->nullable()->constrained('cicsa_assignations')->onDelete('cascade');
+            $table->foreignId('cicsa_purchase_order_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

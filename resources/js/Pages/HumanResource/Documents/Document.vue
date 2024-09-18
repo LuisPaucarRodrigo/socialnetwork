@@ -108,7 +108,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mt-5">
       <div v-for="document in (props.search || props.section || props.subdivision ? props.documents : documents.data)" :key="document.id"
         class="bg-white p-4 rounded-md shadow md:col-span-2">
-        <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">{{ getDocumentName(document.title) }}</h2>
+        <h2 class="text-sm font-semibold text-gray-700 line-clamp-1">{{ getDocumentName(document.title) }}</h2>
+        <p class="text-xs font-semibold text-gray-700 line-clamp-1">{{ document.emp_name }}</p>
         <div class="flex space-x-3 item-center">
             <button v-if="document.title && /\.(pdf|png|jpe?g)$/.test(document.title)" @click="openPreviewDocumentModal(document.id)"
                 class="flex items-center text-green-600 hover:underline">
@@ -152,7 +153,7 @@
                 <option value="">Seleccionar Seccion</option>
                 <option v-for="section in sections" :key="section.id" :value="section.id">{{ section.name }}</option>
               </select>
-              <InputError :message="form.errors.section_id" />
+              <InputError :message="form.errors.subdivision_id" />
             </div>
             <div v-if="form.section_id">
               <InputLabel for="documentSubdivision">Subdivisión:</InputLabel>
@@ -171,6 +172,65 @@
                 <p class="text-red-500">Cree subdivisiones para esta sección.</p>
               </template>
             </div>
+
+
+            <div v-if="create_document" class="mt-4 flex gap-6">
+              <label class="flex gap-3 items-center" for="empTypePlanilla">
+                Planilla
+                <input id="empTypePlanilla" type="radio" :value="1" v-model="form.employeeType" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
+              </label>
+              <label class="flex gap-3 items-center" for="empTypeTerceros">
+                Terceros
+                <input id="empTypeTerceros" type="radio" :value="0" v-model="form.employeeType" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
+              </label>
+            </div>
+            <div v-else >
+              <InputLabel class="flex gap-3 items-center" >
+                Empleado
+              </InputLabel>
+              </div>
+            <div v-if="form.employeeType" class="mt-2">
+                <select v-model="form.employee_id" id="docEmp"
+                  class="border rounded-md px-3 py-2 mb-3 w-full">
+                  <option value="" disabled>Seleccionar Empleado</option>
+                  <option v-for="item in employees" :key="item.id" :value="item.id">
+                    {{ item.name }} {{ item.lastname }}
+                  </option>
+                </select>
+                <InputError :message="form.errors.employee_id" />
+            </div>
+            <div v-else class="mt-2">
+              <select v-model="form.e_employee_id" id="docEmp"
+                class="border rounded-md px-3 py-2 mb-3 w-full">
+                <option value="" disabled>Seleccionar Empleado</option>
+                <option v-for="item in e_employees" :key="item.id" :value="item.id">
+                  {{ item.name }} {{ item.lastname }}
+                </option>
+              </select>
+              <InputError :message="form.errors.e_employee_id" />
+            </div>
+
+
+            <div class="mt-4 flex gap-4">
+              ¿Tiene Fecha de Vencimiento?
+              <label class="flex gap-2 items-center" for="hasExpDateYes">
+                Si
+                <input id="hasExpDateYes" type="radio" :value="1" v-model="form.has_exp_date" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
+              </label>
+              <label class="flex gap-2 items-center" for="hasExpDateNo">
+                No
+                <input id="hasExpDateNo" type="radio" :value="0" v-model="form.has_exp_date" class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"/>
+              </label>
+            </div>
+            <InputError :message="form.errors.has_exp_date" />
+            <div v-if="form.has_exp_date" class="mt-2">
+              <TextInput id="phone" type="date" maxlength="9"
+                  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  v-model="form.exp_date" autocomplete="off" />
+                  <InputError :message="form.errors.exp_date" />
+            </div>
+
+
 
 
             <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -209,11 +269,14 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { TrashIcon, ArrowDownIcon, EyeIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import Dropdown from '@/Components/Dropdown.vue';
 import Pagination from '@/Components/Pagination.vue'
+import Employees from '../ManagementEmployees/Employees.vue';
 
 const props = defineProps({
   sections: Object,
   documents: Object,
   subdivisions: Object,
+  employees: Array,
+  e_employees: Array,
   userPermissions: Array,
   section: [String, null],
   subdivision: [String, null],
@@ -229,6 +292,11 @@ const form = useForm({
   document: null,
   section_id: '',
   subdivision_id: '',
+  employeeType: 1,
+  employee_id: '',
+  e_employee_id: '',
+  has_exp_date: '',
+  exp_date: '',
 });
 
 const filteredSubdivisions = ref([]);
@@ -253,40 +321,43 @@ const openCreateDocumentModal = () => {
 
 const closeModal = () => {
   form.reset();
+  form.clearErrors()
   create_document.value = false;
 };
 
 const openEditDocumentModal = (document) => {
+  console.log(document.e_employee_id)
   // Copia de los datos de la subsección existente al formulario
   editingDocument.value = JSON.parse(JSON.stringify(document));
   form.id = editingDocument.value.id;
   form.document = editingDocument.value.name;
   form.section_id = editingDocument.value.subdivision.section_id;
   form.subdivision_id = editingDocument.value.subdivision_id;
+  form.employee_id = editingDocument.value.employee_id;
+  form.e_employee_id = document.e_employee_id;
+  form.has_exp_date = editingDocument.value.exp_date ? 1 : 0
+  form.employeeType = editingDocument.value.employee_id ? 1 : 0;
   update_document.value = true;
 };
 
 const closeEditModal = () => {
   form.reset();
+  form.clearErrors()
   update_document.value = false;
 };
 
 const submit = () => {
   form.post(route('documents.create'), {
     onSuccess: () => {
-      closeModal();
-      form.reset();
+      closeEditModal();
       showModal.value = true
       setTimeout(() => {
         showModal.value = false;
         router.visit(route('documents.index'))
       }, 2000);
     },
-    onError: () => {
-      form.reset();
-    },
-    onFinish: () => {
-      form.reset();
+    onError: (e) => {
+      console.log(e)
     }
   });
 };
@@ -295,19 +366,15 @@ const submitEdit = () => {
   form.post(route('documents.update', { id: form.id }), {
     onSuccess: () => {
       closeModal();
-      form.reset();
       showEditModal.value = true
       setTimeout(() => {
         showEditModal.value = false;
         router.visit(route('documents.index'))
       }, 2000);
     },
-    onError: () => {
-      form.reset();
+    onError: (e) => {
+      console.log(e)
     },
-    onFinish: () => {
-      form.reset();
-    }
   });
 };
 
@@ -431,5 +498,17 @@ const filterSubdivision = (e) => {
     }
 
 }
+
+
+watch(()=>form.employeeType, ()=>{
+  if(create_document.value){
+    form.employee_id = ''
+    form.e_employee_id = ''
+    console.log('entre')
+  }
+})
+watch(()=>form.has_exp_date, ()=>{
+  form.exp_date = ''
+})
 
 </script>

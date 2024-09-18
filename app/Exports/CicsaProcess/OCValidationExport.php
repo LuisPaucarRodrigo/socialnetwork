@@ -20,13 +20,13 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'Codigo de Proyecto',
                 'CPE',
                 'Orden de Compra',
-                'Fecha validada',
                 'Control de Materiales',
                 'Supervisor',
                 'Almacen',
                 'Jefe',
                 'Liquidador',
                 'SuperIntendente',
+                'Fecha de Validacion',
                 'Encargado'
             ],
             'cicsa_purchase_order_validations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')

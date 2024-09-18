@@ -42,9 +42,14 @@ Usuarios
             </template>
 
             <template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
-                <a v-if="subSectionsPorVencer.length + subSectionsPorVencer7.length > 0 || permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0 || employeeBirthdayAlarms.length > 0"
+                <a v-if="subSectionsPorVencer.length + subSectionsPorVencer7.length > 0 || permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0 || employeeBirthdayAlarms.length > 0 || documentsToExpire.length>0"
                     class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-                    @click="showingHumanResource = (showingMembers && showingMembers7) ? false : !showingHumanResource; showingMembers = showingMembers7 = false">
+                    @click="showingHumanResource = (showingMembers && showingMembers7) 
+                                ? false 
+                                : !showingHumanResource; 
+                                 showingMembers = showingMembers7 = false;
+                                 showDocumentsToExpireAlarms = false;
+                         ">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="red" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -90,6 +95,9 @@ Usuarios
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('employees.external.index')">Empleados Externos</Link>
                 </MyTransition>
+                <!-- <MyTransition :transitiondemonstration="showingHumanResource">
+                    <Link class="w-full" :href="route('controlEmployees.index')">Control de Empleados</Link>
+                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
                 </MyTransition>
@@ -230,6 +238,43 @@ Usuarios
                         </MyTransition>
                     </div>
                 </template>
+
+                <MyTransition :transitiondemonstration="showingHumanResource">
+                    <div class="relative">
+                        <button @click="showDocumentsToExpireAlarms = !showDocumentsToExpireAlarms"><span
+                                v-if="documentsToExpire.length > 0"
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{ documentsToExpire.length }}
+                            </span>
+                        </button>
+                        <Link class="w-full" :href="route('document.rrhh.status')">Estatus RRHH</Link>
+                    </div>
+                </MyTransition>
+                <template v-if="showDocumentsToExpireAlarms">
+                    <div class="mb-4">
+                        <MyTransition v-for="item, i in documentsToExpire" :key="i" class="ml-4"
+                            :transitiondemonstration="showDocumentsToExpireAlarms">
+                            <div class="w-full flex items-center">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                </svg>
+                                <span>{{ item.name }} {{ item.lastname }}</span>
+                            </div>
+                        </div>
+                        </MyTransition>
+                       
+                    </div>
+                </template>
+
+
+
+
+
+
+
             </template>
 
             <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
@@ -710,6 +755,7 @@ export default {
         return {
             employeeBirthdayAlarms:[],
             permissionsPorVencer: [],
+            documentsToExpire: [],
             vacationPorVencer3: [],
             vacationPorVencer7: [],
             subSectionsPorVencer: [],
@@ -762,6 +808,7 @@ export default {
         let showFormationProgramsAlarms = ref(false)
         let showArchivesAlarms = ref(false)
         let showEmployeeBirthdayAlarms = ref(false)
+        let showDocumentsToExpireAlarms = ref(false)
 
         let showDocs = ref(false)
         let showCicsa = ref(false)
@@ -788,6 +835,7 @@ export default {
             showFormationProgramsAlarms,
             showArchivesAlarms,
             showEmployeeBirthdayAlarms,
+            showDocumentsToExpireAlarms,
             showDocs,
             showCicsa,
             showSocialNetworkSot,
@@ -806,6 +854,14 @@ export default {
                 this.employeeBirthdayAlarms = response.data.happyBirthday;
             } catch (error) {
                 console.error('Error al obtener el cumpleaños de los empleados:', error);
+            }
+        },
+        async fetchDocumentsToExpireAlarmCount() {
+            try {
+                const response = await axios.get(route('document.rrhh.status.alarms'));
+                this.documentsToExpire = response.data;
+            } catch (error) {
+                console.error('Error al obtener alarma de documentos de estatus rrhh', error);
             }
         },
 
@@ -942,6 +998,7 @@ export default {
     mounted() {
         if (this.hasPermission('HumanResourceManager') || this.hasPermission('HumanResource')) {
             this.fetchAlarmHappyBirthdayCount();
+            this.fetchDocumentsToExpireAlarmCount();
             this.fetchAlarmPermissionsCount();
             this.fetchAlarmVacationCount();
             this.fetchFormationProgramAlarms();
@@ -965,6 +1022,7 @@ export default {
         setInterval(() => {
             if (this.hasPermission('HumanResourceManager') || this.hasPermission('HumanResource')) {
                 this.fetchAlarmHappyBirthdayCount();
+                this.fetchDocumentsToExpireAlarmCount();
                 this.fetchAlarmPermissionsCount();
                 this.fetchAlarmVacationCount();
                 this.fetchFormationProgramAlarms();

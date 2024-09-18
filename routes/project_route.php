@@ -40,7 +40,9 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::put('/preprojects/{preproject_image_id}/report/image', [PreProjectController::class, 'approve_reject_image'])->name('preprojects.imagereport.approveReject');
     Route::get('/preprojects/{preproject_code_id}/codereport', [PreProjectController::class, 'approve_code'])->name('preprojects.codereport.approveCode');
     Route::get('/preprojects/{preproject_title_id}/titlereport', [PreProjectController::class, 'approve_title'])->name('preprojects.codereport.approveTitle');
+    Route::get('/preprojects/{code_id}/approve_images', [PreProjectController::class, 'approve_images'])->name('preprojects.codereport.approveImages');
     Route::delete('/preprojects/{preproject_id}/report/delete', [PreProjectController::class, 'delete_image'])->name('preprojects.imagereport.delete');
+    Route::get('/preprojects/{preproject_title_id}/download/kmz', [PreProjectController::class, 'downloadKmz'])->name('preprojects.download.kmz');
 
     //Photographic report
     Route::post('/preprojects/photoreport_store', [PreProjectController::class, 'photoreport_store'])->name('preprojects.photoreport.store');
@@ -100,6 +102,9 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project/additional_costs/import/{project_id}', [AdditionalCostsController::class, 'import'])->name('projectmanagement.importAdditionalCost');
     Route::post('/project/purchases_request/{project_id}/static_costs', [StaticCostsController::class, 'store'])->name('projectmanagement.storeStaticCost');
     Route::post('/project/additional_cost/validate/{ac_id}', [AdditionalCostsController::class, 'validateRegister'])->name('projectmanagement.validateAdditionalCost');
+    Route::get('/project/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
+
+    Route::get('/descargar_zip_add/{project_id}', [AdditionalCostsController::class, 'downloadImages'])->name('zip.additional.descargar');
 
     
 
@@ -120,9 +125,13 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project/products/{project_id}/{project_entry}/liquidate', [LiquidationController::class, 'liquidate'])->name('projectmanagement.liquidate.post');
 
     //Codes
-    Route::post('/preprojects/codes/post', [PreProjectController::class, 'postCode'])->name('preprojects.codes.post');
-    Route::put('/preprojects/codes/{code}/put', [PreProjectController::class, 'putCode'])->name('preprojects.codes.put');
+    Route::post('/preprojects/codes/post', [PreProjectController::class, 'storeCode'])->name('preprojects.codes.post');
+    Route::put('/preprojects/codes/{code}/put', [PreProjectController::class, 'updateCode'])->name('preprojects.codes.put');
     Route::delete('/preprojects/codes/{code}/delete', [PreProjectController::class, 'deleteCode'])->name('preprojects.codes.delete');
+
+    Route::post('/preprojects/codes/images/store',[PreProjectController::class, 'storeCodeImages'])->name('preprojects.code.images.store');
+    Route::get('/preprojects/codes/images/{image_id}/show',[PreProjectController::class, 'show_code_image'])->name('preprojects.code.images.show');
+    Route::delete('/preprojects/codes/images/{image_id}/delete',[PreProjectController::class, 'deleteCodeImages'])->name('preprojects.code.images.delete');
 
     //Titles
     Route::post('/preprojects/titles/post', [PreProjectController::class, 'postTitle'])->name('preprojects.titles.post');

@@ -21,35 +21,35 @@
                     <tr
                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Tìtulo
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Tìpo
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Códigos
                         </th>
                         <th v-if="hasPermission('ProjectManager')"
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="title in titles.data" :key="title.id" class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ title.title }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ title.type }}</p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900">{{ title.codes.map((item) => item.code).join(', ') }}</p>
                         </td>
                         <td v-if="hasPermission('ProjectManager')"
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <div class="flex justify-center space-x-3">
                                 <button type="button" @click="openEditTitleModal(title)"
                                     class="text-yellow-600 whitespace-no-wrap">
@@ -78,43 +78,52 @@
                 <form @submit.prevent="create_title ? submit() : submitEdit()">
                     <div class="space-y-12">
                         <div class="border-b border-gray-900/10 pb-12">
-
-                            <div>
-                                <InputLabel for="title" class="font-medium leading-6 text-gray-900 mt-3">Título
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input v-model="form.title" id="title"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.title" />
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
+                                <div>
+                                    <InputLabel for="title" class="font-medium leading-6 text-gray-900">Título
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input v-model="form.title" id="title"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        <InputError :message="form.errors.title" />
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="type" class="font-medium leading-6 text-gray-900 mt-3">Tipo
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.type" id="type"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="">Selecciona etapa</option>
-                                        <option v-for="stage in stages" :key="stage.id" :value="stage.name">
-                                            {{ stage.name }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.type" />
+    
+                                <div>
+                                    <InputLabel for="type" class="font-medium leading-6 text-gray-900">Tipo
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <select v-model="form.type" id="type"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            <option value="">Selecciona etapa</option>
+                                            <option v-for="stage in stages" :key="stage.id" :value="stage.name">
+                                                {{ stage.name }}
+                                            </option>
+                                        </select>
+                                        <InputError :message="form.errors.type" />
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Códigos</InputLabel>
-                                <div class="mt-2">
-                                    <select multiple v-model="form.code_id_array" id="codes"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option v-for="code in props.codes" :key="code.id" :value="code.id">
-                                            {{ code.code }}
-                                        </option>
-                                    </select>
+    
+                                <div>
+                                    <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Códigos</InputLabel>
+                                    <div class="mt-2">
+                                        <select multiple v-model="form.code_id_array" id="codes" size="15"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            <option v-for="code in props.codes" :key="code.id" :value="code.id">
+                                                {{ code.code }}
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
+                                <div>
+                                    <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Codigos Seleccionados</InputLabel>
+                                    <div class="mt-2 grid grid-cols-3 gap-2">
+                                        <p v-for="cod in form.code_id_array" class="text-xs whitespace-nowrap">
+                                            - {{ codes.find(item=>item.id==cod).code }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>      
 
 
                             <div class="mt-6 flex items-center justify-end gap-x-6">

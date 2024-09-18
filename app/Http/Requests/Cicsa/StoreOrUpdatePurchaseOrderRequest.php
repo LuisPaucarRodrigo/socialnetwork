@@ -22,6 +22,7 @@ class StoreOrUpdatePurchaseOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'cicsa_assignation_id' => 'nullable|numeric',
             'oc_date' => 'nullable|date',
             'oc_number' => 'nullable|string',
             'master_format' => 'required|string',

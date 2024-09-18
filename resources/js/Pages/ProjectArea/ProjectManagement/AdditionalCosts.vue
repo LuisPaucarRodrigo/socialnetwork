@@ -50,14 +50,14 @@
                             />
                         </svg>
                     </PrimaryButton>
-                        <div
-                            id="update_data_tooltip"
-                            role="tooltip"
-                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                        >
-                            Actualizar
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div>
+                    <div
+                        id="update_data_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Actualizar
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
 
                     <button
                         data-tooltip-target="export_tooltip"
@@ -90,37 +90,40 @@
 
                     <button
                         type="button"
-                        class="rounded-md bg-yellow-500 px-4 py-2 text-center text-sm text-white hover:bg-yellow-400"
-                        @click="openImportModal()"
+                        class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
+                        @click="openExportPhoto"
+                        data-tooltip-target="export-photo-tooltip"
                     >
                         <svg
-                            class="h-6 w-6 text-white"
-                            viewBox="0 0 512 512"
-                            version="1.1"
+                            fill="#ffffff"
+                            width="22px"
+                            height="22px"
+                            viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"
                         >
-                            <title>upload-document-note</title>
+                            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
                             <g
-                                id="Page-1"
-                                stroke="none"
-                                stroke-width="1"
-                                fill="none"
-                                fill-rule="evenodd"
-                            >
-                                <g
-                                    id="icon"
-                                    fill="#ffffff"
-                                    transform="translate(64.000000, 42.666667)"
-                                >
-                                    <path
-                                        d="M298.642975,268.433404 L392.812864,362.603293 L362.642975,392.773183 L319.976085,350.117404 L319.976308,447.956959 L277.309641,447.956959 L277.309085,350.116404 L234.642975,392.773183 L204.473085,362.603293 L298.642975,268.433404 Z M234.666667,7.10542736e-15 L341.333333,106.666667 L341.333,280.469 L298.779055,237.915875 L298.666,238.028 L298.666667,124.339779 L216.993555,42.6666667 L42.6666667,42.6666667 L42.6666667,384 L196.184,384 L234.773299,422.589676 L256.093414,401.26939 L256.101,426.666 L1.42108547e-14,426.666667 L1.42108547e-14,7.10542736e-15 L234.666667,7.10542736e-15 Z M213.333333,298.666667 L213.333,323.361 L195.361,341.333 L64,341.333333 L64,298.666667 L213.333333,298.666667 Z M196,85.3333333 L256,145.333333 L124,277.333333 L64,277.333333 L64,217.333333 L196,85.3333333 Z M195.989333,130.581333 L96,230.570667 L96,245.333333 L110.72,245.333333 L210.730667,145.322667 L195.989333,130.581333 Z"
-                                        id="Combined-Shape"
-                                    ></path>
-                                </g>
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M22.71,6.29a1,1,0,0,0-1.42,0L20,7.59V2a1,1,0,0,0-2,0V7.59l-1.29-1.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l3-3A1,1,0,0,0,22.71,6.29ZM19,13a1,1,0,0,0-1,1v.38L16.52,12.9a2.79,2.79,0,0,0-3.93,0l-.7.7L9.41,11.12a2.85,2.85,0,0,0-3.93,0L4,12.6V7A1,1,0,0,1,5,6h8a1,1,0,0,0,0-2H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V14A1,1,0,0,0,19,13ZM5,20a1,1,0,0,1-1-1V15.43l2.9-2.9a.79.79,0,0,1,1.09,0l3.17,3.17,0,0L15.46,20Zm13-1a.89.89,0,0,1-.18.53L13.31,15l.7-.7a.77.77,0,0,1,1.1,0L18,17.21Z"
+                                />
                             </g>
                         </svg>
                     </button>
+                    <div
+                        id="export-photo-tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Exportar solo facturas
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
 
                     <button
                         data-tooltip-target="rejected_tooltip"
@@ -1470,8 +1473,11 @@ const handleRucDniAutocomplete = (e) => {
 };
 
 function handlerPreview(id) {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
     window.open(
-        route("additionalcost.archive", { additional_cost_id: id }),
+        route("additionalcost.archive", { additional_cost_id: id }) +
+            "?" +
+            uniqueParam,
         "_blank"
     );
 }
@@ -1597,6 +1603,15 @@ function openExportExcel() {
     window.location.href = url;
 }
 
+function openExportPhoto() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route("zip.additional.descargar", { project_id: props.project_id.id }) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
+}
+
 watch([() => form.type_doc, () => form.zone], () => {
     if (
         form.type_doc === "Factura" &&
@@ -1617,7 +1632,6 @@ async function validateRegister(ac_id, is_accepted) {
             { is_accepted }
         );
         if (res?.data?.additional_cost?.is_accepted == true) {
-            console.log("siuu");
             let index = dataToRender.value.findIndex(
                 (item) => item.id == res.data.additional_cost.id
             );

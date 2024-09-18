@@ -9,7 +9,8 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <a :href="route('purchase.order.export')" class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
+                    <a :href="route('purchase.order.export')"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
@@ -22,41 +23,17 @@
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
+                            <th colspan="2"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
                             </th>
-                            <th
+                            <th colspan="2"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Codigo de Proyecto
                             </th>
-                            <th
+                            <th colspan="2"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de OC
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Numero de OC
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Formato Maestro
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Item 3456
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Presupuesto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Encargado
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -64,65 +41,129 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in purchaseOrders.data ?? purchaseOrders" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_code }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cpe }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_purchase_order?.oc_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_purchase_order?.oc_number }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_purchase_order?.master_format }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_purchase_order?.item3456 }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_purchase_order?.budget }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_purchase_order?.user_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900"
-                                        @click="openEditSotModal(item.id, item.cicsa_purchase_order)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        <template v-for="item in purchaseOrders.data ?? purchaseOrders" :key="item.id">
+                            <tr class="text-gray-700">
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.project_name }}
+                                    </p>
+                                </td>
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.project_code }}
+                                    </p>
+                                </td>
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.cpe }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <div class="flex space-x-3 justify-center">
+                                        <button @click="openCreateModal(item)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </button>
+                                        <button v-if="item.cicsa_purchase_order.length > 0" type="button"
+                                            @click="toggleDetails(item?.cicsa_purchase_order)"
+                                            class="text-blue-900 whitespace-no-wrap">
+                                            <svg v-if="purcahse_order_row !== item.id"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <template v-if="purcahse_order_row == item.id">
+                                <tr
+                                    class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Fecha de OC
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Numero de OC
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Formato Maestro
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Item 3456
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Presupuesto
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Encargado
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Acciones
+                                    </th>
+
+                                </tr>
+                                <tr v-for="materialDetail in item.cicsa_purchase_order" :key="materialDetail.id"
+                                    class="bg-gray-100">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ formattedDate(materialDetail?.oc_date) }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.oc_number }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.master_format }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.item3456 }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.budget }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.user_name }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
+                                        <button class="text-blue-900"
+                                            @click="openEditModal(materialDetail, item.project_name, item.cpe)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </template>
                     </tbody>
                 </table>
             </div>
@@ -136,7 +177,9 @@
         <Modal :show="showAddEditModal" @close="closeAddPuchaseOrderModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Orden de Compra' : 'Nueva Orden de Compra' }}
+                    {{ form.id ? 'Editar Orden de Compra' : 'Nueva Orden de Compra' }} {{ ': ' + dateModal.project_name
+        + ' - '
+        + dateModal.cpe }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -202,10 +245,7 @@
                 </form>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmPuchaseOrder" :title="'Nueva Orden de Compra creada'"
-            :message="'La Orden de Compra fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdatePuchaseOrder" :title="'Orden de Compra Actualizada'"
-            :message="'La Orden de Compra fue actualizada'" />
+        <SuccessOperationModal :confirming="confirmPuchaseOrder" :title="title" :message="message" />
     </AuthenticatedLayout>
 </template>
 
@@ -230,8 +270,10 @@ const { purchaseOrder, auth } = defineProps({
 })
 
 const purchaseOrders = ref(purchaseOrder)
+const dateModal = ref({})
 
 const initialState = {
+    cicsa_assignation_id: null,
     user_id: auth.user.id,
     oc_date: '',
     oc_number: '',
@@ -247,7 +289,10 @@ const form = useForm(
 
 const showAddEditModal = ref(false);
 const confirmPuchaseOrder = ref(false);
-const cicsa_assignation_id = ref(null);
+const cicsa_purchase_order_id = ref(null)
+const purcahse_order_row = ref(0);
+const title = ref('Nueva Orden de Compra creada')
+const message = ref('La Orden de Compra fue creada con éxito')
 
 function closeAddPuchaseOrderModal() {
     showAddEditModal.value = false
@@ -255,23 +300,33 @@ function closeAddPuchaseOrderModal() {
     form.reset()
 }
 
-const confirmUpdatePuchaseOrder = ref(false);
+function openCreateModal(cicsa_assignation) {
+    dateModal.value = { 'project_name': cicsa_assignation.project_name, 'cpe': cicsa_assignation.cpe }
+    form.defaults({ ...initialState, cicsa_assignation_id: cicsa_assignation.id })
+    form.reset()
+    showAddEditModal.value = true
+}
 
-function openEditSotModal(id, item) {
-    cicsa_assignation_id.value = id;
+function openEditModal(item, project_name, cpe) {
+    dateModal.value = { 'project_name': project_name, 'cpe': cpe }
+    cicsa_purchase_order_id.value = item.id;
     form.defaults({ ...item })
     form.reset()
     showAddEditModal.value = true
 }
 
 function submit() {
-    let url = route('purchaseOrder.storeOrUpdate', { cicsa_assignation_id: cicsa_assignation_id.value })
-    form.put(url, {
+    let url = cicsa_purchase_order_id.value ? route('purchaseOrder.storeOrUpdate', { cicsa_purchase_order_id: cicsa_purchase_order_id.value }) : route('purchaseOrder.storeOrUpdate')
+    form.post(url, {
         onSuccess: () => {
             closeAddPuchaseOrderModal()
-            confirmUpdatePuchaseOrder.value = true
+            if (cicsa_purchase_order_id.value) {
+                title.value = 'Orden de Compra Actualizada'
+                message.value = 'La Orden de Compra fue actualizada'
+            }
+            confirmPuchaseOrder.value = true
             setTimeout(() => {
-                confirmUpdatePuchaseOrder.value = false
+                confirmPuchaseOrder.value = false
                 router.get(route('purchase.order.index'))
             }, 1500)
         },
@@ -289,4 +344,12 @@ const search = async ($search) => {
         console.error('Error searching:', error);
     }
 };
+
+const toggleDetails = (purchase_order) => {
+    if (purcahse_order_row.value === purchase_order[0].cicsa_assignation_id) {
+        purcahse_order_row.value = 0;
+    } else {
+        purcahse_order_row.value = purchase_order[0].cicsa_assignation_id;
+    }
+}
 </script>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Huawei\HuaweiApiController;
 use App\Http\Controllers\Huawei\HuaweiBalanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Inventory\HuaweiController;
@@ -109,6 +110,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/projects/real_earnings/{huawei_project_real_earning}/delete', [HuaweiProjectController::class, 'deleteRealEarning'])->name('huawei.projects.realearnings.delete');
     Route::get('huawei/projects/{huawei_project}/real_earnings/export', [HuaweiProjectController::class, 'exportRealEarnings'])->name('huawei.projects.realearnings.export');
     Route::post('huawei/projects/{huawei_project}/real_earnings/import', [HuaweiProjectController::class, 'importRealEarnings'])->name('huawei.projects.realearnings.import');
+    Route::post('huawei/projects/{huawei_project}/real_earnings/verify_import', [HuaweiProjectController::class, 'verifyImportRealEarnings'])->name('huawei.projects.realearnings.verify');
 
     //liquidations
     Route::get('huawei/projects/{huawei_project}/liquidations/get_resources', [HuaweiProjectController::class, 'geResourcesToLiquidate'])->name('huawei.projects.liquidations');
@@ -132,6 +134,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/general_balance/earnings/{huawei_balance_earning}/delete', [HuaweiBalanceController::class, 'deleteEarning'])->name('huawei.generalbalance.earnings.delete');
     Route::post('huawei/general_balance/earnings/import', [HuaweiBalanceController::class, 'importEarnings'])->name('huawei.generalbalance.earnings.import');
     Route::get('huawei/general_balance/earnings/export_excel', [HuaweiBalanceController::class, 'exportEarnings'])->name('huawei.generalbalance.earnings.export');
+    Route::post('huawei/general_balance/earnings/verify_import/post', [HuaweiBalanceController::class, 'verifyImportEarnings'])->name('huawei.generalbalance.earnings.verify');
 
     Route::get('huawei/general_balance/costs/get/{type?}', [HuaweiBalanceController::class, 'getCosts'])->name('huawei.generalbalance.costs');
     Route::get('huawei/general_balance/costs/{request}/search/{type?}', [HuaweiBalanceController::class, 'searchCosts'])->name('huawei.generalbalance.costs.search');
@@ -161,6 +164,9 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/projects/stages/download_image/{image}/get', [HuaweiMobileController::class, 'downloadImage'])->name('huawei.projects.stages.downloadimage');
     Route::delete('huawei/projects/stages/delete_image/{image}/delete', [HuaweiMobileController::class, 'deleteImage'])->name('huawei.projects.stages.deleteimage');
     Route::put('huawei/projects/stages/approve_or_reject/{image}/put', [HuaweiMobileController::class, 'approveOrReject'])->name('huawei.projects.stages.approveReject');
+    Route::put('huawei/projects/stages/approve_code/{code}/put', [HuaweiMobileController::class, 'approveCode'])->name('huawei.projects.stages.approveCode');
+    Route::post('huawei/projects/{huawei_project}/add_stage/post', [HuaweiMobileController::class, 'addStage'])->name('huawei.projects.stages.addStage');
+    Route::put('huawei/projects/{stage}/update_stage/put', [HuaweiMobileController::class, 'enableOrDisable'])->name('huawei.projects.stages.updatestage');
 });
 
 

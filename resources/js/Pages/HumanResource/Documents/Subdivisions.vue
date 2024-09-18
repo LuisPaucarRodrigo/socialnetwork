@@ -37,7 +37,7 @@
                         <button @click="openUpdateSubdivisionModal(subdivision)" class="text-orange-400 hover:underline">
                             <PencilSquareIcon class="h-5 w-5" />
                         </button>
-                        <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
+                        <button v-if="subdivision.id>154" @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
                             <TrashIcon class="h-5 w-5" />
                         </button>
                     </div>

@@ -40,7 +40,7 @@
                     <button @click="openUpdateSectionModal(section)" class="text-orange-400 hover:underline">
                       <PencilSquareIcon class="h-5 w-5" />
                     </button>
-                    <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
+                    <button v-if="section.id>10" @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
                       <TrashIcon class="h-5 w-5" />
                     </button>
                   </div>

@@ -129,6 +129,11 @@
                                 Gestión de Gastos
                             </Link>
                             <Link
+                                :href="route('huawei.projects.stages', { huawei_project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Imágenes
+                            </Link>
+                            <Link
                                 :href="route('huawei.projects.resources', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Productos
@@ -141,7 +146,7 @@
                             <Link
                                 :href="route('huawei.projects.realearnings', { huawei_project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Ingresos Reales
+                                Ingresos Actuales
                             </Link>
                             <Link
                                 :href="route('huawei.projects.liquidations', { huawei_project: item.id })"
