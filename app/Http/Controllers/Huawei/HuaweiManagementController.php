@@ -165,7 +165,7 @@ class HuaweiManagementController extends Controller
                 abort(403, 'Acción no permitida');
         }
 
-        $materials = $materials->transform(function ($material) {
+        $materials = $materials->makeHidden(['huawei_entry_details'])->transform(function ($material) {
             $material->name = $this->sanitizeText2($material->name);
             return $material;
         });

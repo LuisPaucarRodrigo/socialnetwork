@@ -184,6 +184,7 @@ class HuaweiProjectController extends Controller
         $request->validate([
             'name' => 'required',
             'huawei_site_id' => 'required',
+            'prefix' => 'required',
             'description' => 'nullable',
             'ot' => 'nullable',
             'pre_report' => 'nullable',
@@ -203,6 +204,7 @@ class HuaweiProjectController extends Controller
                 'huawei_site_id' => $request->huawei_site_id,
                 'description' => $request->description,
                 'ot' => $request->ot,
+                'prefix' => $request->prefix,
                 'pre_report' => $documentName,
                 'initial_amount' => $request->initial_amount,
                 'assigned_diu' => $request->assigned_diu
@@ -213,6 +215,7 @@ class HuaweiProjectController extends Controller
                 'huawei_site_id' => $request->huawei_site_id,
                 'description' => $request->description,
                 'ot' => $request->ot,
+                'prefix' => $request->prefix,
                 'initial_amount' => $request->initial_amount,
                 'assigned_diu' => $request->assigned_diu
             ]);
