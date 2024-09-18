@@ -1,6 +1,6 @@
 export const principalData = [
     { title: 'Estado', propName: 'contract?.state', propClass: 'text-center' },
-    { title: 'Personal', propName: ['lastname', 'name'], propClass: 'text-left sticky left-0 z-10 bg-yellow-100', titleClass: 'sticky left-0 z-10' },
+    { title: 'Personal', propName: ['lastname', 'name'], propClass: 'text-left sticky left-0 z-10 bg-yellow-100', propClassExternal: 'text-left sticky left-0 z-10 bg-blue-100' ,titleClass: 'sticky left-0 z-10' },
 ]
 
 export const personalData = [

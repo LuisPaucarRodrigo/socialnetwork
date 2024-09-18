@@ -94,6 +94,7 @@ class DocumentSpreedSheetController extends Controller
                         ];
                     }
                 );
+                $emp->contract = ['state'=>'External'];
                 $emp->setRelation('document_registers', $formattedDr);
                 return $emp;
             });
@@ -143,9 +144,11 @@ class DocumentSpreedSheetController extends Controller
             Employee::whereHas('contract', function ($query) {
                 $query->where('discount_sctr', 1);
             })->update(['sctr_exp_date'=>$data['exp_date']]);
+            ExternalEmployee::where('sctr', 1)->update(['sctr_exp_date'=>$data['exp_date']]);
         }
         if($data['title']==='Póliza'){
             Employee::where('l_policy', '1')->update(['policy_exp_date'=>$data['exp_date']]);
+            ExternalEmployee::where('l_policy', 1)->update(['sctr_exp_date'=>$data['exp_date']]);
         }
         return response()->json(['msg'=>'success'], 200);
     }
