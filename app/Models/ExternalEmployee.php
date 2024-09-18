@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class ExternalEmployee extends Model
 {
@@ -27,11 +28,32 @@ class ExternalEmployee extends Model
         'policy_exp_date',
     ];
 
+    protected $appends = [
+        'sctr_about_to_expire',
+        'policy_about_to_expire',
+    ];
+
     public function document_registers () {
         return $this->hasMany(DocumentRegister::class, 'e_employee_id');
     }
 
+    public function getSctrAboutToExpireAttribute () {
+        if ($this->sctr && $this->sctr_exp_date){
+            $actual = Carbon::now()->addDays(7);
+            $exp_date = Carbon::parse($this->sctr_exp_date);
+            return $actual >= $exp_date;
+        }  
+        return null;
+    }
 
+    public function getPolicyAboutToExpireAttribute () {
+        if ($this->l_policy && $this->policy_exp_date){
+            $actual = Carbon::now()->addDays(7);
+            $exp_date = Carbon::parse($this->policy_exp_date);
+            return $actual >= $exp_date;
+        }  
+        return null;
+    }
     
 
 }

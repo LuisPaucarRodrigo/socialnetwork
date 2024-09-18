@@ -528,6 +528,19 @@
           item.policy_about_to_expire = actual>=newDate
         }
       });
+      e_employeesData.value.forEach(item => {
+        let actual = new Date();
+        actual.setDate(actual.getDate() + 7)
+        let newDate = new Date(insuranceForm.exp_date);
+        if(item.sctr && title === 'SCTR'){
+          item.sctr_exp_date = insuranceForm.exp_date
+          item.sctr_about_to_expire = actual>=newDate
+        }
+        if(item.l_policy && title === 'Póliza'){
+          item.policy_exp_date = insuranceForm.exp_date
+          item.policy_about_to_expire = actual>=newDate
+        }
+      });
       closeInsuranceModal()
       setTimeout(()=>{
         notify(`${title} Actualizado`)

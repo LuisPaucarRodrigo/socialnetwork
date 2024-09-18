@@ -301,12 +301,18 @@ class DocumentController extends Controller
         $fileName = $id->title;
         $filePath = "documents/documents/$fileName";
         $path = public_path($filePath);
-        if (file_exists($path)) {
-            unlink($path);
+        if (file_exists($path)) {unlink($path);}
+            
+            $docReg = $id->employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
+                ->where('employee_id', $id->employee_id)->first(): (
+                    $id->e_employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
+                    ->where('e_employee_id', $id->e_employee_id) : null
+                );
+            if($docReg){$docReg->delete();}
             $id->delete();
-        } else {
-            dd("El archivo no existe en la ruta: $filePath");
-        }
+        // } else {
+        //     dd("El archivo no existe en la ruta: $filePath");
+        // }
         return to_route('documents.index');
     }
 
@@ -418,7 +424,6 @@ class DocumentController extends Controller
     public function downloadSectionDocumentsZip($sectionId)
     {
         try {
-            // Buscar la sección por su ID con todas las subdivisiones y documentos relacionados cargados
             $section = DocumentSection::with('subdivisions.documents')->findOrFail($sectionId);
 
             // Nombre del archivo ZIP temporal
