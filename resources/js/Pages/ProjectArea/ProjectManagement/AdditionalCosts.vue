@@ -1482,29 +1482,12 @@ function handlerPreview(id) {
     );
 }
 
+
 const filterForm = ref({
     search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"],
-    selectedExpenseTypes: [
-        "Hospedaje",
-        "Movilidad",
-        "Peaje",
-        "Seguros y Pólizas",
-        "Herramientas",
-        "Fletes",
-        "EPPs",
-        "Gastos de Representación",
-        "Consumibles",
-        "Equipos",
-        "Otros",
-    ],
-    selectedDocTypes: [
-        "Efectivo",
-        "Deposito",
-        "Factura",
-        "Boleta",
-        "Voucher de Pago",
-    ],
+    selectedZones: zones,
+    selectedExpenseTypes: expenseTypes,
+    selectedDocTypes: docTypes
 });
 
 const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
