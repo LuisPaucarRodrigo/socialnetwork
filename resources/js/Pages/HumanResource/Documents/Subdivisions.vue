@@ -7,9 +7,9 @@
         Gestión de Subdivisiones de la Sección: {{ section.name }}
       </template>
       <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-        <!-- <PrimaryButton @click="openCreateSubdivisionModal">
+        <PrimaryButton @click="openCreateSubdivisionModal">
           Crear Nueva Subdivisión
-        </PrimaryButton> -->
+        </PrimaryButton>
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead>
@@ -37,9 +37,9 @@
                         <button @click="openUpdateSubdivisionModal(subdivision)" class="text-orange-400 hover:underline">
                             <PencilSquareIcon class="h-5 w-5" />
                         </button>
-                        <!-- <button @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
+                        <button v-if="subdivision.id>154" @click="confirmDeleteSubdivision(subdivision.id)" class="text-red-600 hover:underline">
                             <TrashIcon class="h-5 w-5" />
-                        </button> -->
+                        </button>
                     </div>
                 </td>
               </tr>
