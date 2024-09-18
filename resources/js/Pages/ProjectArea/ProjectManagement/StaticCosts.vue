@@ -383,12 +383,7 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option>Arequipa</option>
-                                        <option>Chala</option>
-                                        <option>Moquegua</option>
-                                        <option>Tacna</option>
-                                        <option>MDD1-PM</option>
-                                        <option>MDD2-MAZ</option>
+                                         <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -408,13 +403,7 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option>Habitaciones</option>
-                                        <option>Camionetas</option>
-                                        <option>Combustible</option>
-                                        <option>Combustible GEP</option>
-                                        <option>Terceros</option>
-                                        <option>Viáticos</option>
-                                        <option>Otros</option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -436,11 +425,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option>Efectivo</option>
-                                        <option>Deposito</option>
-                                        <option>Factura</option>
-                                        <option>Boleta</option>
-                                        <option>Voucher de Pago</option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -656,12 +641,7 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option>Arequipa</option>
-                                        <option>Chala</option>
-                                        <option>Moquegua</option>
-                                        <option>Tacna</option>
-                                        <option>MDD1-PM</option>
-                                        <option>MDD2-MAZ</option>
+                                        <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -681,13 +661,7 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option>Habitaciones</option>
-                                        <option>Camionetas</option>
-                                        <option>Combustible</option>
-                                        <option>Combustible GEP</option>
-                                        <option>Terceros</option>
-                                        <option>Viáticos</option>
-                                        <option>Otros</option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -710,11 +684,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option>Efectivo</option>
-                                        <option>Deposito</option>
-                                        <option>Factura</option>
-                                        <option>Boleta</option>
-                                        <option>Voucher de Pago</option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -1164,27 +1134,6 @@ function handlerPreview(id) {
     );
 }
 
-const filterForm = ref({
-    search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1-PM", "MDD2-MAZ"],
-    selectedExpenseTypes: [
-        "Camionetas",
-        "Combustible",
-        "Combustible GEP",
-        "Habitaciones",
-        "Terceros",
-        "Viáticos",
-        "Otros",
-    ],
-    selectedDocTypes: [
-        "Efectivo",
-        "Deposito",
-        "Factura",
-        "Boleta",
-        "Voucher de Pago",
-    ],
-});
-
 const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1-PM", "MDD2-MAZ"];
 const expenseTypes = [
     "Camionetas",
@@ -1202,6 +1151,14 @@ const docTypes = [
     "Boleta",
     "Voucher de Pago",
 ];
+
+const filterForm = ref({
+    search: "",
+    selectedZones: zones,
+    selectedExpenseTypes: expenseTypes,
+    selectedDocTypes: docTypes,
+});
+
 
 watch(
     () => [
