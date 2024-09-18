@@ -109,6 +109,7 @@
       <div v-for="document in (props.search || props.section || props.subdivision ? props.documents : documents.data)" :key="document.id"
         class="bg-white p-4 rounded-md shadow md:col-span-2">
         <h2 class="text-sm font-semibold text-gray-700 line-clamp-1">{{ getDocumentName(document.title) }}</h2>
+        <p class="text-xs font-semibold text-gray-700 line-clamp-1">{{ document.emp_name }}</p>
         <div class="flex space-x-3 item-center">
             <button v-if="document.title && /\.(pdf|png|jpe?g)$/.test(document.title)" @click="openPreviewDocumentModal(document.id)"
                 class="flex items-center text-green-600 hover:underline">

@@ -18,23 +18,36 @@ class Document extends Model
     ];
 
     protected $appends = [
-        'extension'
+        'extension',
+        'emp_name'
     ];
 
     public function subdivision()
     {
         return $this->belongsTo(Subdivision::class, 'subdivision_id');
     }
+    public function employee(){
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    public function e_employee(){
+        return $this->belongsTo(ExternalEmployee::class, 'e_employee_id');
+    }
 
     public function getExtensionAttribute()
     {
-        // Obtiene el nombre del archivo completo
         $fileName = $this->title;
-
-        // Utiliza la función pathinfo para obtener la información del archivo
         $fileInfo = pathinfo($fileName);
-
-        // Retorna solo la extensión del archivo
         return $fileInfo['extension'] ?? null;
+    }
+
+    public function getEmpNameAttribute() {
+        if($emp = $this->employee()->first()){
+            return $emp->name. ' '. $emp->lastname;
+        }
+        if ($emp = $this->e_employee()->first()){
+            return $emp->name. ' '. $emp->lastname;
+        }
+        return null;
     }
 }
