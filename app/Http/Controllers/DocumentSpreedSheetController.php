@@ -154,6 +154,19 @@ class DocumentSpreedSheetController extends Controller
     }
 
 
+
+    public function employeesDocumentAlarms() {
+        $employees = Employee::all()->filter(function($item){
+            return $item->documents_about_to_expire > 0;
+        });
+        $e_employees = ExternalEmployee::all()->filter(function($item){
+            return $item->documents_about_to_expire > 0;
+        });
+        $employees->merge($e_employees);
+        return response()->json($employees, 200);
+    }
+
+
     // public function updateDocReg () {
     //     $items = DocumentRegister::all();
 

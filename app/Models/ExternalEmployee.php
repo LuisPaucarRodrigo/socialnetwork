@@ -54,6 +54,21 @@ class ExternalEmployee extends Model
         }  
         return null;
     }
+
+    public function getDocumentsAboutToExpireAttribute()
+    {
+        $total = $this->document_registers()->get()->filter(function ($item) {
+            return $item->display === true;
+        })
+            ->sum('display');
+        if ($this->sctr_about_to_expire) {
+            $total += 1;
+        }
+        if ($this->policy_about_to_expire) {
+            $total += 1;
+        }
+        return $total;
+    }
     
 
 }

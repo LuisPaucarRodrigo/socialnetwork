@@ -29,6 +29,7 @@ class Employee extends Model
     protected $appends = [
         'sctr_about_to_expire',
         'policy_about_to_expire',
+        'documents_about_to_expire',
     ];
 
     //RELATIONS
@@ -71,8 +72,13 @@ class Employee extends Model
         return $this->hasMany(EmployeeFormationProgram::class, 'employee_id');
     }
 
-    public function document_registers () {
+    public function document_registers()
+    {
         return $this->hasMany(DocumentRegister::class, 'employee_id');
+    }
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'employee_id');
     }
 
 
@@ -91,24 +97,43 @@ class Employee extends Model
         return $this->contract()->first()->basic_salary / $days;
     }
 
-    public function getSctrAboutToExpireAttribute () {
-        if ($this->contract()->first()?->discount_sctr
+    public function getSctrAboutToExpireAttribute()
+    {
+        if (
+            $this->contract()->first()?->discount_sctr
             && $this->sctr_exp_date
-        ){
+        ) {
             $actual = Carbon::now()->addDays(7);
             $exp_date = Carbon::parse($this->sctr_exp_date);
             return $actual >= $exp_date;
-        }  
+        }
         return null;
     }
 
-    public function getPolicyAboutToExpireAttribute () {
-        if ($this->l_policy && $this->policy_exp_date
-        ){
+    public function getPolicyAboutToExpireAttribute()
+    {
+        if (
+            $this->l_policy && $this->policy_exp_date
+        ) {
             $actual = Carbon::now()->addDays(7);
             $exp_date = Carbon::parse($this->policy_exp_date);
             return $actual >= $exp_date;
-        }  
+        }
         return null;
+    }
+
+    public function getDocumentsAboutToExpireAttribute()
+    {
+        $total = $this->document_registers()->get()->filter(function ($item) {
+            return $item->display === true;
+        })
+            ->sum('display');
+        if ($this->sctr_about_to_expire) {
+            $total += 1;
+        }
+        if ($this->policy_about_to_expire) {
+            $total += 1;
+        }
+        return $total;
     }
 }

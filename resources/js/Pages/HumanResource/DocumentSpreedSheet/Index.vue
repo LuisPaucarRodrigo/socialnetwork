@@ -389,6 +389,8 @@
     sections: Object,
   });
 
+  console.log(employees)
+
   const employeesData = ref(employees)
   const e_employeesData = ref(e_employees)
   
