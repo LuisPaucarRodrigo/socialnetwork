@@ -204,141 +204,119 @@ class ManagementEmployees extends Controller
 
     public function update(UpdateManagementEmployees $request, $id)
     {
-        $employee = Employee::with('education')->findOrFail($id);
-        $imageUrl = $employee->cropped_image;
-        $documentName = $employee->education->curriculum_vitae;
 
-        if ($request->hasFile('curriculum_vitae')) {
-            $document = $request->file('curriculum_vitae');
-            $documentName = $employee->education->curriculum_vitae ? $employee->education->curriculum_vitae : time() . '._' . $document->getClientOriginalName();
-            $document->move(public_path('documents/curriculum_vitae/'), $documentName);
-        }
+        DB::beginTransaction();
+        try {
 
-        if ($request->hasFile('cropped_image')) {
-            $croppedImage = $request->file('cropped_image');
-            $imageUrl = $employee->cropped_image ? $employee->cropped_image : time() . '._' . $croppedImage->getClientOriginalName();
-            $croppedImage->move(public_path('image/profile/'), $imageUrl);
-        }
+            $employee = Employee::with('education')->findOrFail($id);
+            $imageUrl = $employee->cropped_image;
+            $documentName = $employee->education->curriculum_vitae;
 
-        $employee->update([
-            'name' => $request->name,
-            'lastname' => $request->lastname,
-            'cropped_image' => $imageUrl,
-            'gender' => $request->gender,
-            'state_civil' => $request->state_civil,
-            'birthdate' => $request->birthdate,
-            'dni' => $request->dni,
-            'email' => $request->email,
-            'email_company' => $request->email_company,
-            'phone1' => $request->phone1,
-            'phone2' => $request->phone2,
-        ]);
-
-        $employee->contract->update([
-            'basic_salary' => $request->basic_salary,
-            'life_ley' => $request->life_ley,
-            'discount_remuneration' => $request->discount_remuneration,
-            'discount_sctr' => $request->discount_sctr,
-            'hire_date' => $request->hire_date,
-            'pension_id' => $request->pension_system,
-        ]);
-
-        $employee->education->update([
-            'education_level' => $request->education_level,
-            'education_status' => $request->education_status,
-            'specialization' => $request->specialization,
-            'curriculum_vitae' => $documentName,
-        ]);
-
-        $employee->address->update([
-            'street_address' => $request->street_address,
-            'department' => $request->department,
-            'province' => $request->province,
-            'district' => $request->district,
-        ]);
-
-        if ($request->filled('emergencyContacts')) {
-            Emergency::where('employee_id', $employee->id)->delete();
-            foreach ($request->emergencyContacts as $emergency) {
-                Emergency::create(
-                    [
-                        'emergency_name' => $emergency['emergency_name'],
-                        'emergency_lastname' => $emergency['emergency_lastname'],
-                        'emergency_relations' => $emergency['emergency_relations'],
-                        'emergency_phone' => $emergency['emergency_phone'],
-                        'employee_id' => $employee->id,
-                    ]
-                );
+            if ($request->hasFile('curriculum_vitae')) {
+                $document = $request->file('curriculum_vitae');
+                $documentName = time() . '._' . $document->getClientOriginalName();
+                $document->move(public_path('documents/curriculum_vitae/'), $documentName);
             }
-        }
 
-        if ($request->filled('familyDependents')) {
-            Family::where('employee_id', $employee->id)->delete();
-            foreach ($request->familyDependents as $dependent) {
-                Family::create(
-                    [
-                        'family_dni' => $dependent['family_dni'],
-                        'family_education' => $dependent['family_education'],
-                        'family_relation' => $dependent['family_relation'],
-                        'family_name' => $dependent['family_name'],
-                        'family_lastname' => $dependent['family_lastname'],
-                        'employee_id' => $employee->id,
-                    ]
-                );
+            if ($request->hasFile('cropped_image')) {
+                $croppedImage = $request->file('cropped_image');
+                $imageUrl = time() . '._' . $croppedImage->getClientOriginalName();
+                $croppedImage->move(public_path('image/profile/'), $imageUrl);
             }
+
+            $employee->update([
+                'name' => $request->name,
+                'lastname' => $request->lastname,
+                'cropped_image' => $imageUrl,
+                'gender' => $request->gender,
+                'state_civil' => $request->state_civil,
+                'birthdate' => $request->birthdate,
+                'dni' => $request->dni,
+                'email' => $request->email,
+                'email_company' => $request->email_company,
+                'phone1' => $request->phone1,
+                'phone2' => $request->phone2,
+            ]);
+
+            $employee->contract->update([
+                'basic_salary' => $request->basic_salary,
+                'life_ley' => $request->life_ley,
+                'discount_remuneration' => $request->discount_remuneration,
+                'discount_sctr' => $request->discount_sctr,
+                'hire_date' => $request->hire_date,
+                'pension_id' => $request->pension_system,
+            ]);
+
+            $employee->education->update([
+                'education_level' => $request->education_level,
+                'education_status' => $request->education_status,
+                'specialization' => $request->specialization,
+                'curriculum_vitae' => $documentName,
+            ]);
+
+            $employee->address->update([
+                'street_address' => $request->street_address,
+                'department' => $request->department,
+                'province' => $request->province,
+                'district' => $request->district,
+            ]);
+
+            if ($request->filled('emergencyContacts')) {
+                Emergency::where('employee_id', $employee->id)->delete();
+                foreach ($request->emergencyContacts as $emergency) {
+                    Emergency::create(
+                        [
+                            'emergency_name' => $emergency['emergency_name'],
+                            'emergency_lastname' => $emergency['emergency_lastname'],
+                            'emergency_relations' => $emergency['emergency_relations'],
+                            'emergency_phone' => $emergency['emergency_phone'],
+                            'employee_id' => $employee->id,
+                        ]
+                    );
+                }
+            }
+
+            if ($request->filled('familyDependents')) {
+                Family::where('employee_id', $employee->id)->delete();
+                foreach ($request->familyDependents as $dependent) {
+                    Family::create(
+                        [
+                            'family_dni' => $dependent['family_dni'],
+                            'family_education' => $dependent['family_education'],
+                            'family_relation' => $dependent['family_relation'],
+                            'family_name' => $dependent['family_name'],
+                            'family_lastname' => $dependent['family_lastname'],
+                            'employee_id' => $employee->id,
+                        ]
+                    );
+                }
+            }
+
+            $employee->health->update([
+                'blood_group' => $request->blood_group,
+                'weight' => $request->weight,
+                'height' => $request->height,
+                'shoe_size' => $request->shoe_size,
+                'shirt_size' => $request->shirt_size,
+                'pants_size' => $request->pants_size,
+                'medical_condition' => $request->medical_condition,
+                'allergies' => $request->allergies,
+                'operations' => $request->operations,
+                'accidents' => $request->accidents,
+                'vaccinations' => $request->vaccinations,
+            ]);
+            DB::commit();
+            return to_route('management.employees');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
         }
-
-        $employee->health->update([
-            'blood_group' => $request->blood_group,
-            'weight' => $request->weight,
-            'height' => $request->height,
-            'shoe_size' => $request->shoe_size,
-            'shirt_size' => $request->shirt_size,
-            'pants_size' => $request->pants_size,
-            'medical_condition' => $request->medical_condition,
-            'allergies' => $request->allergies,
-            'operations' => $request->operations,
-            'accidents' => $request->accidents,
-            'vaccinations' => $request->vaccinations,
-        ]);
-        return to_route('management.employees');
-        // DB::beginTransaction();
-        // try {
-
-
-        //     DB::commit();
-        //     return to_route('management.employees');
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return $e->getMessage();
-        // }
     }
 
     public function destroy($id)
     {
-        $education = Education::where('employee_id', $id)->first();
         $employee = Employee::find($id);
-        if ($employee->cropped_image != null) {
-            $filePath = "image/profile/{$employee->cropped_image}";
-            $path = public_path($filePath);
-            if (file_exists($path)) {
-                unlink($path);
-            } else {
-                abort(404, 'Imagen no encontrada');
-            }
-        }
-        if ($education->curriculum_vitae != null) {
-            $filePath = "documents/curriculum_vitae/{$education->curriculum_vitae}";
-            $path = public_path($filePath);
-
-            if (file_exists($path)) {
-                unlink($path);
-            } else {
-                abort(404, 'Documento no encontrado');
-            }
-        }
-
-        Employee::destroy($id);
+        $employee->delete();
         return to_route('management.employees');
     }
 
@@ -412,10 +390,10 @@ class ManagementEmployees extends Controller
     }
 
     public function storeorupdate(StoreOrUpdateEmployeesExternal $request, $external_id = null)
-    {   
-        
+    {
+
         $data = $request->validated();
-        
+
         try {
             $employeesExternal = $external_id ? ExternalEmployee::findOrFail($external_id) : null;
             if ($request->hasFile('curriculum_vitae')) {
@@ -448,7 +426,8 @@ class ManagementEmployees extends Controller
         }
     }
 
-    public function preview_curriculum_vitae (ExternalEmployee $external_preview_id){
+    public function preview_curriculum_vitae(ExternalEmployee $external_preview_id)
+    {
         $fileName = $external_preview_id->curriculum_vitae;
         $filePath = '/documents/curriculum_vitae/' . $fileName;
         $path = public_path($filePath);

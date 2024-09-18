@@ -76,4 +76,35 @@ class Employee extends Model
     {
         return $this->contract()->first()->basic_salary / $days;
     }
+
+    protected static function booted()
+    {
+        static::updating(function ($employee) {
+            if ($employee->isDirty('cropped_image')) {
+                $oldImage = $employee->getOriginal('cropped_image');
+                if ($oldImage) {
+                    $filePath = public_path('image/profile/' . $oldImage);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+        });
+
+        static::deleting(function ($employee) {
+            if ($employee->cropped_image) {
+                $profile = public_path('image/profile/' . $employee->cropped_image);
+                if (file_exists($profile)) {
+                    unlink($profile);
+                }
+            }
+            $educations = $employee->education;
+            if ($educations->curriculum_vitae) {
+                $education = public_path('documents/curriculum_vitae/' . $educations->curriculum_vitae);
+                if (file_exists($education)) {
+                    unlink($education);
+                }
+            }
+        });
+    }
 }

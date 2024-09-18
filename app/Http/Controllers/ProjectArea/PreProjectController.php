@@ -1005,12 +1005,12 @@ class PreProjectController extends Controller
         try {
             $codeImage = CodeImage::find($image_id);
             if ($codeImage) {
-                $filePath = "image/imageCode/{$codeImage->image}";
-                $path = public_path($filePath);
+                // $filePath = "image/imageCode/{$codeImage->image}";
+                // $path = public_path($filePath);
                 
-                if (file_exists($path)) {
-                    unlink($path); 
-                }
+                // if (file_exists($path)) {
+                //     unlink($path); 
+                // }
                 $codeImage->delete();
                 
                 return response()->json([],200);
