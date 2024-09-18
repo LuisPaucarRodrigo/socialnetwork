@@ -98,7 +98,7 @@ class DocumentSpreedSheetController extends Controller
                 $emp->setRelation('document_registers', $formattedDr);
                 return $emp;
             });
-        $sections = DocumentSection::with('subdivisions')->get();
+        $sections = DocumentSection::with('subdivisions')->where('id', '<=', 10)->get();
         return Inertia::render(
             'HumanResource/DocumentSpreedSheet/Index',
             [
