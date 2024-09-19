@@ -1292,6 +1292,20 @@ class HuaweiProjectController extends Controller
         return redirect()->back();
     }
 
+    public function updateEarningState (HuaweiProject $huawei_project, HuaweiProjectEarning $earning, Request $request)
+    {
+        if (!$huawei_project->status){
+            abort(403, 'Acción no permitida');
+        }
+        $data = $request->validate([
+            'state' => 'required'
+        ]);
+
+        $earning->update($data);
+
+        return redirect()->back();
+    }
+
     public function updateEarning (HuaweiProjectEarning $huawei_project_earning, Request $request)
     {
         $found_project = HuaweiProject::find($request->huawei_project_id);

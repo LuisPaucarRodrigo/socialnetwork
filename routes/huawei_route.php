@@ -98,7 +98,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/projects/earnings/{huawei_project_earning}/delete', [HuaweiProjectController::class, 'deleteEarning'])->name('huawei.projects.earnings.delete');
     Route::post('huawei/projects/{huawei_project}/earnings/import', [HuaweiProjectController::class, 'importEarnings'])->name('huawei.projects.earnings.import');
     Route::get('huawei/projects/{huawei_project}/earnings/export', [HuaweiProjectController::class, 'exportEarnings'])->name('huawei.projects.earnings.export');
-
+    Route::put('huawei/projects/{huawei_project}/earnings/{earning}/update_state', [HuaweiProjectController::class, 'updateEarningState'])->name('huawei.projects.earnings.updatestate');
     //real_earnings
     Route::get('huawei/projects/{huawei_project}/real_earnings/get', [HuaweiProjectController::class, 'getRealEarnings'])->name('huawei.projects.realearnings');
     Route::get('huawei/projects/{huawei_project}/real_earnings/search/{request}', [HuaweiProjectController::class, 'searchRealEarnings'])->name('huawei.projects.realearnings.search');

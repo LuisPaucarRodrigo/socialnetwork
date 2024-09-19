@@ -152,25 +152,25 @@ class HuaweiManagementController extends Controller
         $equipments = null;
         switch ($value){
             case '1':
-                $materials = HuaweiMaterial::where('prefix', 'Claro')->with('brand_model')->get();
-                $equipments = HuaweiEquipment::where('prefix', 'Claro')->with('brand_model')->get();
+                $materials = HuaweiMaterial::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Claro')->with('brand_model:id,name,brand_id')->get();
+                $equipments = HuaweiEquipment::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Claro')->with('brand_model:id,name,brand_id')->get();
                 break;
 
             case '2':
-                $materials = HuaweiMaterial::where('prefix', 'Entel')->with('brand_model')->get();
-                $equipments = HuaweiEquipment::where('prefix', 'Entel')->with('brand_model')->get();
+                $materials = HuaweiMaterial::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Entel')->with('brand_model:id,name,brand_id')->get();
+                $equipments = HuaweiEquipment::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Entel')->with('brand_model:id,name,brand_id')->get();
                 break;
 
             default:
                 abort(403, 'Acción no permitida');
         }
 
-        $materials = $materials->makeHidden(['huawei_entry_details'])->transform(function ($material) {
+        $materials = $materials->makeHidden(['huawei_entry_details', 'quantity', 'available_quantity'])->transform(function ($material) {
             $material->name = $this->sanitizeText2($material->name);
             return $material;
         });
 
-        $equipments = $equipments->transform(function ($equipment) {
+        $equipments = $equipments->makeHidden(['quantity', 'available_quantity'])->transform(function ($equipment) {
             $equipment->name = $this->sanitizeText2($equipment->name);
             return $equipment;
         });

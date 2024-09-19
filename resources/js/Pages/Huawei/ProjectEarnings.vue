@@ -102,7 +102,7 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '-' }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + (item.unit_price * item.quantity).toFixed(2) : '-' }}</td>
-              <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+              <!-- <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <div class="flex justify-center items-center">
                     <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
                         <PencilSquareIcon class="h-5 w-5 ml-1" />
@@ -111,6 +111,16 @@
                         <TrashIcon class="h-5 w-5" />
                     </button>
                 </div>
+            </td> -->
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                <select id="selectState"
+                    @change="change_state(item.id, $event.target.value)">
+                    <option selected disabled>{{ item.state }}</option>
+                    <option v-for="option in availableOptions(item.state)" :key="option"
+                            :value="option">
+                            {{ option }}
+                    </option>
+                </select>
             </td>
             </tr>
           </tbody>
@@ -416,6 +426,25 @@ const search = () => {
     }else{
         router.visit(route('huawei.projects.earnings.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
     }
+}
+
+const availableOptions = (state) => {
+    const options = ref(['Pendiente', 'En Proceso', 'Completada', 'Cancelada']);
+    const filteredOptions = options.value.filter(option => option !== state);
+
+    return filteredOptions;
+}
+
+const change_state = (id, state) => {
+    router.put(route('huawei.projects.earnings.updatestate', {huawei_project: props.huawei_project.id, earning: id}), {state: state},
+        {onSuccess: () => {
+            router.visit(route('huawei.projects.earnings', {huawei_project: props.huawei_project.id}));
+        },
+        onError: (e) => {
+            console.error(e);
+        }
+    }
+    )
 }
 
 </script>
