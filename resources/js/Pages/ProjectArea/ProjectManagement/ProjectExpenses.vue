@@ -25,13 +25,14 @@
               <tbody>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Presupuesto actual</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        current_budget.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{current_budget.toFixed(2) }}
+                  </td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Presupuesto restante</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.remaining_budget.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{ project.remaining_budget.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en servicios</td>
@@ -146,7 +147,14 @@ import { ref, onMounted } from 'vue';
 import { Chart, registerables } from 'chart.js/auto';
 import { Head } from '@inertiajs/vue3';
 
-const { project, current_budget, additionalCosts, staticCosts, acExpensesAmounts, scExpensesAmounts } = defineProps({
+const { 
+  project, 
+  current_budget, 
+  additionalCosts, 
+  staticCosts, 
+  acExpensesAmounts, 
+  scExpensesAmounts 
+} = defineProps({
   project: Object,
   current_budget: Number,
   additionalCosts: Number,
@@ -162,14 +170,30 @@ const updateChart = () => {
   if (chartInstance.value) {
     chartInstance.value.destroy();
   }
-  const totalBudget = current_budget;
-  const dataWithRemainingBudget = [project.remaining_budget < 0 ? 0 : project.remaining_budget, staticCosts, additionalCosts, project.total_products_cost, project.total_services_cost,
-  project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2), project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2)
+  const dataWithRemainingBudget = [
+    project.remaining_budget < 0 
+      ? 0 
+      : project.remaining_budget, 
+        staticCosts, 
+        additionalCosts, 
+        project.total_products_cost, 
+        project.total_services_cost,
+        project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2), 
+        project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2)
   ];
+
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Presupuesto Restante', 'Costos Fijos' , 'Costos Variables', 'Costos de Productos', 'Costos de Servicios', 'Planilla', 'Planilla Essalud'],
+      labels: [
+        'Presupuesto Restante', 
+        'Costos Fijos' , 
+        'Costos Variables', 
+        'Costos de Productos', 
+        'Costos de Servicios', 
+        'Planilla', 
+        'Planilla Essalud'
+      ],
       datasets: [{
         data: dataWithRemainingBudget,
         backgroundColor: Array(7).fill().map(() => getRandomColor()),
@@ -201,7 +225,6 @@ const updateChart2 = () => {
   if (chartInstance2.value) {
     chartInstance2.value.destroy();
   }
-  const totalBudget = current_budget;
   const dataWithRemainingBudget = scExpensesAmounts.map(item=>item.total_amount);
   chartInstance2.value = new Chart(ctx, {
     type: 'pie',
@@ -237,7 +260,6 @@ const updateChart3 = () => {
   if (chartInstance3.value) {
     chartInstance3.value.destroy();
   }
-  const totalBudget = current_budget;
   const dataWithRemainingBudget = acExpensesAmounts.map(item=>item.total_amount);
   chartInstance3.value = new Chart(ctx, {
     type: 'pie',
