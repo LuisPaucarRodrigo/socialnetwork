@@ -488,7 +488,6 @@ function sum() {
     if (form.checking_account_amount && form.amount_bank) {
         const checking_account_amount = parseFloat(form.checking_account_amount) || 0;
         const amount_bank = parseFloat(form.amount_bank) || 0;
-        console.log(checking_account_amount, amount_bank)
         if ((checking_account_amount + amount_bank) !== parseFloat(form.amount)) {
             return false
         }

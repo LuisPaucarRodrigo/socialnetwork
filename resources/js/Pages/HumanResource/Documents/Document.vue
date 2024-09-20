@@ -504,7 +504,6 @@ watch(()=>form.employeeType, ()=>{
   if(create_document.value){
     form.employee_id = ''
     form.e_employee_id = ''
-    console.log('entre')
   }
 })
 watch(()=>form.has_exp_date, ()=>{
