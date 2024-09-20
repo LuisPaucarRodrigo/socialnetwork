@@ -280,11 +280,17 @@
             </div>
         </div>
         <div class="overflow-x-auto h-[85vh]">
-            <table class="w-full whitespace-no-wrap">
-                <thead>
+            <table class="w-full">
+                <thead class="sticky top-0 z-20">
                     <tr
-                        class="sticky top-0 z-20 border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
-                    >
+                        class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
+                    >   
+                    
+                        <th
+                            class="bg-gray-100 border-b-2 border-gray-20"
+                        >
+                        <div class="w-2"></div>
+                        </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
@@ -374,15 +380,17 @@
                         v-for="item in dataToRender"
                         :key="item.id"
                         class="text-gray-700"
-                        :class="[
-                            'border-l-8',
-                            {
-                                'border-indigo-500': item.is_accepted === null,
-                                'border-green-500': item.is_accepted == true,
-                                'border-red-500': item.is_accepted == false,
-                            },
-                        ]"
+                        
                     >
+                    <td :class="[
+                            'border-b border-gray-200',
+                            {
+                                'bg-indigo-500': item.is_accepted === null,
+                                'bg-green-500': item.is_accepted == true,
+                                'bg-red-500': item.is_accepted == false,
+                            },
+                        ]">
+                    </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -530,6 +538,10 @@
                         </td>
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
+                        <td
+                            class="font-bold border-b border-gray-200 bg-white"
+                        >      
+                        </td>
                         <td
                             class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         >
@@ -1301,6 +1313,8 @@ const form = useForm({
     photo_status: "stable",
 });
 
+
+
 const create_additional = ref(false);
 const showModal = ref(false);
 const showModalEdit = ref(false);
@@ -1488,18 +1502,22 @@ watch(
     () => {
         filterMode.value = true;
         search_advance(filterForm.value);
-    },
-    { deep: true }
+    }
 );
 
-async function search_advance($data) {
-    let res = await axios.post(
-        route("additionalcost.advance.search", {
-            project_id: props.project_id.id,
-        }),
-        $data
-    );
-    dataToRender.value = res.data;
+async function search_advance(data) {
+    try {
+        let res = await axios.post(
+            route("additionalcost.advance.search", {
+                project_id: props.project_id.id,
+            }),
+            {...data}
+        );
+        console.log(res.data)
+        dataToRender.value = res.data;
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+    }
 }
 
 async function handleSearch() {
@@ -1561,6 +1579,8 @@ function openExportPhoto() {
         uniqueParam;
     window.location.href = url;
 }
+
+
 
 watch([() => form.type_doc, () => form.zone], () => {
     if (

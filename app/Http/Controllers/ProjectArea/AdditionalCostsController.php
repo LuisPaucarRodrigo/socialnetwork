@@ -28,9 +28,19 @@ class AdditionalCostsController extends Controller
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             })
-            ->with('project', 'provider')
+
+
+            ->with(['project', 'provider'])
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
+        
+        $additional_costs->getCollection()->transform(function($item){
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
+
+            
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
@@ -45,6 +55,11 @@ class AdditionalCostsController extends Controller
             ->with('project', 'provider')
             ->orderBy('updated_at', 'desc')
             ->get();
+        $additional_costs->transform(function($item){
+                $item->project->setAppends([]);
+                $item->setAppends(['real_amount']);
+                return $item;
+            });
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCostsRejected', [
             'additional_costs' => $additional_costs,
@@ -55,12 +70,24 @@ class AdditionalCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
-        $result = AdditionalCost::where('project_id', $project_id)->with('project', 'provider');
+        $result = AdditionalCost::where('project_id', $project_id)->with([
+                'project:id,description', 
+                'provider']);
         $result = $request->state === false ? $result->where('is_accepted', 0)
             : $result->where(function ($query) {
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             });
+
+        if ($request->search) {
+            $searchTerms = $request->input('search');
+            $result = $result->where(function ($query) use ($searchTerms) {
+                $query->where('ruc', 'like', "%$searchTerms%")
+                    ->orWhere('doc_date', 'like', "%$searchTerms%")
+                    ->orWhere('description', 'like', "%$searchTerms%")
+                    ->orWhere('amount', 'like', "%$searchTerms%");
+            });
+        }
 
         if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
@@ -71,16 +98,14 @@ class AdditionalCostsController extends Controller
         if (count($request->selectedDocTypes) < 5) {
             $result = $result->whereIn('type_doc', $request->selectedDocTypes);
         }
-        if ($request->search) {
-            $searchTerms = $request->input('search');
-            $result = $result->where(function ($query) use ($searchTerms) {
-                $query->where('ruc', 'like', "%$searchTerms%")
-                    ->orWhere('doc_date', 'like', "%$searchTerms%")
-                    ->orWhere('description', 'like', "%$searchTerms%")
-                    ->orWhere('amount', 'like', "%$searchTerms%");
-            });
-        }
         $result = $result->orderBy('doc_date')->get();
+
+        $result->transform(function($item){
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
+        
         return response()->json($result, 200);
     }
 

@@ -17,6 +17,11 @@ class StaticCostsController extends Controller
     public function index(Request $request, Project $project_id)
     {
         $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
+		$additional_costs->getCollection()->transform(function($item){
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
         $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/StaticCosts', [
@@ -49,8 +54,14 @@ class StaticCostsController extends Controller
             });
         }
         $result = $result->orderBy('doc_date')->get();
+		$result->transform(function($item){
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
         return response()->json($result, 200);
     }
+
 
     public function store(StaticCostsRequest $request, Project $project_id)
     {
