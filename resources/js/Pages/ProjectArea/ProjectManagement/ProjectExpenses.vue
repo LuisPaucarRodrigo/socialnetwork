@@ -226,7 +226,6 @@ const {
   scExpensesAmounts: Array,
 });
 
-console.log(project)
 
 let operativeMod = [
   { spentName : 'Planilla', amount: project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0),  },

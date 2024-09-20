@@ -98,7 +98,7 @@ class Project extends Model
 
     public function getRemainingBudgetAttribute()
     {
-        if ($this->initial_budget === 0.00) { return 0;}
+        if ($this->initial_budget === 0.00) { return 0.00;}
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts()

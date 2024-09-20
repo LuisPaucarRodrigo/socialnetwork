@@ -1513,7 +1513,6 @@ async function search_advance(data) {
             }),
             {...data}
         );
-        console.log(res.data)
         dataToRender.value = res.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);
