@@ -299,7 +299,7 @@ class ProjectManagementController extends Controller
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
-        $additionalCosts = $project_id->additionalCosts()->get()->sum('real_amount');
+        $additionalCosts = $project_id->additionalCosts()->where('is_accepted', 1)->get()->sum('real_amount');
         $acArr = $project_id->additionalCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
