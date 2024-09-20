@@ -349,7 +349,7 @@ class ProjectManagementController extends Controller
         ];
         $model = app($arrModels[$request->spMod]);
         $data = $model
-            ->select('zone', \DB::raw('SUM(amount / (1 + igv / 100)) as amount'))
+            ->select('zone as spentName', \DB::raw('ROUND(SUM(amount / (1 + igv / 100)), 2) as amount'))
             ->where('project_id', $request->project_id)
             ->where('expense_type', $request->expType)
             ->groupBy('zone')

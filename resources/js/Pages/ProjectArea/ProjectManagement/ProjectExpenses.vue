@@ -22,7 +22,7 @@
                     Monto</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="tabular-nums">
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Presupuesto actual</td>
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
@@ -102,15 +102,16 @@
                       <p>
                         {{ item.expense_type }}
                       </p>
-                      <button @click="openDetailsModal({
-                        title: item.expense_type,
-                        detArray: operativeMod
-                      })" type="button" class="text-green-500 hover:text-green-300">
+                      <button @click="prevOpenModal({ 
+                          spMod: 'static', 
+                          expType: item.expense_type,
+                          project_id: project.id
+                        })" type="button" class="text-green-500 hover:text-green-300">
                         <InformationCircleIcon class="w-5 h-5 " />
                       </button>
                     </div>
                   </td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">S/. {{
         item.total_amount.toFixed(2) }}</td>
                 </tr>
               </tbody>
@@ -144,19 +145,19 @@
                       <p>
                         {{ item.expense_type }}
                       </p>
-                      <button @click="prevOpenModal(
-                        { title: item.expense_type},
-                        { 
+                      <button 
+                        @click="prevOpenModal({ 
                           spMod: 'additional', 
                           expType: item.expense_type,
                           project_id: project.id
-                        }
-                        )" type="button" class="text-green-500 hover:text-green-300">
+                        })" 
+                        type="button" 
+                        class="text-green-500 hover:text-green-300">
                         <InformationCircleIcon class="w-5 h-5 " />
                       </button>
                     </div>
                   </td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                     S/. {{ item.total_amount.toFixed(2) }}
                   </td>
                 </tr>
@@ -189,8 +190,8 @@
               <tbody>
                 <tr v-for="(item, i) in detailsStructure.detArray" class="text-gray-700" :key="i">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.spentName }}</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
-                    S/. {{ item.amount }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
+                    S/. {{ item.amount.toFixed(2) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -228,8 +229,8 @@ const {
 console.log(project)
 
 let operativeMod = [
-  { spentName : 'Planilla', amount: project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2),  },
-  { spentName : 'Essalud', amount: project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2) },
+  { spentName : 'Planilla', amount: project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0),  },
+  { spentName : 'Essalud', amount: project.total_employee_costs.reduce((a, item) => item.essalud + a, 0) },
   { spentName : 'Viáticos', amount: 0 },
 ]
 
@@ -247,7 +248,7 @@ const updateChart = () => {
         additionalCosts, 
         project.total_products_cost, 
         project.total_services_cost,
-        operativeMod.reduce((a, b)=>(a + b.amount), 0)
+        operativeMod.reduce((a, b)=>(a + b.amount), 0).toFixed(2)
   ];
 
   chartInstance.value = new Chart(ctx, {
@@ -395,14 +396,15 @@ const closeDetailsModal = () => {
 }
 
 
-const prevOpenModal = (details, form) => {
-
+const prevOpenModal = async (form) => {
+  const det = await fetchExpenseTypeData(form)
+  openDetailsModal({title: form.expType, detArray: det })
 }
 
 
 async function fetchExpenseTypeData (form) {
   try{
-    const res = await axios.post(route('  '), form)
+    const res = await axios.post(route('project.expenses.zones.details'), form)
     return res.data
   } catch(e){
     console.log(e)

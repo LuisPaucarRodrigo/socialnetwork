@@ -245,7 +245,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/staticcost_photo/{additional_cost_id}', [StaticCostsController::class, 'download_ac_photo'])->name('staticcost.archive');
     Route::post('/staticcost_advancesearch/{project_id}', [StaticCostsController::class, 'search_costs'])->name('staticcost.advance.search');
 
-
+    Route::post('/ad_st_costs_details', [ProjectManagementController::class, 'project_expense_details'])->name('project.expenses.zones.details');
 
 
 
