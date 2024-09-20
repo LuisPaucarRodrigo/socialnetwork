@@ -325,7 +325,12 @@ class ProjectManagementController extends Controller
                 'total_amount' => $cost->total_amount,
             ];
         })->toArray();
-        $project_id->setAppends([]);
+        $project_id->setAppends([
+            'remaining_budget',
+            'total_services_cost',
+            'total_products_cost',
+            'total_employee_costs',
+        ]);
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
