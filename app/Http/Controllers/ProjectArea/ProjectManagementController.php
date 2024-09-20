@@ -15,6 +15,7 @@ use App\Models\Purchasing_request;
 use App\Models\Purchase_quote;
 use App\Models\PreprojectEntry;
 use App\Models\ResourceEntry;
+use App\Models\StaticCost;
 use App\Models\Warehouse;
 use App\Models\Preproject;
 use App\Models\ProjectEntry;
@@ -311,8 +312,7 @@ class ProjectManagementController extends Controller
                 'total_amount' => $cost->total_amount,
             ];
         })->toArray();
-
-        $staticCosts =  $this->staticCosts()->where('expense_type', '!=', 'Combustible GEP')->get()
+        $staticCosts =  StaticCost::where('project_id', $project_id->id)->where('expense_type', '!=', 'Combustible GEP')->get()
         ->sum('real_amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
