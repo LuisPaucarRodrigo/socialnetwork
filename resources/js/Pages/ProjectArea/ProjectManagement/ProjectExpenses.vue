@@ -98,13 +98,12 @@
               <tbody>
                 <tr v-for="(item, i) in scExpensesAmounts" class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
-                    {{ item.expense_type }}
                     <div class="flex gap-3 justify-between">
                       <p>
-                        MOD Operativo
+                        {{ item.expense_type }}
                       </p>
                       <button @click="openDetailsModal({
-                        title: 'MOD Operativo',
+                        title: item.expense_type,
                         detArray: operativeMod
                       })" type="button" class="text-green-500 hover:text-green-300">
                         <InformationCircleIcon class="w-5 h-5 " />
@@ -140,7 +139,23 @@
               </thead>
               <tbody>
                 <tr v-for="(item, i) in acExpensesAmounts" class="text-gray-700">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.expense_type }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
+                    <div class="flex gap-3 justify-between">
+                      <p>
+                        {{ item.expense_type }}
+                      </p>
+                      <button @click="prevOpenModal(
+                        { title: item.expense_type},
+                        { 
+                          spMod: 'additional', 
+                          expType: item.expense_type,
+                          project_id: project.id
+                        }
+                        )" type="button" class="text-green-500 hover:text-green-300">
+                        <InformationCircleIcon class="w-5 h-5 " />
+                      </button>
+                    </div>
+                  </td>
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
                     S/. {{ item.total_amount.toFixed(2) }}
                   </td>
@@ -377,6 +392,21 @@ const openDetailsModal = (details) => {
 const closeDetailsModal = () => {
   showDetailsModal.value = false
   detailsStructure.value = {}
+}
+
+
+const prevOpenModal = (details, form) => {
+
+}
+
+
+async function fetchExpenseTypeData (form) {
+  try{
+    const res = await axios.post(route('  '), form)
+    return res.data
+  } catch(e){
+    console.log(e)
+  }
 }
 
 

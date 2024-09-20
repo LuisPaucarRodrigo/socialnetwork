@@ -342,6 +342,21 @@ class ProjectManagementController extends Controller
         ]);
     }
 
+    public function project_expense_details (Request $request) {
+        $arrModels = [
+            'additional' => 'App\Models\AdditionalCost', 
+            'static' => 'App\Models\StaticCost'
+        ];
+        $model = app($arrModels[$request->spMod]);
+        $data = $model
+            ->select('zone', \DB::raw('SUM(amount / (1 + igv / 100)) as amount'))
+            ->where('project_id', $request->project_id)
+            ->where('expense_type', $request->expType)
+            ->groupBy('zone')
+            ->get();
+        return response()->json($data, 200);
+    }
+
 
     public function project_product_index(Project $project_id)
     {
