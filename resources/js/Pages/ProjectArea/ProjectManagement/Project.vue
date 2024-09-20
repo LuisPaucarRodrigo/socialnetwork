@@ -129,13 +129,6 @@
                             Archivos
                             </Link>
                             <span v-else class="text-gray-400">Archivos</span>
-                            <div>
-                                <Link v-if="item.initial_budget > 0 && item.preproject.customer_id == 3"
-                                :href="route('huawei.show', { project: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Huawei
-                            </Link>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -165,7 +158,6 @@ const props = defineProps({
     auth: Object,
     userPermissions:Array
 })
-
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);

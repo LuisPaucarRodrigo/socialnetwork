@@ -33,10 +33,18 @@ class ProjectManagementController extends Controller
     public function index(Request $request)
     {
         if ($request->isMethod('get')) {
+            $projectsData = Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+            ->select('projects.*', 'preprojects.date as preproject_date')
+            ->orderBy('preproject_date', 'desc')->where('projects.status', null)->paginate();
+            $projectsData->getCollection()->each->setAppends([
+                'name', 
+                'code', 
+                'remaining_budget', 
+                'current_budget',
+                'is_liquidable',
+            ]);
             return Inertia::render('ProjectArea/ProjectManagement/Project', [
-                'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
-                    ->select('projects.*', 'preprojects.date as preproject_date')
-                    ->orderBy('preproject_date', 'desc')->where('projects.status', null)->paginate(),
+                'projects' => $projectsData,
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
