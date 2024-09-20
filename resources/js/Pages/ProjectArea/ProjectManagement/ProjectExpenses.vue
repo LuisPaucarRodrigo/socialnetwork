@@ -41,28 +41,35 @@
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en productos</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.total_products_cost.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{project.total_products_cost.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2) }}</td>
-                </tr>
-                <tr class="text-gray-700">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla (essalud)</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
+                    <div class="flex gap-3 justify-between">
+                      <p>
+                        MOD Operativo
+                      </p>
+                      <button @click="openDetailsModal({
+                        title: 'MOD Operativo',
+                        detArray: operativeMod
+                      })" type="button" class="text-green-500 hover:text-green-300">
+                        <InformationCircleIcon class="w-5 h-5 " />
+                      </button>
+                    </div>
+                  </td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/.{{ project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2) }}
+                  </td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Fijos</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        staticCosts.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{ staticCosts.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Variables</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        additionalCosts.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{ additionalCosts.toFixed(2) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -90,7 +97,20 @@
               </thead>
               <tbody>
                 <tr v-for="(item, i) in scExpensesAmounts" class="text-gray-700">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.expense_type }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
+                    {{ item.expense_type }}
+                    <div class="flex gap-3 justify-between">
+                      <p>
+                        MOD Operativo
+                      </p>
+                      <button @click="openDetailsModal({
+                        title: 'MOD Operativo',
+                        detArray: operativeMod
+                      })" type="button" class="text-green-500 hover:text-green-300">
+                        <InformationCircleIcon class="w-5 h-5 " />
+                      </button>
+                    </div>
+                  </td>
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
         item.total_amount.toFixed(2) }}</td>
                 </tr>
@@ -121,8 +141,9 @@
               <tbody>
                 <tr v-for="(item, i) in acExpensesAmounts" class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.expense_type }}</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        item.total_amount.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{ item.total_amount.toFixed(2) }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -134,8 +155,32 @@
           </div>
         </div>
       </div>
-
     </div>
+
+    <Modal :show="showDetailsModal" @close="closeDetailsModal">
+        <div class="p-6">
+          <table class="w-full whitespace-nowrap rounded-md shadow-sm">
+              <thead>
+                <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <th
+                    class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    {{ detailsStructure.title  }}
+                  </th>
+                  <th class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    Monto
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, i) in detailsStructure.detArray" class="text-gray-700" :key="i">
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.spentName }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{ item.amount }}</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </Modal>
 
 
   </AuthenticatedLayout>
@@ -146,6 +191,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, onMounted } from 'vue';
 import { Chart, registerables } from 'chart.js/auto';
 import { Head } from '@inertiajs/vue3';
+import { InformationCircleIcon } from "@heroicons/vue/24/outline";
+import Modal from '@/Components/Modal.vue';
 
 const { 
   project, 
@@ -163,6 +210,13 @@ const {
   scExpensesAmounts: Array,
 });
 
+console.log(project)
+
+let operativeMod = [
+  { spentName : 'Planilla', amount: project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2),  },
+  { spentName : 'Essalud', amount: project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2) },
+  { spentName : 'Viáticos', amount: 0 },
+]
 
 const chartInstance = ref(null);
 const updateChart = () => {
@@ -178,8 +232,7 @@ const updateChart = () => {
         additionalCosts, 
         project.total_products_cost, 
         project.total_services_cost,
-        project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2), 
-        project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2)
+        operativeMod.reduce((a, b)=>(a + b.amount), 0)
   ];
 
   chartInstance.value = new Chart(ctx, {
@@ -311,6 +364,20 @@ const getRandomColor = () => {
   }
   return color;
 };
+
+
+//Details modal 
+
+const showDetailsModal = ref(false)
+const detailsStructure = ref({})
+const openDetailsModal = (details) => {
+  showDetailsModal.value = true
+  detailsStructure.value = details
+}
+const closeDetailsModal = () => {
+  showDetailsModal.value = false
+  detailsStructure.value = {}
+}
 
 
 

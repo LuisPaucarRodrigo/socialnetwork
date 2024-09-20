@@ -295,13 +295,11 @@ class ProjectManagementController extends Controller
     public function project_expenses(Project $project_id)
     {
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
-            ->with('project')
-            ->with('user')
             ->orderByDesc('id')
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
-        $additionalCosts = $project_id->additionalCosts->sum('real_amount');
+        $additionalCosts = $project_id->additionalCosts()->get()->sum('real_amount');
         $acArr = $project_id->additionalCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
@@ -312,19 +310,22 @@ class ProjectManagementController extends Controller
                 'total_amount' => $cost->total_amount,
             ];
         })->toArray();
-        $staticCosts =  StaticCost::where('project_id', $project_id->id)->where('expense_type', '!=', 'Combustible GEP')->get()
+
+        $staticCosts =  $project_id->staticCosts()->where('expense_type', '!=', 'Combustible GEP')->get()
         ->sum('real_amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
             ->get();
+
+        
         $scExpensesAmounts = $scArr->map(function($cost) {
             return [
                 'expense_type' => $cost->expense_type,
                 'total_amount' => $cost->total_amount,
             ];
         })->toArray();
-
+        $project_id->setAppends([]);
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
