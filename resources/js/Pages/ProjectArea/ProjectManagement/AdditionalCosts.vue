@@ -10,6 +10,7 @@
             Gastos Variables del Proyecto {{ props.project_id.name }}
         </template>
         <br />
+        <Toaster richColors/>
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
@@ -1234,14 +1235,6 @@
             :deleteFunction="deleteAdditional"
             @closeModal="closeModalDoc"
         />
-        <ConfirmCreateModal
-            :confirmingcreation="showModal"
-            itemType="Costo Adicional"
-        />
-        <ConfirmUpdateModal
-            :confirmingupdate="showModalEdit"
-            itemType="Costo Adicional"
-        />
         <SuccessOperationModal
             :confirming="confirmImport"
             :title="'Datos Importados'"
@@ -1277,7 +1270,9 @@ import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
+import { setAxiosErrors, toFormData } from "@/utils/utils";
+import { notify } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1356,52 +1351,43 @@ const closeEditModal = () => {
     editAdditionalModal.value = false;
 };
 
-const submit = () => {
-    form.post(
-        route("projectmanagement.storeAdditionalCost", {
+const submit = async () => {
+    try{
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.storeAdditionalCost", {
             project_id: props.project_id.id,
-        }),
-        {
-            onSuccess: () => {
-                closeModal();
-                showModal.value = true;
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
+        }), formToSend)
+        dataToRender.value.unshift(res.data)
+        closeModal();
+        notify('Gasto Fijo Guardado')
+    }catch (e) {
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
         }
-    );
+        console.log(e)
+    }
 };
 
-const submitEdit = () => {
-    form.post(
-        route("projectmanagement.updateAdditionalCost", {
+const submitEdit = async() => {
+    try{
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.updateAdditionalCost", {
             additional_cost: form.id,
-        }),
-        {
-            onSuccess: () => {
-                closeEditModal();
-                showModalEdit.value = true;
-                setTimeout(() => {
-                    showModalEdit.value = false;
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                console.log(e);
-            },
+        }), formToSend)
+        let index = dataToRender.value.findIndex(item=>item.id == form.id)
+        dataToRender.value[index] = res.data
+        closeEditModal();
+        notify('Gasto Fijo Actualizado')
+    }catch (e) {
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
         }
-    );
+        console.log(e)
+    }
 };
+
 
 const confirmDeleteAdditional = (additionalId) => {
     docToDelete.value = additionalId;
@@ -1412,25 +1398,20 @@ const closeModalDoc = () => {
     confirmingDocDeletion.value = false;
 };
 
-const deleteAdditional = () => {
+const deleteAdditional = async () => {
     const docId = docToDelete.value;
     if (docId) {
-        router.delete(
+        const res = await axios.delete(
             route("projectmanagement.deleteAdditionalCost", {
                 project_id: props.project_id.id,
                 additional_cost: docId,
-            }),
-            {
-                onSuccess: () => {
-                    closeModalDoc();
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                },
-            }
-        );
+            }))
+        if (res?.data?.msg==='success'){
+            closeModalDoc()
+            notify('Gasto Fijo Eliminado')
+            let index = dataToRender.value.findIndex(item=>item.id == docId)
+            dataToRender.value.splice(index, 1);
+        }
     }
 };
 

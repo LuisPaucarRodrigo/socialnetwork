@@ -26,6 +26,10 @@ class AdditionalCost extends Model
         'user_id'
     ];
 
+    protected $casts = [
+        'amount' => 'double',
+    ];
+
     protected $appends = [
         'real_amount'
     ];

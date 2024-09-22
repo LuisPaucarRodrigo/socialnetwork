@@ -40,7 +40,7 @@ export function setAxiosErrors(errors, form) {
 export function toFormData(form) {
   const formData = new FormData();
   for (const [key, value] of Object.entries(form)) {
-    formData.append(key, value);
+    formData.append(key, value ? value : '');
   }
-  return formData
+  return formData;
 }

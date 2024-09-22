@@ -116,7 +116,11 @@ class AdditionalCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
-        AdditionalCost::create($data);
+        $item = AdditionalCost::create($data);
+        $item->load('project', 'provider:id,company_name');
+        $item->project->setAppends([]);
+        $item->setAppends(['real_amount']);
+        return response()->json($item, 200);
     }
 
     public function download_ac_photo(AdditionalCost $additional_cost_id)
@@ -170,14 +174,17 @@ class AdditionalCostsController extends Controller
         }
 
         $additional_cost->update($data);
-        return redirect()->back();
+        $additional_cost->load('project', 'provider:id,company_name');
+        $additional_cost->project->setAppends([]);
+        $additional_cost->setAppends(['real_amount']);
+        return response()->json($additional_cost, 200);
     }
 
     public function destroy(Project $project_id, AdditionalCost $additional_cost)
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
         $additional_cost->delete();
-        return to_route('projectmanagement.additionalCosts', ['project_id' => $project_id->id]);
+        return response()->json(['msg'=>'success'],200);
     }
 
 
