@@ -119,24 +119,24 @@ class ApiController extends Controller
     public function codephotospecific($id)
     {
         $data = PreprojectCode::with(['code' => function ($query) {
-            $query->select('id', 'code', 'description')->with('code_images');;
+            $query->select('id', 'code', 'description')->with('code_images');
         }, 'preprojectTitle' => function ($query) {
             $query->select('id', 'preproject_id');
             $query->with(['preproject' => function ($query) {
                 $query->select('id', 'code');
             }]);
         }])->select('id', 'preproject_title_id', 'code_id')->find($id);
-        $images = $data->code->code_images->map(function ($image) {
-            $image->image = url('/image/imageCode/' . $image->image);
-            return $image;
-        });
+        // $images = $data->code->code_images->map(function ($image) {
+        //     $image->image = url('/image/imageCode/' . $image->image);
+        //     return $image;
+        // });
         $codesWith = [
             'id' => $data->id,
             'codePreproject' => $data->preprojectTitle->preproject->code,
             'code' => $data->code->code,
             'description' => $data->code->description,
             'status' => $data->status ?? $data->replaceable_status,
-            'images' => $images
+            // 'images' => $images
         ];
         return response()->json($codesWith);
     }
