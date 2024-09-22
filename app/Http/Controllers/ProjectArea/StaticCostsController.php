@@ -65,7 +65,6 @@ class StaticCostsController extends Controller
 
     public function store(StaticCostsRequest $request, Project $project_id)
     {
-        // dd($request->all());
         $data = $request->validated();
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
@@ -125,16 +124,18 @@ class StaticCostsController extends Controller
                 $this->file_delete($filename, 'documents/staticcosts/');
             }
         }
-
         $additional_cost->update($data);
-        return redirect()->back();
+        $additional_cost->load('project', 'provider:id,company_name');
+        $additional_cost->project->setAppends([]);
+        $additional_cost->setAppends(['real_amount']);
+        return response()->json($additional_cost, 200);
     }
 
     public function destroy(Project $project_id, StaticCost $additional_cost)
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/staticcosts/');
         $additional_cost->delete();
-        return redirect()->back();
+        return response()->json(['msg'=>'success'],200);
     }
 
 

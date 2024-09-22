@@ -10,6 +10,7 @@
             Gastos Fijos del Proyecto {{ props.project_id.name }}
         </template>
         <br />
+        <Toaster richColors/>
         <div class="inline-block min-w-full mb-4 overflow-hidden">
             <div class="flex gap-4 justify-between">
                 <div class="flex space-x-3">
@@ -928,25 +929,15 @@
 
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
-            itemType="Costo Adicional"
+            itemType="Gasto Fijo"
             :deleteFunction="deleteAdditional"
             @closeModal="closeModalDoc"
-        />
-        <ConfirmCreateModal
-            :confirmingcreation="showModal"
-            itemType="Costo Adicional"
-        />
-        <ConfirmUpdateModal
-            :confirmingupdate="showModalEdit"
-            itemType="Costo Adicional"
         />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
-import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
@@ -964,6 +955,8 @@ import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
+import { notify } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     additional_costs: Object,
@@ -999,8 +992,6 @@ const form = useForm({
 });
 
 const create_additional = ref(false);
-const showModal = ref(false);
-const showModalEdit = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const editAdditionalModal = ref(false);
@@ -1011,7 +1002,6 @@ const openCreateAdditionalModal = () => {
 };
 
 const openEditAdditionalModal = (additional) => {
-    // Copia de los datos de la subsección existente al formulario
     editingAdditional.value = JSON.parse(JSON.stringify(additional));
     form.id = editingAdditional.value.id;
     form.expense_type = editingAdditional.value.expense_type;
@@ -1037,6 +1027,7 @@ const closeModal = () => {
 
 const closeEditModal = () => {
     form.reset();
+    form.clearErrors()
     editAdditionalModal.value = false;
 };
 
@@ -1049,65 +1040,32 @@ const submit = async () => {
         }), formToSend)
         dataToRender.value.unshift(res.data)
         closeModal();
-            showModal.value = true;
-            setTimeout(() => {
-                showModal.value = false;
-            }, 2000);
+        notify('Gasto Fijo Guardado')
     }catch (e) {
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
         }
         console.log(e)
     }
-
-    
-    // form.post(
-    //     route("projectmanagement.storeStaticCost", {
-    //         project_id: props.project_id.id,
-    //     }),
-    //     {
-    //         onSuccess: () => {
-    //             closeModal();
-    //             showModal.value = true;
-    //             setTimeout(() => {
-    //                 showModal.value = false;
-    //                 router.visit(
-    //                     route("projectmanagement.staticCosts", {
-    //                         project_id: props.project_id.id,
-    //                     })
-    //                 );
-    //             }, 2000);
-    //         },
-    //         onError: (e)=>{
-    //             console.log(e)
-    //         }
-    //     }
-    // );
 };
 
-const submitEdit = () => {
-    form.post(
-        route("projectmanagement.updateStaticCost", {
+const submitEdit = async () => {
+    try{
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.updateStaticCost",{
             additional_cost: form.id,
-        }),
-        {
-            onSuccess: () => {
-                closeEditModal();
-                showModalEdit.value = true;
-                setTimeout(() => {
-                    showModalEdit.value = false;
-                    router.visit(
-                        route("projectmanagement.staticCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                console.log(e);
-            },
+        }), formToSend)
+        let index = dataToRender.value.findIndex(item=>item.id == form.id)
+        dataToRender.value[index] = res.data
+        closeEditModal();
+        notify('Gasto Fijo Actualizado')
+    }catch (e) {
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
         }
-    );
+        console.log(e)
+    }
 };
 
 
@@ -1120,25 +1078,20 @@ const closeModalDoc = () => {
     confirmingDocDeletion.value = false;
 };
 
-const deleteAdditional = () => {
+const deleteAdditional = async() => {
     const docId = docToDelete.value;
     if (docId) {
-        router.delete(
+        const res = await axios.delete(
             route("projectmanagement.deleteStaticCost", {
                 project_id: props.project_id.id,
                 additional_cost: docId,
-            }),
-            {
-                onSuccess: () => {
-                    closeModalDoc();
-                    router.visit(
-                        route("projectmanagement.staticCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                },
-            }
-        );
+            }))
+        if (res?.data?.msg==='success'){
+            closeModalDoc()
+            notify('Gasto Fijo Eliminado')
+            let index = dataToRender.value.findIndex(item=>item.id == docId)
+            dataToRender.value.splice(index, 1);
+        }
     }
 };
 
