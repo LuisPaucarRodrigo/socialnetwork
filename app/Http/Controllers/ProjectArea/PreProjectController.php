@@ -773,6 +773,7 @@ class PreProjectController extends Controller
 
     public function download_report($preproject_title_id)
     {
+        ini_set('memory_limit', '512M');
         $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->find($preproject_title_id);
         $preproject = Preproject::find($preprojectImages->preproject_id);
         $customer = Customers_contact::find($preproject->subcustomer_id);

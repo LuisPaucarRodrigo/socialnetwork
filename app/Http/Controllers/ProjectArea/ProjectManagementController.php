@@ -4,7 +4,6 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
-use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
 use App\Models\Employee;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
@@ -12,10 +11,7 @@ use App\Models\Entry;
 use App\Models\Inventory;
 use App\Models\PreprojectQuoteService;
 use App\Models\Purchasing_request;
-use App\Models\Purchase_quote;
-use App\Models\PreprojectEntry;
 use App\Models\ResourceEntry;
-use App\Models\StaticCost;
 use App\Models\Warehouse;
 use App\Models\Preproject;
 use App\Models\ProjectEntry;
