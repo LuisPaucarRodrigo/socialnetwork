@@ -65,12 +65,16 @@ class StaticCostsController extends Controller
 
     public function store(StaticCostsRequest $request, Project $project_id)
     {
+        // dd($request->all());
         $data = $request->validated();
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
-        StaticCost::create($data);
-        return redirect()->back();
+        $item = StaticCost::create($data);
+        $item->load('project', 'provider:id,company_name');
+        $item->project->setAppends([]);
+        $item->setAppends(['real_amount']);
+        return response()->json($item, 200);
     }
 
     public function download_ac_photo(StaticCost $additional_cost_id)

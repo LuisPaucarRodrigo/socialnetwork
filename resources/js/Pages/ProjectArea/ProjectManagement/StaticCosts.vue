@@ -472,7 +472,6 @@
                                         type="text"
                                         v-model="form.doc_number"
                                         id="doc_number"
-                                        pattern="^([a-zA-Z0-9]+([-|\/][a-zA-Z0-9]+)*)|([0-9]+)$"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                     <InputError
@@ -964,6 +963,7 @@ import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
+import { setAxiosErrors, toFormData } from "@/utils/utils";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1031,6 +1031,7 @@ const openEditAdditionalModal = (additional) => {
 
 const closeModal = () => {
     form.reset();
+    form.clearErrors()
     create_additional.value = false;
 };
 
@@ -1039,26 +1040,49 @@ const closeEditModal = () => {
     editAdditionalModal.value = false;
 };
 
-const submit = () => {
-    form.post(
-        route("projectmanagement.storeStaticCost", {
+const submit = async () => {
+    try{
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.storeStaticCost", {
             project_id: props.project_id.id,
-        }),
-        {
-            onSuccess: () => {
-                closeModal();
-                showModal.value = true;
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(
-                        route("projectmanagement.staticCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
+        }), formToSend)
+        dataToRender.value.unshift(res.data)
+        closeModal();
+            showModal.value = true;
+            setTimeout(() => {
+                showModal.value = false;
+            }, 2000);
+    }catch (e) {
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
         }
-    );
+        console.log(e)
+    }
+
+    
+    // form.post(
+    //     route("projectmanagement.storeStaticCost", {
+    //         project_id: props.project_id.id,
+    //     }),
+    //     {
+    //         onSuccess: () => {
+    //             closeModal();
+    //             showModal.value = true;
+    //             setTimeout(() => {
+    //                 showModal.value = false;
+    //                 router.visit(
+    //                     route("projectmanagement.staticCosts", {
+    //                         project_id: props.project_id.id,
+    //                     })
+    //                 );
+    //             }, 2000);
+    //         },
+    //         onError: (e)=>{
+    //             console.log(e)
+    //         }
+    //     }
+    // );
 };
 
 const submitEdit = () => {
@@ -1085,6 +1109,7 @@ const submitEdit = () => {
         }
     );
 };
+
 
 const confirmDeleteAdditional = (additionalId) => {
     docToDelete.value = additionalId;
