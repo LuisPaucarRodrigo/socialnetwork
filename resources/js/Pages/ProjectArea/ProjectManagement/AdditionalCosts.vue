@@ -1451,6 +1451,7 @@ const expenseTypes = [
     "Peaje",
     "Herramientas",
     "Equipos",
+    "Daños de Vehículos",
     "EPPs",
     "Seguros y Pólizas",
     "Gastos de Representación",

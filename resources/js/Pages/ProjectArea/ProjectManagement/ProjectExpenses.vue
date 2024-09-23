@@ -230,7 +230,7 @@ const {
 let operativeMod = [
   { spentName : 'Planilla', amount: project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0),  },
   { spentName : 'Essalud', amount: project.total_employee_costs.reduce((a, item) => item.essalud + a, 0) },
-  { spentName : 'Viáticos', amount: 0 },
+  // { spentName : 'Viáticos', amount: 0 },
 ]
 
 const chartInstance = ref(null);

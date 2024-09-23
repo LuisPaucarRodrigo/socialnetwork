@@ -38,7 +38,7 @@ class StaticCostsController extends Controller
         if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 7) {
+        if (count($request->selectedExpenseTypes) < 9) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedDocTypes) < 5) {

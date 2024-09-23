@@ -1121,10 +1121,12 @@ const zones = [
     "MDD2-MAZ"
 ];
 const expenseTypes = [
-    "Camionetas",
+    "Alquiler de Vehículos",
+    "Alquiler de Locales",
     "Combustible",
     "Combustible GEP",
-    "Habitaciones",
+    "Celulares",
+    "Proveídos",
     "Terceros",
     "Viáticos",
     "Otros",

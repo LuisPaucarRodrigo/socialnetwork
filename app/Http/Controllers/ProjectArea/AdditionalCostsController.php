@@ -92,7 +92,7 @@ class AdditionalCostsController extends Controller
         if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 13) {
+        if (count($request->selectedExpenseTypes) < 14) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedDocTypes) < 5) {
