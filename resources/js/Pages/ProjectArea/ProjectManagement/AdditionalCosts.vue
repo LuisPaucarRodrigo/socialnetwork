@@ -1250,8 +1250,6 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
-import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -1271,7 +1269,7 @@ import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify } from "@/Components/Notification";
+import { notify, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 const props = defineProps({
@@ -1311,8 +1309,6 @@ const form = useForm({
 
 
 const create_additional = ref(false);
-const showModal = ref(false);
-const showModalEdit = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const editAdditionalModal = ref(false);
@@ -1351,6 +1347,8 @@ const closeEditModal = () => {
     editAdditionalModal.value = false;
 };
 
+console.log(router.processing)
+
 const submit = async () => {
     try{
         const formToSend = toFormData(form.data())
@@ -1360,7 +1358,7 @@ const submit = async () => {
         }), formToSend)
         dataToRender.value.unshift(res.data)
         closeModal();
-        notify('Gasto Fijo Guardado')
+        notify('Gasto Adicional Guardado')
     }catch (e) {
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
@@ -1379,7 +1377,7 @@ const submitEdit = async() => {
         let index = dataToRender.value.findIndex(item=>item.id == form.id)
         dataToRender.value[index] = res.data
         closeEditModal();
-        notify('Gasto Fijo Actualizado')
+        notify('Gasto Adicional Actualizado')
     }catch (e) {
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
@@ -1408,7 +1406,7 @@ const deleteAdditional = async () => {
             }))
         if (res?.data?.msg==='success'){
             closeModalDoc()
-            notify('Gasto Fijo Eliminado')
+            notify('Gasto Adicional Eliminado')
             let index = dataToRender.value.findIndex(item=>item.id == docId)
             dataToRender.value.splice(index, 1);
         }
@@ -1491,10 +1489,9 @@ async function search_advance(data) {
         let res = await axios.post(
             route("additionalcost.advance.search", {
                 project_id: props.project_id.id,
-            }),
-            {...data}
-        );
+            }),data);
         dataToRender.value = res.data;
+        notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
     } catch (error) {
         console.error('Error en la solicitud:', error);
     }

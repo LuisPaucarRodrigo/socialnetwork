@@ -955,7 +955,7 @@ import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify } from "@/Components/Notification";
+import { notify, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 const props = defineProps({
@@ -1158,14 +1158,13 @@ watch(
     { deep: true }
 );
 
-async function search_advance($data) {
+async function search_advance(data) {
     let res = await axios.post(
         route("staticcost.advance.search", {
             project_id: props.project_id.id,
-        }),
-        $data
-    );
+        }),data);
     dataToRender.value = res.data;
+    notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
 }
 
 async function handleSearch() {
