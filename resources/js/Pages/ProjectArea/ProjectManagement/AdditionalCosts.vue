@@ -1443,17 +1443,22 @@ const zones = [
 ];
 const expenseTypes = [
     "Hospedaje",
-    "Movilidad",
-    "Peaje",
-    "Seguros y Pólizas",
-    "Herramientas",
-    "Fletes",
-    "EPPs",
-    "Gastos de Representación",
+    "Mensajería",
     "Consumibles",
+    "Pasaje Interprovincial",
+    "Taxis y Pasajes",
+    "Bandeos",
+    "Peaje",
+    "Herramientas",
     "Equipos",
+    "EPPs",
+    "Seguros y Pólizas",
+    "Gastos de Representación",
     "Otros",
 ];
+//Fletes
+
+
 const docTypes = [
     "Efectivo",
     "Deposito",
