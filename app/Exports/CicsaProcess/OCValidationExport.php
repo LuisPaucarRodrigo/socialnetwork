@@ -31,8 +31,9 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'Fecha de Validacion',
                 'Encargado'
             ],
-            'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with(['cicsa_purchase_order','cicsa_assignation' => function ($query) {
-                $query->select('project_name','project_code','cpe')
+            'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with([
+                'cicsa_purchase_order','cicsa_assignation' => function ($query) {
+                    return $query->select('project_name','project_code','cpe','id');
             }])
             ->get()
         ]);
