@@ -3,6 +3,8 @@
 namespace App\Exports\CicsaProcess;
 
 use App\Models\CicsaAssignation;
+use App\Models\CicsaPurchaseOrder;
+use App\Models\CicsaPurchaseOrderValidation;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -29,8 +31,9 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'Fecha de Validacion',
                 'Encargado'
             ],
-            'cicsa_purchase_order_validations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-            ->with('cicsa_purchase_order_validation','cicsa_purchase_order')
+            'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with(['cicsa_purchase_order','cicsa_assignation' => function ($query) {
+                $query->select('project_name','project_code','cpe')
+            }])
             ->get()
         ]);
     }
