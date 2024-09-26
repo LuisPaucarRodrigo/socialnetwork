@@ -22,6 +22,7 @@
             <td> {{ $validationOC->superintendent }} </td>
             <td> {{ $validationOC->validation_date }} </td>
             <td> {{ $validationOC->user_name }} </td>
+            <td> {{ $validationOC->cicsa_assignation->manager }} </td>
         </tr>
         @endforeach
     </tbody>

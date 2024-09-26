@@ -19,11 +19,6 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
         Route::post('/preprojectimage', [ApiController::class, 'preprojectimage']);
         Route::get('/register/photo/{id}', [ApiController::class, 'registerPhoto']);
 
-        //Project
-        Route::get('/project', [ApiController::class, 'project_index']);
-        Route::get('/project/show/{id}', [ApiController::class, 'project_show']);
-        Route::post('/project/store/image', [ApiController::class, 'project_store_image']);
-
         Route::post('/logout', [ApiController::class, 'logout']);
 
         //ProjectHuawei

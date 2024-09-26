@@ -67,8 +67,9 @@ class CicsaChargeArea extends Model
     {
         if (!empty($this->deposit_date) && !empty($this->payment_date)) {
             $deposit_date = Carbon::parse($this->deposit_date);
-            $deposit_date = $deposit_date->diffInDays(Carbon::parse($this->payment_date), false);
-            return $deposit_date > 0 ? $deposit_date : 0;
+			$payment_date = Carbon::parse($this->payment_date);
+            $daysLate = $payment_date->diffInDays($deposit_date, false);
+            return $daysLate > 0 ? $daysLate : 0;
         } elseif ($this->payment_date) {
             $paymentDate = Carbon::parse($this->payment_date);
             $currentDate = Carbon::now();

@@ -3,6 +3,7 @@
 namespace App\Exports\CicsaProcess;
 
 use App\Models\CicsaAssignation;
+use App\Models\CicsaServiceOrder;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -28,8 +29,11 @@ class ServiceOrderExport implements FromView, WithColumnWidths
                 'ZIP Factura',
                 'Encargado',
             ],
-            'cicsa_service_orders' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-            ->with('cicsa_service_order','cicsa_purchase_order')
+            'cicsa_service_orders' => CicsaServiceOrder::with(['cicsa_assignation' => function($query){
+                $query->select('id', 'project_name', 'project_code', 'cpe');
+            },'cicsa_purchase_order' => function ($query){
+                $query->select('id','oc_number');
+            }])
             ->get()
         ]);
     }
