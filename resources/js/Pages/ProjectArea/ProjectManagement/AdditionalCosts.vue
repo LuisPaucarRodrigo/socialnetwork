@@ -860,7 +860,8 @@
                             </SecondaryButton>
                             <button
                                 type="submit"
-                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Guardar
@@ -1172,7 +1173,8 @@
                             </SecondaryButton>
                             <button
                                 type="submit"
-                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Actualizar
@@ -1339,18 +1341,21 @@ const openEditAdditionalModal = (additional) => {
 
 const closeModal = () => {
     form.reset();
+    isFetching.value = false
     create_additional.value = false;
 };
 
 const closeEditModal = () => {
     form.reset();
+    isFetching.value = false
     editAdditionalModal.value = false;
 };
 
-console.log(router.processing)
+const isFetching = ref(false)
 
 const submit = async () => {
     try{
+        isFetching.value = true
         const formToSend = toFormData(form.data())
         const res = await axios.post(
             route("projectmanagement.storeAdditionalCost", {
@@ -1369,6 +1374,7 @@ const submit = async () => {
 
 const submitEdit = async() => {
     try{
+        isFetching.value = true
         const formToSend = toFormData(form.data())
         const res = await axios.post(
             route("projectmanagement.updateAdditionalCost", {
