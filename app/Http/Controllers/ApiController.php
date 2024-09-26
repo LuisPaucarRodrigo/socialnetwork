@@ -178,58 +178,6 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
-    //Project
-    public function project_index()
-    {
-        try {
-            $data = Project::all();
-            return response()->json($data);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-    public function project_show($id)
-    {
-        try {
-            $find = Project::find($id);
-            return response()->json($find);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ]);
-            DB::rollBack();
-        }
-    }
-
-    public function project_store_image(ImageRequest $request)
-    {
-        $validateData = $request->validated();
-        DB::beginTransaction();
-        try {
-            $image = str_replace('data:image/png;base64,', '', $validateData['photo']);
-            $image = str_replace(' ', '+', $image);
-            $imageContent = base64_decode($image);
-            $validateData['photo'] = time() . '.png';
-            file_put_contents(public_path('image/imagereportproject/') . $validateData['photo'], $imageContent);
-
-            Projectimage::create([
-                'description' => $validateData['description'],
-                'image' => $validateData['photo'],
-                'project_id' => $validateData['id']
-            ]);
-            DB::commit();
-            return response()->json([200]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
