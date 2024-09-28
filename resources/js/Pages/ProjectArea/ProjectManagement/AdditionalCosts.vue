@@ -7,10 +7,10 @@
         }"
     >
         <template #header>
-            Gastos Variables del Proyecto {{ props.project_id.name }}
+            Gastos Variables del Proyecto 
+            {{ props.project_id.name }}
         </template>
         <br />
-        <Toaster richColors class="z-100"/>
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
@@ -608,6 +608,7 @@
                 </tbody>
             </table>
         </div>
+        <Toaster richColors/>
         <div
             v-if="!filterMode"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
@@ -615,6 +616,7 @@
             <pagination :links="additional_costs.links" />
         </div>
         <Modal :show="create_additional" @close="closeModal">
+            <!-- <Toaster richColors/> -->
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Agregar Costo adicional
@@ -857,14 +859,7 @@
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeModal">
                                 Cancelar
-                            </SecondaryButton>
-                            
-                            <button type="button" @click="()=>{
-                                notify('creoq eu esta bien')
-                            }">
-                                test
-                            </button>
-                            
+                            </SecondaryButton>           
                             <button
                                 type="submit"
                                 :disabled="isFetching"
@@ -1243,6 +1238,7 @@
             itemType="Costo Adicional"
             :deleteFunction="deleteAdditional"
             @closeModal="closeModalDoc"
+            :processing="isFetching"
         />
         <SuccessOperationModal
             :confirming="confirmImport"
@@ -1278,7 +1274,7 @@ import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyWarning } from "@/Components/Notification";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 const props = defineProps({
@@ -1372,10 +1368,12 @@ const submit = async () => {
         closeModal();
         notify('Gasto Adicional Guardado')
     }catch (e) {
+        isFetching.value = false
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
+        } else {
+            notifyError('Server Error')
         }
-        console.log(e)
     }
 };
 
@@ -1392,10 +1390,12 @@ const submitEdit = async() => {
         closeEditModal();
         notify('Gasto Adicional Actualizado')
     }catch (e) {
+        isFetching.value = false
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
+        }else {
+            notifyError('Server Error')
         }
-        console.log(e)
     }
 };
 
@@ -1411,19 +1411,24 @@ const closeModalDoc = () => {
 
 const deleteAdditional = async () => {
     const docId = docToDelete.value;
-    if (docId) {
+    isFetching.value = true
+    try {
         const res = await axios.delete(
-            route("projectmanagement.deleteAdditionalCost", {
-                project_id: props.project_id.id,
-                additional_cost: docId,
-            }))
+        route("projectmanagement.deleteAdditionalCost", {
+            project_id: props.project_id.id,
+            additional_cost: docId,
+        }))
+        isFetching.value = false
         if (res?.data?.msg==='success'){
             closeModalDoc()
             notify('Gasto Adicional Eliminado')
             let index = dataToRender.value.findIndex(item=>item.id == docId)
             dataToRender.value.splice(index, 1);
         }
+    } catch (e) {
+        isFetching.value = false
     }
+    
 };
 
 const handleRucDniAutocomplete = (e) => {
@@ -1454,6 +1459,7 @@ const zones = [
     "MDD1", 
     "MDD2"
 ];
+
 const expenseTypes = [
     "Hospedaje",
     "Mensajería",
@@ -1470,7 +1476,6 @@ const expenseTypes = [
     "Gastos de Representación",
     "Otros",
 ];
-//Fletes
 
 
 const docTypes = [
