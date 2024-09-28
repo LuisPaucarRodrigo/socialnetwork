@@ -231,7 +231,7 @@ class AdditionalCostsController extends Controller
     {
         
         try {
-            $additionalCosts = AdditionalCost::where('project_id', $project_id)->where('type_doc', 'Factura')->get();
+            $additionalCosts = AdditionalCost::where('project_id', $project_id)->where('is_accepted', 1)->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])->get();
             $zipFileName = 'additionalCostsPhotos.zip';
             $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
             $zip = new ZipArchive;
