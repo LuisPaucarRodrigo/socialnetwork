@@ -6,8 +6,8 @@
             Lista de solicitudes {{ project.description }}
         </template>
 
-        <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-            <div class="flex gap-2">
+        <div class="min-h-[300px] min-w-full overflow-hidden rounded-lg shadow">
+            <div class="hidden sm:flex gap-2">
                 <PrimaryButton v-if="project.status === null && hasPermission('ProjectManager')"
                     @click="add_purchase_request" type="button">
                     + Agregar
@@ -24,6 +24,66 @@
                     Gastos Fijos
                 </Link>
             </div>
+
+            <div class="sm:hidden">
+                <dropdown align='left'>
+                    <template #trigger>
+                        <button @click="dropdownOpen = !dropdownOpen"
+                            class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                            <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </template>
+
+                    <template #content class="origin-left">
+                        <div> 
+                            <div class="dropdown">
+                                <div class="dropdown-menu">
+                                    <button 
+                                        v-if="project.status === null && hasPermission('ProjectManager')" 
+                                        @click="add_purchase_request"
+                                        class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        + Agregar
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <button 
+                                       @click="expenses"
+                                        class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Resumen de Gastos
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <button 
+                                       @click="router.visit(route('projectmanagement.additionalCosts', { project_id: props.project.id }))"
+                                        class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Gastos Variables
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <button 
+                                       @click="router.visit(route('projectmanagement.staticCosts', { project_id: props.project.id }))"
+                                        class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Gastos Fijos
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </template>
+                </dropdown>
+            </div>
+
+
+
+
+
+
+
+
             <div class="overflow-x-auto">
                 <table class="min-w-full whitespace-no-wrap">
                     <thead>
@@ -204,6 +264,7 @@ import { formattedDate } from '@/utils/utils';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Dropdown from '@/Components/Dropdown.vue';
 
 const confirmingPurchasesDeletion = ref(false);
 const showError = ref(false)
