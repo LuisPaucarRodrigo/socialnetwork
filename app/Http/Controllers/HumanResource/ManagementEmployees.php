@@ -360,7 +360,7 @@ class ManagementEmployees extends Controller
     {
         $now = Carbon::now();
         $startDate = $now->copy();
-        $endDate = addDays(3);
+        $endDate = $now->copy()->addDays(3);
 
         $dates = [];
         for ($date = $startDate; $date <= $endDate; $date->addDay()) {

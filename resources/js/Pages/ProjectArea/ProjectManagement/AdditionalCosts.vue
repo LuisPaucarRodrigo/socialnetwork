@@ -10,7 +10,7 @@
             Gastos Variables del Proyecto {{ props.project_id.name }}
         </template>
         <br />
-        <Toaster richColors/>
+        <Toaster richColors class="z-100"/>
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
@@ -614,7 +614,7 @@
         >
             <pagination :links="additional_costs.links" />
         </div>
-        <Modal :show="create_additional">
+        <Modal :show="create_additional" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Agregar Costo adicional
@@ -858,6 +858,13 @@
                             <SecondaryButton @click="closeModal">
                                 Cancelar
                             </SecondaryButton>
+                            
+                            <button type="button" @click="()=>{
+                                notify('creoq eu esta bien')
+                            }">
+                                test
+                            </button>
+                            
                             <button
                                 type="submit"
                                 :disabled="isFetching"
@@ -872,7 +879,7 @@
             </div>
         </Modal>
 
-        <Modal :show="editAdditionalModal">
+        <Modal :show="editAdditionalModal" @close="closeEditModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Editar Costo Adicional
