@@ -411,7 +411,7 @@
                             {{ item.type_doc }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums"
                         >
                             {{ item.ruc }}
                         </td>
@@ -421,7 +421,7 @@
                             {{ item?.provider?.company_name }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums"
                         >
                             {{ item.doc_number }}
                         </td>
@@ -431,12 +431,12 @@
                             {{ formattedDate(item.doc_date) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             S/. {{ item.amount.toFixed(2) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             S/. {{ item.real_amount.toFixed(2) }}
                         </td>

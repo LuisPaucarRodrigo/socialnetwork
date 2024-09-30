@@ -50,7 +50,7 @@
         
         <div class="overflow-x-auto h-[85vh]">
             <table class="w-full whitespace-no-wrap">
-                <thead class="sticky top-0 z-20">>
+                <thead class="sticky top-0 z-20">
                     <tr
                         class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
                     >
