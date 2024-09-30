@@ -315,7 +315,7 @@ class ChecklistsController extends Controller
                 ], 404);
             }
             $userId = Auth::user()->id;
-            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount')->get();
+            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount', 'description', 'is_accepted')->get();
             return response()->json($expense, 200);
         } catch (\Exception $e) {
             return response()->json([

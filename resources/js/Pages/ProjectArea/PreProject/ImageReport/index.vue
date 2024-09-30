@@ -16,7 +16,8 @@
                     <PrimaryButton @click="approveTitle(preprojectImage.id)">
                         {{ preprojectImage.state ? 'Desabilitar' : 'Habilitar' }}
                     </PrimaryButton>
-                    <a :href="route('preprojects.report.download', { preproject_title_id: preprojectImage.id })"
+                    <a :href="`${route('preprojects.report.download', { preproject_title_id: preprojectImage.id })}?t=${Date.now()}`"
+                        target="_blank"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Exportar
                     </a>
