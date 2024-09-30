@@ -24,7 +24,6 @@
                     Gastos Fijos
                 </Link>
             </div>
-
             <div class="sm:hidden">
                 <dropdown align='left'>
                     <template #trigger>
@@ -76,13 +75,6 @@
                     </template>
                 </dropdown>
             </div>
-
-
-
-
-
-
-
 
             <div class="overflow-x-auto">
                 <table class="min-w-full whitespace-no-wrap">

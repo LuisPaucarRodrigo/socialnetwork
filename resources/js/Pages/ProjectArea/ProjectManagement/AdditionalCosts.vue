@@ -11,6 +11,7 @@
             {{ props.project_id.name }}
         </template>
         <br />
+        <Toaster richColors/>
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
@@ -608,7 +609,7 @@
                 </tbody>
             </table>
         </div>
-        <Toaster richColors/>
+        
         <div
             v-if="!filterMode"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"

@@ -11,6 +11,7 @@
             <span class="text-red-600"> Rechazados </span>
             del Proyecto {{ props.project_id.name }}
         </template>
+        <Toaster richColors/>
         <br />
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-end">
@@ -46,11 +47,12 @@
                 </form>
             </div>
         </div>
+        
         <div class="overflow-x-auto h-[85vh]">
             <table class="w-full whitespace-no-wrap">
-                <thead>
+                <thead class="sticky top-0 z-20">>
                     <tr
-                        class="sticky top-0 z-20 border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
+                        class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
                     >
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -245,17 +247,7 @@
                                         />
                                     </svg>
                                 </button>
-                                <div
-                                    id="tooltip-up-ac"
-                                    role="tooltip"
-                                    class="absolute z-50 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                                >
-                                    Pasar a aceptado
-                                    <div
-                                        class="tooltip-arrow"
-                                        data-popper-arrow
-                                    ></div>
-                                </div>
+                                
 
                                 <div class="flex gap-3 mr-3">
                                     <button
@@ -344,6 +336,8 @@
                 </tbody>
             </table>
         </div>
+
+
         <Modal :show="create_additional">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
