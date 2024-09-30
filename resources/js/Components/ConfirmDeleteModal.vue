@@ -51,7 +51,8 @@ export default {
     },
     processing: {
       type: Boolean,
-      required: false
+      required: false,
+      default: false
     }
   },
   emits: ['closeModal'],
