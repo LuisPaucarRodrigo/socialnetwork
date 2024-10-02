@@ -9,7 +9,7 @@
       <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
     <!-- Botones principales visibles en pantallas grandes -->
     <div class="flex flex-col sm:flex-row gap-4 items-center">
-        <button @click.prevent="openCreateAdditionalModal" type="button" v-if="props.huawei_project.status"
+        <button @click.prevent="openCreateAdditionalModal" type="button" v-if="props.huawei_project.status && props.earnings.data.length > 0"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
             + Agregar
         </button>
@@ -82,9 +82,6 @@
                 Cantidad</th>
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
-                Estado</th>
-                <th
-                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 Precio Unitario</th>
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
@@ -99,7 +96,6 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.code }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.description }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '-' }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + (item.unit_price * item.quantity).toFixed(2) : '-' }}</td>
               <!-- <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -112,7 +108,7 @@
                     </button>
                 </div>
             </td> -->
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <select id="selectState"
                     @change="change_state(item.id, $event.target.value)">
                     <option selected disabled>{{ item.state }}</option>
@@ -251,6 +247,8 @@
       <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Ingreso" />
       <SuccessOperationModal :confirming="confirmImport" :title="'Éxito'"
       :message="'Se importaron los datos correctamente.'" />
+      <SuccessOperationModal :confirming="confirmUpdateState" :title="'Éxito'"
+      :message="'Se actualizó correctamente el estado de la línea.'" />
     </AuthenticatedLayout>
   </template>
 
@@ -311,6 +309,7 @@ const editingAdditional = ref(null);
 const importModal = ref(false);
 const confirmImport = ref(false);
 const dropdownOpen = ref(false);
+const confirmUpdateState = ref(false);
 
 const openImportModal = () => {
     importModal.value = true;
@@ -438,7 +437,11 @@ const availableOptions = (state) => {
 const change_state = (id, state) => {
     router.put(route('huawei.projects.earnings.updatestate', {huawei_project: props.huawei_project.id, earning: id}), {state: state},
         {onSuccess: () => {
-            router.visit(route('huawei.projects.earnings', {huawei_project: props.huawei_project.id}));
+            confirmUpdateState.value = true;
+            setTimeout(()=> {
+                confirmUpdateState.value = false;
+                router.visit(route('huawei.projects.earnings', {huawei_project: props.huawei_project.id}));
+            }, 2000);
         },
         onError: (e) => {
             console.error(e);

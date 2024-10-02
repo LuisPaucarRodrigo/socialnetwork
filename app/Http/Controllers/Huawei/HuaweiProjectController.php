@@ -1368,8 +1368,8 @@ class HuaweiProjectController extends Controller
         $sheet = $spreadsheet->getSheet(0);
 
         // Definir el rango de lectura: A1 hasta la última fila en la columna C
-        $startCell = 'A0';
-        $endCell = 'C' . $sheet->getHighestRow();
+        $startCell = 'A1';
+        $endCell = 'D' . $sheet->getHighestRow();
         $range = "$startCell:$endCell";
 
         // Leer el rango especificado
@@ -1385,10 +1385,12 @@ class HuaweiProjectController extends Controller
                 'code' => $row['A'],
                 'description' => $row['B'],
                 'quantity' => $row['C'],
+                'state' => $row['D'] ? $row['D'] : 'Pendiente'
             ];
 
             $rowsAsObjects[] = $rowObject;
         }
+
 
         foreach ($rowsAsObjects as $item) {
             $priceGuide = HuaweiPriceGuide::where('code', $item->code)->first();
@@ -1401,13 +1403,15 @@ class HuaweiProjectController extends Controller
                     'description' => $item->description,
                     'quantity' => $item->quantity,
                     'unit_price' => $unitPrice,
-                    'huawei_project_id' => $huawei_project
+                    'huawei_project_id' => $huawei_project,
+                    'state' => $item->state
                 ]);
             }else{
                 HuaweiProjectEarning::create([
                     'code' => $item->code,
                     'description' => $item->description,
                     'quantity' => $item->quantity,
+                    'state' => $item->state,
                     'huawei_project_id' => $huawei_project
                 ]);
             }

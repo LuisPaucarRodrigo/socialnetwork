@@ -820,7 +820,6 @@
 
         await axios.get(route('huawei.inventory.create.getinventory', {value: value}))
             .then(res => {
-                console.log(res.data)
                 materials.value = res.data.materials;
                 equipments.value = res.data.equipments;
                 ready.value = true;
