@@ -61,7 +61,7 @@
                     <img src="image/cicsa_logo.jpg" alt="" class="img-fluid">
                 </td>
                 <td class="column centered-text" style="width:50%;font-weight:bold; font-size:18px">
-                    <p>ESTADO INFRAESTRUCTURA SITE CHALA</p>
+                    <p>{{ strtoupper($preproject->description )}}</p>
                 </td>
                 <td class="column centered-text" style="width:25%">
                     <img src="image/claro_logo.png" width="70px" alt="" class="img-fluid">
@@ -127,7 +127,7 @@
         @endforeach
 
         <article>
-            
+
         </article>
 
 

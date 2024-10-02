@@ -57,7 +57,13 @@ class AdditionalCostsApiRequest extends FormRequest
                     }
                 }
             }],
-            'doc_date' => 'sometimes|required|string',
+            'doc_date' => ['sometimes', 'required', 'string', function($attribute, $value, $fail) {
+                $doc_date = Carbon::createFromFormat('d/m/Y', $value);
+                $now = Carbon::now();
+                if ($doc_date->lt($now->subDays(3))) {
+                    $fail('Solo dos días de atraso');
+                }
+            }],
             'amount' => 'required|numeric',
             'zone' => 'required',
             'provider_id' => 'nullable',

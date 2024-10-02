@@ -811,12 +811,11 @@ class PreProjectController extends Controller
             ],
         ];
 
-        $pdf = Pdf::loadView('pdf.ReportPreProjectPint', compact('preprojectImages', 'preproject', 'customer', 'identificationRows'));
+        $template = $preproject->customer_id == 1 
+            ? 'pdf.ReportPreProjectPint'
+            : 'pdf.ReportPreProject';
 
-        
-
-
-
+        $pdf = Pdf::loadView($template, compact('preprojectImages', 'preproject', 'customer', 'identificationRows'));
         return $pdf->stream();
     }
 
