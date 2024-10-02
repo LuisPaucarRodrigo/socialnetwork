@@ -615,7 +615,8 @@ const toggleDetails = (material) => {
 function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility) {
     form.defaults({ ...initialState })
     form.cicsa_assignation_id = cicsa_assignation_id
-    form.cicsa_material_items = cicsa_material_feasibility ?? []
+    // form.cicsa_material_items = cicsa_material_feasibility ?? []
+    form.cicsa_material_items = []
     showAddEditModal.value = true
 }
 

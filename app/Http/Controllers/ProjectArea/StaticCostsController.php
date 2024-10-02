@@ -17,6 +17,11 @@ class StaticCostsController extends Controller
     public function index(Request $request, Project $project_id)
     {
         $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
+		$additional_costs->getCollection()->transform(function($item){
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
         $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/StaticCosts', [
@@ -33,7 +38,7 @@ class StaticCostsController extends Controller
         if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 7) {
+        if (count($request->selectedExpenseTypes) < 9) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedDocTypes) < 5) {
@@ -49,8 +54,14 @@ class StaticCostsController extends Controller
             });
         }
         $result = $result->orderBy('doc_date')->get();
+		$result->transform(function($item){
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
         return response()->json($result, 200);
     }
+
 
     public function store(StaticCostsRequest $request, Project $project_id)
     {
@@ -58,8 +69,11 @@ class StaticCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
-        StaticCost::create($data);
-        return redirect()->back();
+        $item = StaticCost::create($data);
+        $item->load('project', 'provider:id,company_name');
+        $item->project->setAppends([]);
+        $item->setAppends(['real_amount']);
+        return response()->json($item, 200);
     }
 
     public function download_ac_photo(StaticCost $additional_cost_id)
@@ -110,16 +124,18 @@ class StaticCostsController extends Controller
                 $this->file_delete($filename, 'documents/staticcosts/');
             }
         }
-
         $additional_cost->update($data);
-        return redirect()->back();
+        $additional_cost->load('project', 'provider:id,company_name');
+        $additional_cost->project->setAppends([]);
+        $additional_cost->setAppends(['real_amount']);
+        return response()->json($additional_cost, 200);
     }
 
     public function destroy(Project $project_id, StaticCost $additional_cost)
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/staticcosts/');
         $additional_cost->delete();
-        return redirect()->back();
+        return response()->json(['msg'=>'success'],200);
     }
 
 

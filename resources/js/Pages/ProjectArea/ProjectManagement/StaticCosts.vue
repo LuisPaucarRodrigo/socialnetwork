@@ -10,6 +10,7 @@
             Gastos Fijos del Proyecto {{ props.project_id.name }}
         </template>
         <br />
+        <Toaster richColors/>
         <div class="inline-block min-w-full mb-4 overflow-hidden">
             <div class="flex gap-4 justify-between">
                 <div class="flex space-x-3">
@@ -383,12 +384,7 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option>Arequipa</option>
-                                        <option>Chala</option>
-                                        <option>Moquegua</option>
-                                        <option>Tacna</option>
-                                        <option>MDD1-PM</option>
-                                        <option>MDD2-MAZ</option>
+                                         <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -408,13 +404,7 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option>Habitaciones</option>
-                                        <option>Camionetas</option>
-                                        <option>Combustible</option>
-                                        <option>Combustible GEP</option>
-                                        <option>Terceros</option>
-                                        <option>Viáticos</option>
-                                        <option>Otros</option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -436,11 +426,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option>Efectivo</option>
-                                        <option>Deposito</option>
-                                        <option>Factura</option>
-                                        <option>Boleta</option>
-                                        <option>Voucher de Pago</option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -487,7 +473,6 @@
                                         type="text"
                                         v-model="form.doc_number"
                                         id="doc_number"
-                                        pattern="^([a-zA-Z0-9]+([-|\/][a-zA-Z0-9]+)*)|([0-9]+)$"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                     <InputError
@@ -620,7 +605,8 @@
                             </SecondaryButton>
                             <button
                                 type="submit"
-                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Guardar
@@ -656,12 +642,7 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option>Arequipa</option>
-                                        <option>Chala</option>
-                                        <option>Moquegua</option>
-                                        <option>Tacna</option>
-                                        <option>MDD1-PM</option>
-                                        <option>MDD2-MAZ</option>
+                                        <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -681,13 +662,7 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option>Habitaciones</option>
-                                        <option>Camionetas</option>
-                                        <option>Combustible</option>
-                                        <option>Combustible GEP</option>
-                                        <option>Terceros</option>
-                                        <option>Viáticos</option>
-                                        <option>Otros</option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -710,11 +685,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option>Efectivo</option>
-                                        <option>Deposito</option>
-                                        <option>Factura</option>
-                                        <option>Boleta</option>
-                                        <option>Voucher de Pago</option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -946,7 +917,8 @@
                             </SecondaryButton>
                             <button
                                 type="submit"
-                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Actualizar
@@ -959,25 +931,15 @@
 
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
-            itemType="Costo Adicional"
+            itemType="Gasto Fijo"
             :deleteFunction="deleteAdditional"
             @closeModal="closeModalDoc"
-        />
-        <ConfirmCreateModal
-            :confirmingcreation="showModal"
-            itemType="Costo Adicional"
-        />
-        <ConfirmUpdateModal
-            :confirmingupdate="showModalEdit"
-            itemType="Costo Adicional"
         />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
-import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
@@ -994,6 +956,9 @@ import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
+import { setAxiosErrors, toFormData } from "@/utils/utils";
+import { notify, notifyWarning } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1029,8 +994,6 @@ const form = useForm({
 });
 
 const create_additional = ref(false);
-const showModal = ref(false);
-const showModalEdit = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const editAdditionalModal = ref(false);
@@ -1041,7 +1004,6 @@ const openCreateAdditionalModal = () => {
 };
 
 const openEditAdditionalModal = (additional) => {
-    // Copia de los datos de la subsección existente al formulario
     editingAdditional.value = JSON.parse(JSON.stringify(additional));
     form.id = editingAdditional.value.id;
     form.expense_type = editingAdditional.value.expense_type;
@@ -1061,60 +1023,58 @@ const openEditAdditionalModal = (additional) => {
 
 const closeModal = () => {
     form.reset();
+    form.clearErrors()
     create_additional.value = false;
 };
 
 const closeEditModal = () => {
     form.reset();
+    form.clearErrors()
     editAdditionalModal.value = false;
 };
 
-const submit = () => {
-    form.post(
-        route("projectmanagement.storeStaticCost", {
+const isFetching = ref(false)
+
+const submit = async () => {
+    try{
+        isFetching.value = true
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.storeStaticCost", {
             project_id: props.project_id.id,
-        }),
-        {
-            onSuccess: () => {
-                closeModal();
-                showModal.value = true;
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(
-                        route("projectmanagement.staticCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
+        }), formToSend)
+        dataToRender.value.unshift(res.data)
+        closeModal();
+        notify('Gasto Fijo Guardado')
+    }catch (e) {
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
         }
-    );
+        console.log(e)
+    }
 };
 
-const submitEdit = () => {
-    form.post(
-        route("projectmanagement.updateStaticCost", {
+
+const submitEdit = async () => {
+    try{
+        isFetching.value = true
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.updateStaticCost",{
             additional_cost: form.id,
-        }),
-        {
-            onSuccess: () => {
-                closeEditModal();
-                showModalEdit.value = true;
-                setTimeout(() => {
-                    showModalEdit.value = false;
-                    router.visit(
-                        route("projectmanagement.staticCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                console.log(e);
-            },
+        }), formToSend)
+        let index = dataToRender.value.findIndex(item=>item.id == form.id)
+        dataToRender.value[index] = res.data
+        closeEditModal();
+        notify('Gasto Fijo Actualizado')
+    }catch (e) {
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
         }
-    );
+        console.log(e)
+    }
 };
+
 
 const confirmDeleteAdditional = (additionalId) => {
     docToDelete.value = additionalId;
@@ -1125,25 +1085,20 @@ const closeModalDoc = () => {
     confirmingDocDeletion.value = false;
 };
 
-const deleteAdditional = () => {
+const deleteAdditional = async() => {
     const docId = docToDelete.value;
     if (docId) {
-        router.delete(
+        const res = await axios.delete(
             route("projectmanagement.deleteStaticCost", {
                 project_id: props.project_id.id,
                 additional_cost: docId,
-            }),
-            {
-                onSuccess: () => {
-                    closeModalDoc();
-                    router.visit(
-                        route("projectmanagement.staticCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                },
-            }
-        );
+            }))
+        if (res?.data?.msg==='success'){
+            closeModalDoc()
+            notify('Gasto Fijo Eliminado')
+            let index = dataToRender.value.findIndex(item=>item.id == docId)
+            dataToRender.value.splice(index, 1);
+        }
     }
 };
 
@@ -1164,33 +1119,21 @@ function handlerPreview(id) {
     );
 }
 
-const filterForm = ref({
-    search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1-PM", "MDD2-MAZ"],
-    selectedExpenseTypes: [
-        "Camionetas",
-        "Combustible",
-        "Combustible GEP",
-        "Habitaciones",
-        "Terceros",
-        "Viáticos",
-        "Otros",
-    ],
-    selectedDocTypes: [
-        "Efectivo",
-        "Deposito",
-        "Factura",
-        "Boleta",
-        "Voucher de Pago",
-    ],
-});
-
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1-PM", "MDD2-MAZ"];
+const zones = [
+    "Arequipa", 
+    "Chala", 
+    "Moquegua", 
+    "Tacna", 
+    "MDD1-PM", 
+    "MDD2-MAZ"
+];
 const expenseTypes = [
-    "Camionetas",
+    "Alquiler de Vehículos",
+    "Alquiler de Locales",
     "Combustible",
     "Combustible GEP",
-    "Habitaciones",
+    "Celulares",
+    "Proveídos",
     "Terceros",
     "Viáticos",
     "Otros",
@@ -1202,6 +1145,14 @@ const docTypes = [
     "Boleta",
     "Voucher de Pago",
 ];
+
+const filterForm = ref({
+    search: "",
+    selectedZones: zones,
+    selectedExpenseTypes: expenseTypes,
+    selectedDocTypes: docTypes,
+});
+
 
 watch(
     () => [
@@ -1216,14 +1167,13 @@ watch(
     { deep: true }
 );
 
-async function search_advance($data) {
+async function search_advance(data) {
     let res = await axios.post(
         route("staticcost.advance.search", {
             project_id: props.project_id.id,
-        }),
-        $data
-    );
+        }),data);
     dataToRender.value = res.data;
+    notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
 }
 
 async function handleSearch() {

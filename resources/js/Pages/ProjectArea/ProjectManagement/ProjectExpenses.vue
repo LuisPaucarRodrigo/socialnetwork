@@ -22,16 +22,17 @@
                     Monto</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="tabular-nums">
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Presupuesto actual</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        current_budget.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{current_budget.toFixed(2) }}
+                  </td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Presupuesto restante</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.remaining_budget.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{ project.remaining_budget.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en servicios</td>
@@ -40,28 +41,35 @@
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en productos</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.total_products_cost.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{project.total_products_cost.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2) }}</td>
-                </tr>
-                <tr class="text-gray-700">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en planilla (essalud)</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
+                    <div class="flex gap-3 justify-between">
+                      <p>
+                        MOD Operativo
+                      </p>
+                      <button @click="openDetailsModal({
+                        title: 'MOD Operativo',
+                        detArray: operativeMod
+                      })" type="button" class="text-green-500 hover:text-green-300">
+                        <InformationCircleIcon class="w-5 h-5 " />
+                      </button>
+                    </div>
+                  </td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/.{{ project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2) }}
+                  </td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Fijos</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        staticCosts.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{ staticCosts.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Variables</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        additionalCosts.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                    S/. {{ additionalCosts.toFixed(2) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -89,8 +97,21 @@
               </thead>
               <tbody>
                 <tr v-for="(item, i) in scExpensesAmounts" class="text-gray-700">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.expense_type }}</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
+                    <div class="flex gap-3 justify-between">
+                      <p>
+                        {{ item.expense_type }}
+                      </p>
+                      <button @click="prevOpenModal({ 
+                          spMod: 'static', 
+                          expType: item.expense_type,
+                          project_id: project.id
+                        })" type="button" class="text-green-500 hover:text-green-300">
+                        <InformationCircleIcon class="w-5 h-5 " />
+                      </button>
+                    </div>
+                  </td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">S/. {{
         item.total_amount.toFixed(2) }}</td>
                 </tr>
               </tbody>
@@ -119,9 +140,26 @@
               </thead>
               <tbody>
                 <tr v-for="(item, i) in acExpensesAmounts" class="text-gray-700">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.expense_type }}</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        item.total_amount.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
+                    <div class="flex gap-3 justify-between">
+                      <p>
+                        {{ item.expense_type }}
+                      </p>
+                      <button 
+                        @click="prevOpenModal({ 
+                          spMod: 'additional', 
+                          expType: item.expense_type,
+                          project_id: project.id
+                        })" 
+                        type="button" 
+                        class="text-green-500 hover:text-green-300">
+                        <InformationCircleIcon class="w-5 h-5 " />
+                      </button>
+                    </div>
+                  </td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
+                    S/. {{ item.total_amount.toFixed(2) }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -133,8 +171,32 @@
           </div>
         </div>
       </div>
-
     </div>
+
+    <Modal :show="showDetailsModal" @close="closeDetailsModal">
+        <div class="p-6">
+          <table class="w-full whitespace-nowrap rounded-md shadow-sm">
+              <thead>
+                <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <th
+                    class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    {{ detailsStructure.title  }}
+                  </th>
+                  <th class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    Monto
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, i) in detailsStructure.detArray" class="text-gray-700" :key="i">
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.spentName }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
+                    S/. {{ item.amount.toFixed(2) }}</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </Modal>
 
 
   </AuthenticatedLayout>
@@ -145,8 +207,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, onMounted } from 'vue';
 import { Chart, registerables } from 'chart.js/auto';
 import { Head } from '@inertiajs/vue3';
+import { InformationCircleIcon } from "@heroicons/vue/24/outline";
+import Modal from '@/Components/Modal.vue';
 
-const { project, current_budget, additionalCosts, staticCosts, acExpensesAmounts, scExpensesAmounts } = defineProps({
+const { 
+  project, 
+  current_budget, 
+  additionalCosts, 
+  staticCosts, 
+  acExpensesAmounts, 
+  scExpensesAmounts 
+} = defineProps({
   project: Object,
   current_budget: Number,
   additionalCosts: Number,
@@ -156,20 +227,41 @@ const { project, current_budget, additionalCosts, staticCosts, acExpensesAmounts
 });
 
 
+let operativeMod = [
+  { spentName : 'Planilla', amount: project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0),  },
+  { spentName : 'Essalud', amount: project.total_employee_costs.reduce((a, item) => item.essalud + a, 0) },
+  // { spentName : 'Viáticos', amount: 0 },
+]
+
 const chartInstance = ref(null);
 const updateChart = () => {
   const ctx = document.getElementById('pieChart').getContext('2d');
   if (chartInstance.value) {
     chartInstance.value.destroy();
   }
-  const totalBudget = current_budget;
-  const dataWithRemainingBudget = [project.remaining_budget < 0 ? 0 : project.remaining_budget, staticCosts, additionalCosts, project.total_products_cost, project.total_services_cost,
-  project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2), project.total_employee_costs.reduce((a, item) => item.essalud + a, 0).toFixed(2)
+  const dataWithRemainingBudget = [
+    project.remaining_budget < 0 
+      ? 0 
+      : project.remaining_budget, 
+        staticCosts, 
+        additionalCosts, 
+        project.total_products_cost, 
+        project.total_services_cost,
+        operativeMod.reduce((a, b)=>(a + b.amount), 0).toFixed(2)
   ];
+
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Presupuesto Restante', 'Costos Fijos' , 'Costos Variables', 'Costos de Productos', 'Costos de Servicios', 'Planilla', 'Planilla Essalud'],
+      labels: [
+        'Presupuesto Restante', 
+        'Costos Fijos' , 
+        'Costos Variables', 
+        'Costos de Productos', 
+        'Costos de Servicios', 
+        'Planilla', 
+        'Planilla Essalud'
+      ],
       datasets: [{
         data: dataWithRemainingBudget,
         backgroundColor: Array(7).fill().map(() => getRandomColor()),
@@ -201,7 +293,6 @@ const updateChart2 = () => {
   if (chartInstance2.value) {
     chartInstance2.value.destroy();
   }
-  const totalBudget = current_budget;
   const dataWithRemainingBudget = scExpensesAmounts.map(item=>item.total_amount);
   chartInstance2.value = new Chart(ctx, {
     type: 'pie',
@@ -237,7 +328,6 @@ const updateChart3 = () => {
   if (chartInstance3.value) {
     chartInstance3.value.destroy();
   }
-  const totalBudget = current_budget;
   const dataWithRemainingBudget = acExpensesAmounts.map(item=>item.total_amount);
   chartInstance3.value = new Chart(ctx, {
     type: 'pie',
@@ -289,6 +379,36 @@ const getRandomColor = () => {
   }
   return color;
 };
+
+
+//Details modal 
+
+const showDetailsModal = ref(false)
+const detailsStructure = ref({})
+const openDetailsModal = (details) => {
+  showDetailsModal.value = true
+  detailsStructure.value = details
+}
+const closeDetailsModal = () => {
+  showDetailsModal.value = false
+  detailsStructure.value = {}
+}
+
+
+const prevOpenModal = async (form) => {
+  const det = await fetchExpenseTypeData(form)
+  openDetailsModal({title: form.expType, detArray: det })
+}
+
+
+async function fetchExpenseTypeData (form) {
+  try{
+    const res = await axios.post(route('project.expenses.zones.details'), form)
+    return res.data
+  } catch(e){
+    console.log(e)
+  }
+}
 
 
 

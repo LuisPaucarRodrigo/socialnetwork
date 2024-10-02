@@ -16,7 +16,8 @@
                     <PrimaryButton @click="approveTitle(preprojectImage.id)">
                         {{ preprojectImage.state ? 'Desabilitar' : 'Habilitar' }}
                     </PrimaryButton>
-                    <a :href="route('preprojects.report.download', { preproject_title_id: preprojectImage.id })"
+                    <a :href="`${route('preprojects.report.download', { preproject_title_id: preprojectImage.id })}?t=${Date.now()}`"
+                        target="_blank"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Exportar
                     </a>
@@ -46,7 +47,7 @@
                             class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
                             <h2 :data-tooltip-target="`info-tooltip-${image.id}`"  class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
                                 {{ image.description }}
-                            </h2>
+                            </h2>   
                             <div
                                 :id="`info-tooltip-${image.id}`"
                                 role="tooltip"

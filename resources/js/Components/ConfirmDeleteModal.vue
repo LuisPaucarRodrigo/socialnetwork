@@ -10,7 +10,9 @@
       </p>
       <div class="mt-6 flex justify-end">
         <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-        <DangerButton class="ml-3" @click="deleteItem">{{ deleteText }}</DangerButton>
+        <DangerButton class="ml-3"
+            :class="{ 'opacity-25': processing }"
+                    :disabled="processing" @click="deleteItem">{{ deleteText }}</DangerButton>
       </div>
     </div>
   </Modal>
@@ -46,6 +48,11 @@ export default {
     deleteFunction: {
       type: Function,
       required: true
+    },
+    processing: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   emits: ['closeModal'],

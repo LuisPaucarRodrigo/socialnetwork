@@ -20,7 +20,7 @@ class AdditionalCostsExport implements FromView
     public function view():View
     {
         return view('Export/CostsExport', [
-            'costs' => AdditionalCost::with('project', 'provider')->where('project_id', $this->project_id)->get()
+            'costs' => AdditionalCost::with('project', 'provider')->where('project_id', $this->project_id)->where('is_accepted', 1)->get()
         ]);
     }
 }

@@ -98,20 +98,21 @@ class Project extends Model
 
     public function getRemainingBudgetAttribute()
     {
-        if ($this->initial_budget === 0.00) {
-            return 0;
-        }
+        if ($this->initial_budget === 0.00) { return 0.00;}
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
-        $additionalCosts = $this->additionalCosts->sum('real_amount');
-        $staticCosts = $this->staticCosts()->where('expense_type', '!=', 'Combustible GEP')->get()
-        ->sum('real_amount');
-
+        $additionalCosts = $this->additionalCosts()
+            ->where('is_accepted', 1)
+            ->get()
+            ->sum('real_amount');
+        $staticCosts = $this->staticCosts()
+            ->where('expense_type', '!=', 'Combustible GEP')
+            ->get()
+            ->sum('real_amount');
         $currentBudget = $currentBudget
             - $this->getTotalProductsCostAttribute()
             - $additionalCosts
             - $staticCosts;
-
         foreach ($this->getTotalEmployeeCostsAttribute() as $value){
             $currentBudget -= $value['total_payroll']; 
             $currentBudget -= $value['essalud']; 

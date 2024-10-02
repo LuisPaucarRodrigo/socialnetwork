@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentSpreedSheetController;
 use App\Http\Controllers\HumanResource\ControlEmployees;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
@@ -101,6 +102,11 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::get('/sections', [SectionController::class, 'showSections'])->name('sections.sections');
     Route::post('/sections', [SectionController::class, 'storeSection'])->name('sections.storeSection');
     Route::delete('/sections/{section}', [SectionController::class, 'destroySection'])->name('sections.destroySection');
+
+
+    Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])->name('document.rrhh.status.store');
+    Route::delete('/document_rrhh_status/destroy/{dr_id}', [DocumentSpreedSheetController::class, 'destroy'])->name('document.rrhh.status.destroy');
+    Route::post('/document_rrhh_status/insurance_exp_date', [DocumentSpreedSheetController::class, 'insurance_exp_date'])->name('document.rrhh.status.in_expdate');
 });
 
 Route::middleware('permission:HumanResourceManager|HumanResource')->group(function () {
@@ -149,4 +155,10 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
 
     //Member Alarm
     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.alarm');
+
+
+
+    //Document Spreed Sheet
+    Route::get('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');
+    Route::get('/document_rrhh_status_alarm', [DocumentSpreedSheetController::class, 'employeesDocumentAlarms'])->name('document.rrhh.status.alarms');
 });

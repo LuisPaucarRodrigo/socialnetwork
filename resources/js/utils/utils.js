@@ -25,5 +25,27 @@ export function formattedDate(fecha) {
 
 
 export function realNumeration(perPage, currentPage, index) {
-  return perPage*(currentPage - 1) + (index+1)
+  return perPage * (currentPage - 1) + (index + 1)
+}
+
+
+export function setAxiosErrors(errors, form) {
+  let formErrors = Object.fromEntries(
+    Object.entries(errors)
+      .map(([key, val]) => [key, val.join('\n')])
+  );
+  form.setError(formErrors)
+}
+
+export function toFormData(form) {
+  const formData = new FormData();
+  for (const [key, value] of Object.entries(form)) {
+    formData.append(
+      key, 
+      (value === null || value === undefined) 
+        ? '' 
+        : value
+    );
+  }
+  return formData;
 }

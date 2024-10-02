@@ -416,7 +416,7 @@ const props = defineProps({
     number_people: String,
     userPermissions: Array
 })
-console.log(props.spreadsheets);
+
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }

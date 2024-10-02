@@ -259,15 +259,17 @@ class ChecklistsController extends Controller
     {
         $data = $request->validated();
         try {
-            $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
-            $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+            $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
+            $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
+            $endOfMonth = $doc_date->endOfMonth()->format('Y-m-d');
 
             $preprojectId = Preproject::where('date', '>=', $startOfMonth)
                 ->where('date', '<=', $endOfMonth)
                 ->where('customer_id', 1)
                 ->select('id')
                 ->first();
-            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            $projectId = Project::where('preproject_id', $preprojectId->id)
+                ->select('id')->first();
             if (!$projectId) {
                 return response()->json([
                     'error' => "No se encontraron preproyectos pint para este mes."

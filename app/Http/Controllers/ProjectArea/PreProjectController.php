@@ -773,10 +773,49 @@ class PreProjectController extends Controller
 
     public function download_report($preproject_title_id)
     {
+        ini_set('memory_limit', '512M');
         $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->find($preproject_title_id);
         $preproject = Preproject::find($preprojectImages->preproject_id);
         $customer = Customers_contact::find($preproject->subcustomer_id);
-        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('preprojectImages', 'preproject', 'customer'));
+
+        $identificationRows = [
+            [
+                'first'=> 'Código de la estación:', 
+                'firstValue'=> 'AR4124',
+                'second'=> 'Zona:',
+                'secondValue'=> 'CHALA',
+            ],
+            [
+                'first'=> 'Nombre de la estación:', 
+                'firstValue'=> 'CHALA',
+                'second'=> 'Latitud:',
+                'secondValue'=> "15°51'1.40''S",
+            ],
+            [
+                'first'=> 'Tipo de acceso:', 
+                'firstValue'=> 'Directo',
+                'second'=> 'Longitud:',
+                'secondValue'=> "74°15'4.50''O",
+            ],
+            [
+                'first'=> 'Región Claro:', 
+                'firstValue'=> 'Sur',
+                'second'=> 'Fecha:',
+                'secondValue'=> "12/09/2024",
+            ],
+            [
+                'first'=> 'Empresa:', 
+                'firstValue'=> 'CICSA',
+                'second'=> 'Contrata:',
+                'secondValue'=> "CONPROCO",
+            ],
+        ];
+
+        $template = $preproject->customer_id == 1 
+            ? 'pdf.ReportPreProjectPint'
+            : 'pdf.ReportPreProject';
+
+        $pdf = Pdf::loadView($template, compact('preprojectImages', 'preproject', 'customer', 'identificationRows'));
         return $pdf->stream();
     }
 
