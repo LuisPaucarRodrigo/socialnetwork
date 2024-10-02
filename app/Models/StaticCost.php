@@ -25,6 +25,10 @@ class StaticCost extends Model
         'photo'
     ];
 
+    protected $casts = [
+        'amount' => 'double',
+    ];
+
     protected $appends = [
         'real_amount'
     ];

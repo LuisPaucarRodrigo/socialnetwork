@@ -5,7 +5,7 @@
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header> Instalación PINT y PEXT </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex justify-end space-x-3">
+            <div class="flex justify-between space-x-3">
                 <a :href="route('cicsa.installation.export')"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
@@ -220,16 +220,14 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="coordinator">Coordinador</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.coordinator" autocomplete="off" id="coordinator"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="text" v-model="form.coordinator" autocomplete="off" id="coordinator" />
                                 <InputError :message="form.errors.coordinator" />
                             </div>
                         </div>
                         <div class="sm:col-span-1">
                             <InputLabel for="pext_date">Fecha de PEXT</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.pext_date" autocomplete="off" id="pext_date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="date" v-model="form.pext_date" autocomplete="off" id="pext_date" />
                                 <InputError :message="form.errors.pext_date" />
                             </div>
                         </div>
@@ -237,8 +235,7 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="pint_date">Fecha de PINT</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.pint_date" autocomplete="off" id="pint_date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="date" v-model="form.pint_date" autocomplete="off" id="pint_date" />
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
                         </div>
@@ -246,9 +243,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.projected_amount" autocomplete="off"
-                                    id="projected_amount"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="number" v-model="form.projected_amount" autocomplete="off"
+                                    id="projected_amount" />
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
                         </div>
@@ -280,9 +276,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="shipping_report_date">Fecha de envío de Informe</InputLabel>
                             <div class="mt-2">
-                                <input type="date" v-model="form.shipping_report_date" autocomplete="off"
-                                    id="shipping_report_date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <TextInput type="date" v-model="form.shipping_report_date" autocomplete="off"
+                                    id="shipping_report_date" />
                                 <InputError :message="form.errors.shipping_report_date" />
                             </div>
                         </div>

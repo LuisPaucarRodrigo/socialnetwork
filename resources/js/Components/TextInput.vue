@@ -4,7 +4,8 @@
       :value="formattedModelValue"
       @input="handleInput"
       ref="input"
-    />
+      step="any"
+      />
   </template>
   
   <script setup>

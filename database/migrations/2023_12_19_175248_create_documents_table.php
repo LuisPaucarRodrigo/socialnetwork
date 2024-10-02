@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->foreignId('subdivision_id')->constrained('subdivisions')->onDelete('cascade');
+            $table->foreignId('e_employee_id')->nullable()->constrained('external_employees')->cascadeOnDelete();
+            $table->foreignId('employee_id')->nullable()->constrained('employees')->cascadeOnDelete();
+            $table->date('exp_date')->nullable();
             $table->timestamps();
         });
     }

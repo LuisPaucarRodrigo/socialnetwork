@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DocumentSpreedSheetController;
+use App\Http\Controllers\HumanResource\ControlEmployees;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
@@ -22,6 +24,18 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::delete('/management_employees/external/delete/{id}', [ManagementEmployees::class, 'external_delete'])->name('employees.external.delete');
 
     Route::get('/management_employees/external/preview/{external_preview_id}/curriculum_vitae', [ManagementEmployees::class, 'preview_curriculum_vitae'])->name('employees.external.preview.curriculum_vitae');
+
+    //Control of Employees
+    Route::any('/management_employees/control_employees/index', [ControlEmployees::class, 'control_employees_index'])->name('controlEmployees.index');
+    
+    Route::any('/management_employees/fixed_documentation/index', [ControlEmployees::class, 'fixed_documentation_index'])->name('controlEmployees.fixed.documentation.index');
+    Route::post('/management_employees/fixed_documentation/storeOrUpdate/{fixed_documentation_id?}', [ControlEmployees::class, 'fixed_documentation_storeOrUpdate'])->name('controlEmployees.fixed.documentation.store');
+
+    Route::any('/management_employees/entry_documentation/index', [ControlEmployees::class, 'entry_document_index'])->name('controlEmployees.entry.document.index');
+    Route::post('/management_employees/entry_documentation/storeOrUpdate/{fixed_documentation_id?}', [ControlEmployees::class, 'entry_document_storeOrUpdate'])->name('controlEmployees.entry.document.storeOrUpdate');
+
+    Route::any('/management_employees/issuance_documentation/index', [ControlEmployees::class, 'issuance_documentation_index'])->name('controlEmployees.issuance.documentation.index');
+    Route::post('/management_employees/issuance_documentation/storeOrUpdate/{fixed_documentation_id?}', [ControlEmployees::class, 'issuance_documentation_storeOrUpdate'])->name('controlEmployees.issuance.documentation.storeOrUpdate');
 
     //Schedule    
     Route::get('/management_employees/schedule/index', [ScheduleController::class, 'index'])->name('management.employees.schedule.index');
@@ -88,6 +102,11 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::get('/sections', [SectionController::class, 'showSections'])->name('sections.sections');
     Route::post('/sections', [SectionController::class, 'storeSection'])->name('sections.storeSection');
     Route::delete('/sections/{section}', [SectionController::class, 'destroySection'])->name('sections.destroySection');
+
+
+    Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])->name('document.rrhh.status.store');
+    Route::delete('/document_rrhh_status/destroy/{dr_id}', [DocumentSpreedSheetController::class, 'destroy'])->name('document.rrhh.status.destroy');
+    Route::post('/document_rrhh_status/insurance_exp_date', [DocumentSpreedSheetController::class, 'insurance_exp_date'])->name('document.rrhh.status.in_expdate');
 });
 
 Route::middleware('permission:HumanResourceManager|HumanResource')->group(function () {
@@ -136,4 +155,10 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
 
     //Member Alarm
     Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.alarm');
+
+
+
+    //Document Spreed Sheet
+    Route::get('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');
+    Route::get('/document_rrhh_status_alarm', [DocumentSpreedSheetController::class, 'employeesDocumentAlarms'])->name('document.rrhh.status.alarms');
 });

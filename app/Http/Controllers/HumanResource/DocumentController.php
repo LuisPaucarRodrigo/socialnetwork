@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\HumanResource;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HumanResource\DocumentCreateRequest;
+use App\Http\Requests\HumanResource\DocumentUpdateRequest;
 use App\Models\Document;
+use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
+use App\Models\Employee;
+use App\Models\ExternalEmployee;
 use App\Models\Subdivision;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use ZipArchive;
+use Carbon\Carbon;
 
 class DocumentController extends Controller
 {
@@ -32,7 +38,7 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function updateSection (DocumentSection $section, Request $request)
+    public function updateSection(DocumentSection $section, Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string'
@@ -70,7 +76,7 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function updateSubdivision ($section, Subdivision $subdivision, Request $request)
+    public function updateSubdivision($section, Subdivision $subdivision, Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string'
@@ -87,29 +93,32 @@ class DocumentController extends Controller
 
     //Documents
 
-    public function index() {
+    public function index()
+    {
         return Inertia::render('HumanResource/Documents/Document', [
             'documents' => Document::with('subdivision.section')->paginate(15),
             'sections' => DocumentSection::all(),
             'subdivisions' => Subdivision::all(),
+            'employees' => Employee::orderBy('name')->get(),
+            'e_employees' => ExternalEmployee::orderBy('name')->get(),
             'section' => '',
             'subdivision' => '',
             'search' => ''
         ]);
     }
 
-    public function search ($section, $subdivision, $request)
+    public function search($section, $subdivision, $request)
     {
         $searchTerm = strtolower($request);
         $query = Document::with('subdivision.section')->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
 
-        if ($section !== 'no'){
-            $query->whereHas('subdivision', function ($query) use ($section){
+        if ($section !== 'no') {
+            $query->whereHas('subdivision', function ($query) use ($section) {
                 $query->where('section_id', $section);
             });
         }
 
-        if ($subdivision !== 'no'){
+        if ($subdivision !== 'no') {
             $query->where('subdivision_id', $subdivision);
         }
 
@@ -119,6 +128,8 @@ class DocumentController extends Controller
             'documents' => $documents,
             'sections' => DocumentSection::all(),
             'subdivisions' => Subdivision::all(),
+            'employees' => Employee::orderBy('name')->get(),
+            'e_employees' => ExternalEmployee::orderBy('name')->get(),
             'section' => $section == 'no' ? '' : $section,
             'subdivision' => $subdivision == 'no' ? '' : $subdivision,
             'search' => $request
@@ -146,6 +157,8 @@ class DocumentController extends Controller
             'documents' => $documents->load('subdivision.section'),
             'sections' => DocumentSection::all(),
             'subdivisions' => Subdivision::all(),
+            'employees' => Employee::orderBy('name')->get(),
+            'e_employees' => ExternalEmployee::orderBy('name')->get(),
             'section' => $section,
             'subdivision' => '',
             'search' => $request
@@ -153,75 +166,135 @@ class DocumentController extends Controller
     }
 
     public function subdivisionFilter($section, $subdivision, $request = null)
-{
-    // Construir la consulta base con el filtro de sección
-    $query = Document::where('subdivision_id', $subdivision);
-
-    // Si hay un término de búsqueda, aplicarlo a la consulta
-    if ($request) {
-        $searchTerm = strtolower($request);
-        $query->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
-    }
-
-    // Ejecutar la consulta para obtener los documentos
-    $documents = $query->get();
-
-    // Retornar la vista con los datos necesarios
-    return Inertia::render('HumanResource/Documents/Document', [
-        'documents' => $documents->load('subdivision.section'),
-        'sections' => DocumentSection::all(),
-        'subdivisions' => Subdivision::all(),
-        'section' => $section,
-        'subdivision' => $subdivision,
-        'search' => $request
-    ]);
-}
-
-
-    public function create(Request $request)
     {
-        $request->validate([
-            'document' => 'required',
-            'subdivision_id' => 'required|numeric',
-        ]);
-        $documentName = null;
-        if ($request->hasFile('document')) {
-            $document = $request->file('document');
-            $documentName = time() . '_' . $document->getClientOriginalName();
-            $document->move(public_path('documents/documents/'), $documentName);
+        // Construir la consulta base con el filtro de sección
+        $query = Document::where('subdivision_id', $subdivision);
+
+        // Si hay un término de búsqueda, aplicarlo a la consulta
+        if ($request) {
+            $searchTerm = strtolower($request);
+            $query->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
         }
 
-        Document::create([
-            'title' => $documentName,
-            'subdivision_id' => $request->subdivision_id,
+        // Ejecutar la consulta para obtener los documentos
+        $documents = $query->get();
+
+        // Retornar la vista con los datos necesarios
+        return Inertia::render('HumanResource/Documents/Document', [
+            'documents' => $documents->load('subdivision.section'),
+            'sections' => DocumentSection::all(),
+            'subdivisions' => Subdivision::all(),
+            'employees' => Employee::orderBy('name')->get(),
+            'e_employees' => ExternalEmployee::orderBy('name')->get(),
+            'section' => $section,
+            'subdivision' => $subdivision,
+            'search' => $request
         ]);
+    }
+
+
+    public function create(DocumentCreateRequest $request)
+    {
+        $data = $request->validated();
+        // dd($data);
+        if ($request->hasFile('document')) {
+            $document = $request->file('document');
+            $data['title'] = time() . '_' . $document->getClientOriginalName();
+            $document->move(public_path('documents/documents/'), $data['title']);
+        }
+        $docItem = Document::create($data);
+        $docReg = $docItem->employee_id
+            ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+                ->where('employee_id', $docItem->employee_id)
+                ->first()
+            : ($docItem->e_employee_id
+                ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+                    ->where('e_employee_id', $docItem->e_employee_id)
+                    ->first()
+                : null
+            );
+
+        if ($docReg) {
+            $dataDocReg['document_id'] = $docItem->id;
+            if ($docReg->exp_date === null) {
+                $dataDocReg['exp_date'] = $docItem->exp_date;
+            }
+            if (isset($data['exp_date']) && $docReg->exp_date) {
+                $newExpDate = Carbon::parse($data['exp_date']);
+                $pastExpDate = Carbon::parse($docReg->exp_date);
+                if ($newExpDate >= $pastExpDate) {
+                    $dataDocReg['exp_date'] = $docItem->exp_date;
+                }
+            }
+            $docReg->update($dataDocReg);
+        } else {
+            DocumentRegister::create([
+                'subdivision_id' => $docItem->subdivision_id,
+                'document_id' => $docItem->id,
+                'employee_id' => $docItem->employee_id,
+                'e_employee_id' => $docItem->exp_de_employee_idate,
+                'exp_date' => $docItem->exp_date,
+                'state' => 'Completado',
+            ]);
+        }
+
         return redirect()->back();
     }
 
-    public function update(Request $request, Document $id)
+    public function update(DocumentUpdateRequest $request, $id)
     {
-        $request->validate([
-            'document' => 'required|mimes:pdf,doc,docx,ppt,pptx,xlsx,png,jpg,jpeg|max:2048',
-            'subdivision_id' => 'required|numeric',
-        ]);
-
-        $fileName = $id->title;
+        $data = $request->validated();
+        $docItem = Document::find($id);
+        $fileName = $docItem->title;
         $filePath = "documents/documents/$fileName";
         $path = public_path($filePath);
         if (file_exists($path)) {
             unlink($path);
         }
-            $documentName = null;
-            if ($request->hasFile('document')) {
-                $document = $request->file('document');
-                $documentName = time() . '_' . $document->getClientOriginalName();
-                $document->move(public_path('documents/documents/'), $documentName);
-            }
+        $documentName = null;
+        if ($request->hasFile('document')) {
+            $document = $request->file('document');
+            $data['title'] = time() . '_' . $document->getClientOriginalName();
+            $document->move(public_path('documents/documents/'), $data['title']);
+        }
 
-            $id->update([
-                'title' => $documentName,
-                'subdivision_id' => $request->subdivision_id,
+
+        $docItem->update($data);
+        $docReg = $docItem->employee_id
+            ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+                ->where('employee_id', $docItem->employee_id)
+                ->first()
+            : ($docItem->e_employee_id
+                ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+                    ->where('e_employee_id', $docItem->e_employee_id)
+                    ->first()
+                : null
+            );
+        if ($docReg) {
+            $dataDocReg['document_id'] = $docItem->id;
+            $dataDocReg['employee_id'] = $docItem->employee_id;
+            $dataDocReg['e_employee_id'] = $docItem->e_employee_id;
+            if ($docReg->exp_date === null) {
+                $dataDocReg['exp_date'] = $docItem->exp_date;
+            }
+            if (isset($data['exp_date']) && $docReg->exp_date) {
+                $newExpDate = Carbon::parse($data['exp_date']);
+                $pastExpDate = Carbon::parse($docReg->exp_date);
+                if ($newExpDate >= $pastExpDate) {
+                    $dataDocReg['exp_date'] = $docItem->exp_date;
+                }
+            }
+            $docReg->update($dataDocReg);
+        } else {
+            DocumentRegister::create([
+                'subdivision_id' => $docItem->subdivision_id,
+                'document_id' => $docItem->id,
+                'employee_id' => $docItem->employee_id,
+                'e_employee_id' => $docItem->exp_de_employee_idate,
+                'exp_date' => $docItem->exp_date,
+                'state' => 'Completado',
             ]);
+        }
 
         return redirect()->back();
     }
@@ -231,12 +304,18 @@ class DocumentController extends Controller
         $fileName = $id->title;
         $filePath = "documents/documents/$fileName";
         $path = public_path($filePath);
-        if (file_exists($path)) {
-            unlink($path);
+        if (file_exists($path)) {unlink($path);}
+            
+            $docReg = $id->employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
+                ->where('employee_id', $id->employee_id)->first(): (
+                    $id->e_employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
+                    ->where('e_employee_id', $id->e_employee_id) : null
+                );
+            if($docReg){$docReg->delete();}
             $id->delete();
-        } else {
-            dd("El archivo no existe en la ruta: $filePath");
-        }
+        // } else {
+        //     dd("El archivo no existe en la ruta: $filePath");
+        // }
         return to_route('documents.index');
     }
 
@@ -348,7 +427,6 @@ class DocumentController extends Controller
     public function downloadSectionDocumentsZip($sectionId)
     {
         try {
-            // Buscar la sección por su ID con todas las subdivisiones y documentos relacionados cargados
             $section = DocumentSection::with('subdivisions.documents')->findOrFail($sectionId);
 
             // Nombre del archivo ZIP temporal

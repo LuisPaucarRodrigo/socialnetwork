@@ -25,6 +25,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function PHPSTORM_META\map;
+
 class ApiController extends Controller
 {
 
@@ -67,11 +69,15 @@ class ApiController extends Controller
 
     public function users($id)
     {
-        $user = User::select('name', 'dni', 'email')->find($id);
-        if ($user) {
-            return response()->json($user);
-        } else {
-            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        try {
+			$user = User::select('id','name', 'dni', 'email')->find($id);
+			if ($user) {
+				return response()->json($user,200);
+			}
+		} catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
         }
     }
 
@@ -83,7 +89,11 @@ class ApiController extends Controller
             $preprojects = $user->preprojects()
                 ->select('preprojects.id as preproject_id', 'preproject_user.id as pivot_id', 'code', 'description', 'date', 'observation', 'status')
                 ->whereNull('status')
+                ->whereHas('preprojectTitles', function ($query) {
+                    $query->where('state', 1);
+                })
                 ->get();
+            
             return response()->json($preprojects);
         } catch (\Exception $e) {
             return response()->json([
@@ -113,19 +123,24 @@ class ApiController extends Controller
     public function codephotospecific($id)
     {
         $data = PreprojectCode::with(['code' => function ($query) {
-            $query->select('id', 'code', 'description');
+            $query->select('id', 'code', 'description')->with('code_images');
         }, 'preprojectTitle' => function ($query) {
             $query->select('id', 'preproject_id');
             $query->with(['preproject' => function ($query) {
                 $query->select('id', 'code');
             }]);
         }])->select('id', 'preproject_title_id', 'code_id')->find($id);
+        $images = $data->code->code_images->map(function ($image) {
+            $image->image = url('/image/imageCode/' . $image->image);
+            return $image;
+        });
         $codesWith = [
             'id' => $data->id,
             'codePreproject' => $data->preprojectTitle->preproject->code,
             'code' => $data->code->code,
             'description' => $data->code->description,
-            'status' => $data->status ?? $data->replaceable_status
+            'status' => $data->status ?? $data->replaceable_status,
+            'images' => $images
         ];
         return response()->json($codesWith);
     }
@@ -138,12 +153,12 @@ class ApiController extends Controller
             $image = str_replace('data:image/png;base64,', '', $data['photo']);
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
-            $imagename = time() . '.png';
-            file_put_contents(public_path('image/imagereportpreproject/') . $imagename, $imageContent);
+            $data['image'] = time() . '.png';
+            file_put_contents(public_path('image/imagereportpreproject/') . $data['image'], $imageContent);
 
             Imagespreproject::create([
                 'description' => $data['description'],
-                'image' => $imagename,
+                'image' => $data['image'],
                 'lat' => $data['latitude'],
                 'lon' => $data['longitude'],
                 'preproject_code_id' => $data['id'],
@@ -167,58 +182,6 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
-    //Project
-    public function project_index()
-    {
-        try {
-            $data = Project::all();
-            return response()->json($data);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-    public function project_show($id)
-    {
-        try {
-            $find = Project::find($id);
-            return response()->json($find);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ]);
-            DB::rollBack();
-        }
-    }
-
-    public function project_store_image(ImageRequest $request)
-    {
-        $validateData = $request->validated();
-        DB::beginTransaction();
-        try {
-            $image = str_replace('data:image/png;base64,', '', $validateData['photo']);
-            $image = str_replace(' ', '+', $image);
-            $imageContent = base64_decode($image);
-            $imagename = time() . '.png';
-            file_put_contents(public_path('image/imagereportproject/') . $imagename, $imageContent);
-
-            Projectimage::create([
-                'description' => $validateData['description'],
-                'image' => $imagename,
-                'project_id' => $validateData['id']
-            ]);
-            DB::commit();
-            return response()->json([200]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
@@ -230,13 +193,24 @@ class ApiController extends Controller
         $projects = HuaweiProject::where('status', 1)->with(['huawei_site' => function ($query) {
             $query->select('id', 'name'); // Selecciona campos específicos del modelo relacionado
         }])->select('id', 'assigned_diu', 'huawei_site_id')->get()
-        ->makeHidden(['total_earnings', 'total_real_earnings', 'total_real_earnings_without_deposit', 'total_project_cost',
-                     'total_employee_costs', 'total_essalud_employee_cost',
-                     'additional_cost_total', 'static_cost_total', 'materials_in_project',
-                     'equipments_in_project', 'materials_liquidated', 'equipments_liquidated',
-                     'huawei_project_resources', 'state']);;
+            ->makeHidden([
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost',
+                'additional_cost_total',
+                'static_cost_total',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'huawei_project_resources',
+                'state'
+            ]);;
 
-        return response()->json(['projects' => $projects], 201);
+        return response()->json($projects, 201);
     }
 
     public function storeHuaweiProjectGeneral(Request $request)
@@ -263,7 +237,6 @@ class ApiController extends Controller
                 $bestMatch = $site;
             }
         }
-
 
         if ($bestMatch) {
             // Found a similar site
@@ -296,6 +269,7 @@ class ApiController extends Controller
         return $sanitizedText;
     }
 
+
     public function getStagesPerProject(HuaweiProject $huawei_project)
     {
         $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)
@@ -303,11 +277,11 @@ class ApiController extends Controller
             ->with([
                 'huawei_project_codes' => function ($query) {
                     $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status')
-                          ->with([
-                              'huawei_code' => function ($query) {
-                                  $query->select('id', 'code');
-                              }
-                          ]);
+                        ->with([
+                            'huawei_code' => function ($query) {
+                                $query->select('id', 'code');
+                            }
+                        ]);
                 },
                 'huawei_project_codes.huawei_code' => function ($query) {
                     $query->select('id', 'code');
@@ -327,31 +301,33 @@ class ApiController extends Controller
     }
 
 
-    public function storeImagePerCode (HuaweiProjectCode $code, Request $request)
+    public function storeImagePerCode(HuaweiProjectCode $code, Request $request)
+
     {
-        $request->validate([
-            'image' => 'required',
+        $data = $request->validate([
+            'id' => 'required|numeric',
+            'photo' => 'required',
             'description' => 'nullable',
-            'lat' => 'required',
-            'lon' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
             'site' => 'required'
         ]);
 
         DB::beginTransaction();
         try {
-            $image = str_replace('data:image/png;base64,', '', $request->image);
+            $image = str_replace('data:image/png;base64,', '', $data['photo']);
             $image = str_replace(' ', '+', $image);
             $imageContent = base64_decode($image);
-            $imagename = time() . '.png';
-            file_put_contents(public_path('documents/huawei/photoreports/') . $imagename, $imageContent);
+            $data['photo'] = time() . '.png';
+            file_put_contents(public_path('documents/huawei/photoreports/') . $data['photo'], $imageContent);
 
             HuaweiProjectImage::create([
-                'description' => $request->description,
-                'image' => $imagename,
-                'lat' => $request->lat,
-                'lon' => $request->lon,
-                'site' => $request->site,
-                'huawei_project_code_id' => $code->id
+                'description' => $data['description'],
+                'image' => $data['photo'],
+                'lat' => $data['latitude'],
+                'lon' => $data['longitude'],
+                'site' => $data['site'],
+                'huawei_project_code_id' => $data['id'],
             ]);
             DB::commit();
             return response()->json([201]);
@@ -363,7 +339,7 @@ class ApiController extends Controller
         }
     }
 
-    public function getImageHistoryPerCode (HuaweiProjectCode $code)
+    public function getImageHistoryPerCode(HuaweiProjectCode $code)
     {
         $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
             ->select('id', 'huawei_project_code_id', 'image', 'description', 'observation', 'lat', 'lon', 'state')
@@ -376,7 +352,7 @@ class ApiController extends Controller
         return response()->json(['images' => $images], 200);
     }
 
-    public function getCodesAndProjectCode ($code)
+    public function getCodesAndProjectCode($code)
     {
         $project_code = HuaweiProjectCode::where('id', $code)
             ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
@@ -391,9 +367,21 @@ class ApiController extends Controller
             ->first()
             ->makeHidden(['huawei_project_images']);
 
-        $project_code->huawei_project_stage->huawei_project->makeHidden(['additional_cost_total', 'static_cost_total', 'state', 'materials_in_project',
-        'equipments_in_project', 'materials_liquidated', 'equipments_liquidated', 'total_earnings', 'total_real_earnings', 'total_real_earnings_without_deposit',
-        'total_project_cost', 'total_employee_costs', 'total_essalud_employee_cost']);
+        $project_code->huawei_project_stage->huawei_project->makeHidden([
+            'additional_cost_total',
+            'static_cost_total',
+            'state',
+            'materials_in_project',
+            'equipments_in_project',
+            'materials_liquidated',
+            'equipments_liquidated',
+            'total_earnings',
+            'total_real_earnings',
+            'total_real_earnings_without_deposit',
+            'total_project_cost',
+            'total_employee_costs',
+            'total_essalud_employee_cost'
+        ]);
 
         $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
             ->select('id', 'code', 'description')
@@ -439,7 +427,7 @@ class ApiController extends Controller
         }
     }
 
-    public function getSites ()
+    public function getSites()
     {
         return response()->json(['sites' => HuaweiSite::select('id', 'name')->get()], 200);
     }

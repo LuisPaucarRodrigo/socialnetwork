@@ -16,11 +16,19 @@ class CicsaChargeArea extends Model
         'invoice_number',
         'invoice_date',
         'credit_to',
-        'deposit_date',
         'amount',
+
+        'deposit_date',
+        'transaction_number_current',
+        'checking_account_amount',
+        'deposit_date_bank',
+        'transaction_number_bank',
+        'amount_bank',
+
         'user_name',
         'user_id',
-        'cicsa_assignation_id'
+        'cicsa_assignation_id',
+        'cicsa_purchase_order_id'
     ];
 
     protected $appends = [
@@ -29,55 +37,63 @@ class CicsaChargeArea extends Model
         'state'
     ];
 
-    public function user ()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function cicsa_assignation ()
+    public function cicsa_assignation()
     {
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
+    }
+
+    public function cicsa_purchase_order ()
+    {
+        return $this->belongsTo(CicsaPurchaseOrder::class, 'cicsa_purchase_order_id');
     }
 
     public function getPaymentDateAttribute()
     {
         if (!empty($this->invoice_date) && !empty($this->credit_to)) {
             $invoiceDate = Carbon::parse($this->invoice_date);
-
             $invoiceDate->addDays($this->credit_to);
-
             return $invoiceDate->toDateString();
         }
 
         return null;
     }
 
-
     public function getDaysLateAttribute()
     {
-        if ($this->payment_date) {
+        if (!empty($this->deposit_date) && !empty($this->payment_date)) {
+            $deposit_date = Carbon::parse($this->deposit_date);
+			$payment_date = Carbon::parse($this->payment_date);
+            $daysLate = $payment_date->diffInDays($deposit_date, false);
+            return $daysLate > 0 ? $daysLate : 0;
+        } elseif ($this->payment_date) {
             $paymentDate = Carbon::parse($this->payment_date);
             $currentDate = Carbon::now();
-
             $daysLate = $paymentDate->diffInDays($currentDate, false);
-
             return $daysLate > 0 ? $daysLate : 0;
         }
-
         return 0;
     }
 
-    public function getStateAttribute ()
+    public function getStateAttribute()
     {
-        if (!$this->deposit_date && Carbon::now() < $this->payment_date){
+        if (!$this->deposit_date && Carbon::now() < $this->payment_date) {
             return 'A tiempo';
         }
-        if ($this->deposit_date){
+
+        if ($this->checking_account_amount && $this->amount_bank) {
             return 'Pagado';
         }
 
-        if (!$this->deposit_date && Carbon::now() > $this->payment_date){
+        if (!$this->deposit_date && Carbon::now() > $this->payment_date) {
             return 'Con deuda';
         }
+
+        
+        return 'En Proceso';
     }
 }

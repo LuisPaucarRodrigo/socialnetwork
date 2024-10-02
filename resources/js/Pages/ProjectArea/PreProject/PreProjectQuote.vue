@@ -824,7 +824,7 @@ const { preproject, auth, products, purchasing_requests, existingProducts, servi
     preproject_products: Object
 })
 
-let backUrl = preproject.status === null
+let backUrl = preproject.status === null 
     ? 'preprojects.index'
     : preproject.status == true
         ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
@@ -928,9 +928,13 @@ const submit = () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
-                preproject.status == true
-                    ? router.visit(route('preprojects.index', {preprojects_status: 1}))
-                    : router.visit(route('preprojects.index', {preprojects_status: 0}))
+                if (preproject.status == null ){
+                    router.visit(route('preprojects.index'))
+                } else {
+                    preproject.status == true
+                        ? router.visit(route('preprojects.index', {preprojects_status: 1}))
+                        : router.visit(route('preprojects.index', {preprojects_status: 0}))
+                }
             }, 2000);
         },
         onError: (e) => {
@@ -938,6 +942,7 @@ const submit = () => {
         }
     })
 }
+
 
 const showModalMember = ref(false);
 const showConfirmAccept = ref(false);

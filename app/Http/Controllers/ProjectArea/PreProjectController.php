@@ -24,6 +24,7 @@ use App\Models\Purchasing_requests_product;
 use App\Models\ResourceEntry;
 use App\Models\Service;
 use App\Models\Code;
+use App\Models\CodeImage;
 use App\Models\Customers_contact;
 use App\Models\PreprojectCode;
 use App\Models\PreprojectTitle;
@@ -37,6 +38,8 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use ZipArchive;
 
 class PreProjectController extends Controller
 {
@@ -44,25 +47,20 @@ class PreProjectController extends Controller
     {
         if ($request->isMethod('get')) {
             $preprojects_status = $request->input('preprojects_status');
-            // dd(Preproject::with('project')
-            //     ->where('status', $preprojects_status)
-            //     ->orderBy('created_at')
-            //     ->paginate(12));
             return Inertia::render('ProjectArea/PreProject/PreProjects', [
-                'preprojects' => Preproject::with('project')
-                    ->where('status', $preprojects_status)
-                    ->orderBy('created_at')
+                'preprojects' => Preproject::with('users')->where('status', $preprojects_status)
+                    ->orderBy('created_at', 'desc')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
-                'users' => User::select('id', 'name')->get()
+                'users' => User::select('id', 'name')->orderBy('name', 'asc')->get()
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
             $preprojects_status = $request->input('preprojects_status');
-            $preprojects = Preproject::with('project')
-                ->where('code', 'like', "%$searchQuery%")
+            $preprojects = Preproject::with('users')->orWhere('code', 'like', "%$searchQuery%")
+                ->orWhere('description', 'like', "%$searchQuery%")
                 ->where('status', $preprojects_status)
-                ->orderBy('created_at')
+                ->orderBy('created_at', 'desc')
                 ->paginate(12);
 
             return response()->json([
@@ -70,7 +68,6 @@ class PreProjectController extends Controller
             ]);
         }
     }
-
 
     public function create($preproject_id = null)
     {
@@ -672,7 +669,7 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
             'preprojectImages' => $preprojectImages,
             'imagesCode' => $imagesCode,
-            'preproject' => Preproject::select('id')->find($preproject_id),
+            'preproject' => Preproject::select('id', 'status')->find($preproject_id),
         ]);
     }
 
@@ -698,15 +695,20 @@ class PreProjectController extends Controller
 
     public function approve_reject_image(Request $request, $id)
     {
-        $data = $request->validate([
-            'state' => 'required|boolean',
-            'observation' => 'nullable|string'
-        ]);
-        $image = Imagespreproject::find($id);
-        $image->update([
-            'observation' => $data['observation'],
-            'state' => $data['state']
-        ]);
+        try {
+            $data = $request->validate([
+                'state' => 'required|boolean',
+                'observation' => 'nullable|string'
+            ]);
+            $image = Imagespreproject::find($id);
+            $image->update([
+                'observation' => $data['observation'],
+                'state' => $data['state']
+            ]);
+            return response()->json([], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error al Aprobar multiples imagenes'], 401);
+        }
     }
 
     public function approve_code($id)
@@ -743,6 +745,19 @@ class PreProjectController extends Controller
         }
     }
 
+    public function approve_images($code_id)
+    {
+        try {
+            $code_images = Imagespreproject::where('preproject_code_id', $code_id)->whereNull('state')->get();
+            $code_images->each(function ($image) {
+                $image->update(['state' => 1]);
+            });
+            return response()->json([], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error al Aprobar multiples imagenes'], 401);
+        }
+    }
+
     public function download_image($id)
     {
         $image = Imagespreproject::find($id);
@@ -756,47 +771,51 @@ class PreProjectController extends Controller
         abort(404, 'Imagen no encontrado');
     }
 
-    // public function index_image($preproject_id)
-    // {   
-    //     $preprojectImages = PreprojectTitle::with('preprojectCodes.code','preprojectCodes.imagecodepreprojet',)->where('preproject_id',$preproject_id)->get();
-    //     // $preprojects = PreprojectCode::with('code', 'imagecodepreprojet')->where('preproject_id', $preprojectTitle->id)->get();
-    //     // dd($preprojectTitles);
-    //     // $codesWithStatus = [];
-    //     // foreach ($preprojectTitles as $preprojectTitle) {
-    //     //     $code = $preprojectTitle->preprojectCodes->code;
-    //     //     $codesWithStatus[] = [
-    //     //         'id' => $preprojectTitle->id,
-    //     //         'code' => $code->code,
-    //     //         'status' => $preprojectTitle->status,
-    //     //         'description' => $code->description,
-    //     //     ];
-    //     // }
-    //     $imagesCode = Imagespreproject::all();
-    //     $imagesCode->each(function ($url) {
-    //         $url->image = url('/image/imagereportpreproject/' . $url->image);
-    //     });
-    //     $preprojectImages->each(function ($preprojectTitle) {
-    //         $preprojectTitle->preprojectCodes->each(function ($preprojectCode) {
-    //             $preprojectCode->imagecodepreprojet->each(function ($imagecodepreprojet) {
-    //                 $imagecodepreprojet->image = url('image/imagereportpreproject/' . $imagecodepreprojet->image);
-    //             });
-    //         });
-    //     });
-    //     return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
-    //         // 'codesWithStatus' => $codesWithStatus,
-    //         'preprojectImages' => $preprojectImages,
-    //         'imagesCode' => $imagesCode,
-    //         'preproject' => Preproject::find($preproject_id),
-    //     ]);
-    // }
-
     public function download_report($preproject_title_id)
     {
+        ini_set('memory_limit', '512M');
         $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->find($preproject_title_id);
-        // dd($preprojectImages);
         $preproject = Preproject::find($preprojectImages->preproject_id);
         $customer = Customers_contact::find($preproject->subcustomer_id);
-        $pdf = Pdf::loadView('pdf.ReportPreProject', compact('preprojectImages', 'customer'));
+
+        $identificationRows = [
+            [
+                'first'=> 'Código de la estación:', 
+                'firstValue'=> 'AR4124',
+                'second'=> 'Zona:',
+                'secondValue'=> 'CHALA',
+            ],
+            [
+                'first'=> 'Nombre de la estación:', 
+                'firstValue'=> 'CHALA',
+                'second'=> 'Latitud:',
+                'secondValue'=> "15°51'1.40''S",
+            ],
+            [
+                'first'=> 'Tipo de acceso:', 
+                'firstValue'=> 'Directo',
+                'second'=> 'Longitud:',
+                'secondValue'=> "74°15'4.50''O",
+            ],
+            [
+                'first'=> 'Región Claro:', 
+                'firstValue'=> 'Sur',
+                'second'=> 'Fecha:',
+                'secondValue'=> "12/09/2024",
+            ],
+            [
+                'first'=> 'Empresa:', 
+                'firstValue'=> 'CICSA',
+                'second'=> 'Contrata:',
+                'secondValue'=> "CONPROCO",
+            ],
+        ];
+
+        $template = $preproject->customer_id == 1 
+            ? 'pdf.ReportPreProjectPint'
+            : 'pdf.ReportPreProject';
+
+        $pdf = Pdf::loadView($template, compact('preprojectImages', 'preproject', 'customer', 'identificationRows'));
         return $pdf->stream();
     }
 
@@ -826,6 +845,55 @@ class PreProjectController extends Controller
             return response()->json(['url' => $url]);
         }
         abort(404, 'Imagen no encontrada');
+    }
+
+    public function downloadKmz($preproject_title_id)
+    {
+        $coordinates = PreprojectCode::with('imagecodepreprojet')->where('preproject_title_id', $preproject_title_id)->get();
+        $kmlPlacemarks = '';
+        foreach ($coordinates->imagecodepreprojet as $coord) {
+            $longitude = $coord['longitude'];
+            $latitude = $coord['latitude'];
+            $name = $coord['name'];
+            $kmlPlacemarks .= <<<KML
+        <Placemark>
+            <name>$name</name>
+            <Point>
+                <coordinates>$longitude,$latitude,0</coordinates>
+            </Point>
+        </Placemark>
+        KML;
+        }
+
+        $kmlContent = <<<KML
+        <kml xmlns="http://www.opengis.net/kml/2.2">
+            <Document>
+                $kmlPlacemarks
+            </Document>
+        </kml>
+        KML;
+        // Crear un archivo temporal para el KML
+        $kmlFile = tempnam(sys_get_temp_dir(), 'kml');
+        file_put_contents($kmlFile, $kmlContent);
+
+        // Comprimir el archivo KML en un archivo KMZ
+        $zip = new ZipArchive();
+        $kmzFile = tempnam(sys_get_temp_dir(), 'kmz') . '.kmz';
+        if ($zip->open($kmzFile, ZipArchive::CREATE) === TRUE) {
+            $zip->addFile($kmlFile, 'doc.kml');
+            $zip->close();
+        }
+
+        // Eliminar el archivo KML temporal
+        unlink($kmlFile);
+
+        // Preparar la descarga del archivo KMZ
+        header('Content-Type: application/vnd.google-earth.kmz');
+        header('Content-Disposition: attachment; filename="locations.kmz"');
+        readfile($kmzFile);
+
+        // Eliminar el archivo KMZ temporal después de la descarga
+        unlink($kmzFile);
     }
 
     public function acceptCotization(Request $request, $quote_id)
@@ -896,9 +964,7 @@ class PreProjectController extends Controller
             'preproject_id' => 'required',
             'user_id_array' => 'required'
         ]);
-
         $preproject = Preproject::find($request->preproject_id);
-
         $preproject->users()->sync($request->user_id_array, ['timestamps' => true]);
     }
 
@@ -907,38 +973,92 @@ class PreProjectController extends Controller
     public function showCodes()
     {
         return Inertia::render('ProjectArea/PreProject/Codes', [
-            'codes' => Code::paginate(10)
+            'codes' => Code::with('code_images')->paginate(20)
         ]);
     }
 
-    public function postCode(Request $request)
+    public function storeCode(Request $request)
     {
-        $request->validate([
-            'code' => 'required'
+        $validateData = $request->validate([
+            'code' => 'required|string',
+            'description' => 'required|string',
         ]);
 
-        Code::create([
-            'code' => $request->code,
-            'description' => $request->description
-        ]);
+        try {
+            Code::create($validateData);
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
+        }
     }
 
-    public function putCode(Request $request, Code $code)
+    public function updateCode(Request $request, Code $code)
     {
-        $request->validate([
-            'code' => 'required'
+        $validateData = $request->validate([
+            'code' => 'required',
+            'description' => 'required|string',
         ]);
 
-        $code->update([
-            'code' => $request->code,
-            'description' => $request->description
-        ]);
+        $code->update($validateData);
     }
 
     public function deleteCode(Code $code)
     {
         $code->delete();
         return redirect()->back();
+    }
+
+    public function storeCodeImages(Request $request)
+    {
+        $validateData = $request->validate([
+            'code_id' => 'required|numeric',
+            'images' => 'required|array',
+            'images.*.image' => 'required|image|mimes:jpeg,jpg,png|max:2048'
+        ]);
+
+        foreach ($validateData['images'] as $image) {
+            $uploadedImage = $image['image'];
+            $image['image'] = time() . '._' . $uploadedImage->getClientOriginalName();
+            CodeImage::create([
+                'code_id' => $validateData['code_id'],
+                'image' => $image['image']
+            ]);
+            $uploadedImage->move(public_path('image/imageCode/'), $image['image']);
+        }
+    }
+
+    public function show_code_image($image_id)
+    {
+        $codeImage = CodeImage::find($image_id);
+        $fileName = $codeImage->image;
+        $filePath = 'image/imageCode/' . $fileName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            $url = url($filePath);
+            return response()->json(['url' => $url]);
+        }
+        abort(404, 'Imagen no encontrada');
+    }
+
+    public function deleteCodeImages($image_id)
+    {
+        try {
+            $codeImage = CodeImage::find($image_id);
+            if ($codeImage) {
+                // $filePath = "image/imageCode/{$codeImage->image}";
+                // $path = public_path($filePath);
+                
+                // if (file_exists($path)) {
+                //     unlink($path); 
+                // }
+                $codeImage->delete();
+                
+                return response()->json([],200);
+            } else {
+                return response()->json(['error' => 'Imagen no encontrada'], 404);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     //titles

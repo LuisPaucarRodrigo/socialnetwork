@@ -500,7 +500,6 @@ function closeAddMaterialModal() {
 
 const confirmUpdateMaterial = ref(false);
 
-
 function openEditSotModal(id, item, feasibility_materials) {
     cicsa_assignation_id.value = id;
     let cicsa_material_items = []
@@ -606,7 +605,6 @@ function closeMaterialsModal() {
 }
 
 const toggleDetails = (material) => {
-
     if (materialRow.value === material[0].cicsa_assignation_id) {
         materialRow.value = 0;
     } else {
@@ -617,7 +615,8 @@ const toggleDetails = (material) => {
 function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility) {
     form.defaults({ ...initialState })
     form.cicsa_assignation_id = cicsa_assignation_id
-    form.cicsa_material_items = cicsa_material_feasibility ?? []
+    // form.cicsa_material_items = cicsa_material_feasibility ?? []
+    form.cicsa_material_items = []
     showAddEditModal.value = true
 }
 

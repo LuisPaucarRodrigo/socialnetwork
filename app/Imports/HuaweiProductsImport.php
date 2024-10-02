@@ -30,7 +30,7 @@ class HuaweiProductsImport implements ToCollection
 
             
             
-            $annex1 = HuaweiAnexe1::where('name', $an_sanitize)->get();
+            $annex1 = HuaweiAnexe::where('name', $an_sanitize)->get();
             
             
             $annex2 = HuaweiAnexe2::where('name', $an_sanitize)->get();

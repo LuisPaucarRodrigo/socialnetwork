@@ -7,9 +7,11 @@
         }"
     >
         <template #header>
-            Gastos Variables del Proyecto {{ props.project_id.name }}
+            Gastos Variables del Proyecto 
+            {{ props.project_id.name }}
         </template>
         <br />
+        <Toaster richColors/>
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
@@ -50,14 +52,14 @@
                             />
                         </svg>
                     </PrimaryButton>
-                        <div
-                            id="update_data_tooltip"
-                            role="tooltip"
-                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                        >
-                            Actualizar
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div>
+                    <div
+                        id="update_data_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Actualizar
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
 
                     <button
                         data-tooltip-target="export_tooltip"
@@ -90,37 +92,40 @@
 
                     <button
                         type="button"
-                        class="rounded-md bg-yellow-500 px-4 py-2 text-center text-sm text-white hover:bg-yellow-400"
-                        @click="openImportModal()"
+                        class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
+                        @click="openExportPhoto"
+                        data-tooltip-target="export-photo-tooltip"
                     >
                         <svg
-                            class="h-6 w-6 text-white"
-                            viewBox="0 0 512 512"
-                            version="1.1"
+                            fill="#ffffff"
+                            width="22px"
+                            height="22px"
+                            viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"
                         >
-                            <title>upload-document-note</title>
+                            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
                             <g
-                                id="Page-1"
-                                stroke="none"
-                                stroke-width="1"
-                                fill="none"
-                                fill-rule="evenodd"
-                            >
-                                <g
-                                    id="icon"
-                                    fill="#ffffff"
-                                    transform="translate(64.000000, 42.666667)"
-                                >
-                                    <path
-                                        d="M298.642975,268.433404 L392.812864,362.603293 L362.642975,392.773183 L319.976085,350.117404 L319.976308,447.956959 L277.309641,447.956959 L277.309085,350.116404 L234.642975,392.773183 L204.473085,362.603293 L298.642975,268.433404 Z M234.666667,7.10542736e-15 L341.333333,106.666667 L341.333,280.469 L298.779055,237.915875 L298.666,238.028 L298.666667,124.339779 L216.993555,42.6666667 L42.6666667,42.6666667 L42.6666667,384 L196.184,384 L234.773299,422.589676 L256.093414,401.26939 L256.101,426.666 L1.42108547e-14,426.666667 L1.42108547e-14,7.10542736e-15 L234.666667,7.10542736e-15 Z M213.333333,298.666667 L213.333,323.361 L195.361,341.333 L64,341.333333 L64,298.666667 L213.333333,298.666667 Z M196,85.3333333 L256,145.333333 L124,277.333333 L64,277.333333 L64,217.333333 L196,85.3333333 Z M195.989333,130.581333 L96,230.570667 L96,245.333333 L110.72,245.333333 L210.730667,145.322667 L195.989333,130.581333 Z"
-                                        id="Combined-Shape"
-                                    ></path>
-                                </g>
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M22.71,6.29a1,1,0,0,0-1.42,0L20,7.59V2a1,1,0,0,0-2,0V7.59l-1.29-1.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l3-3A1,1,0,0,0,22.71,6.29ZM19,13a1,1,0,0,0-1,1v.38L16.52,12.9a2.79,2.79,0,0,0-3.93,0l-.7.7L9.41,11.12a2.85,2.85,0,0,0-3.93,0L4,12.6V7A1,1,0,0,1,5,6h8a1,1,0,0,0,0-2H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V14A1,1,0,0,0,19,13ZM5,20a1,1,0,0,1-1-1V15.43l2.9-2.9a.79.79,0,0,1,1.09,0l3.17,3.17,0,0L15.46,20Zm13-1a.89.89,0,0,1-.18.53L13.31,15l.7-.7a.77.77,0,0,1,1.1,0L18,17.21Z"
+                                />
                             </g>
                         </svg>
                     </button>
+                    <div
+                        id="export-photo-tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Exportar solo facturas
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
 
                     <button
                         data-tooltip-target="rejected_tooltip"
@@ -277,11 +282,17 @@
             </div>
         </div>
         <div class="overflow-x-auto h-[85vh]">
-            <table class="w-full whitespace-no-wrap">
-                <thead>
+            <table class="w-full">
+                <thead class="sticky top-0 z-20">
                     <tr
-                        class="sticky top-0 z-20 border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
-                    >
+                        class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
+                    >   
+                    
+                        <th
+                            class="bg-gray-100 border-b-2 border-gray-20"
+                        >
+                        <div class="w-2"></div>
+                        </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
@@ -371,15 +382,17 @@
                         v-for="item in dataToRender"
                         :key="item.id"
                         class="text-gray-700"
-                        :class="[
-                            'border-l-8',
-                            {
-                                'border-indigo-500': item.is_accepted === null,
-                                'border-green-500': item.is_accepted == true,
-                                'border-red-500': item.is_accepted == false,
-                            },
-                        ]"
+                        
                     >
+                    <td :class="[
+                            'border-b border-gray-200',
+                            {
+                                'bg-indigo-500': item.is_accepted === null,
+                                'bg-green-500': item.is_accepted == true,
+                                'bg-red-500': item.is_accepted == false,
+                            },
+                        ]">
+                    </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -398,7 +411,7 @@
                             {{ item.type_doc }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums"
                         >
                             {{ item.ruc }}
                         </td>
@@ -408,7 +421,7 @@
                             {{ item?.provider?.company_name }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums"
                         >
                             {{ item.doc_number }}
                         </td>
@@ -418,12 +431,12 @@
                             {{ formattedDate(item.doc_date) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             S/. {{ item.amount.toFixed(2) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             S/. {{ item.real_amount.toFixed(2) }}
                         </td>
@@ -528,6 +541,10 @@
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
                         <td
+                            class="font-bold border-b border-gray-200 bg-white"
+                        >      
+                        </td>
+                        <td
                             class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         >
                             TOTAL
@@ -592,13 +609,15 @@
                 </tbody>
             </table>
         </div>
+        
         <div
             v-if="!filterMode"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
         >
             <pagination :links="additional_costs.links" />
         </div>
-        <Modal :show="create_additional">
+        <Modal :show="create_additional" @close="closeModal">
+            <!-- <Toaster richColors/> -->
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Agregar Costo adicional
@@ -623,12 +642,7 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option>Arequipa</option>
-                                        <option>Chala</option>
-                                        <option>Moquegua</option>
-                                        <option>Tacna</option>
-                                        <option>MDD1</option>
-                                        <option>MDD2</option>
+                                        <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -648,19 +662,7 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option>Hospedaje</option>
-                                        <option>Movilidad</option>
-                                        <option>Peaje</option>
-                                        <option>Seguros y Pólizas</option>
-                                        <option>Herramientas</option>
-                                        <option>Fletes</option>
-                                        <option>EPPs</option>
-                                        <option>
-                                            Gastos de Representación
-                                        </option>
-                                        <option>Consumibles</option>
-                                        <option>Equipos</option>
-                                        <option>Otros</option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -682,11 +684,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option>Efectivo</option>
-                                        <option>Deposito</option>
-                                        <option>Factura</option>
-                                        <option>Boleta</option>
-                                        <option>Voucher de Pago</option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -862,10 +860,11 @@
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeModal">
                                 Cancelar
-                            </SecondaryButton>
+                            </SecondaryButton>           
                             <button
                                 type="submit"
-                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Guardar
@@ -876,7 +875,7 @@
             </div>
         </Modal>
 
-        <Modal :show="editAdditionalModal">
+        <Modal :show="editAdditionalModal" @close="closeEditModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Editar Costo Adicional
@@ -901,12 +900,7 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option>Arequipa</option>
-                                        <option>Chala</option>
-                                        <option>Moquegua</option>
-                                        <option>Tacna</option>
-                                        <option>MDD1</option>
-                                        <option>MDD2</option>
+                                        <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -926,19 +920,7 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option>Hospedaje</option>
-                                        <option>Movilidad</option>
-                                        <option>Peaje</option>
-                                        <option>Seguros y Pólizas</option>
-                                        <option>Herramientas</option>
-                                        <option>Fletes</option>
-                                        <option>EPPs</option>
-                                        <option>
-                                            Gastos de Representación
-                                        </option>
-                                        <option>Consumibles</option>
-                                        <option>Equipos</option>
-                                        <option>Otros</option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -961,11 +943,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option>Efectivo</option>
-                                        <option>Deposito</option>
-                                        <option>Factura</option>
-                                        <option>Boleta</option>
-                                        <option>Voucher de Pago</option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -1056,12 +1034,7 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
-                            <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
-                            >
+                            <div>
                                 <InputLabel
                                     for="igv"
                                     class="font-medium leading-6 text-gray-900"
@@ -1083,12 +1056,7 @@
                                     <InputError :message="form.errors.igv" />
                                 </div>
                             </div>
-                            <div
-                                v-if="
-                                    form.type_doc === 'Factura' &&
-                                    !['', 'MDD1', 'MDD2'].includes(form.zone)
-                                "
-                            >
+                            <div>
                                 <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
@@ -1208,7 +1176,8 @@
                             </SecondaryButton>
                             <button
                                 type="submit"
-                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Actualizar
@@ -1270,14 +1239,7 @@
             itemType="Costo Adicional"
             :deleteFunction="deleteAdditional"
             @closeModal="closeModalDoc"
-        />
-        <ConfirmCreateModal
-            :confirmingcreation="showModal"
-            itemType="Costo Adicional"
-        />
-        <ConfirmUpdateModal
-            :confirmingupdate="showModalEdit"
-            itemType="Costo Adicional"
+            :processing="isFetching"
         />
         <SuccessOperationModal
             :confirming="confirmImport"
@@ -1294,8 +1256,6 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
-import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -1314,7 +1274,9 @@ import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
+import { setAxiosErrors, toFormData } from "@/utils/utils";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1350,9 +1312,9 @@ const form = useForm({
     photo_status: "stable",
 });
 
+
+
 const create_additional = ref(false);
-const showModal = ref(false);
-const showModalEdit = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const editAdditionalModal = ref(false);
@@ -1383,60 +1345,61 @@ const openEditAdditionalModal = (additional) => {
 
 const closeModal = () => {
     form.reset();
+    isFetching.value = false
     create_additional.value = false;
 };
 
 const closeEditModal = () => {
     form.reset();
+    isFetching.value = false
     editAdditionalModal.value = false;
 };
 
-const submit = () => {
-    form.post(
-        route("projectmanagement.storeAdditionalCost", {
+const isFetching = ref(false)
+
+const submit = async () => {
+    try{
+        isFetching.value = true
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.storeAdditionalCost", {
             project_id: props.project_id.id,
-        }),
-        {
-            onSuccess: () => {
-                closeModal();
-                showModal.value = true;
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
+        }), formToSend)
+        dataToRender.value.unshift(res.data)
+        closeModal();
+        notify('Gasto Adicional Guardado')
+    }catch (e) {
+        isFetching.value = false
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
+        } else {
+            notifyError('Server Error')
         }
-    );
+    }
 };
 
-const submitEdit = () => {
-    form.post(
-        route("projectmanagement.updateAdditionalCost", {
+const submitEdit = async() => {
+    try{
+        isFetching.value = true
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.updateAdditionalCost", {
             additional_cost: form.id,
-        }),
-        {
-            onSuccess: () => {
-                closeEditModal();
-                showModalEdit.value = true;
-                setTimeout(() => {
-                    showModalEdit.value = false;
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                console.log(e);
-            },
+        }), formToSend)
+        let index = dataToRender.value.findIndex(item=>item.id == form.id)
+        dataToRender.value[index] = res.data
+        closeEditModal();
+        notify('Gasto Adicional Actualizado')
+    }catch (e) {
+        isFetching.value = false
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
+        }else {
+            notifyError('Server Error')
         }
-    );
+    }
 };
+
 
 const confirmDeleteAdditional = (additionalId) => {
     docToDelete.value = additionalId;
@@ -1447,26 +1410,26 @@ const closeModalDoc = () => {
     confirmingDocDeletion.value = false;
 };
 
-const deleteAdditional = () => {
+const deleteAdditional = async () => {
     const docId = docToDelete.value;
-    if (docId) {
-        router.delete(
-            route("projectmanagement.deleteAdditionalCost", {
-                project_id: props.project_id.id,
-                additional_cost: docId,
-            }),
-            {
-                onSuccess: () => {
-                    closeModalDoc();
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                },
-            }
-        );
+    isFetching.value = true
+    try {
+        const res = await axios.delete(
+        route("projectmanagement.deleteAdditionalCost", {
+            project_id: props.project_id.id,
+            additional_cost: docId,
+        }))
+        isFetching.value = false
+        if (res?.data?.msg==='success'){
+            closeModalDoc()
+            notify('Gasto Adicional Eliminado')
+            let index = dataToRender.value.findIndex(item=>item.id == docId)
+            dataToRender.value.splice(index, 1);
+        }
+    } catch (e) {
+        isFetching.value = false
     }
+    
 };
 
 const handleRucDniAutocomplete = (e) => {
@@ -1480,51 +1443,42 @@ const handleRucDniAutocomplete = (e) => {
 };
 
 function handlerPreview(id) {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
     window.open(
-        route("additionalcost.archive", { additional_cost_id: id }),
+        route("additionalcost.archive", { additional_cost_id: id }) +
+            "?" +
+            uniqueParam,
         "_blank"
     );
 }
 
-const filterForm = ref({
-    search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"],
-    selectedExpenseTypes: [
-        "Hospedaje",
-        "Movilidad",
-        "Peaje",
-        "Seguros y Pólizas",
-        "Herramientas",
-        "Fletes",
-        "EPPs",
-        "Gastos de Representación",
-        "Consumibles",
-        "Equipos",
-        "Otros",
-    ],
-    selectedDocTypes: [
-        "Efectivo",
-        "Deposito",
-        "Factura",
-        "Boleta",
-        "Voucher de Pago",
-    ],
-});
+const zones = [
+    "Arequipa", 
+    "Chala", 
+    "Moquegua", 
+    "Tacna", 
+    "MDD1", 
+    "MDD2"
+];
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
 const expenseTypes = [
     "Hospedaje",
-    "Movilidad",
-    "Peaje",
-    "Seguros y Pólizas",
-    "Herramientas",
-    "Fletes",
-    "EPPs",
-    "Gastos de Representación",
+    "Mensajería",
     "Consumibles",
+    "Pasaje Interprovincial",
+    "Taxis y Pasajes",
+    "Bandeos",
+    "Peaje",
+    "Herramientas",
     "Equipos",
+    "Daños de Vehículos",
+    "EPPs",
+    "Seguros y Pólizas",
+    "Gastos de Representación",
     "Otros",
 ];
+
+
 const docTypes = [
     "Efectivo",
     "Deposito",
@@ -1532,6 +1486,16 @@ const docTypes = [
     "Boleta",
     "Voucher de Pago",
 ];
+
+
+const filterForm = ref({
+    search: "",
+    selectedZones: zones,
+    selectedExpenseTypes: expenseTypes,
+    selectedDocTypes: docTypes
+});
+
+
 
 watch(
     () => [
@@ -1542,18 +1506,20 @@ watch(
     () => {
         filterMode.value = true;
         search_advance(filterForm.value);
-    },
-    { deep: true }
+    }
 );
 
-async function search_advance($data) {
-    let res = await axios.post(
-        route("additionalcost.advance.search", {
-            project_id: props.project_id.id,
-        }),
-        $data
-    );
-    dataToRender.value = res.data;
+async function search_advance(data) {
+    try {
+        let res = await axios.post(
+            route("additionalcost.advance.search", {
+                project_id: props.project_id.id,
+            }),data);
+        dataToRender.value = res.data;
+        notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+    }
 }
 
 async function handleSearch() {
@@ -1607,6 +1573,17 @@ function openExportExcel() {
     window.location.href = url;
 }
 
+function openExportPhoto() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route("zip.additional.descargar", { project_id: props.project_id.id }) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
+}
+
+
+
 watch([() => form.type_doc, () => form.zone], () => {
     if (
         form.type_doc === "Factura" &&
@@ -1627,7 +1604,6 @@ async function validateRegister(ac_id, is_accepted) {
             { is_accepted }
         );
         if (res?.data?.additional_cost?.is_accepted == true) {
-            console.log("siuu");
             let index = dataToRender.value.findIndex(
                 (item) => item.id == res.data.additional_cost.id
             );

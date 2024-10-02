@@ -4,7 +4,6 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
-use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
 use App\Models\Employee;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
@@ -12,8 +11,6 @@ use App\Models\Entry;
 use App\Models\Inventory;
 use App\Models\PreprojectQuoteService;
 use App\Models\Purchasing_request;
-use App\Models\Purchase_quote;
-use App\Models\PreprojectEntry;
 use App\Models\ResourceEntry;
 use App\Models\Warehouse;
 use App\Models\Preproject;
@@ -32,10 +29,18 @@ class ProjectManagementController extends Controller
     public function index(Request $request)
     {
         if ($request->isMethod('get')) {
+            $projectsData = Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+            ->select('projects.*', 'preprojects.date as preproject_date')
+            ->orderBy('preproject_date', 'desc')->where('projects.status', null)->paginate();
+            $projectsData->getCollection()->each->setAppends([
+                'name', 
+                'code', 
+                'remaining_budget', 
+                'current_budget',
+                'is_liquidable',
+            ]);
             return Inertia::render('ProjectArea/ProjectManagement/Project', [
-                'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
-                    ->select('projects.*', 'preprojects.date as preproject_date')
-                    ->orderBy('preproject_date', 'desc')->where('projects.status', null)->paginate(),
+                'projects' => $projectsData,
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -191,7 +196,16 @@ class ProjectManagementController extends Controller
 
     public function project_add_employee(Request $request, $project_id)
     {
-        $project = Project::find($project_id);
+        $project = Project::with('employees')->find($project_id);
+        $request->validate([
+            'employee.id' => ['required', function($attribute, $value, $fail)  use ($project) {
+                foreach($project->employees as $emp) {
+                    if ($emp->id == $value) {
+                        $fail('El trabajador ya se encuentra en el proyecto' );
+                    }   
+                }
+            }]
+        ]);
         $employee = Employee::find($request->input('employee.id'));
         $project->employees()->attach($request->input('employee.id'), [
             'charge' => $request->input('charge'),
@@ -285,13 +299,11 @@ class ProjectManagementController extends Controller
     public function project_expenses(Project $project_id)
     {
         $last_update = BudgetUpdate::where('project_id', $project_id->id)
-            ->with('project')
-            ->with('user')
             ->orderByDesc('id')
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
-        $additionalCosts = $project_id->additionalCosts->sum('real_amount');
+        $additionalCosts = $project_id->additionalCosts()->where('is_accepted', 1)->get()->sum('real_amount');
         $acArr = $project_id->additionalCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
@@ -303,18 +315,26 @@ class ProjectManagementController extends Controller
             ];
         })->toArray();
 
-        $staticCosts = $project_id->staticCosts->sum('real_amount');
+        $staticCosts =  $project_id->staticCosts()->where('expense_type', '!=', 'Combustible GEP')->get()
+        ->sum('real_amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
             ->get();
+
+        
         $scExpensesAmounts = $scArr->map(function($cost) {
             return [
                 'expense_type' => $cost->expense_type,
                 'total_amount' => $cost->total_amount,
             ];
         })->toArray();
-
+        $project_id->setAppends([
+            'remaining_budget',
+            'total_services_cost',
+            'total_products_cost',
+            'total_employee_costs',
+        ]);
 
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
@@ -324,6 +344,21 @@ class ProjectManagementController extends Controller
             'scExpensesAmounts' => $scExpensesAmounts,
             'staticCosts' => $staticCosts,
         ]);
+    }
+
+    public function project_expense_details (Request $request) {
+        $arrModels = [
+            'additional' => 'App\Models\AdditionalCost', 
+            'static' => 'App\Models\StaticCost'
+        ];
+        $model = app($arrModels[$request->spMod]);
+        $data = $model
+            ->select('zone as spentName', \DB::raw('ROUND(SUM(amount / (1 + igv / 100)), 2) as amount'))
+            ->where('project_id', $request->project_id)
+            ->where('expense_type', $request->expType)
+            ->groupBy('zone')
+            ->get();
+        return response()->json($data, 200);
     }
 
 

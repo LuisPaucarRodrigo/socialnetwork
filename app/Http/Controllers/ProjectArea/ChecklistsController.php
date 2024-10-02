@@ -259,15 +259,17 @@ class ChecklistsController extends Controller
     {
         $data = $request->validated();
         try {
-            $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
-            $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+            $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
+            $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
+            $endOfMonth = $doc_date->endOfMonth()->format('Y-m-d');
 
             $preprojectId = Preproject::where('date', '>=', $startOfMonth)
                 ->where('date', '<=', $endOfMonth)
                 ->where('customer_id', 1)
                 ->select('id')
                 ->first();
-            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            $projectId = Project::where('preproject_id', $preprojectId->id)
+                ->select('id')->first();
             if (!$projectId) {
                 return response()->json([
                     'error' => "No se encontraron preproyectos pint para este mes."
@@ -281,7 +283,8 @@ class ChecklistsController extends Controller
             if (($data['zone']!=='MDD1'&& $data['zone']!=='MDD2') && $data['type_doc'] === 'Factura' ) {
                 $data['igv'] = 18;
             }
-
+            $newDesc = Auth::user()->name.", ".$data['description'];
+            $data['description'] = $newDesc;
             if ($data['photo']) {
                 $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');
             }
@@ -314,7 +317,7 @@ class ChecklistsController extends Controller
                 ], 404);
             }
             $userId = Auth::user()->id;
-            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount')->get();
+            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount','is_accepted','description')->get();
             return response()->json($expense, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -322,7 +325,4 @@ class ChecklistsController extends Controller
             ], 500);
         }
     }
-
-
-
 }

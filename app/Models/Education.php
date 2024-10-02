@@ -20,4 +20,19 @@ class Education extends Model
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
+
+    protected static function booted()
+    {
+        static::updating(function ($education) {
+            if ($education->isDirty('curriculum_vitae')) {
+                $oldImage = $education->getOriginal('curriculum_vitae');                
+                if ($oldImage) {
+                    $filePath = public_path('documents/curriculum_vitae/' . $oldImage);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+        });
+    }
 }

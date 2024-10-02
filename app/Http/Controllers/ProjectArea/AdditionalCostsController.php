@@ -12,7 +12,12 @@ use App\Models\Project;
 use App\Models\AdditionalCost;
 use App\Exports\AdditionalCostsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
+use ZipArchive;
 
 class AdditionalCostsController extends Controller
 {
@@ -23,9 +28,19 @@ class AdditionalCostsController extends Controller
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             })
-            ->with('project', 'provider')
+
+
+            ->with(['project', 'provider'])
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
+        
+        $additional_costs->getCollection()->transform(function($item){
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
+
+            
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
@@ -40,6 +55,11 @@ class AdditionalCostsController extends Controller
             ->with('project', 'provider')
             ->orderBy('updated_at', 'desc')
             ->get();
+        $additional_costs->transform(function($item){
+                $item->project->setAppends([]);
+                $item->setAppends(['real_amount']);
+                return $item;
+            });
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCostsRejected', [
             'additional_costs' => $additional_costs,
@@ -50,22 +70,15 @@ class AdditionalCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
-        $result = AdditionalCost::where('project_id', $project_id)->with('project', 'provider');
+        $result = AdditionalCost::where('project_id', $project_id)->with([
+                'project:id,description', 
+                'provider']);
         $result = $request->state === false ? $result->where('is_accepted', 0)
             : $result->where(function ($query) {
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             });
 
-        if (count($request->selectedZones) < 6) {
-            $result = $result->whereIn('zone', $request->selectedZones);
-        }
-        if (count($request->selectedExpenseTypes) < 11) {
-            $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
-        }
-        if (count($request->selectedDocTypes) < 5) {
-            $result = $result->whereIn('type_doc', $request->selectedDocTypes);
-        }
         if ($request->search) {
             $searchTerms = $request->input('search');
             $result = $result->where(function ($query) use ($searchTerms) {
@@ -75,17 +88,39 @@ class AdditionalCostsController extends Controller
                     ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-        $result = $result->get();
+
+        if (count($request->selectedZones) < 6) {
+            $result = $result->whereIn('zone', $request->selectedZones);
+        }
+        if (count($request->selectedExpenseTypes) < 14) {
+            $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
+        }
+        if (count($request->selectedDocTypes) < 5) {
+            $result = $result->whereIn('type_doc', $request->selectedDocTypes);
+        }
+        $result = $result->orderBy('doc_date')->get();
+
+        $result->transform(function($item){
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
+        
         return response()->json($result, 200);
     }
 
     public function store(AdditionalCostsRequest $request, $project_id)
     {
         $data = $request->validated();
+        $data['is_accepted'] = true;
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
-        AdditionalCost::create($data);
+        $item = AdditionalCost::create($data);
+        $item->load('project', 'provider:id,company_name');
+        $item->project->setAppends([]);
+        $item->setAppends(['real_amount']);
+        return response()->json($item, 200);
     }
 
     public function download_ac_photo(AdditionalCost $additional_cost_id)
@@ -139,14 +174,17 @@ class AdditionalCostsController extends Controller
         }
 
         $additional_cost->update($data);
-        return redirect()->back();
+        $additional_cost->load('project', 'provider:id,company_name');
+        $additional_cost->project->setAppends([]);
+        $additional_cost->setAppends(['real_amount']);
+        return response()->json($additional_cost, 200);
     }
 
     public function destroy(Project $project_id, AdditionalCost $additional_cost)
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
         $additional_cost->delete();
-        return to_route('projectmanagement.additionalCosts', ['project_id' => $project_id->id]);
+        return response()->json(['msg'=>'success'],200);
     }
 
 
@@ -187,4 +225,38 @@ class AdditionalCostsController extends Controller
         ]);
         return response()->json(['additional_cost' => $ac], 200);
     }
+
+
+    public function downloadImages($project_id)
+    {
+        
+        try {
+            $additionalCosts = AdditionalCost::where('project_id', $project_id)->where('is_accepted', 1)->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])->get();
+            $zipFileName = 'additionalCostsPhotos.zip';
+            $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
+            $zip = new ZipArchive;
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+                foreach ($additionalCosts as $cost) {
+                    if (!empty($cost->photo)) {
+                        $photoPath = public_path("/documents/additionalcosts/{$cost->photo}");
+                        if (file_exists($photoPath)) {
+                            $zip->addFile($photoPath, $cost->photo);
+                        } 
+                    }
+                }
+                $zip->close();
+                ob_end_clean();
+                return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    
+            } else {
+                Log::error('No se pudo abrir el archivo ZIP para escritura.');
+                return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al crear el archivo ZIP: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
+        }
+    }
+
+
 }

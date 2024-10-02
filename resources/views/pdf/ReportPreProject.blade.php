@@ -39,16 +39,15 @@
     <div>
         <table>
             <tr>
-                <td class="column" style="width:25%">
-                    <p></p>
+                <td class="column" style="text-align:center;">
+                    <img src="image/projectimage/logo_ccip.jpeg" width="90px" alt="" class="img-fluid">
                 </td>
                 <td class="column centered-text" style="width:50%;font-weight:bold;">
-                    <p>MEMORIA DESCRIPTIVA</p>
+                    <p>{{ $preproject->description }}</p>
                 </td>
                 <td class="column centered-text" style="width:25%">
-                    <p class="text-font-size" style="font-weight:bold;">SIG-PR20-F02-PER</p>
+                    <p class="text-font-size" style="font-weight:bold;">{{ $preproject->code }}</p>
                     <p class="text-font-size">Fecha de Aplicación:09/05/2021</p>
-                    <p class="text-font-size">Version:01</p>
                 </td>
             </tr>
         </table>

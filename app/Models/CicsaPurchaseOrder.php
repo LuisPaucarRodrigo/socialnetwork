@@ -31,4 +31,19 @@ class CicsaPurchaseOrder extends Model
     {
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
     }
+
+    public function cicsa_purchase_order_validation()
+    {
+        return $this->hasOne(CicsaPurchaseOrderValidation::class);
+    }
+
+    public function cicsa_service_order()
+    {
+        return $this->hasOne(CicsaServiceOrder::class);
+    }
+
+    public function cicsa_charge_area()
+    {
+        return $this->hasOne(CicsaChargeArea::class);
+    }
 }
