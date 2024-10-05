@@ -115,24 +115,30 @@
                                 <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
-                                    <a
+                                    <a v-if="item.goodTools"
                                         :href="route('checklist.toolkit.photo', {
                                             id: item.id, photoProp: 'goodTools'
                                         })"
                                     >
                                         <EyeIcon class="text-teal-500 w-5" />
                                     </a>
+                                    <p v-else>
+                                        -
+                                    </p>
                                 </td>
                                 <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
-                                    <a
+                                    <a v-if="item.badTools"
                                     :href="route('checklist.toolkit.photo', {
                                             id: item.id, photoProp: 'badTools'
                                         })"
                                     >
                                         <EyeIcon class="text-teal-500 w-5" />
                                     </a>
+                                    <p v-else>
+                                        -
+                                    </p>
                                 </td>
                                 <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
