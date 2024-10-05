@@ -157,7 +157,7 @@ class ChecklistsController extends Controller
     }
 
     public function toolkit_destroy ($id) {
-        $checklistToolkit = ChecklistCar::findOrFail($id);
+        $checklistToolkit = ChecklistToolkit::findOrFail($id);
         $checklistToolkit->badTools && $this->file_delete($checklistToolkit->badTools, 'image/checklist/checklisttoolkit');
         $checklistToolkit->goodTools && $this->file_delete($checklistToolkit->goodTools, 'image/checklist/checklisttoolkit');
         $checklistToolkit->delete();
