@@ -705,7 +705,7 @@ Usuarios
                     <span class="mx-3">Huawei</span>
                 </a>
                 <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.inventory.show')">Inventario de Huawei</Link>
+                    <Link class="w-full" :href="route('huawei.inventory.show', {warehouse: 1})">Inventario de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.sites')">Sites de Huawei</Link>
@@ -714,7 +714,7 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.projects')">Proyectos de Huawei</Link>
+                    <Link class="w-full" :href="route('huawei.projects', {status: 1, prefix: 'Claro'})">Proyectos de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>

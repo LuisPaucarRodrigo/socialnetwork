@@ -1,6 +1,6 @@
 <template>
     <Head title="Recursos del Proyecto para Liquidar" />
-    <AuthenticatedLayout :redirectRoute="'huawei.projects'">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {status: backStatus, prefix: 'Claro'}}">
       <template #header>
         Recursos del Proyecto {{ props.project_name }}
       </template>
@@ -36,7 +36,7 @@
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.serie_number }}</td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                            <div v-if="item.quantity !== 0 " class="flex items-center justify-center">
+                            <div v-if="item.quantity !== 0 && props.projectState == 1" class="flex items-center justify-center">
                                 <button @click.prevent="openLiquidateModal(item, true)" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                                     Liquidar
                                 </button>
@@ -76,7 +76,7 @@
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                            <div v-if="item.quantity !== 0 " class="flex items-center justify-center">
+                            <div v-if="item.quantity !== 0 && props.projectState == 1" class="flex items-center justify-center">
                                 <button @click.prevent="openLiquidateModal(item, false)" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                                     Liquidar
                                 </button>
@@ -158,8 +158,11 @@
     equipments: Object,
     materials: Object,
     huawei_project: String,
-    project_name: String
+    project_name: String,
+    projectState: Number
   });
+
+  const backStatus = props.projectState == 1 ? '1' : (props.projectState == null ? '2' : '3');
 
   const liquidate_modal = ref(false);
   const showModal = ref(false);

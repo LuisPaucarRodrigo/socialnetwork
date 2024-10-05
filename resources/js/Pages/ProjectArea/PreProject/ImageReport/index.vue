@@ -24,7 +24,7 @@
                 </div>
                 <div v-for="imageCode in preprojectImage.preproject_codes" :key="imageCode.id" class="border">
                     <div class="flex items-center justify-between">
-                        <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
+                        <h1 class="text-md font-bold text-gray-700 m-5">
                             {{ imageCode.code.code }} / {{ imageCode.code.description }}
                         </h1>
 

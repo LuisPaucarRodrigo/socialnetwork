@@ -1,6 +1,6 @@
 <template>
     <Head title="Detalles"/>
-    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.inventory.show', params: props.equipment ? { equipment: 1 } : { equipment: null } }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.inventory.show', params: props.equipment ? { warehouse: 1, equipment: 1 } : { warehouse: 1, equipment: null } }">
         <template #header>
             Detalles
         </template>
@@ -57,6 +57,9 @@
                                         Precio Unitario de Entrada
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        N° de Pedido
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         N° Serie Ingresada
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -103,7 +106,8 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openEditDate(item.id)" class="text-blue-600 hover:underline font-black text-sm">{{ formattedDate(item.entry_date ? item.entry_date : item.huawei_entry.entry_date) }}</button></td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_equipment_serie?.serie_number }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_equipment_serie.serie_number }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -156,6 +160,9 @@
                                         Precio Unitario de Entrada
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        N° de Pedido
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Observaciones del Material
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -177,6 +184,7 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -435,7 +443,7 @@
 
     const closeEditDate = () => {
         updateDateForm.reset();
-        updateDateForm.cleearErrors();
+        updateDateForm.clearErrors();
         updateDateModal.value = false;
     }
 

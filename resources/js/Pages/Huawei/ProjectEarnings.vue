@@ -2,18 +2,18 @@
 
     <Head title="Gestion de Ingresos" />
     <AuthenticatedLayout
-      :redirectRoute="{ route: 'huawei.projects'}">
+      :redirectRoute="{ route: 'huawei.projects', params: {status: backStatus, prefix: 'Claro'}}">
       <template #header>
-        Ingresos del Proyecto {{ props.huawei_project.name }}
+        Ingresos Proyectados del Proyecto {{ props.huawei_project.name }}
       </template>
       <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
     <!-- Botones principales visibles en pantallas grandes -->
     <div class="flex flex-col sm:flex-row gap-4 items-center">
-        <button @click.prevent="openCreateAdditionalModal" type="button" v-if="props.huawei_project.status"
+        <button @click.prevent="openCreateAdditionalModal" type="button" v-if="props.huawei_project.status && props.earnings.data.length > 0"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
             + Agregar
         </button>
-        <button @click.prevent="openImportModal" type="button" v-if="props.huawei_project.status"
+        <button @click.prevent="openImportModal" type="button" v-if="props.huawei_project.status && props.earnings.data.length == 0"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Importar Datos
         </button>
@@ -98,7 +98,7 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '-' }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + (item.unit_price * item.quantity).toFixed(2) : '-' }}</td>
-              <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+              <!-- <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <div class="flex justify-center items-center">
                     <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
                         <PencilSquareIcon class="h-5 w-5 ml-1" />
@@ -107,6 +107,16 @@
                         <TrashIcon class="h-5 w-5" />
                     </button>
                 </div>
+            </td> -->
+            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                <select id="selectState"
+                    @change="change_state(item.id, $event.target.value)">
+                    <option selected disabled>{{ item.state }}</option>
+                    <option v-for="option in availableOptions(item.state)" :key="option"
+                            :value="option">
+                            {{ option }}
+                    </option>
+                </select>
             </td>
             </tr>
           </tbody>
@@ -144,7 +154,22 @@
                             </div>
                         </div>
 
-                        <div class="col-span-1 sm:col-span-2">
+                        <div class="col-span-1">
+                            <InputLabel for="state" class="font-medium leading-6 text-gray-900">Estado</InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.state" id="state"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Selecciona un estado</option>
+                                    <option>Pendiente</option>
+                                    <option>En Proceso</option>
+                                    <option>Completado</option>
+                                    <option>Cancelado</option>
+                                </select>
+                                <InputError :message="form.errors.state" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 sm:col-span-1">
                             <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción del Ingreso</InputLabel>
                             <div class="mt-2">
                                 <textarea v-model="form.description" id="description"
@@ -222,6 +247,8 @@
       <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Ingreso" />
       <SuccessOperationModal :confirming="confirmImport" :title="'Éxito'"
       :message="'Se importaron los datos correctamente.'" />
+      <SuccessOperationModal :confirming="confirmUpdateState" :title="'Éxito'"
+      :message="'Se actualizó correctamente el estado de la línea.'" />
     </AuthenticatedLayout>
   </template>
 
@@ -252,6 +279,8 @@ const props = defineProps({
   total: Number
 });
 
+const backStatus = props.huawei_project.status == 1 ? '1' : (props.huawei_project.status == null ? '2' : '3');
+
 const hasPermission = (permission) => {
   return props.userPermissions.includes(permission);
 };
@@ -261,6 +290,7 @@ const form = useForm({
   description: '',
   quantity: '',
   unit_price: '',
+  state: '',
   huawei_project_id: props.huawei_project.id,
 });
 
@@ -279,6 +309,7 @@ const editingAdditional = ref(null);
 const importModal = ref(false);
 const confirmImport = ref(false);
 const dropdownOpen = ref(false);
+const confirmUpdateState = ref(false);
 
 const openImportModal = () => {
     importModal.value = true;
@@ -314,7 +345,7 @@ const openEditAdditionalModal = (additional) => {
   form.quantity = editingAdditional.value.quantity;
   form.unit_price = editingAdditional.value.unit_price;
   form.huawei_project_id = editingAdditional.value.huawei_project_id;
-
+  form.state = editingAdditional.value.state;
   editAdditionalModal.value = true;
 };
 
@@ -394,6 +425,29 @@ const search = () => {
     }else{
         router.visit(route('huawei.projects.earnings.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
     }
+}
+
+const availableOptions = (state) => {
+    const options = ref(['Pendiente', 'En Proceso', 'Completada', 'Cancelada']);
+    const filteredOptions = options.value.filter(option => option !== state);
+
+    return filteredOptions;
+}
+
+const change_state = (id, state) => {
+    router.put(route('huawei.projects.earnings.updatestate', {huawei_project: props.huawei_project.id, earning: id}), {state: state},
+        {onSuccess: () => {
+            confirmUpdateState.value = true;
+            setTimeout(()=> {
+                confirmUpdateState.value = false;
+                router.visit(route('huawei.projects.earnings', {huawei_project: props.huawei_project.id}));
+            }, 2000);
+        },
+        onError: (e) => {
+            console.error(e);
+        }
+    }
+    )
 }
 
 </script>

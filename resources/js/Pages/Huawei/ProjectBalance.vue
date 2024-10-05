@@ -2,7 +2,7 @@
 
     <Head title="Gestion de Gastos" />
     <AuthenticatedLayout
-      :redirectRoute="{ route: 'huawei.projects'}">
+      :redirectRoute="{ route: 'huawei.projects', params: {status: backStatus, prefix: 'Claro'}}">
       <template #header>
         Resumen de Gastos e Ingresos
       </template>
@@ -180,6 +180,8 @@
   const { huawei_project } = defineProps({
     huawei_project: Object
   });
+
+  const backStatus = huawei_project.status == 1 ? '1' : (huawei_project.status == null ? '2' : '3');
 
   const chartInstance = ref(null);
   const updateChart = () => {

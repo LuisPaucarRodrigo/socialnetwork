@@ -57,7 +57,7 @@ class ControlEmployees extends Controller
         try {
             $data = $request->validated();
             FixedDocumentation::updateOrCreate(
-                ['id', $fixed_documentation_id],
+                ['id' => $fixed_documentation_id],
                 $data
             );
         } catch (\Exception $e) {

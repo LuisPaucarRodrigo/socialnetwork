@@ -23,27 +23,66 @@ use Throwable;
 
 class HuaweiManagementController extends Controller
 {
-    public function show ($equipment = null)
+    public function show ($warehouse, $equipment = null)
     {
-            if ($equipment){
+        $prefix = null;
+
+        switch ($warehouse){
+            case '1':
+                $prefix = 'Claro';
+                break;
+            case '2':
+                $prefix = 'Entel';
+                break;
+            default:
+                $prefix = null;
+                abort(403, 'Acción no permitida');
+        }
+
+        if ($equipment){
+            $equipments = HuaweiEquipment::with('huawei_equipment_series', 'brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            foreach ($equipments as $item) {
+                $item->name = $this->sanitizeText2($item->name);
+            }
+
             return Inertia::render('Huawei/Materials', [
-                'equipments' => HuaweiEquipment::with('huawei_equipment_series', 'brand_model.brand')->paginate(10),
+                'equipments' => $equipments,
                 'brand_models' => BrandModel::all(),
                 'brands' => Brand::all(),
                 'equipment' => $equipment,
+                'warehouse' => $warehouse
             ]);
         } else {
+            $materials = HuaweiMaterial::with('brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            foreach ($materials as $material) {
+                $material->name = $this->sanitizeText2($material->name);
+            }
             return Inertia::render('Huawei/Materials', [
-                'materials' => HuaweiMaterial::with('brand_model.brand')->paginate(10),
+                'materials' => $materials,
                 'brand_models' => BrandModel::all(),
                 'brands' => Brand::all(),
-                'equipment' => $equipment
+                'equipment' => $equipment,
+                'warehouse' => $warehouse
             ]);
         }
     }
 
-    public function searchIndex($request, $equipment = null)
+    public function searchIndex($warehouse, $request, $equipment = null)
     {
+        $prefix = null;
+
+        switch ($warehouse){
+            case '1':
+                $prefix = 'Claro';
+                break;
+            case '2':
+                $prefix = 'Entel';
+                break;
+            default:
+                $prefix = null;
+                abort(403, 'Acción no permitida');
+        }
+
         $searchTerm = strtolower($request);
 
         if ($equipment) {
@@ -51,7 +90,7 @@ class HuaweiManagementController extends Controller
             $equipmentsQuery = HuaweiEquipment::query();
 
             // Aplicar filtros de búsqueda para equipos
-            $equipmentsQuery->where(function ($query) use ($searchTerm) {
+            $equipmentsQuery->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereHas('brand_model.brand', function ($query) use ($searchTerm) {
@@ -63,7 +102,11 @@ class HuaweiManagementController extends Controller
             });
 
             // Obtener los resultados de equipos
-            $equipments = $equipmentsQuery->with('huawei_equipment_series', 'brand_model.brand')->get();
+            $equipments = $equipmentsQuery->with('huawei_equipment_series', 'brand_model.brand')->get()
+                ->map(function ($equipment){
+                    $equipment->name = $this->sanitizeText2($equipment->name);
+                    return $equipment;
+                });
 
             // Retornar la vista para equipos
             return Inertia::render('Huawei/Materials', [
@@ -72,18 +115,23 @@ class HuaweiManagementController extends Controller
                 'brands' => Brand::all(),
                 'equipment' => $equipment,
                 'search' => $request,
+                'warehouse' => $warehouse
             ]);
         } else {
             $materialsQuery = HuaweiMaterial::query();
 
             // Aplicar filtros de búsqueda para materiales
-            $materialsQuery->where(function ($query) use ($searchTerm) {
+            $materialsQuery->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"]);
             });
 
             // Obtener los resultados de materiales
-            $materials = $materialsQuery->with('brand_model.brand')->get();
+            $materials = $materialsQuery->with('brand_model.brand')->get()
+                ->map(function ($material){
+                    $material->name = $this->sanitizeText2($material->name);
+                    return $material;
+                });
 
             // Retornar la vista para materiales
             return Inertia::render('Huawei/Materials', [
@@ -92,6 +140,7 @@ class HuaweiManagementController extends Controller
                 'brands' => Brand::all(),
                 'equipment' => $equipment,
                 'search' => $request,
+                'warehouse' => $warehouse
             ]);
         }
     }
@@ -101,10 +150,45 @@ class HuaweiManagementController extends Controller
     {
         return Inertia::render('Huawei/InventoryStore', [
             'brand_models' => BrandModel::all(),
-            'equipments' => HuaweiEquipment::with('brand_model', 'huawei_equipment_series')->get(),
-            'materials' => HuaweiMaterial::with('brand_model')->get(),
             'brands' => Brand::all(),
         ]);
+    }
+
+    public function getInventoryPerWarehouse ($value)
+    {
+        $materials = null;
+        $equipments = null;
+        switch ($value){
+            case '1':
+                $materials = HuaweiMaterial::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Claro')->with('brand_model:id,name,brand_id')->get();
+                $equipments = HuaweiEquipment::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Claro')->with('brand_model:id,name,brand_id')->get();
+                break;
+
+            case '2':
+                $materials = HuaweiMaterial::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Entel')->with('brand_model:id,name,brand_id')->get();
+                $equipments = HuaweiEquipment::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Entel')->with('brand_model:id,name,brand_id')->get();
+                break;
+
+            default:
+                abort(403, 'Acción no permitida');
+        }
+
+        $materials = $materials->makeHidden(['huawei_entry_details', 'quantity', 'available_quantity'])->transform(function ($material) {
+            $material->name = $this->sanitizeText2($material->name);
+            return $material;
+        });
+
+        $equipments = $equipments->makeHidden(['quantity', 'available_quantity'])->transform(function ($equipment) {
+            $equipment->name = $this->sanitizeText2($equipment->name);
+            return $equipment;
+        });
+
+        return response()->json(['materials' => $materials, 'equipments' => $equipments]);
+    }
+
+    private function sanitizeText2($text) {
+        // Usa una expresión regular para eliminar el texto entre paréntesis al principio del texto
+        return preg_replace('/^\(.*?\)\s*/', '', $text);
     }
 
     // public function antiquation ()
@@ -120,14 +204,18 @@ class HuaweiManagementController extends Controller
             'guide_number' => 'nullable|unique:huawei_entries,guide_number',
             'entry_date' => 'nullable',
             'observation' => 'nullable',
+            'order_number' => 'nullable',
             'materials' => 'nullable|array',
-            'equipments' => 'nullable|array'
+            'equipments' => 'nullable|array',
+            'warehouse' => 'required'
         ]);
 
         // Verificar si ambos materials y equipments están vacíos
         if (empty($request->materials) && empty($request->equipments)) {
             return back()->withErrors(['error_empty' => 'Debe agregar al menos un material o equipo.'])->withInput();
         }
+
+        DB::beginTransaction(); // Iniciar transacción
 
         // Crear entrada
         $huawei_entry = HuaweiEntry::create([
@@ -136,7 +224,18 @@ class HuaweiManagementController extends Controller
             'observation' => $request->observation
         ]);
 
-        DB::beginTransaction(); // Iniciar transacción
+        $warehouse = null;
+
+        switch ($request->warehouse){
+            case '1':
+                $warehouse = 'Claro';
+                break;
+            case '2':
+                $warehouse = 'Entel';
+                break;
+            default:
+                abort(403, 'Acción no permitida');
+        }
 
         try {
             // Manejar materiales
@@ -148,13 +247,15 @@ class HuaweiManagementController extends Controller
                             'huawei_material_id' => $material['material_id'],
                             'quantity' => $material['quantity'],
                             'unit_price' => $material['unit_price'],
-                            'observation' => $material['observation']
+                            'observation' => $material['observation'],
+                            'order_number' => $material['order_number']
                         ]);
                     } else {
                         $new_material = HuaweiMaterial::create([
-                            'name' => $material['name'],
+                            'name' => '(' . $warehouse . ') ' . $material['name'],
                             'claro_code' => $material['claro_code'],
-                            'unit' => $material['unit']
+                            'unit' => $material['unit'],
+                            'prefix' => $warehouse
                         ]);
 
                         HuaweiEntryDetail::create([
@@ -162,7 +263,8 @@ class HuaweiManagementController extends Controller
                             'huawei_material_id' => $new_material->id,
                             'quantity' => $material['quantity'],
                             'unit_price' => $material['unit_price'],
-                            'observation' => $material['observation']
+                            'observation' => $material['observation'],
+                            'order_number' => $material['order_number']
                         ]);
                     }
                 }
@@ -186,6 +288,11 @@ class HuaweiManagementController extends Controller
                                     return response()->json(['error' => 'Ocurrió un error durante la inserción de datos o se encontraron duplicados'], 500);
                                 }
 
+                                if (!$serie['order_number'] && !$request->order_number){
+                                    DB::rollBack();
+                                    abort(403, 'Acción no permitida.');
+                                }
+
                                 $new_serie = HuaweiEquipmentSerie::create([
                                     'huawei_equipment_id' => $equipment['equipment_id'], // Asegúrate de usar 'huawei_equipment_id' aquí
                                     'serie_number' => $serie['serie']
@@ -197,19 +304,26 @@ class HuaweiManagementController extends Controller
                                     'quantity' => 1,
                                     'unit_price' => $serie['unit_price'],
                                     'assigned_diu' => $serie['assigned_diu'],
-                                    'observation' => $serie['observation']
+                                    'observation' => $serie['observation'],
+                                    'order_number' => $serie['order_number']
                                 ]);
                             }
                         } else {
                             // Crear nuevo equipo
                             $new_equipment = HuaweiEquipment::create([
-                                'name' => $equipment['name'],
+                                'name' => '(' . $warehouse . ') ' . $equipment['name'],
                                 'claro_code' => $equipment['claro_code'],
                                 'model_id' => $equipment['brand_model'],
+                                'prefix' => $warehouse,
                                 'unit' => 'Unidad'
                             ]);
 
                             foreach ($equipment['series'] as $serie) {
+                                if (!$serie['order_number'] && !$request->order_number){
+                                    DB::rollBack();
+                                    abort(403, 'Acción no permitida.');
+                                }
+
                                 $new_serie = HuaweiEquipmentSerie::create([
                                     'huawei_equipment_id' => $new_equipment->id, // Usar el ID del nuevo equipo creado
                                     'serie_number' => $serie['serie']
@@ -221,7 +335,8 @@ class HuaweiManagementController extends Controller
                                     'quantity' => 1,
                                     'unit_price' => $serie['unit_price'],
                                     'assigned_diu' => $serie['assigned_diu'],
-                                    'observation' => $serie['observation']
+                                    'observation' => $serie['observation'],
+                                    'order_number' => $serie['order_number']
                                 ]);
                             }
                         }
@@ -235,6 +350,18 @@ class HuaweiManagementController extends Controller
             return response()->json(['error' => $e], 500);
         }
     }
+
+    public function verifySerie(Request $request, HuaweiEquipment $equipment)
+    {
+        $existingSeries = $equipment->huawei_equipment_series->pluck('serie_number')->toArray();
+
+        if (in_array($request->input('serie_number'), $existingSeries)) {
+            return response()->json(['message' => 'found'], 200);
+        }
+
+        return response()->json(['message' => 'notfound'], 200);
+    }
+
 
 
     public function storeBrand (Request $request)
@@ -270,8 +397,15 @@ class HuaweiManagementController extends Controller
             })
             ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
             ->paginate(10);
+
+            foreach ($entries as $entry){
+                $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
+            }
         } else {
             $entries = HuaweiEntryDetail::where('huawei_material_id', $id)->with('huawei_entry', 'huawei_material', 'huawei_project_resources.huawei_project', 'huawei_project_resources.huawei_project_liquidation')->paginate(10);
+            foreach ($entries as $entry){
+                $entry->huawei_material->name = $this->sanitizeText2($entry->huawei_material->name);
+            }
         }
 
         return Inertia::render('Huawei/Details', [
@@ -286,6 +420,10 @@ class HuaweiManagementController extends Controller
         $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
             ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
             ->paginate(20);
+
+        foreach ($equipments as $equipment){
+            $equipment->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_equipment_serie->huawei_equipment->name);
+        }
 
         return Inertia::render('Huawei/GeneralEquipments', [
             'equipments' => $equipments
@@ -353,6 +491,10 @@ class HuaweiManagementController extends Controller
             ->merge($assignedSiteFilteredEquipments)
             ->unique('id');
 
+        foreach ($finalEquipments as $equipment){
+            $equipment->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_equipment_serie->huawei_equipment->name);
+        }
+
         return Inertia::render('Huawei/GeneralEquipments', [
             'equipments' => $finalEquipments,
             'search' => $request
@@ -373,6 +515,10 @@ class HuaweiManagementController extends Controller
         })
         ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
         ->get();
+
+        foreach ($entries as $entry){
+            $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
+        }
 
         return Inertia::render('Huawei/Details', [
             'entries' => $entries,
@@ -456,6 +602,10 @@ class HuaweiManagementController extends Controller
                 ->merge($projectQuery)
                 ->merge($queryByCode)
                 ->unique('id')
+                ->map(function ($detail) {
+                    $detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($detail->huawei_equipment_serie->huawei_equipment->name); // Aplica la función de sanitización al nombre
+                    return $detail;
+                })
                 ->values(); // Asegurarse de que las claves sean secuenciales
 
         } else {
@@ -471,7 +621,11 @@ class HuaweiManagementController extends Controller
             // Obtener los resultados finales para no equipos
             $mergedResults = $query->distinct()
                 ->with('huawei_entry', 'huawei_material',)
-                ->get();
+                ->get()
+                ->map(function ($detail) {
+                    $detail->huawei_material->name = $this->sanitizeText2($detail->huawei_material->name); // Aplica la función de sanitización al nombre
+                    return $detail;
+                });
         }
 
 
@@ -548,12 +702,15 @@ class HuaweiManagementController extends Controller
         return redirect()->back();
     }
 
-    public function getRefunds ($equipment = null)
+    public function getRefunds ($warehouse, $equipment = null)
     {
         if ($equipment){
             $refunds = HuaweiRefund::with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment', 'huawei_entry_detail.huawei_entry')
                 ->whereHas('huawei_entry_detail', function ($query) {
                     $query->whereNull('huawei_material_id');
+                })
+                ->whereHas('huawei_entry_detail.huawei_equipment_serie.huawei_equipment', function ($query) use ($warehouse){
+                    $query->where('prefix', $warehouse);
                 })
                 ->paginate(10);
         }else{
@@ -561,22 +718,38 @@ class HuaweiManagementController extends Controller
                 ->whereHas('huawei_entry_detail', function ($query) {
                     $query->whereNull('huawei_equipment_serie_id');
                 })
+                ->whereHas('huawei_entry_detail.huawei_material', function ($query) use ($warehouse){
+                    $query->where('prefix', $warehouse);
+                })
                 ->paginate(10);
         }
+
+        foreach ($refunds as $refund) {
+            if ($equipment) {
+                $refund->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($refund->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
+            } else {
+                $refund->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($refund->huawei_entry_detail->huawei_material->name);
+            }
+        }
+
         return Inertia::render('Huawei/Refunds', [
             'refunds' => $refunds,
-            'equipment' => $equipment
+            'equipment' => $equipment,
+            'warehouse' => $warehouse
         ]);
     }
 
-    public function searchRefunds ($request, $equipment = null)
+    public function searchRefunds ($warehouse, $request, $equipment = null)
     {
         $searchTerm = strtolower($request);
 
         $query = HuaweiRefund::query();
 
         if ($equipment){
-            $query->whereHas('huawei_entry_detail', function ($query){
+            $query->whereHas('huawei_entry_detail.huawei_equipment_serie.huawei_equipment', function ($query) use ($warehouse){
+                $query->where('prefix', $warehouse);
+            })
+            ->whereHas('huawei_entry_detail', function ($query){
                 $query->whereNull('huawei_material_id');
             });
             $query->where(function ($query) use ($searchTerm) {
@@ -591,7 +764,10 @@ class HuaweiManagementController extends Controller
                 });
             });
         }else{
-            $query->whereHas('huawei_entry_detail', function ($query) {
+            $query->whereHas('huawei_entry_detail.huawei_material', function ($query) use ($warehouse){
+                $query->where('prefix', $warehouse);
+            })
+            ->whereHas('huawei_entry_detail', function ($query) {
                 $query->whereNull('huawei_equipment_serie_id');
             });
             $query->where(function ($query) use ($searchTerm){
@@ -605,11 +781,19 @@ class HuaweiManagementController extends Controller
         }
 
         $refunds = $query->with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment', 'huawei_entry_detail.huawei_material', 'huawei_entry_detail.huawei_entry')->get();
+        foreach ($refunds as $refund) {
+            if ($equipment) {
+                $refund->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($refund->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
+            } else {
+                $refund->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($refund->huawei_entry_detail->huawei_material->name);
+            }
+        }
 
         return Inertia::render('Huawei/Refunds', [
             'refunds' => $refunds,
             'equipment' => $equipment,
-            'search' => $request
+            'search' => $request,
+            'warehouse' => $warehouse
         ]);
     }
 

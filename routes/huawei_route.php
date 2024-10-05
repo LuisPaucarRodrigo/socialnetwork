@@ -17,32 +17,31 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     // Route::get('/huaweiLoads/{loadId}/exportpdf', [HuaweiController::class, 'exportHuaweiProducts'])->name('huawei.loads.exportpdf');
 
     //Inventory
-    Route::get('/huawei/inventory/{equipment?}', [HuaweiManagementController::class, 'show'])->name('huawei.inventory.show');
-    Route::get('/huawei/inventory/search/{request}/{equipment?}', [HuaweiManagementController::class, 'searchIndex'])->name('huawei.inventory.show.search');
-    Route::get('/huawei/inventory/create/get', [HuaweiManagementController::class, 'create'])->name('huawei.inventory.create');
-    Route::post('/huawei/inventory/create/post', [HuaweiManagementController::class, 'store'])->name('huawei.inventory.store');
+    Route::get('/huawei/inventory/{warehouse}/get/{equipment?}', [HuaweiManagementController::class, 'show'])->name('huawei.inventory.show');
+    Route::get('/huawei/inventory/search/{warehouse}/get/{request}/{equipment?}', [HuaweiManagementController::class, 'searchIndex'])->name('huawei.inventory.show.search');
+    Route::get('/huawei/inventory/create/form/get', [HuaweiManagementController::class, 'create'])->name('huawei.inventory.create');
+    Route::post('/huawei/inventory/create/form/post', [HuaweiManagementController::class, 'store'])->name('huawei.inventory.store');
     Route::post('/huawei/inventory/create/get/brand_post', [HuaweiManagementController::class, 'storeBrand'])->name('huawei.inventory.create.brand');
     Route::post('/huawei/inventory/create/get/brand_model_post', [HuaweiManagementController::class, 'storeBrandModel'])->name('huawei.inventory.create.brandmodel');
     Route::get('/huawei/inventory/details/{id}/{equipment?}', [HuaweiManagementController::class, 'showDetails'])->name('huawei.inventory.show.details');
     Route::get('/huawei/inventory/details/{id}/without_diu/get', [HuaweiManagementController::class, 'detailsWithoutDiu'])->name('huawei.inventory.show.details.withoutdiu');
     Route::get('/huawei/inventory/details/search/{id}/{request}/{equipment?}', [HuaweiManagementController::class, 'search'])->name('huawei.inventory.show.details.search');
     Route::post('/huawei/inventory/details/refunds/post/{equipment?}', [HuaweiManagementController::class, 'refund'])->name('huawei.inventory.details.refund');
-    Route::get('/huawei/inventory/refunds/get/{equipment?}', [HuaweiManagementController::class, 'getRefunds'])->name('huawei.inventory.refunds');
-    Route::get('/huawei/inventory/refunds/search/{request}/{equipment?}', [HuaweiManagementController::class, 'searchRefunds'])->name('huawei.inventory.refunds.search');
+    Route::get('/huawei/inventory/refunds/view/get/{warehouse}/{equipment?}', [HuaweiManagementController::class, 'getRefunds'])->name('huawei.inventory.refunds');
+    Route::get('/huawei/inventory/refunds/view/search/{warehouse}/{request}/{equipment?}', [HuaweiManagementController::class, 'searchRefunds'])->name('huawei.inventory.refunds.search');
     //Route::get('huawei/inventory/antiquation/get', [HuaweiManagementController::class, 'antiquation'])->name('huawei.inventory.antiquation');
     Route::post('/huawei/inventory/details/assign_diu/post', [HuaweiManagementController::class, 'assignDIU'])->name('huawei.inventory.details.assigndiu');
-    Route::get('/huawei/inventory/export/get', [HuaweiManagementController::class, 'exportInventory'])->name('huawei.inventory.export');
-    Route::get('/huawei/inventory/general_equipments/get', [HuaweiManagementController::class, 'getGeneralEquipments'])->name('huawei.inventory.general.equipments');
-    Route::get('/huawei/inventory/general_equipments/search/{request}', [HuaweiManagementController::class, 'searchGeneralEquipments'])->name('huawei.inventory.general.equipments.search');
+    Route::get('/huawei/inventory/export/general/export/get', [HuaweiManagementController::class, 'exportInventory'])->name('huawei.inventory.export');
+    Route::get('/huawei/inventory/general/general_equipments/get', [HuaweiManagementController::class, 'getGeneralEquipments'])->name('huawei.inventory.general.equipments');
+    Route::get('/huawei/inventory/general/general_equipments/search/{request}', [HuaweiManagementController::class, 'searchGeneralEquipments'])->name('huawei.inventory.general.equipments.search');
     Route::put('huawei/inventory/update_entry_detail_date/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateEntryDate'])->name('huawei.inventory.update.entrydetail');
     Route::put('huawei/inventory/update_entry_detail_site/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateSite'])->name('huawei.inventory.update.entrydetail.site');
-
+    Route::post('huawei/inventory/create/{equipment}/verify_serie/post', [HuaweiManagementController::class, 'verifySerie'])->name('huawei.inventory.create.verifyserie');
+    Route::get('huawei/inventory/create/{value}/get_inventory/get', [HuaweiManagementController::class, 'getInventoryPerWarehouse'])->name('huawei.inventory.create.getinventory');
     //projects
-    Route::get('huawei/projects/show', [HuaweiProjectController::class, 'show'])->name('huawei.projects');
-    Route::get('huawei/projects/search/{request}', [HuaweiProjectController::class, 'searchProject'])->name('huawei.projects.search');
+    Route::get('huawei/projects/show/{status}/{prefix}/get', [HuaweiProjectController::class, 'show'])->name('huawei.projects');
+    Route::get('huawei/projects/search/{status}/{prefix}/get/{request}', [HuaweiProjectController::class, 'searchProject'])->name('huawei.projects.search');
     Route::get('huawei/projects/prereport/{huawei_project}', [HuaweiProjectController::class, 'showPreReport'])->name('huawei.projects.prereport');
-    Route::get('huawei/projects/history', [HuaweiProjectController::class, 'projectHistory'])->name('huawei.projects.history');
-    Route::get('huawei/projects/history/search/{request}', [HuaweiProjectController::class, 'searchProjectHistory'])->name('huawei.projects.search.history');
     Route::get('huawei/projects/create', [HuaweiProjectController::class, 'create'])->name('huawei.projects.create');
     Route::post('huawei/projects/store', [HuaweiProjectController::class, 'store'])->name('huawei.projects.store');
     Route::get('huawei/projects/toUpdate/{huawei_project}', [HuaweiProjectController::class, 'toUpdate'])->name('huawei.projects.toupdate');
@@ -53,9 +52,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::put('huawei/projects/{huawei_project}/liquidate/put', [HuaweiProjectController::class, 'liquidateProject'])->name('huawei.projects.liquidateproject');
     Route::put('huawei/projects/{huawei_project}/cancel/put', [HuaweiProjectController::class, 'cancelProject'])->name('huawei.projects.cancelproject');
     Route::get('huawei/projects/balance/{huawei_project}/get', [HuaweiProjectController::class, 'projectBalance'])->name('huawei.projects.balance');
-    Route::get('huawei/projects/stopped/get', [HuaweiProjectController::class, 'showStoppedProjects'])->name('huawei.projects.stopped');
     Route::put('huawei/projects/stopped/{huawei_project}/put', [HuaweiProjectController::class, 'resumeProject'])->name('huawei.projects.stopped.resume');
-    Route::get('huawei/projects/stopped/{request}/search', [HuaweiProjectController::class, 'searchStoppedProjects'])->name('huawei.projects.stopped.search');
 
     //sites
     Route::get('huawei/sites/get', [HuaweiProjectController::class, 'getSites'])->name('huawei.sites');
@@ -92,7 +89,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/projects/{huawei_project}/resources/search/{request}/{equipment?}', [HuaweiProjectController::class, 'searchResources'])->name('huawei.projects.resources.search');
     Route::post('huawei/projects/{huawei_project}/resources/post/{equipment?}', [HuaweiProjectController::class, 'storeProjectResource'])->name('huawei.projects.resources.store');
     Route::put('huawei/projects/refund_resource/{huawei_resource}/{equipment?}', [HuaweiProjectController::class, 'refundResource'])->name('huawei.projects.refund');
-
+    Route::post('huawei/projects/{huawei_project}/resources/search_details/{id}/post/{equipment?}', [HuaweiProjectController::class, 'searchEntryDetails'])->name('huawei.projects.resources.searchdetails');
     //earnings
     Route::get('huawei/projects/{huawei_project}/earnings/get', [HuaweiProjectController::class, 'getEarnings'])->name('huawei.projects.earnings');
     Route::get('huawei/projects/{huawei_project}/earnings/search/{request}', [HuaweiProjectController::class, 'searchEarnings'])->name('huawei.projects.earnings.search');
@@ -101,7 +98,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/projects/earnings/{huawei_project_earning}/delete', [HuaweiProjectController::class, 'deleteEarning'])->name('huawei.projects.earnings.delete');
     Route::post('huawei/projects/{huawei_project}/earnings/import', [HuaweiProjectController::class, 'importEarnings'])->name('huawei.projects.earnings.import');
     Route::get('huawei/projects/{huawei_project}/earnings/export', [HuaweiProjectController::class, 'exportEarnings'])->name('huawei.projects.earnings.export');
-
+    Route::put('huawei/projects/{huawei_project}/earnings/{earning}/update_state', [HuaweiProjectController::class, 'updateEarningState'])->name('huawei.projects.earnings.updatestate');
     //real_earnings
     Route::get('huawei/projects/{huawei_project}/real_earnings/get', [HuaweiProjectController::class, 'getRealEarnings'])->name('huawei.projects.realearnings');
     Route::get('huawei/projects/{huawei_project}/real_earnings/search/{request}', [HuaweiProjectController::class, 'searchRealEarnings'])->name('huawei.projects.realearnings.search');

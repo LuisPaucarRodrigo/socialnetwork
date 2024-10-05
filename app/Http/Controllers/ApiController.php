@@ -69,11 +69,15 @@ class ApiController extends Controller
 
     public function users($id)
     {
-        $user = User::select('name', 'dni', 'email')->find($id);
-        if ($user) {
-            return response()->json($user);
-        } else {
-            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        try {
+			$user = User::select('id','name', 'dni', 'email')->find($id);
+			if ($user) {
+				return response()->json($user,200);
+			}
+		} catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
         }
     }
 
@@ -126,17 +130,17 @@ class ApiController extends Controller
                 $query->select('id', 'code');
             }]);
         }])->select('id', 'preproject_title_id', 'code_id')->find($id);
-        // $images = $data->code->code_images->map(function ($image) {
-        //     $image->image = url('/image/imageCode/' . $image->image);
-        //     return $image;
-        // });
+        $images = $data->code->code_images->map(function ($image) {
+            $image->image = url('/image/imageCode/' . $image->image);
+            return $image;
+        });
         $codesWith = [
             'id' => $data->id,
             'codePreproject' => $data->preprojectTitle->preproject->code,
             'code' => $data->code->code,
             'description' => $data->code->description,
             'status' => $data->status ?? $data->replaceable_status,
-            // 'images' => $images
+            'images' => $images
         ];
         return response()->json($codesWith);
     }

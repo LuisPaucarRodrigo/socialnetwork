@@ -1,6 +1,6 @@
 <template>
     <Head title="Devoluciones Huawei" />
-    <AuthenticatedLayout :redirectRoute="'huawei.inventory.show'">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 1}}">
       <template #header>
         {{ props.equipment ? 'Devolución de Equipos' : 'Devolución de Materiales' }}
       </template>
@@ -9,16 +9,27 @@
             <!-- Sección de enlaces -->
             <div class="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
                 <div v-if="props.equipment">
-                <Link :href="route('huawei.inventory.refunds')" type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-center text-white hover:bg-indigo-500">
+                <Link :href="route('huawei.inventory.refunds', {warehouse: props.warehouse})" type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-center text-white hover:bg-indigo-500">
                     Materiales
                 </Link>
                 </div>
                 <div v-else>
-                <Link :href="route('huawei.inventory.refunds', { equipment: 1 })" type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-center text-white hover:bg-indigo-500">
+                <Link :href="route('huawei.inventory.refunds', { warehouse: props.warehouse, equipment: 1 })" type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-center text-white hover:bg-indigo-500">
                     Equipos
                 </Link>
                 </div>
             </div>
+
+            <div class="flex items-center gap-2">
+                <p>Almacén</p>
+                <select v-model="selectedWarehouse" id="code" @change="changeWarehouse($event.target.value)"
+                    class="block w-full min-w-[150px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option disabled>Seleccione Almacén</option>
+                    <option value="Claro">Claro</option>
+                    <option value="Entel">Entel</option>
+                </select>
+            </div>
+
 
             <!-- Sección de búsqueda -->
             <div class="flex items-center mt-4 sm:mt-0 w-full sm:w-auto">
@@ -50,6 +61,9 @@
                             Número de Serie
                         </th>
                         <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                            Nª de Pedido
+                        </th>
+                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Guía de Entrada
                         </th>
                         <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -67,6 +81,7 @@
                         <tr v-for="item in (props.search ? props.refunds : refunds.data)" :key="item.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.huawei_equipment.name }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.serie_number }}</td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.order_number }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_entry.guide_number }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry_detail.huawei_entry.entry_date) }}</td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
@@ -92,6 +107,9 @@
                                 Cantidad Devuelta
                             </th>
                             <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                            Nª de Pedido
+                            </th>
+                            <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Guía de Entrada
                             </th>
                             <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -109,6 +127,7 @@
                             <tr v-for="item in (props.search ? props.refunds : refunds.data)" :key="item.id" class="text-gray-700">
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_material.name }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.order_number }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_entry.guide_number }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry_detail.huawei_entry.entry_date) }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
@@ -136,12 +155,16 @@
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import TextInput from '@/Components/TextInput.vue';
   import { formattedDate } from '@/utils/utils'
+  import { ref } from 'vue';
 
   const props = defineProps({
     refunds: Object,
     equipment: String,
-    search: String
+    search: String,
+    warehouse: String
   });
+
+  const selectedWarehouse = ref(props.warehouse);
 
   const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -154,17 +177,34 @@
   const search = () => {
         if (searchForm.searchTerm == '') {
             if (props.equipment){
-                router.visit(route('huawei.inventory.refunds', {equipment: 1}));
+                router.visit(route('huawei.inventory.refunds', {warehouse: props.warehouse, equipment: 1}));
             } else {
-                router.visit(route('huawei.inventory.refunds'));
+                router.visit(route('huawei.inventory.refunds', {warehouse: props.warehouse}));
             }
         } else {
             if (props.equipment){
-                router.visit(route('huawei.inventory.refunds.search', {request: searchForm.searchTerm, equipment: 1}));
+                router.visit(route('huawei.inventory.refunds.search', {warehouse: props.warehouse, request: searchForm.searchTerm, equipment: 1}));
             } else {
-                router.visit(route('huawei.inventory.refunds.search', {request: searchForm.searchTerm}));
+                router.visit(route('huawei.inventory.refunds.search', {warehouse: props.warehouse, request: searchForm.searchTerm}));
             }
         }
     }
+
+   const changeWarehouse = (value) => {
+    selectedWarehouse.value = value;
+    if (props.search){
+        if (props.equipment){
+            router.visit(route('huawei.inventory.refunds.search', {warehouse: selectedWarehouse.value, request: props.search, equipment: 1}));
+        }else{
+            router.visit(route('huawei.inventory.refunds.search', {warehouse: selectedWarehouse.value, request: props.search}));
+        }
+    }else{
+        if (props.equipment){
+            router.visit(route('huawei.inventory.refunds', {warehouse: selectedWarehouse.value, equipment: 1}));
+        }else{
+            router.visit(route('huawei.inventory.refunds', {warehouse: selectedWarehouse.value}));
+        }
+    }
+   }
 
   </script>

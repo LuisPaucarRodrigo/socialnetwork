@@ -15,7 +15,8 @@ class HuaweiEquipment extends Model
         'name',
         'claro_code',
         'model_id',
-        'unit'
+        'unit',
+        'prefix'
     ];
 
     protected $appends = [
