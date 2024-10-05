@@ -21,7 +21,8 @@ class HuaweiEntryDetail extends Model
         'assigned_diu',
         'observation',
         'entry_date',
-        'new_site'
+        'new_site',
+        'order_number'
     ];
 
     protected $appends = [

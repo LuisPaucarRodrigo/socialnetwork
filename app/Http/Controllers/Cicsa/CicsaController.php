@@ -34,6 +34,8 @@ use App\Models\CicsaPurchaseOrderValidation;
 use App\Models\ToolsGtd;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
@@ -372,25 +374,32 @@ class CicsaController extends Controller
     }
 
     public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_purchase_order_id = null)
-    {
-        $validateData = $request->validated();
-        $purchase_order_id = CicsaPurchaseOrder::updateOrCreate(
-            ['id' => $cicsa_purchase_order_id],
-            $validateData
-        );
-        if (!$cicsa_purchase_order_id) {
-            CicsaPurchaseOrderValidation::create([
-                'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
-                'cicsa_purchase_order_id' => $purchase_order_id->id
-            ]);
-            CicsaServiceOrder::create([
-                'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
-                'cicsa_purchase_order_id' => $purchase_order_id->id
-            ]);
-            CicsaChargeArea::create([
-                'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
-                'cicsa_purchase_order_id' => $purchase_order_id->id
-            ]);
+    {   
+        DB::beginTransaction();
+        try {
+            $validateData = $request->validated();
+            $purchase_order_id = CicsaPurchaseOrder::updateOrCreate(
+                ['id' => $cicsa_purchase_order_id],
+                $validateData
+            );
+            if (!$cicsa_purchase_order_id) {
+                CicsaPurchaseOrderValidation::create([
+                    'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
+                    'cicsa_purchase_order_id' => $purchase_order_id->id
+                ]);
+                CicsaServiceOrder::create([
+                    'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
+                    'cicsa_purchase_order_id' => $purchase_order_id->id
+                ]);
+                CicsaChargeArea::create([
+                    'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
+                    'cicsa_purchase_order_id' => $purchase_order_id->id
+                ]);
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
         }
     }
 

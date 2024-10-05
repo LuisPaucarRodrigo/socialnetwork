@@ -99,7 +99,7 @@
                             <td class="border-b border-gray-200 px-5 py-3 text-[13px]"
                                 :class="!item?.deposit_date ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item?.deposit_date) }}
+                                    {{ formattedDate(item?.payment_date) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 px-5 py-3 text-[13px]"

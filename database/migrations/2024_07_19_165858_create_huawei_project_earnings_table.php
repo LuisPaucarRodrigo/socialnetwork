@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
             $table->double('unit_price')->nullable();
             $table->integer('quantity');
+            $table->string('state');
             $table->timestamps();
         });
     }

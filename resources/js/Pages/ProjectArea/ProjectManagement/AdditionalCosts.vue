@@ -7,9 +7,11 @@
         }"
     >
         <template #header>
-            Gastos Variables del Proyecto {{ props.project_id.name }}
+            Gastos Variables del Proyecto 
+            {{ props.project_id.name }}
         </template>
         <br />
+        <Toaster richColors/>
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
@@ -280,11 +282,17 @@
             </div>
         </div>
         <div class="overflow-x-auto h-[85vh]">
-            <table class="w-full whitespace-no-wrap">
-                <thead>
+            <table class="w-full">
+                <thead class="sticky top-0 z-20">
                     <tr
-                        class="sticky top-0 z-20 border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
-                    >
+                        class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
+                    >   
+                    
+                        <th
+                            class="bg-gray-100 border-b-2 border-gray-20"
+                        >
+                        <div class="w-2"></div>
+                        </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
@@ -374,15 +382,17 @@
                         v-for="item in dataToRender"
                         :key="item.id"
                         class="text-gray-700"
-                        :class="[
-                            'border-l-8',
-                            {
-                                'border-indigo-500': item.is_accepted === null,
-                                'border-green-500': item.is_accepted == true,
-                                'border-red-500': item.is_accepted == false,
-                            },
-                        ]"
+                        
                     >
+                    <td :class="[
+                            'border-b border-gray-200',
+                            {
+                                'bg-indigo-500': item.is_accepted === null,
+                                'bg-green-500': item.is_accepted == true,
+                                'bg-red-500': item.is_accepted == false,
+                            },
+                        ]">
+                    </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -401,7 +411,7 @@
                             {{ item.type_doc }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums"
                         >
                             {{ item.ruc }}
                         </td>
@@ -411,7 +421,7 @@
                             {{ item?.provider?.company_name }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums"
                         >
                             {{ item.doc_number }}
                         </td>
@@ -421,12 +431,12 @@
                             {{ formattedDate(item.doc_date) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             S/. {{ item.amount.toFixed(2) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             S/. {{ item.real_amount.toFixed(2) }}
                         </td>
@@ -531,6 +541,10 @@
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
                         <td
+                            class="font-bold border-b border-gray-200 bg-white"
+                        >      
+                        </td>
+                        <td
                             class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         >
                             TOTAL
@@ -595,13 +609,15 @@
                 </tbody>
             </table>
         </div>
+        
         <div
             v-if="!filterMode"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
         >
             <pagination :links="additional_costs.links" />
         </div>
-        <Modal :show="create_additional">
+        <Modal :show="create_additional" @close="closeModal">
+            <!-- <Toaster richColors/> -->
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Agregar Costo adicional
@@ -626,12 +642,7 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option>Arequipa</option>
-                                        <option>Chala</option>
-                                        <option>Moquegua</option>
-                                        <option>Tacna</option>
-                                        <option>MDD1</option>
-                                        <option>MDD2</option>
+                                        <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -651,19 +662,7 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option>Hospedaje</option>
-                                        <option>Movilidad</option>
-                                        <option>Peaje</option>
-                                        <option>Seguros y Pólizas</option>
-                                        <option>Herramientas</option>
-                                        <option>Fletes</option>
-                                        <option>EPPs</option>
-                                        <option>
-                                            Gastos de Representación
-                                        </option>
-                                        <option>Consumibles</option>
-                                        <option>Equipos</option>
-                                        <option>Otros</option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -685,11 +684,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option>Efectivo</option>
-                                        <option>Deposito</option>
-                                        <option>Factura</option>
-                                        <option>Boleta</option>
-                                        <option>Voucher de Pago</option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -865,10 +860,11 @@
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeModal">
                                 Cancelar
-                            </SecondaryButton>
+                            </SecondaryButton>           
                             <button
                                 type="submit"
-                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Guardar
@@ -879,7 +875,7 @@
             </div>
         </Modal>
 
-        <Modal :show="editAdditionalModal">
+        <Modal :show="editAdditionalModal" @close="closeEditModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Editar Costo Adicional
@@ -904,12 +900,7 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option>Arequipa</option>
-                                        <option>Chala</option>
-                                        <option>Moquegua</option>
-                                        <option>Tacna</option>
-                                        <option>MDD1</option>
-                                        <option>MDD2</option>
+                                        <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -929,19 +920,7 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option>Hospedaje</option>
-                                        <option>Movilidad</option>
-                                        <option>Peaje</option>
-                                        <option>Seguros y Pólizas</option>
-                                        <option>Herramientas</option>
-                                        <option>Fletes</option>
-                                        <option>EPPs</option>
-                                        <option>
-                                            Gastos de Representación
-                                        </option>
-                                        <option>Consumibles</option>
-                                        <option>Equipos</option>
-                                        <option>Otros</option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -964,11 +943,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option>Efectivo</option>
-                                        <option>Deposito</option>
-                                        <option>Factura</option>
-                                        <option>Boleta</option>
-                                        <option>Voucher de Pago</option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -1201,7 +1176,8 @@
                             </SecondaryButton>
                             <button
                                 type="submit"
-                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
                                 class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
                                 Actualizar
@@ -1263,14 +1239,7 @@
             itemType="Costo Adicional"
             :deleteFunction="deleteAdditional"
             @closeModal="closeModalDoc"
-        />
-        <ConfirmCreateModal
-            :confirmingcreation="showModal"
-            itemType="Costo Adicional"
-        />
-        <ConfirmUpdateModal
-            :confirmingupdate="showModalEdit"
-            itemType="Costo Adicional"
+            :processing="isFetching"
         />
         <SuccessOperationModal
             :confirming="confirmImport"
@@ -1287,8 +1256,6 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
-import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -1307,7 +1274,9 @@ import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
+import { setAxiosErrors, toFormData } from "@/utils/utils";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1343,9 +1312,9 @@ const form = useForm({
     photo_status: "stable",
 });
 
+
+
 const create_additional = ref(false);
-const showModal = ref(false);
-const showModalEdit = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const editAdditionalModal = ref(false);
@@ -1376,60 +1345,61 @@ const openEditAdditionalModal = (additional) => {
 
 const closeModal = () => {
     form.reset();
+    isFetching.value = false
     create_additional.value = false;
 };
 
 const closeEditModal = () => {
     form.reset();
+    isFetching.value = false
     editAdditionalModal.value = false;
 };
 
-const submit = () => {
-    form.post(
-        route("projectmanagement.storeAdditionalCost", {
+const isFetching = ref(false)
+
+const submit = async () => {
+    try{
+        isFetching.value = true
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.storeAdditionalCost", {
             project_id: props.project_id.id,
-        }),
-        {
-            onSuccess: () => {
-                closeModal();
-                showModal.value = true;
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
+        }), formToSend)
+        dataToRender.value.unshift(res.data)
+        closeModal();
+        notify('Gasto Adicional Guardado')
+    }catch (e) {
+        isFetching.value = false
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
+        } else {
+            notifyError('Server Error')
         }
-    );
+    }
 };
 
-const submitEdit = () => {
-    form.post(
-        route("projectmanagement.updateAdditionalCost", {
+const submitEdit = async() => {
+    try{
+        isFetching.value = true
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(
+            route("projectmanagement.updateAdditionalCost", {
             additional_cost: form.id,
-        }),
-        {
-            onSuccess: () => {
-                closeEditModal();
-                showModalEdit.value = true;
-                setTimeout(() => {
-                    showModalEdit.value = false;
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                console.log(e);
-            },
+        }), formToSend)
+        let index = dataToRender.value.findIndex(item=>item.id == form.id)
+        dataToRender.value[index] = res.data
+        closeEditModal();
+        notify('Gasto Adicional Actualizado')
+    }catch (e) {
+        isFetching.value = false
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
+        }else {
+            notifyError('Server Error')
         }
-    );
+    }
 };
+
 
 const confirmDeleteAdditional = (additionalId) => {
     docToDelete.value = additionalId;
@@ -1440,26 +1410,26 @@ const closeModalDoc = () => {
     confirmingDocDeletion.value = false;
 };
 
-const deleteAdditional = () => {
+const deleteAdditional = async () => {
     const docId = docToDelete.value;
-    if (docId) {
-        router.delete(
-            route("projectmanagement.deleteAdditionalCost", {
-                project_id: props.project_id.id,
-                additional_cost: docId,
-            }),
-            {
-                onSuccess: () => {
-                    closeModalDoc();
-                    router.visit(
-                        route("projectmanagement.additionalCosts", {
-                            project_id: props.project_id.id,
-                        })
-                    );
-                },
-            }
-        );
+    isFetching.value = true
+    try {
+        const res = await axios.delete(
+        route("projectmanagement.deleteAdditionalCost", {
+            project_id: props.project_id.id,
+            additional_cost: docId,
+        }))
+        isFetching.value = false
+        if (res?.data?.msg==='success'){
+            closeModalDoc()
+            notify('Gasto Adicional Eliminado')
+            let index = dataToRender.value.findIndex(item=>item.id == docId)
+            dataToRender.value.splice(index, 1);
+        }
+    } catch (e) {
+        isFetching.value = false
     }
+    
 };
 
 const handleRucDniAutocomplete = (e) => {
@@ -1482,45 +1452,33 @@ function handlerPreview(id) {
     );
 }
 
-const filterForm = ref({
-    search: "",
-    selectedZones: ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"],
-    selectedExpenseTypes: [
-        "Hospedaje",
-        "Movilidad",
-        "Peaje",
-        "Seguros y Pólizas",
-        "Herramientas",
-        "Fletes",
-        "EPPs",
-        "Gastos de Representación",
-        "Consumibles",
-        "Equipos",
-        "Otros",
-    ],
-    selectedDocTypes: [
-        "Efectivo",
-        "Deposito",
-        "Factura",
-        "Boleta",
-        "Voucher de Pago",
-    ],
-});
+const zones = [
+    "Arequipa", 
+    "Chala", 
+    "Moquegua", 
+    "Tacna", 
+    "MDD1", 
+    "MDD2"
+];
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
 const expenseTypes = [
     "Hospedaje",
-    "Movilidad",
-    "Peaje",
-    "Seguros y Pólizas",
-    "Herramientas",
-    "Fletes",
-    "EPPs",
-    "Gastos de Representación",
+    "Mensajería",
     "Consumibles",
+    "Pasaje Interprovincial",
+    "Taxis y Pasajes",
+    "Bandeos",
+    "Peaje",
+    "Herramientas",
     "Equipos",
+    "Daños de Vehículos",
+    "EPPs",
+    "Seguros y Pólizas",
+    "Gastos de Representación",
     "Otros",
 ];
+
+
 const docTypes = [
     "Efectivo",
     "Deposito",
@@ -1528,6 +1486,16 @@ const docTypes = [
     "Boleta",
     "Voucher de Pago",
 ];
+
+
+const filterForm = ref({
+    search: "",
+    selectedZones: zones,
+    selectedExpenseTypes: expenseTypes,
+    selectedDocTypes: docTypes
+});
+
+
 
 watch(
     () => [
@@ -1538,18 +1506,20 @@ watch(
     () => {
         filterMode.value = true;
         search_advance(filterForm.value);
-    },
-    { deep: true }
+    }
 );
 
-async function search_advance($data) {
-    let res = await axios.post(
-        route("additionalcost.advance.search", {
-            project_id: props.project_id.id,
-        }),
-        $data
-    );
-    dataToRender.value = res.data;
+async function search_advance(data) {
+    try {
+        let res = await axios.post(
+            route("additionalcost.advance.search", {
+                project_id: props.project_id.id,
+            }),data);
+        dataToRender.value = res.data;
+        notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+    }
 }
 
 async function handleSearch() {
@@ -1611,6 +1581,8 @@ function openExportPhoto() {
         uniqueParam;
     window.location.href = url;
 }
+
+
 
 watch([() => form.type_doc, () => form.zone], () => {
     if (

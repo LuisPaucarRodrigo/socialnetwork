@@ -3,6 +3,7 @@
 namespace App\Exports\CicsaProcess;
 
 use App\Models\CicsaAssignation;
+use App\Models\CicsaChargeArea;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -26,8 +27,11 @@ class ChargeAreaExport implements FromView, WithColumnWidths
                 'Monto',
                 'Encargado'
             ],
-            'cicsa_charge_areas' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-            ->with('cicsa_charge_area','cicsa_purchase_order')
+            'cicsa_charge_areas' => CicsaChargeArea::with(['cicsa_assignation' =>function($query){
+                $query->select('id', 'project_name', 'project_code', 'cpe');
+            },'cicsa_purchase_order' => function ($query){
+                $query->select('id','oc_number');
+            }])
             ->get()
         ]);
     }

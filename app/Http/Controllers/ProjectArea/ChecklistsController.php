@@ -157,7 +157,7 @@ class ChecklistsController extends Controller
     }
 
     public function toolkit_destroy ($id) {
-        $checklistToolkit = ChecklistCar::findOrFail($id);
+        $checklistToolkit = ChecklistToolkit::findOrFail($id);
         $checklistToolkit->badTools && $this->file_delete($checklistToolkit->badTools, 'image/checklist/checklisttoolkit');
         $checklistToolkit->goodTools && $this->file_delete($checklistToolkit->goodTools, 'image/checklist/checklisttoolkit');
         $checklistToolkit->delete();
@@ -259,15 +259,17 @@ class ChecklistsController extends Controller
     {
         $data = $request->validated();
         try {
-            $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
-            $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+            $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
+            $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
+            $endOfMonth = $doc_date->endOfMonth()->format('Y-m-d');
 
             $preprojectId = Preproject::where('date', '>=', $startOfMonth)
                 ->where('date', '<=', $endOfMonth)
                 ->where('customer_id', 1)
                 ->select('id')
                 ->first();
-            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            $projectId = Project::where('preproject_id', $preprojectId->id)
+                ->select('id')->first();
             if (!$projectId) {
                 return response()->json([
                     'error' => "No se encontraron preproyectos pint para este mes."
@@ -315,7 +317,7 @@ class ChecklistsController extends Controller
                 ], 404);
             }
             $userId = Auth::user()->id;
-            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount')->get();
+            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount','is_accepted','description')->get();
             return response()->json($expense, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -323,7 +325,4 @@ class ChecklistsController extends Controller
             ], 500);
         }
     }
-
-
-
 }

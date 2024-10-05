@@ -258,6 +258,7 @@ class DocumentController extends Controller
             $document->move(public_path('documents/documents/'), $data['title']);
         }
 
+
         $docItem->update($data);
         $docReg = $docItem->employee_id
             ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
@@ -271,6 +272,8 @@ class DocumentController extends Controller
             );
         if ($docReg) {
             $dataDocReg['document_id'] = $docItem->id;
+            $dataDocReg['employee_id'] = $docItem->employee_id;
+            $dataDocReg['e_employee_id'] = $docItem->e_employee_id;
             if ($docReg->exp_date === null) {
                 $dataDocReg['exp_date'] = $docItem->exp_date;
             }

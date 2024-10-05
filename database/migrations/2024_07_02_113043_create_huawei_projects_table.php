@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('pre_report')->nullable();
             $table->double('initial_amount')->nullable();
             $table->string('assigned_diu');
+            $table->string('prefix');
             $table->boolean('status')->nullable()->default(true);
             $table->timestamps();
         });

@@ -15,15 +15,15 @@
     <tbody>
         @foreach($purchaseOrders as $purchaseOrder)
         <tr>
-            <td> {{ $purchaseOrder->project_name }} </td>
-            <td> {{ $purchaseOrder->project_code }} </td>
-            <td> {{ $purchaseOrder->cpe }} </td>
-            <td> {{ $purchaseOrder->cicsa_purchase_order?->oc_date }} </td>
-            <td> {{ $purchaseOrder->cicsa_purchase_order?->oc_number }} </td>
-            <td> {{ $purchaseOrder->cicsa_purchase_order?->master_format }} </td>
-            <td> {{ $purchaseOrder->cicsa_purchase_order?->item3456 }} </td>
-            <td> {{ $purchaseOrder->cicsa_purchase_order?->budget }} </td>
-            <td> {{ $purchaseOrder->cicsa_purchase_order?->user_name }} </td>
+            <td> {{ $purchaseOrder->cicsa_assignation->project_name }} </td>
+            <td> {{ $purchaseOrder->cicsa_assignation->project_code }} </td>
+            <td> {{ $purchaseOrder->cicsa_assignation->cpe }} </td>
+            <td> {{ $purchaseOrder?->oc_date }} </td>
+            <td> {{ $purchaseOrder?->oc_number }} </td>
+            <td> {{ $purchaseOrder?->master_format }} </td>
+            <td> {{ $purchaseOrder?->item3456 }} </td>
+            <td> {{ $purchaseOrder?->budget }} </td>
+            <td> {{ $purchaseOrder?->user_name }} </td>
         </tr>
         @endforeach
     </tbody>

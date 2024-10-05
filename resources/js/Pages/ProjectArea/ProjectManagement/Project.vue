@@ -9,7 +9,7 @@
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-4">
                     <button v-if="hasPermission('ProjectManager')" @click="add_project" type="button"
-                        class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
+                        class="whitespace-nowrap inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                         + Agregar
                     </button>
                     <Link :href="route('projectscalendar.index')"
@@ -40,7 +40,7 @@
                                 <div class="dropdown">
                                     <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
                                         <button @click="add_project"
-                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Agregar
                                         </button>
                                     </div>
@@ -48,6 +48,14 @@
                                 <dropdown-link :href="route('projectscalendar.index')">
                                     Calendario
                                 </dropdown-link>
+                                <div class="dropdown">
+                                    <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
+                                        <button @click="()=>router.visit(route('projectmanagement.historial'))"
+                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Historial
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </template>
                     </dropdown>
@@ -129,13 +137,6 @@
                             Archivos
                             </Link>
                             <span v-else class="text-gray-400">Archivos</span>
-                            <div>
-                                <Link v-if="item.initial_budget > 0 && item.preproject.customer_id == 3"
-                                :href="route('huawei.show', { project: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Huawei
-                            </Link>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -165,7 +166,6 @@ const props = defineProps({
     auth: Object,
     userPermissions:Array
 })
-
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);

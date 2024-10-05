@@ -290,7 +290,6 @@ function modalStoreImage(id = null) {
     formImage.code_id = id ?? null;
     if (formImage.code_id) {
         formImage.images.length = 0
-        console.log('dasda')
     }
     showStoreImage.value = !showStoreImage.value
 }
@@ -406,7 +405,6 @@ const deleteCode = () => {
 function visuallyChangeImage() {
     const code = props.codes.data.find(code => code.id === codeId.value);
     if (code) {
-        console.log(code.code_images)
         const updatedImages = code.code_images.findIndex(image => image.id === imageId.value);
         if (updatedImages !== -1) {
             code.code_images.splice(updatedImages, 1);

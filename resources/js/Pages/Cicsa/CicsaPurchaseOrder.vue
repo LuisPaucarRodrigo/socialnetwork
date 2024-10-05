@@ -206,6 +206,7 @@
                                 <select id="master_format" v-model="form.master_format" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option>Pendiente</option>
+                                    <option>En Proceso</option>
                                     <option>Completado</option>
                                 </select>
                                 <InputError :message="form.errors.master_format" />
@@ -217,6 +218,7 @@
                                 <select id="item3456" v-model="form.item3456" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option>Pendiente</option>
+                                    <option>En Proceso</option>
                                     <option>Completado</option>
                                 </select>
                                 <InputError :message="form.errors.item3456" />
@@ -228,6 +230,7 @@
                                 <select id="budget" v-model="form.budget" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option>Pendiente</option>
+                                    <option>En Proceso</option>
                                     <option>Completado</option>
                                 </select>
                                 <InputError :message="form.errors.budget" />

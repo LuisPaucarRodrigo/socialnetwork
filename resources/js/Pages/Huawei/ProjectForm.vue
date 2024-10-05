@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyecto de Huawei" />
-    <AuthenticatedLayout :redirectRoute="'huawei.projects'">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {status: '1', prefix: 'Claro'}}">
         <template v-if="props.huawei_project" #header>
             Edición de proyecto
         </template>
@@ -26,6 +26,16 @@
                                 <div class="mt-2">
                                 <InputLabel class="font-medium leading-6 text-gray-900">
                                     {{ props.huawei_project.huawei_site.name }}
+                                </InputLabel>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Almacén
+                                </InputLabel>
+                                <div class="mt-2">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    {{ props.huawei_project.prefix }}
                                 </InputLabel>
                                 </div>
                             </div>
@@ -65,10 +75,24 @@
                                 <InputLabel for="huawei_site_id" class="font-medium leading-6 text-gray-900">Site
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select required id="type" v-model="form.huawei_site_id"
+                                    <select required id="huawei_site_id" v-model="form.huawei_site_id"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccione uno</option>
                                         <option v-for="item in props.huawei_sites" :key="item.id" :value="item.id">{{ item.name }}</option>
+                                    </select>
+                                </div>
+                                <InputError :message="form.errors.huawei_site_id" />
+                            </div>
+
+                            <div v-if="!props.huawei_project" class="sm:col-span-3">
+                                <InputLabel for="prefix" class="font-medium leading-6 text-gray-900">Almacén
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select required id="prefix" v-model="form.prefix"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">Seleccione uno</option>
+                                        <option>Claro</option>
+                                        <option>Entel</option>
                                     </select>
                                 </div>
                                 <InputError :message="form.errors.huawei_site_id" />
@@ -119,7 +143,7 @@
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-6">
+                            <div :class="props.huawei_project ? 'sm:col-span-6' : 'sm:col-span-3'">
                                 <InputLabel for="name" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
@@ -316,6 +340,7 @@ const initialState = {
     description: '',
     huawei_site_id: '',
     ot: '',
+    prefix: '',
     pre_report: null,
     employees: [],
     initial_amount: '',
@@ -348,7 +373,7 @@ const submit = () => {
                 showModal.value = true;
                 setTimeout(() => {
                     showModal.value = false;
-                    router.visit(route('huawei.projects'))
+                    router.visit(route('huawei.projects', {status: '1', prefix: 'Claro'}))
                 }, 2000);
             },
         })
@@ -358,7 +383,7 @@ const submit = () => {
                 showUpdateModal.value = true;
                 setTimeout(() => {
                     showUpdateModal.value = false;
-                    router.visit(route('huawei.projects'))
+                    router.visit(route('huawei.projects', {status: 1, prefix: 'Claro'}))
                 }, 2000);
             },
         })
