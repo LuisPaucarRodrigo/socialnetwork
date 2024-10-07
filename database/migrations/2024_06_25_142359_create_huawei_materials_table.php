@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('claro_code')->nullable();
             $table->string('unit');
+            $table->string('prefix');
             $table->foreignId('model_id')->nullable()->constrained('brand_models')->onDelete('cascade');
             $table->timestamps();
         });

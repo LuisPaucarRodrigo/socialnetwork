@@ -1,6 +1,6 @@
 <template>
     <Head title="Huawei" />
-    <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {equipment: 1}}">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: '1', equipment: 1}}">
       <template #header>
         Equipos
       </template>

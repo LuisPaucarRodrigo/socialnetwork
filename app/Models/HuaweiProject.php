@@ -18,6 +18,7 @@ class HuaweiProject extends Model
         'pre_report',
         'status',
         'initial_amount',
+        'prefix',
         'assigned_diu'
     ];
 

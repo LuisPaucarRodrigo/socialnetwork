@@ -1,13 +1,13 @@
   <template>
       <Head title="Agregar Entrada" />
-      <AuthenticatedLayout :redirectRoute="'huawei.inventory.show'">
+      <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 1} }">
         <template #header>
           <h1 class="text-lg font-semibold leading-7 text-gray-900">Agregar Entrada</h1>
         </template>
         <div class="min-w-full rounded-lg shadow p-6">
           <form class="mb-8">
-            <div class="grid grid-cols-2 gap-6">
-              <div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="col-span-1">
                 <label for="guide_number" class="block text-sm font-medium text-gray-700">Número de Guía</label>
                 <input
                   id="guide_number"
@@ -18,7 +18,7 @@
                 <InputError :message="form.errors.guide_number" />
               </div>
 
-              <div>
+              <div class="col-span-1">
                 <label for="entry_date" class="block text-sm font-medium text-gray-700">Fecha de Entrada</label>
                 <input
                   id="entry_date"
@@ -29,8 +29,34 @@
                 <InputError :message="form.errors.entry_date" />
               </div>
 
-              <div class="col-span-2">
-                <label for="entry_date" class="block text-sm font-medium text-gray-700">Observaciones</label>
+              <div class="col-span-1">
+                <label for="order_number" class="block text-sm font-medium text-gray-700">N° de Pedido</label>
+                <input
+                  id="order_number"
+                  type="text"
+                  v-model="form.order_number"
+                  class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+                <InputError :message="form.errors.order_number" />
+              </div>
+
+              <div class="col-span-1">
+                <label for="warehouse" class="block text-sm font-medium text-gray-700">Almacén</label>
+                <select
+                    id="warehouse"
+                    v-model="form.warehouse"
+                    @change="getInventory(form.warehouse)"
+                    class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                >
+                    <option value="" disabled>Selecciona una almacén</option>
+                    <option value="1">Claro</option>
+                    <option value="2">Entel</option>
+                </select>
+                <InputError :message="form.errors.warehouse" />
+            </div>
+
+            <div class="col-span-1 md:col-span-2">
+                <label for="observation" class="block text-sm font-medium text-gray-700">Observaciones</label>
                 <textarea
                   id="observation"
                   v-model="form.observation"
@@ -43,7 +69,7 @@
 
           </form>
           <div class="grid grid-cols-2 gap-x-12 gap-y-12">
-            <div class="col-span-2">
+            <div v-if="ready" class="col-span-2">
               <div class="flex items-center mb-4">
                   <h2 class="text-lg font-medium leading-7 text-gray-900 mr-4">Materiales</h2>
                   <button @click="openMaterialModal" type="button" class="text-blue-500 hover:text-purple-500">
@@ -76,6 +102,9 @@
                         Unidad
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                        N° de Pedido
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Observación
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -89,6 +118,7 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit_price ? item.unit_price : '-' }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
@@ -101,7 +131,7 @@
               </div>
             </div>
 
-            <div v-if="form.guide_number && form.entry_date" class="col-span-2">
+            <div v-if="form.guide_number && form.entry_date && ready" class="col-span-2">
               <div class="flex items-center mb-4">
                   <h2 class="text-lg font-medium leading-7 text-gray-900 mr-4">Equipos</h2>
                   <button @click="openEquipmentModal" type="button" class="text-blue-500 hover:text-purple-500">
@@ -157,7 +187,7 @@
 
           </div>
           <div class="mt-6 flex items-center justify-end gap-x-3">
-              <Link :href="route('huawei.inventory.show')" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700">Cancelar</Link>
+              <Link :href="route('huawei.inventory.show', {warehouse: 1})" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700">Cancelar</Link>
               <button @click="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-800">Guardar</button>
             </div>
         </div>
@@ -167,17 +197,21 @@
     <h2 class="text-base font-medium leading-7 text-gray-900">Agregar Material</h2>
     <form @submit.prevent="add_material" class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Contenido del formulario en un solo contenedor con grid -->
-      <div>
+      <div class="col-span-1 md:col-span-2">
         <InputLabel class="mb-1" for="name">Nombre</InputLabel>
-        <input v-model="materialForm.name"
-               type="text"
-               class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
-               @input="(e) => handleAutocomplete(e, true)"
-               autocomplete="off"
-               list="material-list" />
-
+        <div class="flex items-center gap-2">
+            <p>{{ '(' + prefix + ') ' }}</p>
+            <input
+                v-model="materialForm.name"
+                type="text"
+                class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
+                @input="(e) => handleAutocomplete(e, true)"
+                autocomplete="off"
+                list="material-list"
+            />
+        </div>
         <datalist id="material-list">
-          <option v-for="material in props.materials" :key="material.id" :value="material.name" :data-value="material"></option>
+          <option v-for="material in materials" :key="material.id" :value="material.name" :data-value="material"></option>
         </datalist>
       </div>
 
@@ -185,7 +219,10 @@
         <InputLabel class="mb-1" for="claro_code">Código de Claro</InputLabel>
         <input type="text" :disabled="autoCompletement" v-model="materialForm.claro_code" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
-
+      <div>
+        <InputLabel class="mb-1" for="order_number">N° de Pedido</InputLabel>
+        <input id="order_number" type="text" v-model="materialForm.order_number" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+      </div>
       <div>
         <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
         <input type="number" step="0.01" min="0" v-model="materialForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
@@ -207,7 +244,7 @@
         <input type="number" min="0" step="0.01" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
 
-      <div>
+      <div class="col-span-1">
         <InputLabel class="mb-1" for="observation">Observación</InputLabel>
         <textarea v-model="materialForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"></textarea>
       </div>
@@ -221,152 +258,135 @@
   </div>
 </Modal>
 
-        <Modal :show="equipmentModal">
-          <div class="p-6">
-            <h2 class="text-base font-medium leading-7 text-gray-900">Agregar Equipo</h2>
-            <form @submit.prevent="add_equipment" class="grid grid-cols-2 gap-3">
-              <!-- Primera Fila -->
-              <div class="col-span-2 grid grid-cols-2 gap-6">
-                <div>
-                  <InputLabel class="mb-1" for="claro_code">Nombre</InputLabel>
-                  <input v-model="equipmentForm.name"
-                        type="text"
-                        class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
-                        @input="(e) => handleAutocomplete(e, false)"
-                        autocomplete="off"
-                        list="material-list" />
+    <Modal :show="equipmentModal">
+    <div class="p-6">
+        <h2 class="text-base font-medium leading-7 text-gray-900">Agregar Equipo</h2>
+        <form @submit.prevent="add_equipment" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- Contenido del Formulario -->
+        <div class="col-span-1 md:col-span-2">
+            <InputLabel class="mb-1" for="name">Nombre</InputLabel>
+            <div class="flex items-center gap-2">
+            <p>{{ '(' + prefix + ') ' }}</p>
+            <input v-model="equipmentForm.name"
+                    type="text"
+                    class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
+                    @input="(e) => handleAutocomplete(e, false)"
+                    autocomplete="off"
+                    list="material-list" />
+            </div>
+            <datalist id="material-list">
+            <option v-for="equipment in equipments" :key="equipment.id" :value="equipment.name" :data-value="equipment"></option>
+            </datalist>
+        </div>
 
-                  <datalist id="material-list">
-                    <option v-for="equipment in props.equipments" :key="equipment.id" :value="equipment.name" :data-value="equipment"></option>
-                  </datalist>
-                </div>
-                <div>
-                  <InputLabel class="mb-1" for="claro_code">Código de Claro</InputLabel>
-                  <input type="text" :disabled="autoCompletement" v-model="equipmentForm.claro_code" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
-              </div>
+        <div class="col-span-1">
+            <div class="flex items-center gap-2">
+                <InputLabel for="brand" class="font-medium leading-6 text-gray-900 mb-1">Marca</InputLabel>
 
-              <!-- Segunda Fila -->
-              <div class="col-span-2 grid grid-cols-2 gap-6">
-                <div>
-                  <div class="flex items-center gap-2">
-                    <InputLabel for="brand" class="font-medium leading-6 text-gray-900 mb-1">Marca
-                    </InputLabel>
-                    <button type="button" @click="new_brand">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                          <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <select :disabled="autoCompletement" v-model="equipmentForm.brand" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
-                    <option value="" disabled>Seleccionar Marca</option>
-                    <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
-                  </select>
-                </div>
+            <button type="button" @click="new_brand">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </button>
+            </div>
+            <select :disabled="autoCompletement" v-model="equipmentForm.brand" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
+            <option value="" disabled>Seleccionar Marca</option>
+            <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
+            </select>
+        </div>
 
-                <div>
-                  <div class="flex items-center gap-2">
-                    <InputLabel for="model" class="font-medium leading-6 text-gray-900 mb-1">Modelo
-                    </InputLabel>
-                    <button type="button" @click="new_brand_model">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                          <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                      </svg>
-                    </button>
-                  </div>
-                    <select :disabled="autoCompletement" v-model="equipmentForm.brand_model" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
-                    <option value="" disabled>Seleccionar Modelo</option>
-                    <option v-for="model in filteredModels" :key="model.id" :value="model.id">{{ model.name }}</option>
-                  </select>
-                </div>
-              </div>
+        <div class="col-span-1">
+            <div class="flex items-center gap-2">
+                <InputLabel for="model" class="font-medium leading-6 text-gray-900 mb-1">Modelo</InputLabel>
 
-              <!-- Tercera Fila -->
-              <div class="col-span-2 grid grid-cols-2 gap-6">
-                <div class="col-span-1">
-                    <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
-                    <input type="number" step="0.01" min="0" v-model="equipmentForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
-                <div class="col-span-1">
-                    <InputLabel class="mb-1" for="unit_price">DIU Asignada</InputLabel>
-                    <input type="text" v-model="equipmentForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
-              </div>
+            <button type="button" @click="new_brand_model">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </button>
+            </div>
+            <select :disabled="autoCompletement" v-model="equipmentForm.brand_model" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
+            <option value="" disabled>Seleccionar Modelo</option>
+            <option v-for="model in filteredModels" :key="model.id" :value="model.id">{{ model.name }}</option>
+            </select>
+        </div>
 
-              <div class="col-span-2 grid grid-cols-2 gap-6">
+        <div class="col-span-1">
+            <InputLabel class="mb-1" for="claro_code">Código de Claro</InputLabel>
+            <input type="text" :disabled="autoCompletement" v-model="equipmentForm.claro_code" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        </div>
 
-                <div class="col-span-1">
-                    <InputLabel class="mb-1" for="unit_price">Observaciones del Equipo</InputLabel>
-                    <input v-model="equipmentForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                </div>
+        <div class="col-span-1">
+            <InputLabel class="mb-1" for="order_number">N° de Pedido</InputLabel>
+            <input type="text" v-model="equipmentForm.order_number" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        </div>
 
-                <div class="col-span-1">
-                    <InputLabel class="mb-1" for="quantity">Agregar Serie</InputLabel>
-                    <div class="flex items-center">
-                    <input type="text" v-model="newSerie" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                    <button type="button" @click="addSerie" class="ml-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                    </button>
-                    </div>
-                </div>
-              </div>
+        <div class="col-span-1">
+            <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
+            <input type="number" step="0.01" min="0" v-model="equipmentForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        </div>
 
+        <div class="col-span-1">
+            <InputLabel class="mb-1" for="assigned_diu">DIU Asignada</InputLabel>
+            <input type="text" v-model="equipmentForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        </div>
 
+        <div class="col-span-1">
+            <InputLabel class="mb-1" for="observation">Observaciones del Equipo</InputLabel>
+            <input v-model="equipmentForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        </div>
 
-              <div class="overflow-x-auto mt-3 col-span-2">
-                <table class="w-full whitespace-no-wrap">
-                  <thead>
-                    <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                        N°
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                        Serie
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                        DIU
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                        Precio Unitario
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                        Observación
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                    </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in equipmentForm.series" :key="index" class="text-gray-700">
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ index + 1 }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.serie }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.assigned_diu }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.observation }}</td>
-                      <div class="flex items-center">
-                          <button @click.prevent="removeSerie(index)" class="text-red-600 hover:underline mr-2 py-5"><TrashIcon class="h-5 w-5" /></button>
-                        </div>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+        <div class="col-span-1">
+            <InputLabel class="mb-1" for="new_serie">Agregar Serie</InputLabel>
+            <div class="flex items-center">
+            <input type="text" v-model="newSerie" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+            <button type="button" @click="addSerie" class="ml-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </button>
+            </div>
+        </div>
 
-              <!-- Botones de Acción -->
-              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeEquipmentModal">Cancelar</SecondaryButton>
-                <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
-              </div>
-            </form>
-          </div>
-        </Modal>
+        <!-- Tabla -->
+        <div class="col-span-1 sm:col-span-2 overflow-x-auto mt-3">
+            <table class="w-full whitespace-no-wrap">
+            <thead>
+                <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">N°</th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Serie</th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">DIU</th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Precio Unitario</th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">N° de Pedido</th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Observación</th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in equipmentForm.series" :key="index" class="text-gray-700">
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ index + 1 }}</td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.serie }}</td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.assigned_diu }}</td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.order_number }}</td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.observation }}</td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">
+                    <button @click.prevent="removeSerie(index)" class="text-red-600 hover:underline"><TrashIcon class="h-5 w-5" /></button>
+                </td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="col-span-1 sm:col-span-2 mt-6 flex items-center justify-end gap-x-6">
+            <SecondaryButton @click="closeEquipmentModal">Cancelar</SecondaryButton>
+            <PrimaryButton type="submit">Guardar</PrimaryButton>
+        </div>
+        </form>
+    </div>
+    </Modal>
+
 
         <Modal :show="serieModal">
           <div class="p-6">
@@ -388,6 +408,9 @@
                         Precio Unitario
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        N° de Pedido
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Observación
                       </th>
                     </tr>
@@ -398,6 +421,7 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.serie }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.assigned_diu }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.order_number }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.observation }}</td>
                     </tr>
                   </tbody>
@@ -448,9 +472,10 @@
           <SuccessOperationModal :confirming="addSuccess" title="" message="" />
           <SuccessOperationModal :confirming="showModal" title="Éxito" message="La entrada se registró correctamente." />
           <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'Debe proporcionar al menos un equipo o material'" />
-          <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos, excepto el precio unitario, código de claro, diu y observación.'" />
+          <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos, excepto el precio unitario, diu y observación.'" />
           <ErrorOperationModal :showError="existingSerie" :title="'Error'" :message="'El número de serie ya está registrado para este equipo.'" />
           <ErrorOperationModal :showError="newExistingResource" :title="'Error'" :message="'El material o equipo acaba de ser registrado.'" />
+          <ErrorOperationModal :showError="noOrderNumber" :title="'Error'" :message="'Si no tiene un número de pedido general debe especificarlo para cada equipo.'" />
 
         </AuthenticatedLayout>
     </template>
@@ -473,8 +498,6 @@
     const props = defineProps({
       brand_models: Object,
       brands: Object,
-      equipments: Object,
-      materials: Object
     });
 
     const materialModal = ref(false);
@@ -493,6 +516,11 @@
     const foundMaterial = ref(null);
     const existingSerie = ref(false);
     const newExistingResource = ref(false);
+    const materials = ref(null);
+    const equipments = ref(null);
+    const ready = ref(false);
+    const prefix = ref(null);
+    const noOrderNumber = ref(false);
 
     const openMaterialModal = () => {
       materialModal.value = true;
@@ -517,6 +545,8 @@
       guide_number: '',
       entry_date: '',
       observation: '',
+      warehouse: '',
+      order_number: '',
       materials: [],
       equipments: [],
     });
@@ -528,7 +558,8 @@
       unit_price: '',
       material_id: '',
       unit: '',
-      observation: ''
+      observation: '',
+      order_number: ''
     });
 
     const equipmentForm = useForm({
@@ -541,18 +572,38 @@
       equipment_id: '',
       assigned_diu: '',
       observation: '',
+      order_number: ''
     });
 
-    const addSerie = () => {
+    const addSerie = async () => {
+        if (!equipmentForm.order_number && !form.order_number){
+            noOrderNumber.value = true;
+            setTimeout(()=> {
+                noOrderNumber.value = false;
+            }, 2000)
+            return;
+        }
         if (newSerie.value.trim() === '') {
             return; // No se permite serie vacía
         }
 
         if (autoCompletement.value && foundEquipment.value) {
-            const foundSerie = foundEquipment.value.huawei_equipment_series.find(seriesItem => seriesItem.serie_number === newSerie.value);
-            const foundSerie2 = equipmentForm.series.find(seriesItem => seriesItem === newSerie.value);
 
-            if (foundSerie || foundSerie2) {
+            const foundSerie = ref(null);
+
+            const res = await axios.post(route('huawei.inventory.create.verifyserie', { equipment: foundEquipment.value.id }), {
+                serie_number: newSerie.value // Envía el número de serie en el cuerpo de la petición
+            })
+
+            if (res.data.message == 'found') {
+                foundSerie.value = 1;
+            }else{
+                foundSerie.value = null;
+            }
+
+            const foundSerie2 = equipmentForm.series.find(seriesItem => seriesItem.serie === newSerie.value);
+
+            if (foundSerie.value || foundSerie2) {
                 existingSerie.value = true;
                 setTimeout(() => {
                     existingSerie.value = false;
@@ -562,13 +613,14 @@
                     serie: newSerie.value,
                     assigned_diu: equipmentForm.assigned_diu,
                     unit_price: equipmentForm.unit_price,
-                    observation: equipmentForm.observation
+                    observation: equipmentForm.observation,
+                    order_number: equipmentForm.order_number ? equipmentForm.order_number : form.order_number
                 });
                 newSerie.value = '';
             }
-        } else {
-            const foundSerie = equipmentForm.series.find(seriesItem => seriesItem === newSerie.value);
 
+        } else {
+            const foundSerie = equipmentForm.series.find(seriesItem => seriesItem.serie === newSerie.value);
             if (foundSerie) {
                 existingSerie.value = true;
                 setTimeout(() => {
@@ -579,7 +631,8 @@
                     serie: newSerie.value,
                     assigned_diu: equipmentForm.assigned_diu,
                     unit_price: equipmentForm.unit_price,
-                    observation: equipmentForm.observation
+                    observation: equipmentForm.observation,
+                    order_number: equipmentForm.order_number ? equipmentForm.order_number : form.order_number
                 });
                 newSerie.value = '';
             }
@@ -635,7 +688,8 @@
             unit_price: materialForm.unit_price,
             material_id: materialForm.material_id,
             observation: materialForm.observation,
-            unit: materialForm.unit
+            unit: materialForm.unit,
+            order_number: materialForm.order_number ? materialForm.order_number : form.order_number
             });
 
             materialForm.reset();
@@ -650,11 +704,13 @@
     }
 
     const add_equipment = () => {
-      if (!equipmentForm.name || !equipmentForm.brand || !equipmentForm.brand_model || equipmentForm.series.length == 0){
+      if (!equipmentForm.name || !equipmentForm.brand || !equipmentForm.claro_code || !equipmentForm.brand_model || equipmentForm.series.length == 0){
         emptyModal.value = true;
         setTimeout(() => {
           emptyModal.value = false;
         }, 2000);
+
+
       }else{
           const existingEquipment = newEquipments.value.find(item => item.name === equipmentForm.name);
           if (existingEquipment){
@@ -670,7 +726,7 @@
                     brand_model: equipmentForm.brand_model,
                     series: equipmentForm.series ,
                     equipment_id: equipmentForm.equipment_id,
-                    unit: equipmentForm.unit
+                    unit: equipmentForm.unit,
                 });
 
                 equipmentForm.reset();
@@ -752,7 +808,7 @@
                 showModal.value = true;
                 setTimeout(() => {
                     showModal.value = false;
-                    router.visit(route('huawei.inventory.show'))
+                    router.visit(route('huawei.inventory.show', {warehouse: 1}))
                 }, 2000);
             },
             onError: (e) => {
@@ -767,7 +823,7 @@
     }
     const handleAutocomplete = (e, material) => {
     if (material) {
-        foundMaterial.value = props.materials.find(material =>
+        foundMaterial.value = materials.value.find(material =>
         material.name === e.target.value
         );
 
@@ -783,7 +839,7 @@
         materialForm.unit = '';
         }
     } else {
-        foundEquipment.value = props.equipments.find(equipment =>
+        foundEquipment.value = equipments.value.find(equipment =>
         equipment.name === e.target.value
         );
 
@@ -805,5 +861,31 @@
     }
     };
 
+    const getInventory = async (value) => {
+        ready.value = false;
+
+        await axios.get(route('huawei.inventory.create.getinventory', {value: value}))
+            .then(res => {
+                materials.value = res.data.materials;
+                equipments.value = res.data.equipments;
+                ready.value = true;
+                switch (value){
+                    case '1':
+                        prefix.value = 'Claro';
+                        break;
+                    case '2':
+                        prefix.value = 'Entel';
+                        break;
+                    default:
+                        prefix.value = null;
+                        break;
+                }
+
+            })
+            .catch(e => {
+                ready.value = false;
+                console.error(e);
+            })
+    };
 
     </script>
