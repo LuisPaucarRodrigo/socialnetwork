@@ -103,7 +103,7 @@
                             <template v-if="materialRow == item.id">
                                 <tr
                                     class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    <th 
+                                    <th
                                         class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
                                     <th
@@ -114,7 +114,7 @@
                                         class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Numero de Guia
                                     </th>
-                                    <th 
+                                    <th
                                         class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Lista de Materiales Recibidos
                                     </th>
@@ -456,7 +456,7 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { formattedDate } from '@/utils/utils.js';
+import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
@@ -514,36 +514,40 @@ function openEditSotModal(id, item, feasibility_materials) {
 }
 
 
-function submit() {
+async function submit() {
     let url = cicsa_assignation_id.value ? route('material.update', { cicsa_assignation_id: cicsa_assignation_id.value }) : route('material.store')
     if (cicsa_assignation_id.value) {
-        form.put(url, {
-            onSuccess: () => {
-                closeAddMaterialModal()
-                confirmUpdateMaterial.value = true
-                setTimeout(() => {
-                    confirmUpdateMaterial.value = false
-                    router.get(route('material.index'))
-                }, 1500)
-            },
-            onError: (e) => {
-                console.error(e)
+        try {
+            const response = await axios.put(url, form)
+            updateMaterial(false, response.data)
+            closeAddMaterialModal()
+            confirmUpdateMaterial.value = true
+            setTimeout(() => {
+                confirmUpdateMaterial.value = false
+            }, 1500)
+        } catch (error) {
+            if (error.response) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error(error)
             }
-        })
+        }
     } else {
-        form.post(url, {
-            onSuccess: () => {
-                closeAddMaterialModal()
-                confirmUpdateMaterial.value = true
-                setTimeout(() => {
-                    confirmUpdateMaterial.value = false
-                    router.get(route('material.index'))
-                }, 1500)
-            },
-            onError: (e) => {
-                console.error(e)
+        try {
+            const response = await axios.post(url, form)
+            updateMaterial(true, response.data)
+            closeAddMaterialModal()
+            confirmUpdateMaterial.value = true
+            setTimeout(() => {
+                confirmUpdateMaterial.value = false
+            }, 1500)
+        } catch (error) {
+            if (error.response) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error(error)
             }
-        })
+        }
     }
 
 }
@@ -556,7 +560,7 @@ function modalFeasibility() {
 
 const material_item = ref({
     id: '',
-    code_ax:'',
+    code_ax: '',
     name: '',
     unit: '',
     quantity: 0,
@@ -634,7 +638,7 @@ function submitImportExcel() {
         .then(response => {
             if (response.status === 200) {
                 form.cicsa_material_items = response.data;
-                modalImportMaterial();       
+                modalImportMaterial();
             }
         })
         .catch(error => {
@@ -651,7 +655,7 @@ const search = async ($search) => {
     try {
         const response = await axios.post(route('material.index'), { searchQuery: $search });
         materials.value = response.data.material;
-        
+
     } catch (error) {
         console.error('Error searching:', error);
     }
@@ -674,4 +678,16 @@ function updateMaterialItem(e) {
         material_item.value.unit = selectedItem.unit
     }
 }
+
+function updateMaterial(item, material) {
+    const index = materials.value.data.findIndex(item => item.id === material.cicsa_assignation_id);
+    if (item) {
+        materials.value.data[index].cicsa_materials.push(material)
+    } else {
+        console.log(material)
+        const indexMaterial = materials.value.data[index].cicsa_materials.findIndex(item => item.id === material.id);
+        materials.value.data[index].cicsa_materials[indexMaterial] = material
+    }
+}
+
 </script>

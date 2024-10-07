@@ -228,6 +228,7 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import { setAxiosErrors } from "@/utils/utils";
 
 const { assignation, auth } = defineProps({
     assignation: Object,
@@ -255,29 +256,34 @@ const form = useForm(
 
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
+
 function openAddAssignationModal() {
     showAddEditModal.value = true
 }
+
 function closeAddAssignationModal() {
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
 }
-function submitStore() {
+
+async function submitStore() {
     let url = route('assignation.storeOrUpdate');
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmAssignation.value = true
-            setTimeout(() => {
-                confirmAssignation.value = false
-                router.get(route('assignation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    try {
+        const response = await axios.put(url, form)
+        updateAssignation(null, response.data)
+        closeAddAssignationModal()
+        confirmAssignation.value = true
+        setTimeout(() => {
+            confirmAssignation.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
         }
-    })
+    }
 }
 
 const confirmUpdateAssignation = ref(false);
@@ -288,21 +294,23 @@ function openEditSotModal(item) {
     showAddEditModal.value = true
 }
 
-function submitUpdate() {
+async function submitUpdate() {
     let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false
-                router.get(route('assignation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.log(e)
+    try {
+        const response = await axios.put(url, form)
+        updateAssignation(form.id, response.data)
+        closeAddAssignationModal()
+        confirmUpdateAssignation.value = true
+        setTimeout(() => {
+            confirmUpdateAssignation.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
         }
-    })
+    }
 }
 
 function submit() {
@@ -318,4 +326,19 @@ const search = async ($search) => {
         console.error('Error searching:', error);
     }
 };
+
+function updateAssignation(cicsa_assignation_id, assignation) {
+    const index = assignations.value.data.findIndex(item => item.id === cicsa_assignation_id)
+    if (cicsa_assignation_id) {
+        assignations.value.data[index] = assignation
+    } else {
+        assignations.value.data.unshift(assignation);
+    }
+
+    if (assignations.value.data.length > assignations.value.per_page) {
+        assignations.value.data.pop();
+    }
+
+}
+
 </script>

@@ -96,19 +96,19 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{
-        formattedDate(
-            item.cicsa_installation?.pext_date
-        )
-    }}
+                                        formattedDate(
+                                            item.cicsa_installation?.pext_date
+                                        )
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{
-            formattedDate(
-                item.cicsa_installation?.pint_date
-            )
-        }}
+                                        formattedDate(
+                                            item.cicsa_installation?.pint_date
+                                        )
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -123,43 +123,43 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
                                 <button v-if="item?.total_materials?.length > 0" type="button" @click="
-        openMaterialsModal(item.total_materials)
-        ">
+                                    openMaterialsModal(item.total_materials)
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
                                 <button v-if="item?.cicsa_installation
-            ?.cicsa_installation_materials
-            ?.length > 0
-        " type="button" @click="
-        openInstMaterialsModal(
-            item.cicsa_installation
-                .cicsa_installation_materials
-        )
-        ">
+                                    ?.cicsa_installation_materials
+                                    ?.length > 0
+                                " type="button" @click="
+                                    openInstMaterialsModal(
+                                        item.cicsa_installation
+                                            .cicsa_installation_materials
+                                    )
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{
-        formattedDate(
-            item.cicsa_installation
-                ?.shipping_report_date
-        )
-    }}
+                                        formattedDate(
+                                            item.cicsa_installation
+                                                ?.shipping_report_date
+                                        )
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{
-            item.cicsa_installation
-                ?.projected_amount
-                ? "S/" +
-                item.cicsa_installation.projected_amount.toFixed()
-                : ""
-        }}
+                                        item.cicsa_installation
+                                            ?.projected_amount
+                                            ? "S/" +
+                                            item.cicsa_installation.projected_amount.toFixed(2)
+                                            : ""
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -175,14 +175,14 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900" @click="
-        openEditFeasibilityModal(
-            item.id,
-            item.cicsa_installation,
-            item.total_materials,
-            item?.cicsa_installation
-                ?.cicsa_installation_materials
-        )
-        ">
+                                        openEditFeasibilityModal(
+                                            item.id,
+                                            item.cicsa_installation,
+                                            item.total_materials,
+                                            item?.cicsa_installation
+                                                ?.cicsa_installation_materials
+                                        )
+                                        ">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -243,8 +243,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" v-model="form.projected_amount" autocomplete="off"
-                                    id="projected_amount" />
+                                <input type="number" v-model="form.projected_amount" id="projected_amount"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
                         </div>
@@ -302,6 +302,10 @@
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Recibidos
                                             </th>
+                                            <!-- <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Pint Usados
+                                            </th> -->
                                             <th
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Usados
@@ -322,18 +326,25 @@
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
                                                 {{ item?.quantity }}
                                             </td>
+                                            <!-- <td class="border-b border-slate-300 px-2 py-4">
+                                                <input required type="number" min="0" v-model="form.total_materials[i][
+                                                    'used_quantity'
+                                                ]
+                                                    " autocomplete="off" :max="item.quantity"
+                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                            </td> -->
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 <input required type="number" min="0" v-model="form.total_materials[i][
-        'used_quantity'
-        ]
-        " autocomplete="off" :max="item.quantity"
+                                                    'used_quantity'
+                                                ]
+                                                    " autocomplete="off" :max="item.quantity"
                                                     class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
                                                 {{
-        item?.quantity -
-        item.used_quantity
-    }}
+                                                    item?.quantity -
+                                                    item.used_quantity
+                                                }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -394,7 +405,7 @@
                 </div>
             </div>
         </Modal>
-        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+        <Modal :show="showMaterials" @close="closeMaterialsModal" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     Total Materiales Recibidos
@@ -449,7 +460,7 @@
             </div>
         </Modal>
 
-        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" max-width="md" :closeable="true">
+        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     Materiales Liquidados
@@ -488,8 +499,8 @@
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{
-        item?.quantity - item?.used_quantity
-    }}
+                                            item?.quantity - item?.used_quantity
+                                        }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -519,7 +530,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
@@ -527,11 +538,14 @@ import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import { formattedDate } from "@/utils/utils.js";
 import TextInput from "@/Components/TextInput.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
+import { setAxiosErrors } from "@/utils/utils";
+
 
 const { installation, auth } = defineProps({
     installation: Object,
     auth: Object,
 });
+
 const installations = ref(installation);
 
 const initialState = {
@@ -556,6 +570,7 @@ const mateiralObject = ref({
     quantity: 0,
     cicsa_feasibility_id: "",
 });
+
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
 const showModalMaterial = ref(false);
@@ -596,21 +611,23 @@ function openEditFeasibilityModal(
     showAddEditModal.value = true;
 }
 
-function submit() {
+async function submit() {
     let url = route("cicsa.installation.store", { ci_id: form?.id });
-    form.post(url, {
-        onSuccess: () => {
-            closeAddAssignationModal();
-            confirmUpdateAssignation.value = true;
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false;
-                router.get(route("cicsa.installation.index"));
-            }, 1500);
-        },
-        onError: (e) => {
-            console.error(e);
-        },
-    });
+    try {
+        const response = await axios.post(url, form);
+        updateInstallations(form.cicsa_assignation_id, response.data)
+        closeAddAssignationModal();
+        confirmUpdateAssignation.value = true;
+        setTimeout(() => {
+            confirmUpdateAssignation.value = false;
+        }, 1500);
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
+        }
+    }
 }
 
 function addMaterial() {
@@ -666,4 +683,9 @@ const search = async ($search) => {
         console.error("Error searching:", error);
     }
 };
+
+function updateInstallations(cicsa_assignation_id, installation) {
+    const index = installations.value.data.findIndex(item => item.id === cicsa_assignation_id);
+    installations.value.data[index].cicsa_installation = installation
+}
 </script>

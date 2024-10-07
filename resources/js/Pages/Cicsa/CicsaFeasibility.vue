@@ -319,6 +319,8 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import axios from 'axios';
+import { setAxiosErrors } from "@/utils/utils";
 
 const { feasibility, auth } = defineProps({
     feasibility: Object,
@@ -374,21 +376,39 @@ function openEditFeasibilityModal(id, item) {
 
 }
 
-function submit() {
+async function submit() {
     let url = route('feasibilities.storeOrUpdate', { cicsa_assignation_id: cicsa_assignation_id.value })
-    form.put(url, {
-        onSuccess: () => {
-            closeAddFeasibilityModal()
-            confirmUpdateFeasibility.value = true
-            setTimeout(() => {
-                confirmUpdateFeasibility.value = false
-                router.get(route('feasibilities.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    try {
+        const response = await axios.put(url, form);
+        console.log(response.data)
+        updateFeasibility(cicsa_assignation_id.value,response.data)
+        closeAddFeasibilityModal()
+        confirmUpdateFeasibility.value = true
+        setTimeout(() => {
+            confirmUpdateFeasibility.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
         }
-    })
+    }
+
+
+    // form.put(url, {
+    //     onSuccess: () => {
+    //         closeAddFeasibilityModal()
+    //         confirmUpdateFeasibility.value = true
+    //         setTimeout(() => {
+    //             confirmUpdateFeasibility.value = false
+    //             router.get(route('feasibilities.index'))
+    //         }, 1500)
+    //     },
+    //     onError: (e) => {
+    //         console.error(e)
+    //     }
+    // })
 }
 
 function addFeasibility() {
@@ -453,4 +473,10 @@ function updateMaterialItem(e) {
         feasibilityObject.value.unit = selectedItem.unit
     }
 }
+
+function updateFeasibility(cicsa_assignation_id, feasibility) {
+    const index = feasibilitys.value.data.findIndex(item => item.id === cicsa_assignation_id)
+    feasibilitys.value.data[index].cicsa_feasibility = feasibility
+}
+
 </script>

@@ -152,27 +152,51 @@ class CicsaController extends Controller
         return redirect()->back();
     }
 
-    public function chargeCicsa()
+    public function chargeCicsa(Request $request)
     {
-        $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
-            ->whereNotNull('invoice_number')
-            ->whereNotNull('invoice_date')
-            ->whereNotNull('amount')
-            ->where(function ($query) {
-                $query->orWhereNull('checking_account_amount')
-                    ->orWhereNull('amount_bank');
-            });
-        $dd = $charge_areas->get();
-        return Inertia::render('Cicsa/CicsaCollect', [
-            'charge_areas' => $charge_areas->paginate(20),
-            'total_amount' => $dd->sum('amount')
-        ]);
+        if ($request->isMethod('get')) {
+            $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
+                ->whereNotNull('invoice_number')
+                ->whereNotNull('invoice_date')
+                ->whereNotNull('amount')
+                ->where(function ($query) {
+                    $query->orWhereNull('checking_account_amount')
+                        ->orWhereNull('amount_bank');
+                });
+            $dd = $charge_areas->get();
+            return Inertia::render('Cicsa/CicsaCollect', [
+                'charge_areas' => $charge_areas->paginate(20),
+                'total_amount' => $dd->sum('amount')
+            ]);
+        } else {
+            $item = $request->searchQuery;
+            $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
+                ->where(function ($a) use ($item) {
+                    $a->whereNotNull('invoice_number')
+                        ->whereNotNull('invoice_date')
+                        ->whereNotNull('amount')
+                        ->where(function ($b) use ($item) {
+                            $b->whereHas('cicsa_assignation', function ($c) use ($item) {
+                                $c->where('project_name', 'like', "%$item%")
+                                    ->orWhere('project_code', 'like', "%$item%")
+                                    ->orWhere('cpe', 'like', "%$item%");
+                            });
+                        });
+                });
+
+
+            $dd = $charge_areas->get();
+            return response()->json([
+                'charge_areas' => $charge_areas->paginate(20),
+                'total_amount' => $dd->sum('amount')
+            ], 200);
+        }
     }
 
     public function indexAssignation(Request $request)
     {
         if ($request->isMethod('get')) {
-            $assignation = CicsaAssignation::paginate(20);
+            $assignation = CicsaAssignation::orderBy('created_at', 'desc')->paginate(2);
             return Inertia::render('Cicsa/CicsaAssignation', [
                 'assignation' => $assignation
             ]);
@@ -190,10 +214,11 @@ class CicsaController extends Controller
     public function updateOrStoreAssignation(StoreOrUpdateAssigantionRequest $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validated();
-        CicsaAssignation::updateOrCreate(
+        $cicsa_assigantion = CicsaAssignation::updateOrCreate(
             ['id' => $cicsa_assignation_id],
             $validateData
         );
+        return response()->json($cicsa_assigantion, 200);
     }
 
     public function exportAssignation()
@@ -239,6 +264,8 @@ class CicsaController extends Controller
                 $material
             );
         }
+        $cicsaFeasibility->load('cicsa_feasibility_materials');
+        return response()->json($cicsaFeasibility, 200);
     }
 
     public function exportFeasibilities()
@@ -281,7 +308,8 @@ class CicsaController extends Controller
                 CicsaMaterialsItem::create($item);
             }
         }
-        return redirect()->back();
+        $cicsaMaterial->load('cicsa_material_items');
+        return response()->json($cicsaMaterial, 200);
     }
 
     public function updateMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_assignation_id = null)
@@ -298,7 +326,9 @@ class CicsaController extends Controller
             $item['cicsa_material_id'] = $cicsaMaterial->id;
             CicsaMaterialsItem::create($item);
         }
-        return redirect()->back();
+
+        $cicsaMaterial->load('cicsa_material_items');
+        return response()->json($cicsaMaterial, 200);
     }
 
     public function searchMaterial(Request $request)
@@ -374,7 +404,7 @@ class CicsaController extends Controller
     }
 
     public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_purchase_order_id = null)
-    {   
+    {
         DB::beginTransaction();
         try {
             $validateData = $request->validated();
@@ -418,7 +448,8 @@ class CicsaController extends Controller
                     'cicsa_installation.user'
                 )
                 ->orderBy('assignation_date', 'desc')
-                ->paginate(20);
+                ->paginate();
+            // dd($installations);
             return Inertia::render('Cicsa/CicsaInstallation', [
                 'installation' => $installations
             ]);
@@ -453,6 +484,10 @@ class CicsaController extends Controller
             $material['cicsa_installation_id'] = $cicsaInstallation->id;
             CicsaInstallationMaterial::create($material);
         }
+
+        $cicsaInstallation->load('cicsa_installation_materials');
+
+        return response()->json($cicsaInstallation, 200);
     }
 
     public function exportInstallation()
