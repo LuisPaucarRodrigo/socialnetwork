@@ -12,7 +12,7 @@
                     <PrimaryButton @click="openAddAssignationModal" type="button">
                         + Agregar
                     </PrimaryButton>
-                    <a :href="route('assignation.export')"
+                    <a :href="route('assignation.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
 
@@ -236,6 +236,7 @@ const { assignation, auth } = defineProps({
 })
 
 const assignations = ref(assignation);
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 
 const initialState = {
     id: null,

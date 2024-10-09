@@ -6,7 +6,7 @@
         <template #header> Instalación PINT y PEXT </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between space-x-3">
-                <a :href="route('cicsa.installation.export')"
+                <a :href="route('cicsa.installation.export')  + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
@@ -546,6 +546,7 @@ const { installation, auth } = defineProps({
     auth: Object,
 });
 
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const installations = ref(installation);
 
 const initialState = {

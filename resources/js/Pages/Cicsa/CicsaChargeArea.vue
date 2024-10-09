@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('cicsa.charge_areas.export')"
+                <a :href="route('cicsa.charge_areas.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)"
@@ -414,6 +414,7 @@ const { charge_area, auth } = defineProps({
     auth: Object
 })
 
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const charge_areas = ref(charge_area)
 const invoice_number = ref(null)
 const errorAmount = ref(false)
