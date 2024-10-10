@@ -191,7 +191,7 @@
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     {{ form.id ? 'Editar Orden de Servicio' : 'Nueva Orden de Servicio' }} {{ oc_number ? ": " +
-        oc_number : ""
+                        oc_number : ""
                     }}
                 </h2>
                 <br>
@@ -308,7 +308,7 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { formattedDate } from '@/utils/utils.js';
+import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
 const { service_order, auth } = defineProps({
@@ -357,21 +357,23 @@ function openEditModal(item) {
     showAddEditModal.value = true
 }
 
-function submit() {
+async function submit() {
     let url = route('cicsa.service_orders.update', { cicsa_service_order_id: form.id });
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false
-                router.get(route('cicsa.service_orders'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    try {
+        const response = await axios.put(url, form)
+        updateServiceOrder(response.data)
+        closeAddAssignationModal()
+        confirmUpdateAssignation.value = true
+        setTimeout(() => {
+            confirmUpdateAssignation.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error(error)
         }
-    })
+    }
 }
 
 const search = async ($search) => {
@@ -389,5 +391,12 @@ const toggleDetails = (cicsa_service_order) => {
     } else {
         service_order_row.value = cicsa_service_order[0].cicsa_assignation_id;
     }
+}
+
+function updateServiceOrder(serviceOrder){
+    const validations = service_orders.value.data || service_orders.value;
+    const index = validations.findIndex(item => item.id === serviceOrder.cicsa_assignation_id)
+    const indexServiceOrder = validations[index].cicsa_service_order.findIndex(item => item.id === serviceOrder.id)
+    validations[index].cicsa_service_order[indexServiceOrder] = serviceOrder
 }
 </script>

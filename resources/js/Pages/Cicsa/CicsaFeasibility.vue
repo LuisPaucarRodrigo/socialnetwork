@@ -475,8 +475,9 @@ function updateMaterialItem(e) {
 }
 
 function updateFeasibility(cicsa_assignation_id, feasibility) {
-    const index = feasibilitys.value.data.findIndex(item => item.id === cicsa_assignation_id)
-    feasibilitys.value.data[index].cicsa_feasibility = feasibility
+    const validations = feasibilitys.value.data || feasibilitys.value;
+    const index = validations.findIndex(item => item.id === cicsa_assignation_id)
+    validations[index].cicsa_feasibility = feasibility
 }
 
 </script>

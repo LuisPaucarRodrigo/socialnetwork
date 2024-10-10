@@ -680,13 +680,14 @@ function updateMaterialItem(e) {
 }
 
 function updateMaterial(item, material) {
-    const index = materials.value.data.findIndex(item => item.id === material.cicsa_assignation_id);
+    const validations = materials.value.data || materials.value;
+    const index = validations.findIndex(item => item.id === material.cicsa_assignation_id);
     if (item) {
-        materials.value.data[index].cicsa_materials.push(material)
+        validations[index].cicsa_materials.push(material)
     } else {
         console.log(material)
-        const indexMaterial = materials.value.data[index].cicsa_materials.findIndex(item => item.id === material.id);
-        materials.value.data[index].cicsa_materials[indexMaterial] = material
+        const indexMaterial = validations[index].cicsa_materials.findIndex(item => item.id === material.id);
+        validations[index].cicsa_materials[indexMaterial] = material
     }
 }
 

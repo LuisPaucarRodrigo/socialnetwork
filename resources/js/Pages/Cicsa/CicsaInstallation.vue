@@ -685,7 +685,8 @@ const search = async ($search) => {
 };
 
 function updateInstallations(cicsa_assignation_id, installation) {
-    const index = installations.value.data.findIndex(item => item.id === cicsa_assignation_id);
-    installations.value.data[index].cicsa_installation = installation
+    const validations = installations.value.data || installations.value;
+    const index = validations.findIndex(item => item.id === cicsa_assignation_id);
+    validations[index].cicsa_installation = installation
 }
 </script>

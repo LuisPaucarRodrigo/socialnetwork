@@ -264,8 +264,9 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { formattedDate } from '@/utils/utils.js';
+import { formattedDate,setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import axios from 'axios';
 
 const { purchaseOrder, auth } = defineProps({
     purchaseOrder: Object,
@@ -318,25 +319,29 @@ function openEditModal(item, project_name, cpe) {
     showAddEditModal.value = true
 }
 
-function submit() {
+async function submit() {
     let url = cicsa_purchase_order_id.value ? route('purchaseOrder.storeOrUpdate', { cicsa_purchase_order_id: cicsa_purchase_order_id.value }) : route('purchaseOrder.storeOrUpdate')
-    form.post(url, {
-        onSuccess: () => {
-            closeAddPuchaseOrderModal()
+    try {
+        const response = await axios.post(url,form)
+        closeAddPuchaseOrderModal()
             if (cicsa_purchase_order_id.value) {
+                updatePurchaseOrder(false,response.data)
                 title.value = 'Orden de Compra Actualizada'
                 message.value = 'La Orden de Compra fue actualizada'
+            } else {
+                updatePurchaseOrder(true,response.data)
             }
             confirmPuchaseOrder.value = true
             setTimeout(() => {
                 confirmPuchaseOrder.value = false
-                router.get(route('purchase.order.index'))
             }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    } catch (error) {
+        if(error.response){
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error(error)
         }
-    })
+    }
 }
 
 const search = async ($search) => {
@@ -353,6 +358,17 @@ const toggleDetails = (purchase_order) => {
         purcahse_order_row.value = 0;
     } else {
         purcahse_order_row.value = purchase_order[0].cicsa_assignation_id;
+    }
+}
+
+function updatePurchaseOrder(item, purchaseOrder) {
+    const validations = purchaseOrders.value.data || purchaseOrders.value;
+    const index = validations.findIndex(item => item.id === purchaseOrder.cicsa_assignation_id);
+    if (item) {
+        validations[index].cicsa_purchase_order.push(purchaseOrder)
+    } else {
+        const indexMaterial = validations[index].cicsa_purchase_order.findIndex(item => item.id === purchaseOrder.id);
+        validations[index].cicsa_purchase_order[indexMaterial] = purchaseOrder
     }
 }
 </script>
