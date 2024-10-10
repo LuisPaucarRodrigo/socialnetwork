@@ -7,6 +7,7 @@ use App\Http\Controllers\Inventory\HuaweiController;
 use App\Http\Controllers\Huawei\HuaweiManagementController;
 use App\Http\Controllers\Huawei\HuaweiMobileController;
 use App\Http\Controllers\Huawei\HuaweiProjectController;
+use App\Http\Controllers\Huawei\QuickMaterialsController;
 
 Route::middleware('permission:HuaweiManager')->group(function () {
     // Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
@@ -164,6 +165,21 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::put('huawei/projects/stages/approve_code/{code}/put', [HuaweiMobileController::class, 'approveCode'])->name('huawei.projects.stages.approveCode');
     Route::post('huawei/projects/{huawei_project}/add_stage/post', [HuaweiMobileController::class, 'addStage'])->name('huawei.projects.stages.addStage');
     Route::put('huawei/projects/{stage}/update_stage/put', [HuaweiMobileController::class, 'enableOrDisable'])->name('huawei.projects.stages.updatestage');
+
+    //quick_materials
+    Route::get('huawei/quick_materials/get', [QuickMaterialsController::class, 'getMaterials'])->name('huawei.quickmaterials');
+    Route::get('huawei/quick_materials/{request}/search', [QuickMaterialsController::class, 'searchMaterial'])->name('huawei.quickmaterials.search');
+    Route::post('huawei/quick_materials/post', [QuickMaterialsController::class, 'storeMaterial'])->name('huawei.quickmaterials.store');
+    Route::put('huawei/quick_materials/{material}/update', [QuickMaterialsController::class, 'updateMaterial'])->name('huawei.quickmaterials.update');
+    Route::delete('huawei/quick_materials/{material}/delete', [QuickMaterialsController::class, 'deleteMaterial'])->name('huawei.quickmaterials.delete');
+    Route::post('huawei/quick_materials/verify_name/{update?}', [QuickMaterialsController::class, 'verifyName'])->name('huawei.quickmaterials.verifyname');
+    //quick_materials_details
+    Route::get('huawei/quick_materials/{material_id}/details/get', [QuickMaterialsController::class, 'index'])->name('huawei.quickmaterials.details');
+    Route::post('huawei/quick_materials/{material_id}/details/store', [QuickMaterialsController::class, 'store'])->name('huawei.quickmaterials.details.store');
+    Route::delete('huawei/quick_materials/details/{quick_material}/delete', [QuickMaterialsController::class, 'destroy'])->name('huawei.quickmaterials.details.delete');
+
+    //outputs-
+    Route::post('huawei/quick_materials/details/store/output/{entry_id}', [QuickMaterialsController::class, 'storeOutput'])->name('huawei.quickmaterials.details.output.store');
 });
 
 
