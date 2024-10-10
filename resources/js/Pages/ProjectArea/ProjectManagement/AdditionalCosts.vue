@@ -1582,8 +1582,6 @@ function openExportPhoto() {
     window.location.href = url;
 }
 
-
-
 watch([() => form.type_doc, () => form.zone], () => {
     if (
         form.type_doc === "Factura" &&

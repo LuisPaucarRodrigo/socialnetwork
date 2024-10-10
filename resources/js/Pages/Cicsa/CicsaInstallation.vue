@@ -6,7 +6,7 @@
         <template #header> Instalación PINT y PEXT </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between space-x-3">
-                <a :href="route('cicsa.installation.export')  + '?' + uniqueParam"
+                <a :href="route('cicsa.installation.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
@@ -287,10 +287,10 @@
                     <template v-if="true">
                         <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
                             <div class="flex gap-2 items-center">
-                                <b>Liquidación de Materiales</b>
+                                <b>Liquidación de Pint</b>
                             </div>
                             <br />
-                            <div v-if="form.total_materials.length > 0" class="overflow-auto">
+                            <div v-if="pintList.length > 0" class="overflow-auto">
                                 <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
                                     <thead>
                                         <tr
@@ -302,10 +302,6 @@
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Recibidos
                                             </th>
-                                            <!-- <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Pint Usados
-                                            </th> -->
                                             <th
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Usados
@@ -319,22 +315,15 @@
                                     <tbody>
                                         <tr v-for="(
                                                 item, i
-                                            ) in form.total_materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                            ) in pintList" :key="i" class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 {{ item?.name }}
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
                                                 {{ item?.quantity }}
                                             </td>
-                                            <!-- <td class="border-b border-slate-300 px-2 py-4">
-                                                <input required type="number" min="0" v-model="form.total_materials[i][
-                                                    'used_quantity'
-                                                ]
-                                                    " autocomplete="off" :max="item.quantity"
-                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                            </td> -->
                                             <td class="border-b border-slate-300 px-2 py-4">
-                                                <input required type="number" min="0" v-model="form.total_materials[i][
+                                                <input required type="number" min="0" v-model="pintList[i][
                                                     'used_quantity'
                                                 ]
                                                     " autocomplete="off" :max="item.quantity"
@@ -352,6 +341,64 @@
                             </div>
                             <div v-else>No hay materiales por liquidar</div>
                         </div>
+
+                        <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
+                            <div class="flex gap-2 items-center">
+                                <b>Liquidación de Pext</b>
+                            </div>
+                            <br />
+                            <div v-if="pextList.length > 0" class="overflow-auto">
+                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                    <thead>
+                                        <tr
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                                Material
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Recibidos
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Usados
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Resto
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(
+                                                item, i
+                                            ) in pextList" :key="i" class="text-gray-700 bg-white text-sm">
+                                            <td class="border-b border-slate-300 px-2 py-4">
+                                                {{ item?.name }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item?.quantity }}
+                                            </td>
+                                            <td class="border-b border-slate-300 px-2 py-4">
+                                                <input required type="number" min="0" v-model="pextList[i][
+                                                    'used_quantity'
+                                                ]
+                                                    " autocomplete="off" :max="item.quantity"
+                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{
+                                                    item?.quantity -
+                                                    item.used_quantity
+                                                }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div v-else>No hay materiales por liquidar</div>
+                        </div>
+
 
                         <InputError :message="form.errors.total_materials" />
                     </template>
@@ -427,6 +474,9 @@
                                         Unidad
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Tipo
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Cantidad
                                     </th>
                                 </tr>
@@ -441,6 +491,9 @@
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.unit }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.type }}
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.quantity }}
@@ -482,6 +535,9 @@
                                         Usados
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Tipo
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Resto
                                     </th>
                                 </tr>
@@ -496,6 +552,9 @@
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.used_quantity }}
+                                    </td>
+                                    <td class="border-b border-slate-300 px-4 py-4">
+                                        {{ item?.type }}
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{
@@ -531,7 +590,6 @@ import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { Head, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
@@ -539,6 +597,7 @@ import { formattedDate } from "@/utils/utils.js";
 import TextInput from "@/Components/TextInput.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { setAxiosErrors } from "@/utils/utils";
+import { ref, watch } from "vue";
 
 
 const { installation, auth } = defineProps({
@@ -548,6 +607,8 @@ const { installation, auth } = defineProps({
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const installations = ref(installation);
+const pintList = ref([])
+const pextList = ref([])
 
 const initialState = {
     user_id: auth.user.id,
@@ -612,7 +673,20 @@ function openEditFeasibilityModal(
     showAddEditModal.value = true;
 }
 
+watch(() => form.total_materials, (newVal) => {
+    pintList.value = [];
+    pextList.value = [];
+    newVal.forEach(item => {
+        if (item.type === "Pint") {
+            pintList.value.push(item);
+        } else {
+            pextList.value.push(item);
+        }
+    })
+});
+
 async function submit() {
+    form.total_materials = pintList.value.concat(pextList.value);
     let url = route("cicsa.installation.store", { ci_id: form?.id });
     try {
         const response = await axios.post(url, form);

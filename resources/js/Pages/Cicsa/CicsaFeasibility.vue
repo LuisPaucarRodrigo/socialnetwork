@@ -395,21 +395,6 @@ async function submit() {
             console.error('Error desconocido:', error);
         }
     }
-
-
-    // form.put(url, {
-    //     onSuccess: () => {
-    //         closeAddFeasibilityModal()
-    //         confirmUpdateFeasibility.value = true
-    //         setTimeout(() => {
-    //             confirmUpdateFeasibility.value = false
-    //             router.get(route('feasibilities.index'))
-    //         }, 1500)
-    //     },
-    //     onError: (e) => {
-    //         console.error(e)
-    //     }
-    // })
 }
 
 function addFeasibility() {

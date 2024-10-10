@@ -149,7 +149,7 @@
                                     <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             <button class="text-blue-900"
-                                                @click="openEditSotModal(item.id, materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
+                                                @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
                                                     class="w-5 h-5 text-amber-400">
@@ -378,6 +378,9 @@
                                         Unidad
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Tipo
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Cantidad
                                     </th>
                                 </tr>
@@ -392,6 +395,9 @@
                                     </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.unit }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.type }}
                                     </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.quantity }}
@@ -489,6 +495,7 @@ const formImport = useForm({
 const showAddEditModal = ref(false);
 const confirmMaterial = ref(false);
 const cicsa_assignation_id = ref(null);
+const cicsa_material_id = ref(null);
 const materialRow = ref(0);
 const showModalImport = ref(false);
 
@@ -501,8 +508,8 @@ function closeAddMaterialModal() {
 
 const confirmUpdateMaterial = ref(false);
 
-function openEditSotModal(id, item, feasibility_materials) {
-    cicsa_assignation_id.value = id;
+function openEditSotModal(item, feasibility_materials) {
+    cicsa_material_id.value = item.id;
     let cicsa_material_items = []
     if (item?.id) {
         cicsa_material_items = item.cicsa_material_items?.length > 0 ? [...item.cicsa_material_items] : feasibility_materials ? feasibility_materials?.map(item => ({ ...item })) : []
@@ -516,8 +523,8 @@ function openEditSotModal(id, item, feasibility_materials) {
 
 
 async function submit() {
-    let url = cicsa_assignation_id.value ? route('material.update', { cicsa_assignation_id: cicsa_assignation_id.value }) : route('material.store')
-    if (cicsa_assignation_id.value) {
+    let url = cicsa_material_id.value ? route('material.update', { cicsa_material_id: cicsa_material_id.value }) : route('material.store')
+    if (cicsa_material_id.value) {
         try {
             const response = await axios.put(url, form)
             updateMaterial(false, response.data)
@@ -550,7 +557,6 @@ async function submit() {
             }
         }
     }
-
 }
 
 const showModalFeasibility = ref(false);
@@ -685,7 +691,6 @@ function updateMaterial(item, material) {
     if (item) {
         materials.value.data[index].cicsa_materials.push(material)
     } else {
-        console.log(material)
         const indexMaterial = materials.value.data[index].cicsa_materials.findIndex(item => item.id === material.id);
         materials.value.data[index].cicsa_materials[indexMaterial] = material
     }

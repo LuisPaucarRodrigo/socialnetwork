@@ -196,7 +196,7 @@ class CicsaController extends Controller
     public function indexAssignation(Request $request)
     {
         if ($request->isMethod('get')) {
-            $assignation = CicsaAssignation::orderBy('created_at', 'desc')->paginate(2);
+            $assignation = CicsaAssignation::orderBy('created_at', 'desc')->paginate();
             return Inertia::render('Cicsa/CicsaAssignation', [
                 'assignation' => $assignation
             ]);
@@ -312,11 +312,11 @@ class CicsaController extends Controller
         return response()->json($cicsaMaterial, 200);
     }
 
-    public function updateMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_assignation_id = null)
+    public function updateMaterial(StoreOrUpdateMaterialRequest $request, $cicsa_material_id = null)
     {
         $validateData = $request->validated();
         $cicsaMaterial = CicsaMaterial::updateOrCreate(
-            ['cicsa_assignation_id' => $cicsa_assignation_id],
+            ['id' => $cicsa_material_id],
             $validateData
         );
         if ($cicsaMaterial->cicsa_material_items) {
@@ -449,7 +449,6 @@ class CicsaController extends Controller
                 )
                 ->orderBy('assignation_date', 'desc')
                 ->paginate();
-            // dd($installations);
             return Inertia::render('Cicsa/CicsaInstallation', [
                 'installation' => $installations
             ]);

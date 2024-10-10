@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('code_ax');
             $table->string('name');
             $table->string('unit');
+            $table->string('type');
             $table->integer('quantity');
             $table->timestamps();
         });

@@ -15,6 +15,7 @@ class CicsaInstallationMaterial extends Model
         'name',
         'unit',
         'quantity',
+        'type',
         'used_quantity',
         'cicsa_installation_id'
     ];

@@ -21,7 +21,7 @@ Route::get('/cicsa_feasibilities/export', [CicsaController::class, 'exportFeasib
 
 Route::any('/cicsa_material', [CicsaController::class, 'indexMaterial'])->name('material.index');
 Route::post('/cicsa_material/store', [CicsaController::class, 'storeMaterial'])->name('material.store');
-Route::put('/cicsa_material/update/{cicsa_assignation_id}', [CicsaController::class, 'updateMaterial'])->name('material.update');
+Route::put('/cicsa_material/update/{cicsa_material_id}', [CicsaController::class, 'updateMaterial'])->name('material.update');
 Route::post('/cicsa_material/search/material', [CicsaController::class, 'searchMaterial'])->name('material.search.material');
 Route::get('/cicsa_material/export', [CicsaController::class, 'exportMaterial'])->name('material.export');
 
