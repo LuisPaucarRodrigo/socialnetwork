@@ -81,7 +81,7 @@
                             <template v-if="charge_area_row == item.id">
                                 <tr
                                     class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    
+
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Numero de OC
@@ -149,7 +149,7 @@
                                 </tr>
                                 <tr v-for="materialDetail in item.cicsa_charge_area" :key="materialDetail.id"
                                     class="bg-gray-100">
-                                    
+
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail.cicsa_purchase_order?.oc_number }}
@@ -168,7 +168,7 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.credit_to ? materialDetail?.credit_to + 'día(s)'
-                                            : '' }}
+                                                : '' }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -179,22 +179,22 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.invoice_date && materialDetail?.credit_to
-        ?
-        materialDetail.days_late + ' día(s)' : '' }}
+                                                ?
+                                                materialDetail.days_late + ' día(s)' : '' }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.invoice_date && materialDetail?.credit_to
-        ?
-        materialDetail?.state : '' }}
+                                                ?
+                                                materialDetail?.state : '' }}
                                         </p>
                                     </td>
                                     <td
                                         class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] whitespace-nowrap">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.amount ? 'S/. ' +
-       materialDetail?.amount.toFixed(2) : ''
+                                                materialDetail?.amount.toFixed(2) : ''
                                             }}
                                         </p>
                                     </td>
@@ -212,7 +212,7 @@
                                         class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.checking_account_amount ? 'S/. ' +
-       materialDetail?.checking_account_amount.toFixed(2) : ''
+                                                materialDetail?.checking_account_amount.toFixed(2) : ''
                                             }}
                                         </p>
                                     </td>
@@ -230,7 +230,7 @@
                                         class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.amount_bank ? 'S/. ' +
-        materialDetail?.amount_bank.toFixed(2) : ''
+                                                materialDetail?.amount_bank.toFixed(2) : ''
                                             }}
                                         </p>
                                     </td>
@@ -240,8 +240,7 @@
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-                                        <button class="text-blue-900"
-                                            @click="openEditModal(materialDetail)">
+                                        <button class="text-blue-900" @click="openEditModal(materialDetail)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -312,7 +311,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="amount">Monto Total de Factura</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" v-model="form.amount" autocomplete="off" id="amount" />
+                                <input type="number" v-model="form.amount" id="amount" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.amount" />
                             </div>
                         </div>
@@ -341,8 +341,9 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="checking_account_amount">Monto de cuenta corriente</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" v-model="form.checking_account_amount" autocomplete="off"
-                                    id="checking_account_amount" min="0" :max="form.amount" />
+                                <input type="number" v-model="form.checking_account_amount" id="checking_account_amount"
+                                    autocomplete="off" min="0" :max="form.checking_account_amount"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.checking_account_amount" />
                             </div>
                         </div>
@@ -357,7 +358,8 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion</InputLabel>
+                            <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion
+                            </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" v-model="form.transaction_number_bank" autocomplete="off"
                                     id="transaction_number_bank" />
@@ -368,8 +370,9 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" v-model="form.amount_bank" autocomplete="off" id="amount_bank"
-                                    min="0" :max="form.amount" />
+                                <input type="number" v-model="form.amount_bank" id="amount_bank"
+                                    autocomplete="off" min="0" :max="form.amount_bank"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.amount_bank" />
                             </div>
                         </div>
@@ -406,7 +409,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import { formattedDate } from '@/utils/utils.js';
+import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
 const { charge_area, auth } = defineProps({
@@ -456,27 +459,29 @@ const confirmUpdateAssignation = ref(false);
 
 function openEditModal(item) {
     invoice_number.value = item?.invoice_number
-    form.defaults({...item, user_name: auth.user.name, user_id: auth.user.id})
+    form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
     showAddEditModal.value = true
 }
 
-function submit() {
+async function submit() {
     if (sum()) {
-        let url = route('cicsa.charge_areas.update', { cicsa_charge_area_id: form.id }) ;
-        form.put(url, {
-            onSuccess: () => {
-                closeAddAssignationModal()
-                confirmUpdateAssignation.value = true
-                setTimeout(() => {
-                    confirmUpdateAssignation.value = false
-                    router.get(route('cicsa.charge_areas'))
-                }, 1500)
-            },
-            onError: (e) => {
-                console.error(e)
+        let url = route('cicsa.charge_areas.update', { cicsa_charge_area_id: form.id });
+        try {
+            const response = await axios.put(url, form)
+            updateChargeArea(response.data)
+            closeAddAssignationModal()
+            confirmUpdateAssignation.value = true
+            setTimeout(() => {
+                confirmUpdateAssignation.value = false
+            }, 1500)
+        } catch (error) {
+            if (error.response) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error(error)
             }
-        })
+        }
     } else {
         errorAmount.value = !errorAmount.value
         setTimeout(() => {
@@ -540,5 +545,12 @@ const toggleDetails = (cicsa_charge_area) => {
     } else {
         charge_area_row.value = cicsa_charge_area[0].cicsa_assignation_id;
     }
+}
+
+function updateChargeArea(chargeArea) {
+    const validations = charge_areas.value.data || charge_areas.value;
+    const index = validations.findIndex(item => item.id === chargeArea.cicsa_assignation_id)
+    const indexChargeArea = validations[index].cicsa_charge_area.findIndex(item => item.id === chargeArea.id)
+    validations[index].cicsa_charge_area[indexChargeArea] = chargeArea
 }
 </script>

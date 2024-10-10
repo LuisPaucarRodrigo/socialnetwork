@@ -363,7 +363,7 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { formattedDate } from '@/utils/utils.js';
+import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
 const { purchase_validation, auth } = defineProps({
@@ -413,20 +413,23 @@ function openUpdateModal(item) {
     showAddEditModal.value = true
 }
 
-function submit() {
-    form.put(route('cicsa.purchase_orders.validation.storeOrUpdate', { cicsa_validation_order_id: form.id }), {
-        onSuccess: () => {
-            closeAddAssignationModal()
+async function submit() {
+    let url = route('cicsa.purchase_orders.validation.update', { cicsa_validation_order_id: form.id });
+    try {
+       const response = await axios.put(url,form) 
+       updatePurchaseOrderValidation(response.data)
+       closeAddAssignationModal()
             confirmUpdateAssignation.value = true
             setTimeout(() => {
                 confirmUpdateAssignation.value = false
-                router.get(route('cicsa.purchase_orders.validation'))
             }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    } catch (error) {
+        if(error.response){
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error(error)
         }
-    })
+    }
 }
 
 const search = async ($search) => {
@@ -444,5 +447,12 @@ const toggleDetails = (cicsa_purchase_order_validation) => {
     } else {
         validation_purchase_order_row.value = cicsa_purchase_order_validation[0].cicsa_assignation_id;
     }
+}
+
+function updatePurchaseOrderValidation(OCValidation){
+    const validations = purchase_validations.value.data || purchase_validations.value;
+    const index = validations.findIndex(item => item.id === OCValidation.cicsa_assignation_id)
+    const indexOCValidation = validations[index].cicsa_purchase_order_validation.findIndex(item => item.id === OCValidation.id)
+    validations[index].cicsa_purchase_order_validation[indexOCValidation] = OCValidation
 }
 </script>

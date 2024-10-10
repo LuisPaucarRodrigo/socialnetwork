@@ -240,6 +240,10 @@
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                            Tipo
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Cantidad
                                         </th>
                                         <th
@@ -257,6 +261,11 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
+                                            </p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                            <p class="text-gray-900 text-center">
+                                                {{ item.type }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -336,6 +345,18 @@
                                 <option>LATA</option>
                                 <option>PAQUETE</option>
                                 <option>ROLLO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <InputLabel for="type">Tipo
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select id="type" v-model="material_item.type" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccionar Tipo</option>
+                                <option>Pint</option>
+                                <option>Pext</option>
                             </select>
                         </div>
                     </div>
@@ -570,6 +591,7 @@ const material_item = ref({
     code_ax: '',
     name: '',
     unit: '',
+    type:'',
     quantity: 0,
 });
 
@@ -579,6 +601,7 @@ function addFeasibility() {
             code_ax: material_item.value.code_ax,
             name: material_item.value.name,
             unit: material_item.value.unit,
+            type: material_item.value.type,
             quantity: material_item.value.quantity
         };
         form.cicsa_material_items.push(newFeasibility);
@@ -592,6 +615,7 @@ function cleanArrayMaterial() {
     material_item.value.code_ax = '';
     material_item.value.name = '';
     material_item.value.unit = '';
+    material_item.value.type = '';
     material_item.value.quantity = '';
 }
 
@@ -687,12 +711,13 @@ function updateMaterialItem(e) {
 }
 
 function updateMaterial(item, material) {
-    const index = materials.value.data.findIndex(item => item.id === material.cicsa_assignation_id);
+    const validations = materials.value.data || materials.value;
+    const index = validations.findIndex(item => item.id === material.cicsa_assignation_id);
     if (item) {
-        materials.value.data[index].cicsa_materials.push(material)
+        validations[index].cicsa_materials.push(material)
     } else {
-        const indexMaterial = materials.value.data[index].cicsa_materials.findIndex(item => item.id === material.id);
-        materials.value.data[index].cicsa_materials[indexMaterial] = material
+        const indexMaterial = validations[index].cicsa_materials.findIndex(item => item.id === material.id);
+        validations[index].cicsa_materials[indexMaterial] = material
     }
 }
 

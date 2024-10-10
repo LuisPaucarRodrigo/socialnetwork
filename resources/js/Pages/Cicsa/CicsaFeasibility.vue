@@ -381,7 +381,6 @@ async function submit() {
     let url = route('feasibilities.storeOrUpdate', { cicsa_assignation_id: cicsa_assignation_id.value })
     try {
         const response = await axios.put(url, form);
-        console.log(response.data)
         updateFeasibility(cicsa_assignation_id.value,response.data)
         closeAddFeasibilityModal()
         confirmUpdateFeasibility.value = true
@@ -461,8 +460,9 @@ function updateMaterialItem(e) {
 }
 
 function updateFeasibility(cicsa_assignation_id, feasibility) {
-    const index = feasibilitys.value.data.findIndex(item => item.id === cicsa_assignation_id)
-    feasibilitys.value.data[index].cicsa_feasibility = feasibility
+    const validations = feasibilitys.value.data || feasibilitys.value;
+    const index = validations.findIndex(item => item.id === cicsa_assignation_id)
+    validations[index].cicsa_feasibility = feasibility
 }
 
 </script>

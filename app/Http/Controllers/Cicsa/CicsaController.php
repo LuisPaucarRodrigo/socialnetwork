@@ -40,6 +40,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
+use function Pest\Laravel\json;
+
 class CicsaController extends Controller
 {
     public function index()
@@ -408,25 +410,26 @@ class CicsaController extends Controller
         DB::beginTransaction();
         try {
             $validateData = $request->validated();
-            $purchase_order_id = CicsaPurchaseOrder::updateOrCreate(
+            $purchase_order = CicsaPurchaseOrder::updateOrCreate(
                 ['id' => $cicsa_purchase_order_id],
                 $validateData
             );
             if (!$cicsa_purchase_order_id) {
                 CicsaPurchaseOrderValidation::create([
-                    'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
-                    'cicsa_purchase_order_id' => $purchase_order_id->id
+                    'cicsa_assignation_id' => $purchase_order->cicsa_assignation_id,
+                    'cicsa_purchase_order_id' => $purchase_order->id
                 ]);
                 CicsaServiceOrder::create([
-                    'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
-                    'cicsa_purchase_order_id' => $purchase_order_id->id
+                    'cicsa_assignation_id' => $purchase_order->cicsa_assignation_id,
+                    'cicsa_purchase_order_id' => $purchase_order->id
                 ]);
                 CicsaChargeArea::create([
-                    'cicsa_assignation_id' => $purchase_order_id->cicsa_assignation_id,
-                    'cicsa_purchase_order_id' => $purchase_order_id->id
+                    'cicsa_assignation_id' => $purchase_order->cicsa_assignation_id,
+                    'cicsa_purchase_order_id' => $purchase_order->id
                 ]);
             }
             DB::commit();
+            return response()->json($purchase_order, 200);
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors(['message' => $e->getMessage()]);
@@ -500,7 +503,9 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $purchase_validations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_purchase_order_validation.cicsa_purchase_order')
+                ->with(['cicsa_purchase_order_validation.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                }])
                 // ->whereDoesntHave('cicsa_service_order')
                 // ->whereHas('cicsa_purchase_order', function ($query) {
                 //     $query->whereNotNull('oc_date')
@@ -518,7 +523,9 @@ class CicsaController extends Controller
 
             $searchQuery = $request->searchQuery;
             $purchase_validations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_purchase_order_validation.cicsa_purchase_order')
+                ->with(['cicsa_purchase_order_validation.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                }])
                 // ->whereDoesntHave('cicsa_service_order')
                 // ->whereHas('cicsa_purchase_order', function ($query) {
                 //     $query->whereNotNull('oc_date')
@@ -557,12 +564,11 @@ class CicsaController extends Controller
             'user_name' => 'required',
             'user_id' => 'required',
         ]);
-        try {
-            $validationOc = CicsaPurchaseOrderValidation::find($cicsa_validation_order_id);
-            $validationOc->update($validateData);
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['message' => 'Error processing file', 'error' => $e->getMessage()]);
-        }
+        $validationOc = CicsaPurchaseOrderValidation::with(['cicsa_purchase_order' => function ($query) {
+            $query->select('id', 'oc_number');
+        }])->find($cicsa_validation_order_id);
+        $validationOc->update($validateData);
+        return response()->json($validationOc, 200);
     }
 
     public function exportOCValidation()
@@ -575,7 +581,9 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_service_order.cicsa_purchase_order')
+                ->with(['cicsa_service_order.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                }])
                 // ->whereDoesntHave('cicsa_charge_area')
                 // ->whereHas('cicsa_purchase_order_validation',function($query){
                 //     $query->where('file_validation','Completado')
@@ -594,7 +602,9 @@ class CicsaController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
             $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_service_order.cicsa_purchase_order')
+                ->with(['cicsa_service_order.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                }])
                 // ->whereDoesntHave('cicsa_charge_area')
                 // ->whereHas('cicsa_purchase_order_validation',function($query){
                 //     $query->where('file_validation','Completado')
@@ -635,8 +645,11 @@ class CicsaController extends Controller
             'user_id' => 'required',
         ]);
 
-        $serviceOrderOc = CicsaServiceOrder::find($cicsa_service_order_id);
+        $serviceOrderOc = CicsaServiceOrder::with(['cicsa_purchase_order' => function ($query) {
+            $query->select('id', 'oc_number');
+        }])->find($cicsa_service_order_id);
         $serviceOrderOc->update($validateData);
+        return response()->json($serviceOrderOc, 200);
     }
 
     public function exportServiceOrder()
@@ -649,7 +662,9 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_charge_area.cicsa_purchase_order')
+                ->with(['cicsa_charge_area.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                }])
                 // ->whereHas('cicsa_service_order',function($query){
                 //     $query->where('service_order','Completado')
                 //     ->where('estimate_sheet','Completado')
@@ -665,7 +680,9 @@ class CicsaController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
             $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-                ->with('cicsa_charge_area.cicsa_purchase_order')
+                ->with(['cicsa_charge_area.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                }])
                 // ->whereHas('cicsa_service_order',function($query){
                 //     $query->where('service_order','Completado')
                 //     ->where('estimate_sheet','Completado')
@@ -721,8 +738,11 @@ class CicsaController extends Controller
             'user_id' => 'required',
         ]);
 
-        $chargeAreaOc = CicsaChargeArea::find($cicsa_charge_area_id);
+        $chargeAreaOc = CicsaChargeArea::with(['cicsa_purchase_order' => function ($query) {
+            $query->select('id', 'oc_number');
+        }])->find($cicsa_charge_area_id);
         $chargeAreaOc->update($validateData);
+        return response()->json($chargeAreaOc, 200);
     }
 
     public function getChargeAreaAccepted()

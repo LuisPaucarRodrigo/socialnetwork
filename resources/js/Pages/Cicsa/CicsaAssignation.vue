@@ -329,17 +329,16 @@ const search = async ($search) => {
 };
 
 function updateAssignation(cicsa_assignation_id, assignation) {
-    const index = assignations.value.data.findIndex(item => item.id === cicsa_assignation_id)
+    const validations = assignations.value.data || assignations.value;
+    const index = validations.findIndex(item => item.id === cicsa_assignation_id)
     if (cicsa_assignation_id) {
-        assignations.value.data[index] = assignation
+        validations[index] = assignation
     } else {
-        assignations.value.data.unshift(assignation);
+        validations.unshift(assignation);
     }
 
-    if (assignations.value.data.length > assignations.value.per_page) {
-        assignations.value.data.pop();
+    if (validations.length > assignations.value.per_page) {
+        validations.pop();
     }
-
 }
-
 </script>
