@@ -181,6 +181,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     //outputs-
     Route::post('huawei/quick_materials/details/store/output/{entry_id}', [QuickMaterialsController::class, 'storeOutput'])->name('huawei.quickmaterials.details.output.store');
     Route::delete('huawei/quick_materials/details/delete/output/{output}', [QuickMaterialsController::class, 'destroyOutput'])->name('huawei.quickmaterials.details.output.delete');
+    Route::post('huawei/quick_materials/details/fetchprojects/output/{site_id}', [QuickMaterialsController::class, 'fetchProjects'])->name('huawei.quickmaterials.details.output.fetchprojects');
+    Route::post('huawei/quick_materials/details/selectproject/output/{entry_id}/{project_id}', [QuickMaterialsController::class, 'selectProject'])->name('huawei.quickmaterials.details.output.selectproject');
 });
 
 

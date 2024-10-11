@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Huawei;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Huawei\QuickMaterialsOutputRequest;
 use App\Http\Requests\Huawei\QuickMaterialsRequest;
+use App\Models\HuaweiProject;
 use App\Models\HuaweiSite;
 use App\Models\QuickMaterial;
 use App\Models\QuickMaterialsEntry;
@@ -167,6 +168,24 @@ class QuickMaterialsController extends Controller
     public function destroyOutput (QuickMaterialsOutput $output) {
         $output->delete();
         return response()->json(['message'=>'success'], 200);
+    }
+
+    public function fetchProjects ($site_id)
+    {
+        $projects = HuaweiProject::select('id', 'name', 'assigned_diu')->where('huawei_site_id', $site_id)->get();
+        return response()->json(['projects' => $projects]);
+    }
+
+    public function selectProject ($entry_id, $project_id, Request $request)
+    {
+        $originalData = $request->all();
+
+        if (empty($originalData)){
+            return response()->json(['message' => $originalData]);
+        }
+
+        $quick_res_project = QuickMaterialsOutput::updateOrCreate(['id' => $request->id, 'quick_material_entry_id' => $entry_id, 'huawei_project_id' => $project_id]);
+        return response()->json(['quick_res_out' => $quick_res_project], 200);
     }
 }
 

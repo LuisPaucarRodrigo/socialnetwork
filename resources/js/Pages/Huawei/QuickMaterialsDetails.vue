@@ -50,7 +50,7 @@
                         <template v-for="(item, key) in backlogsToRender"
                         :key="key">
                         <tr class="text-gray-700">
-                        <td class="border border-gray-200 px-2 bg-white py-2">
+                        <td class="border border-gray-200 px-2 bg-white py-2 text-center">
                             <button v-if="item.id" type="button" @click="toogle(item)"
                                 class="text-blue-900 whitespace-no-wrap">
                                     <svg v-if="quickMaterialSelected?.id !== item.id" xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +183,7 @@
                                         </button>
                                     </td>
                                     <td
-                                        v-for="field2 in ['output_date', 'output_quantity', 'output_employee', 'output_observation', 'site']"
+                                        v-for="field2 in ['output_date', 'output_quantity', 'output_employee', 'output_observation', 'site', 'huawei_project']"
                                         :key="field2"
                                         :class="[
                                             'border border-gray-200 px-2 bg-white py-2 text-[12px]',
@@ -192,7 +192,7 @@
                                         ]"
                                         @dblclick="editToogleCell(key2, field2)"
                                     >
-                                    <div v-if="field2 !== 'site'">
+                                    <div v-if="field2 !== 'site' && field2 !== 'huawei_project'">
                                         <template v-if="isEditingToogle(key2, field2)">
                                             <input
                                                 :type="field2 === 'output_date' ? 'date' : field2 === 'output_quantity' ? 'number' : 'text'"
@@ -210,12 +210,13 @@
                                             </p>
                                         </template>
                                     </div>
-                                    <div v-else>
+                                    <div v-if="field2 === 'site'">
                                         <template v-if="isEditingToogle(key2, field2)">
                                             <select
                                                 v-model="output[field2]"
-                                                @blur="saveEditToogle(key2, field2, item.id)"
-                                                @keydown.enter.prevent="isEnterPressedToogle = true; saveEditToogle(key2, field2, item.id)"
+                                                @blur="fetchProjects($event.target.value)"
+                                                @keydown.enter.prevent="isEnterPressedToogle = true; fetchProjects($event.target.value)"
+                                                @change="fetchProjects($event.target.value)"
                                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             >
                                                 <option v-for="site in sites" :key="site.id" :value="site.id">{{ site.name }}</option>
@@ -224,6 +225,23 @@
                                         <template v-else>
                                             <p class="text-gray-900 text-center">
                                                 {{ output.huawei_project?.huawei_site.name }}
+                                            </p>
+                                        </template>
+                                    </div>
+                                    <div v-else>
+                                        <template v-if="isEditingToogle(key2, field2)">
+                                            <select v-if="availableProject"
+                                                @blur="saveEditProjectToogle(key2, field2, item.id, $event.target.value)"
+                                                @keydown.enter.prevent="isEnterPressedToogle = true; saveEditProjectToogle(key2, field2, item.id, $event.target.value)"
+                                                @change="saveEditProjectToogle(key2, field2, item.id, $event.target.value)"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option v-for="project in projectsFetched" :key="project.id" :value="project.id">{{ project.assigned_diu }}</option>
+                                            </select>
+                                        </template>
+                                        <template v-else>
+                                            <p class="text-gray-900 text-center">
+                                                {{ output.huawei_project?.name }}
                                             </p>
                                         </template>
                                     </div>
@@ -403,6 +421,9 @@ const toogleKey = ref(null);
 const toogleToDelete = ref(null);
 const showToogleDeleteModal = ref(false);
 const confirmToogleDelete = ref(false);
+const availableProject = ref(false);
+const projectsFetched = ref(null);
+const selectedProject = ref(null);
 
 function openToogleDeleteModal(id, key) {
     toogleToDelete.value = id;
@@ -474,6 +495,33 @@ function saveEditToogle(key, field, id) {
 async function storeToogle (key, id){
     const res = await axios.post(
         route('huawei.quickmaterials.details.output.store', {entry_id: id}),
+        quickMaterialOutputs.value[key]
+    );
+    quickMaterialOutputs.value[key] = res.data.quick_res_out;
+}
+
+async function fetchProjects (value){
+    availableProject.value = false;
+    projectsFetched.value = null;
+    const res = await axios.post(
+        route('huawei.quickmaterials.details.output.fetchprojects', {site_id: value}), null
+    );
+    projectsFetched.value = res.data.projects;
+    availableProject.value = true;
+}
+
+function saveEditProjectToogle (key, field, entry_id, project_id){
+    if (isEnterPressedToogle.value) {
+        isEnterPressedToogle.value = false;
+    } else {
+        selectProject(key, entry_id, project_id);
+    }
+    editingToogleCells.value[`${key}-${field}`] = false;
+}
+
+async function selectProject (key, entry_id, project_id) {
+    const res = await axios.post(
+        route('huawei.quickmaterials.details.output.selectproject', {entry_id: entry_id, project_id: project_id}),
         quickMaterialOutputs.value[key]
     );
     quickMaterialOutputs.value[key] = res.data.quick_res_out;
