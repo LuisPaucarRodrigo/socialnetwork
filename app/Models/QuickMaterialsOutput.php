@@ -13,9 +13,10 @@ class QuickMaterialsOutput extends Model
 
     protected $fillable = [
         'output_date',
-        'quantity',
+        'output_quantity',
         'quick_material_entry_id',
-        'employee',
+        'output_employee',
+        'output_observation',
         'huawei_project_id'
     ];
 

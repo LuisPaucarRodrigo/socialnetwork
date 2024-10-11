@@ -14,6 +14,8 @@
                         <tr
                             class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500"
                         >
+                        <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                            </th>
                             <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
                                 <p class="text-center w-[200px]">
                                     Fecha de Entrada
@@ -47,10 +49,23 @@
                     <tbody>
                         <template v-for="(item, key) in backlogsToRender"
                         :key="key">
-                        <tr
-
-                            class="text-gray-700"
-                        >
+                        <tr class="text-gray-700">
+                        <td class="border border-gray-200 px-2 bg-white py-2">
+                            <button v-if="item.id" type="button" @click="toogle(item)"
+                                class="text-blue-900 whitespace-no-wrap">
+                                    <svg v-if="quickMaterialSelected?.id !== item.id" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                    </svg>
+                                </button>
+                        </td>
                             <td
                                 v-for="field in ['entry_date', 'quantity', 'unit_price', 'employee', 'observation']"
                                 :key="field"
@@ -104,6 +119,89 @@
                                 </div>
                             </td>
                         </tr>
+                        <template v-if="quickMaterialSelected?.id == item.id && item.id">
+                            <tr class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                <th class="border border-gray-300 bg-gray-100 px-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                    <button type="button" @click="addToogleRow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                </th>
+                                <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                    <p class="text-center w-[200px]">
+                                        Fecha de Salida
+                                    </p>
+                                </th>
+                                <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                    <p class="text-center w-[200px]">
+                                        Cantidad
+                                    </p>
+                                </th>
+                                <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                    <p class="text-center w-[200px]">
+                                        Encargado
+                                    </p>
+                                </th>
+                                <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                    <p class="text-center w-[200px]">
+                                        Observacion
+                                    </p>
+                                </th>
+                            </tr>
+                            <template v-for="(output, key2) in quickMaterialOutputs" :key="key2">
+                                <tr class="text-gray-700">
+                                    <td class="text-center bg-white border">
+                                        <button
+                                            type="button"
+                                            @click="output?.id ? openSotDeleteModal(item.id, key) : deleteToogleRow(key)"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-4 h-4 text-red-500"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                    <td
+                                        v-for="field2 in ['output_date', 'output_quantity', 'output_employee', 'output_observation']"
+                                        :key="field2"
+                                        :class="[
+                                            'border border-gray-200 px-2 bg-white py-2 text-[12px]',
+                                            output?.id ? '' : 'h-16',
+                                            'cursor-pointer',
+                                        ]"
+                                        @dblclick="editToogleCell(key2, field2)"
+                                    >
+                                        <template v-if="isEditingToogle(key2, field2)">
+                                            <input
+                                                :type="field2 === 'output_date' ? 'date' : field2 === 'output_quantity' ? 'number' : 'text'"
+                                                :id="`${key2}-${field2}`"
+                                                v-model="output[field2]"
+                                                @blur="saveEditToogle(key2, field2, item.id)"
+                                                @keydown.enter.prevent="isEnterPressedToogle = true; saveEditToogle(key2, field2, item.id)"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            />
+                                        </template>
+
+                                        <template v-else>
+                                            <p class="text-gray-900 text-center">
+                                                {{ field2 === 'output_date' ? formattedDate(output[field2]) : output[field2] }}
+                                            </p>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </template>
+                        </template>
                     </template>
                     </tbody>
                 </table>
@@ -158,7 +256,6 @@ const { quickMaterials, material } = defineProps({
     quickMaterials: Object,
     material: Object
 });
-
 
 const backlogsToRender = ref(quickMaterials.data);
 
@@ -238,6 +335,70 @@ async function storeBacklog(key) {
         backlogsToRender.value[key]
     );
     backlogsToRender.value[key] = res.data.quick_res;
+}
+
+//test_outputs
+
+const quickMaterialSelected = ref(null);
+const quickMaterialOutputs = ref([]);
+const editingToogleCells = ref({});
+const isEnterPressedToogle = ref(false);
+const toogleKey = ref(null);
+
+function openToogleDeleteModal(id, key) {
+
+}
+
+
+function toogle (item) {
+    quickMaterialOutputs.value = []
+    if (quickMaterialSelected.value && quickMaterialSelected.value.id === item.id){
+        quickMaterialSelected.value = null;
+    }else{
+        quickMaterialSelected.value = item;
+        quickMaterialOutputs.value = item.quick_materials_outputs;
+    }
+}
+
+function addToogleRow () {
+    quickMaterialOutputs.value.unshift({});
+}
+
+function deleteToogleRow (i) {
+    quickMaterialOutputs.value.splice(i, 1);
+}
+
+function isEditingToogle(key, field) {
+    return editingToogleCells.value[`${key}-${field}`] === true;
+}
+
+function editToogleCell(key, field) {
+    editingToogleCells.value[`${key}-${field}`] = true;
+    nextTick(() => {
+        const input = document.getElementById(`${key}-${field}`);
+        if (input) {
+            input.focus();
+        }
+    });
+}
+
+function saveEditToogle(key, field, id) {
+    if (isEnterPressedToogle.value) {
+        isEnterPressedToogle.value = false;
+    } else {
+        console.log(id);
+        console.log(quickMaterialOutputs.value[key]);
+        storeToogle(key, id);
+    }
+    editingToogleCells.value[`${key}-${field}`] = false;
+}
+
+async function storeToogle (key, id){
+    const res = await axios.post(
+        route('huawei.quickmaterials.details.output.store', {entry_id: id}),
+        quickMaterialOutputs.value[key]
+    );
+    quickMaterialOutputs.value[key] = res.data.quick_res_out;
 }
 
 </script>

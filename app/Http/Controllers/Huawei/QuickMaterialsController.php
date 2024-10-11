@@ -119,7 +119,12 @@ class QuickMaterialsController extends Controller
     public function index($material_id) {
         $material = QuickMaterial::find($material_id);
         return Inertia::render('Huawei/QuickMaterialsDetails', [
-                'quickMaterials' => QuickMaterialsEntry::where('quick_material_id', $material_id)->with('quick_materials_outputs')->orderBy('created_at', 'desc')->paginate(20),
+                'quickMaterials' => QuickMaterialsEntry::where('quick_material_id', $material_id)
+                    ->with(['quick_materials_outputs' => function ($query) {
+                        $query->orderBy('created_at', 'desc');
+                    }])
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(20),
                 'material' => $material
             ]
         );
@@ -143,21 +148,23 @@ class QuickMaterialsController extends Controller
     }
 
     //outputs
-    public function storeOutput ($entry_id, Request $request)
+    public function storeOutput ($entry_id, QuickMaterialsOutputRequest $request)
     {
         $originalData = $request->all();
-        $object = [
-            'output_date' => $request->output_date,
-            'quantity' => $request->quantity2,
-            'employee' => $request->employee2,
-            'observation' => $request->observation2
-        ];
 
         if (empty($originalData)){
             return response()->json(['message' => $originalData]);
         }
 
-        $quick_res_out = QuickMaterialsOutput::updateOrCreate(['id' => $request->id, 'quick_material_entry_id' => $entry_id], $object);
+        $data = $request->validated();
+
+        $quick_res_out = QuickMaterialsOutput::updateOrCreate(['id' => $request->id, 'quick_material_entry_id' => $entry_id], $data);
         return response()->json(['quick_res_out' => $quick_res_out], 200);
     }
+
+    public function destroyOutput (QuickMaterialsOutput $output) {
+        $output->delete();
+        return response()->json(['message'=>'success'], 200);
+    }
 }
+

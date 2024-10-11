@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('quick_materials_outputs', function (Blueprint $table) {
             $table->id();
             $table->date('output_date')->nullable();
-            $table->double('quantity')->nullable();
+            $table->double('output_quantity')->nullable();
             $table->foreignId('quick_material_entry_id')->constrained('quick_materials_entries')->onDelete('cascade');
-            $table->string('employee')->nullable();
+            $table->string('output_employee')->nullable();
+            $table->text('output_observation')->nullable();
             $table->foreignId('huawei_project_id')->nullable()->constrained('huawei_projects')->onDelete('cascade');
             $table->timestamps();
         });

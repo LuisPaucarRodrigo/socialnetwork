@@ -23,9 +23,9 @@ class QuickMaterialsOutputRequest extends FormRequest
     {
         return [
             'output_date' => 'nullable',
-            'quantity' => 'nullable',
-            'employee' => 'nullable',
-            'observation' => 'nullable',
+            'output_quantity' => 'nullable',
+            'output_employee' => 'nullable',
+            'output_observation' => 'nullable',
             'huawei_project_id' => 'nullable'
         ];
     }
