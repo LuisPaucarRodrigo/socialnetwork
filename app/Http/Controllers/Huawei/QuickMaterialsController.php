@@ -143,14 +143,21 @@ class QuickMaterialsController extends Controller
     }
 
     //outputs
-    public function storeOutput ($entry_id, QuickMaterialsOutputRequest $request)
+    public function storeOutput ($entry_id, Request $request)
     {
         $originalData = $request->all();
+        $object = [
+            'output_date' => $request->output_date,
+            'quantity' => $request->quantity2,
+            'employee' => $request->employee2,
+            'observation' => $request->observation2
+        ];
+
         if (empty($originalData)){
-            return response()->json(['message' => 'No data provided']);
+            return response()->json(['message' => $originalData]);
         }
-        $data = $request->validated();
-        $quick_res_out = QuickMaterialsOutput::updateOrCreate(['id' => $request->id, 'quick_material_entry_id' => $entry_id], $data);
+
+        $quick_res_out = QuickMaterialsOutput::updateOrCreate(['id' => $request->id, 'quick_material_entry_id' => $entry_id], $object);
         return response()->json(['quick_res_out' => $quick_res_out], 200);
     }
 }

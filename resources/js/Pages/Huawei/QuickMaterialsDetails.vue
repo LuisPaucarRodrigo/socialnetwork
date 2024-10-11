@@ -14,9 +14,6 @@
                         <tr
                             class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500"
                         >
-                        <th
-                                class="border border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            ></th>
                             <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
                                 <p class="text-center w-[200px]">
                                     Fecha de Entrada
@@ -54,22 +51,6 @@
 
                             class="text-gray-700"
                         >
-                        <td class="text-center border-b border-gray-200 bg-white px-2 py-1">
-                            <button v-if="item.id && item.quick_materials_outputs" type="button" @click="toggleDetails(item)"
-                                        class="text-blue-900 whitespace-no-wrap">
-                                        <svg v-if="huaweiProject?.id !== item.id" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                            class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                        </svg>
-                                        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                        </svg>
-                                    </button>
-                        </td>
                             <td
                                 v-for="field in ['entry_date', 'quantity', 'unit_price', 'employee', 'observation']"
                                 :key="field"
@@ -123,70 +104,6 @@
                                 </div>
                             </td>
                         </tr>
-                        <template v-if="huaweiProject?.id == item.id && item.id">
-                            <tr class="text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                <th
-                                    class="text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                    <button type="button" @click="addToogleRow">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </button>
-                                </th>
-                                <th colspan="1" class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                    Fecha de Salida
-                                </th>
-                                <th colspan="1" class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                    Cantidad
-                                </th>
-                                <th colspan="1" class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                    Encargado
-                                </th>
-                                <th colspan="1" class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                    Observación
-                                </th>
-                                <th colspan="1" class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                    Site
-                                </th>
-                                <th colspan="1" class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                    Proyecto
-                                </th>
-                            </tr>
-                            <template v-for="(output, key) in backlogToogle" :key="key">
-                            <tr class="bg-gray-100 h-[35px]">
-                                <td>
-                                </td>
-                                <td
-                                v-for="field in ['output_date', 'quantity', 'employee', 'observation', 'site', 'project']"
-                                :key="field"
-                                :class="[
-                                    'border border-gray-200 border-b-gray-800 px-2 bg-white py-2 text-[12px]',
-                                    item?.id ? '' : 'h-16',
-                                    'cursor-pointer',
-                                ]"
-                                @dblclick="editCell(key, field)"
-                            >
-                                <template v-if="isEditing(key, field)">
-                                    <input
-                                        :type="field === 'output_date' ? 'date' : field === 'quantity2' || field === 'unit_price' ? 'number' : 'text'"
-                                        :id="`${key}-${field}`"
-                                        v-model="item[field]"
-                                        @blur="saveEdit(key, field, item.id)"
-                                        @keydown.enter.prevent="isEnterPressed = true; saveEdit(key, field, item.id)"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                </template>
-
-                                <template v-else>
-                                    <p class="text-gray-900 text-center">
-                                        {{ field === 'output_date' ? formattedDate(item[field]) : item[field] }}
-                                    </p>
-                                </template>
-                            </td>
-
-                            </tr>
-                        </template>
-                        </template>
                     </template>
                     </tbody>
                 </table>
@@ -244,20 +161,6 @@ const { quickMaterials, material } = defineProps({
 
 
 const backlogsToRender = ref(quickMaterials.data);
-const huaweiProject = ref(null);
-const backlogToogle = ref([]);
-
-const toggleDetails = (item) => {
-        if (huaweiProject.value && huaweiProject.value.id === item.id){
-            backlogToogle.value = [];
-            backlogToogle.value = huaweiProject.value.quick_materials_outputs;
-            huaweiProject.value = null;
-        }else{
-            huaweiProject.value = item;
-            backlogToogle.value = [];
-            backlogToogle.value = huaweiProject.value.quick_materials_outputs;
-        }
-    }
 
 function addBacklogRow() {
     backlogsToRender.value.unshift({});
@@ -265,14 +168,6 @@ function addBacklogRow() {
 
 function deleteBacklogRow(i) {
     backlogsToRender.value.splice(i, 1);
-}
-
-function addToogleRow() {
-    backlogToogle.value.unshift({});
-}
-
-function deleteToogleRow (i) {
-    backlogToogle.value.splice(i, 1)
 }
 
 // Modal de eliminación
@@ -328,28 +223,21 @@ function editCell(key, field) {
     });
 }
 
-function saveEdit(key, field, id) {
+function saveEdit(key, field) {
     if (isEnterPressed.value) {
         isEnterPressed.value = false;
     } else {
-        storeBacklog(key, id);
+        storeBacklog(key);
     }
     editingCells.value[`${key}-${field}`] = false;
 }
 
-async function storeBacklog(key, id) {
-    if (!id) {
-        const res = await axios.post(
-            route("huawei.quickmaterials.details.store", {material_id: material.id}),
-            backlogsToRender.value[key]
-        );
-        backlogsToRender.value[key] = res.data.quick_res;
-    }else{
-        const res = await axios.post(
-            route('huawei.quickmaterials.details.output.store', {entry_id: id}),
-            backlogToogle.value[key]
-        );
-        backlogToogle.value[key] = res.data.quick_res_out;
-    }
+async function storeBacklog(key) {
+    const res = await axios.post(
+        route("huawei.quickmaterials.details.store", {material_id: material.id}),
+        backlogsToRender.value[key]
+    );
+    backlogsToRender.value[key] = res.data.quick_res;
 }
+
 </script>
