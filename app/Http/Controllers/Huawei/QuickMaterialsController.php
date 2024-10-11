@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Huawei;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Huawei\QuickMaterialsOutputRequest;
 use App\Http\Requests\Huawei\QuickMaterialsRequest;
+use App\Models\HuaweiSite;
 use App\Models\QuickMaterial;
 use App\Models\QuickMaterialsEntry;
 use App\Models\QuickMaterialsOutput;
@@ -122,10 +123,11 @@ class QuickMaterialsController extends Controller
                 'quickMaterials' => QuickMaterialsEntry::where('quick_material_id', $material_id)
                     ->with(['quick_materials_outputs' => function ($query) {
                         $query->orderBy('created_at', 'desc');
-                    }])
+                    }, 'quick_materials_outputs.huawei_project.huawei_site'])
                     ->orderBy('created_at', 'desc')
                     ->paginate(20),
-                'material' => $material
+                'material' => $material,
+                'sites' => HuaweiSite::select('id', 'name')->get()
             ]
         );
     }

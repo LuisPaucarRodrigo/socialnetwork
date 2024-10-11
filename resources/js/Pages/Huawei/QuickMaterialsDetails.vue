@@ -37,7 +37,7 @@
                                 </p>
                             </th>
                             <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                <p class="text-center w-[400px]">
+                                <p class="text-center w-[200px]">
                                     Observación
                                 </p>
                             </th>
@@ -148,13 +148,23 @@
                                         Observacion
                                     </p>
                                 </th>
+                                <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                    <p class="text-center w-[200px]">
+                                        Site
+                                    </p>
+                                </th>
+                                <th class="border border-gray-300 bg-gray-100 px-3 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                    <p class="text-center w-[200px]">
+                                        Proyecto
+                                    </p>
+                                </th>
                             </tr>
                             <template v-for="(output, key2) in quickMaterialOutputs" :key="key2">
                                 <tr class="text-gray-700">
                                     <td class="text-center bg-white border">
                                         <button
                                             type="button"
-                                            @click="output?.id ? openSotDeleteModal(item.id, key) : deleteToogleRow(key)"
+                                            @click="output?.id ? openToogleDeleteModal(item.id, key) : deleteToogleRow(key)"
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +183,7 @@
                                         </button>
                                     </td>
                                     <td
-                                        v-for="field2 in ['output_date', 'output_quantity', 'output_employee', 'output_observation']"
+                                        v-for="field2 in ['output_date', 'output_quantity', 'output_employee', 'output_observation', 'site']"
                                         :key="field2"
                                         :class="[
                                             'border border-gray-200 px-2 bg-white py-2 text-[12px]',
@@ -182,6 +192,7 @@
                                         ]"
                                         @dblclick="editToogleCell(key2, field2)"
                                     >
+                                    <div v-if="field2 !== 'site'">
                                         <template v-if="isEditingToogle(key2, field2)">
                                             <input
                                                 :type="field2 === 'output_date' ? 'date' : field2 === 'output_quantity' ? 'number' : 'text'"
@@ -198,6 +209,24 @@
                                                 {{ field2 === 'output_date' ? formattedDate(output[field2]) : output[field2] }}
                                             </p>
                                         </template>
+                                    </div>
+                                    <div v-else>
+                                        <template v-if="isEditingToogle(key2, field2)">
+                                            <select
+                                                v-model="output[field2]"
+                                                @blur="saveEditToogle(key2, field2, item.id)"
+                                                @keydown.enter.prevent="isEnterPressedToogle = true; saveEditToogle(key2, field2, item.id)"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option v-for="site in sites" :key="site.id" :value="site.id">{{ site.name }}</option>
+                                            </select>
+                                        </template>
+                                        <template v-else>
+                                            <p class="text-gray-900 text-center">
+                                                {{ output.huawei_project?.huawei_site.name }}
+                                            </p>
+                                        </template>
+                                    </div>
                                     </td>
                                 </tr>
                             </template>
@@ -215,7 +244,7 @@
         <Modal :show="showSotDeleteModal" @close="closeSotDeleteModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900">
-                    ¿Estás seguro de que quieres eliminar el registro del backlog?
+                    ¿Estás seguro de que quieres eliminar el registro de la entrada?
                 </h2>
                 <p class="mt-1 text-sm text-gray-600">
                     Una vez que se elimine el registro, todos sus recursos y datos se eliminarán permanentemente.
@@ -232,10 +261,36 @@
             </div>
         </Modal>
 
+        <Modal :show="showToogleDeleteModal" @close="closeToogleDeleteModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    ¿Estás seguro de que quieres eliminar el registro de salida?
+                </h2>
+                <p class="mt-1 text-sm text-gray-600">
+                    Una vez que se elimine el registro, todos sus recursos y datos se eliminarán permanentemente.
+                </p>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeToogleDeleteModal">
+                        Cancelar
+                    </SecondaryButton>
+                    <DangerButton class="ml-3" @click="deleteToogle">
+                        Eliminar
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
+
         <SuccessOperationModal
             :confirming="confirmSotDelete"
             :title="'Registro Eliminado'"
-            :message="'El registro del backlog fue eliminado con éxito'"
+            :message="'El registro de la entrada fue eliminado con éxito'"
+        />
+
+        <SuccessOperationModal
+            :confirming="confirmToogleDelete"
+            :title="'Registro Eliminado'"
+            :message="'El registro de la salida fue eliminado con éxito'"
         />
     </AuthenticatedLayout>
 </template>
@@ -252,9 +307,10 @@ import { formattedDate } from "@/utils/utils";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
-const { quickMaterials, material } = defineProps({
+const { quickMaterials, material, sites } = defineProps({
     quickMaterials: Object,
-    material: Object
+    material: Object,
+    sites: Object
 });
 
 const backlogsToRender = ref(quickMaterials.data);
@@ -344,11 +400,35 @@ const quickMaterialOutputs = ref([]);
 const editingToogleCells = ref({});
 const isEnterPressedToogle = ref(false);
 const toogleKey = ref(null);
+const toogleToDelete = ref(null);
+const showToogleDeleteModal = ref(false);
+const confirmToogleDelete = ref(false);
 
 function openToogleDeleteModal(id, key) {
-
+    toogleToDelete.value = id;
+    toogleKey.value = key;
+    showToogleDeleteModal.value = true;
 }
 
+function closeToogleDeleteModal (){
+    toogleToDelete.value = null;
+    toogleKey.value = null;
+    showToogleDeleteModal.value = false;
+}
+
+async function deleteToogle (){
+    const res = await axios.delete(
+        route('huawei.quickmaterials.details.output.delete', {output: toogleToDelete.value})
+    );
+    if (res.data.message === "success") {
+        deleteToogleRow(toogleKey.value);
+        showToogleDeleteModal.value = false;
+        confirmToogleDelete.value = true;
+        setTimeout(() => {
+            confirmToogleDelete.value = false;
+        }, 1500)
+    }
+}
 
 function toogle (item) {
     quickMaterialOutputs.value = []
@@ -386,8 +466,6 @@ function saveEditToogle(key, field, id) {
     if (isEnterPressedToogle.value) {
         isEnterPressedToogle.value = false;
     } else {
-        console.log(id);
-        console.log(quickMaterialOutputs.value[key]);
         storeToogle(key, id);
     }
     editingToogleCells.value[`${key}-${field}`] = false;
