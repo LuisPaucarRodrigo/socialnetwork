@@ -174,31 +174,6 @@
                     Añadir {{ resorceOrProduct ? 'Producto' : 'Activo' }}
                 </h2>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                    <!-- <div v-if="!form.products.length" class="sm:col-span-3">
-                        <InputLabel for="type_product">Tipo de {{ resorceOrProduct ? 'Producto' : 'Activo' }}</InputLabel>
-                        <div v-if="resorceOrProduct" class="mt-2">
-                            <select required id="type_product" v-model="type_product"
-                                @change="handleTypeProduct($event.target.value)"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled value="">Seleccione tipo</option>
-                                <option v-for="item in typeProduct" :key="item.id" :value="item.name">
-                                    {{ item.name }}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div v-else class="mt-2">
-                            <select required id="type_product" v-model="type_product"
-                                @change="handleTypeResource($event.target.value)"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option disabled value="">Seleccione tipo</option>
-                                <option v-for="item in resourceType" :key="item.id" :value="item.id">
-                                    {{ item.name }}
-                                </option>
-                            </select>
-                        </div>
-                    </div> -->
-
                     <div class="sm:col-span-3">
                         <InputLabel for="unit">{{ resorceOrProduct ? 'Producto' : 'Activo' }}</InputLabel>
                         <div class="mt-2">

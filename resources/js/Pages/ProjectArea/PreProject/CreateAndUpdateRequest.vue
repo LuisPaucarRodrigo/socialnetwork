@@ -1,6 +1,10 @@
 <template>
     <Head title="Agregar Solicitud" />
-    <AuthenticatedLayout :redirectRoute=" { route: 'preprojects.request.index', params: { id: purchase ? purchase.preproject.id : preproject.id } }">
+    <AuthenticatedLayout 
+        :redirectRoute="{
+            route: 'preprojects.request.index', 
+            params: { id: purchase ? purchase.preproject.id : preproject.id } 
+    }">
         <template #header>
             {{ purchase ? purchase.code : (preproject ? 'Nueva solicitud de compra para:':'Nueva solicitud de compra') }}
         </template>

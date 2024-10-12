@@ -15,6 +15,8 @@ class StaticCost extends Model
         'ruc',
         'type_doc',
         'zone',
+        'operation_number',
+        'operation_date',
         'doc_number',
         'doc_date',
         'description',

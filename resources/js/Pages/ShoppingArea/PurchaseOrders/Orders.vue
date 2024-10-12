@@ -153,7 +153,6 @@
                                     <InputError :message="form.errors.serie_number" />
                                 </div>
                             </div>
-
                             <div>
                                 <InputLabel for="facture_number">
                                     Numero de Factura

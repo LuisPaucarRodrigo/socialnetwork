@@ -155,6 +155,16 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
+                            Numero de Operación
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            Fecha de Operación
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
                             Numero de Depósito
                         </th>
                         <th
@@ -225,6 +235,16 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
                             {{ item?.provider?.company_name }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            {{ item.operation_number }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            {{ item.operation_date && formattedDate(item.operation_date) }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -459,6 +479,44 @@
                                         </option>
                                     </datalist>
                                     <InputError :message="form.errors.ruc" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_number"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Numero de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="form.operation_number"
+                                        id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.operation_number"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_date"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Fecha de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="date"
+                                        v-model="form.operation_date"
+                                        id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.operation_date"
+                                    />
                                 </div>
                             </div>
 
@@ -718,6 +776,44 @@
                                         </option>
                                     </datalist>
                                     <InputError :message="form.errors.ruc" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_number"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Numero de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="form.operation_number"
+                                        id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.operation_number"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_date"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Fecha de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="date"
+                                        v-model="form.operation_date"
+                                        id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.operation_date"
+                                    />
                                 </div>
                             </div>
 
@@ -984,6 +1080,8 @@ const form = useForm({
     provider_id: "",
     project_id: props.project_id.id,
     type_doc: "",
+    operation_number: "",
+    operation_date: "",
     doc_number: "",
     doc_date: "",
     description: "",
@@ -1011,6 +1109,8 @@ const openEditAdditionalModal = (additional) => {
     form.amount = editingAdditional.value.amount;
     form.igv = editingAdditional.value.igv;
     form.type_doc = editingAdditional.value.type_doc;
+    form.operation_number = editingAdditional.value.operation_number
+    form.operation_date = editingAdditional.value.operation_date
     form.doc_number = editingAdditional.value.doc_number;
     form.doc_date = editingAdditional.value.doc_date;
     form.description = editingAdditional.value.description;

@@ -476,7 +476,6 @@ class ApiController extends Controller
     private function downloadFile($path)
     {
         $filePath = storage_path('app/' . $path);
-
         if (!file_exists($filePath)) {
             return abort(404, 'El archivo no existe.');
         }

@@ -30,8 +30,6 @@ class PurchaseOrdersController extends Controller
                     ->orWhere('state', 'Completada/Aprobada');
             })
             ->paginate(10);
-
-
         return Inertia::render('ShoppingArea/PurchaseOrders/HistoryOrders', ['orders' => $completedOrders]);
     }
 

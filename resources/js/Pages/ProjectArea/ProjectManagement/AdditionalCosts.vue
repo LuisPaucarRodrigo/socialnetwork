@@ -123,7 +123,7 @@
                         role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
                     >
-                        Exportar solo facturas
+                        Facturas, Boletas y Vouchers de Pago
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
 
