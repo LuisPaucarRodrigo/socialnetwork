@@ -581,6 +581,12 @@ Usuarios
                         </Link>
                     </MyTransition>
                 </template>
+
+
+                <MyTransition :transitiondemonstration="showingFinance">
+                    <Link class="w-full" :href="route('finance.account_status')">Estado de Cuenta</Link>
+                </MyTransition>
+
             </template>
 
 
