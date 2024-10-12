@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class AccountStatusController extends Controller
+class AccountStatementController extends Controller
 {
     public function index () {
-        return Inertia::render('Finance/AccountStatus/AccountStatus');
+        // $accountStatuses = A
+        return Inertia::render('Finance/AccountStatement/AccountStatement');
     }
 }

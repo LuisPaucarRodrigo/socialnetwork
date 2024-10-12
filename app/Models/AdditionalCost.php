@@ -14,6 +14,8 @@ class AdditionalCost extends Model
         'ruc',
         'type_doc',
         'zone',
+        'operation_number',
+        'operation_date',
         'doc_number',
         'doc_date',
         'description',
@@ -23,7 +25,9 @@ class AdditionalCost extends Model
         'photo',
         'is_accepted',
         'igv',
-        'user_id'
+        'user_id',
+        'account_statement_id',
+
     ];
 
     protected $casts = [

@@ -22,12 +22,32 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                        Foto de Factura
+                            Fecha de Operación 
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            Número de Operación
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
                             Descripción
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            Cargo
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            Abono
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            Saldo Contable
                         </th>
                         <th
                             v-if="
@@ -43,6 +63,26 @@
                     <tr
                         class="text-gray-700"
                     >
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            k
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            gv
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            k
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            gv
+                        </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -78,10 +118,22 @@
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
                         <td
-                            class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                            class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
                         >
                             TOTAL
                         </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
@@ -102,6 +154,7 @@ import { Head, useForm, router } from "@inertiajs/vue3";
 const { auth } = defineProps({
     auth: Object,
 });
+
 
 
 

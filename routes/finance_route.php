@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Finance\AccountStatusController;
+use App\Http\Controllers\Finance\AccountStatementController;
 use App\Http\Controllers\Finance\BudgetUpdateController;
 use App\Http\Controllers\Finance\DepositController;
 use App\Http\Controllers\Finance\ExpenseManagementController;
@@ -20,7 +20,7 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::post('/finance/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
 
     //Account Status
-    Route::get('/finance/account_status', [AccountStatusController::class, 'index'])->name('finance.account_status');
+    Route::get('/finance/account_statement', [AccountStatementController::class, 'index'])->name('finance.account_status');
 });
 
 Route::middleware('permission:FinanceManager|Finance')->group(function () {

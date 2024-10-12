@@ -24,7 +24,8 @@ class StaticCost extends Model
         'project_id',
         'provider_id',
         'igv',
-        'photo'
+        'photo',
+        'account_statement_id',
     ];
 
     protected $casts = [

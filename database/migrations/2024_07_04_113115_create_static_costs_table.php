@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -33,6 +32,10 @@ return new class extends Migration
                 ->constrained('projects')
                 ->onDelete('cascade');
             $table->integer('igv')->default('0');
+            $table->foreignId('account_statement_id')
+                ->nullable()
+                ->constrained('account_statements')
+                ->onDelete('set null');
             $table->timestamps();
         });
     }
