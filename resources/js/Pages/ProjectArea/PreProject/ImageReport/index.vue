@@ -157,11 +157,13 @@ const preproject_image_id = ref(null);
 const imageCodeId = ref('');
 const props = defineProps({
     // codesWithStatus: Object,
-    preprojectImages: Object,
+    preprojectImage: Object,
     imagesCode: Object,
     preproject: Object,
     userPermissions: Array
 });
+
+const preprojectImages = ref(props.preprojectImage)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -363,30 +365,15 @@ async function approveCode() {
     } catch (error) {
         console.error(error);
     }
-
-    // router.get(, {
-    //     onSuccess: () => {
-    //         titleSuccessImage.value = "Code Aprobado"
-    //         messageSuccessImage.value = "El Codigo se aprobo correctamente"
-    //         approve_reject_Image.value = true
-    //         setTimeout(() => {
-    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-    //         }, 2000)
-    //     }
-    // })
 }
 
-function approveTitle(preproject_title_id) {
-    router.get(route('preprojects.codereport.approveTitle', { preproject_title_id: preproject_title_id }), {
-        onSuccess: () => {
-            titleSuccessImage.value = "Aprobado"
-            messageSuccessImage.value = "Se aprobo correctamente"
-            approve_reject_Image.value = true
-            setTimeout(() => {
-                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-            }, 2000)
-        }
-    })
+async function approveTitle(preproject_title_id) {
+    try {
+        await axios.get(route('preprojects.codereport.approveTitle', { preproject_title_id: preproject_title_id }))
+        updateStateStage(preproject_title_id)
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 async function approveImages(code_id) {
@@ -401,17 +388,6 @@ async function approveImages(code_id) {
     } catch (error) {
         console.error(error);
     }
-
-    // router.get(route('preprojects.codereport.approveImages', { code_id: code_id }), {
-    //     onSuccess: () => {
-    //         titleSuccessImage.value = "Aprobado"
-    //         messageSuccessImage.value = "Las imagenes se aprovaron Correctamente"
-    //         approve_reject_Image.value = true
-    //         setTimeout(() => {
-    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-    //         }, 2000)
-    //     }
-    // })
 }
 
 // const showMap = () => {
@@ -428,7 +404,7 @@ function verifyApproveModal(preprojectImageId, preproject_code_id) {
 }
 
 function visuallyChangeCode(preprojectImageId, preprojectCodeId) {
-    const preprojectImage = props.preprojectImages.find(image => image.id === preprojectImageId);
+    const preprojectImage = preprojectImages.value.find(image => image.id === preprojectImageId);
     if (preprojectImage) {
         const preprojectCode = preprojectImage.preproject_codes.find(code => code.id === preprojectCodeId);
         if (preprojectCode) {
@@ -442,7 +418,7 @@ function visuallyChangeCode(preprojectImageId, preprojectCodeId) {
 }
 
 function visuallyChangeImage(preprojectTitleId, preprojectImageCodeId, preprojectImageId, state) {
-    const preprojectImage = props.preprojectImages.find(title => title.id === preprojectTitleId);
+    const preprojectImage = preprojectImages.value.find(title => title.id === preprojectTitleId);
     if (preprojectImage) {
         const preprojectCode = preprojectImage.preproject_codes.find(code => code.id === preprojectImageCodeId);
         if (preprojectCode) {
@@ -460,4 +436,10 @@ function visuallyChangeImage(preprojectTitleId, preprojectImageCodeId, preprojec
         console.log('No se encontró el preproject especificado.');
     }
 }
+
+function updateStateStage(preproject_stage_id) {
+    const index = preprojectImages.value.findIndex(item => item.id === preproject_stage_id)
+    preprojectImages.value[index].state = !preprojectImages.value[index].state;
+}
+
 </script>
