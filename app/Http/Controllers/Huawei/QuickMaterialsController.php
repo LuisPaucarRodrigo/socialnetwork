@@ -11,7 +11,10 @@ use App\Models\QuickMaterial;
 use App\Models\QuickMaterialsEntry;
 use App\Models\QuickMaterialsOutput;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+
+use function Pest\Laravel\json;
 
 class QuickMaterialsController extends Controller
 {
@@ -118,20 +121,36 @@ class QuickMaterialsController extends Controller
     }
 
     //details
-    public function index($material_id) {
+    public function index($material_id)
+    {
         $material = QuickMaterial::find($material_id);
+
+        // Obtiene los datos con la relación quick_materials_outputs y las subrelaciones
+        $quickMaterials = QuickMaterialsEntry::where('quick_material_id', $material_id)
+            ->with(['quick_materials_outputs' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }, 'quick_materials_outputs.huawei_project.huawei_site'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        // Iteramos sobre los resultados para añadir los campos 'project' y 'site'
+        $quickMaterials->getCollection()->transform(function ($entry) {
+            $entry->quick_materials_outputs->transform(function ($output) {
+                $output->project = optional($output->huawei_project)->assigned_diu;
+                $output->site = optional($output->huawei_project?->huawei_site)->name;
+                return $output;
+            });
+            return $entry;
+        });
+
+        // Retornamos la vista con los datos transformados
         return Inertia::render('Huawei/QuickMaterialsDetails', [
-                'quickMaterials' => QuickMaterialsEntry::where('quick_material_id', $material_id)
-                    ->with(['quick_materials_outputs' => function ($query) {
-                        $query->orderBy('created_at', 'desc');
-                    }, 'quick_materials_outputs.huawei_project.huawei_site'])
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(20),
-                'material' => $material,
-                'sites' => HuaweiSite::select('id', 'name')->get()
-            ]
-        );
+            'quickMaterials' => $quickMaterials,
+            'material' => $material,
+            'sites' => HuaweiSite::select('id', 'name')->get()
+        ]);
     }
+
 
     public function store($material_id, QuickMaterialsRequest $request) {
         $originalData = $request->all();
@@ -167,7 +186,7 @@ class QuickMaterialsController extends Controller
 
     public function destroyOutput (QuickMaterialsOutput $output) {
         $output->delete();
-        return response()->json(['message'=>'success'], 200);
+        return response()->json(['message'=>'success', $output], 200);
     }
 
     public function fetchProjects ($site_id)
@@ -176,16 +195,36 @@ class QuickMaterialsController extends Controller
         return response()->json(['projects' => $projects]);
     }
 
-    public function selectProject ($entry_id, $project_id, Request $request)
+    public function selectProject($entry_id, $project_id, $output_id = null)
     {
-        $originalData = $request->all();
+        // Obtiene el proyecto con su relación huawei_site
+        $project = HuaweiProject::with('huawei_site')->find($project_id)->setAppends([]);
 
-        if (empty($originalData)){
-            return response()->json(['message' => $originalData]);
+        if ($output_id) {
+            // Si se proporciona un output_id, actualiza la salida existente
+            $quick_res_project = QuickMaterialsOutput::find($output_id);
+            $quick_res_project->update([
+                'quick_material_entry_id' => $entry_id,
+                'huawei_project_id' => $project_id
+            ]);
+        } else {
+            // Si no se proporciona output_id, crea una nueva entrada
+            $quick_res_project = QuickMaterialsOutput::create([
+                'quick_material_entry_id' => $entry_id,
+                'huawei_project_id' => $project_id
+            ]);
         }
 
-        $quick_res_project = QuickMaterialsOutput::updateOrCreate(['id' => $request->id, 'quick_material_entry_id' => $entry_id, 'huawei_project_id' => $project_id]);
-        return response()->json(['quick_res_out' => $quick_res_project], 200);
+        // Convertimos el objeto en JSON para poder agregarle los campos adicionales
+        $quick_res_project = $quick_res_project->toArray();
+
+        // Añadimos los campos adicionales que quieres devolver en la respuesta
+        $quick_res_project['project'] = $project->assigned_diu;
+        $quick_res_project['site'] = $project->huawei_site->name;
+
+        // Devolvemos la respuesta JSON con los campos adicionales
+        return response()->json(['quick_res_project' => $quick_res_project], 200);
     }
+
 }
 

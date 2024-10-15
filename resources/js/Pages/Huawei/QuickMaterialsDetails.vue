@@ -3,7 +3,7 @@
 
     <AuthenticatedLayout :redirectRoute="{route: 'huawei.quickmaterials'}">
         <template #header> Detalles del Material: {{ material.description }}</template>
-
+        <p>{{ material.available_quantity }}</p>
         <div class="min-w-full rounded-lg shadow">
             <PrimaryButton @click="addBacklogRow" type="button">
                 + Agregar
@@ -164,7 +164,7 @@
                                     <td class="text-center bg-white border">
                                         <button
                                             type="button"
-                                            @click="output?.id ? openToogleDeleteModal(item.id, key) : deleteToogleRow(key)"
+                                            @click="output?.id ? openToogleDeleteModal(output.id, key) : deleteToogleRow(key)"
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +183,7 @@
                                         </button>
                                     </td>
                                     <td
-                                        v-for="field2 in ['output_date', 'output_quantity', 'output_employee', 'output_observation', 'site', 'huawei_project']"
+                                        v-for="field2 in ['output_date', 'output_quantity', 'output_employee', 'output_observation', 'site', 'project']"
                                         :key="field2"
                                         :class="[
                                             'border border-gray-200 px-2 bg-white py-2 text-[12px]',
@@ -192,7 +192,7 @@
                                         ]"
                                         @dblclick="editToogleCell(key2, field2)"
                                     >
-                                    <div v-if="field2 !== 'site' && field2 !== 'huawei_project'">
+                                    <div v-if="field2 !== 'site' && field2 !== 'project'">
                                         <template v-if="isEditingToogle(key2, field2)">
                                             <input
                                                 :type="field2 === 'output_date' ? 'date' : field2 === 'output_quantity' ? 'number' : 'text'"
@@ -219,29 +219,30 @@
                                                 @change="fetchProjects($event.target.value)"
                                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             >
+                                                <option disabled value="">Seleccione una opción</option>
                                                 <option v-for="site in sites" :key="site.id" :value="site.id">{{ site.name }}</option>
                                             </select>
                                         </template>
                                         <template v-else>
                                             <p class="text-gray-900 text-center">
-                                                {{ output.huawei_project?.huawei_site.name }}
+                                                {{ output[field2] }}
                                             </p>
                                         </template>
                                     </div>
-                                    <div v-else>
+                                    <div v-if="field2 === 'project'">
                                         <template v-if="isEditingToogle(key2, field2)">
                                             <select v-if="availableProject"
-                                                @blur="saveEditProjectToogle(key2, field2, item.id, $event.target.value)"
-                                                @keydown.enter.prevent="isEnterPressedToogle = true; saveEditProjectToogle(key2, field2, item.id, $event.target.value)"
-                                                @change="saveEditProjectToogle(key2, field2, item.id, $event.target.value)"
+                                                @blur="saveEditProjectToogle(key2, field2, item.id, $event.target.value, output.id)"
+                                                @keydown.enter.prevent="isEnterPressedToogle = true; saveEditProjectToogle(key2, field2, item.id, $event.target.value, output.id)"
                                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             >
+                                                <option disabled value="">Seleccione una opción</option>
                                                 <option v-for="project in projectsFetched" :key="project.id" :value="project.id">{{ project.assigned_diu }}</option>
                                             </select>
                                         </template>
                                         <template v-else>
                                             <p class="text-gray-900 text-center">
-                                                {{ output.huawei_project?.name }}
+                                                {{ output[field2] }}
                                             </p>
                                         </template>
                                     </div>
@@ -310,6 +311,8 @@
             :title="'Registro Eliminado'"
             :message="'El registro de la salida fue eliminado con éxito'"
         />
+        <ErrorOperationModal :showError="errorQuantityModal" :title="'Error'" :message="'Ha excedido la cantidad disponible de la entrada'" />
+
     </AuthenticatedLayout>
 </template>
 
@@ -324,6 +327,7 @@ import { ref, nextTick } from "vue";
 import { formattedDate } from "@/utils/utils";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const { quickMaterials, material, sites } = defineProps({
     quickMaterials: Object,
@@ -424,6 +428,7 @@ const confirmToogleDelete = ref(false);
 const availableProject = ref(false);
 const projectsFetched = ref(null);
 const selectedProject = ref(null);
+const errorQuantityModal = ref(false);
 
 function openToogleDeleteModal(id, key) {
     toogleToDelete.value = id;
@@ -492,13 +497,47 @@ function saveEditToogle(key, field, id) {
     editingToogleCells.value[`${key}-${field}`] = false;
 }
 
-async function storeToogle (key, id){
-    const res = await axios.post(
-        route('huawei.quickmaterials.details.output.store', {entry_id: id}),
-        quickMaterialOutputs.value[key]
-    );
-    quickMaterialOutputs.value[key] = res.data.quick_res_out;
+async function storeToogle(key, id) {
+    const entry = backlogsToRender.value.find(item => item.id == id);
+    const output_val = entry.quick_materials_outputs.find(item => item.id == quickMaterialOutputs.value[key].id);
+    console.log(output_val);
+
+    // Guarda el valor original de output_quantity antes de modificarlo
+    const originalOutputQuantity = output_val.output_quantity;
+
+    if (quickMaterialOutputs.value[key].output_quantity > entry.available_quantity) {
+        // Si la cantidad es mayor al disponible, muestra el modal de error y restablece el valor original
+        errorQuantityModal.value = true;
+        setTimeout(() => {
+            // Si hay un ID, restaura el valor original desde el objeto entry.quick_materials_outputs
+            if (quickMaterialOutputs.value[key].id) {
+                const output = entry.quick_materials_outputs.find(item => item.id == quickMaterialOutputs.value[key].id);
+                console.log(output);
+                quickMaterialOutputs.value[key].output_quantity = originalOutputQuantity;
+            } else {
+                // Si no hay ID (nuevo registro), vacía el campo
+                quickMaterialOutputs.value[key].output_quantity = '';
+            }
+            errorQuantityModal.value = false;
+        }, 2000);
+    } else {
+        try {
+            // Realiza la petición solo si la cantidad es válida
+            const res = await axios.post(
+                route('huawei.quickmaterials.details.output.store', { entry_id: id }),
+                quickMaterialOutputs.value[key]
+            );
+            // Actualiza el valor después de recibir la respuesta
+            quickMaterialOutputs.value[key] = res.data.quick_res_out;
+        } catch (error) {
+            // Manejo de errores en la petición
+            console.error('Error al guardar:', error);
+            // Si ocurre un error, restaurar el valor original
+            quickMaterialOutputs.value[key].output_quantity = originalOutputQuantity;
+        }
+    }
 }
+
 
 async function fetchProjects (value){
     availableProject.value = false;
@@ -510,21 +549,22 @@ async function fetchProjects (value){
     availableProject.value = true;
 }
 
-function saveEditProjectToogle (key, field, entry_id, project_id){
+function saveEditProjectToogle (key, field, entry_id, project_id, output_id = null){
     if (isEnterPressedToogle.value) {
         isEnterPressedToogle.value = false;
     } else {
-        selectProject(key, entry_id, project_id);
+        selectProject(key, entry_id, project_id, output_id);
     }
     editingToogleCells.value[`${key}-${field}`] = false;
+    editingToogleCells.value[`${key}-site`] = false;
 }
 
-async function selectProject (key, entry_id, project_id) {
+async function selectProject (key, entry_id, project_id, output_id = null) {
     const res = await axios.post(
-        route('huawei.quickmaterials.details.output.selectproject', {entry_id: entry_id, project_id: project_id}),
+        route('huawei.quickmaterials.details.output.selectproject', {entry_id: entry_id, project_id: project_id, output_id: output_id}),
         quickMaterialOutputs.value[key]
-    );
-    quickMaterialOutputs.value[key] = res.data.quick_res_out;
+    )
+    quickMaterialOutputs.value[key] = res.data.quick_res_project;
 }
 
 </script>
