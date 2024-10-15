@@ -31,8 +31,7 @@ export function realNumeration(perPage, currentPage, index) {
 
 export function setAxiosErrors(errors, form) {
   let formErrors = Object.fromEntries(
-    Object.entries(errors)
-      .map(([key, val]) => [key, val.join('\n')])
+    Object.entries(errors).map(([key, val]) => [key, val.join('\n')])
   );
   form.setError(formErrors)
 }

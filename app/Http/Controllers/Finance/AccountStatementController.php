@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AccountStatement\AccountStatementRequest;
+use App\Models\AccountStatement;
 use App\Models\AdditionalCost;
 use App\Models\StaticCost;
 use Illuminate\Http\Request;
@@ -19,7 +21,7 @@ class AccountStatementController extends Controller
         $od = $request->operation_date;
         $on = $request->operation_number;
 
-        $acData = AdditionalCost::select('expense_type','zone','amount', 'project_id')
+        $acData = AdditionalCost::select('id', 'expense_type','zone','amount', 'project_id')
             ->with(['project' => function ($query) {
                 $query->select('id', 'preproject_id');
             }])
@@ -32,7 +34,7 @@ class AccountStatementController extends Controller
             return $item;
         });
         
-        $scData = StaticCost::select('expense_type','zone','amount', 'project_id')
+        $scData = StaticCost::select('id', 'expense_type','zone','amount', 'project_id')
             ->with(['project' => function ($query) {
                 $query->select('id', 'preproject_id');
             }])
@@ -46,5 +48,21 @@ class AccountStatementController extends Controller
         });
 
         return response()->json(['acData'=>$acData, 'scData'=>$scData]);
+    }
+
+
+    public function store (AccountStatementRequest $request, $as_id = null) {
+        $data = $request->validated();
+        // $
+        // if ($as_id) {
+        //     $rs = 
+        //     AccountStatement::
+        // } else {
+        //     $rs = AccountStatement::create($data);
+        // }
+        // $id
+        
+        // $id AccountStatement::
+        return Inertia::render('Finance/AccountStatement/AccountStatement');
     }
 }

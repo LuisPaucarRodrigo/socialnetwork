@@ -20,8 +20,9 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::post('/finance/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
 
     //Account Status
-    Route::get('/finance/account_statement', [AccountStatementController::class, 'index'])->name('finance.account_status');
+    Route::get('/finance/account_statement', [AccountStatementController::class, 'index'])->name('finance.account_statement');
     Route::get('/finance/account_statement/search_costs', [AccountStatementController::class, 'searchCosts'])->name('finance.search_costs');
+    Route::post('/finance/account_statement/store/{as_id?}', [AccountStatementController::class, 'store'])->name('finance.account_statement.store');
 });
 
 Route::middleware('permission:FinanceManager|Finance')->group(function () {

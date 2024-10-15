@@ -17,7 +17,12 @@ class AccountStatement extends Model
         'balance',
     ];
 
-    
+    public function additional_costs () {
+        return $this->hasMany(AdditionalCost::class, 'account_statement_id');
+    }
 
+    public function static_costs () {
+        return $this->hasMany(AdditionalCost::class, 'account_statement_id');
+    }
 
 }

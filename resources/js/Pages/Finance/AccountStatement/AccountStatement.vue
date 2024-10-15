@@ -2,7 +2,7 @@
     <Head title="Estado de Cuenta" />
     <AuthenticatedLayout
         :redirectRoute="{
-            route: 'finance.account_status',
+            route: 'finance.account_statement',
         }"
     >
         <template #header> Estado de Cuenta </template>
@@ -16,6 +16,7 @@
                 + Agregar
             </PrimaryButton>
         </div>
+        <Toaster richColors/>
         <div class="overflow-x-auto h-[85vh]">
             <table class="w-full whitespace-no-wrap">
                 <thead>
@@ -190,62 +191,105 @@
                             </div>
 
                             <div class="sm:col-span-2">
-                                <p class="text-sm font-medium leading-6 text-gray-600">Registros coincidentes</p>
-                                <div class="rounded-md border border-gray-300 overflow-auto">
-                                    <table class="w-full ">
-                                        <thead>
-                                            <tr
-                                                class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                                            >
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                <div v-if="costsFounded.acData.length + costsFounded.scData.length > 0">
+                                    <p class="text-sm font-medium leading-6 text-gray-600">Registros coincidentes</p>
+                                    <div class="rounded-md border border-gray-300 overflow-auto">
+                                        <table class="w-full ">
+                                            <thead>
+                                                <tr
+                                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
                                                 >
-                                                    Zona
-                                                </th>
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Zona
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Tipo de Gasto
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Ubicación
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Monto
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-gray-700"
+                                                    v-for="(item, i) in costsFounded.scData"
+                                                    :key="i"
                                                 >
-                                                    Tipo de Gasto
-                                                </th>
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.zone }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.expense_type }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.project.code }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums"
+                                                    >
+                                                        S/. {{ item.amount }}
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-gray-700"
+                                                    v-for="(item, i) in costsFounded.acData"
+                                                    :key="i"
                                                 >
-                                                    Ubicación
-                                                </th>
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
-                                                >
-                                                    Monto
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="text-gray-700">
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
-                                                >
-                                                    k
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
-                                                >
-                                                    k
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
-                                                >
-                                                    gv
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
-                                                >
-                                                    k
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.zone }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.expense_type }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.project.code }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums"
+                                                    >
+                                                        S/. {{ item.amount }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
+                                <div v-else> 
+                                    <p class="text-sm font-medium leading-6 text-gray-600">
+                                        No hay registros coincidentes
+                                    </p>
+                                </div>
+                                <InputError
+                                        :message="form.errors.acData"
+                                    />
+                                <InputError
+                                        :message="form.errors.scData"
+                                    />
                             </div>
+                            
+                            
 
                             <div>
                                 <InputLabel
@@ -344,12 +388,15 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
+import { setAxiosErrors } from "@/utils/utils";
+import { notify, notifyError } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
 import { ref, watch } from "vue";
 
 const { auth, userPermissions } = defineProps({
@@ -369,6 +416,8 @@ const form = useForm({
     charge: "",
     payment: "",
     balance: "",
+    acData:[],
+    scData:[],
 });
 
 function openFormModal() {
@@ -381,7 +430,22 @@ function closeFormModal() {
 
 const isFetching = ref(false);
 async function submit() {
-    console.log("halo");
+    try{
+        isFetching.value = true
+        const res = await axios.post(
+            route("finance.account_statement.store"), form.data())
+        // let index = dataToRender.value.findIndex(item=>item.id == form.id)
+        // dataToRender.value[index] = res.data
+        closeFormModal()
+        notify('Gasto Adicional Actualizado')
+    }catch (e) {
+        isFetching.value = false
+        if (e.response?.data?.errors){
+            setAxiosErrors(e.response.data.errors, form)
+        }else {
+            notifyError('Server Error')
+        }
+    }
 }
 
 async function searchCosts (data) {
@@ -389,11 +453,18 @@ async function searchCosts (data) {
     return res.data
 }
 
+const costsFounded = ref({
+    acData: [],
+    scData: [],
+})
+
 watch([()=>form.operation_number, ()=>form.operation_date], async()=>{
     const res = await searchCosts({
         'operation_date':form.operation_date, 
         'operation_number':form.operation_number
     })
-    console.log(res)
+    costsFounded.value = res
+    form.acData = res.acData.map(val=>val?.id)
+    form.scData = res.scData.map(val=>val?.id)
 }) 
 </script>
