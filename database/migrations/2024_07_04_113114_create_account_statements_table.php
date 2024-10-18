@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('account_statements', function (Blueprint $table) {
             $table->id();
-            $table->date('operation_date');
+            $table->dateTime('operation_date');
             $table->string('operation_number');
             $table->string('description');
             $table->string('charge');

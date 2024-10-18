@@ -14,7 +14,13 @@ class AccountStatementController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Finance/AccountStatement/AccountStatement');
+        $accountStatements = AccountStatement::paginate(40);
+        return Inertia::render(
+            'Finance/AccountStatement/AccountStatement',
+            [
+                'accountStatements' => $accountStatements
+            ]
+        );
     }
 
 
@@ -62,7 +68,6 @@ class AccountStatementController extends Controller
         $data = $request->validated();
         $scIds = $data["scData"];
         $acIds = $data["acData"];
-        // return response()->json($data, 200);
         unset($data["scData"]);
         unset($data["acData"]);
         $rg = AccountStatement::updateOrCreate(['id' => $as_id], $data);
@@ -82,7 +87,7 @@ class AccountStatementController extends Controller
 
     public function syncOneToMany($parentModel, $childModelClass, array $childIds, $foreignKey)
     {
-        $childModelClass = "App\Models\\".$childModelClass;
+        $childModelClass = "App\Models\\" . $childModelClass;
         $childModelClass::where($foreignKey, $parentModel->id)
             ->whereNotIn('id', $childIds)
             ->update([$foreignKey => null]);

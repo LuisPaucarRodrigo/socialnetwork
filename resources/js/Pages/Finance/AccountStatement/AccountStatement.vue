@@ -62,31 +62,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="text-gray-700">
+                    <tr v-for="item in accountStatements.data" class="text-gray-700" :key="item.id">
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            k
+                            {{ formattedDate(item.operation_date) }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            gv
+                            {{ item.operation_number }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            k
+                            {{ item.description }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            gv
+                            {{ item.charge }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            k
+                            {{ item.payment }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -161,7 +161,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
-                                        type="date"
+                                        type="datetime-local"
                                         v-model="form.operation_date"
                                         id="operation_date"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -394,15 +394,17 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
-import { setAxiosErrors } from "@/utils/utils";
+import { formattedDate, setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { ref, watch } from "vue";
 
-const { auth, userPermissions } = defineProps({
+const { accountStatements, auth, userPermissions } = defineProps({
+    accountStatements: Object,
     auth: Object,
     userPermissions: Array,
 });
+
 
 const hasPermission = (permission) => {
     return userPermissions.includes(permission);
@@ -459,13 +461,27 @@ const costsFounded = ref({
 })
 
 watch([()=>form.operation_number, ()=>form.operation_date], async()=>{
-    const res = await searchCosts({
-        'operation_date':form.operation_date, 
-        'operation_number':form.operation_number
-    })
-    costsFounded.value = res
-    form.acData = res.acData.map(val=>val?.id)
-    form.scData = res.scData.map(val=>val?.id)
+    if (form.operation_date && form.operation_number) {
+        const res = await searchCosts({
+            'operation_date':form.operation_date, 
+            'operation_number':form.operation_number
+        })
+        costsFounded.value = res
+        form.acData = res.acData.map(val=>val?.id)
+        form.scData = res.scData.map(val=>val?.id)
+    }
+})
+
+
+watch(()=>[form.payment], ()=>{
+    if(form.payment){
+        form.charge = ''
+    }
+})
+watch(()=>[form.charge], ()=>{
+    if(form.charge){
+        form.payment = ''
+    }
 })
 
 

@@ -22,11 +22,11 @@ class AccountStatementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'operation_date' => 'required',
+            'operation_date' => 'required | date',
             'operation_number' => 'required',
             'description' => 'required',
-            'charge' => 'required',
-            'payment' => 'required',
+            'charge' => "required_without:payment",
+            'payment' => "required_without:charge",
             'acData' => 'nullable|array',
             'acData.*' => 'integer',
             'scData' => 'nullable|array',
