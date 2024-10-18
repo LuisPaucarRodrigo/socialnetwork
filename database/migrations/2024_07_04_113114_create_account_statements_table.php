@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('account_statements', function (Blueprint $table) {
             $table->id();
             $table->date('operation_date');
-            $table->date('operation_number');
-            $table->text('description');
+            $table->string('operation_number');
+            $table->string('description');
             $table->string('charge');
             $table->string('payment');
             $table->double('balance');

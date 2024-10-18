@@ -83,12 +83,31 @@ class AdditionalCostsController extends Controller
             $searchTerms = $request->input('search');
             $result = $result->where(function ($query) use ($searchTerms) {
                 $query->where('ruc', 'like', "%$searchTerms%")
-                    ->orWhere('doc_date', 'like', "%$searchTerms%")
+                    ->orWhere('doc_number', 'like', "%$searchTerms%")
+                    ->orWhere('operation_number', 'like', "%$searchTerms%")
                     ->orWhere('description', 'like', "%$searchTerms%")
                     ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
 
+        if($request->docNoDate){
+            $result->where('doc_date', null);
+        }
+        if($request->docStartDate){
+            $result->where('doc_date', '>=', $request->docStartDate);
+        }
+        if($request->docEndDate){
+            $result->where('doc_date', '<=', $request->docEndDate);
+        }
+        if($request->opNoDate){
+            $result->where('operation_date', null);
+        }
+        if($request->opStartDate){
+            $result->where('operation_date', '>=', $request->opStartDate);
+        }
+        if($request->opEndDate){
+            $result->where('operation_date', '<=', $request->opEndDate);
+        }
         if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
@@ -231,9 +250,11 @@ class AdditionalCostsController extends Controller
 
     public function downloadImages($project_id)
     {
-        
         try {
-            $additionalCosts = AdditionalCost::where('project_id', $project_id)->where('is_accepted', 1)->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])->get();
+            $additionalCosts = AdditionalCost::where('project_id', $project_id)
+                ->where('is_accepted', 1)
+                ->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])
+                ->get();
             $zipFileName = 'additionalCostsPhotos.zip';
             $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
             $zip = new ZipArchive;

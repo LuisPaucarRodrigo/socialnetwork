@@ -434,9 +434,10 @@ async function submit() {
         isFetching.value = true
         const res = await axios.post(
             route("finance.account_statement.store"), form.data())
+        console.log(res.data)
         // let index = dataToRender.value.findIndex(item=>item.id == form.id)
         // dataToRender.value[index] = res.data
-        closeFormModal()
+        // closeFormModal()
         notify('Gasto Adicional Actualizado')
     }catch (e) {
         isFetching.value = false
@@ -466,5 +467,8 @@ watch([()=>form.operation_number, ()=>form.operation_date], async()=>{
     costsFounded.value = res
     form.acData = res.acData.map(val=>val?.id)
     form.scData = res.scData.map(val=>val?.id)
-}) 
+})
+
+
+
 </script>
