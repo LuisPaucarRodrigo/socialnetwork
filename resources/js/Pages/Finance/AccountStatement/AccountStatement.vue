@@ -346,7 +346,7 @@
                                     />
                                 </div>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <InputLabel
                                     for="balance"
                                     class="font-medium leading-6 text-gray-900"
@@ -364,7 +364,7 @@
                                         :message="form.errors.balance"
                                     />
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeFormModal">
@@ -415,7 +415,6 @@ const form = useForm({
     description: "",
     charge: "",
     payment: "",
-    balance: "",
     acData:[],
     scData:[],
 });

@@ -17,7 +17,7 @@ class StaticCostsController extends Controller
     public function index(Request $request, Project $project_id)
     {
         $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
-		$additional_costs->getCollection()->transform(function($item){
+        $additional_costs->getCollection()->transform(function ($item) {
             $item->project->setAppends([]);
             $item->setAppends(['real_amount']);
             return $item;
@@ -35,6 +35,35 @@ class StaticCostsController extends Controller
     public function search_costs(Request $request, $project_id)
     {
         $result = StaticCost::with('project', 'provider')->where('project_id', $project_id);
+
+        if ($request->search) {
+            $searchTerms = $request->input('search');
+            $result = $result->where(function ($query) use ($searchTerms) {
+                $query->where('ruc', 'like', "%$searchTerms%")
+                    ->orWhere('doc_number', 'like', "%$searchTerms%")
+                    ->orWhere('operation_number', 'like', "%$searchTerms%")
+                    ->orWhere('description', 'like', "%$searchTerms%")
+                    ->orWhere('amount', 'like', "%$searchTerms%");
+            });
+        }
+        if ($request->docNoDate) {
+            $result->where('doc_date', null);
+        }
+        if ($request->docStartDate) {
+            $result->where('doc_date', '>=', $request->docStartDate);
+        }
+        if ($request->docEndDate) {
+            $result->where('doc_date', '<=', $request->docEndDate);
+        }
+        if ($request->opNoDate) {
+            $result->where('operation_date', null);
+        }
+        if ($request->opStartDate) {
+            $result->where('operation_date', '>=', $request->opStartDate);
+        }
+        if ($request->opEndDate) {
+            $result->where('operation_date', '<=', $request->opEndDate);
+        }
         if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
@@ -44,17 +73,8 @@ class StaticCostsController extends Controller
         if (count($request->selectedDocTypes) < 5) {
             $result = $result->whereIn('type_doc', $request->selectedDocTypes);
         }
-        if ($request->search) {
-            $searchTerms = $request->input('search');
-            $result = $result->where(function($query) use ($searchTerms){
-                $query->where('ruc', 'like', "%$searchTerms%")
-                ->orWhere('doc_date', 'like', "%$searchTerms%")
-                ->orWhere('description', 'like', "%$searchTerms%")
-                ->orWhere('amount', 'like', "%$searchTerms%");
-            });
-        }
         $result = $result->orderBy('doc_date')->get();
-		$result->transform(function($item){
+        $result->transform(function ($item) {
             $item->project->setAppends([]);
             $item->setAppends(['real_amount']);
             return $item;
@@ -137,7 +157,7 @@ class StaticCostsController extends Controller
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/staticcosts/');
         $additional_cost->delete();
-        return response()->json(['msg'=>'success'],200);
+        return response()->json(['msg' => 'success'], 200);
     }
 
 
@@ -157,7 +177,8 @@ class StaticCostsController extends Controller
     }
 
 
-    public function export($project_id) {
+    public function export($project_id)
+    {
         return Excel::download(new StaticCostsExport($project_id), 'Gastos_Fijos.xlsx');
     }
 }

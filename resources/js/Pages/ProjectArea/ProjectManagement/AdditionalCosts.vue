@@ -357,7 +357,7 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                        <TableDateFilter
+                            <TableDateFilter
                                 labelClass="text-[11px]"
                                 label="Fecha de Docoumento"
                                 v-model:startDate="filterForm.docStartDate"
@@ -1640,7 +1640,6 @@ watch(
     ],
     ([]) => {
         filterMode.value = true;
-        console.log(filterForm.value)
         search_advance(filterForm.value);
     }
 );

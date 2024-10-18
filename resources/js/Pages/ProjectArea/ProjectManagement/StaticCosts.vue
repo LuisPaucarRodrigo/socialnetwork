@@ -160,17 +160,31 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Fecha de Operación
+                            <TableDateFilter
+                                labelClass="text-[11px]"
+                                label="Fecha de Operación"
+                                v-model:startDate="filterForm.opStartDate"
+                                v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate"
+                                width="w-40"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Numero de Depósito
+                            Numero de Documento
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Fecha de Depósito
+                            <TableDateFilter
+                                labelClass="text-[11px]"
+                                label="Fecha de Docoumento"
+                                v-model:startDate="filterForm.docStartDate"
+                                v-model:endDate="filterForm.docEndDate"
+                                v-model:noDate="filterForm.docNoDate"
+                                width="w-40"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -313,6 +327,12 @@
                         >
                             TOTAL
                         </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
@@ -524,7 +544,7 @@
                                 <InputLabel
                                     for="doc_number"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Numero de Depósito
+                                    >Numero de Documento
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
@@ -543,7 +563,7 @@
                                 <InputLabel
                                     for="doc_date"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Fecha de Depósito
+                                    >Fecha de Documento
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
@@ -1050,6 +1070,7 @@ import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
+import TableDateFilter from "@/Components/TableDateFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
@@ -1251,6 +1272,12 @@ const filterForm = ref({
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes,
+    opStartDate: "",
+    opEndDate: "",
+    opNoDate: false,
+    docStartDate: "",
+    docEndDate: "",
+    docNoDate: false,
 });
 
 
@@ -1259,6 +1286,12 @@ watch(
         filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedDocTypes,
+        filterForm.value.opStartDate,
+        filterForm.value.opEndDate,
+        filterForm.value.opNoDate,
+        filterForm.value.docStartDate,
+        filterForm.value.docEndDate,
+        filterForm.value.docNoDate,
     ],
     () => {
         filterMode.value = true;

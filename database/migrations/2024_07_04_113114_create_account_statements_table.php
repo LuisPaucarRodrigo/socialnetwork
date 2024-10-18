@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('description');
             $table->string('charge');
             $table->string('payment');
-            $table->double('balance');
             $table->timestamps();
         });
     }

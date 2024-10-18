@@ -27,7 +27,6 @@ class AccountStatementRequest extends FormRequest
             'description' => 'required',
             'charge' => 'required',
             'payment' => 'required',
-            'balance' => 'required',
             'acData' => 'nullable|array',
             'acData.*' => 'integer',
             'scData' => 'nullable|array',

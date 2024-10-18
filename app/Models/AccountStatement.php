@@ -14,7 +14,6 @@ class AccountStatement extends Model
         'description',
         'charge',
         'payment',
-        'balance',
     ];
 
     public function additional_costs () {
