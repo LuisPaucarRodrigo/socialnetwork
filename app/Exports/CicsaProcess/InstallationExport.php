@@ -18,6 +18,7 @@ class InstallationExport implements FromView, WithColumnWidths
             'title' => [
                 'Nombre de Proyecto',
                 'Codigo de Proyecto',
+                'Centro de Costos',
                 'CPE',
                 'Fecha PEXT',
                 'Fecha PINT',
@@ -28,7 +29,7 @@ class InstallationExport implements FromView, WithColumnWidths
                 'Coordinador',
                 'Encargado'
             ],
-            'assignations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
+            'assignations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'cost_center')
             ->with('cicsa_installation')
             ->get()
         ]);
@@ -42,12 +43,13 @@ class InstallationExport implements FromView, WithColumnWidths
             'C' => 17,
             'D' => 17,
             'E' => 17,
-            'F' => 30,
+            'F' => 17,
             'G' => 30,
             'H' => 30,
             'I' => 30,
             'J' => 30,
             'K' => 30,
+            'L' => 30
         ];
     }
 }

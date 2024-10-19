@@ -421,6 +421,9 @@ Usuarios
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="route('projectmanagement.pext.index')">Proyectos Pext</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('checklist.index')">
                         Checklist
                     </Link>

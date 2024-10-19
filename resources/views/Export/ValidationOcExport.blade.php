@@ -11,6 +11,7 @@
         <tr>
             <td> {{ $validationOC->cicsa_assignation->project_name }} </td>
             <td> {{ $validationOC->cicsa_assignation->project_code }} </td>
+            <td> {{ $validationOC->cicsa_assignation->cost_center }} </td>
             <td> {{ $validationOC->cicsa_assignation->cpe }} </td>
             <td> {{ $validationOC->cicsa_purchase_order->oc_number }} </td>
             <td> {{ $validationOC->file_validation }} </td>

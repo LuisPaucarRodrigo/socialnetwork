@@ -1312,8 +1312,6 @@ const form = useForm({
     photo_status: "stable",
 });
 
-
-
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
@@ -1325,7 +1323,6 @@ const openCreateAdditionalModal = () => {
 };
 
 const openEditAdditionalModal = (additional) => {
-    // Copia de los datos de la subsección existente al formulario
     editingAdditional.value = JSON.parse(JSON.stringify(additional));
     form.id = editingAdditional.value.id;
     form.expense_type = editingAdditional.value.expense_type;

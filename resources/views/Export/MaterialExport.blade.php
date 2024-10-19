@@ -11,6 +11,7 @@
         <tr>
             <td> {{ $assignation->assignation_date }} </td>
             <td> {{ $assignation->project_name }} </td>
+            <td> {{ $assignation->cost_center }} </td>
             <td> {{ $assignation->customer }} </td>
             <td> {{ $assignation->project_code }} </td>
             <td> {{ $assignation->cpe }} </td>

@@ -11,6 +11,7 @@
         <tr>
             <td> {{ $assignation->project_name }} </td>
             <td> {{ $assignation->project_code }} </td>
+            <td> {{ $assignation->cost_center }} </td>
             <td> {{ $assignation->cpe }} </td>
             <td> {{ $assignation->cicsa_installation?->pext_date }} </td>
             <td> {{ $assignation->cicsa_installation?->pint_date }} </td>

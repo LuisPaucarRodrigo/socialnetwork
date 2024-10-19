@@ -405,8 +405,6 @@ class ProjectManagementController extends Controller
         ]);
     }
 
-
-
     public function warehouse_products(Project $project, Warehouse $warehouse)
     {
         if ($warehouse->category === 'Especial') {
@@ -450,7 +448,6 @@ class ProjectManagementController extends Controller
                 })->values()->all();
         }
 
-
         return response()->json(['inventory' => $inventory]);
     }
 
@@ -464,8 +461,6 @@ class ProjectManagementController extends Controller
             'zone' => 'required|string',
             'entry_id' => 'nullable|numeric'
         ]);
-
-        // dd($request->all());
 
         if ($request->special_inventory_id != null) {
             ProjectEntry::create([
@@ -501,14 +496,11 @@ class ProjectManagementController extends Controller
         }
     }
 
-
     public function liquidate_project(Request $request)
     {
         Project::find($request->project_id)?->update(['status' => true]);
         return redirect()->back();
     }
-
-
 
     public function createFolder($name){
         $path = 'Projects';

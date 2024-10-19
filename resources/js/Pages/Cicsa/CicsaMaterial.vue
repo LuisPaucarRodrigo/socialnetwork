@@ -22,23 +22,27 @@
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
                             </th>
                             <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Codigo de Proyecto
                             </th>
                             <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Centro de Costos
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
                             </th>
                             <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales de Factibilidad
                             </th>
-                            <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            <th 
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
                         </tr>
@@ -54,6 +58,11 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_code }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.cost_center }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -102,29 +111,32 @@
                             </tr>
                             <template v-if="materialRow == item.id">
                                 <tr
-                                    class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    class="border-b bg-red-500 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
                                     <th
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
                                     <th
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Fecha de Recojo
                                     </th>
                                     <th
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Numero de Guia
                                     </th>
                                     <th
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Lista de Materiales Recibidos
                                     </th>
-                                    <th colspan="2"
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    <th 
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Acciones
+                                    </th>
+                                    <th 
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
                                 </tr>
                                 <tr v-for="materialDetail in item.cicsa_materials" :key="materialDetail.id"
-                                    class="bg-gray-100">
+                                    class="bg-gray-100 text-center">
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -146,7 +158,7 @@
                                             </button>
                                         </p>
                                     </td>
-                                    <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             <button class="text-blue-900"
                                                 @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
@@ -158,6 +170,8 @@
                                                 </svg>
                                             </button>
                                         </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     </td>
                                 </tr>
                             </template>
