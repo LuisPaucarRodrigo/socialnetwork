@@ -336,6 +336,7 @@ const { quickMaterials, material, sites } = defineProps({
 });
 
 const backlogsToRender = ref(quickMaterials.data);
+const inmutableBacklogs = ref(JSON.parse(JSON.stringify(quickMaterials.data)));
 
 function addBacklogRow() {
     backlogsToRender.value.unshift({});
@@ -498,26 +499,17 @@ function saveEditToogle(key, field, id) {
 }
 
 async function storeToogle(key, id) {
-    const entry = backlogsToRender.value.find(item => item.id == id);
-    const output_val = entry.quick_materials_outputs.find(item => item.id == quickMaterialOutputs.value[key].id);
-    console.log(output_val);
-
-    // Guarda el valor original de output_quantity antes de modificarlo
-    const originalOutputQuantity = output_val.output_quantity;
-
+    const entry = inmutableBacklogs.value.find(item => item.id == id);
     if (quickMaterialOutputs.value[key].output_quantity > entry.available_quantity) {
-        // Si la cantidad es mayor al disponible, muestra el modal de error y restablece el valor original
         errorQuantityModal.value = true;
-        setTimeout(() => {
-            // Si hay un ID, restaura el valor original desde el objeto entry.quick_materials_outputs
-            if (quickMaterialOutputs.value[key].id) {
-                const output = entry.quick_materials_outputs.find(item => item.id == quickMaterialOutputs.value[key].id);
-                console.log(output);
+        if (quickMaterialOutputs.value[key].id) {
+                const output_val = entry.quick_materials_outputs.find(item => item.id == quickMaterialOutputs.value[key].id);
+                const originalOutputQuantity = output_val.output_quantity;
                 quickMaterialOutputs.value[key].output_quantity = originalOutputQuantity;
             } else {
-                // Si no hay ID (nuevo registro), vacía el campo
                 quickMaterialOutputs.value[key].output_quantity = '';
             }
+        setTimeout(() => {
             errorQuantityModal.value = false;
         }, 2000);
     } else {
