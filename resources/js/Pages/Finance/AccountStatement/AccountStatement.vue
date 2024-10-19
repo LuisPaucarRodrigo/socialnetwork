@@ -339,6 +339,34 @@
                                                         S/. {{ item.amount }}
                                                     </td>
                                                 </tr>
+                                                <tr
+                                                    class="text-gray-700"
+                                                    v-for="(
+                                                        item, i
+                                                    ) in costsFounded.peData"
+                                                    :key="i"
+                                                >
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.zone }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.expense_type }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                    >
+                                                        {{ item.cicsa_assignation.project_name }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums"
+                                                    >
+                                                        S/. {{ item.amount }}
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -486,6 +514,7 @@ const form = useForm({
     payment: "",
     acData: [],
     scData: [],
+    peData: [],
 });
 
 function openFormModal() {
@@ -504,7 +533,7 @@ async function submit() {
             route("finance.account_statement.store"),
             form.data()
         );
-        dataToRender.value = res.data;
+        dataToRender.value = res.data.accountStatements;
         closeFormModal();
         notify("Gasto Adicional Actualizado");
     } catch (e) {
@@ -525,6 +554,7 @@ async function searchCosts(data) {
 const costsFounded = ref({
     acData: [],
     scData: [],
+    peData: []
 });
 
 watch([() => form.operation_number, () => form.operation_date], async () => {
@@ -536,6 +566,7 @@ watch([() => form.operation_number, () => form.operation_date], async () => {
         costsFounded.value = res;
         form.acData = res.acData.map((val) => val?.id);
         form.scData = res.scData.map((val) => val?.id);
+        form.peData = res.peData.map((val) => val?.id);
     }
 });
 
