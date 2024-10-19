@@ -9,12 +9,18 @@ use App\Models\AdditionalCost;
 use App\Models\StaticCost;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class AccountStatementController extends Controller
 {
     public function index()
     {
-        $accountStatements = AccountStatement::paginate(40);
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+        $accountStatements = AccountStatement::whereMonth('operation_date', $currentMonth)
+            ->whereYear('operation_date', $currentYear)
+            ->orderBy('operation_date', 'asc')
+            ->get();
         return Inertia::render(
             'Finance/AccountStatement/AccountStatement',
             [
@@ -24,42 +30,10 @@ class AccountStatementController extends Controller
     }
 
 
-    public function searchCosts(Request $request)
+    public function searchStatements(Request $request)
     {
-        $od = $request->operation_date;
-        $on = $request->operation_number;
-
-        $acData = AdditionalCost::select('id', 'expense_type', 'zone', 'amount', 'project_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
-            ->where('operation_date', $od)
-            ->where('operation_number', $on)
-            ->get();
-        $acData->transform(function ($item) {
-            $item->project->setAppends(['code']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $scData = StaticCost::select('id', 'expense_type', 'zone', 'amount', 'project_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
-            ->where('operation_date', $od)
-            ->where('operation_number', $on)
-            ->get();
-        $scData->transform(function ($item) {
-            $item->project->setAppends(['code']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        return response()->json(['acData' => $acData, 'scData' => $scData]);
+        
+        return response()->json([]);
     }
 
 
@@ -68,12 +42,21 @@ class AccountStatementController extends Controller
         $data = $request->validated();
         $scIds = $data["scData"];
         $acIds = $data["acData"];
-        unset($data["scData"]);
-        unset($data["acData"]);
         $rg = AccountStatement::updateOrCreate(['id' => $as_id], $data);
         $this->syncOneToMany($rg, 'AdditionalCost', $acIds, 'account_statement_id');
         $this->syncOneToMany($rg, 'StaticCost', $scIds, 'account_statement_id');
-        return response()->json($rg, 200);
+
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
+
+        $accountStatements = AccountStatement::whereMonth('operation_date', $currentMonth)
+            ->whereYear('operation_date', $currentYear)
+            ->orderBy('operation_date', 'asc')
+            ->get();
+        return response()->json([
+            'accountStatements' => $accountStatements
+        ], 200);
     }
 
 

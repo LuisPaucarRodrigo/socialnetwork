@@ -122,6 +122,27 @@ const handleNoDate = () => {
     emit("update:noDate", localNoDate.value);
 };
 
+watch(
+    () => props.startDate,
+    (newValue) => {
+        localStartDate.value = newValue;
+    }
+);
+
+watch(
+    () => props.endDate,
+    (newValue) => {
+        localEndDate.value = newValue;
+    }
+);
+
+watch(
+    () => props.noDate,
+    (newValue) => {
+        localNoDate.value = newValue;
+    }
+);
+
 onMounted(() => {
     document.addEventListener("click", closePopup);
 });

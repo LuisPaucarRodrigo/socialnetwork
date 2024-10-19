@@ -1757,4 +1757,6 @@ async function validateRegister(ac_id, is_accepted) {
         console.log(e);
     }
 }
+
+
 </script>

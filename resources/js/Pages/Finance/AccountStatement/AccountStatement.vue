@@ -6,17 +6,62 @@
         }"
     >
         <template #header> Estado de Cuenta </template>
+        <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
-            <PrimaryButton
-                v-if="hasPermission('FinanceManager')"
-                @click="openFormModal"
-                type="button"
-                class="whitespace-nowrap"
-            >
-                + Agregar
-            </PrimaryButton>
+            <div class="flex justify-between">
+                <div class="flex sm:items-center space-x-3">
+                    <PrimaryButton
+                        v-if="hasPermission('FinanceManager')"
+                        @click="openFormModal"
+                        type="button"
+                        class="whitespace-nowrap"
+                    >
+                        + Agregar
+                    </PrimaryButton>
+                    <button
+                        class="p-2 bg-white ring-1 ring-slate-400 rounded-md text-slate-900 hover:text-slate-400"
+                    >
+                        <ServerIcon class="h-5 w-5 font-bold" />
+                    </button>
+                </div>
+
+                <form
+                    @submit.prevent="handleSearch"
+                    class="flex gap-4 items-center w-full sm:w-auto"
+                >
+                    <input
+                        type="month"
+                        v-model="filterForm.moth"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                    <TextInput
+                        type="text"
+                        placeholder="Buscar..."
+                        v-model="filterForm.search"
+                    />
+                    <button
+                        type="submit"
+                        class="rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        <svg
+                            width="30px"
+                            height="21px"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                                stroke="white"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+                    </button>
+                </form>
+            </div>
         </div>
-        <Toaster richColors/>
         <div class="overflow-x-auto h-[85vh]">
             <table class="w-full whitespace-no-wrap">
                 <thead>
@@ -62,31 +107,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in accountStatements.data" class="text-gray-700" :key="item.id">
+                    <tr
+                        v-for="item in dataToRender"
+                        class="text-gray-700"
+                        :key="item.id"
+                    >
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
                             {{ formattedDate(item.operation_date) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
                             {{ item.operation_number }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
                             {{ item.description }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
-                            {{ item.charge }}
+                            {{ item.charge && ` S/. ${item.charge}` }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
-                            {{ item.payment }}
+                            {{ item.payment && ` S/. ${item.payment}` }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -191,10 +240,22 @@
                             </div>
 
                             <div class="sm:col-span-2">
-                                <div v-if="costsFounded.acData.length + costsFounded.scData.length > 0">
-                                    <p class="text-sm font-medium leading-6 text-gray-600">Registros coincidentes</p>
-                                    <div class="rounded-md border border-gray-300 overflow-auto">
-                                        <table class="w-full ">
+                                <div
+                                    v-if="
+                                        costsFounded.acData.length +
+                                            costsFounded.scData.length >
+                                        0
+                                    "
+                                >
+                                    <p
+                                        class="text-sm font-medium leading-6 text-gray-600"
+                                    >
+                                        Registros coincidentes
+                                    </p>
+                                    <div
+                                        class="rounded-md border border-gray-300 overflow-auto"
+                                    >
+                                        <table class="w-full">
                                             <thead>
                                                 <tr
                                                     class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
@@ -222,8 +283,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="text-gray-700"
-                                                    v-for="(item, i) in costsFounded.scData"
+                                                <tr
+                                                    class="text-gray-700"
+                                                    v-for="(
+                                                        item, i
+                                                    ) in costsFounded.scData"
                                                     :key="i"
                                                 >
                                                     <td
@@ -247,8 +311,11 @@
                                                         S/. {{ item.amount }}
                                                     </td>
                                                 </tr>
-                                                <tr class="text-gray-700"
-                                                    v-for="(item, i) in costsFounded.acData"
+                                                <tr
+                                                    class="text-gray-700"
+                                                    v-for="(
+                                                        item, i
+                                                    ) in costsFounded.acData"
                                                     :key="i"
                                                 >
                                                     <td
@@ -276,20 +343,16 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div v-else> 
-                                    <p class="text-sm font-medium leading-6 text-gray-600">
+                                <div v-else>
+                                    <p
+                                        class="text-sm font-medium leading-6 text-gray-600"
+                                    >
                                         No hay registros coincidentes
                                     </p>
                                 </div>
-                                <InputError
-                                        :message="form.errors.acData"
-                                    />
-                                <InputError
-                                        :message="form.errors.scData"
-                                    />
+                                <InputError :message="form.errors.acData" />
+                                <InputError :message="form.errors.scData" />
                             </div>
-                            
-                            
 
                             <div>
                                 <InputLabel
@@ -393,6 +456,8 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import { ServerIcon } from "@heroicons/vue/24/outline";
+import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
 import { formattedDate, setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError } from "@/Components/Notification";
@@ -405,6 +470,8 @@ const { accountStatements, auth, userPermissions } = defineProps({
     userPermissions: Array,
 });
 
+const dataToRender = ref(accountStatements);
+const filterMode = ref(false);
 
 const hasPermission = (permission) => {
     return userPermissions.includes(permission);
@@ -417,8 +484,8 @@ const form = useForm({
     description: "",
     charge: "",
     payment: "",
-    acData:[],
-    scData:[],
+    acData: [],
+    scData: [],
 });
 
 function openFormModal() {
@@ -431,59 +498,69 @@ function closeFormModal() {
 
 const isFetching = ref(false);
 async function submit() {
-    try{
-        isFetching.value = true
+    try {
+        isFetching.value = true;
         const res = await axios.post(
-            route("finance.account_statement.store"), form.data())
-        console.log(res.data)
-        // let index = dataToRender.value.findIndex(item=>item.id == form.id)
-        // dataToRender.value[index] = res.data
-        // closeFormModal()
-        notify('Gasto Adicional Actualizado')
-    }catch (e) {
-        isFetching.value = false
-        if (e.response?.data?.errors){
-            setAxiosErrors(e.response.data.errors, form)
-        }else {
-            notifyError('Server Error')
+            route("finance.account_statement.store"),
+            form.data()
+        );
+        dataToRender.value = res.data;
+        closeFormModal();
+        notify("Gasto Adicional Actualizado");
+    } catch (e) {
+        isFetching.value = false;
+        if (e.response?.data?.errors) {
+            setAxiosErrors(e.response.data.errors, form);
+        } else {
+            notifyError("Server Error");
         }
     }
 }
 
-async function searchCosts (data) {
-    const res = await axios.get(route('finance.search_costs', data));
-    return res.data
+async function searchCosts(data) {
+    const res = await axios.get(route("finance.search_costs", data));
+    return res.data;
 }
 
 const costsFounded = ref({
     acData: [],
     scData: [],
-})
+});
 
-watch([()=>form.operation_number, ()=>form.operation_date], async()=>{
+watch([() => form.operation_number, () => form.operation_date], async () => {
     if (form.operation_date && form.operation_number) {
         const res = await searchCosts({
-            'operation_date':form.operation_date, 
-            'operation_number':form.operation_number
-        })
-        costsFounded.value = res
-        form.acData = res.acData.map(val=>val?.id)
-        form.scData = res.scData.map(val=>val?.id)
+            operation_date: form.operation_date,
+            operation_number: form.operation_number,
+        });
+        costsFounded.value = res;
+        form.acData = res.acData.map((val) => val?.id);
+        form.scData = res.scData.map((val) => val?.id);
     }
-})
+});
 
-
-watch(()=>[form.payment], ()=>{
-    if(form.payment){
-        form.charge = ''
+watch(
+    () => [form.payment],
+    () => {
+        if (form.payment) {
+            form.charge = "";
+        }
     }
-})
-watch(()=>[form.charge], ()=>{
-    if(form.charge){
-        form.payment = ''
+);
+watch(
+    () => [form.charge],
+    () => {
+        if (form.charge) {
+            form.payment = "";
+        }
     }
-})
+);
 
-
-
+const now = new Date();
+const defaultMonth = now.toISOString().slice(0, 7);
+const filterForm = ref({
+    month: defaultMonth,
+    search: "",
+});
+const handleSearch = () => {};
 </script>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\AccountStatement;
 
+use App\Models\AccountStatement;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AccountStatementRequest extends FormRequest
 {
@@ -23,7 +25,10 @@ class AccountStatementRequest extends FormRequest
     {
         return [
             'operation_date' => 'required | date',
-            'operation_number' => 'required',
+            'operation_number' => [
+                'required',
+                Rule::unique(AccountStatement::class)->ignore('operation_number'),
+            ],
             'description' => 'required',
             'charge' => "required_without:payment",
             'payment' => "required_without:charge",
