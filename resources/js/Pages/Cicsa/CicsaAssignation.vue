@@ -12,7 +12,7 @@
                     <PrimaryButton @click="openAddAssignationModal" type="button">
                         + Agregar
                     </PrimaryButton>
-                    <a :href="route('assignation.export')"
+                    <a :href="route('assignation.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
 
@@ -228,6 +228,7 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import { setAxiosErrors } from "@/utils/utils";
 
 const { assignation, auth } = defineProps({
     assignation: Object,
@@ -235,6 +236,7 @@ const { assignation, auth } = defineProps({
 })
 
 const assignations = ref(assignation);
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 
 const initialState = {
     id: null,
@@ -255,29 +257,34 @@ const form = useForm(
 
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
+
 function openAddAssignationModal() {
     showAddEditModal.value = true
 }
+
 function closeAddAssignationModal() {
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
 }
-function submitStore() {
+
+async function submitStore() {
     let url = route('assignation.storeOrUpdate');
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmAssignation.value = true
-            setTimeout(() => {
-                confirmAssignation.value = false
-                router.get(route('assignation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    try {
+        const response = await axios.put(url, form)
+        updateAssignation(null, response.data)
+        closeAddAssignationModal()
+        confirmAssignation.value = true
+        setTimeout(() => {
+            confirmAssignation.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
         }
-    })
+    }
 }
 
 const confirmUpdateAssignation = ref(false);
@@ -288,21 +295,23 @@ function openEditSotModal(item) {
     showAddEditModal.value = true
 }
 
-function submitUpdate() {
+async function submitUpdate() {
     let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false
-                router.get(route('assignation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.log(e)
+    try {
+        const response = await axios.put(url, form)
+        updateAssignation(form.id, response.data)
+        closeAddAssignationModal()
+        confirmUpdateAssignation.value = true
+        setTimeout(() => {
+            confirmUpdateAssignation.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
         }
-    })
+    }
 }
 
 function submit() {
@@ -318,4 +327,18 @@ const search = async ($search) => {
         console.error('Error searching:', error);
     }
 };
+
+function updateAssignation(cicsa_assignation_id, assignation) {
+    const validations = assignations.value.data || assignations.value;
+    const index = validations.findIndex(item => item.id === cicsa_assignation_id)
+    if (cicsa_assignation_id) {
+        validations[index] = assignation
+    } else {
+        validations.unshift(assignation);
+    }
+
+    if (validations.length > assignations.value.per_page) {
+        validations.pop();
+    }
+}
 </script>

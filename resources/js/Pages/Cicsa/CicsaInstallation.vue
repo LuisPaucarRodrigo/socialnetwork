@@ -6,7 +6,7 @@
         <template #header> Instalación PINT y PEXT </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between space-x-3">
-                <a :href="route('cicsa.installation.export')"
+                <a :href="route('cicsa.installation.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
@@ -96,19 +96,19 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{
-        formattedDate(
-            item.cicsa_installation?.pext_date
-        )
-    }}
+                                        formattedDate(
+                                            item.cicsa_installation?.pext_date
+                                        )
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{
-            formattedDate(
-                item.cicsa_installation?.pint_date
-            )
-        }}
+                                        formattedDate(
+                                            item.cicsa_installation?.pint_date
+                                        )
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -123,43 +123,43 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
                                 <button v-if="item?.total_materials?.length > 0" type="button" @click="
-        openMaterialsModal(item.total_materials)
-        ">
+                                    openMaterialsModal(item.total_materials)
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
                                 <button v-if="item?.cicsa_installation
-            ?.cicsa_installation_materials
-            ?.length > 0
-        " type="button" @click="
-        openInstMaterialsModal(
-            item.cicsa_installation
-                .cicsa_installation_materials
-        )
-        ">
+                                    ?.cicsa_installation_materials
+                                    ?.length > 0
+                                " type="button" @click="
+                                    openInstMaterialsModal(
+                                        item.cicsa_installation
+                                            .cicsa_installation_materials
+                                    )
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{
-        formattedDate(
-            item.cicsa_installation
-                ?.shipping_report_date
-        )
-    }}
+                                        formattedDate(
+                                            item.cicsa_installation
+                                                ?.shipping_report_date
+                                        )
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{
-            item.cicsa_installation
-                ?.projected_amount
-                ? "S/" +
-                item.cicsa_installation.projected_amount.toFixed()
-                : ""
-        }}
+                                        item.cicsa_installation
+                                            ?.projected_amount
+                                            ? "S/" +
+                                            item.cicsa_installation.projected_amount.toFixed(2)
+                                            : ""
+                                    }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -175,14 +175,14 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900" @click="
-        openEditFeasibilityModal(
-            item.id,
-            item.cicsa_installation,
-            item.total_materials,
-            item?.cicsa_installation
-                ?.cicsa_installation_materials
-        )
-        ">
+                                        openEditFeasibilityModal(
+                                            item.id,
+                                            item.cicsa_installation,
+                                            item.total_materials,
+                                            item?.cicsa_installation
+                                                ?.cicsa_installation_materials
+                                        )
+                                        ">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -243,8 +243,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" v-model="form.projected_amount" autocomplete="off"
-                                    id="projected_amount" />
+                                <input type="number" v-model="form.projected_amount" id="projected_amount"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
                         </div>
@@ -287,10 +287,10 @@
                     <template v-if="true">
                         <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
                             <div class="flex gap-2 items-center">
-                                <b>Liquidación de Materiales</b>
+                                <b>Liquidación de Pint</b>
                             </div>
                             <br />
-                            <div v-if="form.total_materials.length > 0" class="overflow-auto">
+                            <div v-if="pintList.length > 0" class="overflow-auto">
                                 <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
                                     <thead>
                                         <tr
@@ -315,7 +315,7 @@
                                     <tbody>
                                         <tr v-for="(
                                                 item, i
-                                            ) in form.total_materials" :key="i" class="text-gray-700 bg-white text-sm">
+                                            ) in pintList" :key="i" class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 {{ item?.name }}
                                             </td>
@@ -323,17 +323,17 @@
                                                 {{ item?.quantity }}
                                             </td>
                                             <td class="border-b border-slate-300 px-2 py-4">
-                                                <input required type="number" min="0" v-model="form.total_materials[i][
-        'used_quantity'
-        ]
-        " autocomplete="off" :max="item.quantity"
+                                                <input required type="number" min="0" v-model="pintList[i][
+                                                    'used_quantity'
+                                                ]
+                                                    " autocomplete="off" :max="item.quantity"
                                                     class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
                                                 {{
-        item?.quantity -
-        item.used_quantity
-    }}
+                                                    item?.quantity -
+                                                    item.used_quantity
+                                                }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -341,6 +341,64 @@
                             </div>
                             <div v-else>No hay materiales por liquidar</div>
                         </div>
+
+                        <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
+                            <div class="flex gap-2 items-center">
+                                <b>Liquidación de Pext</b>
+                            </div>
+                            <br />
+                            <div v-if="pextList.length > 0" class="overflow-auto">
+                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                    <thead>
+                                        <tr
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                                Material
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Recibidos
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Usados
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Resto
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(
+                                                item, i
+                                            ) in pextList" :key="i" class="text-gray-700 bg-white text-sm">
+                                            <td class="border-b border-slate-300 px-2 py-4">
+                                                {{ item?.name }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item?.quantity }}
+                                            </td>
+                                            <td class="border-b border-slate-300 px-2 py-4">
+                                                <input required type="number" min="0" v-model="pextList[i][
+                                                    'used_quantity'
+                                                ]
+                                                    " autocomplete="off" :max="item.quantity"
+                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{
+                                                    item?.quantity -
+                                                    item.used_quantity
+                                                }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div v-else>No hay materiales por liquidar</div>
+                        </div>
+
 
                         <InputError :message="form.errors.total_materials" />
                     </template>
@@ -394,7 +452,7 @@
                 </div>
             </div>
         </Modal>
-        <Modal :show="showMaterials" @close="closeMaterialsModal" max-width="md" :closeable="true">
+        <Modal :show="showMaterials" @close="closeMaterialsModal" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     Total Materiales Recibidos
@@ -416,6 +474,9 @@
                                         Unidad
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Tipo
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Cantidad
                                     </th>
                                 </tr>
@@ -430,6 +491,9 @@
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.unit }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.type }}
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.quantity }}
@@ -449,7 +513,7 @@
             </div>
         </Modal>
 
-        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" max-width="md" :closeable="true">
+        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     Materiales Liquidados
@@ -471,6 +535,9 @@
                                         Usados
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Tipo
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Resto
                                     </th>
                                 </tr>
@@ -487,9 +554,12 @@
                                         {{ item?.used_quantity }}
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
+                                        {{ item?.type }}
+                                    </td>
+                                    <td class="border-b border-slate-300 px-4 py-4">
                                         {{
-        item?.quantity - item?.used_quantity
-    }}
+                                            item?.quantity - item?.used_quantity
+                                        }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -519,20 +589,26 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { Head, useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import { formattedDate } from "@/utils/utils.js";
 import TextInput from "@/Components/TextInput.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
+import { setAxiosErrors } from "@/utils/utils";
+import { ref, watch } from "vue";
+
 
 const { installation, auth } = defineProps({
     installation: Object,
     auth: Object,
 });
+
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const installations = ref(installation);
+const pintList = ref([])
+const pextList = ref([])
 
 const initialState = {
     user_id: auth.user.id,
@@ -556,6 +632,7 @@ const mateiralObject = ref({
     quantity: 0,
     cicsa_feasibility_id: "",
 });
+
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
 const showModalMaterial = ref(false);
@@ -596,21 +673,36 @@ function openEditFeasibilityModal(
     showAddEditModal.value = true;
 }
 
-function submit() {
+watch(() => form.total_materials, (newVal) => {
+    pintList.value = [];
+    pextList.value = [];
+    newVal.forEach(item => {
+        if (item.type === "Pint") {
+            pintList.value.push(item);
+        } else {
+            pextList.value.push(item);
+        }
+    })
+});
+
+async function submit() {
+    form.total_materials = pintList.value.concat(pextList.value);
     let url = route("cicsa.installation.store", { ci_id: form?.id });
-    form.post(url, {
-        onSuccess: () => {
-            closeAddAssignationModal();
-            confirmUpdateAssignation.value = true;
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false;
-                router.get(route("cicsa.installation.index"));
-            }, 1500);
-        },
-        onError: (e) => {
-            console.error(e);
-        },
-    });
+    try {
+        const response = await axios.post(url, form);
+        updateInstallations(form.cicsa_assignation_id, response.data)
+        closeAddAssignationModal();
+        confirmUpdateAssignation.value = true;
+        setTimeout(() => {
+            confirmUpdateAssignation.value = false;
+        }, 1500);
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
+        }
+    }
 }
 
 function addMaterial() {
@@ -666,4 +758,10 @@ const search = async ($search) => {
         console.error("Error searching:", error);
     }
 };
+
+function updateInstallations(cicsa_assignation_id, installation) {
+    const validations = installations.value.data || installations.value;
+    const index = validations.findIndex(item => item.id === cicsa_assignation_id);
+    validations[index].cicsa_installation = installation
+}
 </script>

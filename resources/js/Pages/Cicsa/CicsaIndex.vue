@@ -4,7 +4,7 @@
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header> Proceso CICSA </template>
 
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full ">
             <div class="flex justify-between">
                 <div class="flex space-x-4">
                     <FilterProcess
@@ -56,7 +56,7 @@
                 </div>
             </div>
             <br />
-            <div class="overflow-x-auto h-[70vh]">
+            <div class="overflow-x-auto h-[70vh] rounded-lg shadow">
                 <table
                     :class="[
                         'w-full '
@@ -1931,13 +1931,13 @@ const stateClass = (state) => {
 
 //Total
 function getTotalAmount(objArray) {
-    return objArray.reduce(
-        (a, item) =>
-            a +
-            (item?.cicsa_charge_area?.amount
-                ? item?.cicsa_charge_area?.amount
-                : 0),
-        0
+    console.log(objArray)
+    return objArray.reduce((a, item) => {
+            const sumAmount = item.cicsa_charge_area.reduce((sum, chargeArea) => {
+                return sum + (chargeArea?.amount ? chargeArea.amount : 0);
+            }, 0);
+            return a + sumAmount;
+        },0
     ).toFixed(2);
 }
 

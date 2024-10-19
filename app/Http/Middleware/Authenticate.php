@@ -14,7 +14,7 @@ class Authenticate extends Middleware
     {
         // return $request->expectsJson() ? null : route('login');
         return $request->expectsJson()
-            ? response()->json(['error' => 'Unauthenticatedd.'], 401)
+            ? response()->json(['error' => 'Unauthenticated.'], 401)
             : route('login');
     }
 }

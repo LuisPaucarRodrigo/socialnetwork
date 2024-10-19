@@ -281,6 +281,7 @@ class CicsaAssignation extends Model
                     array_push($total_materials,[
                         'name'=> $item->name,
                         'unit'=> $item->unit,
+                        'type' => $item->type,
                         'guide_number' => $guide->guide_number,
                         'quantity'=> $item->quantity,
                     ]);

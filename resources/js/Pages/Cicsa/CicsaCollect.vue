@@ -5,9 +5,14 @@
         <template #header>
             Proyecto Cicsa por Cobrar
         </template>
-        <div class="min-w-full rounded-lg shadow">
-            <div class="overflow-x-auto h-full">
-                <table class="w-full whitespace-no-wrap">
+        <div class="min-w-full">
+            <div class="flex justify-end mb-5">
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
+                </div>
+            </div>
+            <div class="overflow-x-auto h-full rounded-lg shadow">
+                <table class="w-full whitespace-nowrap">
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -86,7 +91,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in charge_areas.data ?? charge_areas" :key="item.id" class="text-gray-700">
+                        <tr v-for="item in chargeAreas.data ?? chargeAreas" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cicsa_assignation.project_name }}
@@ -198,7 +203,7 @@
                                 Totales:
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="8">
-                                S/ {{ total_amount.toFixed(2) }}
+                                S/ {{ totalAmount.toFixed(2) }}
                             </td>
                         </tr>
                     </tbody>
@@ -218,10 +223,30 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Head } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils.js';
+import TextInput from '@/Components/TextInput.vue';
+import { ref } from 'vue';
+import axios from 'axios';
 
-const { charge_areas, total_amount } = defineProps({
+// Recibimos los props iniciales
+const props = defineProps({
     charge_areas: Object,
-    total_amount: Object
-})
+    total_amount: Number
+});
 
+// Creamos variables reactivas para poder modificarlas
+const chargeAreas = ref(props.charge_areas);
+const totalAmount = ref(props.total_amount);
+
+// Función de búsqueda
+async function search ($search) {
+    try {
+        const response = await axios.post(route('cicsa.charge'), { searchQuery: $search });
+        chargeAreas.value = response.data.charge_areas;
+        totalAmount.value = response.data.total_amount;
+
+    } catch (error) {
+        console.error('Error searching:', error);
+    }
+};
 </script>
+

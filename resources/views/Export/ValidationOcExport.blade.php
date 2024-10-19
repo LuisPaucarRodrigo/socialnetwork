@@ -20,6 +20,7 @@
             <td> {{ $validationOC->boss }} </td>
             <td> {{ $validationOC->liquidator }} </td>
             <td> {{ $validationOC->superintendent }} </td>
+            <td> {{ $validationOC->observations }} </td>
             <td> {{ $validationOC->validation_date }} </td>
             <td> {{ $validationOC->user_name }} </td>
             <td> {{ $validationOC->cicsa_assignation->manager }} </td>

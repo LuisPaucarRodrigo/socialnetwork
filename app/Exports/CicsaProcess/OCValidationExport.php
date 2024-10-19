@@ -22,13 +22,14 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'Codigo de Proyecto',
                 'CPE',
                 'Orden de Compra',
-                'Control de Materiales',
                 'Validacion de Expediente',
+                'Control de Materiales',
                 'Supervisor',
                 'Almacen',
                 'Jefe',
                 'Liquidador',
                 'SuperIntendente',
+                'Observaciones',
                 'Fecha de Validacion',
                 'Encargado',
                 'Gestor'
@@ -57,7 +58,9 @@ class OCValidationExport implements FromView, WithColumnWidths
             'J' => 17,
             'K' => 17,
             'L' => 30,
-            'M' => 30,
+            'M' => 20,
+			'N' => 30,
+			'O' => 30,
         ];
     }
 }

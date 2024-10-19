@@ -108,7 +108,6 @@ class StaticCostsController extends Controller
         abort(404, 'Documento no encontrado');
     }
 
-
     public function update(Request $request, StaticCost $additional_cost)
     {
         $data = $request->validate([

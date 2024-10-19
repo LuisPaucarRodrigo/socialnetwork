@@ -129,6 +129,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::put('/preprojects/codes/{code}/put', [PreProjectController::class, 'updateCode'])->name('preprojects.codes.put');
     Route::delete('/preprojects/codes/{code}/delete', [PreProjectController::class, 'deleteCode'])->name('preprojects.codes.delete');
 
+    Route::get('/preprojects/codes/{code_id}/images/show',[PreProjectController::class, 'indexImages'])->name('preprojects.code.images.index');
     Route::post('/preprojects/codes/images/store',[PreProjectController::class, 'storeCodeImages'])->name('preprojects.code.images.store');
     Route::get('/preprojects/codes/images/{image_id}/show',[PreProjectController::class, 'show_code_image'])->name('preprojects.code.images.show');
     Route::delete('/preprojects/codes/images/{image_id}/delete',[PreProjectController::class, 'deleteCodeImages'])->name('preprojects.code.images.delete');
