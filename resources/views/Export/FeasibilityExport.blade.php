@@ -11,6 +11,7 @@
         <tr>
             <td> {{ $feasibility->project_name }} </td>
             <td> {{ $feasibility->project_code }} </td>
+            <td> {{ $feasibility->cost_center }} </td>
             <td> {{ $feasibility->cpe }} </td>
             <td> {{ $feasibility->cicsa_feasibility?->feasibility_date }} </td>
             <td> {{ $feasibility->cicsa_feasibility?->report }} </td>

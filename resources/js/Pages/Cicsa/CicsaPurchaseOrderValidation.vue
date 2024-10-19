@@ -31,9 +31,13 @@
                             </th>
                             <th colspan="3"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                CPE
+                                Centro de Costos
                             </th>
                             <th colspan="2"
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                CPE
+                            </th>
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -54,10 +58,15 @@
                                 </td>
                                 <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
+                                        {{ item.cost_center }}
+                                    </p>
+                                </td>
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
                                         {{ item.cpe }}
                                     </p>
                                 </td>
-                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <div class="flex space-x-3 justify-center">
                                         <button v-if="item.cicsa_purchase_order_validation.length > 0" type="button"
                                             @click="toggleDetails(item?.cicsa_purchase_order_validation)"

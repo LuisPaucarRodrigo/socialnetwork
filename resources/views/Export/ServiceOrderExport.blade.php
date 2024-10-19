@@ -11,6 +11,7 @@
         <tr>
             <td> {{ $cicsa_service_order->cicsa_assignation?->project_name }} </td>
             <td> {{ $cicsa_service_order->cicsa_assignation?->project_code }} </td>
+            <td> {{ $cicsa_service_order->cicsa_assignation?->cost_center }} </td>
             <td> {{ $cicsa_service_order->cicsa_assignation?->cpe }} </td>
             <td> {{ $cicsa_service_order->cicsa_purchase_order?->oc_number }} </td>
             <td> {{ $cicsa_service_order->service_order_date }} </td>

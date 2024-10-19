@@ -38,6 +38,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Centro de Costo
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cliente
                             </th>
                             <th
@@ -75,6 +79,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.assignation_date) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cost_center }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -163,6 +172,23 @@
                             </div>
                         </div>
                         <div class="">
+                            <InputLabel for="cost_center">Centro de Costos</InputLabel>
+                            <div class="mt-2">
+                                <select id="report" v-model="form.cost_center" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Centro de Costo</option>
+                                    <option>Planta Externa Claro</option>
+                                    <option>Instalaciones GTD</option>
+                                    <option>Planta Externa GTD-Averias</option>
+                                    <option>STL</option>
+                                    <option>Densificacion</option>
+                                    <option>Adicionales</option>
+                                    <option>Instalaciones Claro</option>
+                                </select>
+                                <InputError :message="form.errors.cost_center" />
+                            </div>
+                        </div>
+                        <div class="">
                             <InputLabel for="customer">Cliente</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.customer" autocomplete="off" id="customer"
@@ -243,6 +269,7 @@ const initialState = {
     user_id: auth.user.id,
     assignation_date: '',
     project_name: '',
+    cost_center: '',
     customer: '',
     project_code: '',
     cpe: '',

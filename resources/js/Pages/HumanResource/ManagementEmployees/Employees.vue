@@ -9,7 +9,7 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
                 <div class="flex items-center justify-between gap-x-3 w-full">
-                    <div v-if="hasPermission('HumanResourceManager')" class="hidden sm:flex sm:items-center space-x-4">
+                    <div v-if="hasPermission('HumanResourceManager')" class="hidden sm:flex sm:items-center space-x-3">
                         <PrimaryButton @click="add_information" type="button">
                             + Agregar
                         </PrimaryButton>
@@ -112,9 +112,9 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="inline-block text-gray-900 whitespace-nowrap text-center w-[22px]">
                                     {{ props.search === undefined ?
-        realNumeration(employees.per_page, employees.current_page, i)
-        :
-        i + 1
+                                        realNumeration(employees.per_page, employees.current_page, i)
+                                    :
+                                    i + 1
 
                                     }}
                                 </p>

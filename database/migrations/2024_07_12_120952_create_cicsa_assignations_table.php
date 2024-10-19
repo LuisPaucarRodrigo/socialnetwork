@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('assignation_date')->nullable();
             $table->string('project_name');
+            $table->string('cost_center');
             $table->string('customer')->nullable();
             $table->string('project_code')->nullable();
             $table->string('cpe')->nullable();

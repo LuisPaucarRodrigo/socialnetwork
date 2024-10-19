@@ -1452,7 +1452,6 @@ const openCreateAdditionalModal = () => {
 };
 
 const openEditAdditionalModal = (additional) => {
-    // Copia de los datos de la subsección existente al formulario
     editingAdditional.value = JSON.parse(JSON.stringify(additional));
     form.id = editingAdditional.value.id;
     form.expense_type = editingAdditional.value.expense_type;
