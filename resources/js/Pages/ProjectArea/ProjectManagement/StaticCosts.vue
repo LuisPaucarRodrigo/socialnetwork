@@ -1145,12 +1145,14 @@ const openEditAdditionalModal = (additional) => {
 const closeModal = () => {
     form.reset();
     form.clearErrors()
+    isFetching.value = false
     create_additional.value = false;
 };
 
 const closeEditModal = () => {
     form.reset();
     form.clearErrors()
+    isFetching.value = false
     editAdditionalModal.value = false;
 };
 
@@ -1168,6 +1170,7 @@ const submit = async () => {
         closeModal();
         notify('Gasto Fijo Guardado')
     }catch (e) {
+        isFetching.value = false
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
         }
@@ -1189,6 +1192,7 @@ const submitEdit = async () => {
         closeEditModal();
         notify('Gasto Fijo Actualizado')
     }catch (e) {
+        isFetching.value = false
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
         }

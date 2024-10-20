@@ -24,10 +24,10 @@ class AccountStatementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'operation_date' => 'required | date',
+            'operation_date' => 'required | date | before_or_equal:now',
             'operation_number' => [
                 'required',
-                Rule::unique(AccountStatement::class)->ignore('operation_number'),
+                Rule::unique(AccountStatement::class)->ignore($this->id),
             ],
             'description' => 'required',
             'charge' => "required_without:payment",

@@ -23,6 +23,7 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::get('/finance/account_statement', [AccountStatementController::class, 'index'])->name('finance.account_statement');
     Route::get('/finance/account_statement/search_costs', [AccountStatementController::class, 'searchCosts'])->name('finance.search_costs');
     Route::post('/finance/account_statement/store/{as_id?}', [AccountStatementController::class, 'store'])->name('finance.account_statement.store');
+    Route::get('/finance/account_statement_search}', [AccountStatementController::class, 'searchStatements'])->name('finance.account_statement.search');
 });
 
 Route::middleware('permission:FinanceManager|Finance')->group(function () {

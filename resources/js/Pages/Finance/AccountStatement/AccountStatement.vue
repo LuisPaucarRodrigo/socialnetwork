@@ -7,7 +7,8 @@
     >
         <template #header> Estado de Cuenta </template>
         <Toaster richColors />
-        <div class="inline-block min-w-full mb-4">
+
+        <div class="inline-block min-w-full gap-10">
             <div class="flex justify-between">
                 <div class="flex sm:items-center space-x-3">
                     <PrimaryButton
@@ -19,19 +20,28 @@
                         + Agregar
                     </PrimaryButton>
                     <button
+                        type="button"
+                        @click="
+                            () => {
+                                filterForm.month = '';
+                                handleSearch(null, true);
+                            }
+                        "
                         class="p-2 bg-white ring-1 ring-slate-400 rounded-md text-slate-900 hover:text-slate-400"
                     >
                         <ServerIcon class="h-5 w-5 font-bold" />
                     </button>
                 </div>
 
-                <form
-                    @submit.prevent="handleSearch"
-                    class="flex gap-4 items-center w-full sm:w-auto"
-                >
+                <div class="flex gap-4 items-center w-full sm:w-auto">
                     <input
                         type="month"
-                        v-model="filterForm.moth"
+                        @input="
+                            (e) => {
+                                handleSearch(e.target.value);
+                            }
+                        "
+                        v-model="filterForm.month"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                     <TextInput
@@ -39,30 +49,85 @@
                         placeholder="Buscar..."
                         v-model="filterForm.search"
                     />
-                    <button
-                        type="submit"
-                        class="rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        <svg
-                            width="30px"
-                            height="21px"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                stroke="white"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            />
-                        </svg>
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
-        <div class="overflow-x-auto h-[85vh]">
+
+        <div class="my-8 grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div
+                class="grid grid-rows-2 h-20 bg-white rounded-md border border-gray-300"
+            >
+                <div
+                    class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
+                >
+                    <p>Saldo Contable (Inicio)</p>
+                </div>
+                <div
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                >
+                    S/. {{ dataToRender.previousBalance }}
+                </div>
+            </div>
+
+            <div
+                class="grid grid-rows-2 h-20 bg-white rounded-md border border-gray-300"
+            >
+                <div
+                    class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
+                >
+                    <p>Abonos (Depósitos)</p>
+                </div>
+                <div
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                >
+                    S/. {{ dataToRender.totalPayment }}
+                </div>
+            </div>
+            <div
+                class="grid grid-rows-2 h-20 bg-white rounded-md border border-gray-300"
+            >
+                <div
+                    class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
+                >
+                    <p>Cargos (Retiros)</p>
+                </div>
+                <div
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                >
+                    S/. {{ dataToRender.totalCharge }}
+                </div>
+            </div>
+            <div
+                class="grid grid-rows-2 h-20 bg-white rounded-md border border-gray-300"
+            >
+                <div
+                    class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
+                >
+                    <p>Saldo Contabl (Final)</p>
+                </div>
+                <div
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                >
+                    S/. {{ dataToRender.currentBalance }}
+                </div>
+            </div>
+            <div
+                class="grid grid-rows-2 h-20 bg-white rounded-md border border-gray-300"
+            >
+                <div
+                    class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
+                >
+                    <p>Saldo Promedio</p>
+                </div>
+                <div
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                >
+                    S/. {{ dataToRender.balanceMedia.toFixed(2) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto h-[85vh] rounded-md border border-gray-300">
             <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr
@@ -108,7 +173,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in dataToRender"
+                        v-for="item in dataToRender.accountStatements"
                         class="text-gray-700"
                         :key="item.id"
                     >
@@ -138,29 +203,28 @@
                             {{ item.payment && ` S/. ${item.payment}` }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
-                            gv
+                            S/. {{ item.balance }}
                         </td>
                         <td
                             v-if="auth.user.role_id === 1"
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            dd
-                            <!-- <div class="flex items-center">
+                            <div class="flex items-center">
                                 <button
-                                    @click="openEditAdditionalModal(item)"
+                                    @click="openFormModal(item)"
                                     class="text-amber-600 hover:underline mr-2"
                                 >
                                     <PencilSquareIcon class="h-4 w-4 ml-1" />
                                 </button>
-                                <button
+                                <!-- <button
                                     @click="confirmDeleteAdditional(item.id)"
                                     class="text-red-600 hover:underline"
                                 >
                                     <TrashIcon class="h-4 w-4" />
-                                </button>
-                            </div> -->
+                                </button> -->
+                            </div>
                         </td>
                     </tr>
                     <!-- <tr class="sticky bottom-0 z-10 text-gray-700">
@@ -195,7 +259,7 @@
         <Modal :show="showFormModal" @close="closeFormModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Añadir Estado de Cuenta
+                    {{ form.id ? 'Editar Estado de Cuenta' : 'Añadir Estado de Cuenta'}}
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
@@ -243,17 +307,18 @@
                                 <div
                                     v-if="
                                         costsFounded.acData.length +
-                                            costsFounded.scData.length >
+                                            costsFounded.scData.length + costsFounded.peData.length >
                                         0
                                     "
                                 >
                                     <p
                                         class="text-sm font-medium leading-6 text-gray-600"
                                     >
-                                        Registros coincidentes
+                                        Registros coincidentes ({{ costsFounded.acData.length +
+                                            costsFounded.scData.length + costsFounded.peData.length }})
                                     </p>
                                     <div
-                                        class="rounded-md border border-gray-300 overflow-auto"
+                                        class="rounded-md border border-gray-300 overflow-auto max-h-40"
                                     >
                                         <table class="w-full">
                                             <thead>
@@ -359,7 +424,11 @@
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
                                                     >
-                                                        {{ item.cicsa_assignation.project_name }}
+                                                        {{
+                                                            item
+                                                                .cicsa_assignation
+                                                                .project_name
+                                                        }}
                                                     </td>
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums"
@@ -488,17 +557,39 @@ import { ServerIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
 import { formattedDate, setAxiosErrors } from "@/utils/utils";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { ref, watch } from "vue";
 
-const { accountStatements, auth, userPermissions } = defineProps({
+const {
+    accountStatements,
+    previousBalance,
+    currentBalance,
+    totalCharge,
+    totalPayment,
+    balanceMedia,
+    auth,
+    userPermissions,
+} = defineProps({
     accountStatements: Object,
+    previousBalance: Number,
+    currentBalance: Number,
+    balanceMedia: Number,
+    totalCharge: Number,
+    totalPayment: Number,
     auth: Object,
     userPermissions: Array,
 });
 
-const dataToRender = ref(accountStatements);
+const dataToRender = ref({
+    accountStatements,
+    previousBalance,
+    currentBalance,
+    balanceMedia,
+    totalCharge,
+    totalPayment,
+});
 const filterMode = ref(false);
 
 const hasPermission = (permission) => {
@@ -507,6 +598,7 @@ const hasPermission = (permission) => {
 
 const showFormModal = ref(false);
 const form = useForm({
+    id: null,
     operation_date: "",
     operation_number: "",
     description: "",
@@ -517,33 +609,40 @@ const form = useForm({
     peData: [],
 });
 
-function openFormModal() {
+function openFormModal(item = null) {
     showFormModal.value = true;
+    if (item) {
+        form.id = item.id
+        form.operation_date = item.operation_date
+        form.operation_number = item.operation_number
+        form.description = item.description
+        form.charge = item.charge
+        form.payment = item.payment
+    }
 }
 
 function closeFormModal() {
     showFormModal.value = false;
+    form.clearErrors();
+    isFetching.value = false;
 }
+
 
 const isFetching = ref(false);
 async function submit() {
-    try {
-        isFetching.value = true;
-        const res = await axios.post(
-            route("finance.account_statement.store"),
-            form.data()
-        );
-        dataToRender.value = res.data.accountStatements;
-        closeFormModal();
-        notify("Gasto Adicional Actualizado");
-    } catch (e) {
-        isFetching.value = false;
-        if (e.response?.data?.errors) {
-            setAxiosErrors(e.response.data.errors, form);
-        } else {
-            notifyError("Server Error");
-        }
-    }
+    console.log(form.data())
+    isFetching.value = true;
+    const res = await axios
+        .post(route("finance.account_statement.store", {as_id : form.id}), form.data())
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);
+            } else { notifyError("Server Error");}
+        });
+    dataToRender.value = res.data.dataToRender;
+    filterForm.value.month = res.data.month;
+    closeFormModal();
+    notify("Gasto Adicional Actualizado");
 }
 
 async function searchCosts(data) {
@@ -554,7 +653,7 @@ async function searchCosts(data) {
 const costsFounded = ref({
     acData: [],
     scData: [],
-    peData: []
+    peData: [],
 });
 
 watch([() => form.operation_number, () => form.operation_date], async () => {
@@ -572,19 +671,11 @@ watch([() => form.operation_number, () => form.operation_date], async () => {
 
 watch(
     () => [form.payment],
-    () => {
-        if (form.payment) {
-            form.charge = "";
-        }
-    }
+    () => {if (form.payment) {form.charge = "";}}
 );
 watch(
     () => [form.charge],
-    () => {
-        if (form.charge) {
-            form.payment = "";
-        }
-    }
+    () => {if (form.charge) {form.payment = "";}}
 );
 
 const now = new Date();
@@ -593,5 +684,11 @@ const filterForm = ref({
     month: defaultMonth,
     search: "",
 });
-const handleSearch = () => {};
+
+const handleSearch = async (month = null, all = null) => {
+    const res = await axios
+        .get(route("finance.account_statement.search", { month, all }))
+        .catch((e) => console.error(e));
+    dataToRender.value = res.data;
+};
 </script>
