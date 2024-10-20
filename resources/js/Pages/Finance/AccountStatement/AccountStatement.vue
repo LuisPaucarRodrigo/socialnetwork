@@ -9,7 +9,7 @@
         <Toaster richColors />
 
         <div class="inline-block min-w-full gap-10">
-            <div class="flex justify-between">
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
                 <div class="flex sm:items-center space-x-3">
                     <PrimaryButton
                         v-if="hasPermission('FinanceManager')"
@@ -33,7 +33,7 @@
                     </button>
                 </div>
 
-                <div class="flex gap-4 items-center w-full sm:w-auto">
+                <div class="flex flex-col sm:flex-row  gap-4 items-center w-full sm:w-auto">
                     <input
                         type="month"
                         @input="
@@ -60,12 +60,12 @@
                 <div
                     class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
                 >
-                    <p>Saldo Contable (Inicio)</p>
+                    <p class="text-center">Saldo Contable (Inicio)</p>
                 </div>
                 <div
-                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap tabular-nums"
                 >
-                    S/. {{ dataToRender.previousBalance }}
+                    S/. {{ dataToRender.previousBalance.toFixed(2) }}
                 </div>
             </div>
 
@@ -75,12 +75,12 @@
                 <div
                     class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
                 >
-                    <p>Abonos (Depósitos)</p>
+                    <p class="text-center">Abonos (Depósitos)</p>
                 </div>
                 <div
-                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap tabular-nums"
                 >
-                    S/. {{ dataToRender.totalPayment }}
+                    S/. {{ dataToRender.totalPayment.toFixed(2) }}
                 </div>
             </div>
             <div
@@ -89,12 +89,12 @@
                 <div
                     class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
                 >
-                    <p>Cargos (Retiros)</p>
+                    <p class="text-center">Cargos (Retiros)</p>
                 </div>
                 <div
-                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap tabular-nums"
                 >
-                    S/. {{ dataToRender.totalCharge }}
+                    S/. {{ dataToRender.totalCharge.toFixed(2) }}
                 </div>
             </div>
             <div
@@ -103,12 +103,12 @@
                 <div
                     class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
                 >
-                    <p>Saldo Contabl (Final)</p>
+                    <p class="text-center">Saldo Contable (Final)</p>
                 </div>
                 <div
-                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap tabular-nums"
                 >
-                    S/. {{ dataToRender.currentBalance }}
+                    S/. {{ dataToRender.currentBalance.toFixed(2) }}
                 </div>
             </div>
             <div
@@ -117,10 +117,10 @@
                 <div
                     class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center"
                 >
-                    <p>Saldo Promedio</p>
+                    <p class="text-center">Saldo Promedio</p>
                 </div>
                 <div
-                    class="flex items-center justify-center text-[13px] whitespace-nowrap"
+                    class="flex items-center justify-center text-[13px] whitespace-nowrap tabular-nums"
                 >
                     S/. {{ dataToRender.balanceMedia.toFixed(2) }}
                 </div>
@@ -149,23 +149,23 @@
                             Descripción
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
                             Cargo
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
                             Abono
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
                             Saldo Contable
                         </th>
                         <th
                             v-if="auth.user.role_id === 1"
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
                             Acciones
                         </th>
@@ -193,65 +193,42 @@
                             {{ item.description }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-right text-[13px] tabular-nums whitespace-nowrap"
                         >
-                            {{ item.charge && ` S/. ${item.charge}` }}
+                            {{ item.charge && ` S/. ${item.charge.toFixed(2)}` }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-right text-[13px] tabular-nums whitespace-nowrap"
                         >
-                            {{ item.payment && ` S/. ${item.payment}` }}
+                            {{ item.payment && ` S/. ${item.payment.toFixed(2)}` }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-right text-[13px] tabular-nums whitespace-nowrap"
                         >
-                            S/. {{ item.balance }}
+                            S/. {{ item.balance.toFixed(2) }}
                         </td>
                         <td
                             v-if="auth.user.role_id === 1"
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-right text-[13px]"
                         >
-                            <div class="flex items-center">
+                            <div class="flex items-center justify-end">
                                 <button
+                                    type="button"
                                     @click="openFormModal(item)"
                                     class="text-amber-600 hover:underline mr-2"
                                 >
                                     <PencilSquareIcon class="h-4 w-4 ml-1" />
                                 </button>
-                                <!-- <button
-                                    @click="confirmDeleteAdditional(item.id)"
+                                <button
+                                    type="button"
+                                    @click="openDeleteModal(item.id)"
                                     class="text-red-600 hover:underline"
                                 >
                                     <TrashIcon class="h-4 w-4" />
-                                </button> -->
+                                </button>
                             </div>
                         </td>
                     </tr>
-                    <!-- <tr class="sticky bottom-0 z-10 text-gray-700">
-                        <td
-                            class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                        >
-                            TOTAL
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                        ></td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                        ></td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                        ></td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                        ></td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                        ></td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                        ></td>
-                    </tr> -->
                 </tbody>
             </table>
         </div>
@@ -543,11 +520,19 @@
                 </form>
             </div>
         </Modal>
+        <ConfirmDeleteModal
+            :confirmingDeletion="showDeleteModal"
+            itemType="Estado de Cuenta"
+            :deleteFunction="deleteAccountStatement"
+            @closeModal="closeDeleteModal"
+            :processing="isFetching"
+        />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -582,6 +567,10 @@ const {
     userPermissions: Array,
 });
 
+const now = new Date();
+const defaultMonth = now.toISOString().slice(0, 7);
+const hasPermission = (per) => {return userPermissions.includes(per);};
+
 const dataToRender = ref({
     accountStatements,
     previousBalance,
@@ -590,13 +579,15 @@ const dataToRender = ref({
     totalCharge,
     totalPayment,
 });
-const filterMode = ref(false);
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
-
-const showFormModal = ref(false);
+const costsFounded = ref({
+    acData: [],
+    scData: [],
+    peData: [],
+});
+const filterForm = ref({
+    month: defaultMonth,
+    search: "",
+});
 const form = useForm({
     id: null,
     operation_date: "",
@@ -608,7 +599,14 @@ const form = useForm({
     scData: [],
     peData: [],
 });
+const showFormModal = ref(false);
+const isFetching = ref(false);
+const showDeleteModal = ref(false);
+const asToDeleteId = ref(null);
 
+
+
+//Edit and create
 function openFormModal(item = null) {
     showFormModal.value = true;
     if (item) {
@@ -627,10 +625,7 @@ function closeFormModal() {
     isFetching.value = false;
 }
 
-
-const isFetching = ref(false);
 async function submit() {
-    console.log(form.data())
     isFetching.value = true;
     const res = await axios
         .post(route("finance.account_statement.store", {as_id : form.id}), form.data())
@@ -645,17 +640,49 @@ async function submit() {
     notify("Gasto Adicional Actualizado");
 }
 
+//search month
+const handleSearch = async (month = null, all = null) => {
+    const res = await axios
+        .get(route("finance.account_statement.search", { month, all }))
+        .catch((e) => console.error(e));
+    dataToRender.value = res.data;
+};
+
 async function searchCosts(data) {
     const res = await axios.get(route("finance.search_costs", data));
     return res.data;
 }
 
-const costsFounded = ref({
-    acData: [],
-    scData: [],
-    peData: [],
-});
 
+//delete 
+const openDeleteModal = (id) => {
+    showDeleteModal.value = true
+    asToDeleteId.value = id
+}
+
+const closeDeleteModal = () => {
+    showDeleteModal.value = true
+    asToDeleteId.value = null
+    isFetching.value = false
+}
+
+const deleteAccountStatement = async () => {
+    isFetching.value = true;
+    const res = await axios
+        .delete(route("finance.account_statement.delete", {as_id : asToDeleteId.value}))
+        .catch((e) => {
+            isFetching.value = false;
+            notifyError("Server Error");
+        });
+    dataToRender.value = res.data.dataToRender;
+    filterForm.value.month = res.data.month;
+    closeDeleteModal();
+    notify("Registro Eliminado");
+}
+
+
+
+//search for costs in all tables
 watch([() => form.operation_number, () => form.operation_date], async () => {
     if (form.operation_date && form.operation_number) {
         const res = await searchCosts({
@@ -669,26 +696,17 @@ watch([() => form.operation_number, () => form.operation_date], async () => {
     }
 });
 
-watch(
-    () => [form.payment],
-    () => {if (form.payment) {form.charge = "";}}
+//handle no charge and payment at the same time
+watch(() => [form.payment],() => {
+    if (form.payment) {form.charge = "";}}
 );
-watch(
-    () => [form.charge],
-    () => {if (form.charge) {form.payment = "";}}
+watch(() => [form.charge], () => {
+    if (form.charge) {form.payment = "";}}
 );
 
-const now = new Date();
-const defaultMonth = now.toISOString().slice(0, 7);
-const filterForm = ref({
-    month: defaultMonth,
-    search: "",
-});
 
-const handleSearch = async (month = null, all = null) => {
-    const res = await axios
-        .get(route("finance.account_statement.search", { month, all }))
-        .catch((e) => console.error(e));
-    dataToRender.value = res.data;
-};
+
+
+
+
 </script>

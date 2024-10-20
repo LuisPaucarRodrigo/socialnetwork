@@ -39,12 +39,22 @@ class AccountStatementController extends Controller
         return response()->json(['dataToRender'=>$data, 'month'=>$month], 200);
     }
 
+    public function destroy($as_id)
+    {
+        $as = AccountStatement::findOrFail($as_id);
+        $operationDate = Carbon::parse($as->operation_date);
+        $as->delete();
+        $month = $operationDate->format('Y-m');
+        $data = $this->getAccountVariables($month);
+        return response()->json(['dataToRender'=>$data, 'month'=>$month], 200);
+    }
 
     public function searchStatements(Request $request)
     {
         $data = $this->getAccountVariables($request->month, $request->all);
         return response()->json($data, 200);
     }
+
 
 
 
