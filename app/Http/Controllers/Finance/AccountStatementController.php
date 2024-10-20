@@ -35,17 +35,17 @@ class AccountStatementController extends Controller
         $this->syncOneToMany($rg, 'PextProjectExpense', $peIds, 'account_statement_id');
         $operationDate = Carbon::parse($data['operation_date']);
         $month = $operationDate->format('Y-m');
-        $data = $this->getAccountVariables($month);
+        $data = $this->getAccountVariables($request->month, $request->all);
         return response()->json(['dataToRender'=>$data, 'month'=>$month], 200);
     }
 
-    public function destroy($as_id)
+    public function destroy(Request $request, $as_id)
     {
         $as = AccountStatement::findOrFail($as_id);
         $operationDate = Carbon::parse($as->operation_date);
         $as->delete();
         $month = $operationDate->format('Y-m');
-        $data = $this->getAccountVariables($month);
+        $data = $this->getAccountVariables($request->month, $request->all);
         return response()->json(['dataToRender'=>$data, 'month'=>$month], 200);
     }
 
@@ -169,12 +169,17 @@ class AccountStatementController extends Controller
         $totalCharge = 0;
         $totalPayment = 0;
         $balanceMedia = 0;
-        $accountStatements = !$all
-            ? AccountStatement::whereMonth('operation_date', $currentMonth)
-                ->whereYear('operation_date', $currentYear)
-                ->orderBy('operation_date', 'asc')
-            : AccountStatement::orderBy('operation_date', 'asc');
-        $accountStatements = $accountStatements->get()
+        $accountStatements = AccountStatement::select(
+            'operation_date',
+            'operation_number',
+            'description',
+            'charge',
+            'payment',
+        );
+        $accountStatements = $all ? $accountStatements : $accountStatements
+                ->whereMonth('operation_date', $currentMonth)
+                ->whereYear('operation_date', $currentYear);
+        $accountStatements = $accountStatements->orderBy('operation_date', 'asc')->get()
             ->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia) {
                 $totalCharge += $statement->charge;
                 $totalPayment += $statement->payment;
@@ -183,13 +188,14 @@ class AccountStatementController extends Controller
                 $balanceMedia += $statement->balance;
                 return $statement;
             });
+        $balanceMedia = $balanceMedia / ($accountStatements->count() ?: 1);
         return [
             'accountStatements' => $accountStatements,
             'currentBalance' => $currentBalance,
             'previousBalance' => $previousBalance,
             'totalCharge' => $totalCharge,
             'totalPayment' => $totalPayment,
-            'balanceMedia' => $balanceMedia / $accountStatements->count(),
+            'balanceMedia' => $balanceMedia,
         ];
     }
 }

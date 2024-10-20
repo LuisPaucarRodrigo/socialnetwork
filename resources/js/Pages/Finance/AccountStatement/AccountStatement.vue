@@ -173,7 +173,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in dataToRender.accountStatements"
+                        v-for="item in dataToShow"
                         class="text-gray-700"
                         :key="item.id"
                     >
@@ -543,7 +543,7 @@ import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
 import { formattedDate, setAxiosErrors } from "@/utils/utils";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { notify, notifyError } from "@/Components/Notification";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { ref, watch } from "vue";
 
@@ -603,6 +603,7 @@ const showFormModal = ref(false);
 const isFetching = ref(false);
 const showDeleteModal = ref(false);
 const asToDeleteId = ref(null);
+const dataToShow = ref(accountStatements)
 
 
 
@@ -628,14 +629,13 @@ function closeFormModal() {
 async function submit() {
     isFetching.value = true;
     const res = await axios
-        .post(route("finance.account_statement.store", {as_id : form.id}), form.data())
+        .post(route("finance.account_statement.store", {as_id : form.id}), {...form.data(), month: filterForm.value.month, all: filterForm.value.month ? false : true})
         .catch((e) => {
             isFetching.value = false;
             if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);
             } else { notifyError("Server Error");}
         });
     dataToRender.value = res.data.dataToRender;
-    filterForm.value.month = res.data.month;
     closeFormModal();
     notify("Gasto Adicional Actualizado");
 }
@@ -646,11 +646,32 @@ const handleSearch = async (month = null, all = null) => {
         .get(route("finance.account_statement.search", { month, all }))
         .catch((e) => console.error(e));
     dataToRender.value = res.data;
+    notifyWarning(`Registros Encontrados ${res.data.accountStatements.length}`)
 };
 
+//search costs
 async function searchCosts(data) {
     const res = await axios.get(route("finance.search_costs", data));
     return res.data;
+}
+
+//search in data that was obtained
+function handleSearchClient () {
+    let filterData = dataToRender.value.accountStatements.filter((item, i)=>{
+        let condition = true
+        if(filterForm.value.search) {
+            let search = filterForm.value.search.toLowerCase()
+            condition = condition 
+                && (item.operation_number.toLowerCase().includes(search)
+                || item.description.toLowerCase().includes(search)
+                || (item.charge ? item.charge.toString().toLowerCase().includes(search) : false)
+                || (item.payment ? item.payment.toString().toLowerCase().includes(search): false)
+                || (item.balance ? item.balance.toString().toLowerCase().includes(search): false))
+        }
+        //add filter 1 date
+        return condition
+    })
+    dataToShow.value = filterData
 }
 
 
@@ -661,7 +682,7 @@ const openDeleteModal = (id) => {
 }
 
 const closeDeleteModal = () => {
-    showDeleteModal.value = true
+    showDeleteModal.value = false
     asToDeleteId.value = null
     isFetching.value = false
 }
@@ -669,13 +690,14 @@ const closeDeleteModal = () => {
 const deleteAccountStatement = async () => {
     isFetching.value = true;
     const res = await axios
-        .delete(route("finance.account_statement.delete", {as_id : asToDeleteId.value}))
+        .post(route("finance.account_statement.delete", {as_id : asToDeleteId.value}), {
+            month: filterForm.value.month, all: filterForm.value.month ? false : true
+        })
         .catch((e) => {
             isFetching.value = false;
             notifyError("Server Error");
         });
     dataToRender.value = res.data.dataToRender;
-    filterForm.value.month = res.data.month;
     closeDeleteModal();
     notify("Registro Eliminado");
 }
@@ -696,7 +718,7 @@ watch([() => form.operation_number, () => form.operation_date], async () => {
     }
 });
 
-//handle no charge and payment at the same time
+//to no charge and payment at the same time
 watch(() => [form.payment],() => {
     if (form.payment) {form.charge = "";}}
 );
@@ -704,6 +726,14 @@ watch(() => [form.charge], () => {
     if (form.charge) {form.payment = "";}}
 );
 
+
+
+//to handle change in filterform.values except month
+watch(() => filterForm.value.search, () => {
+    handleSearchClient(); 
+    notifyWarning(`Registros Encontrados ${dataToShow.value.length}`)
+});
+watch(() => dataToRender.value.accountStatements, (val) => {dataToShow.value = val});
 
 
 
