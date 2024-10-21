@@ -186,6 +186,7 @@ class AccountStatementController extends Controller
         $totalPayment = 0;
         $balanceMedia = 0;
         $accountStatements = AccountStatement::select(
+            'id',
             'operation_date',
             'operation_number',
             'description',

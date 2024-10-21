@@ -751,7 +751,13 @@ function openFormModal(item = null) {
 function closeFormModal() {
     showFormModal.value = false;
     form.clearErrors();
+    form.reset();
     isFetching.value = false;
+    costsFounded.value = {
+        acData: [],
+        scData: [],
+        peData: [],
+    }
 }
 
 async function submit() {
