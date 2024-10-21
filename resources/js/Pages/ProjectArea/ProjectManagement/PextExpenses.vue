@@ -80,7 +80,7 @@
                     </dropdown>
                 </div>
                 <div class="sm:flex item-center">
-                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" class="h-full h-auto" />
+                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" class="h-auto" />
                 </div>
             </div>
         </div>
