@@ -132,6 +132,57 @@ class AccountStatementController extends Controller
         ]);
     }
 
+    public function searchStatementsCosts($as_id)
+    {
+        $acData = AdditionalCost::select('id', 'expense_type', 'zone', 'amount', 'project_id', 'account_statement_id')
+            ->with([
+                'project' => function ($query) {
+                    $query->select('id', 'preproject_id');
+                }
+            ])
+            ->where('account_statement_id', $as_id)
+            ->get();
+        $acData->transform(function ($item) {
+            $item->project->setAppends(['code']);
+            $item->setAppends([]);
+            return $item;
+        });
+
+        $scData = StaticCost::select('id', 'expense_type', 'zone', 'amount', 'project_id', 'account_statement_id')
+            ->with([
+                'project' => function ($query) {
+                    $query->select('id', 'preproject_id');
+                }
+            ])
+            ->where('account_statement_id', $as_id)
+            ->get();
+        $scData->transform(function ($item) {
+            $item->project->setAppends(['code']);
+            $item->setAppends([]);
+            return $item;
+        });
+
+        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'cicsa_assignation_id', 'account_statement_id')
+            ->with([
+                'cicsa_assignation' => function ($query) {
+                    $query->select('id', 'project_name');
+                }
+            ])
+            ->where('account_statement_id', $as_id)
+            ->get();
+        $peData->transform(function ($item) {
+            $item->cicsa_assignation->setAppends([]);
+            $item->setAppends([]);
+            return $item;
+        });
+
+        return response()->json([
+            'acData' => $acData,
+            'scData' => $scData,
+            'peData' => $peData,
+        ]);
+    }
+
 
     public function syncOneToMany($parentModel, $childModelClass, array $childIds, $foreignKey)
     {

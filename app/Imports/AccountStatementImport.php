@@ -47,7 +47,6 @@ class AccountStatementImport implements ToModel
             // Manejar la columna 4 para asignar 'charge' y 'payment'
             $amount = $this->parseAmount($row[4]);
 
-            // Crear el registro en la tabla `account_statements`
             $accountStatement = AccountStatement::create([
                 'operation_date' => $operationDate,
                 'operation_number' => $operationNumber,
@@ -56,6 +55,7 @@ class AccountStatementImport implements ToModel
                 'payment' => $amount['payment'],
             ]);
 
+            //relations with add stat costs pext expenses
             $this->searchAndUpdateCosts($accountStatement->operation_date->toDateString(), $accountStatement->operation_number, $accountStatement->id);
 
             $this->rowNumber++; 

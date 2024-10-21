@@ -224,71 +224,239 @@
                         >
                             Acciones
                         </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        ></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
+                    <template
                         v-for="item in dataToShow"
                         class="text-gray-700"
                         :key="item.id"
                     >
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-1 text-center text-[13px] whitespace-nowrap"
-                        >
-                            {{ formattedDate(item.operation_date) }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-1 text-center text-[13px] whitespace-nowrap"
-                        >
-                            {{ item.operation_number }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-1 text-center text-[13px] whitespace-nowrap"
-                        >
-                            {{ item.description }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
-                        >
-                            {{
-                                item.charge && ` S/. ${item.charge.toFixed(2)}`
-                            }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
-                        >
-                            {{
-                                item.payment &&
-                                ` S/. ${item.payment.toFixed(2)}`
-                            }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
-                        >
-                            S/. {{ item.balance.toFixed(2) }}
-                        </td>
-                        <td
-                            v-if="auth.user.role_id === 1"
-                            class="border-b border-gray-200 bg-white px-2 py-1 text-right text-[13px]"
-                        >
-                            <div class="flex items-center justify-end">
+                        <tr class="text-gray-700 bg-white hover:bg-slate-200">
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-center text-[13px] whitespace-nowrap tabular-nums"
+                            >
+                                {{ formattedDate(item.operation_date) }}
+                            </td>
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-center text-[13px] whitespace-nowrap tabular-nums"
+                            >
+                                {{ item.operation_number }}
+                            </td>
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-center text-[13px] whitespace-nowrap"
+                            >
+                                {{ item.description }}
+                            </td>
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
+                            >
+                                {{
+                                    item.charge && ` S/. ${item.charge.toFixed(2)}`
+                                }}
+                            </td>
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
+                            >
+                                {{
+                                    item.payment &&
+                                    ` S/. ${item.payment.toFixed(2)}`
+                                }}
+                            </td>
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
+                            >
+                                S/. {{ item.balance.toFixed(2) }}
+                            </td>
+                            <td
+                                v-if="auth.user.role_id === 1"
+                                class="border-b border-gray-200 px-2 py-1 text-right text-[13px]"
+                            >
+                                <div class="flex items-center justify-end">
+                                    <button
+                                        type="button"
+                                        @click="openFormModal(item)"
+                                        class="rounded-full text-amber-600 hover:bg-amber-300 mr-2"
+                                    >
+                                        <PencilSquareIcon class="h-4 w-4 ml-1" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        @click="openDeleteModal(item.id)"
+                                        class="rounded-full text-red-600 hover:bg-red-300"
+                                    >
+                                        <TrashIcon class="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </td>
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-sm"
+                            >
                                 <button
                                     type="button"
-                                    @click="openFormModal(item)"
-                                    class="text-amber-600 hover:underline mr-2"
+                                    @click="toggleDetails(item.id)"
+                                    :class="`flex items-center text-blue-900 rounded-full hover:bg-blue-300`"
                                 >
-                                    <PencilSquareIcon class="h-4 w-4 ml-1" />
+                                    <svg
+                                        v-if="row !== item.id"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        :class="`w-4 h-4`"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                        />
+                                    </svg>
+                                    <svg
+                                        v-else
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-4 h-4"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                                        />
+                                    </svg>
                                 </button>
-                                <button
-                                    type="button"
-                                    @click="openDeleteModal(item.id)"
-                                    class="text-red-600 hover:underline"
-                                >
-                                    <TrashIcon class="h-4 w-4" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                        <template v-if="row == item.id">
+                            <tr class="bg-white h-16">
+                                <td colspan="8" class="py-1 px-2">
+                                    <table class="w-full">
+                                        <thead>
+                                            <tr
+                                                class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                                            >
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                >
+                                                    Zona
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                >
+                                                    Tipo de Gasto
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                >
+                                                    Ubicación
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                >
+                                                    Monto
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                class="text-gray-700"
+                                                v-for="(
+                                                    item, i
+                                                ) in costsFounded.scData"
+                                                :key="i"
+                                            >
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{ item.zone }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{ item.expense_type }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{ item.project.code }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums"
+                                                >
+                                                    S/. {{ item.amount }}
+                                                </td>
+                                            </tr>
+                                            <tr
+                                                class="text-gray-700"
+                                                v-for="(
+                                                    item, i
+                                                ) in costsFounded.acData"
+                                                :key="i"
+                                            >
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{ item.zone }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{ item.expense_type }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{ item.project.code }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums"
+                                                >
+                                                    S/. {{ item.amount }}
+                                                </td>
+                                            </tr>
+                                            <tr
+                                                class="text-gray-700"
+                                                v-for="(
+                                                    item, i
+                                                ) in costsFounded.peData"
+                                                :key="i"
+                                            >
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{ item.zone }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{ item.expense_type }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                >
+                                                    {{
+                                                        item.cicsa_assignation
+                                                            .project_name
+                                                    }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums"
+                                                >
+                                                    S/. {{ item.amount }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
                 </tbody>
             </table>
         </div>
@@ -695,6 +863,11 @@ const defaultMonth = now.toISOString().slice(0, 7);
 const hasPermission = (per) => {
     return userPermissions.includes(per);
 };
+const initStateCostsFounded = {
+    acData: [],
+    scData: [],
+    peData: [],
+}
 
 const dataToRender = ref({
     accountStatements,
@@ -704,11 +877,7 @@ const dataToRender = ref({
     totalCharge,
     totalPayment,
 });
-const costsFounded = ref({
-    acData: [],
-    scData: [],
-    peData: [],
-});
+const costsFounded = ref(initStateCostsFounded);
 const filterForm = ref({
     month: defaultMonth,
     search: "",
@@ -725,19 +894,21 @@ const form = useForm({
     peData: [],
 });
 const importForm = useForm({
-    excel_file: null
-})
+    excel_file: null,
+});
 const showFormModal = ref(false);
 const showImportModal = ref(false);
 const isFetching = ref(false);
 const showDeleteModal = ref(false);
 const asToDeleteId = ref(null);
 const dataToShow = ref(accountStatements);
-
+const row = ref(0);
 
 //Edit and create
 function openFormModal(item = null) {
+    row.value = 0
     showFormModal.value = true;
+    costsFounded.value = initStateCostsFounded;
     if (item) {
         form.id = item.id;
         form.operation_date = item.operation_date;
@@ -753,11 +924,7 @@ function closeFormModal() {
     form.clearErrors();
     form.reset();
     isFetching.value = false;
-    costsFounded.value = {
-        acData: [],
-        scData: [],
-        peData: [],
-    }
+    costsFounded.value = initStateCostsFounded;
 }
 
 async function submit() {
@@ -804,7 +971,9 @@ function handleSearchClient() {
             let search = filterForm.value.search.toLowerCase();
             condition =
                 condition &&
-                ((item.operation_number ? item.operation_number.toLowerCase().includes(search):false) ||
+                ((item.operation_number
+                    ? item.operation_number.toLowerCase().includes(search)
+                    : false) ||
                     item.description.toLowerCase().includes(search) ||
                     (item.charge
                         ? item.charge.toString().toLowerCase().includes(search)
@@ -858,24 +1027,23 @@ const deleteAccountStatement = async () => {
     notify("Registro Eliminado");
 };
 
-
 //import excel
 const openImportModal = () => {
-    showImportModal.value = true
-}
+    showImportModal.value = true;
+};
 
 const closeImportModal = () => {
     showImportModal.value = false;
     importForm.clearErrors();
     isFetching.value = false;
-}
+};
 
-async function submitImport () {
+async function submitImport() {
     isFetching.value = true;
     try {
         const formData = new FormData();
-        formData.append('excel_file', importForm.excel_file);
-        await axios.post(route('finance.account_statement.import'), formData);
+        formData.append("excel_file", importForm.excel_file);
+        await axios.post(route("finance.account_statement.import"), formData);
         closeImportModal();
         handleSearch(filterForm.value.month);
         notify("Datos Importados");
@@ -883,11 +1051,36 @@ async function submitImport () {
         if (e.response?.data?.errors) {
             setAxiosErrors(e.response.data.errors, importForm);
         } else {
-            notifyError(e?.response.data.error)
+            notifyError(e?.response.data.error);
         }
     } finally {
         isFetching.value = false;
     }
+}
+
+
+const toggleDetails = async(id) => {
+    console.log('soy el valor de la row', row.value)
+    if(row.value == 0) await handleExpansible(id)
+    if (row.value === costsFounded.value?.acData[0]?.account_statement_id
+        || row.value === costsFounded.value?.scData[0]?.account_statement_id
+        || row.value === costsFounded.value?.peData[0]?.account_statement_id
+    ) {
+        row.value = 0;
+    } else {
+        row.value = costsFounded.value?.acData[0]?.account_statement_id ?? 0
+        row.value = costsFounded.value?.scData[0]?.account_statement_id ?? 0
+        row.value = costsFounded.value?.peData[0]?.account_statement_id ?? 0
+    }
+}
+
+const handleExpansible = async(id) => {
+    const res = await axios.get(route('finance.account_statement.costs', {as_id: id}))
+        .catch((e)=>{
+            notifyError('Server Error')
+        })
+    costsFounded.value = res.data
+    notifyWarning(`Gastos Encontrados ${costsFounded.value.acData.length + costsFounded.value.scData.length + costsFounded.value.peData.length}`)
 }
 
 
@@ -938,4 +1131,6 @@ watch(
         dataToShow.value = val;
     }
 );
+
+
 </script>

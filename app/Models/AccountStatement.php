@@ -24,4 +24,8 @@ class AccountStatement extends Model
         return $this->hasMany(AdditionalCost::class, 'account_statement_id');
     }
 
+    public function pext_project_expenses () {
+        return $this->hasMany(PextProjectExpense::class, 'account_statement_id');
+    }
+
 }
