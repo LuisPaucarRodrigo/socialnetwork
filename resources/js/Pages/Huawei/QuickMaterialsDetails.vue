@@ -3,7 +3,6 @@
 
     <AuthenticatedLayout :redirectRoute="{route: 'huawei.quickmaterials'}">
         <template #header> Detalles del Material: {{ material.description }}</template>
-        <p>{{ material.available_quantity }}</p>
         <div class="min-w-full rounded-lg shadow">
             <PrimaryButton @click="addBacklogRow" type="button">
                 + Agregar
@@ -122,7 +121,7 @@
                         <template v-if="quickMaterialSelected?.id == item.id && item.id">
                             <tr class="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
                                 <th class="border border-gray-300 bg-gray-100 px-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                    <button type="button" @click="addToogleRow">
+                                    <button v-if="item.available_quantity > 0" type="button" @click="addToogleRow">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
@@ -428,7 +427,6 @@ const showToogleDeleteModal = ref(false);
 const confirmToogleDelete = ref(false);
 const availableProject = ref(false);
 const projectsFetched = ref(null);
-const selectedProject = ref(null);
 const errorQuantityModal = ref(false);
 
 function openToogleDeleteModal(id, key) {
@@ -439,7 +437,6 @@ function openToogleDeleteModal(id, key) {
 
 function closeToogleDeleteModal (){
     toogleToDelete.value = null;
-    toogleKey.value = null;
     showToogleDeleteModal.value = false;
 }
 
@@ -449,6 +446,7 @@ async function deleteToogle (){
     );
     if (res.data.message === "success") {
         deleteToogleRow(toogleKey.value);
+        toogleToDelete.value = null;
         showToogleDeleteModal.value = false;
         confirmToogleDelete.value = true;
         setTimeout(() => {
