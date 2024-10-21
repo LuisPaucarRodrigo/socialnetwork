@@ -1060,17 +1060,22 @@ async function submitImport() {
 
 
 const toggleDetails = async(id) => {
-    console.log('soy el valor de la row', row.value)
-    if(row.value == 0) await handleExpansible(id)
+    if(row.value == 0 || row.value != id) await handleExpansible(id)
     if (row.value === costsFounded.value?.acData[0]?.account_statement_id
         || row.value === costsFounded.value?.scData[0]?.account_statement_id
         || row.value === costsFounded.value?.peData[0]?.account_statement_id
     ) {
         row.value = 0;
     } else {
-        row.value = costsFounded.value?.acData[0]?.account_statement_id ?? 0
-        row.value = costsFounded.value?.scData[0]?.account_statement_id ?? 0
-        row.value = costsFounded.value?.peData[0]?.account_statement_id ?? 0
+        if(costsFounded.value?.acData.length > 0) {
+            row.value =  costsFounded.value?.acData[0].account_statement_id
+        }
+        if(costsFounded.value?.scData.length > 0) {
+            row.value =  costsFounded.value?.scData[0].account_statement_id
+        }
+        if(costsFounded.value?.peData.length > 0) {
+            row.value =  costsFounded.value?.peData[0].account_statement_id
+        }
     }
 }
 

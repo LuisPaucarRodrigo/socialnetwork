@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
 use App\Imports\CostsImport;
+use App\Models\AccountStatement;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -135,6 +136,11 @@ class AdditionalCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+            $data['account_statement_id'] = $as?->id;
+        }
         $item = AdditionalCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
@@ -172,6 +178,11 @@ class AdditionalCostsController extends Controller
             'igv' => 'required',
             'description' => 'required|string',
         ]);
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+            $data['account_statement_id'] = $as?->id;
+        }
 
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;

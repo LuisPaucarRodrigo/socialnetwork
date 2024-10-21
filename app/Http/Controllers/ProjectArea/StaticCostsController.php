@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Exports\StaticCostsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\StaticCostsRequest;
+use App\Models\AccountStatement;
 use App\Models\Provider;
 use App\Models\StaticCost;
 use Illuminate\Http\Request;
@@ -89,6 +90,11 @@ class StaticCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+            $data['account_statement_id'] = $as?->id;
+        }
         $item = StaticCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
@@ -125,6 +131,13 @@ class StaticCostsController extends Controller
             'igv' => 'required',
             'description' => 'required|string',
         ]);
+
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+            $data['account_statement_id'] = $as?->id;
+        }
+
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;
             if ($filename) {
