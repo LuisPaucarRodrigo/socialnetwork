@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('zone');
             $table->string('type_doc');
             $table->string('operation_number');
-            $table->dateTime('operation_date');
+            $table->date('operation_date');
             $table->string('doc_number')->nullable();
             $table->date('doc_date');
             $table->double('amount');

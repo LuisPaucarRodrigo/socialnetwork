@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AccountStatement\AccountStatementImportRequest;
 use App\Http\Requests\AccountStatement\AccountStatementRequest;
+use App\Imports\AccountStatementImport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use App\Models\AccountStatement;
 use App\Models\AdditionalCost;
@@ -53,6 +56,19 @@ class AccountStatementController extends Controller
     {
         $data = $this->getAccountVariables($request->month, $request->all);
         return response()->json($data, 200);
+    }
+
+    public function importExcel (AccountStatementImportRequest $request){
+        $data = $request->validated();
+        try{
+            Excel::import(new AccountStatementImport, $data['excel_file']);
+            return response()->json(['msg'=>'Datos Importados'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'msg' => 'Error al importar los datos',
+                'error' => $e->getMessage()
+            ], 422);
+        }
     }
 
 

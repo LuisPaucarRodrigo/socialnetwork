@@ -9,7 +9,9 @@
         <Toaster richColors />
 
         <div class="inline-block min-w-full gap-10">
-            <div class="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
+            <div
+                class="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between"
+            >
                 <div class="flex sm:items-center space-x-3">
                     <PrimaryButton
                         v-if="hasPermission('FinanceManager')"
@@ -19,21 +21,74 @@
                     >
                         + Agregar
                     </PrimaryButton>
-                    <button
-                        type="button"
-                        @click="
-                            () => {
-                                filterForm.month = '';
-                                handleSearch(null, true);
-                            }
-                        "
-                        class="p-2 bg-white ring-1 ring-slate-400 rounded-md text-slate-900 hover:text-slate-400"
-                    >
-                        <ServerIcon class="h-5 w-5 font-bold" />
-                    </button>
+                    <div>
+                        <button
+                            data-tooltip-target="all_register_tooltip"
+                            type="button"
+                            @click="
+                                () => {
+                                    filterForm.month = '';
+                                    handleSearch(null, true);
+                                }
+                            "
+                            class="p-2 bg-gray-100 ring-1 ring-slate-400 rounded-md text-slate-900 hover:bg-white"
+                        >
+                            <ServerIcon class="h-5 w-5 font-bold" />
+                        </button>
+                        <div
+                            id="all_register_tooltip"
+                            role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                        >
+                            Todos los Registros
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
+                    <div>
+                        <button
+                            data-tooltip-target="import_register_tooltip"
+                            type="button"
+                            @click="openImportModal"
+                            class="p-2 bg-yellow-300 rounded-md text-slate-900 hover:bg-yellow-200"
+                        >
+                            <CloudArrowUpIcon
+                                class="text-white h-5 w-5 font-bold"
+                            />
+                        </button>
+                        <div
+                            id="import_register_tooltip"
+                            role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                        >
+                            Importar Excel
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
+                    <div>
+                        <button
+                            data-tooltip-target="export_register_tooltip"
+                            type="button"
+                            @click=""
+                            class="p-2 bg-green-500 rounded-md text-slate-900 hover:bg-green-400"
+                        >
+                            <CloudArrowDownIcon
+                                class="text-white h-5 w-5 font-bold"
+                            />
+                        </button>
+                        <div
+                            id="export_register_tooltip"
+                            role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                        >
+                            Exportar Excel
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row  gap-4 items-center w-full sm:w-auto">
+                <div
+                    class="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto"
+                >
                     <input
                         type="month"
                         @input="
@@ -127,7 +182,7 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto h-[85vh] rounded-md border border-gray-300">
+        <div class="overflow-x-auto h-[60vh] rounded-md border border-gray-300">
             <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr
@@ -178,38 +233,43 @@
                         :key="item.id"
                     >
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-1 text-center text-[13px] whitespace-nowrap"
                         >
                             {{ formattedDate(item.operation_date) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-1 text-center text-[13px] whitespace-nowrap"
                         >
                             {{ item.operation_number }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-1 text-center text-[13px] whitespace-nowrap"
                         >
                             {{ item.description }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-right text-[13px] tabular-nums whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
                         >
-                            {{ item.charge && ` S/. ${item.charge.toFixed(2)}` }}
+                            {{
+                                item.charge && ` S/. ${item.charge.toFixed(2)}`
+                            }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-right text-[13px] tabular-nums whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
                         >
-                            {{ item.payment && ` S/. ${item.payment.toFixed(2)}` }}
+                            {{
+                                item.payment &&
+                                ` S/. ${item.payment.toFixed(2)}`
+                            }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-right text-[13px] tabular-nums whitespace-nowrap"
+                            class="border-b border-gray-200 bg-white px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
                         >
                             S/. {{ item.balance.toFixed(2) }}
                         </td>
                         <td
                             v-if="auth.user.role_id === 1"
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-right text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-1 text-right text-[13px]"
                         >
                             <div class="flex items-center justify-end">
                                 <button
@@ -236,7 +296,11 @@
         <Modal :show="showFormModal" @close="closeFormModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    {{ form.id ? 'Editar Estado de Cuenta' : 'Añadir Estado de Cuenta'}}
+                    {{
+                        form.id
+                            ? "Editar Estado de Cuenta"
+                            : "Añadir Estado de Cuenta"
+                    }}
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
@@ -251,7 +315,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
-                                        type="datetime-local"
+                                        type="date"
                                         v-model="form.operation_date"
                                         id="operation_date"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -284,15 +348,19 @@
                                 <div
                                     v-if="
                                         costsFounded.acData.length +
-                                            costsFounded.scData.length + costsFounded.peData.length >
+                                            costsFounded.scData.length +
+                                            costsFounded.peData.length >
                                         0
                                     "
                                 >
                                     <p
                                         class="text-sm font-medium leading-6 text-gray-600"
                                     >
-                                        Registros coincidentes ({{ costsFounded.acData.length +
-                                            costsFounded.scData.length + costsFounded.peData.length }})
+                                        Registros coincidentes ({{
+                                            costsFounded.acData.length +
+                                            costsFounded.scData.length +
+                                            costsFounded.peData.length
+                                        }})
                                     </p>
                                     <div
                                         class="rounded-md border border-gray-300 overflow-auto max-h-40"
@@ -520,6 +588,55 @@
                 </form>
             </div>
         </Modal>
+
+        <Modal :show="showImportModal" @close="closeImportModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Importar Excel
+                </h2>
+                <form @submit.prevent="submitImport">
+                    <div class="space-y-12 mt-4">
+                        <div
+                            class="border-b grid sm:grid-cols-2 gap-6 border-gray-900/10 pb-12"
+                        >
+                            <div>
+                                <InputLabel
+                                    for="excel_file"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Archivo Excel
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <InputFile
+                                        type="file"
+                                        v-model="importForm.excel_file"
+                                        id="excel_file"
+                                        accept=".xlsx"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="importForm.errors.excel_file"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeImportModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button
+                                type="submit"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal
             :confirmingDeletion="showDeleteModal"
             itemType="Estado de Cuenta"
@@ -538,14 +655,20 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
-import { ServerIcon } from "@heroicons/vue/24/outline";
+import InputFile from "@/Components/InputFile.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
 import { formattedDate, setAxiosErrors } from "@/utils/utils";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { ref, watch } from "vue";
+import {
+    ServerIcon,
+    CloudArrowUpIcon,
+    CloudArrowDownIcon,
+    TrashIcon,
+    PencilSquareIcon,
+} from "@heroicons/vue/24/outline";
 
 const {
     accountStatements,
@@ -569,7 +692,9 @@ const {
 
 const now = new Date();
 const defaultMonth = now.toISOString().slice(0, 7);
-const hasPermission = (per) => {return userPermissions.includes(per);};
+const hasPermission = (per) => {
+    return userPermissions.includes(per);
+};
 
 const dataToRender = ref({
     accountStatements,
@@ -599,24 +724,27 @@ const form = useForm({
     scData: [],
     peData: [],
 });
+const importForm = useForm({
+    excel_file: null
+})
 const showFormModal = ref(false);
+const showImportModal = ref(false);
 const isFetching = ref(false);
 const showDeleteModal = ref(false);
 const asToDeleteId = ref(null);
-const dataToShow = ref(accountStatements)
-
+const dataToShow = ref(accountStatements);
 
 
 //Edit and create
 function openFormModal(item = null) {
     showFormModal.value = true;
     if (item) {
-        form.id = item.id
-        form.operation_date = item.operation_date
-        form.operation_number = item.operation_number
-        form.description = item.description
-        form.charge = item.charge
-        form.payment = item.payment
+        form.id = item.id;
+        form.operation_date = item.operation_date;
+        form.operation_number = item.operation_number;
+        form.description = item.description;
+        form.charge = item.charge;
+        form.payment = item.payment;
     }
 }
 
@@ -629,15 +757,22 @@ function closeFormModal() {
 async function submit() {
     isFetching.value = true;
     const res = await axios
-        .post(route("finance.account_statement.store", {as_id : form.id}), {...form.data(), month: filterForm.value.month, all: filterForm.value.month ? false : true})
+        .post(route("finance.account_statement.store", { as_id: form.id }), {
+            ...form.data(),
+            month: filterForm.value.month,
+            all: filterForm.value.month ? false : true,
+        })
         .catch((e) => {
             isFetching.value = false;
-            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);
-            } else { notifyError("Server Error");}
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, form);
+            } else {
+                notifyError("Server Error");
+            }
         });
     dataToRender.value = res.data.dataToRender;
     closeFormModal();
-    notify("Gasto Adicional Actualizado");
+    notify("Estado de Cuenta Guardado");
 }
 
 //search month
@@ -646,7 +781,7 @@ const handleSearch = async (month = null, all = null) => {
         .get(route("finance.account_statement.search", { month, all }))
         .catch((e) => console.error(e));
     dataToRender.value = res.data;
-    notifyWarning(`Registros Encontrados ${res.data.accountStatements.length}`)
+    notifyWarning(`Registros Encontrados ${res.data.accountStatements.length}`);
 };
 
 //search costs
@@ -656,43 +791,58 @@ async function searchCosts(data) {
 }
 
 //search in data that was obtained
-function handleSearchClient () {
-    let filterData = dataToRender.value.accountStatements.filter((item, i)=>{
-        let condition = true
-        if(filterForm.value.search) {
-            let search = filterForm.value.search.toLowerCase()
-            condition = condition 
-                && (item.operation_number.toLowerCase().includes(search)
-                || item.description.toLowerCase().includes(search)
-                || (item.charge ? item.charge.toString().toLowerCase().includes(search) : false)
-                || (item.payment ? item.payment.toString().toLowerCase().includes(search): false)
-                || (item.balance ? item.balance.toString().toLowerCase().includes(search): false))
+function handleSearchClient() {
+    let filterData = dataToRender.value.accountStatements.filter((item, i) => {
+        let condition = true;
+        if (filterForm.value.search) {
+            let search = filterForm.value.search.toLowerCase();
+            condition =
+                condition &&
+                ((item.operation_number ? item.operation_number.toLowerCase().includes(search):false) ||
+                    item.description.toLowerCase().includes(search) ||
+                    (item.charge
+                        ? item.charge.toString().toLowerCase().includes(search)
+                        : false) ||
+                    (item.payment
+                        ? item.payment.toString().toLowerCase().includes(search)
+                        : false) ||
+                    (item.operation_date
+                        ? formattedDate(item.operation_date).includes(search)
+                        : false) ||
+                    (item.balance
+                        ? item.balance.toString().toLowerCase().includes(search)
+                        : false));
         }
         //add filter 1 date
-        return condition
-    })
-    dataToShow.value = filterData
+        return condition;
+    });
+    dataToShow.value = filterData;
 }
 
-
-//delete 
+//delete
 const openDeleteModal = (id) => {
-    showDeleteModal.value = true
-    asToDeleteId.value = id
-}
+    showDeleteModal.value = true;
+    asToDeleteId.value = id;
+};
 
 const closeDeleteModal = () => {
-    showDeleteModal.value = false
-    asToDeleteId.value = null
-    isFetching.value = false
-}
+    showDeleteModal.value = false;
+    asToDeleteId.value = null;
+    isFetching.value = false;
+};
 
 const deleteAccountStatement = async () => {
     isFetching.value = true;
     const res = await axios
-        .post(route("finance.account_statement.delete", {as_id : asToDeleteId.value}), {
-            month: filterForm.value.month, all: filterForm.value.month ? false : true
-        })
+        .post(
+            route("finance.account_statement.delete", {
+                as_id: asToDeleteId.value,
+            }),
+            {
+                month: filterForm.value.month,
+                all: filterForm.value.month ? false : true,
+            }
+        )
         .catch((e) => {
             isFetching.value = false;
             notifyError("Server Error");
@@ -700,6 +850,38 @@ const deleteAccountStatement = async () => {
     dataToRender.value = res.data.dataToRender;
     closeDeleteModal();
     notify("Registro Eliminado");
+};
+
+
+//import excel
+const openImportModal = () => {
+    showImportModal.value = true
+}
+
+const closeImportModal = () => {
+    showImportModal.value = false;
+    importForm.clearErrors();
+    isFetching.value = false;
+}
+
+async function submitImport () {
+    isFetching.value = true;
+    try {
+        const formData = new FormData();
+        formData.append('excel_file', importForm.excel_file);
+        await axios.post(route('finance.account_statement.import'), formData);
+        closeImportModal();
+        handleSearch(filterForm.value.month);
+        notify("Datos Importados");
+    } catch (e) {
+        if (e.response?.data?.errors) {
+            setAxiosErrors(e.response.data.errors, importForm);
+        } else {
+            notifyError(e?.response.data.error)
+        }
+    } finally {
+        isFetching.value = false;
+    }
 }
 
 
@@ -719,24 +901,35 @@ watch([() => form.operation_number, () => form.operation_date], async () => {
 });
 
 //to no charge and payment at the same time
-watch(() => [form.payment],() => {
-    if (form.payment) {form.charge = "";}}
+watch(
+    () => [form.payment],
+    () => {
+        if (form.payment) {
+            form.charge = "";
+        }
+    }
 );
-watch(() => [form.charge], () => {
-    if (form.charge) {form.payment = "";}}
+watch(
+    () => [form.charge],
+    () => {
+        if (form.charge) {
+            form.payment = "";
+        }
+    }
 );
-
-
 
 //to handle change in filterform.values except month
-watch(() => filterForm.value.search, () => {
-    handleSearchClient(); 
-    notifyWarning(`Registros Encontrados ${dataToShow.value.length}`)
-});
-watch(() => dataToRender.value.accountStatements, (val) => {dataToShow.value = val});
-
-
-
-
-
+watch(
+    () => filterForm.value.search,
+    () => {
+        handleSearchClient();
+        notifyWarning(`Registros Encontrados ${dataToShow.value.length}`);
+    }
+);
+watch(
+    () => dataToRender.value.accountStatements,
+    (val) => {
+        dataToShow.value = val;
+    }
+);
 </script>
