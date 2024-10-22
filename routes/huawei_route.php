@@ -186,7 +186,9 @@ Route::middleware('permission:HuaweiManager')->group(function () {
 
     //internal_guide
     Route::get('huawei/internal_guides/get', [QuickMaterialsController::class, 'internalGuides'])->name('huawei.internalguides');
-    Route::post('huawei/internal_guide/generate', [QuickMaterialsController::class, 'generateInternalGuide'])->name('huawei.internalguides.store');
+    Route::post('huawei/internal_guides/generate', [QuickMaterialsController::class, 'generateInternalGuide'])->name('huawei.internalguides.store');
+    Route::delete('huawei/internal_guides/{id}/delete', [QuickMaterialsController::class, 'deleteInternalGuide'])->name('huawei.internalguides.delete');
+    Route::get('huawei/internal_guides/{id}/show', [QuickMaterialsController::class, 'showInternalGuide'])->name('huawei.internalguides.show');
 });
 
 

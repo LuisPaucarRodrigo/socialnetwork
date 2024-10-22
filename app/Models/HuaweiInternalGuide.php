@@ -12,7 +12,8 @@ class HuaweiInternalGuide extends Model
     protected $table = 'huawei_internal_guides';
 
     protected $fillable = [
-        'name'
+        'name',
+        'code'
     ];
 
 }

@@ -297,21 +297,49 @@ class QuickMaterialsController extends Controller
                 $data[] = $materialData;
             }
 
-
-            $pdf = Pdf::loadView('pdf.InternalGuidePDF', compact(['data', 'additionalData']));
+            $lastGuide = HuaweiInternalGuide::latest('id')->first();
+            $newId = $lastGuide ? $lastGuide->id + 1 : 1;
+            $code = 'Nª ' . str_pad($newId, 5, '0', STR_PAD_LEFT);
             $fileName = time() . '_internal_guide.pdf';
+
+            $internal_guide = HuaweiInternalGuide::create([
+                'name' => $fileName,
+                'code' => $code
+            ]);
+
+            $pdf = Pdf::loadView('pdf.InternalGuidePDF', compact(['data', 'additionalData', 'code']));
             $path = public_path('documents/huawei/internal_guides/' . $fileName);
             $pdf->save($path);
 
-            HuaweiInternalGuide::create([
-                'name' => $fileName
-            ]);
-
-            return redirect()->back();
+            return response()->json(['guide_id' => $internal_guide->id]);
         }
 
         return back()->withErrors(['file' => 'Debe subir el archivo']);
     }
 
+    public function deleteInternalGuide (HuaweiInternalGuide $id)
+    {
+        $fileName = $id->name;
+        $filePath = "documents/huawei/internal_guides/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($filePath)){
+            unlink($path);
+            $id->delete();
+        }
+        return redirect()->back();
+    }
+
+    public function showInternalGuide (HuaweiInternalGuide $id)
+    {
+        $fileName = $id->name;
+        $filePath = "documents/huawei/internal_guides/$fileName";
+        $path = public_path($filePath);
+
+        if (file_exists($path)){
+            ob_end_clean();
+            return response()->file($path);
+        }
+        abort(403, 'Guía no encontrada');
+    }
 }
 

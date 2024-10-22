@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('huawei_internal_guides', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('code');
             $table->timestamps();
         });
     }

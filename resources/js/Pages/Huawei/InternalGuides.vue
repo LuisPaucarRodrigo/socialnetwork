@@ -19,11 +19,11 @@
                     <tr
                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 text-center border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Código
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 text-center border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Fecha de Emisión
                         </th>
                         <th
@@ -34,15 +34,19 @@
                 <tbody>
                     <tr v-for="item in internal_guides.data" :key="item.id" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ item.id }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap text-center">{{ item.code }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ item.created_at }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap text-center">{{ formattedDate(item.created_at) }}</p>
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex justify-center space-x-3">
-                                <button type="button" @click="confirmDeleteCode(code.id)"
+                                <button @click="openPreviewDocumentModal(item.id)"
+                                    class="flex items-center text-green-600 hover:underline">
+                                    <EyeIcon class="h-5 w-5 ml-1" />
+                                </button>
+                                <button type="button" @click="confirmDeleteCode(item.id)"
                                     class="text-red-600 whitespace-no-wrap">
                                     <TrashIcon class="h-5 w-5 ml-1" />
                                 </button>
@@ -207,6 +211,7 @@
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Código" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Código" :deleteFunction="deleteCode"
             @closeModal="closeModalDoc" />
+        <ErrorOperationModal :showError="errorModal" :title="'Error'" :message="errorMessage" />
     </AuthenticatedLayout>
 </template>
 
@@ -223,11 +228,15 @@ import { TrashIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { formattedDate } from '@/utils/utils'
+import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 
 const create_code = ref(false);
 const showModal = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
+const errorModal = ref(false);
+const errorMessage = ref(null);
 
 const props = defineProps({
     internal_guides: Object,
@@ -257,24 +266,47 @@ const form = useForm({
     transport_unit: '',
     brand:'',
     plate: '',
-    licence: '',
+    license: '',
     transport_company: '',
     inscrip_const: '',
     name: '',
     file: null
 });
 
-const submit = () => {
-    form.post(route('huawei.internalguides.store'), {
-        onSuccess: () => {
-            close_add_code();
-            form.reset();
-            showModal.value = true
-            setTimeout(() => {
-                showModal.value = false;
-                router.visit(route('huawei.internalguides'))
-            }, 2000);
-        },
+const submit = async () => {
+    await axios.post(route('huawei.internalguides.store'), form, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    .then(res => {
+        openPreviewDocumentModal(res.data.guide_id);
+        close_add_code();
+        form.reset();
+        showModal.value = true;
+        setTimeout(() => {
+            showModal.value = false;
+        }, 2000);
+        router.visit(route('huawei.internalguides'));
+    })
+    .catch(error => {
+        const fieldMessages = {
+                emission_date: 'La fecha de emisión es obligatoria',
+                transfer_date: 'La fecha de traslado es obligatoria'
+            };
+
+        const errorMessages = Object.entries(error.response.data.errors)
+            .map(([field, messages]) => {
+                return fieldMessages[field] || messages[0];
+            })
+            .join(' y ');
+
+        errorMessage.value = errorMessages;
+        errorModal.value = true;
+        setTimeout(() => {
+            errorModal.value = false;
+            errorMessage.value = null;
+        }, 3000);
     });
 };
 
@@ -290,14 +322,18 @@ const closeModalDoc = () => {
 const deleteCode = () => {
     const docId = docToDelete.value;
     if (docId) {
-        router.delete(route('huawei.codes.delete', { huawei_code: docId }), {
+        router.delete(route('huawei.internalguides.delete', { id: docId }), {
             onSuccess: () => {
                 closeModalDoc(),
-                    router.visit(route('huawei.codes'))
+                    router.visit(route('huawei.internalguides'))
             }
         });
     }
 };
 
+function openPreviewDocumentModal(documentId) {
+  const routeToShow = route('huawei.internalguides.show', { id: documentId });
+  window.open(routeToShow, '_blank');
+}
 
 </script>

@@ -74,7 +74,7 @@
                     <td style="text-align: center; vertical-align: middle;">
                         <div>
                             <p style="display: inline; margin: 0;">0001-</p>
-                            <p style="display: inline; margin: 0; color: red;">N° 00412</p>
+                            <p style="display: inline; margin: 0; color: red;">{{ $code }}</p>
                         </div>
                     </td>
                     </tr>
@@ -99,56 +99,56 @@
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Punto de Partida:</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['start_point'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['start_point'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Punto de Llegada:</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['end_point'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['end_point'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Destinatario:</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['addresee'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['addresee'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">R.U.C.</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['ruc'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['ruc'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Unidad de Transporte y Conducir:</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['transport_unit'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['transport_unit'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Marca:</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['brand'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['brand'] }}</td>
                     <td style="padding: 2px; border: none;">Placa:</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['plate'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['plate'] }}</td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">N° de Licencia de Conducir</td>
-                    <td style="padding: 2px; border: none;">{{ isset($additionalData['license']) ? $additionalData['license'] : 'N/A' }}
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['license'] }}
                     </td>
                     <td style="padding: 2px; border: none;">Control de Inscrip</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['inscrip_const'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['inscrip_const'] }}</td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Empresa de Transporte:</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['transport_company'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['transport_company'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Nombre:</td>
-                    <td style="padding: 2px; border: none;">{{ $additionalData['name'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['name'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
