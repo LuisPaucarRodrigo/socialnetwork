@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Huawei;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Huawei\QuickMaterialsOutputRequest;
 use App\Http\Requests\Huawei\QuickMaterialsRequest;
+use App\Models\HuaweiInternalGuide;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiSite;
 use App\Models\QuickMaterial;
@@ -13,7 +14,9 @@ use App\Models\QuickMaterialsOutput;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use function Pest\Laravel\json;
 
 class QuickMaterialsController extends Controller
@@ -151,7 +154,6 @@ class QuickMaterialsController extends Controller
         ]);
     }
 
-
     public function store($material_id, QuickMaterialsRequest $request) {
         $originalData = $request->all();
         if (empty($originalData)) {
@@ -224,6 +226,91 @@ class QuickMaterialsController extends Controller
 
         // Devolvemos la respuesta JSON con los campos adicionales
         return response()->json(['quick_res_project' => $quick_res_project], 200);
+    }
+
+    //internal_guides
+
+    public function internalGuides ()
+    {
+        return Inertia::render('Huawei/InternalGuides', [
+            'internal_guides' => HuaweiInternalGuide::orderBy('created_at', 'desc')->paginate(15)
+        ]);
+    }
+
+    public function generateInternalGuide(Request $request)
+    {
+        $additionalData = $request->validate([
+            'emission_date' => 'required',
+            'transfer_date' => 'required',
+            'start_point' => 'nullable',
+            'end_point' => 'nullable',
+            'addresee' => 'nullable',
+            'ruc' => 'nullable',
+            'transport_unit' => 'nullable',
+            'brand' => 'nullable',
+            'plate' => 'nullable',
+            'license' => 'nullable',
+            'transport_company' => 'nullable',
+            'inscrip_const' => 'nullable',
+            'name' => 'nullable'
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $data = [];
+
+            // Obtener la hoja activa
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // Iterar a través de las filas del archivo Excel
+            $data = [];
+
+            foreach ($sheet->getRowIterator() as $rowIndex => $row) {
+                if ($rowIndex === 1) {
+                    // Saltar la fila de cabecera
+                    continue;
+                }
+
+                $cells = $row->getCellIterator();
+                $cells->setIterateOnlyExistingCells(false); // Permitir celdas vacías
+
+                // Crear un array para almacenar los datos de la fila
+                $materialData = [];
+
+                // Columna A
+                $materialData['name'] = $cells->current()->getValue();
+                $cells->next();
+
+                // Columna B (Serie, puede estar vacía)
+                $materialData['serie'] = $cells->current()->getValue() ? $cells->current()->getValue() : 'NO APLICA';
+                $cells->next();
+
+                // Columna C (Cantidad)
+                $materialData['quantity'] = $cells->current()->getValue();
+                $cells->next();
+
+                // Columna D (Unidad)
+                $materialData['unit'] = $cells->current()->getValue();
+
+                // Agregar el array de la fila al array principal
+                $data[] = $materialData;
+            }
+
+
+            $pdf = Pdf::loadView('pdf.InternalGuidePDF', compact(['data', 'additionalData']));
+            $fileName = time() . '_internal_guide.pdf';
+            $path = public_path('documents/huawei/internal_guides/' . $fileName);
+            $pdf->save($path);
+
+            HuaweiInternalGuide::create([
+                'name' => $fileName
+            ]);
+
+            return redirect()->back();
+        }
+
+        return back()->withErrors(['file' => 'Debe subir el archivo']);
     }
 
 }

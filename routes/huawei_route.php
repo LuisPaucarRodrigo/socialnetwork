@@ -183,6 +183,10 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::delete('huawei/quick_materials/details/delete/output/{output}', [QuickMaterialsController::class, 'destroyOutput'])->name('huawei.quickmaterials.details.output.delete');
     Route::post('huawei/quick_materials/details/fetchprojects/output/{site_id}', [QuickMaterialsController::class, 'fetchProjects'])->name('huawei.quickmaterials.details.output.fetchprojects');
     Route::post('huawei/quick_materials/details/selectproject/output/{entry_id}/{project_id}/{output_id?}', [QuickMaterialsController::class, 'selectProject'])->name('huawei.quickmaterials.details.output.selectproject');
+
+    //internal_guide
+    Route::get('huawei/internal_guides/get', [QuickMaterialsController::class, 'internalGuides'])->name('huawei.internalguides');
+    Route::post('huawei/internal_guide/generate', [QuickMaterialsController::class, 'generateInternalGuide'])->name('huawei.internalguides.store');
 });
 
 

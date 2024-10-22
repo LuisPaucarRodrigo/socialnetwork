@@ -518,6 +518,7 @@ async function storeToogle(key, id) {
                 quickMaterialOutputs.value[key]
             );
             // Actualiza el valor después de recibir la respuesta
+
             quickMaterialOutputs.value[key] = res.data.quick_res_out;
         } catch (error) {
             // Manejo de errores en la petición
