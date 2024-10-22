@@ -26,9 +26,13 @@ class StoreOrUpdateRequest extends FormRequest
             'expense_type' => 'required|string',
             'ruc' => ['required','numeric','digits:11',
                 function ($attribute, $value, $fail) {
+                    $expenseId = $this->route('expense_id');
                     if ($this->doc_number) {
                         $exists = PextProjectExpense::where('ruc', $value)
                             ->where('doc_number', $this->doc_number)
+                            ->when($expenseId, function ($query, $expenseId) {
+                                return $query->where('id', '!=', $expenseId);
+                            })
                             ->exists();
 
                         if ($exists) {
