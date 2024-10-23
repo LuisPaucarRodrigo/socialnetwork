@@ -6,6 +6,7 @@ use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\ChecklistDailytoolkit;
+use App\Models\CicsaAssignation;
 use App\Models\HuaweiCode;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiProjectCode;
@@ -18,6 +19,7 @@ use App\Models\PreprojectTitle;
 use App\Models\PreReportHuaweiGeneral;
 use App\Models\Project;
 use App\Models\HuaweiSite;
+use App\Models\PextProjectExpense;
 use App\Models\Projectimage;
 use App\Models\User;
 use Exception;
@@ -68,11 +70,11 @@ class ApiController extends Controller
     public function users($id)
     {
         try {
-			$user = User::select('id','name', 'dni', 'email')->find($id);
-			if ($user) {
-				return response()->json($user,200);
-			}
-		} catch (\Exception $e) {
+            $user = User::select('id', 'name', 'dni', 'email')->find($id);
+            if ($user) {
+                return response()->json($user, 200);
+            }
+        } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
             ]);
@@ -494,5 +496,27 @@ class ApiController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function cicsaProcess()
+    {
+        $cicsaProcess = CicsaAssignation::select('id', 'project_name')->get();
+        return response()->json($cicsaProcess, 200);
+    }
+
+    public function storeExpensesPext(Request $request) 
+    {   
+        $validateData = $request->validate([
+            
+        ]);
+        PextProjectExpense::create($validateData);
+        return response()->noContent();
+    }
+
+    public function historyExpensesPext()
+    {
+        $user = Auth::user();
+        $expensesPext = PextProjectExpense::where('user_id', $user->id)->get();
+        return response()->json($expensesPext, 200);
     }
 }
