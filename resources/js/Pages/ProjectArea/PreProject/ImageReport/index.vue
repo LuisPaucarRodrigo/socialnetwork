@@ -13,23 +13,25 @@
                     <h2 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ preprojectImage.type }}
                     </h2>
-                    <PrimaryButton @click="approveTitle(preprojectImage.id)">
+                    <PrimaryButton @click="approveTitle(preprojectImage.id)"
+                        :customColor="[preprojectImage.state ? 'bg-red-600 hover:bg-red-500' : 'bg-green-600 hover:bg-green-500']">
                         {{ preprojectImage.state ? 'Desabilitar' : 'Habilitar' }}
                     </PrimaryButton>
                     <a :href="`${route('preprojects.report.download', { preproject_title_id: preprojectImage.id })}?t=${Date.now()}`"
                         target="_blank"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                        class="rounded-md bg-green-500 px-4 py-2 text-center text-sm text-white hover:bg-green-400">
                         Exportar
                     </a>
                 </div>
                 <div v-for="imageCode in preprojectImage.preproject_codes" :key="imageCode.id" class="border">
-                    <div class="flex items-center justify-between">
-                        <h1 class="text-md font-bold text-gray-700 m-5">
-                            {{ imageCode.code.code }} / {{ imageCode.code.description }}
-                        </h1>
-
+                    <div class="grid grid-cols-1 sm:grid-cols-6">
+                        <div class="sm:col-span-4">
+                            <h1 class="text-md font-bold text-gray-700 m-2">
+                                {{ imageCode.code.code }} / {{ imageCode.code.description }}
+                            </h1>
+                        </div>
                         <template v-if="hasPermission('ProjectManager')">
-                            <div class="space-x-3" v-if="!imageCode.status">
+                            <div class="sm:col-span-2 space-x-3 text-right" v-if="!imageCode.status">
                                 <PrimaryButton @click="approveImages(imageCode.id)" type="button">
                                     Aprobar Imagenes
                                 </PrimaryButton>
@@ -45,18 +47,16 @@
                         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-5">
                         <div v-for="image in imageCode.imagecodepreprojet" :key="image.id"
                             class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
-                            <h2 :data-tooltip-target="`info-tooltip-${image.id}`"  class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
+                            <h2 :data-tooltip-target="`info-tooltip-${image.id}`"
+                                class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
                                 {{ image.description }}
-                            </h2>   
-                            <div
-                                :id="`info-tooltip-${image.id}`"
-                                role="tooltip"
-                                class="absolute z-50 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                            >
+                            </h2>
+                            <div :id="`info-tooltip-${image.id}`" role="tooltip"
+                                class="absolute z-50 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                                 {{ image.description }}
                                 <div class="tooltip-arrow" data-popper-arrow></div>
                             </div>
-                          
+
                             <div class="grid grid-cols-1 gap-y-1 text-sm text-center">
                                 <img :src="image.image">
                                 <p>Lat:{{ image?.lat }} Lon:{{ image?.lon }}</p>
@@ -157,11 +157,13 @@ const preproject_image_id = ref(null);
 const imageCodeId = ref('');
 const props = defineProps({
     // codesWithStatus: Object,
-    preprojectImages: Object,
+    preprojectImage: Object,
     imagesCode: Object,
     preproject: Object,
     userPermissions: Array
 });
+
+const preprojectImages = ref(props.preprojectImage)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -363,30 +365,15 @@ async function approveCode() {
     } catch (error) {
         console.error(error);
     }
-
-    // router.get(, {
-    //     onSuccess: () => {
-    //         titleSuccessImage.value = "Code Aprobado"
-    //         messageSuccessImage.value = "El Codigo se aprobo correctamente"
-    //         approve_reject_Image.value = true
-    //         setTimeout(() => {
-    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-    //         }, 2000)
-    //     }
-    // })
 }
 
-function approveTitle(preproject_title_id) {
-    router.get(route('preprojects.codereport.approveTitle', { preproject_title_id: preproject_title_id }), {
-        onSuccess: () => {
-            titleSuccessImage.value = "Aprobado"
-            messageSuccessImage.value = "Se aprobo correctamente"
-            approve_reject_Image.value = true
-            setTimeout(() => {
-                router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-            }, 2000)
-        }
-    })
+async function approveTitle(preproject_title_id) {
+    try {
+        await axios.get(route('preprojects.codereport.approveTitle', { preproject_title_id: preproject_title_id }))
+        updateStateStage(preproject_title_id)
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 async function approveImages(code_id) {
@@ -401,17 +388,6 @@ async function approveImages(code_id) {
     } catch (error) {
         console.error(error);
     }
-
-    // router.get(route('preprojects.codereport.approveImages', { code_id: code_id }), {
-    //     onSuccess: () => {
-    //         titleSuccessImage.value = "Aprobado"
-    //         messageSuccessImage.value = "Las imagenes se aprovaron Correctamente"
-    //         approve_reject_Image.value = true
-    //         setTimeout(() => {
-    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-    //         }, 2000)
-    //     }
-    // })
 }
 
 // const showMap = () => {
@@ -428,7 +404,7 @@ function verifyApproveModal(preprojectImageId, preproject_code_id) {
 }
 
 function visuallyChangeCode(preprojectImageId, preprojectCodeId) {
-    const preprojectImage = props.preprojectImages.find(image => image.id === preprojectImageId);
+    const preprojectImage = preprojectImages.value.find(image => image.id === preprojectImageId);
     if (preprojectImage) {
         const preprojectCode = preprojectImage.preproject_codes.find(code => code.id === preprojectCodeId);
         if (preprojectCode) {
@@ -442,7 +418,7 @@ function visuallyChangeCode(preprojectImageId, preprojectCodeId) {
 }
 
 function visuallyChangeImage(preprojectTitleId, preprojectImageCodeId, preprojectImageId, state) {
-    const preprojectImage = props.preprojectImages.find(title => title.id === preprojectTitleId);
+    const preprojectImage = preprojectImages.value.find(title => title.id === preprojectTitleId);
     if (preprojectImage) {
         const preprojectCode = preprojectImage.preproject_codes.find(code => code.id === preprojectImageCodeId);
         if (preprojectCode) {
@@ -460,4 +436,10 @@ function visuallyChangeImage(preprojectTitleId, preprojectImageCodeId, preprojec
         console.log('No se encontró el preproject especificado.');
     }
 }
+
+function updateStateStage(preproject_stage_id) {
+    const index = preprojectImages.value.findIndex(item => item.id === preproject_stage_id)
+    preprojectImages.value[index].state = !preprojectImages.value[index].state;
+}
+
 </script>

@@ -12,7 +12,7 @@
                     <PrimaryButton @click="openAddAssignationModal" type="button">
                         + Agregar
                     </PrimaryButton>
-                    <a :href="route('assignation.export')"
+                    <a :href="route('assignation.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
 
@@ -35,6 +35,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Asignacion
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Centro de Costo
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -75,6 +79,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ formattedDate(item.assignation_date) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cost_center }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -163,6 +172,23 @@
                             </div>
                         </div>
                         <div class="">
+                            <InputLabel for="cost_center">Centro de Costos</InputLabel>
+                            <div class="mt-2">
+                                <select id="report" v-model="form.cost_center" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Centro de Costo</option>
+                                    <option>Planta Externa Claro</option>
+                                    <option>Instalaciones GTD</option>
+                                    <option>Planta Externa GTD-Averias</option>
+                                    <option>STL</option>
+                                    <option>Densificacion</option>
+                                    <option>Adicionales</option>
+                                    <option>Instalaciones Claro</option>
+                                </select>
+                                <InputError :message="form.errors.cost_center" />
+                            </div>
+                        </div>
+                        <div class="">
                             <InputLabel for="customer">Cliente</InputLabel>
                             <div class="mt-2">
                                 <input type="text" v-model="form.customer" autocomplete="off" id="customer"
@@ -228,6 +254,7 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import { setAxiosErrors } from "@/utils/utils";
 
 const { assignation, auth } = defineProps({
     assignation: Object,
@@ -235,12 +262,14 @@ const { assignation, auth } = defineProps({
 })
 
 const assignations = ref(assignation);
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 
 const initialState = {
     id: null,
     user_id: auth.user.id,
     assignation_date: '',
     project_name: '',
+    cost_center: '',
     customer: '',
     project_code: '',
     cpe: '',
@@ -255,29 +284,34 @@ const form = useForm(
 
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
+
 function openAddAssignationModal() {
     showAddEditModal.value = true
 }
+
 function closeAddAssignationModal() {
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
 }
-function submitStore() {
+
+async function submitStore() {
     let url = route('assignation.storeOrUpdate');
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmAssignation.value = true
-            setTimeout(() => {
-                confirmAssignation.value = false
-                router.get(route('assignation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    try {
+        const response = await axios.put(url, form)
+        updateAssignation(null, response.data)
+        closeAddAssignationModal()
+        confirmAssignation.value = true
+        setTimeout(() => {
+            confirmAssignation.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
         }
-    })
+    }
 }
 
 const confirmUpdateAssignation = ref(false);
@@ -288,21 +322,23 @@ function openEditSotModal(item) {
     showAddEditModal.value = true
 }
 
-function submitUpdate() {
+async function submitUpdate() {
     let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
-    form.put(url, {
-        onSuccess: () => {
-            closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false
-                router.get(route('assignation.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.log(e)
+    try {
+        const response = await axios.put(url, form)
+        updateAssignation(form.id, response.data)
+        closeAddAssignationModal()
+        confirmUpdateAssignation.value = true
+        setTimeout(() => {
+            confirmUpdateAssignation.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
         }
-    })
+    }
 }
 
 function submit() {
@@ -318,4 +354,18 @@ const search = async ($search) => {
         console.error('Error searching:', error);
     }
 };
+
+function updateAssignation(cicsa_assignation_id, assignation) {
+    const validations = assignations.value.data || assignations.value;
+    const index = validations.findIndex(item => item.id === cicsa_assignation_id)
+    if (cicsa_assignation_id) {
+        validations[index] = assignation
+    } else {
+        validations.unshift(assignation);
+    }
+
+    if (validations.length > assignations.value.per_page) {
+        validations.pop();
+    }
+}
 </script>

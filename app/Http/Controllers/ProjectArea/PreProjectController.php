@@ -667,7 +667,7 @@ class PreProjectController extends Controller
             });
         });
         return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
-            'preprojectImages' => $preprojectImages,
+            'preprojectImage' => $preprojectImages,
             'imagesCode' => $imagesCode,
             'preproject' => Preproject::select('id', 'status')->find($preproject_id),
         ]);
@@ -743,6 +743,7 @@ class PreProjectController extends Controller
                 'state' => 1,
             ]);
         }
+        return response()->noContent();
     }
 
     public function approve_images($code_id)
@@ -780,38 +781,38 @@ class PreProjectController extends Controller
 
         $identificationRows = [
             [
-                'first'=> 'Código de la estación:', 
-                'firstValue'=> 'AR4124',
-                'second'=> 'Zona:',
-                'secondValue'=> 'CHALA',
+                'first' => 'Código de la estación:',
+                'firstValue' => 'AR4124',
+                'second' => 'Zona:',
+                'secondValue' => 'CHALA',
             ],
             [
-                'first'=> 'Nombre de la estación:', 
-                'firstValue'=> 'CHALA',
-                'second'=> 'Latitud:',
-                'secondValue'=> "15°51'1.40''S",
+                'first' => 'Nombre de la estación:',
+                'firstValue' => 'CHALA',
+                'second' => 'Latitud:',
+                'secondValue' => "15°51'1.40''S",
             ],
             [
-                'first'=> 'Tipo de acceso:', 
-                'firstValue'=> 'Directo',
-                'second'=> 'Longitud:',
-                'secondValue'=> "74°15'4.50''O",
+                'first' => 'Tipo de acceso:',
+                'firstValue' => 'Directo',
+                'second' => 'Longitud:',
+                'secondValue' => "74°15'4.50''O",
             ],
             [
-                'first'=> 'Región Claro:', 
-                'firstValue'=> 'Sur',
-                'second'=> 'Fecha:',
-                'secondValue'=> "12/09/2024",
+                'first' => 'Región Claro:',
+                'firstValue' => 'Sur',
+                'second' => 'Fecha:',
+                'secondValue' => "12/09/2024",
             ],
             [
-                'first'=> 'Empresa:', 
-                'firstValue'=> 'CICSA',
-                'second'=> 'Contrata:',
-                'secondValue'=> "CONPROCO",
+                'first' => 'Empresa:',
+                'firstValue' => 'CICSA',
+                'second' => 'Contrata:',
+                'secondValue' => "CONPROCO",
             ],
         ];
 
-        $template = $preproject->customer_id == 1 
+        $template = $preproject->customer_id == 1
             ? 'pdf.ReportPreProjectPint'
             : 'pdf.ReportPreProject';
 
@@ -973,7 +974,7 @@ class PreProjectController extends Controller
     public function showCodes()
     {
         return Inertia::render('ProjectArea/PreProject/Codes', [
-            'codes' => Code::with('code_images')->paginate(20)
+            'code' => Code::paginate(20)
         ]);
     }
 
@@ -984,11 +985,8 @@ class PreProjectController extends Controller
             'description' => 'required|string',
         ]);
 
-        try {
-            Code::create($validateData);
-        } catch (Exception $e) {
-            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
-        }
+        $code = Code::create($validateData);
+        return response()->json($code, 200);
     }
 
     public function updateCode(Request $request, Code $code)
@@ -999,12 +997,22 @@ class PreProjectController extends Controller
         ]);
 
         $code->update($validateData);
+        return response()->json($code, 200);
     }
 
     public function deleteCode(Code $code)
     {
+        if ($code->preprojectCodes()->exists() || $code->code_images()->exists() || $code->titles()->exists() || $code->code_images()->exists()) {
+            return response()->json(['message' => 'No se puede eliminar el código porque tiene relaciones con otras tablas'], 400);
+        }
         $code->delete();
-        return redirect()->back();
+        return response()->noContent();
+    }
+
+    public function indexImages($code_id)
+    {
+        $imagesCode = CodeImage::where('code_id', $code_id)->get();
+        return response()->json($imagesCode, 200);
     }
 
     public function storeCodeImages(Request $request)
@@ -1024,6 +1032,7 @@ class PreProjectController extends Controller
             ]);
             $uploadedImage->move(public_path('image/imageCode/'), $image['image']);
         }
+        return response()->noContent();
     }
 
     public function show_code_image($image_id)
@@ -1046,13 +1055,13 @@ class PreProjectController extends Controller
             if ($codeImage) {
                 // $filePath = "image/imageCode/{$codeImage->image}";
                 // $path = public_path($filePath);
-                
+
                 // if (file_exists($path)) {
                 //     unlink($path); 
                 // }
                 $codeImage->delete();
-                
-                return response()->json([],200);
+
+                return response()->json([], 200);
             } else {
                 return response()->json(['error' => 'Imagen no encontrada'], 404);
             }

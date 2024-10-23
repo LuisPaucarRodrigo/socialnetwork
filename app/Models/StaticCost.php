@@ -15,6 +15,8 @@ class StaticCost extends Model
         'ruc',
         'type_doc',
         'zone',
+        'operation_number',
+        'operation_date',
         'doc_number',
         'doc_date',
         'description',
@@ -22,7 +24,8 @@ class StaticCost extends Model
         'project_id',
         'provider_id',
         'igv',
-        'photo'
+        'photo',
+        'account_statement_id',
     ];
 
     protected $casts = [

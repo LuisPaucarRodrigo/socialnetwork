@@ -97,7 +97,7 @@ class WarehousesController extends Controller
         if ($warehouse->inventory->isEmpty()) {
             // Crear registros de inventario directamente
             foreach ($purchase_order->purchase_quote->purchase_quote_products as $purchaseQuoteProduct) {
-                if($purchaseQuoteProduct->quantity > 0){
+                if($purchaseQuoteProduct->quantity > 0) {
                     $inventory = Inventory::create([
                         'purchase_product_id' => $purchaseQuoteProduct->purchase_product->id,
                         'warehouse_id' => 3

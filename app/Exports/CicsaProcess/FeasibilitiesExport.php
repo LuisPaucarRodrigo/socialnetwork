@@ -18,13 +18,14 @@ class FeasibilitiesExport implements FromView, WithColumnWidths
             'title' => [
                 'Nombre de Proyecto',
                 'Codigo de Proyecto',
+                'Centro de Costos',
                 'CPE',
                 'Fecha Factibilidad',
                 'Informe',
                 'Coordinador',
                 'Encargado'
             ],
-            'feasibilitys' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
+            'feasibilitys' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'cost_center')
                 ->with('cicsa_feasibility')
                 ->get()
         ]);
@@ -38,8 +39,9 @@ class FeasibilitiesExport implements FromView, WithColumnWidths
             'C' => 17,
             'D' => 17,
             'E' => 17,
-            'F' => 30,
+            'F' => 17,
             'G' => 30,
+            'H' => 30
         ];
     }
 }

@@ -12,33 +12,35 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 class OCValidationExport implements FromView, WithColumnWidths
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function view(): View
     {
         return view('Export.ValidationOcExport', [
             'title' => [
                 'Nombre de Proyecto',
                 'Codigo de Proyecto',
+                'Centro de Costos',
                 'CPE',
                 'Orden de Compra',
-                'Control de Materiales',
                 'Validacion de Expediente',
+                'Control de Materiales',
                 'Supervisor',
                 'Almacen',
                 'Jefe',
                 'Liquidador',
                 'SuperIntendente',
+                'Observaciones',
                 'Fecha de Validacion',
                 'Encargado',
                 'Gestor'
             ],
-            'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with(['cicsa_purchase_order' => function ($query){
-                $query->select('id','oc_number');
-            },'cicsa_assignation' => function ($query) {
-                $query->select('id','project_name','project_code','cpe','manager');
+            'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with(['cicsa_purchase_order' => function ($query) {
+                $query->select('id', 'oc_number');
+            }, 'cicsa_assignation' => function ($query) {
+                $query->select('id', 'project_name', 'project_code', 'cpe', 'cost_center', 'manager');
             }])
-            ->get()
+                ->get()
         ]);
     }
 
@@ -56,8 +58,11 @@ class OCValidationExport implements FromView, WithColumnWidths
             'I' => 17,
             'J' => 17,
             'K' => 17,
-            'L' => 30,
+            'L' => 17,
             'M' => 30,
+            'N' => 20,
+            'O' => 30,
+            'P' => 30
         ];
     }
 }

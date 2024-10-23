@@ -25,8 +25,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-use function PHPSTORM_META\map;
-
 class ApiController extends Controller
 {
 
@@ -93,7 +91,6 @@ class ApiController extends Controller
                     $query->where('state', 1);
                 })
                 ->get();
-            
             return response()->json($preprojects);
         } catch (\Exception $e) {
             return response()->json([
@@ -476,7 +473,6 @@ class ApiController extends Controller
     private function downloadFile($path)
     {
         $filePath = storage_path('app/' . $path);
-
         if (!file_exists($filePath)) {
             return abort(404, 'El archivo no existe.');
         }

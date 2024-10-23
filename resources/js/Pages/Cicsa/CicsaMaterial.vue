@@ -8,7 +8,7 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
-                <!-- <a :href="route('material.export')"
+                <!-- <a :href="route('material.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a> -->
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
@@ -22,23 +22,27 @@
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
                             </th>
                             <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Codigo de Proyecto
                             </th>
                             <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Centro de Costos
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
                             </th>
                             <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales de Factibilidad
                             </th>
-                            <th
-                                class="w-1/5 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            <th 
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
                         </tr>
@@ -54,6 +58,11 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_code }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.cost_center }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -102,29 +111,32 @@
                             </tr>
                             <template v-if="materialRow == item.id">
                                 <tr
-                                    class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    <th 
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    class="border-b bg-red-500 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
                                     <th
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Fecha de Recojo
                                     </th>
                                     <th
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Numero de Guia
                                     </th>
-                                    <th 
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Lista de Materiales Recibidos
                                     </th>
-                                    <th colspan="2"
-                                        class="w-1/5 border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    <th 
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Acciones
+                                    </th>
+                                    <th 
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
                                 </tr>
                                 <tr v-for="materialDetail in item.cicsa_materials" :key="materialDetail.id"
-                                    class="bg-gray-100">
+                                    class="bg-gray-100 text-center">
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -146,10 +158,10 @@
                                             </button>
                                         </p>
                                     </td>
-                                    <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             <button class="text-blue-900"
-                                                @click="openEditSotModal(item.id, materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
+                                                @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
                                                     class="w-5 h-5 text-amber-400">
@@ -158,6 +170,8 @@
                                                 </svg>
                                             </button>
                                         </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     </td>
                                 </tr>
                             </template>
@@ -240,6 +254,10 @@
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                            Tipo
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Cantidad
                                         </th>
                                         <th
@@ -257,6 +275,11 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.name }}
+                                            </p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                            <p class="text-gray-900 text-center">
+                                                {{ item.type }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -340,6 +363,18 @@
                         </div>
                     </div>
                     <div class="sm:col-span-1">
+                        <InputLabel for="type">Tipo
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select id="type" v-model="material_item.type" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option disabled value="">Seleccionar Tipo</option>
+                                <option>Pint</option>
+                                <option>Pext</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="sm:col-span-1">
                         <InputLabel for="quantity">Cantidad
                         </InputLabel>
                         <div class="mt-2">
@@ -378,6 +413,9 @@
                                         Unidad
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Tipo
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Cantidad
                                     </th>
                                 </tr>
@@ -392,6 +430,9 @@
                                     </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.unit }}
+                                    </td>
+                                    <td class="border-b border-slate-300  px-4 py-4">
+                                        {{ item?.type }}
                                     </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.quantity }}
@@ -456,7 +497,7 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { formattedDate } from '@/utils/utils.js';
+import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
@@ -465,6 +506,7 @@ const { material, auth } = defineProps({
     auth: Object
 })
 
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const materials = ref(material)
 const arrayMaterials = ref([])
 
@@ -488,6 +530,7 @@ const formImport = useForm({
 const showAddEditModal = ref(false);
 const confirmMaterial = ref(false);
 const cicsa_assignation_id = ref(null);
+const cicsa_material_id = ref(null);
 const materialRow = ref(0);
 const showModalImport = ref(false);
 
@@ -500,8 +543,8 @@ function closeAddMaterialModal() {
 
 const confirmUpdateMaterial = ref(false);
 
-function openEditSotModal(id, item, feasibility_materials) {
-    cicsa_assignation_id.value = id;
+function openEditSotModal(item, feasibility_materials) {
+    cicsa_material_id.value = item.id;
     let cicsa_material_items = []
     if (item?.id) {
         cicsa_material_items = item.cicsa_material_items?.length > 0 ? [...item.cicsa_material_items] : feasibility_materials ? feasibility_materials?.map(item => ({ ...item })) : []
@@ -514,38 +557,41 @@ function openEditSotModal(id, item, feasibility_materials) {
 }
 
 
-function submit() {
-    let url = cicsa_assignation_id.value ? route('material.update', { cicsa_assignation_id: cicsa_assignation_id.value }) : route('material.store')
-    if (cicsa_assignation_id.value) {
-        form.put(url, {
-            onSuccess: () => {
-                closeAddMaterialModal()
-                confirmUpdateMaterial.value = true
-                setTimeout(() => {
-                    confirmUpdateMaterial.value = false
-                    router.get(route('material.index'))
-                }, 1500)
-            },
-            onError: (e) => {
-                console.error(e)
+async function submit() {
+    let url = cicsa_material_id.value ? route('material.update', { cicsa_material_id: cicsa_material_id.value }) : route('material.store')
+    if (cicsa_material_id.value) {
+        try {
+            const response = await axios.put(url, form)
+            updateMaterial(false, response.data)
+            closeAddMaterialModal()
+            confirmUpdateMaterial.value = true
+            setTimeout(() => {
+                confirmUpdateMaterial.value = false
+            }, 1500)
+        } catch (error) {
+            if (error.response) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error(error)
             }
-        })
+        }
     } else {
-        form.post(url, {
-            onSuccess: () => {
-                closeAddMaterialModal()
-                confirmUpdateMaterial.value = true
-                setTimeout(() => {
-                    confirmUpdateMaterial.value = false
-                    router.get(route('material.index'))
-                }, 1500)
-            },
-            onError: (e) => {
-                console.error(e)
+        try {
+            const response = await axios.post(url, form)
+            updateMaterial(true, response.data)
+            closeAddMaterialModal()
+            confirmUpdateMaterial.value = true
+            setTimeout(() => {
+                confirmUpdateMaterial.value = false
+            }, 1500)
+        } catch (error) {
+            if (error.response) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error(error)
             }
-        })
+        }
     }
-
 }
 
 const showModalFeasibility = ref(false);
@@ -556,9 +602,10 @@ function modalFeasibility() {
 
 const material_item = ref({
     id: '',
-    code_ax:'',
+    code_ax: '',
     name: '',
     unit: '',
+    type:'',
     quantity: 0,
 });
 
@@ -568,6 +615,7 @@ function addFeasibility() {
             code_ax: material_item.value.code_ax,
             name: material_item.value.name,
             unit: material_item.value.unit,
+            type: material_item.value.type,
             quantity: material_item.value.quantity
         };
         form.cicsa_material_items.push(newFeasibility);
@@ -581,6 +629,7 @@ function cleanArrayMaterial() {
     material_item.value.code_ax = '';
     material_item.value.name = '';
     material_item.value.unit = '';
+    material_item.value.type = '';
     material_item.value.quantity = '';
 }
 
@@ -634,7 +683,7 @@ function submitImportExcel() {
         .then(response => {
             if (response.status === 200) {
                 form.cicsa_material_items = response.data;
-                modalImportMaterial();       
+                modalImportMaterial();
             }
         })
         .catch(error => {
@@ -651,7 +700,7 @@ const search = async ($search) => {
     try {
         const response = await axios.post(route('material.index'), { searchQuery: $search });
         materials.value = response.data.material;
-        
+
     } catch (error) {
         console.error('Error searching:', error);
     }
@@ -674,4 +723,16 @@ function updateMaterialItem(e) {
         material_item.value.unit = selectedItem.unit
     }
 }
+
+function updateMaterial(item, material) {
+    const validations = materials.value.data || materials.value;
+    const index = validations.findIndex(item => item.id === material.cicsa_assignation_id);
+    if (item) {
+        validations[index].cicsa_materials.push(material)
+    } else {
+        const indexMaterial = validations[index].cicsa_materials.findIndex(item => item.id === material.id);
+        validations[index].cicsa_materials[indexMaterial] = material
+    }
+}
+
 </script>

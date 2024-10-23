@@ -421,6 +421,9 @@ Usuarios
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="route('projectmanagement.pext.index')">Proyectos Pext</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('checklist.index')">
                         Checklist
                     </Link>
@@ -581,6 +584,12 @@ Usuarios
                         </Link>
                     </MyTransition>
                 </template>
+
+
+                <MyTransition :transitiondemonstration="showingFinance">
+                    <Link class="w-full" :href="route('finance.account_statement')">Estado de Cuenta</Link>
+                </MyTransition>
+
             </template>
 
 

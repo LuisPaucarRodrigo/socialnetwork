@@ -12,7 +12,7 @@ use Inertia\Inertia;
 class BacklogController extends Controller
 {
     public function index() {
-        return Inertia::render('ProjectArea/Backlog/Index', 
+        return Inertia::render('ProjectArea/Backlog/Index',
             ['inertiaBacklogs' => Backlog::with('backlog_site')->orderBy('created_at', 'desc')->paginate(20)]
         );
     }

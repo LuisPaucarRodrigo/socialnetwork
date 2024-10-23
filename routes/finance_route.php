@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Finance\AccountStatementController;
 use App\Http\Controllers\Finance\BudgetUpdateController;
 use App\Http\Controllers\Finance\DepositController;
 use App\Http\Controllers\Finance\ExpenseManagementController;
@@ -17,6 +18,15 @@ Route::middleware('permission:FinanceManager')->group(function () {
 
     //Payment
     Route::post('/finance/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
+
+    //Account Status
+    Route::get('/finance/account_statement', [AccountStatementController::class, 'index'])->name('finance.account_statement');
+    Route::get('/finance/account_statement/search_costs', [AccountStatementController::class, 'searchCosts'])->name('finance.search_costs');
+    Route::post('/finance/account_statement/store/{as_id?}', [AccountStatementController::class, 'store'])->name('finance.account_statement.store');
+    Route::get('/finance/account_statement_search}', [AccountStatementController::class, 'searchStatements'])->name('finance.account_statement.search');
+    Route::post('/finance/account_statement_delete/{as_id}', [AccountStatementController::class, 'destroy'])->name('finance.account_statement.delete');
+    Route::post('/finance/account_statement_import', [AccountStatementController::class, 'importExcel'])->name('finance.account_statement.import');
+    Route::get('/finance/account_statement_costs/{as_id}', [AccountStatementController::class, 'searchStatementsCosts'])->name('finance.account_statement.costs');
 });
 
 Route::middleware('permission:FinanceManager|Finance')->group(function () {

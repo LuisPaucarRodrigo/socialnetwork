@@ -7,11 +7,11 @@
         }"
     >
         <template #header>
-            Gastos Variables del Proyecto 
+            Gastos Variables del Proyecto
             {{ props.project_id.name }}
         </template>
         <br />
-        <Toaster richColors/>
+        <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
@@ -123,7 +123,7 @@
                         role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
                     >
-                        Exportar solo facturas
+                        Facturas, Boletas y Vouchers de Pago
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
 
@@ -152,7 +152,6 @@
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </div>
-
                 <div class="sm:hidden">
                     <dropdown align="left">
                         <template #trigger>
@@ -285,13 +284,10 @@
             <table class="w-full">
                 <thead class="sticky top-0 z-20">
                     <tr
-                        class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
-                    >   
-                    
-                        <th
-                            class="bg-gray-100 border-b-2 border-gray-20"
-                        >
-                        <div class="w-2"></div>
+                        class="border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
+                    >
+                        <th class="bg-gray-100 border-b-2 border-gray-20">
+                            <div class="w-2"></div>
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -312,7 +308,7 @@
                                 label="Tipo de Gasto"
                                 :options="expenseTypes"
                                 v-model="filterForm.selectedExpenseTypes"
-                                width="w-48"
+                                width="w-44"
                             />
                         </th>
                         <th
@@ -339,12 +335,36 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
+                            Numero de Operación
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableDateFilter
+                                labelClass="text-[11px]"
+                                label="Fecha de Operación"
+                                v-model:startDate="filterForm.opStartDate"
+                                v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate"
+                                width="w-40"
+                            />
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
                             Numero de Doc
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Fecha de Documento
+                            <TableDateFilter
+                                labelClass="text-[11px]"
+                                label="Fecha de Docoumento"
+                                v-model:startDate="filterForm.docStartDate"
+                                v-model:endDate="filterForm.docEndDate"
+                                v-model:noDate="filterForm.docNoDate"
+                                width="w-40"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -367,6 +387,16 @@
                             Descripción
                         </th>
                         <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableStateFilter
+                                labelClass="text-[11px]"
+                                label="Estado"
+                                v-model="filterForm.state"
+                                width="w-32"
+                            />
+                        </th>
+                        <th
                             v-if="
                                 auth.user.role_id === 1 &&
                                 project_id.status === null
@@ -382,17 +412,17 @@
                         v-for="item in dataToRender"
                         :key="item.id"
                         class="text-gray-700"
-                        
                     >
-                    <td :class="[
-                            'border-b border-gray-200',
-                            {
-                                'bg-indigo-500': item.is_accepted === null,
-                                'bg-green-500': item.is_accepted == true,
-                                'bg-red-500': item.is_accepted == false,
-                            },
-                        ]">
-                    </td>
+                        <td
+                            :class="[
+                                'border-b border-gray-200',
+                                {
+                                    'bg-indigo-500': item.is_accepted === null,
+                                    'bg-green-500': item.is_accepted == true,
+                                    'bg-red-500': item.is_accepted == false,
+                                },
+                            ]"
+                        ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -419,6 +449,19 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
                             {{ item?.provider?.company_name }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            {{ item.operation_number }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            {{
+                                item.operation_date &&
+                                formattedDate(item.operation_date)
+                            }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums"
@@ -459,16 +502,11 @@
                             </p>
                         </td>
                         <td
-                            v-if="
-                                auth.user.role_id === 1 &&
-                                project_id.status === null
-                            "
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            <div class="flex items-center gap-3 w-full">
-                                <div
+                        <div
                                     v-if="item.is_accepted === null"
-                                    class="flex gap-3 justify-center w-1/2"
+                                    class="flex gap-3 justify-center w-full"
                                 >
                                     <button
                                         @click="
@@ -516,7 +554,19 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <div v-else class="w-1/2"></div>
+                                <div v-else class="text-center text-green-500">
+                                    Aceptado
+                                </div>
+                        </td>
+                        <td
+                            v-if="
+                                auth.user.role_id === 1 &&
+                                project_id.status === null
+                            "
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            <div class="flex items-center justify-center gap-3 w-full">
+                                
 
                                 <div class="flex gap-3 mr-3">
                                     <button
@@ -542,13 +592,18 @@
                     <tr class="sticky bottom-0 z-10 text-gray-700">
                         <td
                             class="font-bold border-b border-gray-200 bg-white"
-                        >      
-                        </td>
+                        ></td>
                         <td
                             class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         >
                             TOTAL
                         </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
@@ -597,6 +652,9 @@
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
                         <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
+                        <td
                             v-if="
                                 auth.user.role_id === 1 &&
                                 project_id.status === null
@@ -609,7 +667,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         <div
             v-if="!filterMode"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
@@ -642,7 +700,9 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option v-for="op in zones">{{ op }}</option>
+                                        <option v-for="op in zones">
+                                            {{ op }}
+                                        </option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -662,7 +722,9 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option v-for="op in expenseTypes">{{ op }}</option>
+                                        <option v-for="op in expenseTypes">
+                                            {{ op }}
+                                        </option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -684,7 +746,9 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option v-for="op in docTypes">{{ op }}</option>
+                                        <option v-for="op in docTypes">
+                                            {{ op }}
+                                        </option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -717,6 +781,44 @@
                                         </option>
                                     </datalist>
                                     <InputError :message="form.errors.ruc" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_number"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Numero de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="form.operation_number"
+                                        id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.operation_number"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_date"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Fecha de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="date"
+                                        v-model="form.operation_date"
+                                        id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.operation_date"
+                                    />
                                 </div>
                             </div>
 
@@ -860,7 +962,7 @@
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeModal">
                                 Cancelar
-                            </SecondaryButton>           
+                            </SecondaryButton>
                             <button
                                 type="submit"
                                 :disabled="isFetching"
@@ -900,7 +1002,9 @@
                                         <option disabled value="">
                                             Seleccionar
                                         </option>
-                                        <option v-for="op in zones">{{ op }}</option>
+                                        <option v-for="op in zones">
+                                            {{ op }}
+                                        </option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
@@ -920,7 +1024,9 @@
                                         <option disabled value="">
                                             Seleccionar Gasto
                                         </option>
-                                        <option v-for="op in expenseTypes">{{ op }}</option>
+                                        <option v-for="op in expenseTypes">
+                                            {{ op }}
+                                        </option>
                                     </select>
                                     <InputError
                                         :message="form.errors.expense_type"
@@ -943,7 +1049,9 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option v-for="op in docTypes">{{ op }}</option>
+                                        <option v-for="op in docTypes">
+                                            {{ op }}
+                                        </option>
                                     </select>
                                     <InputError
                                         :message="form.errors.type_doc"
@@ -976,6 +1084,44 @@
                                         </option>
                                     </datalist>
                                     <InputError :message="form.errors.ruc" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_number"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Numero de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="form.operation_number"
+                                        id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.operation_number"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_date"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Fecha de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="date"
+                                        v-model="form.operation_date"
+                                        id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.operation_date"
+                                    />
                                 </div>
                             </div>
 
@@ -1262,7 +1408,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
-import { ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
@@ -1277,6 +1423,8 @@ import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import TableDateFilter from "@/Components/TableDateFilter.vue";
+import TableStateFilter from "@/Components/TableStateFilter.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1303,6 +1451,8 @@ const form = useForm({
     provider_id: "",
     project_id: props.project_id.id,
     type_doc: "",
+    operation_number: "",
+    operation_date: "",
     doc_number: "",
     doc_date: "",
     description: "",
@@ -1311,8 +1461,6 @@ const form = useForm({
     igv: 0,
     photo_status: "stable",
 });
-
-
 
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
@@ -1325,13 +1473,14 @@ const openCreateAdditionalModal = () => {
 };
 
 const openEditAdditionalModal = (additional) => {
-    // Copia de los datos de la subsección existente al formulario
     editingAdditional.value = JSON.parse(JSON.stringify(additional));
     form.id = editingAdditional.value.id;
     form.expense_type = editingAdditional.value.expense_type;
     form.ruc = editingAdditional.value.ruc;
     form.amount = editingAdditional.value.amount;
     form.type_doc = editingAdditional.value.type_doc;
+    form.operation_number = editingAdditional.value.operation_number;
+    form.operation_date = editingAdditional.value.operation_date;
     form.doc_number = editingAdditional.value.doc_number;
     form.doc_date = editingAdditional.value.doc_date;
     form.igv = editingAdditional.value.igv;
@@ -1345,61 +1494,64 @@ const openEditAdditionalModal = (additional) => {
 
 const closeModal = () => {
     form.reset();
-    isFetching.value = false
+    isFetching.value = false;
     create_additional.value = false;
 };
 
 const closeEditModal = () => {
     form.reset();
-    isFetching.value = false
+    isFetching.value = false;
     editAdditionalModal.value = false;
 };
 
-const isFetching = ref(false)
+const isFetching = ref(false);
 
 const submit = async () => {
-    try{
-        isFetching.value = true
-        const formToSend = toFormData(form.data())
+    try {
+        isFetching.value = true;
+        const formToSend = toFormData(form.data());
         const res = await axios.post(
             route("projectmanagement.storeAdditionalCost", {
-            project_id: props.project_id.id,
-        }), formToSend)
-        dataToRender.value.unshift(res.data)
+                project_id: props.project_id.id,
+            }),
+            formToSend
+        );
+        dataToRender.value.unshift(res.data);
         closeModal();
-        notify('Gasto Adicional Guardado')
-    }catch (e) {
-        isFetching.value = false
-        if (e.response?.data?.errors){
-            setAxiosErrors(e.response.data.errors, form)
+        notify("Gasto Adicional Guardado");
+    } catch (e) {
+        isFetching.value = false;
+        if (e.response?.data?.errors) {
+            setAxiosErrors(e.response.data.errors, form);
         } else {
-            notifyError('Server Error')
+            notifyError("Server Error");
         }
     }
 };
 
-const submitEdit = async() => {
-    try{
-        isFetching.value = true
-        const formToSend = toFormData(form.data())
+const submitEdit = async () => {
+    try {
+        isFetching.value = true;
+        const formToSend = toFormData(form.data());
         const res = await axios.post(
             route("projectmanagement.updateAdditionalCost", {
-            additional_cost: form.id,
-        }), formToSend)
-        let index = dataToRender.value.findIndex(item=>item.id == form.id)
-        dataToRender.value[index] = res.data
+                additional_cost: form.id,
+            }),
+            formToSend
+        );
+        let index = dataToRender.value.findIndex((item) => item.id == form.id);
+        dataToRender.value[index] = res.data;
         closeEditModal();
-        notify('Gasto Adicional Actualizado')
-    }catch (e) {
-        isFetching.value = false
-        if (e.response?.data?.errors){
-            setAxiosErrors(e.response.data.errors, form)
-        }else {
-            notifyError('Server Error')
+        notify("Gasto Adicional Actualizado");
+    } catch (e) {
+        isFetching.value = false;
+        if (e.response?.data?.errors) {
+            setAxiosErrors(e.response.data.errors, form);
+        } else {
+            notifyError("Server Error");
         }
     }
 };
-
 
 const confirmDeleteAdditional = (additionalId) => {
     docToDelete.value = additionalId;
@@ -1412,24 +1564,26 @@ const closeModalDoc = () => {
 
 const deleteAdditional = async () => {
     const docId = docToDelete.value;
-    isFetching.value = true
+    isFetching.value = true;
     try {
         const res = await axios.delete(
-        route("projectmanagement.deleteAdditionalCost", {
-            project_id: props.project_id.id,
-            additional_cost: docId,
-        }))
-        isFetching.value = false
-        if (res?.data?.msg==='success'){
-            closeModalDoc()
-            notify('Gasto Adicional Eliminado')
-            let index = dataToRender.value.findIndex(item=>item.id == docId)
+            route("projectmanagement.deleteAdditionalCost", {
+                project_id: props.project_id.id,
+                additional_cost: docId,
+            })
+        );
+        isFetching.value = false;
+        if (res?.data?.msg === "success") {
+            closeModalDoc();
+            notify("Gasto Adicional Eliminado");
+            let index = dataToRender.value.findIndex(
+                (item) => item.id == docId
+            );
             dataToRender.value.splice(index, 1);
         }
     } catch (e) {
-        isFetching.value = false
+        isFetching.value = false;
     }
-    
 };
 
 const handleRucDniAutocomplete = (e) => {
@@ -1452,14 +1606,7 @@ function handlerPreview(id) {
     );
 }
 
-const zones = [
-    "Arequipa", 
-    "Chala", 
-    "Moquegua", 
-    "Tacna", 
-    "MDD1", 
-    "MDD2"
-];
+const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
 
 const expenseTypes = [
     "Hospedaje",
@@ -1478,7 +1625,6 @@ const expenseTypes = [
     "Otros",
 ];
 
-
 const docTypes = [
     "Efectivo",
     "Deposito",
@@ -1487,23 +1633,34 @@ const docTypes = [
     "Voucher de Pago",
 ];
 
-
 const filterForm = ref({
     search: "",
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
-    selectedDocTypes: docTypes
+    selectedDocTypes: docTypes,
+    opStartDate: "",
+    opEndDate: "",
+    opNoDate: false,
+    docStartDate: "",
+    docEndDate: "",
+    docNoDate: false,
+    state: '',
 });
-
-
 
 watch(
     () => [
         filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedDocTypes,
+        filterForm.value.opStartDate,
+        filterForm.value.opEndDate,
+        filterForm.value.opNoDate,
+        filterForm.value.docStartDate,
+        filterForm.value.docEndDate,
+        filterForm.value.docNoDate,
+        filterForm.value.state,
     ],
-    () => {
+    ([]) => {
         filterMode.value = true;
         search_advance(filterForm.value);
     }
@@ -1514,11 +1671,13 @@ async function search_advance(data) {
         let res = await axios.post(
             route("additionalcost.advance.search", {
                 project_id: props.project_id.id,
-            }),data);
+            }),
+            data
+        );
         dataToRender.value = res.data;
-        notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
+        notifyWarning(`Se encontraron ${res.data.length} registro(s)`);
     } catch (error) {
-        console.error('Error en la solicitud:', error);
+        console.error("Error en la solicitud:", error);
     }
 }
 
@@ -1582,8 +1741,6 @@ function openExportPhoto() {
     window.location.href = url;
 }
 
-
-
 watch([() => form.type_doc, () => form.zone], () => {
     if (
         form.type_doc === "Factura" &&
@@ -1622,4 +1779,6 @@ async function validateRegister(ac_id, is_accepted) {
         console.log(e);
     }
 }
+
+
 </script>

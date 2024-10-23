@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
 use App\Imports\CostsImport;
+use App\Models\AccountStatement;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -83,12 +84,36 @@ class AdditionalCostsController extends Controller
             $searchTerms = $request->input('search');
             $result = $result->where(function ($query) use ($searchTerms) {
                 $query->where('ruc', 'like', "%$searchTerms%")
-                    ->orWhere('doc_date', 'like', "%$searchTerms%")
+                    ->orWhere('doc_number', 'like', "%$searchTerms%")
+                    ->orWhere('operation_number', 'like', "%$searchTerms%")
                     ->orWhere('description', 'like', "%$searchTerms%")
                     ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
+        
+        if($request->state !== ''){
+            $state = $request->state === 'pending' ? null : $request->state;
+            $result->where('is_accepted', $state);
+        }
 
+        if($request->docNoDate){
+            $result->where('doc_date', null);
+        }
+        if($request->docStartDate){
+            $result->where('doc_date', '>=', $request->docStartDate);
+        }
+        if($request->docEndDate){
+            $result->where('doc_date', '<=', $request->docEndDate);
+        }
+        if($request->opNoDate){
+            $result->where('operation_date', null);
+        }
+        if($request->opStartDate){
+            $result->where('operation_date', '>=', $request->opStartDate);
+        }
+        if($request->opEndDate){
+            $result->where('operation_date', '<=', $request->opEndDate);
+        }
         if (count($request->selectedZones) < 6) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
@@ -116,6 +141,13 @@ class AdditionalCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+            $data['account_statement_id'] = $as?->id;
+        }else {
+            $data['account_statement_id'] = null;
+        }
         $item = AdditionalCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
@@ -142,6 +174,8 @@ class AdditionalCostsController extends Controller
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'operation_number' => 'nullable',
+            'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',
             'amount' => 'required|numeric',
@@ -151,6 +185,11 @@ class AdditionalCostsController extends Controller
             'igv' => 'required',
             'description' => 'required|string',
         ]);
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+            $data['account_statement_id'] = $as?->id;
+        }
 
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;
@@ -229,9 +268,11 @@ class AdditionalCostsController extends Controller
 
     public function downloadImages($project_id)
     {
-        
         try {
-            $additionalCosts = AdditionalCost::where('project_id', $project_id)->where('is_accepted', 1)->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])->get();
+            $additionalCosts = AdditionalCost::where('project_id', $project_id)
+                ->where('is_accepted', 1)
+                ->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])
+                ->get();
             $zipFileName = 'additionalCostsPhotos.zip';
             $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
             $zip = new ZipArchive;

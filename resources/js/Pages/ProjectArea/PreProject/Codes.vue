@@ -49,7 +49,7 @@
                                             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
                                 </button>
-                                <button @click="openModal(code.id,code.code_images)">
+                                <button @click="openModal(code.id)">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -74,7 +74,7 @@
         </div>
 
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-            <pagination :links="props.codes.links" />
+            <pagination :links="codes.links" />
         </div>
 
         <Modal :show="create_code || edit_code">
@@ -239,13 +239,13 @@ const docToDelete = ref(null);
 const showModalViewImage = ref(null);
 const listImageView = ref([])
 const showStoreImage = ref(false)
-const codeId = ref(null)
-const imageId = ref(null)
 
 const props = defineProps({
-    codes: Object,
+    code: Object,
     userPermissions: Array
 })
+
+const codes = ref(props.code)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission)
@@ -294,10 +294,16 @@ function modalStoreImage(id = null) {
     showStoreImage.value = !showStoreImage.value
 }
 
-function openModal(code_id,images) {
-    codeId.value = code_id ?? null
-    listImageView.value = images ?? []
-    showModalViewImage.value = !showModalViewImage.value
+async function openModal(code_id) {
+    try {
+        const response = await axios.get(route('preprojects.code.images.index', { code_id: code_id }));
+        listImageView.value = response.data
+        showModalViewImage.value = !showModalViewImage.value
+    } catch (error) {
+        console.error('Error al cargar las imágenes:', error);
+        listImageView.value = [];
+    }
+
 }
 
 function show_image(imageId) {
@@ -316,61 +322,59 @@ function show_image(imageId) {
     }
 }
 
-function delete_image(image_id) {
-    if (imageId) {
-        imageId.value = image_id
-        const url = route('preprojects.code.images.delete', { image_id: image_id });
-        axios.delete(url)
-            .then(response => {
-                showModalViewImage.value = !showModalViewImage.value
-                visuallyChangeImage()
-            })
-            .catch(error => {
-                console.error('Error fetching image URL:', error);
-            });
-    } else {
-        console.error('No se proporcionó un ID de imagen válido');
+async function delete_image(image_id) {
+    const url = route('preprojects.code.images.delete', { image_id: image_id });
+    try {
+        await axios.delete(url)
+        showModalViewImage.value = !showModalViewImage.value
+        visuallyChangeImage(image_id)
+    } catch (error) {
+        console.error('Error fetching image URL:', error);
     }
 }
 
-const submit = () => {
-    form.post(route('preprojects.codes.post'), {
-        onSuccess: () => {
-            close_add_code();
-            form.reset();
-            showModal.value = true
-            setTimeout(() => {
-                showModal.value = false;
-            }, 2000);
-        },
-        onError: (e) => {
-            console.log(e)
-        }
-    });
+function visuallyChangeImage(image_id) {
+    const index = listImageView.value.findIndex(item => item.id === image_id);
+    listImageView.splice(index, 1)
+}
+
+async function submit() {
+    try {
+        const response = await axios.post(route('preprojects.codes.post'), form)
+        updateCode(response.data, true)
+        close_add_code();
+        form.reset();
+        showModal.value = true
+        setTimeout(() => {
+            showModal.value = false;
+        }, 2000);
+    } catch (error) {
+        console.error(e)
+    }
 };
 
-const submitImage = () => {
-    formImage.post(route('preprojects.code.images.store'), {
-        onSuccess: () => {
-            showStoreImage.value = false;
-        },
-        onError: (e) => {
-            console.log(e)
-        }
-    });
+async function submitImage() {
+    try {
+        await axios.post(route('preprojects.code.images.store'), formImage)
+        showStoreImage.value = false;
+    } catch (error) {
+        console.error(error);
+    }
 };
 
-const submitEdit = () => {
-    form.put(route('preprojects.codes.put', { code: form.id }), {
-        onSuccess: () => {
-            close_edit_code();
-            form.reset();
-            showModalEdit.value = true
-            setTimeout(() => {
-                showModalEdit.value = false;
-            }, 2000);
-        }
-    });
+async function submitEdit() {
+    try {
+        const response = await axios.put(route('preprojects.codes.put', { code: form.id }), form)
+        updateCode(response.data, false)
+        close_edit_code();
+        form.reset();
+        showModalEdit.value = true
+        setTimeout(() => {
+            showModalEdit.value = false;
+        }, 2000);
+    } catch (error) {
+
+    }
 };
 
 const openEditCodeModal = (code) => {
@@ -391,29 +395,35 @@ const closeModalDoc = () => {
     confirmingDocDeletion.value = false;
 };
 
-const deleteCode = () => {
+async function deleteCode() {
     const docId = docToDelete.value;
     if (docId) {
-        router.delete(route('preprojects.codes.delete', { code: docId }), {
-            onSuccess: () => {
-                closeModalDoc()
+        try {
+            await axios.delete(route('preprojects.codes.delete', { code: docId }))
+            updateCode(docId)
+            closeModalDoc()
+        } catch (error) {
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                console.error(error)
             }
-        });
+        }
     }
 };
 
-function visuallyChangeImage() {
-    const code = props.codes.data.find(code => code.id === codeId.value);
-    if (code) {
-        const updatedImages = code.code_images.findIndex(image => image.id === imageId.value);
-        if (updatedImages !== -1) {
-            code.code_images.splice(updatedImages, 1);
+function updateCode(code, boolean) {
+    const index = codes.value.data.findIndex(item => item.id === code.id ?? code)
+    if (code.id) {
+        if (boolean) {
+            if (codes.value.data.length < codes.value.per_page) {
+                codes.value.data.push(code)
+            }
         } else {
-            console.log('No se encontró la imagen especificada.');
+            codes.value.data[index] = code
         }
     } else {
-        console.log('No se encontró el codigo especificado.');
+        codes.value.data.splice(index, 1)
     }
 }
-
 </script>

@@ -8,7 +8,7 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('feasibilities.export')"
+                <a :href="route('feasibilities.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
@@ -17,7 +17,7 @@
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full whitespace-no-wrap">
+                <table class="w-full whitespace-no_wrap">
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -28,6 +28,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Codigo de Proyecto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Centro de Costos
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -64,6 +68,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.project_code }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cost_center }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -319,12 +328,15 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import axios from 'axios';
+import { setAxiosErrors } from "@/utils/utils";
 
 const { feasibility, auth } = defineProps({
     feasibility: Object,
     auth: Object
 })
 
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const feasibilitys = ref(feasibility)
 const arrayFeasibilitys = ref([])
 
@@ -374,21 +386,23 @@ function openEditFeasibilityModal(id, item) {
 
 }
 
-function submit() {
+async function submit() {
     let url = route('feasibilities.storeOrUpdate', { cicsa_assignation_id: cicsa_assignation_id.value })
-    form.put(url, {
-        onSuccess: () => {
-            closeAddFeasibilityModal()
-            confirmUpdateFeasibility.value = true
-            setTimeout(() => {
-                confirmUpdateFeasibility.value = false
-                router.get(route('feasibilities.index'))
-            }, 1500)
-        },
-        onError: (e) => {
-            console.error(e)
+    try {
+        const response = await axios.put(url, form);
+        updateFeasibility(cicsa_assignation_id.value,response.data)
+        closeAddFeasibilityModal()
+        confirmUpdateFeasibility.value = true
+        setTimeout(() => {
+            confirmUpdateFeasibility.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
         }
-    })
+    }
 }
 
 function addFeasibility() {
@@ -453,4 +467,11 @@ function updateMaterialItem(e) {
         feasibilityObject.value.unit = selectedItem.unit
     }
 }
+
+function updateFeasibility(cicsa_assignation_id, feasibility) {
+    const validations = feasibilitys.value.data || feasibilitys.value;
+    const index = validations.findIndex(item => item.id === cicsa_assignation_id)
+    validations[index].cicsa_feasibility = feasibility
+}
+
 </script>

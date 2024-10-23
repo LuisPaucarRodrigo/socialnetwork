@@ -15,6 +15,7 @@ class CicsaMaterialsItem extends Model
         'code_ax',
         'name',
         'unit',
+        'type',
         'quantity',
     ];
 

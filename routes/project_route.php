@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
+use App\Http\Controllers\ProjectArea\PextController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
 use App\Http\Controllers\ProjectArea\ProjectDocumentController;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
@@ -70,6 +71,14 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     Route::get('/preprojects/load_resource_entries/{service_id}', [PreProjectController::class, 'load_resource_entries'])->name('load.resource_entries');
 
+    //Pext Project
+    Route::post('/projectPext/storeOrUpdate/{pext_id?}', [PextController::class, 'storeOrUpdate'])->name('projectmanagement.pext.storeOrUpdate');
+    Route::get('/projectPext/requestCicsa/{name_cicsa}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
+
+
+    Route::post('/projectPext/expenses/storeOrUpdate/{expense_id?}', [PextController::class, 'expenses_storeOrUpdate'])->name('pext.expenses.storeOrUpdate');
+    Route::delete('/projectPext/expenses/delete/{expense_id}', [PextController::class, 'expenses_delete'])->name('pext.expenses.delete');
+    Route::put('/projectPext/expenses/expenseValidate/{expense_id}', [PextController::class, 'expense_validate'])->name('projectmanagement.pext.expenses.validate');
 
     //Project
     Route::get('/project/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
@@ -105,8 +114,9 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::get('/project/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
 
     Route::get('/descargar_zip_add/{project_id}', [AdditionalCostsController::class, 'downloadImages'])->name('zip.additional.descargar');
+    Route::get('/descargar_zip_static/{project_id}', [StaticCostsController::class, 'downloadImages'])->name('zip.static.descargar');
 
-    
+
 
 
     //Project product
@@ -118,7 +128,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::delete('/project/warehouse_products/{assigned}', [ProjectManagementController::class, 'warehouse_products_delete'])->name('projectmanagement.products.delete');
 
     Route::post('/project/purchases_request/update/due_date', [ProjectManagementController::class, 'project_purchases_request_update_due_date'])->name('projectmanagement.update_due_date');
-    
+
 
     //Project liquidate
     Route::get('/project/products/{project_id}/{project_entry}', [LiquidationController::class, 'liquidateForm'])->name('projectmanagement.liquidate.form');
@@ -129,9 +139,10 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::put('/preprojects/codes/{code}/put', [PreProjectController::class, 'updateCode'])->name('preprojects.codes.put');
     Route::delete('/preprojects/codes/{code}/delete', [PreProjectController::class, 'deleteCode'])->name('preprojects.codes.delete');
 
-    Route::post('/preprojects/codes/images/store',[PreProjectController::class, 'storeCodeImages'])->name('preprojects.code.images.store');
-    Route::get('/preprojects/codes/images/{image_id}/show',[PreProjectController::class, 'show_code_image'])->name('preprojects.code.images.show');
-    Route::delete('/preprojects/codes/images/{image_id}/delete',[PreProjectController::class, 'deleteCodeImages'])->name('preprojects.code.images.delete');
+    Route::get('/preprojects/codes/{code_id}/images/show', [PreProjectController::class, 'indexImages'])->name('preprojects.code.images.index');
+    Route::post('/preprojects/codes/images/store', [PreProjectController::class, 'storeCodeImages'])->name('preprojects.code.images.store');
+    Route::get('/preprojects/codes/images/{image_id}/show', [PreProjectController::class, 'show_code_image'])->name('preprojects.code.images.show');
+    Route::delete('/preprojects/codes/images/{image_id}/delete', [PreProjectController::class, 'deleteCodeImages'])->name('preprojects.code.images.delete');
 
     //Titles
     Route::post('/preprojects/titles/post', [PreProjectController::class, 'postTitle'])->name('preprojects.titles.post');
@@ -170,10 +181,6 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::delete('/checklist/toolkit/{id}/destroy', [ChecklistsController::class, 'toolkit_destroy'])->name('checklist.toolkit.destroy');
     Route::delete('/checklist/dailytoolkit/{id}/destroy', [ChecklistsController::class, 'dailytoolkit_destroy'])->name('checklist.dailytoolkit.destroy');
     Route::delete('/checklist/epp/{id}/destroy', [ChecklistsController::class, 'epp_destroy'])->name('checklist.epp.destroy');
-
-
-
-    
 });
 
 Route::middleware('permission:ProjectManager|Project')->group(function () {
@@ -218,6 +225,17 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::any('/project', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
     Route::any('/project/historial', [ProjectManagementController::class, 'historial'])->name('projectmanagement.historial');
 
+    //Project Pext
+    Route::any('/projectPext', [PextController::class, 'index'])->name('projectmanagement.pext.index');
+    Route::get('/projectPext/export/expenses', [PextController::class, 'export_expenses'])->name('projectmanagement.pext.export.expenses');
+
+    Route::any('/projectPext/expenses/index/{pext_project_id}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
+    Route::get('/projectPext/expenses/showImage/{expense_id}', [PextController::class, 'expense_show_image'])->name('projectmanagement.pext.expenses.image.show');
+    Route::get('/projectPext/expenses/export/{pext_project_id}', [PextController::class, 'expense_export'])->name('projectmanagement.pext.expenses.export');
+    
+
+
+
     //Project calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');
     Route::get('/calendarTasks/{project}', [CalendarController::class, 'show'])->name('projectscalendar.show');
@@ -233,8 +251,8 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/project/purchases_request/{project_id}', [ProjectManagementController::class, 'project_purchases_request_index'])->name('projectmanagement.purchases_request.index');
     Route::get('/project/purchases_request/details/{id}', [ProjectManagementController::class, 'project_purchases_request_details'])->name('projectmanagement.purchases_request.details');
 
-    
-    
+
+
     Route::get('/project/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'index'])->name('projectmanagement.additionalCosts');
     Route::get('/project/purchases_request/{project_id}/additional_costs/rejected', [AdditionalCostsController::class, 'indexRejected'])->name('projectmanagement.additionalCosts.rejected');
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
@@ -242,7 +260,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
 
     Route::get('/project/purchases_request/{project_id}/static_costs', [StaticCostsController::class, 'index'])->name('projectmanagement.staticCosts');
-    Route::get('/staticcost_photo/{additional_cost_id}', [StaticCostsController::class, 'download_ac_photo'])->name('staticcost.archive');
+    Route::get('/staticcost_photo/{static_cost_id}', [StaticCostsController::class, 'download_ac_photo'])->name('staticcost.archive');
     Route::post('/staticcost_advancesearch/{project_id}', [StaticCostsController::class, 'search_costs'])->name('staticcost.advance.search');
 
     Route::post('/ad_st_costs_details', [ProjectManagementController::class, 'project_expense_details'])->name('project.expenses.zones.details');
@@ -277,9 +295,4 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
     Route::get('/additionalcosts/excel_export/{project_id}', [AdditionalCostsController::class, 'export'])->name('additionalcost.excel.export');
     Route::get('/staticcosts/excel_export/{project_id}', [StaticCostsController::class, 'export'])->name('staticcost.excel.export');
-
 });
-
-
-
-
