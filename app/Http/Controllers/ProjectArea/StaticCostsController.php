@@ -96,6 +96,8 @@ class StaticCostsController extends Controller
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $data['operation_number'])->first();
             $data['account_statement_id'] = $as?->id;
+        } else {
+            $data['account_statement_id'] = null;
         }
         $item = StaticCost::create($data);
         $item->load('project', 'provider:id,company_name');

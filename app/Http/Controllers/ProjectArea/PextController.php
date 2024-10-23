@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Exports\PextExpenseExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateRequest;
+use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
 use App\Models\PextProject;
 use App\Models\PextProjectExpense;
@@ -141,6 +142,15 @@ class PextController extends Controller
         $validatedData['is_accepted'] = true;
         $validatedData['amount'] = intval($validatedData['amount']);
         $validatedData['state'] = json_decode($validatedData['state']);
+
+        if(isset($validatedData['operation_number']) && isset($validatedData['operation_date'])){
+            $as = AccountStatement::where('operation_date', $validatedData['operation_date'])
+                ->where('operation_number', $validatedData['operation_number'])->first();
+            $validatedData['account_statement_id'] = $as?->id;
+        } else {
+            $validatedData['account_statement_id'] = null;
+        }
+
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $validatedData['photo'] = time() . '._' . $photo->getClientOriginalName();
