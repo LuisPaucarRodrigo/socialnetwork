@@ -49,7 +49,6 @@
                     />
                 </label>
 
-                
             </div>
         </div>
     </div>
@@ -68,9 +67,9 @@ const props = defineProps({
         type: String,
         default: "text-xs font-semibold",
     },
-    state: {
+    modelValue: {
         type: String,
-        default: "text-xs font-semibold",
+        default: "",
     },
     width: {
         type: String,
@@ -79,16 +78,13 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
-    "update:startDate",
-    "update:endDate",
-    "update:noDate",
+    "update:modelValue",
 ]);
 
 const showPopup = ref(false);
 const popup = ref(null);
 
-const localState = ref(props.state);
-
+const localState = ref(props.modelValue);
 
 const widthClass = computed(() => props?.width);
 
@@ -102,16 +98,20 @@ const closePopup = (event) => {
     }
 };
 
-
-
+// Sincronizamos modelValue con localState y viceversa
 watch(
-    () => props?.localState,
+    () => props.modelValue,
     (newValue) => {
         localState.value = newValue;
     }
 );
 
-
+watch(
+    () => localState.value,
+    (newValue) => {
+        emit('update:modelValue', newValue);
+    }
+);
 
 onMounted(() => {
     document.addEventListener("click", closePopup);

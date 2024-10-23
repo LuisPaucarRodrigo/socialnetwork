@@ -392,6 +392,7 @@
                             <TableStateFilter
                                 labelClass="text-[11px]"
                                 label="Estado"
+                                v-model="filterForm.state"
                                 width="w-32"
                             />
                         </th>
@@ -1643,6 +1644,7 @@ const filterForm = ref({
     docStartDate: "",
     docEndDate: "",
     docNoDate: false,
+    state: '',
 });
 
 watch(
@@ -1656,6 +1658,7 @@ watch(
         filterForm.value.docStartDate,
         filterForm.value.docEndDate,
         filterForm.value.docNoDate,
+        filterForm.value.state,
     ],
     ([]) => {
         filterMode.value = true;

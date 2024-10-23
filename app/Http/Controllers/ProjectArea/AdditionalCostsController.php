@@ -90,6 +90,11 @@ class AdditionalCostsController extends Controller
                     ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
+        
+        if($request->state !== ''){
+            $state = $request->state === 'pending' ? null : $request->state;
+            $result->where('is_accepted', $state);
+        }
 
         if($request->docNoDate){
             $result->where('doc_date', null);
