@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pext_projects', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
+            $table->string('date');
             $table->string('description');
             $table->timestamps();
         });

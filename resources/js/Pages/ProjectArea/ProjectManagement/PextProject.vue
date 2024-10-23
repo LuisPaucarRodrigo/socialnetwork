@@ -106,7 +106,7 @@
                                     Fecha de Proyecto
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <TextInput type="date" v-model="form.date" id="date" />
+                                    <TextInput type="month" v-model="form.date" id="date" />
                                     <InputError :message="form.errors.date" />
                                 </div>
                             </div>
