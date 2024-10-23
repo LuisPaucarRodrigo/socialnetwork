@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Exports\StaticCostsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\StaticCostsRequest;
+use App\Models\AccountStatement;
 use App\Models\Provider;
 use App\Models\StaticCost;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Inertia\Inertia;
 use App\Models\Project;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
+use ZipArchive;
+
 class StaticCostsController extends Controller
 {
     public function index(Request $request, Project $project_id)
@@ -89,6 +92,13 @@ class StaticCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+            $data['account_statement_id'] = $as?->id;
+        } else {
+            $data['account_statement_id'] = null;
+        }
         $item = StaticCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
@@ -96,9 +106,9 @@ class StaticCostsController extends Controller
         return response()->json($item, 200);
     }
 
-    public function download_ac_photo(StaticCost $additional_cost_id)
+    public function download_ac_photo(StaticCost $static_cost_id)
     {
-        $fileName = $additional_cost_id->photo;
+        $fileName = $static_cost_id->photo;
         $filePath = '/documents/staticcosts/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
@@ -125,6 +135,13 @@ class StaticCostsController extends Controller
             'igv' => 'required',
             'description' => 'required|string',
         ]);
+
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+            $data['account_statement_id'] = $as?->id;
+        }
+
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;
             if ($filename) {
@@ -173,6 +190,38 @@ class StaticCostsController extends Controller
         $path = public_path($file_path);
         if (file_exists($path))
             unlink($path);
+    }
+
+    public function downloadImages($project_id)
+    {
+        try {
+            $additionalCosts = StaticCost::where('project_id', $project_id)
+                ->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])
+                ->get();
+            $zipFileName = 'staticCostsPhotos.zip';
+            $zipFilePath = public_path("/documents/staticcosts/{$zipFileName}");
+            $zip = new ZipArchive;
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+                foreach ($additionalCosts as $cost) {
+                    if (!empty($cost->photo)) {
+                        $photoPath = public_path("/documents/staticcosts/{$cost->photo}");
+                        if (file_exists($photoPath)) {
+                            $zip->addFile($photoPath, $cost->photo);
+                        } 
+                    }
+                }
+                $zip->close();
+                ob_end_clean();
+                return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    
+            } else {
+                Log::error('No se pudo abrir el archivo ZIP para escritura.');
+                return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al crear el archivo ZIP: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
+        }
     }
 
 

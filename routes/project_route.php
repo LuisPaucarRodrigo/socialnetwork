@@ -114,6 +114,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::get('/project/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
 
     Route::get('/descargar_zip_add/{project_id}', [AdditionalCostsController::class, 'downloadImages'])->name('zip.additional.descargar');
+    Route::get('/descargar_zip_static/{project_id}', [StaticCostsController::class, 'downloadImages'])->name('zip.static.descargar');
 
 
 
@@ -259,7 +260,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
 
     Route::get('/project/purchases_request/{project_id}/static_costs', [StaticCostsController::class, 'index'])->name('projectmanagement.staticCosts');
-    Route::get('/staticcost_photo/{additional_cost_id}', [StaticCostsController::class, 'download_ac_photo'])->name('staticcost.archive');
+    Route::get('/staticcost_photo/{static_cost_id}', [StaticCostsController::class, 'download_ac_photo'])->name('staticcost.archive');
     Route::post('/staticcost_advancesearch/{project_id}', [StaticCostsController::class, 'search_costs'])->name('staticcost.advance.search');
 
     Route::post('/ad_st_costs_details', [ProjectManagementController::class, 'project_expense_details'])->name('project.expenses.zones.details');

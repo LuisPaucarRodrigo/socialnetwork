@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pext_projects', function (Blueprint $table) {
+        Schema::create('huawei_internal_guides', function (Blueprint $table) {
             $table->id();
-            $table->string('date');
-            $table->string('description');
+            $table->string('name');
+            $table->string('code');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pext_projects');
+        Schema::dropIfExists('huawei_internal_guides');
     }
 };

@@ -69,6 +69,34 @@
                             />
                         </svg>
                     </button>
+                    <button
+                        type="button"
+                        class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
+                        @click="openExportPhoto"
+                        data-tooltip-target="export-photo-tooltip"
+                    >
+                        <svg
+                            fill="#ffffff"
+                            width="22px"
+                            height="22px"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+                            <g
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M22.71,6.29a1,1,0,0,0-1.42,0L20,7.59V2a1,1,0,0,0-2,0V7.59l-1.29-1.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l3-3A1,1,0,0,0,22.71,6.29ZM19,13a1,1,0,0,0-1,1v.38L16.52,12.9a2.79,2.79,0,0,0-3.93,0l-.7.7L9.41,11.12a2.85,2.85,0,0,0-3.93,0L4,12.6V7A1,1,0,0,1,5,6h8a1,1,0,0,0,0-2H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V14A1,1,0,0,0,19,13ZM5,20a1,1,0,0,1-1-1V15.43l2.9-2.9a.79.79,0,0,1,1.09,0l3.17,3.17,0,0L15.46,20Zm13-1a.89.89,0,0,1-.18.53L13.31,15l.7-.7a.77.77,0,0,1,1.1,0L18,17.21Z"
+                                />
+                            </g>
+                        </svg>
+                    </button>
                 </div>
 
                 <form
@@ -567,7 +595,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
-                                        type="datetime-local"
+                                        type="date"
                                         v-model="form.doc_date"
                                         id="doc_date"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -826,7 +854,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
-                                        type="datetime-local"
+                                        type="date"
                                         v-model="form.operation_date"
                                         id="operation_date"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -982,7 +1010,7 @@
                                         <a
                                             :href="
                                                 route('staticcost.archive', {
-                                                    additional_cost_id: form.id,
+                                                    static_cost_id: form.id,
                                                 })
                                             "
                                             target="_blank"
@@ -1145,12 +1173,14 @@ const openEditAdditionalModal = (additional) => {
 const closeModal = () => {
     form.reset();
     form.clearErrors()
+    isFetching.value = false
     create_additional.value = false;
 };
 
 const closeEditModal = () => {
     form.reset();
     form.clearErrors()
+    isFetching.value = false
     editAdditionalModal.value = false;
 };
 
@@ -1168,6 +1198,7 @@ const submit = async () => {
         closeModal();
         notify('Gasto Fijo Guardado')
     }catch (e) {
+        isFetching.value = false
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
         }
@@ -1189,6 +1220,7 @@ const submitEdit = async () => {
         closeEditModal();
         notify('Gasto Fijo Actualizado')
     }catch (e) {
+        isFetching.value = false
         if (e.response?.data?.errors){
             setAxiosErrors(e.response.data.errors, form)
         }
@@ -1234,10 +1266,22 @@ const handleRucDniAutocomplete = (e) => {
 };
 
 function handlerPreview(id) {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
     window.open(
-        route("staticcost.archive", { additional_cost_id: id }),
+        route("staticcost.archive", { static_cost_id: id })+
+            "?" +
+            uniqueParam,
         "_blank"
     );
+}
+
+function openExportPhoto() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route("zip.static.descargar", { project_id: props.project_id.id }) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
 }
 
 const zones = [

@@ -387,6 +387,16 @@
                             Descripción
                         </th>
                         <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableStateFilter
+                                labelClass="text-[11px]"
+                                label="Estado"
+                                v-model="filterForm.state"
+                                width="w-32"
+                            />
+                        </th>
+                        <th
                             v-if="
                                 auth.user.role_id === 1 &&
                                 project_id.status === null
@@ -492,16 +502,11 @@
                             </p>
                         </td>
                         <td
-                            v-if="
-                                auth.user.role_id === 1 &&
-                                project_id.status === null
-                            "
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            <div class="flex items-center gap-3 w-full">
-                                <div
+                        <div
                                     v-if="item.is_accepted === null"
-                                    class="flex gap-3 justify-center w-1/2"
+                                    class="flex gap-3 justify-center w-full"
                                 >
                                     <button
                                         @click="
@@ -549,7 +554,19 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <div v-else class="w-1/2"></div>
+                                <div v-else class="text-center text-green-500">
+                                    Aceptado
+                                </div>
+                        </td>
+                        <td
+                            v-if="
+                                auth.user.role_id === 1 &&
+                                project_id.status === null
+                            "
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            <div class="flex items-center justify-center gap-3 w-full">
+                                
 
                                 <div class="flex gap-3 mr-3">
                                     <button
@@ -628,6 +645,9 @@
                                     .toFixed(2)
                             }}
                         </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
@@ -791,7 +811,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
-                                        type="datetime-local"
+                                        type="date"
                                         v-model="form.operation_date"
                                         id="operation_date"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -1094,7 +1114,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
-                                        type="datetime-local"
+                                        type="date"
                                         v-model="form.operation_date"
                                         id="operation_date"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -1404,6 +1424,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
+import TableStateFilter from "@/Components/TableStateFilter.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1623,6 +1644,7 @@ const filterForm = ref({
     docStartDate: "",
     docEndDate: "",
     docNoDate: false,
+    state: '',
 });
 
 watch(
@@ -1636,6 +1658,7 @@ watch(
         filterForm.value.docStartDate,
         filterForm.value.docEndDate,
         filterForm.value.docNoDate,
+        filterForm.value.state,
     ],
     ([]) => {
         filterMode.value = true;
