@@ -315,7 +315,7 @@
                                     Centro de Costos
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" id="subCostCenter"
+                                    <input type="text" id="subCostCenter" v-model="form.pext_project_name"
                                         @input="handleProjectNameAutocomplete($event.target.value)" autocomplete="off"
                                         list="project_name"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -570,6 +570,7 @@ const form = useForm({
     zone: "",
     provider_id: "",
     cicsa_assignation_id: "",
+    pext_project_name: "",
     pext_project_id: props.pext_project_id,
     type_doc: "",
     operation_number: "",
@@ -593,6 +594,7 @@ const openCreateAdditionalModal = () => {
 
 const openEditAdditionalModal = (additional) => {
     Object.assign(form, additional)
+    form.pext_project_name = additional.cicsa_assignation?.project_name
     create_additional.value = true;
 };
 
@@ -607,7 +609,6 @@ async function submit() {
     try {
         const formData = toFormData(form)
         const response = await axios.post(url, formData);
-        
         const action = form.id ? "update" : "create"
         updateExpense(response.data, action)
         closeModal();
@@ -665,7 +666,6 @@ async function handleProjectNameAutocomplete(e) {
         } else {
             form.cicsa_assignation_id = "";
         }
-        console.log(form.cicsa_assignation_id)
     } catch (error) {
         console.error(error)
     }

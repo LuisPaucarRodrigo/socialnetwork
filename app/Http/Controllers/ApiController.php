@@ -91,7 +91,6 @@ class ApiController extends Controller
                     $query->where('state', 1);
                 })
                 ->get();
-            
             return response()->json($preprojects);
         } catch (\Exception $e) {
             return response()->json([
