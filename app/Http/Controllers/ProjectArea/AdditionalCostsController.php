@@ -74,11 +74,6 @@ class AdditionalCostsController extends Controller
         $result = AdditionalCost::where('project_id', $project_id)->with([
                 'project:id,description', 
                 'provider']);
-        $result = $request->state === false ? $result->where('is_accepted', 0)
-            : $result->where(function ($query) {
-                $query->where('is_accepted', 1)
-                    ->orWhere('is_accepted', null);
-            });
 
         if ($request->search) {
             $searchTerms = $request->input('search');
@@ -91,9 +86,26 @@ class AdditionalCostsController extends Controller
             });
         }
         
-        if($request->state !== ''){
-            $state = $request->state === 'pending' ? null : $request->state;
-            $result->where('is_accepted', $state);
+        if($request->state === false ){
+            $result->where('is_accepted', 0);
+        } else {
+            if(count($request->selectedStateTypes) < 2) {
+                $newSS = array_values(array_map(function ($item) {
+                    if ($item === 'Aceptado') return '1';
+                    if ($item === 'Pendiente') return null;
+                }, $request->selectedStateTypes));
+                $acceptedValues = array_filter($newSS, fn($value) => $value !== null);
+                $result = $result->when(
+                    in_array(null, $newSS, true),
+                    fn($query) => $query->whereNull('is_accepted'), 
+                    fn($query) => $query->whereIn('is_accepted', $acceptedValues) 
+                );
+            } else {
+                $result->where(function ($query) {
+                    $query->where('is_accepted', 1)
+                        ->orWhere('is_accepted', null);
+                });
+            }
         }
 
         if($request->docNoDate){
