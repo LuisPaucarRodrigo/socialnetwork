@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
 use App\Http\Requests\LoginMobileRequest;
+use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\ChecklistDailytoolkit;
 use App\Models\CicsaAssignation;
@@ -19,9 +20,11 @@ use App\Models\PreprojectTitle;
 use App\Models\PreReportHuaweiGeneral;
 use App\Models\Project;
 use App\Models\HuaweiSite;
+use App\Models\PextProject;
 use App\Models\PextProjectExpense;
 use App\Models\Projectimage;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -501,16 +504,62 @@ class ApiController extends Controller
     public function cicsaProcess()
     {
         $cicsaProcess = CicsaAssignation::select('id', 'project_name')->get();
+        $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }
 
-    public function storeExpensesPext(Request $request) 
-    {   
-        $validateData = $request->validate([
+    public function storeExpensesPext(ApiStoreExpensesRequest $request)
+    {
+        $validateData = $request->validated();
+        try {
+            $doc_date = Carbon::createFromFormat('d/m/Y', $validateData['doc_date']);
+            $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
+            $endOfMonth = $doc_date->endOfMonth()->format('Y-m-d');
+
+            $pextProject = PextProject::where('date', '>=', $startOfMonth)
+                ->where('date', '<=', $endOfMonth)
+                ->select('id')
+                ->first();
+            if (!$pextProject) {
+                return response()->json([
+                    'error' => "No se encontraron proyectos pext al cual asignar su gasto."
+                ], 404);
+            }
+            $validateData['pext_project_id'] = $pextProject->id;
+            $docDate = Carbon::createFromFormat('d/m/Y', $validateData['doc_date']);
+            $validateData['doc_date'] = $docDate->format('Y-m-d');
+
+            if (($validateData['zone']!=='MDD') && $validateData['type_doc'] === 'Factura' ) {
+                $validateData['igv'] = 18;
+            }
+            $newDesc = Auth::user()->name.", ".$validateData['description'];
+            $validateData['description'] = $newDesc;
+            if ($validateData['photo']) {
+                $validateData['photo'] = $this->storeBase64Image($validateData['photo'], 'documents/expensesPext', 'Gasto Pext');
+            }
+            $validateData['user_id'] = Auth::user()->id;
             
-        ]);
-        PextProjectExpense::create($validateData);
-        return response()->noContent();
+            PextProjectExpense::create($validateData);
+            return response()->noContent();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function storeBase64Image($photo, $path, $name)
+    {
+        try {
+            $image = str_replace('data:image/png;base64,', '', $photo);
+            $image = str_replace(' ', '+', $image);
+            $imageContent = base64_decode($image);
+            $imagename = time() . $name . '.png';
+            file_put_contents(public_path($path) . "/" . $imagename, $imageContent);
+            return $imagename;
+        } catch (Exception $e) {
+            abort(500, 'something went wrong');
+        }
     }
 
     public function historyExpensesPext()

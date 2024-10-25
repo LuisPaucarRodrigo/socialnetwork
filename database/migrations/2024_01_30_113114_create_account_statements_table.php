@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('operation_number')->nullable()->unique();
             $table->string('description');
             $table->double('charge');
-            $table->dpuble('payment');
+            $table->double('payment');
             $table->timestamps();
         });
     }

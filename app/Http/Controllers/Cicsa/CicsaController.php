@@ -37,10 +37,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Log;
-
-use function Pest\Laravel\json;
 
 class CicsaController extends Controller
 {
@@ -151,7 +147,7 @@ class CicsaController extends Controller
     public function destroy($ca_id)
     {
         CicsaAssignation::findOrFail($ca_id)->delete();
-        return redirect()->back();
+        return response()->noContent();
     }
 
     public function chargeCicsa(Request $request)

@@ -11,7 +11,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-class AdditionalCostsApiRequest extends FormRequest
+class  AdditionalCostsApiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

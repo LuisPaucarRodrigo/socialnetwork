@@ -34,14 +34,14 @@ class AdditionalCostsController extends Controller
             ->with(['project', 'provider'])
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
-        
-        $additional_costs->getCollection()->transform(function($item){
+
+        $additional_costs->getCollection()->transform(function ($item) {
             $item->project->setAppends([]);
             $item->setAppends(['real_amount']);
             return $item;
         });
 
-            
+
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
             'additional_costs' => $additional_costs,
@@ -56,11 +56,11 @@ class AdditionalCostsController extends Controller
             ->with('project', 'provider')
             ->orderBy('updated_at', 'desc')
             ->get();
-        $additional_costs->transform(function($item){
-                $item->project->setAppends([]);
-                $item->setAppends(['real_amount']);
-                return $item;
-            });
+        $additional_costs->transform(function ($item) {
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount']);
+            return $item;
+        });
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/AdditionalCostsRejected', [
             'additional_costs' => $additional_costs,
@@ -72,8 +72,9 @@ class AdditionalCostsController extends Controller
     public function search_costs(Request $request, $project_id)
     {
         $result = AdditionalCost::where('project_id', $project_id)->with([
-                'project:id,description', 
-                'provider']);
+            'project:id,description',
+            'provider'
+        ]);
         $result = $request->state === false ? $result->where('is_accepted', 0)
             : $result->where(function ($query) {
                 $query->where('is_accepted', 1)
@@ -90,28 +91,28 @@ class AdditionalCostsController extends Controller
                     ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-        
-        if($request->state !== ''){
+
+        if ($request->state !== '') {
             $state = $request->state === 'pending' ? null : $request->state;
             $result->where('is_accepted', $state);
-        }
+        }   
 
-        if($request->docNoDate){
+        if ($request->docNoDate) {
             $result->where('doc_date', null);
         }
-        if($request->docStartDate){
+        if ($request->docStartDate) {
             $result->where('doc_date', '>=', $request->docStartDate);
         }
-        if($request->docEndDate){
+        if ($request->docEndDate) {
             $result->where('doc_date', '<=', $request->docEndDate);
         }
-        if($request->opNoDate){
+        if ($request->opNoDate) {
             $result->where('operation_date', null);
         }
-        if($request->opStartDate){
+        if ($request->opStartDate) {
             $result->where('operation_date', '>=', $request->opStartDate);
         }
-        if($request->opEndDate){
+        if ($request->opEndDate) {
             $result->where('operation_date', '<=', $request->opEndDate);
         }
         if (count($request->selectedZones) < 6) {
@@ -125,12 +126,12 @@ class AdditionalCostsController extends Controller
         }
         $result = $result->orderBy('doc_date')->get();
 
-        $result->transform(function($item){
+        $result->transform(function ($item) {
             $item->project->setAppends([]);
             $item->setAppends(['real_amount']);
             return $item;
         });
-        
+
         return response()->json($result, 200);
     }
 
@@ -141,11 +142,11 @@ class AdditionalCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
-        if(isset($data['operation_number']) && isset($data['operation_date'])){
+        if (isset($data['operation_number']) && isset($data['operation_date'])) {
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $data['operation_number'])->first();
             $data['account_statement_id'] = $as?->id;
-        }else {
+        } else {
             $data['account_statement_id'] = null;
         }
         $item = AdditionalCost::create($data);
@@ -185,7 +186,7 @@ class AdditionalCostsController extends Controller
             'igv' => 'required',
             'description' => 'required|string',
         ]);
-        if(isset($data['operation_number']) && isset($data['operation_date'])){
+        if (isset($data['operation_number']) && isset($data['operation_date'])) {
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $data['operation_number'])->first();
             $data['account_statement_id'] = $as?->id;
@@ -197,7 +198,6 @@ class AdditionalCostsController extends Controller
                 $this->file_delete($filename, 'documents/additionalcosts/');
             }
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
-
         } else if ($request->photo_status === 'stable') {
             $filename = $additional_cost->photo;
             if ($filename) {
@@ -223,7 +223,7 @@ class AdditionalCostsController extends Controller
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
         $additional_cost->delete();
-        return response()->json(['msg'=>'success'],200);
+        return response()->json(['msg' => 'success'], 200);
     }
 
 
@@ -282,13 +282,12 @@ class AdditionalCostsController extends Controller
                         $photoPath = public_path("/documents/additionalcosts/{$cost->photo}");
                         if (file_exists($photoPath)) {
                             $zip->addFile($photoPath, $cost->photo);
-                        } 
+                        }
                     }
                 }
                 $zip->close();
                 ob_end_clean();
                 return response()->download($zipFilePath)->deleteFileAfterSend(true);
-    
             } else {
                 Log::error('No se pudo abrir el archivo ZIP para escritura.');
                 return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);
@@ -298,6 +297,4 @@ class AdditionalCostsController extends Controller
             return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
         }
     }
-
-
 }
