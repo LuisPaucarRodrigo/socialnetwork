@@ -389,11 +389,12 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            <TableStateFilter
+                            <TableHeaderFilter
                                 labelClass="text-[11px]"
                                 label="Estado"
-                                v-model="filterForm.state"
-                                width="w-32"
+                                :options="stateTypes"
+                                v-model="filterForm.selectedStateTypes"
+                                width="w-28"
                             />
                         </th>
                         <th
@@ -1633,18 +1634,23 @@ const docTypes = [
     "Voucher de Pago",
 ];
 
+const stateTypes = [
+    "Aceptado",
+    "Pendiente",
+];
+
 const filterForm = ref({
     search: "",
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes,
+    selectedStateTypes: stateTypes,
     opStartDate: "",
     opEndDate: "",
     opNoDate: false,
     docStartDate: "",
     docEndDate: "",
     docNoDate: false,
-    state: '',
 });
 
 watch(
@@ -1652,13 +1658,13 @@ watch(
         filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedDocTypes,
+        filterForm.value.selectedStateTypes,
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
         filterForm.value.opNoDate,
         filterForm.value.docStartDate,
         filterForm.value.docEndDate,
         filterForm.value.docNoDate,
-        filterForm.value.state,
     ],
     ([]) => {
         filterMode.value = true;

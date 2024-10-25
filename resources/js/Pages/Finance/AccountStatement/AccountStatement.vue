@@ -84,6 +84,66 @@
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>
                     </div>
+
+                    <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button
+                                    data-tooltip-target="action_button_tooltip"
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2"
+                                >
+                                    <svg
+                                        width="20px"
+                                        height="20px"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M4 6H20M4 12H20M4 18H20"
+                                            stroke="#ffffff"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </button>
+                                <div
+                                    id="action_button_tooltip"
+                                    role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap"
+                                >
+                                    Acciones
+                                    <div
+                                        class="tooltip-arrow"
+                                        data-popper-arrow
+                                    ></div>
+                                </div>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+
+                                    <div class="">
+                                        <button
+                                            @click="handleBlockDelete"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
+                                            Eliminar
+                                        </button>
+                                        <button
+                                            @click=""
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
+                                            Swap
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
                 </div>
 
                 <div
@@ -189,6 +249,25 @@
                         class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
                     >
                         <th
+                            class="border-b-2 border-gray-200 bg-gray-100 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        ></th>
+                        <th
+                            class="border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-20"
+                        >
+                            <label
+                                :for="`check-all`"
+                                class="flex gap-3 justify-center w-full px-2 py-1"
+                            >
+                                <input
+                                    @change="handleCheckAll"
+                                    :id="`check-all`"
+                                    :checked="actionForm.ids.length > 0"
+                                    type="checkbox"
+                                />
+                                {{ actionForm.ids.length ?? "" }}
+                            </label>
+                        </th>
+                        <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
                             Fecha de Operación
@@ -237,6 +316,24 @@
                     >
                         <tr class="text-gray-700 bg-white hover:bg-slate-200">
                             <td
+                                class="bg-gray-400 border-b border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
+                            ></td>
+                            <td
+                                class="border-b border-r border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
+                            >
+                                <label
+                                    :for="`check-${item.id}`"
+                                    class="block w-full px-2 py-1"
+                                >
+                                    <input
+                                        v-model="actionForm.ids"
+                                        :value="item.id"
+                                        :id="`check-${item.id}`"
+                                        type="checkbox"
+                                    />
+                                </label>
+                            </td>
+                            <td
                                 class="border-b border-gray-200 px-2 py-1 text-center text-[13px] whitespace-nowrap tabular-nums"
                             >
                                 {{ formattedDate(item.operation_date) }}
@@ -255,7 +352,8 @@
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
                             >
                                 {{
-                                    item.charge && ` S/. ${item.charge.toFixed(2)}`
+                                    item.charge &&
+                                    ` S/. ${item.charge.toFixed(2)}`
                                 }}
                             </td>
                             <td
@@ -281,7 +379,9 @@
                                         @click="openFormModal(item)"
                                         class="rounded-full text-amber-600 hover:bg-amber-300 mr-2"
                                     >
-                                        <PencilSquareIcon class="h-4 w-4 ml-1" />
+                                        <PencilSquareIcon
+                                            class="h-4 w-4 ml-1"
+                                        />
                                     </button>
                                     <button
                                         type="button"
@@ -335,7 +435,7 @@
                         </tr>
                         <template v-if="row == item.id">
                             <tr class="bg-white h-16">
-                                <td colspan="8" class="py-1 px-2">
+                                <td colspan="10" class="py-1 px-2">
                                     <table class="w-full">
                                         <thead>
                                             <tr
@@ -825,6 +925,7 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputFile from "@/Components/InputFile.vue";
 import TextInput from "@/Components/TextInput.vue";
+import Dropdown from "@/Components/Dropdown.vue";
 import Modal from "@/Components/Modal.vue";
 import { formattedDate, setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
@@ -867,7 +968,7 @@ const initStateCostsFounded = {
     acData: [],
     scData: [],
     peData: [],
-}
+};
 
 const dataToRender = ref({
     accountStatements,
@@ -906,7 +1007,7 @@ const row = ref(0);
 
 //Edit and create
 function openFormModal(item = null) {
-    row.value = 0
+    row.value = 0;
     showFormModal.value = true;
     costsFounded.value = initStateCostsFounded;
     if (item) {
@@ -1058,37 +1159,64 @@ async function submitImport() {
     }
 }
 
-
-const toggleDetails = async(id) => {
-    if(row.value == 0 || row.value != id) await handleExpansible(id)
-    if (row.value === costsFounded.value?.acData[0]?.account_statement_id
-        || row.value === costsFounded.value?.scData[0]?.account_statement_id
-        || row.value === costsFounded.value?.peData[0]?.account_statement_id
+const toggleDetails = async (id) => {
+    if (row.value == 0 || row.value != id) await handleExpansible(id);
+    if (
+        row.value === costsFounded.value?.acData[0]?.account_statement_id ||
+        row.value === costsFounded.value?.scData[0]?.account_statement_id ||
+        row.value === costsFounded.value?.peData[0]?.account_statement_id
     ) {
         row.value = 0;
     } else {
-        if(costsFounded.value?.acData.length > 0) {
-            row.value =  costsFounded.value?.acData[0].account_statement_id
+        if (costsFounded.value?.acData.length > 0) {
+            row.value = costsFounded.value?.acData[0].account_statement_id;
         }
-        if(costsFounded.value?.scData.length > 0) {
-            row.value =  costsFounded.value?.scData[0].account_statement_id
+        if (costsFounded.value?.scData.length > 0) {
+            row.value = costsFounded.value?.scData[0].account_statement_id;
         }
-        if(costsFounded.value?.peData.length > 0) {
-            row.value =  costsFounded.value?.peData[0].account_statement_id
+        if (costsFounded.value?.peData.length > 0) {
+            row.value = costsFounded.value?.peData[0].account_statement_id;
         }
     }
-}
+};
 
-const handleExpansible = async(id) => {
-    const res = await axios.get(route('finance.account_statement.costs', {as_id: id}))
-        .catch((e)=>{
-            notifyError('Server Error')
-        })
-    costsFounded.value = res.data
-    notifyWarning(`Gastos Encontrados ${costsFounded.value.acData.length + costsFounded.value.scData.length + costsFounded.value.peData.length}`)
-}
+const handleExpansible = async (id) => {
+    const res = await axios
+        .get(route("finance.account_statement.costs", { as_id: id }))
+        .catch((e) => {
+            notifyError("Server Error");
+        });
+    costsFounded.value = res.data;
+    notifyWarning(
+        `Gastos Encontrados ${
+            costsFounded.value.acData.length +
+            costsFounded.value.scData.length +
+            costsFounded.value.peData.length
+        }`
+    );
+};
 
+const actionForm = ref({
+    ids: [],
+});
 
+const handleCheckAll = (e) => {
+    if (e.target.checked) {
+        actionForm.value.ids = dataToShow.value.map((item) => item.id);
+    } else {
+        actionForm.value.ids = [];
+    }
+};
+
+//delete block
+
+const handleBlockDelete = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros selccionados");
+        return;
+    }
+    console.log('het')
+};
 
 //search for costs in all tables
 watch([() => form.operation_number, () => form.operation_date], async () => {
@@ -1136,6 +1264,4 @@ watch(
         dataToShow.value = val;
     }
 );
-
-
 </script>

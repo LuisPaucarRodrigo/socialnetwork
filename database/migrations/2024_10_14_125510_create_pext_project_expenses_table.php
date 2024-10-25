@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('photo')->nullable();
             $table->boolean('is_accepted')->nullable();
-            $table->boolean('state')->nullable();
+            $table->boolean('state')->default(true);
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('cicsa_assignation_id')->nullable()->constrained();
             $table->foreignId('provider_id')
