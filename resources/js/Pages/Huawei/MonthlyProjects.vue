@@ -103,14 +103,18 @@
                             <div>
                                 <InputLabel for="employees" class="hidden sm:block font-medium leading-6 text-gray-900">Empleados</InputLabel>
                             </div>
-                            <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
                                 <select v-model="selectedEmployee" id="employees"  class="block w-full min-w-[250px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Selecciona un empleado</option>
                                     <option v-for="employee in availableEmployees" :key="employee.id" :value="employee">
                                         {{ employee.name + ' ' + employee.lastname }}
                                     </option>
                                 </select>
-                                <PrimaryButton @click.prevent="addEmployee">Agregar</PrimaryButton>
+                                <button type="button" @click.prevent="addEmployee">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-indigo-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
 
@@ -191,7 +195,7 @@ const props = defineProps({
 const showModal = ref(false);
 const showSuccessModal = ref(false);
 const successMessage = ref('');
-const selectedEmployee = ref(null);
+const selectedEmployee = ref('');
 const huaweiIds = [1];
 const huaweiEmployees = props.employees.filter(employee => huaweiIds.includes(employee.id));
 
@@ -235,6 +239,7 @@ const editProject = (project) => {
 const createOrEditModal = () => {
     if (showModal.value) {
         form.defaults({ ...initialState })
+        selectedEmployee.value = ''
         form.reset()
     }
     showModal.value = !showModal.value

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Huawei;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Huawei\HuaweiMonthlyExpenseRequest;
 use App\Models\Employee;
+use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiMonthlyProject;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -21,18 +23,26 @@ class HuaweiMonthlyController extends Controller
         ]);
     }
 
-    public function searchProjects ($request)
+    public function searchProjects($searchTerm)
     {
-        $searchTerm = strtolower($request);
+        $searchTerm = strtolower($searchTerm);
         $query = HuaweiMonthlyProject::query();
 
-        $query->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])->orderBy('created_at', 'desc')->get();
+        $projects = $query->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+            ->orderBy('created_at', 'desc')
+            ->with('huawei_monthly_employees')
+            ->get();
 
         return Inertia::render('Huawei/MonthlyProjects', [
-            'projects' => $query,
-            'employees' => Employee::select('id', 'name', 'lastname')->orderBy('name')->get()->makeHidden(['documents_about_to_expire', 'policy_about_to_expire', 'sctr_about_to_expire'])
+            'projects' => $projects,
+            'employees' => Employee::select('id', 'name', 'lastname')
+                ->orderBy('name')
+                ->get()
+                ->makeHidden(['documents_about_to_expire', 'policy_about_to_expire', 'sctr_about_to_expire']),
+            'search' => $searchTerm
         ]);
     }
+
 
     public function storeProject (Request $request)
     {
@@ -70,4 +80,33 @@ class HuaweiMonthlyController extends Controller
         return redirect()->back();
     }
 
+    //expenses
+    public function getExpenses (HuaweiMonthlyProject $project)
+    {
+        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->paginate(15);
+        return Inertia::render('Huawei/MonthlyExpenses', [
+            'expenses' => $expenses,
+            'project' => $project
+        ]);
+    }
+
+    public function storeExpense (HuaweiMonthlyExpenseRequest $request)
+    {
+        $data = $request->validated();
+        HuaweiMonthlyExpense::create($data);
+        return redirect()->back();
+    }
+
+    public function updateExpense (HuaweiMonthlyExpense $expense, HuaweiMonthlyExpenseRequest $request)
+    {
+        $data = $request->validated();
+        $expense->update($data);
+        return redirect()->back();
+    }
+
+    public function deleteExpense (HuaweiMonthlyExpense $expense)
+    {
+        $expense->delete();
+        return redirect()->back();
+    }
 }
