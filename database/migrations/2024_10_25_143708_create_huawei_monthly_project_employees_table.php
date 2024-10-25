@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('account_statements', function (Blueprint $table) {
+        Schema::create('huawei_monthly_project_employees', function (Blueprint $table) {
             $table->id();
-            $table->date('operation_date');
-            $table->string('operation_number')->nullable()->unique();
-            $table->string('description');
-            $table->double('charge');
-            $table->dpuble('payment');
+            $table->foreignId('huawei_mp_id')->constrained('huawei_monthly_projects')->onDelete('cascade');
+            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('account_statements');
+        Schema::dropIfExists('huawei_monthly_project_employees');
     }
 };

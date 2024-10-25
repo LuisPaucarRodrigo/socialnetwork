@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Inventory\HuaweiController;
 use App\Http\Controllers\Huawei\HuaweiManagementController;
 use App\Http\Controllers\Huawei\HuaweiMobileController;
+use App\Http\Controllers\Huawei\HuaweiMonthlyController;
 use App\Http\Controllers\Huawei\HuaweiProjectController;
 use App\Http\Controllers\Huawei\QuickMaterialsController;
 
@@ -189,6 +190,12 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('huawei/internal_guides/generate', [QuickMaterialsController::class, 'generateInternalGuide'])->name('huawei.internalguides.store');
     Route::delete('huawei/internal_guides/{id}/delete', [QuickMaterialsController::class, 'deleteInternalGuide'])->name('huawei.internalguides.delete');
     Route::get('huawei/internal_guides/{id}/show', [QuickMaterialsController::class, 'showInternalGuide'])->name('huawei.internalguides.show');
+
+    //monthly_projects
+    Route::get('huawei/monthly_projects/get', [HuaweiMonthlyController::class, 'getProjects'])->name('huawei.monthlyprojects');
+    Route::get('huawei/monthly_projects/{request}/search', [HuaweiMonthlyController::class, 'searchProjects'])->name('huawei.monthlyprojects.search');
+    Route::post('huawei/monthly_projects/store', [HuaweiMonthlyController::class, 'storeProject'])->name('huawei.monthlyprojects.store');
+    Route::put('huawei/monthly_projects/{project}/update', [HuaweiMonthlyController::class, 'updateProject'])->name('huawei.monthlyprojects.update');
 });
 
 

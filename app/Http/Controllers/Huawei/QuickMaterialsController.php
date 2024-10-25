@@ -303,7 +303,7 @@ class QuickMaterialsController extends Controller
 
 
             if ($characterCount > 50){
-                return response()->json(['file_error' => 'Cantidad de registros excedida' . $characterCount]);
+                return response()->json(['file_error' => 'Cantidad de registros excedida']);
             }
 
             $lastGuide = HuaweiInternalGuide::latest('id')->first();
