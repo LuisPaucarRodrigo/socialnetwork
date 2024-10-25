@@ -260,11 +260,10 @@ class QuickMaterialsController extends Controller
             $spreadsheet = IOFactory::load($file->getRealPath());
             $data = [];
 
-            // Obtener la hoja activa
-            $sheet = $spreadsheet->getActiveSheet();
+             $sheet = $spreadsheet->getActiveSheet();
 
-            // Iterar a través de las filas del archivo Excel
             $data = [];
+            $characterCount = 0;
 
             foreach ($sheet->getRowIterator() as $rowIndex => $row) {
                 if ($rowIndex === 1) {
@@ -275,26 +274,36 @@ class QuickMaterialsController extends Controller
                 $cells = $row->getCellIterator();
                 $cells->setIterateOnlyExistingCells(false); // Permitir celdas vacías
 
-                // Crear un array para almacenar los datos de la fila
                 $materialData = [];
 
-                // Columna A
+                // Columna A (nombre)
                 $materialData['name'] = $cells->current()->getValue();
                 $cells->next();
 
                 // Columna B (Serie, puede estar vacía)
-                $materialData['serie'] = $cells->current()->getValue() ? $cells->current()->getValue() : 'NO APLICA';
+                $materialData['serie'] = $cells->current()->getValue();
                 $cells->next();
 
                 // Columna C (Cantidad)
                 $materialData['quantity'] = $cells->current()->getValue();
                 $cells->next();
 
-                // Columna D (Unidad)
                 $materialData['unit'] = $cells->current()->getValue();
 
-                // Agregar el array de la fila al array principal
+                if (empty($materialData['name']) && empty($materialData['serie']) && empty($materialData['quantity'])) {
+                    break;
+                }
+
+                if (!empty($materialData['name'])) {
+                    $characterCount += strlen($materialData['name']) > 50 ? 2 : 1;
+                }
+
                 $data[] = $materialData;
+            }
+
+
+            if ($characterCount > 50){
+                return response()->json(['file_error' => 'Cantidad de registros excedida' . $characterCount]);
             }
 
             $lastGuide = HuaweiInternalGuide::latest('id')->first();
@@ -314,7 +323,7 @@ class QuickMaterialsController extends Controller
             return response()->json(['guide_id' => $internal_guide->id]);
         }
 
-        return back()->withErrors(['file' => 'Debe subir el archivo']);
+        return response()->json(['file_error' => 'Debe subir el archivo']);
     }
 
     public function deleteInternalGuide (HuaweiInternalGuide $id)
