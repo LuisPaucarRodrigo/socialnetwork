@@ -27,6 +27,7 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::post('/finance/account_statement_delete/{as_id}', [AccountStatementController::class, 'destroy'])->name('finance.account_statement.delete');
     Route::post('/finance/account_statement_import', [AccountStatementController::class, 'importExcel'])->name('finance.account_statement.import');
     Route::get('/finance/account_statement_costs/{as_id}', [AccountStatementController::class, 'searchStatementsCosts'])->name('finance.account_statement.costs');
+    Route::post('/finance/account_statement_massive_delete', [AccountStatementController::class, 'masiveDestroy'])->name('finance.account_statement.masivedelete');
 });
 
 Route::middleware('permission:FinanceManager|Finance')->group(function () {

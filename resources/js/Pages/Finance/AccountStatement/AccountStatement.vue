@@ -912,6 +912,14 @@
             @closeModal="closeDeleteModal"
             :processing="isFetching"
         />
+        <DeleteOperationModal
+            :confirmingDeletion="showMasiveDeleteModal"
+            title="ELIMINACIÓN MASIVA"
+            message="Todos los registros seleccionados se eliminarán"
+            :deleteFunction="deleteMasiveAS"
+            @closeModal="closeMasiveDeleteModal"
+            :processing="isFetching"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -921,6 +929,7 @@ import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import DeleteOperationModal from "@/Components/DeleteOperationModal.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -999,8 +1008,9 @@ const importForm = useForm({
 });
 const showFormModal = ref(false);
 const showImportModal = ref(false);
-const isFetching = ref(false);
 const showDeleteModal = ref(false);
+const showMasiveDeleteModal = ref(false);
+const isFetching = ref(false);
 const asToDeleteId = ref(null);
 const dataToShow = ref(accountStatements);
 const row = ref(0);
@@ -1215,8 +1225,39 @@ const handleBlockDelete = () => {
         notifyWarning("No hay registros selccionados");
         return;
     }
-    console.log('het')
+    showMasiveDeleteModal.value = true
 };
+
+const closeMasiveDeleteModal = () => {
+    showMasiveDeleteModal.value = false
+    isFetching.value = false
+    actionForm.value.ids = []
+}
+
+const deleteMasiveAS = async() => {
+    isFetching.value = true;
+    const res = await axios
+        .post(route("finance.account_statement.masivedelete"),{
+                ...actionForm.value,
+                month: filterForm.value.month,
+                all: filterForm.value.month ? false : true,
+            }
+        )
+        .catch((e) => {
+            isFetching.value = false;
+            notifyError("Server Error");
+        });
+    dataToRender.value = res.data.dataToRender;
+    closeMasiveDeleteModal();
+    notify("Todos los Registros Eliminados");
+}
+
+
+
+
+
+
+
 
 //search for costs in all tables
 watch([() => form.operation_number, () => form.operation_date], async () => {

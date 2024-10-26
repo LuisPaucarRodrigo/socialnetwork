@@ -45,11 +45,9 @@ class AccountStatementController extends Controller
     public function destroy(Request $request, $as_id)
     {
         $as = AccountStatement::findOrFail($as_id);
-        $operationDate = Carbon::parse($as->operation_date);
         $as->delete();
-        $month = $operationDate->format('Y-m');
         $data = $this->getAccountVariables($request->month, $request->all);
-        return response()->json(['dataToRender'=>$data, 'month'=>$month], 200);
+        return response()->json(['dataToRender'=>$data], 200);
     }
 
     public function searchStatements(Request $request)
@@ -69,6 +67,17 @@ class AccountStatementController extends Controller
                 'error' => $e->getMessage()
             ], 422);
         }
+    }
+
+    public function masiveDestroy(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'ids.*' => 'integer'
+        ]);
+        AccountStatement::whereIn('id', $data['ids'])->delete();
+        $data = $this->getAccountVariables($request->month, $request->all);
+        return response()->json(['dataToRender'=>$data], 200);
     }
 
 
