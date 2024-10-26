@@ -29,35 +29,20 @@
                     <PrimaryButton
                         data-tooltip-target="update_data_tooltip"
                         type="button"
-                        @click="
-                            router.visit(
-                                route('projectmanagement.additionalCosts', {
-                                    project_id: project_id.id,
-                                })
-                            )
+                        @click="()=>{
+                                filterMode = true;
+                                search_advance(initialFilterFormState);
+                            }
                         "
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="h-5 w-5 text-white"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                            />
-                        </svg>
+                        <ServerIcon class="w-5 h-5 text-white"/>
                     </PrimaryButton>
                     <div
                         id="update_data_tooltip"
                         role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
                     >
-                        Actualizar
+                        Todos los Registros
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
 
@@ -286,8 +271,24 @@
                     <tr
                         class="border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
                     >
-                        <th class="bg-gray-100 border-b-2 border-gray-20">
+                        <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
                             <div class="w-2"></div>
+                        </th>
+                        <th
+                            class="sticky left-2  z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"
+                        >
+                            <label
+                                :for="`check-all`"
+                                class="flex gap-3 justify-center w-full px-2 py-1"
+                            >
+                                <input
+                                    @change="handleCheckAll"
+                                    :id="`check-all`"
+                                    :checked="actionForm.ids.length > 0"
+                                    type="checkbox"
+                                />
+                                {{ actionForm.ids.length ?? "" }}
+                            </label>
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -416,7 +417,7 @@
                     >
                         <td
                             :class="[
-                                'border-b border-gray-200',
+                                'sticky left-0 z-10 border-b border-gray-200',
                                 {
                                     'bg-indigo-500': item.is_accepted === null,
                                     'bg-green-500': item.is_accepted == true,
@@ -424,6 +425,21 @@
                                 },
                             ]"
                         ></td>
+                        <td
+                                class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
+                            >
+                                <label
+                                    :for="`check-${item.id}`"
+                                    class="block w-full px-2 py-1"
+                                >
+                                    <input
+                                        v-model="actionForm.ids"
+                                        :value="item.id"
+                                        :id="`check-${item.id}`"
+                                        type="checkbox"
+                                    />
+                                </label>
+                            </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -599,6 +615,9 @@
                         >
                             TOTAL
                         </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
@@ -1411,7 +1430,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { reactive, ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon, PencilSquareIcon,ServerIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -1639,7 +1658,7 @@ const stateTypes = [
     "Pendiente",
 ];
 
-const filterForm = ref({
+const initialFilterFormState = {
     search: "",
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
@@ -1651,7 +1670,9 @@ const filterForm = ref({
     docStartDate: "",
     docEndDate: "",
     docNoDate: false,
-});
+}
+
+const filterForm = ref(initialFilterFormState);
 
 watch(
     () => [
@@ -1785,6 +1806,21 @@ async function validateRegister(ac_id, is_accepted) {
         console.log(e);
     }
 }
+
+
+//block actions
+
+const actionForm = ref({
+    ids: [],
+});
+
+const handleCheckAll = (e) => {
+    if (e.target.checked) {
+        actionForm.value.ids = dataToRender.value.map((item) => item.id);
+    } else {
+        actionForm.value.ids = [];
+    }
+};
 
 
 </script>

@@ -27,7 +27,7 @@
                             type="button"
                             @click="
                                 () => {
-                                    filterForm.month = '';
+                                    filterForm = {month: '', search : ''}
                                     handleSearch(null, true);
                                 }
                             "
@@ -988,10 +988,11 @@ const dataToRender = ref({
     totalPayment,
 });
 const costsFounded = ref(initStateCostsFounded);
-const filterForm = ref({
+const initialFilterFormState = {
     month: defaultMonth,
     search: "",
-});
+}
+const filterForm = ref(initialFilterFormState);
 const form = useForm({
     id: null,
     operation_date: "",
@@ -1005,6 +1006,9 @@ const form = useForm({
 });
 const importForm = useForm({
     excel_file: null,
+});
+const actionForm = ref({
+    ids: [],
 });
 const showFormModal = ref(false);
 const showImportModal = ref(false);
@@ -1206,9 +1210,7 @@ const handleExpansible = async (id) => {
     );
 };
 
-const actionForm = ref({
-    ids: [],
-});
+//block actions
 
 const handleCheckAll = (e) => {
     if (e.target.checked) {
@@ -1304,5 +1306,12 @@ watch(
     (val) => {
         dataToShow.value = val;
     }
+);
+watch(
+    () => filterForm.value,
+    () => {
+        actionForm.value = { ids: [] };
+    },
+    { deep: true }
 );
 </script>
