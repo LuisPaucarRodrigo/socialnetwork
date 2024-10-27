@@ -153,6 +153,7 @@
                         type="month"
                         @input="
                             (e) => {
+                                filterForm.search = ''
                                 handleSearch(e.target.value);
                             }
                         "
@@ -1180,8 +1181,9 @@ const toggleDetails = async (id) => {
         row.value === costsFounded.value?.scData[0]?.account_statement_id ||
         row.value === costsFounded.value?.peData[0]?.account_statement_id
     ) {
-        row.value = 0;
+        row.value = 0
     } else {
+        row.value = 0
         if (costsFounded.value?.acData.length > 0) {
             row.value = costsFounded.value?.acData[0].account_statement_id;
         }
@@ -1251,12 +1253,8 @@ const deleteMasiveAS = async() => {
         });
     dataToRender.value = res.data.dataToRender;
     closeMasiveDeleteModal();
-    notify("Todos los Registros Eliminados");
+    notify("Registros Seleccionados Eliminados");
 }
-
-
-
-
 
 
 

@@ -231,6 +231,25 @@ class AdditionalCostsController extends Controller
         return response()->json($additional_cost, 200);
     }
 
+    public function masiveUpdate (Request $request) {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'ids.*' => 'integer',
+            'operation_date' => 'required|date',
+            'operation_number' => 'required',
+        ]);
+
+        $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $data['operation_number'])->first();
+        $data['account_statement_id'] = $as?->id;
+        AdditionalCost::whereIn('id', $data['ids'])->update([
+            'operation_date' => $data['operation_date'],
+            'operation_number' => $data['operation_number'],
+            'account_statement_id' => $data['account_statement_id'],
+        ]);
+        return response()->json(['msg'=>"all updated"], 200);
+    }
+
     public function destroy(Project $project_id, AdditionalCost $additional_cost)
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');

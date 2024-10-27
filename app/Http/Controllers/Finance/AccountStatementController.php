@@ -96,7 +96,7 @@ class AccountStatementController extends Controller
                 }
             ])
             ->where('operation_date', $od)
-            ->where('operation_number', $on)
+            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $acData->transform(function ($item) {
             $item->project->setAppends(['code']);
@@ -111,7 +111,7 @@ class AccountStatementController extends Controller
                 }
             ])
             ->where('operation_date', $od)
-            ->where('operation_number', $on)
+            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $scData->transform(function ($item) {
             $item->project->setAppends(['code']);
@@ -126,7 +126,7 @@ class AccountStatementController extends Controller
                 }
             ])
             ->where('operation_date', $od)
-            ->where('operation_number', $on)
+            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $peData->transform(function ($item) {
             $item->cicsa_assignation->setAppends([]);

@@ -29,13 +29,14 @@
                     <PrimaryButton
                         data-tooltip-target="update_data_tooltip"
                         type="button"
-                        @click="()=>{
+                        @click="
+                            () => {
                                 filterMode = true;
                                 search_advance(initialFilterFormState);
                             }
                         "
                     >
-                        <ServerIcon class="w-5 h-5 text-white"/>
+                        <ServerIcon class="w-5 h-5 text-white" />
                     </PrimaryButton>
                     <div
                         id="update_data_tooltip"
@@ -136,6 +137,67 @@
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+
+                    <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button
+                                    data-tooltip-target="action_button_tooltip"
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2"
+                                >
+                                    <svg
+                                        width="20px"
+                                        height="20px"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M4 6H20M4 12H20M4 18H20"
+                                            stroke="#ffffff"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </button>
+                                <div
+                                    id="action_button_tooltip"
+                                    role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap"
+                                >
+                                    Acciones
+                                    <div
+                                        class="tooltip-arrow"
+                                        data-popper-arrow
+                                    ></div>
+                                </div>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+
+                                    <div class="">
+                                        <button
+                                            @click="openOpNuDaModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
+                                            Actualizar Operación
+                                        </button>
+                                        <button
+                                            @click=""
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
+                                            Swap
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
+
                 </div>
                 <div class="sm:hidden">
                     <dropdown align="left">
@@ -271,11 +333,13 @@
                     <tr
                         class="border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
                     >
-                        <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
+                        <th
+                            class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20"
+                        >
                             <div class="w-2"></div>
                         </th>
                         <th
-                            class="sticky left-2  z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"
+                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"
                         >
                             <label
                                 :for="`check-all`"
@@ -426,20 +490,20 @@
                             ]"
                         ></td>
                         <td
-                                class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
+                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
+                        >
+                            <label
+                                :for="`check-${item.id}`"
+                                class="block w-full px-2 py-1"
                             >
-                                <label
-                                    :for="`check-${item.id}`"
-                                    class="block w-full px-2 py-1"
-                                >
-                                    <input
-                                        v-model="actionForm.ids"
-                                        :value="item.id"
-                                        :id="`check-${item.id}`"
-                                        type="checkbox"
-                                    />
-                                </label>
-                            </td>
+                                <input
+                                    v-model="actionForm.ids"
+                                    :value="item.id"
+                                    :id="`check-${item.id}`"
+                                    type="checkbox"
+                                />
+                            </label>
+                        </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -521,59 +585,57 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                        <div
-                                    v-if="item.is_accepted === null"
-                                    class="flex gap-3 justify-center w-full"
+                            <div
+                                v-if="item.is_accepted === null"
+                                class="flex gap-3 justify-center w-full"
+                            >
+                                <button
+                                    @click="
+                                        () => validateRegister(item.id, true)
+                                    "
+                                    class="flex items-center rounded-xl text-blue-500 hover:bg-green-200"
                                 >
-                                    <button
-                                        @click="
-                                            () =>
-                                                validateRegister(item.id, true)
-                                        "
-                                        class="flex items-center rounded-xl text-blue-500 hover:bg-green-200"
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5 text-green-500"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5 text-green-500"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                    <button
-                                        @click="
-                                            () =>
-                                                validateRegister(item.id, false)
-                                        "
-                                        type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200"
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                    </svg>
+                                </button>
+                                <button
+                                    @click="
+                                        () => validateRegister(item.id, false)
+                                    "
+                                    type="button"
+                                    class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5 text-red-500"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5 text-red-500"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div v-else class="text-center text-green-500">
-                                    Aceptado
-                                </div>
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div v-else class="text-center text-green-500">
+                                Aceptado
+                            </div>
                         </td>
                         <td
                             v-if="
@@ -582,9 +644,9 @@
                             "
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            <div class="flex items-center justify-center gap-3 w-full">
-                                
-
+                            <div
+                                class="flex items-center justify-center gap-3 w-full"
+                            >
                                 <div class="flex gap-3 mr-3">
                                     <button
                                         @click="openEditAdditionalModal(item)"
@@ -1400,6 +1462,72 @@
             </div>
         </Modal>
 
+        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Actualización Masiva
+                </h2>
+                <form @submit.prevent="submitOpNuDatModal">
+                    <div class="space-y-12">
+                        <div
+                            class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12"
+                        >
+                            <div>
+                                <InputLabel
+                                    for="operation_number"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Numero de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="opNuDateForm.operation_number"
+                                        id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="opNuDateForm.errors.operation_number"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_date"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Fecha de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="date"
+                                        v-model="opNuDateForm.operation_date"
+                                        id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="opNuDateForm.errors.operation_date"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeOpNuDatModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button
+                                type="submit"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
             itemType="Costo Adicional"
@@ -1430,7 +1558,11 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { reactive, ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon,ServerIcon } from "@heroicons/vue/24/outline";
+import {
+    TrashIcon,
+    PencilSquareIcon,
+    ServerIcon,
+} from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -1653,10 +1785,7 @@ const docTypes = [
     "Voucher de Pago",
 ];
 
-const stateTypes = [
-    "Aceptado",
-    "Pendiente",
-];
+const stateTypes = ["Aceptado", "Pendiente"];
 
 const initialFilterFormState = {
     search: "",
@@ -1670,7 +1799,7 @@ const initialFilterFormState = {
     docStartDate: "",
     docEndDate: "",
     docNoDate: false,
-}
+};
 
 const filterForm = ref(initialFilterFormState);
 
@@ -1821,6 +1950,70 @@ const handleCheckAll = (e) => {
         actionForm.value.ids = [];
     }
 };
+
+watch(
+    () => filterForm.value,
+    () => {
+        actionForm.value = { ids: [] };
+    },
+    { deep: true }
+);
+
+
+const opNuDateForm = useForm({
+    operation_date: '',
+    operation_number: '',
+})
+
+const showOpNuDatModal = ref(false)
+
+const closeOpNuDatModal = () => {
+    showOpNuDatModal.value = false
+    isFetching.value = false
+    opNuDateForm.reset()
+}
+
+const openOpNuDaModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros selccionados");
+        return;
+    }
+    showOpNuDatModal.value = true
+}
+
+const submitOpNuDatModal = async () => {
+    isFetching.value = true;
+    await axios
+        .post(route("projectmanagement.additionalCosts.massiveUpdate"), {
+            ...opNuDateForm.data(),
+            ...actionForm.value
+        })
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, form);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+    ;
+    if (filterMode.value) { search_advance(filterForm.value);} 
+    else { window.location.reload(); }
+    filterMode.value = true;
+    closeOpNuDatModal();
+    notify("Registros Seleccionados Actualizados");
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 </script>
