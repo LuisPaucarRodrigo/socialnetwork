@@ -92,12 +92,12 @@ class StaticCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
+        $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
-            $as = AccountStatement::where('operation_date', $data['operation_date'])
+            $on = substr($data['operation_number'], -6);
+            $as = AccountStatement::where('operation_date', $on)
                 ->where('operation_number', $data['operation_number'])->first();
             $data['account_statement_id'] = $as?->id;
-        } else {
-            $data['account_statement_id'] = null;
         }
         $item = StaticCost::create($data);
         $item->load('project', 'provider:id,company_name');
@@ -136,8 +136,10 @@ class StaticCostsController extends Controller
             'description' => 'required|string',
         ]);
 
+        $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
-            $as = AccountStatement::where('operation_date', $data['operation_date'])
+            $on = substr($data['operation_number'], -6);
+            $as = AccountStatement::where('operation_date', $on)
                 ->where('operation_number', $data['operation_number'])->first();
             $data['account_statement_id'] = $as?->id;
         }

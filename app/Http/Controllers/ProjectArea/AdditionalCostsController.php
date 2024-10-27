@@ -153,12 +153,12 @@ class AdditionalCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
+        $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
-            $as = AccountStatement::where('operation_date', $data['operation_date'])
+            $on = substr($data['operation_number'], -6);
+            $as = AccountStatement::where('operation_date', $on)
                 ->where('operation_number', $data['operation_number'])->first();
             $data['account_statement_id'] = $as?->id;
-        }else {
-            $data['account_statement_id'] = null;
         }
         $item = AdditionalCost::create($data);
         $item->load('project', 'provider:id,company_name');
@@ -186,7 +186,7 @@ class AdditionalCostsController extends Controller
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
-            'operation_number' => 'nullable',
+            'operation_number' => 'nullable | min:6',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',
@@ -197,8 +197,10 @@ class AdditionalCostsController extends Controller
             'igv' => 'required',
             'description' => 'required|string',
         ]);
+        $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
-            $as = AccountStatement::where('operation_date', $data['operation_date'])
+            $on = substr($data['operation_number'], -6);
+            $as = AccountStatement::where('operation_date', $on)
                 ->where('operation_number', $data['operation_number'])->first();
             $data['account_statement_id'] = $as?->id;
         }

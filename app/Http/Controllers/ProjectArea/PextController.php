@@ -143,12 +143,12 @@ class PextController extends Controller
         $validatedData['amount'] = intval($validatedData['amount']);
         $validatedData['state'] = json_decode($validatedData['state']);
 
+        $validatedData['account_statement_id'] = null;
         if(isset($validatedData['operation_number']) && isset($validatedData['operation_date'])){
-            $as = AccountStatement::where('operation_date', $validatedData['operation_date'])
+            $on = substr($validatedData['operation_number'], -6);
+            $as = AccountStatement::where('operation_date', $on)
                 ->where('operation_number', $validatedData['operation_number'])->first();
             $validatedData['account_statement_id'] = $as?->id;
-        } else {
-            $validatedData['account_statement_id'] = null;
         }
 
         if ($request->hasFile('photo')) {
