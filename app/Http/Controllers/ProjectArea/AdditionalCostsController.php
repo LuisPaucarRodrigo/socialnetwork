@@ -156,8 +156,8 @@ class AdditionalCostsController extends Controller
         $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
             $on = substr($data['operation_number'], -6);
-            $as = AccountStatement::where('operation_date', $on)
-                ->where('operation_number', $data['operation_number'])->first();
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
         }
         $item = AdditionalCost::create($data);
@@ -200,8 +200,8 @@ class AdditionalCostsController extends Controller
         $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
             $on = substr($data['operation_number'], -6);
-            $as = AccountStatement::where('operation_date', $on)
-                ->where('operation_number', $data['operation_number'])->first();
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
         }
 
@@ -238,18 +238,26 @@ class AdditionalCostsController extends Controller
             'ids' => 'required | array | min:1',
             'ids.*' => 'integer',
             'operation_date' => 'required|date',
-            'operation_number' => 'required',
+            'operation_number' => 'required|min:6',
         ]);
-
+        $on = substr($data['operation_number'], -6);
         $as = AccountStatement::where('operation_date', $data['operation_date'])
-                ->where('operation_number', $data['operation_number'])->first();
+                ->where('operation_number', $on)->first();
         $data['account_statement_id'] = $as?->id;
+
         AdditionalCost::whereIn('id', $data['ids'])->update([
             'operation_date' => $data['operation_date'],
             'operation_number' => $data['operation_number'],
             'account_statement_id' => $data['account_statement_id'],
         ]);
-        return response()->json(['msg'=>"all updated"], 200);
+        $updatedCosts = AdditionalCost::whereIn('id', $data['ids'])
+        ->with(['project', 'provider:id,company_name'])
+        ->get();
+        $updatedCosts->each(function ($cost) {
+        $cost->project->setAppends([]);
+        $cost->setAppends(['real_amount']);
+        });
+        return response()->json($updatedCosts, 200);
     }
 
     public function destroy(Project $project_id, AdditionalCost $additional_cost)

@@ -1983,7 +1983,7 @@ const openOpNuDaModal = () => {
 
 const submitOpNuDatModal = async () => {
     isFetching.value = true;
-    await axios
+    const res = await axios
         .post(route("projectmanagement.additionalCosts.massiveUpdate"), {
             ...opNuDateForm.data(),
             ...actionForm.value
@@ -1991,15 +1991,20 @@ const submitOpNuDatModal = async () => {
         .catch((e) => {
             isFetching.value = false;
             if (e.response?.data?.errors) {
-                setAxiosErrors(e.response.data.errors, form);
+                setAxiosErrors(e.response.data.errors, opNuDateForm);
             } else {
                 notifyError("Server Error");
             }
         });
-    ;
-    if (filterMode.value) { search_advance(filterForm.value);} 
-    else { window.location.reload(); }
-    filterMode.value = true;
+    
+    const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
+    res.data.forEach(update => {
+        if (originalMap.has(update.id)) {
+            originalMap.set(update.id, update);
+        }
+    });
+    const updatedArray = Array.from(originalMap.values());
+    dataToRender.value = updatedArray
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
 }

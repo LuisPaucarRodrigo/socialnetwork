@@ -95,8 +95,8 @@ class StaticCostsController extends Controller
         $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
             $on = substr($data['operation_number'], -6);
-            $as = AccountStatement::where('operation_date', $on)
-                ->where('operation_number', $data['operation_number'])->first();
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
         }
         $item = StaticCost::create($data);
@@ -139,8 +139,8 @@ class StaticCostsController extends Controller
         $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
             $on = substr($data['operation_number'], -6);
-            $as = AccountStatement::where('operation_date', $on)
-                ->where('operation_number', $data['operation_number'])->first();
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
         }
 

@@ -146,8 +146,8 @@ class PextController extends Controller
         $validatedData['account_statement_id'] = null;
         if(isset($validatedData['operation_number']) && isset($validatedData['operation_date'])){
             $on = substr($validatedData['operation_number'], -6);
-            $as = AccountStatement::where('operation_date', $on)
-                ->where('operation_number', $validatedData['operation_number'])->first();
+            $as = AccountStatement::where('operation_date', $validatedData['operation_date'])
+                ->where('operation_number', $on)->first();
             $validatedData['account_statement_id'] = $as?->id;
         }
 
