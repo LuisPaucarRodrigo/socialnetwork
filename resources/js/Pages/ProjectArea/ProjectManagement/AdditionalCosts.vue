@@ -14,7 +14,7 @@
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
-                <div class="hidden sm:flex sm:items-center space-x-3">
+                <div class="hidden sm:flex  space-x-3">
                     <PrimaryButton
                         v-if="
                             project_id.status === null &&
@@ -84,8 +84,8 @@
                     >
                         <svg
                             fill="#ffffff"
-                            width="22px"
-                            height="22px"
+                            width="20px"
+                            height="20px"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                         >
@@ -424,7 +424,7 @@
                         >
                             <TableDateFilter
                                 labelClass="text-[11px]"
-                                label="Fecha de Docoumento"
+                                label="Fecha de Documento"
                                 v-model:startDate="filterForm.docStartDate"
                                 v-model:endDate="filterForm.docEndDate"
                                 v-model:noDate="filterForm.docNoDate"
@@ -1576,7 +1576,6 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
-import TableStateFilter from "@/Components/TableStateFilter.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -2008,17 +2007,6 @@ const submitOpNuDatModal = async () => {
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 </script>
