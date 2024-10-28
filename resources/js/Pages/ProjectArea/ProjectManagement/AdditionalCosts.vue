@@ -1800,7 +1800,7 @@ const initialFilterFormState = {
     docNoDate: false,
 };
 
-const filterForm = ref(initialFilterFormState);
+const filterForm = ref({...initialFilterFormState});
 
 watch(
     () => [

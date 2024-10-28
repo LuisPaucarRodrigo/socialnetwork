@@ -29,7 +29,6 @@
                                 () => {
                                     filterForm = {month: '', search : ''}
                                     handleSearch(null, true);
-                                    console.log(dataToShow)
                                 }
                             "
                             class="p-2 bg-gray-100 ring-1 ring-slate-400 rounded-md text-slate-900 hover:bg-white"
@@ -999,7 +998,7 @@ const initialFilterFormState = {
     month: defaultMonth,
     search: "",
 }
-const filterForm = ref(initialFilterFormState);
+const filterForm = ref({...initialFilterFormState});
 const form = useForm({
     id: null,
     operation_date: "",
