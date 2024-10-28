@@ -256,8 +256,12 @@ class AccountStatementController extends Controller
         $accountStatements = $all ? $accountStatements : $accountStatements
                 ->whereMonth('operation_date', $currentMonth)
                 ->whereYear('operation_date', $currentYear);
-        $accountStatements = $accountStatements->orderBy('operation_date', 'asc')->get()
-            ->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia) {
+        $accountStatements = $accountStatements->orderBy('operation_date', 'asc')->get();
+        $accountStatements->transform(function ($item) {
+            $item->setAppends(['state']);
+            return $item;
+        });
+        $accountStatements = $accountStatements->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia) {
                 $totalCharge += $statement->charge;
                 $totalPayment += $statement->payment;
                 $currentBalance += $statement->payment - $statement->charge;

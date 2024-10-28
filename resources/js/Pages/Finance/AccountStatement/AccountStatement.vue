@@ -29,6 +29,7 @@
                                 () => {
                                     filterForm = {month: '', search : ''}
                                     handleSearch(null, true);
+                                    console.log(dataToShow)
                                 }
                             "
                             class="p-2 bg-gray-100 ring-1 ring-slate-400 rounded-md text-slate-900 hover:bg-white"
@@ -317,7 +318,12 @@
                     >
                         <tr class="text-gray-700 bg-white hover:bg-slate-200">
                             <td
-                                class="bg-gray-400 border-b border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
+                                class="w-2 border-b border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
+                                :class="[
+                                    item.state === 'No aplica' && 'bg-gray-400',
+                                    item.state === 'Validado' && 'bg-green-400',
+                                    item.state === 'No validado' && 'bg-red-400',
+                                ]"
                             ></td>
                             <td
                                 class="border-b border-r border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
@@ -1312,4 +1318,5 @@ watch(
     },
     { deep: true }
 );
+
 </script>
