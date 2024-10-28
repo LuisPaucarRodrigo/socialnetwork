@@ -57,8 +57,7 @@
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
-                            "
-                                class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
+                            " class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
                                 colspan="5">
                                 Factibilidad PINT y PEXT
                             </th>
@@ -69,8 +68,7 @@
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
+                            " class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
                                 colspan="9">
                                 Instalación PINT y PEXT
                             </th>
@@ -682,11 +680,11 @@
                                             ?.cicsa_installation_materials
                                             ?.length > 0
                                     " @click="
-                                            openInstMaterialsModal(
-                                                item?.cicsa_installation
-                                                    ?.cicsa_installation_materials
-                                            )
-                                            " class="text-green-600">
+                                        openInstMaterialsModal(
+                                            item?.cicsa_installation
+                                                ?.cicsa_installation_materials
+                                        )
+                                        " class="text-green-600">
                                         <EyeIcon class="h-4 w-4 ml-1" />
                                     </button>
                                 </div>
@@ -1369,23 +1367,25 @@ function openSotDeleteModal(id) {
     sotToDelete.value = id;
     showSotDeleteModal.value = true;
 }
+
 function closeSotDeleteModal() {
     sotToDelete.value = null;
     showSotDeleteModal.value = false;
 }
-function deleteSot() {
-    router.delete(
-        route("cicsa.assignation.destroy", { ca_id: sotToDelete.value }),
-        {
-            onSuccess: () => {
-                closeSotDeleteModal();
-                confirmSotDelete.value = true;
-                setTimeout(() => {
-                    confirmSotDelete.value = false;
-                }, 1500);
-            },
-        }
-    );
+
+async function deleteSot() {
+    let url = route("cicsa.assignation.destroy", { ca_id: sotToDelete.value });
+    try {
+        await axios.delete(url)
+        updateCicsaIndex(sotToDelete.value)
+        closeSotDeleteModal();
+        confirmSotDelete.value = true;
+        setTimeout(() => {
+            confirmSotDelete.value = false;
+        }, 1500);
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 const material_title = ref("");
@@ -1547,4 +1547,9 @@ onMounted(async () => {
 onUnmounted(() => {
     window.removeEventListener("resize", handleResize);
 });
+
+function updateCicsaIndex(cisca_assignation_id) { 
+    const index = dataToRender.value.findIndex(item => item.id = cisca_assignation_id)
+    dataToRender.value.splice(index, 1)
+}
 </script>

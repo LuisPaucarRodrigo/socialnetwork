@@ -44,4 +44,8 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
         Route::post('/expense/store', [ChecklistsController::class, 'expenseStore']);
 
         Route::get('/expense/index', [ChecklistsController::class, 'expenseIndex']);
+
+        Route::get('/cicsaProcessList', [ApiController::class, 'cicsaProcess']);
+        Route::post('/expensePext/store', [ApiController::class, 'storeExpensesPext']);
+        Route::get('/expensePext/history', [ApiController::class, 'historyExpensesPext']);
     });
