@@ -154,12 +154,12 @@ class AdditionalCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/additionalcosts/');
         }
-        if (isset($data['operation_number']) && isset($data['operation_date'])) {
+        $data['account_statement_id'] = null;
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $on = substr($data['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $data['operation_date'])
-                ->where('operation_number', $data['operation_number'])->first();
+                ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
-        } else {
-            $data['account_statement_id'] = null;
         }
         $item = AdditionalCost::create($data);
         $item->load('project', 'provider:id,company_name');
@@ -187,7 +187,7 @@ class AdditionalCostsController extends Controller
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
-            'operation_number' => 'nullable',
+            'operation_number' => 'nullable | min:6',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',
@@ -198,9 +198,11 @@ class AdditionalCostsController extends Controller
             'igv' => 'required',
             'description' => 'required|string',
         ]);
-        if (isset($data['operation_number']) && isset($data['operation_date'])) {
+        $data['account_statement_id'] = null;
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $on = substr($data['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $data['operation_date'])
-                ->where('operation_number', $data['operation_number'])->first();
+                ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
         }
 
@@ -229,6 +231,33 @@ class AdditionalCostsController extends Controller
         $additional_cost->project->setAppends([]);
         $additional_cost->setAppends(['real_amount']);
         return response()->json($additional_cost, 200);
+    }
+
+    public function masiveUpdate (Request $request) {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'ids.*' => 'integer',
+            'operation_date' => 'required|date',
+            'operation_number' => 'required|min:6',
+        ]);
+        $on = substr($data['operation_number'], -6);
+        $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $on)->first();
+        $data['account_statement_id'] = $as?->id;
+
+        AdditionalCost::whereIn('id', $data['ids'])->update([
+            'operation_date' => $data['operation_date'],
+            'operation_number' => $data['operation_number'],
+            'account_statement_id' => $data['account_statement_id'],
+        ]);
+        $updatedCosts = AdditionalCost::whereIn('id', $data['ids'])
+        ->with(['project', 'provider:id,company_name'])
+        ->get();
+        $updatedCosts->each(function ($cost) {
+        $cost->project->setAppends([]);
+        $cost->setAppends(['real_amount']);
+        });
+        return response()->json($updatedCosts, 200);
     }
 
     public function destroy(Project $project_id, AdditionalCost $additional_cost)

@@ -45,11 +45,9 @@ class AccountStatementController extends Controller
     public function destroy(Request $request, $as_id)
     {
         $as = AccountStatement::findOrFail($as_id);
-        $operationDate = Carbon::parse($as->operation_date);
         $as->delete();
-        $month = $operationDate->format('Y-m');
         $data = $this->getAccountVariables($request->month, $request->all);
-        return response()->json(['dataToRender'=>$data, 'month'=>$month], 200);
+        return response()->json(['dataToRender'=>$data], 200);
     }
 
     public function searchStatements(Request $request)
@@ -71,6 +69,17 @@ class AccountStatementController extends Controller
         }
     }
 
+    public function masiveDestroy(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'ids.*' => 'integer'
+        ]);
+        AccountStatement::whereIn('id', $data['ids'])->delete();
+        $data = $this->getAccountVariables($request->month, $request->all);
+        return response()->json(['dataToRender'=>$data], 200);
+    }
+
 
 
 
@@ -87,7 +96,7 @@ class AccountStatementController extends Controller
                 }
             ])
             ->where('operation_date', $od)
-            ->where('operation_number', $on)
+            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $acData->transform(function ($item) {
             $item->project->setAppends(['code']);
@@ -102,7 +111,7 @@ class AccountStatementController extends Controller
                 }
             ])
             ->where('operation_date', $od)
-            ->where('operation_number', $on)
+            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $scData->transform(function ($item) {
             $item->project->setAppends(['code']);
@@ -117,7 +126,7 @@ class AccountStatementController extends Controller
                 }
             ])
             ->where('operation_date', $od)
-            ->where('operation_number', $on)
+            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $peData->transform(function ($item) {
             $item->cicsa_assignation->setAppends([]);
@@ -247,8 +256,12 @@ class AccountStatementController extends Controller
         $accountStatements = $all ? $accountStatements : $accountStatements
                 ->whereMonth('operation_date', $currentMonth)
                 ->whereYear('operation_date', $currentYear);
-        $accountStatements = $accountStatements->orderBy('operation_date', 'asc')->get()
-            ->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia) {
+        $accountStatements = $accountStatements->orderBy('operation_date', 'asc')->get();
+        $accountStatements->transform(function ($item) {
+            $item->setAppends(['state']);
+            return $item;
+        });
+        $accountStatements = $accountStatements->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia) {
                 $totalCharge += $statement->charge;
                 $totalPayment += $statement->payment;
                 $currentBalance += $statement->payment - $statement->charge;

@@ -26,19 +26,23 @@ class AccountStatementRequest extends FormRequest
         return [
             'operation_date' => 'required | date | before_or_equal:now',
             'operation_number' => [
-                'required',
-                Rule::unique(AccountStatement::class)->ignore($this->id),
+                'nullable', 
+                'size:6',
+                Rule::unique(AccountStatement::class)
+                    ->ignore($this->id)
+                    ->where(function ($query) {
+                        return $query->where('operation_date', $this->operation_date);
+                    }),
             ],
             'description' => 'required',
-            'charge' => "required_without:payment",
-            'payment' => "required_without:charge",
+            'charge' => 'required_without:payment',
+            'payment' => 'required_without:charge',
             'acData' => 'nullable|array',
             'acData.*' => 'integer',
             'scData' => 'nullable|array',
             'scData.*' => 'integer',
             'peData' => 'nullable|array',
             'peData.*' => 'integer',
-
         ];
     }
 }

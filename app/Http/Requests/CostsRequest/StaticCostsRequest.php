@@ -29,7 +29,7 @@ class StaticCostsRequest extends FormRequest
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
-            "operation_number" => 'nullable',
+            "operation_number" => 'nullable|min:6',
             "operation_date" => 'nullable|date',
             'doc_number' => 'nullable|string',
             'doc_date' => 'required|date',

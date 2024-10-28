@@ -14,7 +14,7 @@
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
-                <div class="hidden sm:flex sm:items-center space-x-3">
+                <div class="hidden sm:flex  space-x-3">
                     <PrimaryButton
                         v-if="
                             project_id.status === null &&
@@ -30,34 +30,20 @@
                         data-tooltip-target="update_data_tooltip"
                         type="button"
                         @click="
-                            router.visit(
-                                route('projectmanagement.additionalCosts', {
-                                    project_id: project_id.id,
-                                })
-                            )
+                            () => {
+                                filterMode = true;
+                                search_advance(initialFilterFormState);
+                            }
                         "
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="h-5 w-5 text-white"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                            />
-                        </svg>
+                        <ServerIcon class="w-5 h-5 text-white" />
                     </PrimaryButton>
                     <div
                         id="update_data_tooltip"
                         role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
                     >
-                        Actualizar
+                        Todos los Registros
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
 
@@ -98,8 +84,8 @@
                     >
                         <svg
                             fill="#ffffff"
-                            width="22px"
-                            height="22px"
+                            width="20px"
+                            height="20px"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                         >
@@ -151,6 +137,67 @@
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+
+                    <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button
+                                    data-tooltip-target="action_button_tooltip"
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2"
+                                >
+                                    <svg
+                                        width="20px"
+                                        height="20px"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M4 6H20M4 12H20M4 18H20"
+                                            stroke="#ffffff"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </button>
+                                <div
+                                    id="action_button_tooltip"
+                                    role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap"
+                                >
+                                    Acciones
+                                    <div
+                                        class="tooltip-arrow"
+                                        data-popper-arrow
+                                    ></div>
+                                </div>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+
+                                    <div class="">
+                                        <button
+                                            @click="openOpNuDaModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
+                                            Actualizar Operación
+                                        </button>
+                                        <button
+                                            @click=""
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
+                                            Swap
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
+
                 </div>
                 <div class="sm:hidden">
                     <dropdown align="left">
@@ -286,8 +333,26 @@
                     <tr
                         class="border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500"
                     >
-                        <th class="bg-gray-100 border-b-2 border-gray-20">
+                        <th
+                            class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20"
+                        >
                             <div class="w-2"></div>
+                        </th>
+                        <th
+                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"
+                        >
+                            <label
+                                :for="`check-all`"
+                                class="flex gap-3 justify-center w-full px-2 py-1"
+                            >
+                                <input
+                                    @change="handleCheckAll"
+                                    :id="`check-all`"
+                                    :checked="actionForm.ids.length > 0"
+                                    type="checkbox"
+                                />
+                                {{ actionForm.ids.length ?? "" }}
+                            </label>
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -359,7 +424,7 @@
                         >
                             <TableDateFilter
                                 labelClass="text-[11px]"
-                                label="Fecha de Docoumento"
+                                label="Fecha de Documento"
                                 v-model:startDate="filterForm.docStartDate"
                                 v-model:endDate="filterForm.docEndDate"
                                 v-model:noDate="filterForm.docNoDate"
@@ -416,7 +481,7 @@
                     >
                         <td
                             :class="[
-                                'border-b border-gray-200',
+                                'sticky left-0 z-10 border-b border-gray-200',
                                 {
                                     'bg-indigo-500': item.is_accepted === null,
                                     'bg-green-500': item.is_accepted == true,
@@ -424,6 +489,21 @@
                                 },
                             ]"
                         ></td>
+                        <td
+                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
+                        >
+                            <label
+                                :for="`check-${item.id}`"
+                                class="block w-full px-2 py-1"
+                            >
+                                <input
+                                    v-model="actionForm.ids"
+                                    :value="item.id"
+                                    :id="`check-${item.id}`"
+                                    type="checkbox"
+                                />
+                            </label>
+                        </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -505,59 +585,57 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                        <div
-                                    v-if="item.is_accepted === null"
-                                    class="flex gap-3 justify-center w-full"
+                            <div
+                                v-if="item.is_accepted === null"
+                                class="flex gap-3 justify-center w-full"
+                            >
+                                <button
+                                    @click="
+                                        () => validateRegister(item.id, true)
+                                    "
+                                    class="flex items-center rounded-xl text-blue-500 hover:bg-green-200"
                                 >
-                                    <button
-                                        @click="
-                                            () =>
-                                                validateRegister(item.id, true)
-                                        "
-                                        class="flex items-center rounded-xl text-blue-500 hover:bg-green-200"
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5 text-green-500"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5 text-green-500"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                    <button
-                                        @click="
-                                            () =>
-                                                validateRegister(item.id, false)
-                                        "
-                                        type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200"
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                    </svg>
+                                </button>
+                                <button
+                                    @click="
+                                        () => validateRegister(item.id, false)
+                                    "
+                                    type="button"
+                                    class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5 text-red-500"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5 text-red-500"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div v-else class="text-center text-green-500">
-                                    Aceptado
-                                </div>
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div v-else class="text-center text-green-500">
+                                Aceptado
+                            </div>
                         </td>
                         <td
                             v-if="
@@ -566,9 +644,9 @@
                             "
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            <div class="flex items-center justify-center gap-3 w-full">
-                                
-
+                            <div
+                                class="flex items-center justify-center gap-3 w-full"
+                            >
                                 <div class="flex gap-3 mr-3">
                                     <button
                                         @click="openEditAdditionalModal(item)"
@@ -599,6 +677,9 @@
                         >
                             TOTAL
                         </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                        ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                         ></td>
@@ -1381,6 +1462,72 @@
             </div>
         </Modal>
 
+        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Actualización Masiva
+                </h2>
+                <form @submit.prevent="submitOpNuDatModal">
+                    <div class="space-y-12">
+                        <div
+                            class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12"
+                        >
+                            <div>
+                                <InputLabel
+                                    for="operation_number"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Numero de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="opNuDateForm.operation_number"
+                                        id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="opNuDateForm.errors.operation_number"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="operation_date"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Fecha de Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="date"
+                                        v-model="opNuDateForm.operation_date"
+                                        id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="opNuDateForm.errors.operation_date"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeOpNuDatModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button
+                                type="submit"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
             itemType="Costo Adicional"
@@ -1411,7 +1558,11 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { reactive, ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import {
+    TrashIcon,
+    PencilSquareIcon,
+    ServerIcon,
+} from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -1425,7 +1576,6 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
-import TableStateFilter from "@/Components/TableStateFilter.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1634,12 +1784,9 @@ const docTypes = [
     "Voucher de Pago",
 ];
 
-const stateTypes = [
-    "Aceptado",
-    "Pendiente",
-];
+const stateTypes = ["Aceptado", "Pendiente"];
 
-const filterForm = ref({
+const initialFilterFormState = {
     search: "",
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
@@ -1651,7 +1798,9 @@ const filterForm = ref({
     docStartDate: "",
     docEndDate: "",
     docNoDate: false,
-});
+};
+
+const filterForm = ref({...initialFilterFormState});
 
 watch(
     () => [
@@ -1784,6 +1933,79 @@ async function validateRegister(ac_id, is_accepted) {
     } catch (e) {
         console.log(e);
     }
+}
+
+
+//block actions
+
+const actionForm = ref({
+    ids: [],
+});
+
+const handleCheckAll = (e) => {
+    if (e.target.checked) {
+        actionForm.value.ids = dataToRender.value.map((item) => item.id);
+    } else {
+        actionForm.value.ids = [];
+    }
+};
+
+watch(
+    () => filterForm.value,
+    () => {
+        actionForm.value = { ids: [] };
+    },
+    { deep: true }
+);
+
+
+const opNuDateForm = useForm({
+    operation_date: '',
+    operation_number: '',
+})
+
+const showOpNuDatModal = ref(false)
+
+const closeOpNuDatModal = () => {
+    showOpNuDatModal.value = false
+    isFetching.value = false
+    opNuDateForm.reset()
+}
+
+const openOpNuDaModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros selccionados");
+        return;
+    }
+    showOpNuDatModal.value = true
+}
+
+const submitOpNuDatModal = async () => {
+    isFetching.value = true;
+    const res = await axios
+        .post(route("projectmanagement.additionalCosts.massiveUpdate"), {
+            ...opNuDateForm.data(),
+            ...actionForm.value
+        })
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, opNuDateForm);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+    
+    const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
+    res.data.forEach(update => {
+        if (originalMap.has(update.id)) {
+            originalMap.set(update.id, update);
+        }
+    });
+    const updatedArray = Array.from(originalMap.values());
+    dataToRender.value = updatedArray
+    closeOpNuDatModal();
+    notify("Registros Seleccionados Actualizados");
 }
 
 

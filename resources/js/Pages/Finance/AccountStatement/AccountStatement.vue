@@ -27,7 +27,7 @@
                             type="button"
                             @click="
                                 () => {
-                                    filterForm.month = '';
+                                    filterForm = {month: '', search : ''}
                                     handleSearch(null, true);
                                 }
                             "
@@ -153,6 +153,7 @@
                         type="month"
                         @input="
                             (e) => {
+                                filterForm.search = ''
                                 handleSearch(e.target.value);
                             }
                         "
@@ -316,7 +317,12 @@
                     >
                         <tr class="text-gray-700 bg-white hover:bg-slate-200">
                             <td
-                                class="bg-gray-400 border-b border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
+                                class="w-2 border-b border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
+                                :class="[
+                                    item.state === 'No aplica' && 'bg-gray-400',
+                                    item.state === 'Validado' && 'bg-green-400',
+                                    item.state === 'No validado' && 'bg-red-400',
+                                ]"
                             ></td>
                             <td
                                 class="border-b border-r border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
@@ -912,6 +918,14 @@
             @closeModal="closeDeleteModal"
             :processing="isFetching"
         />
+        <DeleteOperationModal
+            :confirmingDeletion="showMasiveDeleteModal"
+            title="ELIMINACIÓN MASIVA"
+            message="Todos los registros seleccionados se eliminarán"
+            :deleteFunction="deleteMasiveAS"
+            @closeModal="closeMasiveDeleteModal"
+            :processing="isFetching"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -921,6 +935,7 @@ import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import DeleteOperationModal from "@/Components/DeleteOperationModal.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -979,10 +994,11 @@ const dataToRender = ref({
     totalPayment,
 });
 const costsFounded = ref(initStateCostsFounded);
-const filterForm = ref({
+const initialFilterFormState = {
     month: defaultMonth,
     search: "",
-});
+}
+const filterForm = ref({...initialFilterFormState});
 const form = useForm({
     id: null,
     operation_date: "",
@@ -997,10 +1013,14 @@ const form = useForm({
 const importForm = useForm({
     excel_file: null,
 });
+const actionForm = ref({
+    ids: [],
+});
 const showFormModal = ref(false);
 const showImportModal = ref(false);
-const isFetching = ref(false);
 const showDeleteModal = ref(false);
+const showMasiveDeleteModal = ref(false);
+const isFetching = ref(false);
 const asToDeleteId = ref(null);
 const dataToShow = ref(accountStatements);
 const row = ref(0);
@@ -1166,8 +1186,9 @@ const toggleDetails = async (id) => {
         row.value === costsFounded.value?.scData[0]?.account_statement_id ||
         row.value === costsFounded.value?.peData[0]?.account_statement_id
     ) {
-        row.value = 0;
+        row.value = 0
     } else {
+        row.value = 0
         if (costsFounded.value?.acData.length > 0) {
             row.value = costsFounded.value?.acData[0].account_statement_id;
         }
@@ -1196,9 +1217,7 @@ const handleExpansible = async (id) => {
     );
 };
 
-const actionForm = ref({
-    ids: [],
-});
+//block actions
 
 const handleCheckAll = (e) => {
     if (e.target.checked) {
@@ -1215,8 +1234,35 @@ const handleBlockDelete = () => {
         notifyWarning("No hay registros selccionados");
         return;
     }
-    console.log('het')
+    showMasiveDeleteModal.value = true
 };
+
+const closeMasiveDeleteModal = () => {
+    showMasiveDeleteModal.value = false
+    isFetching.value = false
+    actionForm.value.ids = []
+}
+
+const deleteMasiveAS = async() => {
+    isFetching.value = true;
+    const res = await axios
+        .post(route("finance.account_statement.masivedelete"),{
+                ...actionForm.value,
+                month: filterForm.value.month,
+                all: filterForm.value.month ? false : true,
+            }
+        )
+        .catch((e) => {
+            isFetching.value = false;
+            notifyError("Server Error");
+        });
+    dataToRender.value = res.data.dataToRender;
+    closeMasiveDeleteModal();
+    notify("Registros Seleccionados Eliminados");
+}
+
+
+
 
 //search for costs in all tables
 watch([() => form.operation_number, () => form.operation_date], async () => {
@@ -1264,4 +1310,12 @@ watch(
         dataToShow.value = val;
     }
 );
+watch(
+    () => filterForm.value,
+    () => {
+        actionForm.value = { ids: [] };
+    },
+    { deep: true }
+);
+
 </script>

@@ -1,9 +1,9 @@
 <template>
 
-    <Head title="CICSA" />
+    <Head title="F. Pext" />
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
-        <template #header> Proceso CICSA </template>
+        <template #header> Facturación Pext </template>
 
         <div class="min-w-full ">
             <div class="flex justify-between">
