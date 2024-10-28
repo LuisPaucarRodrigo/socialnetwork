@@ -178,7 +178,10 @@ class CicsaController extends Controller
                                 $c->where('project_name', 'like', "%$item%")
                                     ->orWhere('project_code', 'like', "%$item%")
                                     ->orWhere('cpe', 'like', "%$item%");
-                            });
+                            })
+                                ->whereHas('cicsa_purchase_order', function ($e) use ($item) {
+                                    $e->where('oc_number', 'iike', "%$item%");
+                                });
                         });
                 });
 

@@ -501,9 +501,10 @@ class ApiController extends Controller
         }
     }
 
-    public function cicsaProcess()
+    public function cicsaProcess($zone)
     {
-        $cicsaProcess = CicsaAssignation::select('id', 'project_name')->get();
+        $cicsaProcess = CicsaAssignation::select('id', 'project_name','zone')
+        ->where('zone',$zone)->get();
         $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }

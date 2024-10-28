@@ -8,7 +8,7 @@
         <div class="min-w-full">
             <div class="flex justify-end mb-5">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
                 </div>
             </div>
             <div class="overflow-x-auto h-full rounded-lg shadow">
@@ -147,20 +147,20 @@
                                 :class="item.days_late > 0 ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.invoice_date && item?.credit_to ?
-        item.days_late + ' día(s)' : '' }}
+                                        item.days_late + ' día(s)' : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 px-5 py-3 text-[13px]"
                                 :class="item?.state === 'Con deuda' && !item?.credit_to ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.invoice_date && item?.credit_to ?
-        item?.state : '' }}
+                                    item?.state : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.amount ? 'S/. ' +
-        item?.amount.toFixed(2) : ''
+                                        item?.amount.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
@@ -177,7 +177,7 @@
                             <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.checking_account_amount ? 'S/. ' +
-        item?.checking_account_amount.toFixed(2) : ''
+                                        item?.checking_account_amount.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
@@ -194,7 +194,7 @@
                             <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.amount_bank ? 'S/. ' +
-        item?.amount_bank.toFixed(2) : ''
+                                        item?.amount_bank.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
@@ -247,7 +247,7 @@ const chargeAreas = ref(props.charge_areas);
 const totalAmount = ref(props.total_amount);
 
 // Función de búsqueda
-async function search ($search) {
+async function search($search) {
     try {
         const response = await axios.post(route('cicsa.charge'), { searchQuery: $search });
         chargeAreas.value = response.data.charge_areas;
@@ -258,4 +258,3 @@ async function search ($search) {
     }
 };
 </script>
-

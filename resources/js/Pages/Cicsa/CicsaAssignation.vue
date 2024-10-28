@@ -54,6 +54,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Zona
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha limite de Proyecto
                             </th>
                             <th
@@ -99,6 +103,11 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.zone }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -213,6 +222,22 @@
                             </div>
                         </div>
                         <div class="">
+                            <InputLabel for="zone">Zona</InputLabel>
+                            <div class="mt-2">
+                                <select id="zone" v-model="form.zone" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Zona</option>
+                                    <option>Arequipa</option>
+                                    <option>Moquegua</option>
+                                    <option>Tacna</option>
+                                    <option>Cuzco</option>
+                                    <option>Puno</option>
+                                    <option>MDD</option>
+                                </select>
+                                <InputError :message="form.errors.zone" />
+                            </div>
+                        </div>
+                        <div class="">
                             <InputLabel for="project_deadline">Fecha Limite del Proyecto</InputLabel>
                             <div class="mt-2">
                                 <input type="date" v-model="form.project_deadline" autocomplete="off"
@@ -273,6 +298,7 @@ const initialState = {
     customer: '',
     project_code: '',
     cpe: '',
+    zone: '',
     project_deadline: '',
     manager: '',
     user_name: auth.user.name,
