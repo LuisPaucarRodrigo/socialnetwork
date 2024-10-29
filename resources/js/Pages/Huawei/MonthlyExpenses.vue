@@ -630,7 +630,6 @@ const closeModal = () => {
 };
 
 function submit(update) {
-    console.log(form)
     if (!update){
         const url = route('huawei.monthlyexpenses.expenses.store');
         form.post(url, {
@@ -699,26 +698,33 @@ const employees = props.project.huawei_monthly_employees.map(employee => {
 });
 
 const zones = [
-    "Arequipa",
-    "Moquegua",
-    "Tacna",
-    "Cuzco",
-    "Puno",
-    "MDD"
+    "DESAGUADERO",
+    "HUAWEI",
+    "HUAWEI-AQP",
+    "HUAWEI-PUNO",
+    "HUAWEI-TACNA",
+    "HUAWEI-CHALA",
+    "HUAWEI-CUSCO",
+    "HUAWEI-ILO",
+    "HUAWEI-JULIACA",
+    "HUAWEI-LA PUNTA",
+    "HUAWEI-ORCOPAMPA",
+    "HUAWEI-ABANCAY",
+    "HUAWEI-BANOSPAMPA",
+    "HUAWEI-EL PALOMAR",
+    "IP HUAWEI",
+    "PDI AQP",
+    "PERAL"
 ];
 
 const expenseTypes = [
-    "Hospedaje",
-    "Mensajería",
+    "Combustible",
     "Consumibles",
-    "Pasaje Interprovincial",
-    "Taxis y Pasajes",
-    "Bandeos",
-    "Peaje",
-    "Herramientas",
-    "Equipos",
-    "EPPs",
-    "Seguros y Pólizas",
+    "Fletes",
+    "Hospedaje",
+    "Materiales",
+    "Movilidad",
+    "Planilla",
     "Otros",
 ];
 
@@ -728,7 +734,8 @@ const cdp_types = [
     "Depósito",
     "Factura",
     "Boleta",
-    "Voucher de Pago",
+    "RH",
+    "Yape",
 ];
 
 
@@ -744,24 +751,25 @@ const filterForm = ref({
 
 watch(() => [
     filterForm.value.search,
-    filterForm.value.selectedCostCenter,
+    filterForm.value.selectedEmployees,
     filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
-    filterForm.value.selectedDocTypes,
+    filterForm.value.selectedCDPTypes,
 ],
     () => {
-
+        filterMode.value = true,
         search_advance(filterForm.value);
-    }
+    },
+    {deep: true}
 );
 
-async function search_advance(data) {
-    let url = route("projectmanagement.pext.expenses.index", {
-        pext_project_id: props.pext_project_id,
+async function search_advance($data) {
+    let url = route("huawei.monthlyexpenses.expenses.searchadvance", {
+        project: props.project.id,
     })
     try {
-        let response = await axios.post(url, data);
-        expenses.value.data = response.data;
+        let response = await axios.post(url, $data);
+        expenses.value.data = response.data.expenses;
     } catch (error) {
         console.error('Error en la solicitud:', error);
     }

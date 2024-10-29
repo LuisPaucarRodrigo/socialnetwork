@@ -111,7 +111,7 @@ class HuaweiMonthlyController extends Controller
             });
 
         // Ejecutar la consulta y obtener los resultados
-        $expenses = $expensesQuery->get();
+        $expenses = $expensesQuery->orderBy('created_at', 'desc')->get();
         $project->load(['huawei_monthly_employees' => function ($query) {
             $query->select('employees.id', 'employees.name', 'employees.lastname'); // Selecciona solo los campos necesarios
         }]);
@@ -120,6 +120,26 @@ class HuaweiMonthlyController extends Controller
             'project' => $project,
             'search' => $request
         ]);
+    }
+
+    public function searchAdvance (HuaweiMonthlyProject $project, Request $request)
+    {
+        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
+        $employeeCount = $project->huawei_monthly_employees()->count();
+        if (count($request->selectedZones) < 17){
+            $expenses->whereIn('zone', $request->selectedZones);
+        }
+        if (count($request->selectedExpenseTypes) < 8){
+            $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
+        }
+        if (count($request->selectedCDPTypes) < 6){
+            $expenses->whereIn('cdp_type', $request->selectedCDPTypes);
+        }
+        if (count($request->selectedEmployees) < $employeeCount){
+            $expenses->whereIn('employee', $request->selectedEmployees);
+        }
+        $expenses = $expenses->orderBy('created_at', 'desc')->get(); // Asegúrate de asignar el resultado
+        return response()->json(["expenses" => $expenses], 200);
     }
 
     public function storeExpense (HuaweiMonthlyExpenseRequest $request)

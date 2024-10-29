@@ -199,6 +199,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     //monthly_expenses
     Route::get('huawei/monthly_projects/{project}/monthly_expenses/get', [HuaweiMonthlyController::class, 'getExpenses'])->name('huawei.monthlyexpenses.expenses');
     Route::get('huawei/monthly_projects/{project}/monthly_expenses/{request}/search', [HuaweiMonthlyController::class, 'searchExpenses'])->name('huawei.monthlyexpenses.expenses.search');
+    Route::post('huawei/monthly_projects/{project}/monthly_expenses/search_advance/search', [HuaweiMonthlyController::class, 'searchAdvance'])->name('huawei.monthlyexpenses.expenses.searchadvance');
     Route::post('huawei/monthly_projects/monthly_expenses/store/post', [HuaweiMonthlyController::class, 'storeExpense'])->name('huawei.monthlyexpenses.expenses.store');
     Route::post('huawei/monthly_projects/monthly_expenses/{expense}/update', [HuaweiMonthlyController::class, 'updateExpense'])->name('huawei.monthlyexpenses.expenses.update');
     Route::delete('huawei/monthly_projects/monthly_expenses/{expense}/delete', [HuaweiMonthlyController::class, 'deleteExpense'])->name('huawei.monthlyexpenses.expenses.delete');
