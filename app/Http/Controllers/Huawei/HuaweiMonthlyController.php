@@ -83,30 +83,140 @@ class HuaweiMonthlyController extends Controller
     //expenses
     public function getExpenses (HuaweiMonthlyProject $project)
     {
-        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->paginate(15);
+        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->orderBy('created_at', 'desc')->paginate(15);
+        $project->load(['huawei_monthly_employees' => function ($query) {
+            $query->select('employees.id', 'employees.name', 'employees.lastname'); // Selecciona solo los campos necesarios
+        }]);
         return Inertia::render('Huawei/MonthlyExpenses', [
-            'expenses' => $expenses,
+            'expense' => $expenses,
             'project' => $project
+        ]);
+    }
+
+    public function searchExpenses(HuaweiMonthlyProject $project, $request)
+    {
+        $searchTerm = strtolower($request);
+
+        $expensesQuery = HuaweiMonthlyExpense::query()
+            ->where('huawei_monthly_project_id', $project->id)
+            ->where(function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(employee) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(cdp_type) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(op_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(ruc) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"]);
+            });
+
+        // Ejecutar la consulta y obtener los resultados
+        $expenses = $expensesQuery->get();
+        $project->load(['huawei_monthly_employees' => function ($query) {
+            $query->select('employees.id', 'employees.name', 'employees.lastname'); // Selecciona solo los campos necesarios
+        }]);
+        return Inertia::render('Huawei/MonthlyExpenses', [
+            'expense' => $expenses,
+            'project' => $project,
+            'search' => $request
         ]);
     }
 
     public function storeExpense (HuaweiMonthlyExpenseRequest $request)
     {
         $data = $request->validated();
-        HuaweiMonthlyExpense::create($data);
+        $expense = HuaweiMonthlyExpense::create($data);
+
+        $expenseDirectory = 'documents/huawei/monthly_expenses/';
+        $imageFields = ['image1', 'image2', 'image3'];
+        $imageUpdates = [];
+
+        foreach ($imageFields as $index => $field) {
+            if ($request->hasFile($field)) {
+                $image = $request->file($field);
+                $filename = "expense_{$expense->id}_" . ($index + 1) . '_' . time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path($expenseDirectory), $filename);
+                $imageUpdates[$field] = $filename;
+            } else {
+                $imageUpdates[$field] = null;
+            }
+        }
+
+        $expense->update($imageUpdates);
+
         return redirect()->back();
     }
 
-    public function updateExpense (HuaweiMonthlyExpense $expense, HuaweiMonthlyExpenseRequest $request)
+    public function updateExpense(HuaweiMonthlyExpense $expense, HuaweiMonthlyExpenseRequest $request)
     {
         $data = $request->validated();
+
+        $expenseDirectory = 'documents/huawei/monthly_expenses/';
+
+        $imageFields = ['image1', 'image2', 'image3'];
+
+        foreach ($imageFields as $index => $field) {
+            if ($request->hasFile($field)) {
+                if ($expense->$field) {
+                    $oldPath = public_path($expenseDirectory . $expense->$field);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+
+                $imageFile = $request->file($field);
+                $filename = "expense_{$expense->id}_" . ($index + 1) . '_' . time() . '.' . $imageFile->getClientOriginalExtension();
+                $imageFile->move(public_path('documents/huawei/monthly_expenses/'), $filename);
+                $data[$field] = $filename;
+            } else {
+                $data[$field] = $expense->$field;
+            }
+        }
+
         $expense->update($data);
-        return redirect()->back();
+
+        return redirect()->back()->with('success', 'Gasto actualizado correctamente y archivos procesados.');
+    }
+
+    public function showImage (HuaweiMonthlyExpense $expense, $image)
+    {
+        $field = 'image' . $image;
+        $imageToShow = $expense->$field;
+        $path = public_path("documents/huawei/monthly_expenses/$imageToShow");
+        if (file_exists($path)){
+            ob_end_clean();
+            return response()->file($path);
+        }
+        abort(403, 'Imagen no encontrada');
     }
 
     public function deleteExpense (HuaweiMonthlyExpense $expense)
     {
+        $expenseDirectory = 'documents/huawei/monthly_expenses/';
+        $imageFields = ['image1', 'image2', 'image3'];
+
+        foreach ($imageFields as $index => $field) {
+            if ($expense->$field) {
+                $oldPath = public_path($expenseDirectory . $expense->$field);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
+        }
+
         $expense->delete();
         return redirect()->back();
+    }
+
+    public function validateExpense (Request $request, HuaweiMonthlyExpense $expense)
+    {
+        $validatedData = $request->validate([
+            'is_accepted' => 'required|boolean'
+        ]);
+
+        $expense->update($validatedData);
+
+        return response()->noContent();
     }
 }

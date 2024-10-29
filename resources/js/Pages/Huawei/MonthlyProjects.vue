@@ -40,7 +40,7 @@
                         <div class="inline-flex justify-end items-start gap-x-2">
                             <button @click.prevent="editProject(item)"
                                 class="flex items-start">
-                                <PencilIcon class="h-5 w-5 text-teal-600" />
+                                <PencilSquareIcon class="h-5 w-5 text-yellow-400" />
                             </button>
                         </div>
                     </div>
@@ -50,21 +50,15 @@
                         </h3>
                     </div>
 
-                    <!-- <div
-                        class="text-gray-500 text-sm mt-1">
-                        <div class="grid grid-cols-1 gap-y-1">
-                            <Link
-                                :href="route('huawei.projects.additionalcosts.summary', { huawei_project: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Gestión de Gastos
-                            </Link>
-                            <Link
-                                :href="route('huawei.projects.balance', { huawei_project: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Balance del Proyecto
-                            </Link>
+                    <div class="text-gray-500 text-sm mt-1">
+                            <div class="grid grid-cols-1 gap-y-1">
+                                <Link
+                                    :href="route('huawei.monthlyexpenses.expenses', { project: item.id })"
+                                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                    Gastos
+                                </Link>
+                            </div>
                         </div>
-                    </div> -->
                 </div>
             </div>
             <br>
@@ -174,7 +168,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, computed } from 'vue';

@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('ruc')->nullable();
             $table->string('description');
             $table->double('amount');
+            $table->string('image1');
+            $table->string('image2')->nullable();
+            $table->string('image3')->nullable();
             $table->boolean('is_accepted')->nullable();
             $table->string('refund_status');
             $table->date('ec_expense_date')->nullable();

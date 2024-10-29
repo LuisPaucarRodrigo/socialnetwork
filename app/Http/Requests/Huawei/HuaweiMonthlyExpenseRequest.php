@@ -11,7 +11,7 @@ class HuaweiMonthlyExpenseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -32,10 +32,14 @@ class HuaweiMonthlyExpenseRequest extends FormRequest
             'ruc' => 'nullable',
             'description' => 'required',
             'amount' => 'required',
+            'image1' => 'required',
+            'image2' => 'nullable',
+            'image3' => 'nullable',
             'refund_status' => 'required',
             'ec_expense_date' => 'nullable',
             'ec_op_number' => 'nullable',
-            'ec_amount' => 'nullable'
+            'ec_amount' => 'nullable',
+            'huawei_monthly_project_id' => 'required'
         ];
     }
 }

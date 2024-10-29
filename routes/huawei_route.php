@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Huawei\HuaweiApiController;
 use App\Http\Controllers\Huawei\HuaweiBalanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Inventory\HuaweiController;
@@ -196,6 +195,15 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/monthly_projects/{request}/search', [HuaweiMonthlyController::class, 'searchProjects'])->name('huawei.monthlyprojects.search');
     Route::post('huawei/monthly_projects/store', [HuaweiMonthlyController::class, 'storeProject'])->name('huawei.monthlyprojects.store');
     Route::put('huawei/monthly_projects/{project}/update', [HuaweiMonthlyController::class, 'updateProject'])->name('huawei.monthlyprojects.update');
+
+    //monthly_expenses
+    Route::get('huawei/monthly_projects/{project}/monthly_expenses/get', [HuaweiMonthlyController::class, 'getExpenses'])->name('huawei.monthlyexpenses.expenses');
+    Route::get('huawei/monthly_projects/{project}/monthly_expenses/{request}/search', [HuaweiMonthlyController::class, 'searchExpenses'])->name('huawei.monthlyexpenses.expenses.search');
+    Route::post('huawei/monthly_projects/monthly_expenses/store/post', [HuaweiMonthlyController::class, 'storeExpense'])->name('huawei.monthlyexpenses.expenses.store');
+    Route::post('huawei/monthly_projects/monthly_expenses/{expense}/update', [HuaweiMonthlyController::class, 'updateExpense'])->name('huawei.monthlyexpenses.expenses.update');
+    Route::delete('huawei/monthly_projects/monthly_expenses/{expense}/delete', [HuaweiMonthlyController::class, 'deleteExpense'])->name('huawei.monthlyexpenses.expenses.delete');
+    Route::put('huawei/monthly_projects/monthly_expenses/{expense}/validate', [HuaweiMonthlyController::class, 'validateExpense'])->name('huawei.monthlyexpenses.expenses.validate');
+    Route::get('huawei/monthly_projects/monthly_expenses/{expense}/{image}/show_image', [HuaweiMonthlyController::class, 'showImage'])->name('huawei.monthlyexpenses.expenses.showimage');
 });
 
 
