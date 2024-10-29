@@ -777,13 +777,7 @@ async function search_advance($data) {
 
 
 function openExportExcel() {
-    const uniqueParam = `timestamp=${new Date().getTime()}`;
-    const url =
-        route("projectmanagement.pext.expenses.export", {
-            pext_project_id: props.pext_project_id,
-        }) +
-        "?" +
-        uniqueParam;
+    const url = route('huawei.monthlyexpenses.expenses.export', {project: props.project.id});
     window.location.href = url;
 }
 

@@ -44,9 +44,9 @@ Usuarios
             <template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
                 <a v-if="subSectionsPorVencer.length + subSectionsPorVencer7.length > 0 || permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0 || employeeBirthdayAlarms.length > 0 || documentsToExpire.length>0"
                     class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-                    @click="showingHumanResource = (showingMembers && showingMembers7) 
-                                ? false 
-                                : !showingHumanResource; 
+                    @click="showingHumanResource = (showingMembers && showingMembers7)
+                                ? false
+                                : !showingHumanResource;
                                  showingMembers = showingMembers7 = false;
                                  showDocumentsToExpireAlarms = false;
                          ">
@@ -265,7 +265,7 @@ Usuarios
                             </div>
                         </div>
                         </MyTransition>
-                       
+
                     </div>
                 </template>
 
@@ -717,6 +717,12 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.inventory.show', {warehouse: 1})">Inventario de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.quickmaterials')">Materiales Internos</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.internalguides')">Guías Internas</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.sites')">Sites de Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
@@ -724,6 +730,9 @@ Usuarios
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.projects', {status: 1, prefix: 'Claro'})">Proyectos de Huawei</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.monthlyprojects')">Proyectos Mensuales</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>

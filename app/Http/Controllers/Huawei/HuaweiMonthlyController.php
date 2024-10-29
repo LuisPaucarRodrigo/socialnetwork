@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Huawei;
 
+use App\Exports\HuaweiMonthlyExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Huawei\HuaweiMonthlyExpenseRequest;
 use App\Models\Employee;
@@ -9,7 +10,7 @@ use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiMonthlyProject;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class HuaweiMonthlyController extends Controller
 {
@@ -238,5 +239,10 @@ class HuaweiMonthlyController extends Controller
         $expense->update($validatedData);
 
         return response()->noContent();
+    }
+
+    public function exportMonthlyExpenses (HuaweiMonthlyProject $project)
+    {
+        return Excel::download(new HuaweiMonthlyExport($project->id), 'Gastos del proyecto ' . $project->description . '.xlsx');
     }
 }
