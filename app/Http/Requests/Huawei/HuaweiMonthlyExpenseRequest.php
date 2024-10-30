@@ -4,25 +4,16 @@ namespace App\Http\Requests\Huawei;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
-use App\Models\Huawei\HuaweiMonthlyProject;
 use App\Models\HuaweiMonthlyProject as ModelsHuaweiMonthlyProject;
 use Carbon\Carbon;
 
 class HuaweiMonthlyExpenseRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -47,31 +38,28 @@ class HuaweiMonthlyExpenseRequest extends FormRequest
         ];
     }
 
-    /**
-     * Configure the validator instance.
-     *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
-     */
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
             $projectId = $this->input('huawei_monthly_project_id');
+            $expenseDateInput = $this->input('expense_date');
 
-            // Buscar el proyecto y obtener la fecha en formato 'Y-m'
+            // Verificar que el ID del proyecto esté presente y exista
             $project = ModelsHuaweiMonthlyProject::find($projectId);
 
-            if ($project) {
-                $projectDate = Carbon::createFromFormat('Y-m', $project->date);
-                $startOfMonth = $projectDate->startOfMonth();
-                $endOfMonth = $projectDate->endOfMonth();
+            if ($project && $expenseDateInput) {
+                // Obtener solo el mes y el año del proyecto
+                $projectMonth = Carbon::createFromFormat('Y-m', $project->date)->format('Y-m');
 
-                // Validar que 'expense_date' esté dentro del rango permitido
-                $expenseDate = Carbon::parse($this->input('expense_date'));
+                // Obtener el mes y el año de la fecha de gasto
+                $expenseMonth = Carbon::parse($expenseDateInput)->format('Y-m');
 
-                if ($expenseDate->lt($startOfMonth) || $expenseDate->gt($endOfMonth)) {
-                    $validator->errors()->add('expense_date', 'La fecha de gasto debe estar dentro del mes y año del proyecto.');
+                // Comparar ambos valores
+                if ($expenseMonth !== $projectMonth) {
+                    $validator->errors()->add('expense_date', 'La fecha de gasto debe estar dentro del mismo mes y año del proyecto: ' . $project->date);
                 }
+            } else {
+                $validator->errors()->add('huawei_monthly_project_id', 'El proyecto no existe o no se ha seleccionado.');
             }
         });
     }

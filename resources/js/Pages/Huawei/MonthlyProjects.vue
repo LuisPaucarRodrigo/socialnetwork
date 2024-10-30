@@ -190,7 +190,8 @@ const showModal = ref(false);
 const showSuccessModal = ref(false);
 const successMessage = ref('');
 const selectedEmployee = ref('');
-const huaweiIds = [1];
+const huaweiIds = [37, 42, 26, 18, 32, 8, 43, 41, 39, 10, 44, 45];
+
 const huaweiEmployees = props.employees.filter(employee => huaweiIds.includes(employee.id));
 
 

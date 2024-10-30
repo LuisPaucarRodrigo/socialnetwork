@@ -257,7 +257,7 @@
                         </td>
                         <td
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                            {{ item.is_accepted === true ? 'Aceptado' : (item.is_accepted === null ? 'Pendiente' : 'Rechazado') }}
+                            {{ item.is_accepted === 1 ? 'Aceptado' : (item.is_accepted === null ? 'Pendiente' : 'Rechazado') }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center gap-3 w-full justify-center">
