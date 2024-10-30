@@ -725,6 +725,7 @@ const expenseTypes = [
     "Materiales",
     "Movilidad",
     "Planilla",
+    "Herramientas",
     "Otros",
 ];
 
@@ -736,6 +737,7 @@ const cdp_types = [
     "Boleta",
     "RH",
     "Yape",
+    "Pendiente Factura"
 ];
 
 

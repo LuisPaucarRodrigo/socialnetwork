@@ -130,10 +130,10 @@ class HuaweiMonthlyController extends Controller
         if (count($request->selectedZones) < 17){
             $expenses->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 8){
+        if (count($request->selectedExpenseTypes) < 9){
             $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        if (count($request->selectedCDPTypes) < 6){
+        if (count($request->selectedCDPTypes) < 7){
             $expenses->whereIn('cdp_type', $request->selectedCDPTypes);
         }
         if (count($request->selectedEmployees) < $employeeCount){
