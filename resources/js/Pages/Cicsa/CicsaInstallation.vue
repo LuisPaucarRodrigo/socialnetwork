@@ -65,7 +65,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto Proyectado
+                                Monto Proyectado sin IGV
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -252,7 +252,7 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.projected_amount" id="projected_amount"
+                                <input type="number" v-model="form.projected_amount" id="projected_amount" step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
@@ -622,14 +622,14 @@ const pextList = ref([])
 const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
-    coordinator: "",
-    cicsa_assignation_id: "",
-    pext_date: "",
-    pint_date: "",
-    projected_amount: "",
-    conformity: "Pendiente",
-    report: "Pendiente",
-    shipping_report_date: "",
+    coordinator: '',
+    cicsa_assignation_id: '',
+    pext_date: '',
+    pint_date: '',
+    projected_amount: '',
+    conformity: 'Pendiente',
+    report: 'Pendiente',
+    shipping_report_date: '',
 };
 
 const form = useForm({ ...initialState });
@@ -707,9 +707,13 @@ async function submit() {
         }, 1500);
     } catch (error) {
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
         } else {
-            console.error('Error desconocido:', error);
+            console.error("Network or other error:", error)
         }
     }
 }

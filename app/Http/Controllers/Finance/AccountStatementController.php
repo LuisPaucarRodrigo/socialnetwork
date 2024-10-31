@@ -99,7 +99,7 @@ class AccountStatementController extends Controller
             ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $acData->transform(function ($item) {
-            $item->project->setAppends(['code']);
+            $item->project->setAppends(['name']);
             $item->setAppends([]);
             return $item;
         });
@@ -114,7 +114,7 @@ class AccountStatementController extends Controller
             ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $scData->transform(function ($item) {
-            $item->project->setAppends(['code']);
+            $item->project->setAppends(['name']);
             $item->setAppends([]);
             return $item;
         });
@@ -152,7 +152,7 @@ class AccountStatementController extends Controller
             ->where('account_statement_id', $as_id)
             ->get();
         $acData->transform(function ($item) {
-            $item->project->setAppends(['code']);
+            $item->project->setAppends(['name']);
             $item->setAppends([]);
             return $item;
         });
@@ -166,7 +166,7 @@ class AccountStatementController extends Controller
             ->where('account_statement_id', $as_id)
             ->get();
         $scData->transform(function ($item) {
-            $item->project->setAppends(['code']);
+            $item->project->setAppends(['name']);
             $item->setAppends([]);
             return $item;
         });

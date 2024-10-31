@@ -390,7 +390,7 @@ async function submit() {
     let url = route('feasibilities.storeOrUpdate', { cicsa_assignation_id: cicsa_assignation_id.value })
     try {
         const response = await axios.put(url, form);
-        updateFeasibility(cicsa_assignation_id.value,response.data)
+        updateFeasibility(cicsa_assignation_id.value, response.data)
         closeAddFeasibilityModal()
         confirmUpdateFeasibility.value = true
         setTimeout(() => {
@@ -398,9 +398,13 @@ async function submit() {
         }, 1500)
     } catch (error) {
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
         } else {
-            console.error('Error desconocido:', error);
+            console.error("Network or other error:", error)
         }
     }
 }

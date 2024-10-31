@@ -333,9 +333,13 @@ async function submitStore() {
         }, 1500)
     } catch (error) {
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
         } else {
-            console.error('Error desconocido:', error);
+            console.error("Network or other error:", error)
         }
     }
 }

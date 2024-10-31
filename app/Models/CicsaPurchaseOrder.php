@@ -17,6 +17,8 @@ class CicsaPurchaseOrder extends Model
         'master_format',
         'item3456',
         'budget',
+        'document',
+        'observation',
         'user_name',
         'user_id',
         'cicsa_assignation_id'
@@ -45,5 +47,20 @@ class CicsaPurchaseOrder extends Model
     public function cicsa_charge_area()
     {
         return $this->hasOne(CicsaChargeArea::class);
+    }
+
+    protected static function booted()
+    {
+        static::updating(function ($cicsaPurchaseOrder) {
+            if ($cicsaPurchaseOrder->isDirty('document')) {
+                $document = $cicsaPurchaseOrder->getOriginal('document');
+                if ($document) {
+                    $filePath = public_path('documents/cicsa/cicsaPurchaseOrder/' . $document);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+        });
     }
 }

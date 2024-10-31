@@ -8,7 +8,7 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('cicsa.purchase_orders.validation.export')  + '?' + uniqueParam"
+                <a :href="route('cicsa.purchase_orders.validation.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
@@ -337,7 +337,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="observations">Observaciones</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.observations" id="observations" class="block w-full mt-1 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm rounded-md" />
+                                <textarea v-model="form.observations" id="observations"
+                                    class="block w-full mt-1 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm rounded-md" />
                                 <InputError :message="form.errors.observations" />
                             </div>
                         </div>
@@ -425,18 +426,22 @@ function openUpdateModal(item) {
 async function submit() {
     let url = route('cicsa.purchase_orders.validation.update', { cicsa_validation_order_id: form.id });
     try {
-       const response = await axios.put(url,form) 
-       updatePurchaseOrderValidation(response.data)
-       closeAddAssignationModal()
-            confirmUpdateAssignation.value = true
-            setTimeout(() => {
-                confirmUpdateAssignation.value = false
-            }, 1500)
+        const response = await axios.put(url, form)
+        updatePurchaseOrderValidation(response.data)
+        closeAddAssignationModal()
+        confirmUpdateAssignation.value = true
+        setTimeout(() => {
+            confirmUpdateAssignation.value = false
+        }, 1500)
     } catch (error) {
-        if(error.response){
-            setAxiosErrors(error.response.data.errors, form)
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
         } else {
-            console.error(error)
+            console.error("Network or other error:", error)
         }
     }
 }
@@ -458,7 +463,7 @@ const toggleDetails = (cicsa_purchase_order_validation) => {
     }
 }
 
-function updatePurchaseOrderValidation(OCValidation){
+function updatePurchaseOrderValidation(OCValidation) {
     const validations = purchase_validations.value.data || purchase_validations.value;
     const index = validations.findIndex(item => item.id === OCValidation.cicsa_assignation_id)
     const indexOCValidation = validations[index].cicsa_purchase_order_validation.findIndex(item => item.id === OCValidation.id)

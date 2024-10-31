@@ -18,6 +18,7 @@ class CicsaServiceOrder extends Model
         'purchase_order',
         'pdf_invoice',
         'zip_invoice',
+        'document',
         'user_name',
         'user_id',
         'cicsa_assignation_id',
@@ -37,5 +38,20 @@ class CicsaServiceOrder extends Model
     public function cicsa_purchase_order ()
     {
         return $this->belongsTo(CicsaPurchaseOrder::class, 'cicsa_purchase_order_id');
+    }
+
+    protected static function booted()
+    {
+        static::updating(function ($cicsaPurchaseOrder) {
+            if ($cicsaPurchaseOrder->isDirty('document')) {
+                $document = $cicsaPurchaseOrder->getOriginal('document');
+                if ($document) {
+                    $filePath = public_path('documents/cicsa/cicsaServiceOrder/' . $document);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+        });
     }
 }

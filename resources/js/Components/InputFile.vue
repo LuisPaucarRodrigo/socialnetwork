@@ -1,7 +1,7 @@
 <template>
     <input
       type="file"
-      class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
+      class="block w-full py-1.5 rounded-md sm:text-sm focus:border-indigo-600"
       @change="handleChange"
       ref="input"
       :accept="computedAccept"

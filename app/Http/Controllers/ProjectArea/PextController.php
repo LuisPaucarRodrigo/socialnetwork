@@ -175,7 +175,7 @@ class PextController extends Controller
     public function expense_show_image(PextProjectExpense $expense_id)
     {
         $fileName = $expense_id->photo;
-        $filePath = '/documents/additionalcosts/' . $fileName;
+        $filePath = '/documents/expensesPext/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
             ob_end_clean();

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('deposit_date_bank')->nullable();
             $table->string('transaction_number_bank')->nullable();
             $table->float('amount_bank')->nullable();
+            $table->string('document');
             
             $table->string('user_name')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
