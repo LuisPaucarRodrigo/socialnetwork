@@ -46,7 +46,7 @@ class ApiStoreExpensesRequest extends FormRequest
             ],
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => 'nullable|numeric',
-            'doc_date' => 'sometimes|required|date',
+            'doc_date' => 'sometimes|required|string',
             'amount' => 'required|string',
             'zone' => 'required',
             'description' => 'required|string',

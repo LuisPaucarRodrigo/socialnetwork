@@ -92,12 +92,12 @@ class StaticCostsController extends Controller
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
+        $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $on = substr($data['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $data['operation_date'])
-                ->where('operation_number', $data['operation_number'])->first();
+                ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
-        } else {
-            $data['account_statement_id'] = null;
         }
         $item = StaticCost::create($data);
         $item->load('project', 'provider:id,company_name');
@@ -136,9 +136,11 @@ class StaticCostsController extends Controller
             'description' => 'required|string',
         ]);
 
+        $data['account_statement_id'] = null;
         if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $on = substr($data['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $data['operation_date'])
-                ->where('operation_number', $data['operation_number'])->first();
+                ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
         }
 
@@ -168,6 +170,35 @@ class StaticCostsController extends Controller
         $additional_cost->setAppends(['real_amount']);
         return response()->json($additional_cost, 200);
     }
+
+    public function masiveUpdate (Request $request) {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'ids.*' => 'integer',
+            'operation_date' => 'required|date',
+            'operation_number' => 'required|min:6',
+        ]);
+        $on = substr($data['operation_number'], -6);
+        $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $on)->first();
+        $data['account_statement_id'] = $as?->id;
+
+        StaticCost::whereIn('id', $data['ids'])->update([
+            'operation_date' => $data['operation_date'],
+            'operation_number' => $data['operation_number'],
+            'account_statement_id' => $data['account_statement_id'],
+        ]);
+        $updatedCosts = StaticCost::whereIn('id', $data['ids'])
+        ->with(['project', 'provider:id,company_name'])
+        ->get();
+        $updatedCosts->each(function ($cost) {
+        $cost->project->setAppends([]);
+        $cost->setAppends(['real_amount']);
+        });
+        return response()->json($updatedCosts, 200);
+    }
+
+
 
     public function destroy(Project $project_id, StaticCost $additional_cost)
     {

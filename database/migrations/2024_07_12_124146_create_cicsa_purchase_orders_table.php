@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('master_format');
             $table->string('item3456');
             $table->string('budget');
+            $table->string('document');
+            $table->string('observation');
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('cicsa_assignation_id')->constrained('cicsa_assignations')->onDelete('cascade');

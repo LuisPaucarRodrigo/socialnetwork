@@ -10,9 +10,8 @@
       </p>
       <div class="mt-6 flex justify-end">
         <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-        <DangerButton class="ml-3"
-            :class="{ 'opacity-25': processing }"
-                    :disabled="processing" @click="deleteItem">{{ deleteText }}</DangerButton>
+        <DangerButton class="ml-3" :class="{ 'opacity-25': processing }" :disabled="processing" @click="deleteItem">{{
+          deleteText }}</DangerButton>
       </div>
     </div>
   </Modal>

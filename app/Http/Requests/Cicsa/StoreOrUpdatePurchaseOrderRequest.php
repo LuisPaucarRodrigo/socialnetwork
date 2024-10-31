@@ -28,6 +28,8 @@ class StoreOrUpdatePurchaseOrderRequest extends FormRequest
             'master_format' => 'required|string',
             'item3456' => 'required|string',
             'budget' => 'required|string',
+            'document' => 'required',
+            'observation' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
         ];

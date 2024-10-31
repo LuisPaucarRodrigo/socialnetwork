@@ -169,20 +169,23 @@ class CicsaController extends Controller
         } else {
             $item = $request->searchQuery;
             $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
-                ->where(function ($a) use ($item) {
-                    $a->whereNotNull('invoice_number')
-                        ->whereNotNull('invoice_date')
-                        ->whereNotNull('amount')
-                        ->where(function ($b) use ($item) {
-                            $b->whereHas('cicsa_assignation', function ($c) use ($item) {
-                                $c->where('project_name', 'like', "%$item%")
-                                    ->orWhere('project_code', 'like', "%$item%")
-                                    ->orWhere('cpe', 'like', "%$item%");
-                            });
+                ->whereNotNull('invoice_number')
+                ->whereNotNull('invoice_date')
+                ->whereNotNull('amount')
+                ->where(function ($query) {
+                    $query->orWhereNull('checking_account_amount')
+                        ->orWhereNull('amount_bank');
+                })
+                ->where(function ($query) use ($item) {
+                    $query->whereHas('cicsa_assignation', function ($c) use ($item) {
+                        $c->where('project_name', 'like', "%$item%")
+                            ->orWhere('project_code', 'like', "%$item%")
+                            ->orWhere('cpe', 'like', "%$item%");
+                    })
+                        ->whereHas('cicsa_purchase_order', function ($e) use ($item) {
+                            $e->orWhere('oc_number', 'like', "%$item%");
                         });
                 });
-
-
             $dd = $charge_areas->get();
             return response()->json([
                 'charge_areas' => $charge_areas->paginate(20),
@@ -221,7 +224,7 @@ class CicsaController extends Controller
 
     public function exportAssignation()
     {
-        return Excel::download(new AssignationExport, 'Asignación ' . date('m-Y') . '.xlsx');
+        return Excel::download(new AssignationExport, 'Asignación ' . date('d-m-Y') . '.xlsx');
     }
 
     public function indexFeasibilities(Request $request)
@@ -268,7 +271,7 @@ class CicsaController extends Controller
 
     public function exportFeasibilities()
     {
-        return Excel::download(new FeasibilitiesExport, 'Factibilidad ' . date('m-Y') . '.xlsx');
+        return Excel::download(new FeasibilitiesExport, 'Factibilidad ' . date('d-m-Y') . '.xlsx');
     }
 
     public function indexMaterial(Request $request)
@@ -343,7 +346,7 @@ class CicsaController extends Controller
 
     public function exportMaterial()
     {
-        return Excel::download(new MaterialExport, 'Materiales ' . date('m-Y') . '.xlsx');
+        return Excel::download(new MaterialExport, 'Materiales ' . date('d-m-Y') . '.xlsx');
     }
 
     public function importMaterial(Request $request)
@@ -390,7 +393,8 @@ class CicsaController extends Controller
                         ->orWhere('cpe', 'like', "%$searchQuery%")
                         ->orWhere(function ($query) use ($searchQuery) {
                             $query->whereHas('cicsa_purchase_order', function ($query) use ($searchQuery) {
-                                $query->where('oc_number', 'like', "%$searchQuery%");
+                                $query->where('oc_number', 'like', "%$searchQuery%")
+                                    ->orWhere('observation', 'like', "%$searchQuery%");
                             });
                         });
                 })
@@ -403,13 +407,20 @@ class CicsaController extends Controller
 
     public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_purchase_order_id = null)
     {
+        $validateData = $request->validated();
+        $document = null;
         DB::beginTransaction();
         try {
-            $validateData = $request->validated();
+            if ($request->hasFile('document')) {
+                $document = $request->file('document');
+                $validateData['document'] = time() . '._' . $document->getClientOriginalName();
+            }
+
             $purchase_order = CicsaPurchaseOrder::updateOrCreate(
                 ['id' => $cicsa_purchase_order_id],
                 $validateData
             );
+
             if (!$cicsa_purchase_order_id) {
                 CicsaPurchaseOrderValidation::create([
                     'cicsa_assignation_id' => $purchase_order->cicsa_assignation_id,
@@ -425,16 +436,31 @@ class CicsaController extends Controller
                 ]);
             }
             DB::commit();
+            if ($request->hasFile('document')) {
+                $document->move(public_path('documents/cicsa/cicsaPurchaseOrder/'), $validateData['document']);
+            }
             return response()->json($purchase_order, 200);
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
+            return response()->json(['error', $e->getMessage()], 500);
         }
+    }
+
+    public function showDocument(CicsaPurchaseOrder $purchaseOrder)
+    {
+        $documentName = $purchaseOrder->document;
+        $filePath = 'documents/cicsa/cicsaPurchaseOrder/' . $documentName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            $url = url($filePath);
+            return response()->json(['url' => $url]);
+        }
+        abort(404, 'Imagen no encontrada');
     }
 
     public function exportPurchaseOrder()
     {
-        return Excel::download(new PurchaseOrderExport, 'Orden de Compra ' . date('m-Y') . '.xlsx');
+        return Excel::download(new PurchaseOrderExport, 'Orden de Compra ' . date('d-m-Y') . '.xlsx');
     }
 
 
@@ -490,7 +516,7 @@ class CicsaController extends Controller
 
     public function exportInstallation()
     {
-        return Excel::download(new InstallationExport, 'Instalacion ' . date('m-Y') . '.xlsx');
+        return Excel::download(new InstallationExport, 'Instalacion ' . date('d-m-Y') . '.xlsx');
     }
 
     // CicsaPurchaseOrderValidations
@@ -536,6 +562,9 @@ class CicsaController extends Controller
                         ->orWhere('cpe', 'like', "%$searchQuery%")
                         ->orWhereHas('cicsa_purchase_order', function ($query) use ($searchQuery) {
                             $query->where('oc_number', 'like', "%$searchQuery%");
+                        })
+                        ->orWhereHas('cicsa_purchase_order_validation', function ($query) use ($searchQuery) {
+                            $query->where('observations', 'like', "%$searchQuery%");
                         });
                 })
                 ->get();
@@ -569,7 +598,7 @@ class CicsaController extends Controller
 
     public function exportOCValidation()
     {
-        return Excel::download(new OCValidationExport, 'Validación de OC ' . date('m-Y') . '.xlsx');
+        return Excel::download(new OCValidationExport, 'Validación de OC ' . date('d-m-Y') . '.xlsx');
     }
 
     // CicsaServiceOrder
@@ -637,20 +666,47 @@ class CicsaController extends Controller
             'purchase_order' => 'required',
             'pdf_invoice' => 'required',
             'zip_invoice' => 'required',
+            'document' => 'required',
             'user_name' => 'required',
             'user_id' => 'required',
         ]);
+        $document = null;
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('document')) {
+                $document = $request->file('document');
+                $validateData['document'] = time() . '._' . $document->getClientOriginalName();
+            }
+            $serviceOrderOc = CicsaServiceOrder::with(['cicsa_purchase_order' => function ($query) {
+                $query->select('id', 'oc_number');
+            }])->find($cicsa_service_order_id);
+            $serviceOrderOc->update($validateData);
+            DB::commit();
+            if ($request->hasFile('document')) {
+                $document->move(public_path('documents/cicsa/cicsaServiceOrder/'), $validateData['document']);
+            }
+            return response()->json($serviceOrderOc, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['error', $e->getMessage()], 500);
+        }
+    }
 
-        $serviceOrderOc = CicsaServiceOrder::with(['cicsa_purchase_order' => function ($query) {
-            $query->select('id', 'oc_number');
-        }])->find($cicsa_service_order_id);
-        $serviceOrderOc->update($validateData);
-        return response()->json($serviceOrderOc, 200);
+    public function showServiceDocument(CicsaServiceOrder $serviceOrder)
+    {
+        $documentName = $serviceOrder->document;
+        $filePath = 'documents/cicsa/cicsaServiceOrder/' . $documentName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            $url = url($filePath);
+            return response()->json(['url' => $url]);
+        }
+        abort(404, 'Imagen no encontrada');
     }
 
     public function exportServiceOrder()
     {
-        return Excel::download(new ServiceOrderExport, 'Orden de Servicio ' . date('m-Y') . '.xlsx');
+        return Excel::download(new ServiceOrderExport, 'Orden de Servicio ' . date('d-m-Y') . '.xlsx');
     }
 
     //CicsaChargeArea
@@ -724,40 +780,95 @@ class CicsaController extends Controller
                     }
                 }
             ],
+            'document' => 'required',
+            'amount' => 'required',
             'transaction_number_current' => 'nullable',
             'checking_account_amount' => 'nullable|numeric',
             'deposit_date_bank' => 'nullable|date',
             'transaction_number_bank' => 'nullable',
             'amount_bank' => 'nullable|numeric',
-            'amount' => 'required',
             'user_name' => 'required',
             'user_id' => 'required',
         ]);
 
-        $chargeAreaOc = CicsaChargeArea::with(['cicsa_purchase_order' => function ($query) {
-            $query->select('id', 'oc_number');
-        }])->find($cicsa_charge_area_id);
-        $chargeAreaOc->update($validateData);
-        return response()->json($chargeAreaOc, 200);
+        DB::beginTransaction();
+        try {
+            $validateData['amount'] = intval($validateData['amount']);
+            if ($request->hasFile('document')) {
+                $document = $request->file('document');
+                $validateData['document'] = time() . '._' . $document->getClientOriginalName();
+            }
+            $chargeAreaOc = CicsaChargeArea::with(['cicsa_purchase_order' => function ($query) {
+                $query->select('id', 'oc_number');
+            }])->find($cicsa_charge_area_id);
+            $chargeAreaOc->update($validateData);
+
+            DB::commit();
+            if ($request->hasFile('document')) {
+                $document->move(public_path('documents/cicsa/cicsaChargeAreaOrder/'), $validateData['document']);
+            }
+            return response()->json($chargeAreaOc, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['error', $e->getMessage()], 500);
+        }
     }
 
-    public function getChargeAreaAccepted()
+    public function showChargeAreaDocument(CicsaChargeArea $chargeAreaOrder)
     {
-        $charge_areas = CicsaChargeArea::with(['cicsa_purchase_order', 'cicsa_assignation:id,project_name'])
-            ->whereNotNull('checking_account_amount')
-            ->whereNotNull('amount_bank');
-        $dd = $charge_areas->get();
-        return Inertia::render('Cicsa/CicsaChargeAreasAccepted', [
-            'charge_areas' => $charge_areas->paginate(20),
-            'total_amount' => $dd->sum('amount'),
-            'total_checking_account_amount' => $dd->sum('checking_account_amount'),
-            'total_amount_bank' => $dd->sum('amount_bank')
-        ]);
+        $documentName = $chargeAreaOrder->document;
+        $filePath = 'documents/cicsa/cicsaChargeAreaOrder/' . $documentName;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            $url = url($filePath);
+            return response()->json(['url' => $url]);
+        }
+        abort(404, 'Imagen no encontrada');
+    }
+
+    public function getChargeAreaAccepted(Request $request)
+    {
+        if ($request->isMethod('get')) {
+            $charge_areas = CicsaChargeArea::with(['cicsa_purchase_order', 'cicsa_assignation:id,project_name,project_code,cpe,cost_center'])
+                ->whereNotNull('checking_account_amount')
+                ->whereNotNull('amount_bank');
+            $dd = $charge_areas->get();
+            return Inertia::render('Cicsa/CicsaChargeAreasAccepted', [
+                'charge_areas' => $charge_areas->paginate(20),
+                'total_amount' => $dd->sum('amount'),
+                'total_checking_account_amount' => $dd->sum('checking_account_amount'),
+                'total_amount_bank' => $dd->sum('amount_bank')
+            ]);
+        } else {
+            $item = $request->searchQuery;
+            $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
+                ->whereNotNull('checking_account_amount')
+                ->whereNotNull('amount_bank')
+                ->where(function ($query) use ($item) {
+                    $query->whereHas('cicsa_assignation', function ($c) use ($item) {
+                        $c->where('project_name', 'like', "%$item%")
+                            ->orWhere('project_code', 'like', "%$item%")
+                            ->orWhere('cpe', 'like', "%$item%");
+                    })
+                        ->whereHas('cicsa_purchase_order', function ($e) use ($item) {
+                            $e->orWhere('oc_number', 'like', "%$item%");
+                        });
+                });
+
+
+            $dd = $charge_areas->get();
+            return response()->json([
+                'charge_areas' => $charge_areas->paginate(20),
+                'total_amount' => $dd->sum('amount'),
+                'total_checking_account_amount' => $dd->sum('checking_account_amount'),
+                'total_amount_bank' => $dd->sum('amount_bank')
+            ], 200);
+        }
     }
 
     public function exportChargeArea()
     {
-        return Excel::download(new ChargeAreaExport, 'Cobranza ' . date('m-Y') . '.xlsx');
+        return Excel::download(new ChargeAreaExport, 'Cobranza ' . date('d-m-Y') . '.xlsx');
     }
 
     public function exportMaterialsSummary($ca_id)

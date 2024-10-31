@@ -38,12 +38,21 @@ class AccountStatementImport implements ToModel
             list($day, $month) = explode('-', $dateValue);
             $operationDate = \Carbon\Carbon::createFromDate(date('Y'), $month, $day);
 
-            // Verificar si el valor de la columna 2 no está vacío y si el valor ya existe en la base de datos
+            // Verificar si el valor de la columna 2 no está vacío y si la combinación de operation_date y operation_number ya existe en la base de datos
             $operationNumber = $row[2];
-            if (!empty($operationNumber) && AccountStatement::where('operation_number', $operationNumber)->exists()) {
-                throw new \Exception("Error en la fila {$this->rowNumber}: El valor de la columna 2 (operation_number) ya existe.");
+
+            // Verifica que operation_number tenga exactamente 6 caracteres
+            if (!empty($operationNumber) && strlen($operationNumber) !== 6) {
+                throw new \Exception("Error en la fila " . ($this->rowNumber + 1) . ": operation_number debe tener exactamente 6 caracteres.");
             }
 
+            // Verifica la unicidad de la combinación de operation_date y operation_number
+            if (
+                !empty($operationNumber) && AccountStatement::where('operation_date', $operationDate)
+                    ->where('operation_number', $operationNumber)->exists()
+            ) {
+                throw new \Exception("Error en la fila {$this->rowNumber}: La combinación de Fecha y operation_number ya existe.");
+            }
             // Manejar la columna 4 para asignar 'charge' y 'payment'
             $amount = $this->parseAmount($row[4]);
 
@@ -58,14 +67,14 @@ class AccountStatementImport implements ToModel
             //relations with add stat costs pext expenses
             $this->searchAndUpdateCosts($accountStatement->operation_date->toDateString(), $accountStatement->operation_number, $accountStatement->id);
 
-            $this->rowNumber++; 
+            $this->rowNumber++;
             $this->lastValidOperationDate = $operationDate;
 
             DB::commit();
 
         } catch (\Exception $e) {
-            DB::rollBack(); 
-            throw $e; 
+            DB::rollBack();
+            throw $e;
         }
     }
 
@@ -86,17 +95,18 @@ class AccountStatementImport implements ToModel
     {
         if ($od && $on) {
             AdditionalCost::where('operation_date', $od)
-                ->where('operation_number', $on)
+                ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
                 ->update(['account_statement_id' => $accountStatementId]);
-    
+
             StaticCost::where('operation_date', $od)
-                ->where('operation_number', $on)
+                ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
                 ->update(['account_statement_id' => $accountStatementId]);
-    
+
             PextProjectExpense::where('operation_date', $od)
-                ->where('operation_number', $on)
+                ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
                 ->update(['account_statement_id' => $accountStatementId]);
         }
     }
+
 
 }

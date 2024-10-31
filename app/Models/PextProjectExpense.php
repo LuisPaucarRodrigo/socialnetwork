@@ -52,7 +52,7 @@ class PextProjectExpense extends Model
             if ($expense->isDirty('photo')) {
                 $oldImage = $expense->getOriginal('photo');
                 if ($oldImage) {
-                    $filePath = public_path('documents/additionalcosts/' . $oldImage);
+                    $filePath = public_path('documents/expensesPext/' . $oldImage);
                     if (file_exists($filePath)) {
                         unlink($filePath);
                     }
@@ -62,7 +62,7 @@ class PextProjectExpense extends Model
 
         static::deleting(function ($expense) {
             if ($expense->photo) {
-                $profile = public_path('documents/additionalcosts/' . $expense->photo);
+                $profile = public_path('documents/expensesPext/' . $expense->photo);
                 if (file_exists($profile)) {
                     unlink($profile);
                 }
