@@ -41,7 +41,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Lista de Materiales de Factibilidad
                             </th>
-                            <th 
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
@@ -127,11 +127,11 @@
                                         class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Lista de Materiales Recibidos
                                     </th>
-                                    <th 
+                                    <th
                                         class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         Acciones
                                     </th>
-                                    <th 
+                                    <th
                                         class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
                                     </th>
                                 </tr>
@@ -511,6 +511,7 @@ const materials = ref(material)
 const arrayMaterials = ref([])
 
 const initialState = {
+    id: null,
     cicsa_assignation_id: null,
     user_id: auth.user.id,
     pick_date: '',
@@ -570,9 +571,13 @@ async function submit() {
             }, 1500)
         } catch (error) {
             if (error.response) {
-                setAxiosErrors(error.response.data.errors, form)
+                if (error.response.data.errors) {
+                    setAxiosErrors(error.response.data.errors, form)
+                } else {
+                    console.error("Server error:", error.response.data)
+                }
             } else {
-                console.error(error)
+                console.error("Network or other error:", error)
             }
         }
     } else {
@@ -605,7 +610,7 @@ const material_item = ref({
     code_ax: '',
     name: '',
     unit: '',
-    type:'',
+    type: '',
     quantity: 0,
 });
 

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('customer')->nullable();
             $table->string('project_code')->nullable();
             $table->string('cpe')->nullable();
+            $table->string('zone');
             $table->date('project_deadline')->nullable();
             $table->string('manager');
             $table->string('user_name');

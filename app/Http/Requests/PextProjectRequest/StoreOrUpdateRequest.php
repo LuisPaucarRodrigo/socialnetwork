@@ -42,7 +42,7 @@ class StoreOrUpdateRequest extends FormRequest
                 }
             ],
             'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
-            'operation_number' => 'nullable|numeric',
+            'operation_number' => 'nullable|numeric|min:6',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|numeric',
             'doc_date' => 'sometimes|required|date',

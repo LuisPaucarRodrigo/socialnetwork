@@ -8,7 +8,7 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('cicsa.service_orders.export')  + '?' + uniqueParam"
+                <a :href="route('cicsa.service_orders.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
@@ -65,7 +65,7 @@
                                         {{ item.cpe }}
                                     </p>
                                 </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <div class="flex space-x-3 justify-center">
                                         <button v-if="item.cicsa_service_order.length > 0" type="button"
                                             @click="toggleDetails(item?.cicsa_service_order)"
@@ -119,6 +119,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Documento
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Encargado
                                     </th>
                                     <th
@@ -162,6 +166,12 @@
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.zip_invoice }}
                                         </p>
+                                    </td>
+                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <button v-if="materialDetail?.document" type="button"
+                                            @click="openPDF(materialDetail?.id)">
+                                            <EyeIcon class="w-5 h-5 text-green-600" />
+                                        </button>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
@@ -278,7 +288,13 @@
                                 <InputError :message="form.errors.zip_invoice" />
                             </div>
                         </div>
-
+                        <div class="sm:col-span-1">
+                            <InputLabel for="document">Documento</InputLabel>
+                            <div>
+                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
+                                <InputError :message="form.errors.document" />
+                            </div>
+                        </div>
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -311,8 +327,10 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
+import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import InputFile from '@/Components/InputFile.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 const { service_order, auth } = defineProps({
     service_order: Object,
@@ -333,6 +351,7 @@ const initialState = {
     purchase_order: 'Pendiente',
     pdf_invoice: 'Pendiente',
     zip_invoice: 'Pendiente',
+    document: '',
     user_name: '',
     cicsa_assignation_id: '',
     cicsa_purchase_order_id: '',
@@ -348,6 +367,7 @@ const confirmAssignation = ref(false);
 
 function closeAddAssignationModal() {
     showAddEditModal.value = false
+    form.clearErrors()
     form.defaults({ ...initialState })
     form.reset()
 }
@@ -364,7 +384,8 @@ function openEditModal(item) {
 async function submit() {
     let url = route('cicsa.service_orders.update', { cicsa_service_order_id: form.id });
     try {
-        const response = await axios.put(url, form)
+        let formData = toFormData(form)
+        const response = await axios.post(url, formData)
         updateServiceOrder(response.data)
         closeAddAssignationModal()
         confirmUpdateAssignation.value = true
@@ -373,9 +394,13 @@ async function submit() {
         }, 1500)
     } catch (error) {
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
         } else {
-            console.error(error)
+            console.error("Network or other error:", error)
         }
     }
 }
@@ -397,7 +422,23 @@ const toggleDetails = (cicsa_service_order) => {
     }
 }
 
-function updateServiceOrder(serviceOrder){
+async function openPDF(serviceOrderId) {
+    if (serviceOrderId) {
+        const url = route('cicsa.service_orders.showDocument', { serviceOrder: serviceOrderId });
+        await axios.get(url)
+            .then(response => {
+                const imageUrl = response.data.url;
+                window.open(imageUrl, '_blank');
+            })
+            .catch(error => {
+                console.error('Error fetching image URL:', error);
+            });
+    } else {
+        console.error('No se proporcionó un ID de imagen válido');
+    }
+}
+
+function updateServiceOrder(serviceOrder) {
     const validations = service_orders.value.data || service_orders.value;
     const index = validations.findIndex(item => item.id === serviceOrder.cicsa_assignation_id)
     const indexServiceOrder = validations[index].cicsa_service_order.findIndex(item => item.id === serviceOrder.id)

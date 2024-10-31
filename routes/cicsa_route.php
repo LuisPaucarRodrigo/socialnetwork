@@ -30,6 +30,7 @@ Route::post('/cicsa_material/importmaterial', [CicsaController::class, 'importMa
 
 Route::any('/cicsa_purchase_order', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
 Route::post('/cicsa_purchase_order/store/update/{cicsa_purchase_order_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
+Route::get('/cicsa_purchase_order/showDocument/{purchaseOrder}', [CicsaController::class, 'showDocument'])->name('purchase.order.showDocument');
 Route::get('/cicsa_purchase_order/export', [CicsaController::class, 'exportPurchaseOrder'])->name('purchase.order.export');
 
 
@@ -50,15 +51,19 @@ Route::get('/cicsa_purchase_order_validation/export', [CicsaController::class, '
 // CicsaServiceOrders
 
 Route::any('/cicsa_service_orders', [CicsaController::class, 'indexServiceOrder'])->name('cicsa.service_orders');
-Route::put('/cicsa_service_orders/update/{cicsa_service_order_id}', [CicsaController::class, 'updateServiceOrder'])->name('cicsa.service_orders.update');
+Route::post('/cicsa_service_orders/update/{cicsa_service_order_id}', [CicsaController::class, 'updateServiceOrder'])->name('cicsa.service_orders.update');
+Route::get('/cicsa_service_orders/showDocument/{serviceOrder}', [CicsaController::class, 'showServiceDocument'])->name('cicsa.service_orders.showDocument');
 Route::get('/cicsa_service_orders/export', [CicsaController::class, 'exportServiceOrder'])->name('cicsa.service_orders.export');
 
 // CicsaChargeArea
 
 Route::any('/cicsa_charge_areas', [CicsaController::class, 'indexChargeArea'])->name('cicsa.charge_areas');
-Route::put('/cicsa_charge_areas/update/{cicsa_charge_area_id}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
-Route::get('/cicsa_charge_areas/accepted/get', [CicsaController::class, 'getChargeAreaAccepted'])->name('cicsa.charge_areas.accpeted');
+Route::post('/cicsa_charge_areas/update/{cicsa_charge_area_id}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
+Route::get('/cicsa_charge_areas/showDocument/{chargeAreaOrder}', [CicsaController::class, 'showChargeAreaDocument'])->name('cicsa.charge_areas.showDocument');
 Route::get('/cicsa_charge_areas/export', [CicsaController::class, 'exportChargeArea'])->name('cicsa.charge_areas.export');
+
+// CicsaChargeAreaAccepted
+Route::any('/cicsa_charge_areas/accepted', [CicsaController::class, 'getChargeAreaAccepted'])->name('cicsa.charge_areas.accepted');
 
 
 //search

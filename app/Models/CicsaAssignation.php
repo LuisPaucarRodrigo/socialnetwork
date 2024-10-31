@@ -19,6 +19,7 @@ class CicsaAssignation extends Model
         'customer',
         'project_code',
         'cpe',
+        'zone',
         'project_deadline',
         'manager',
         'user_name',
@@ -100,9 +101,9 @@ class CicsaAssignation extends Model
         if ($feasibility->report !== 'Completado') {
             return false;
         }
-        if ($feasibility->cicsa_feasibility_materials()->count() === 0) {
-            return false;
-        }
+        // if ($feasibility->cicsa_feasibility_materials()->count() === 0) {
+        //     return false;
+        // }
         return true;
     }
 
@@ -115,16 +116,16 @@ class CicsaAssignation extends Model
         $fieldsToCheck = [
             'pick_date',
             'guide_number',
-            'received_materials',
+            // 'received_materials',
         ];
         foreach ($fieldsToCheck as $field) {
             if (is_null($materials->$field)) {
                 return false;
             }
         }
-        if ($materials->cicsa_material_items()->count() === 0) {
-            return false;
-        }
+        // if ($materials->cicsa_material_items()->count() === 0) {
+        //     return false;
+        // }
         return true;
     }
 
@@ -152,9 +153,9 @@ class CicsaAssignation extends Model
         ) {
             return false;
         }
-        if ($installation->cicsa_installation_materials()->count() === 0) {
-            return false;
-        }
+        // if ($installation->cicsa_installation_materials()->count() === 0) {
+        //     return false;
+        // }
         return true;
     }
 

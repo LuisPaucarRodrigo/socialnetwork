@@ -9,7 +9,7 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <a :href="route('purchase.order.export')  + '?' + uniqueParam"
+                    <a :href="route('purchase.order.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
@@ -27,7 +27,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
                             </th>
-                            <th colspan="1"
+                            <th colspan="2"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Codigo de Proyecto
                             </th>
@@ -35,7 +35,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Centro de Costos
                             </th>
-                            <th colspan="1"
+                            <th colspan="2"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
                             </th>
@@ -52,7 +52,7 @@
                                         {{ item.project_name }}
                                     </p>
                                 </td>
-                                <td colspan="1" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_code }}
                                     </p>
@@ -62,7 +62,7 @@
                                         {{ item.cost_center }}
                                     </p>
                                 </td>
-                                <td colspan="1" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.cpe }}
                                     </p>
@@ -120,6 +120,14 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Documento
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Observaciones
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Encargado
                                     </th>
                                     <th
@@ -155,6 +163,17 @@
                                             {{ materialDetail?.budget }}
                                         </p>
                                     </td>
+                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <button v-if="materialDetail?.document" type="button"
+                                            @click="openPDF(materialDetail?.id)">
+                                            <EyeIcon class="w-5 h-5 text-green-600" />
+                                        </button>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.observation }}
+                                        </p>
+                                    </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.user_name }}
@@ -187,8 +206,8 @@
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     {{ form.id ? 'Editar Orden de Compra' : 'Nueva Orden de Compra' }} {{ ': ' + dateModal.project_name
-        + ' - '
-        + dateModal.cpe }}
+                        + ' - '
+                        + dateModal.cpe }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -245,6 +264,21 @@
                                 <InputError :message="form.errors.budget" />
                             </div>
                         </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="document">Documento</InputLabel>
+                            <div>
+                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
+                                <InputError :message="form.errors.document" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="observation">Observaciones</InputLabel>
+                            <div class="mt-2">
+                                <textarea v-model="form.observation" id="observation"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.observation" />
+                            </div>
+                        </div>
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -273,9 +307,11 @@ import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { formattedDate,setAxiosErrors } from '@/utils/utils.js';
+import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
+import InputFile from '@/Components/InputFile.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 const { purchaseOrder, auth } = defineProps({
     purchaseOrder: Object,
@@ -287,6 +323,7 @@ const purchaseOrders = ref(purchaseOrder)
 const dateModal = ref({})
 
 const initialState = {
+    id: null,
     cicsa_assignation_id: null,
     user_id: auth.user.id,
     oc_date: '',
@@ -294,6 +331,8 @@ const initialState = {
     master_format: 'Pendiente',
     item3456: 'Pendiente',
     budget: 'Pendiente',
+    document: '',
+    observation: '',
     user_name: auth.user.name,
 }
 
@@ -310,6 +349,7 @@ const message = ref('La Orden de Compra fue creada con éxito')
 
 function closeAddPuchaseOrderModal() {
     showAddEditModal.value = false
+    form.clearErrors()
     form.defaults({ ...initialState })
     form.reset()
 }
@@ -332,24 +372,30 @@ function openEditModal(item, project_name, cpe) {
 async function submit() {
     let url = cicsa_purchase_order_id.value ? route('purchaseOrder.storeOrUpdate', { cicsa_purchase_order_id: cicsa_purchase_order_id.value }) : route('purchaseOrder.storeOrUpdate')
     try {
-        const response = await axios.post(url,form)
+        let formData = toFormData(form)
+        const response = await axios.post(url, formData)
         closeAddPuchaseOrderModal()
-            if (cicsa_purchase_order_id.value) {
-                updatePurchaseOrder(false,response.data)
-                title.value = 'Orden de Compra Actualizada'
-                message.value = 'La Orden de Compra fue actualizada'
-            } else {
-                updatePurchaseOrder(true,response.data)
-            }
-            confirmPuchaseOrder.value = true
-            setTimeout(() => {
-                confirmPuchaseOrder.value = false
-            }, 1500)
-    } catch (error) {
-        if(error.response){
-            setAxiosErrors(error.response.data.errors, form)
+        if (cicsa_purchase_order_id.value) {
+            updatePurchaseOrder(false, response.data)
+            title.value = 'Orden de Compra Actualizada'
+            message.value = 'La Orden de Compra fue actualizada'
+            cicsa_purchase_order_id.value = null
         } else {
-            console.error(error)
+            updatePurchaseOrder(true, response.data)
+        }
+        confirmPuchaseOrder.value = true
+        setTimeout(() => {
+            confirmPuchaseOrder.value = false
+        }, 1500)
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
+        } else {
+            console.error("Network or other error:", error)
         }
     }
 }
@@ -371,9 +417,25 @@ const toggleDetails = (purchase_order) => {
     }
 }
 
+async function openPDF(purchaseOrderId) {
+    if (purchaseOrderId) {
+        const url = route('purchase.order.showDocument', { purchaseOrder: purchaseOrderId });
+        await axios.get(url)
+            .then(response => {
+                const imageUrl = response.data.url;
+                window.open(imageUrl, '_blank');
+            })
+            .catch(error => {
+                console.error('Error fetching image URL:', error);
+            });
+    } else {
+        console.error('No se proporcionó un ID de imagen válido');
+    }
+}
+
 function updatePurchaseOrder(item, purchaseOrder) {
     const validations = purchaseOrders.value.data || purchaseOrders.value;
-    const index = validations.findIndex(item => item.id === purchaseOrder.cicsa_assignation_id);
+    const index = validations.findIndex(item => item.id === Number(purchaseOrder.cicsa_assignation_id));
     if (item) {
         validations[index].cicsa_purchase_order.push(purchaseOrder)
     } else {

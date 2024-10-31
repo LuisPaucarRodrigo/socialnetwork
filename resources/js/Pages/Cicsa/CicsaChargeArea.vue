@@ -33,7 +33,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Centro de Costos
                             </th>
-                            <th colspan="3"
+                            <th colspan="4"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
                             </th>
@@ -61,7 +61,7 @@
                                         {{ item.cost_center }}
                                     </p>
                                 </td>
-                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <td colspan="4" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.cpe }}
                                     </p>
@@ -104,6 +104,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Documento
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Crédito a
                                     </th>
                                     <th
@@ -120,7 +124,7 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Monto
+                                        Monto con IGV
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -172,6 +176,12 @@
                                         <p class="text-gray-900 text-center">
                                             {{ formattedDate(materialDetail?.invoice_date) }}
                                         </p>
+                                    </td>
+                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <button v-if="materialDetail?.document" type="button"
+                                            @click="openPDF(materialDetail?.id)">
+                                            <EyeIcon class="w-5 h-5 text-green-600" />
+                                        </button>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
@@ -314,12 +324,18 @@
                             </div>
                         </div>
 
-
+                        <div class="sm:col-span-1">
+                            <InputLabel for="document">Documento</InputLabel>
+                            <div>
+                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
+                                <InputError :message="form.errors.document" />
+                            </div>
+                        </div>
 
                         <div class="sm:col-span-1">
                             <InputLabel for="amount">Monto Total de Factura</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.amount" id="amount" autocomplete="off"
+                                <input type="number" v-model="form.amount" id="amount" autocomplete="off" step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.amount" />
                             </div>
@@ -350,7 +366,7 @@
                             <InputLabel for="checking_account_amount">Monto de cuenta corriente</InputLabel>
                             <div class="mt-2">
                                 <input type="number" v-model="form.checking_account_amount" id="checking_account_amount"
-                                    autocomplete="off" min="0" :max="form.checking_account_amount"
+                                    autocomplete="off" min="0" :max="form.checking_account_amount" step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.checking_account_amount" />
                             </div>
@@ -378,8 +394,8 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.amount_bank" id="amount_bank"
-                                    autocomplete="off" min="0" :max="form.amount_bank"
+                                <input type="number" v-model="form.amount_bank" id="amount_bank" autocomplete="off"
+                                    min="0" :max="form.amount_bank" step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.amount_bank" />
                             </div>
@@ -417,8 +433,11 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
+import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
+import InputFile from '@/Components/InputFile.vue';
+
 
 const { charge_area, auth } = defineProps({
     charge_area: Object,
@@ -438,6 +457,7 @@ const initialState = {
     invoice_date: '',
     credit_to: '',
     payment_date: '',
+    document: '',
     amount: '',
     deposit_date: '',
     transaction_number_current: '',
@@ -476,7 +496,8 @@ async function submit() {
     if (sum()) {
         let url = route('cicsa.charge_areas.update', { cicsa_charge_area_id: form.id });
         try {
-            const response = await axios.put(url, form)
+            let formData = toFormData(form)
+            const response = await axios.post(url, formData)
             updateChargeArea(response.data)
             closeAddAssignationModal()
             confirmUpdateAssignation.value = true
@@ -485,9 +506,13 @@ async function submit() {
             }, 1500)
         } catch (error) {
             if (error.response) {
-                setAxiosErrors(error.response.data.errors, form)
+                if (error.response.data.errors) {
+                    setAxiosErrors(error.response.data.errors, form)
+                } else {
+                    console.error("Server error:", error.response.data)
+                }
             } else {
-                console.error(error)
+                console.error("Network or other error:", error)
             }
         }
     } else {
@@ -552,6 +577,22 @@ const toggleDetails = (cicsa_charge_area) => {
         charge_area_row.value = 0;
     } else {
         charge_area_row.value = cicsa_charge_area[0].cicsa_assignation_id;
+    }
+}
+
+async function openPDF(purchaseOrderId) {
+    if (purchaseOrderId) {
+        const url = route('cicsa.charge_areas.showDocument', { purchaseOrder: purchaseOrderId });
+        await axios.get(url)
+            .then(response => {
+                const imageUrl = response.data.url;
+                window.open(imageUrl, '_blank');
+            })
+            .catch(error => {
+                console.error('Error fetching image URL:', error);
+            });
+    } else {
+        console.error('No se proporcionó un ID de imagen válido');
     }
 }
 

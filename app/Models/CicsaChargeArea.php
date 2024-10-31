@@ -24,7 +24,8 @@ class CicsaChargeArea extends Model
         'deposit_date_bank',
         'transaction_number_bank',
         'amount_bank',
-
+        'document',
+        
         'user_name',
         'user_id',
         'cicsa_assignation_id',
@@ -95,5 +96,20 @@ class CicsaChargeArea extends Model
 
         
         return 'En Proceso';
+    }
+
+    protected static function booted()
+    {
+        static::updating(function ($cicsaPurchaseOrder) {
+            if ($cicsaPurchaseOrder->isDirty('document')) {
+                $document = $cicsaPurchaseOrder->getOriginal('document');
+                if ($document) {
+                    $filePath = public_path('documents/cicsa/cicsaChargeAreaOrder/' . $document);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+        });
     }
 }
