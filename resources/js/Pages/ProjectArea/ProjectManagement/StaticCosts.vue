@@ -104,9 +104,10 @@ const filterForm = ref({...initialFilterFormState});<template>
                 </div>
 
                 <form @submit.prevent="handleSearch" class="flex items-center w-full sm:w-auto">
-                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search"  :handleEnter="search_advance"/>
+                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
+                        v-model="filterForm.search" :handleEnter="search_advance" />
 
-                    <button data-tooltip-target="search_fields" type="submit"
+                    <button type="submit"
                         class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">

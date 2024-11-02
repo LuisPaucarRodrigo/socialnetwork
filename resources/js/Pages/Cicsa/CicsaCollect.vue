@@ -8,7 +8,12 @@
         <div class="min-w-full">
             <div class="flex justify-end mb-5">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Cod,CPE,OC" />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Cod,CPE,OC
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <div class="overflow-x-auto h-full rounded-lg shadow">
@@ -220,7 +225,7 @@
             </div>
 
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="charge_areas.links" />
+                <pagination :links="chargeAreas.links" />
             </div>
         </div>
     </AuthenticatedLayout>

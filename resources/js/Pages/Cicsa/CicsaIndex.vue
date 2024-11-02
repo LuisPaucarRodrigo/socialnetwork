@@ -36,8 +36,13 @@
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                     Por Cobrar
                     </Link>
-                    <TextInput type="text" v-model="filterForm.search" placeholder="Nombre,Cliente,Codigo" />
+                    <TextInput data-tooltip-target="search_fields" type="text" v-model="filterForm.search" placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Proceso" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Cliente,Codigo
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <br />
@@ -78,22 +83,22 @@
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="7">
+                                colspan="8">
                                 Orden de Compra
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="9">
+                                colspan="10">
                                 Validación de OC
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="7">
+                                colspan="8">
                                 Orden de Servicio
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="9">
+                                colspan="10">
                                 Cobranza
                             </th>
                             <th v-if="!checkVisibility('Cobranza')"
@@ -302,6 +307,10 @@
                                 Documento
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                Observaciones
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[150px]">Encargado</div>
                             </th>
@@ -338,6 +347,10 @@
                                 Superintendente
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                Observaciones
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[150px]">Encargado</div>
                             </th>
@@ -366,6 +379,10 @@
                                 Factura en ZIP
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                Documento
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[150px]">Encargado</div>
                             </th>
@@ -377,6 +394,10 @@
                             <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Fecha de Factura
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                Documento
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -800,10 +821,23 @@
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="order in item?.cicsa_purchase_order" class="text-center">
-                                    <button v-if="order.document" type="button" @click="openPDF(order?.id)">
-                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                <div v-for="order in item?.cicsa_purchase_order" class="text-center text-red-500">
+                                    <button v-if="order.document" type="button"
+                                        @click="openPDF(order?.id, 'purchaseOrder')">
+                                        <EyeIcon class="w-4 h-4 text-green-600" />
                                     </button>
+                                    <p v-else>
+                                        --
+                                    </p>
+                                </div>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Compra')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <p v-for="order in item?.cicsa_purchase_order" :class="stateClassP(
+                                    order?.observation
+                                )
+                                    " class="text-gray-900 text-center">
+                                    {{ order?.observation || "--" }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')"
@@ -923,6 +957,19 @@
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
+                                    order_validation
+                                        ?.observations
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    {{
+                                        order_validation
+                                            ?.observations || "--"
+                                    }}
+                                </p>
+                            </td>
+                            <td v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
@@ -1011,6 +1058,20 @@
                                     {{ service_order?.zip_invoice }}
                                 </p>
                             </td>
+
+                            <td v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <div v-for="service_order in item?.cicsa_service_order" class="text-center text-red-500">
+                                    <button v-if="service_order.document" type="button"
+                                        @click="openPDF(service_order?.id, 'serviceOrder')">
+                                        <EyeIcon class="w-4 h-4 text-green-600" />
+                                    </button>
+                                    <p v-else>
+                                        --
+                                    </p>
+                                </div>
+                            </td>
+
                             <td v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
@@ -1049,7 +1110,20 @@
                                     }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Cobranza')" 
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <div v-for="charge_area in item?.cicsa_charge_area" class="text-center text-red-500">
+                                    <button v-if="charge_area.document" type="button"
+                                        @click="openPDF(charge_area?.id, 'chargeAreaOrder')">
+                                        <EyeIcon class="w-4 h-4 text-green-600" />
+                                    </button>
+                                    <p v-else>
+                                        --
+                                    </p>
+                                </div>
+                            </td>
+
+                            <td v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
                                     charge_area
@@ -1449,6 +1523,7 @@ const stateClassP = (state) => {
         case undefined:
         case null:
         case false:
+        case "":
         case "Pendiente":
             return "text-red-500";
         case "En Proceso":
@@ -1565,9 +1640,17 @@ function updateCicsaIndex(cisca_assignation_id) {
     dataToRender.value.splice(index, 1)
 }
 
-async function openPDF(purchaseOrderId) {
-    if (purchaseOrderId) {
-        const url = route('purchase.order.showDocument', { purchaseOrder: purchaseOrderId });
+async function openPDF(id, cicsa) {
+    let url = null
+    if (cicsa === 'purchaseOrder') {
+        url = route('purchase.order.showDocument', { purchaseOrder: id })
+    } if (cicsa === 'serviceOrder') {
+        url = route('cicsa.service_orders.showDocument', { serviceOrder: id })
+    } if (cicsa === 'chargeAreaOrder') {
+        url = route('cicsa.charge_areas.showDocument', { chargeAreaOrder: id })
+    }
+    console.log(cicsa)
+    if (id) {
         await axios.get(url)
             .then(response => {
                 const imageUrl = response.data.url;

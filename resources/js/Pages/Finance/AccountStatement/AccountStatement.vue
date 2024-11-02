@@ -97,7 +97,12 @@
                     }
                         " v-model="filterForm.month"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" />
+                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..." v-model="filterForm.search" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Numero de Operación,Fecha de Operación,Descripción,cargo,Abono,Saldo Contable
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
         </div>
