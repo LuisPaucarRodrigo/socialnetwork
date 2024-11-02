@@ -288,7 +288,7 @@
                                     item.state === 'No validado' && 'text-red-500',
                                 ]"
                                 >
-                                {{ item.state }} {{ item.operation_date }}
+                                {{ item.state }}
                             </td>
                             <td v-if="auth.user.role_id === 1"
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px]">
@@ -339,7 +339,7 @@
                                                     Ubicación
                                                 </th>
                                                 <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[9px] font-semibold uppercase tracking-wider text-gray-600 ">
                                                     Monto
                                                 </th>
                                             </tr>
@@ -361,7 +361,7 @@
                                                     {{ item.project.name }}
                                                 </td>
                                                 <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
                                                     S/. {{ item.amount }}
                                                 </td>
                                             </tr>
@@ -381,7 +381,7 @@
                                                     {{ item.project.name }}
                                                 </td>
                                                 <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
                                                     S/. {{ item.amount }}
                                                 </td>
                                             </tr>
@@ -404,8 +404,29 @@
                                                     }}
                                                 </td>
                                                 <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
                                                     S/. {{ item.amount }}
+                                                </td>
+                                            </tr>
+                                            <tr class="text-gray-700">
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                    Total:
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-[12px] tabular-nums text-right font-medium">
+                                                    S/. {{ 
+                                                    
+                                                        (costsFounded.scData.reduce((a,b)=>a+b.amount, 0)
+                                                        + costsFounded.acData.reduce((a,b)=>a+b.amount, 0)
+                                                        + costsFounded.peData.reduce((a,b)=>a+b.amount, 0)).toFixed(2)
+                                                    }}
                                                 </td>
                                             </tr>
                                         </tbody>
