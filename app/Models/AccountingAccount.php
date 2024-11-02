@@ -14,7 +14,6 @@ class AccountingAccount extends Model
         'denomination',
     ];
 
-
     public function deposits () {
         return $this->hasMany(Deposit::class, 'accounting_account_id');
     }
