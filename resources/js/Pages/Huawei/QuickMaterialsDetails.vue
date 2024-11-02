@@ -213,9 +213,8 @@
                                         <template v-if="isEditingToogle(key2, field2)">
                                             <select
                                                 v-model="output[field2]"
-                                                @blur="fetchProjects($event.target.value)"
-                                                @keydown.enter.prevent="isEnterPressedToogle = true; fetchProjects($event.target.value)"
-                                                @change="fetchProjects($event.target.value)"
+                                                @blur="fetchProjects($event.target.value, key)"
+                                                @keydown.enter.prevent="isEnterPressedToogle = true; fetchProjects($event.target.value, key)"
                                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             >
                                                 <option disabled value="">Seleccione una opción</option>
@@ -498,11 +497,11 @@ function saveEditToogle(key, field, id) {
 
 async function storeToogle(key, id) {
     const entry = inmutableBacklogs.value.find(item => item.id == id);
-    if (quickMaterialOutputs.value[key].output_quantity > entry.available_quantity) {
+    if (quickMaterialOutputs.value[key].output_quantity > entry.available_quantity && key == 'output_quantity') {
         errorQuantityModal.value = true;
         if (quickMaterialOutputs.value[key].id) {
                 const output_val = entry.quick_materials_outputs.find(item => item.id == quickMaterialOutputs.value[key].id);
-                const originalOutputQuantity = output_val.output_quantity;
+                const originalOutputQuantity = output_val ? output_val.output_quantity : null;
                 quickMaterialOutputs.value[key].output_quantity = originalOutputQuantity;
             } else {
                 quickMaterialOutputs.value[key].output_quantity = '';
@@ -530,14 +529,19 @@ async function storeToogle(key, id) {
 }
 
 
-async function fetchProjects (value){
+async function fetchProjects (value, key){
     availableProject.value = false;
     projectsFetched.value = null;
-    const res = await axios.post(
-        route('huawei.quickmaterials.details.output.fetchprojects', {site_id: value}), null
-    );
-    projectsFetched.value = res.data.projects;
-    availableProject.value = true;
+    if (value){
+        const res = await axios.post(
+            route('huawei.quickmaterials.details.output.fetchprojects', {site_id: value}), null
+        );
+        projectsFetched.value = res.data.projects;
+        availableProject.value = true;
+    }else{
+        editingToogleCells.value[`${key}-site`] = false;
+        return;
+    }
 }
 
 function saveEditProjectToogle (key, field, entry_id, project_id, output_id = null){
