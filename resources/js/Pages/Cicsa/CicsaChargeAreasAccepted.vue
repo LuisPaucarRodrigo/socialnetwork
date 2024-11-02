@@ -8,7 +8,13 @@
         <div class="min-w-full">
             <div class="flex justify-end mb-5">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Cod,CPE,OC" />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Cod,CPE,OC
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <div class="overflow-x-auto h-full">
@@ -31,6 +37,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Centro de Costos
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Numero de OC
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -114,6 +124,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_purchase_order.oc_number }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
                                     {{ item?.invoice_number }}
                                 </p>
                             </td>
@@ -138,20 +153,20 @@
                                 :class="item.days_late > 0 ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.invoice_date && item?.credit_to ?
-        item.days_late + ' día(s)' : '' }}
+                                        item.days_late + ' día(s)' : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 px-5 py-3 text-[13px]"
                                 :class="item?.state === 'Con deuda' && !item?.credit_to ? 'bg-red-200' : 'bg-white'">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.invoice_date && item?.credit_to ?
-        item?.state : '' }}
+                                    item?.state : '' }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.amount ? 'S/. ' +
-        item?.amount.toFixed(2) : ''
+                                        item?.amount.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
@@ -168,7 +183,7 @@
                             <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.checking_account_amount ? 'S/. ' +
-        item?.checking_account_amount.toFixed(2) : ''
+                                        item?.checking_account_amount.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>
@@ -185,7 +200,7 @@
                             <td class="whitespace-nowrap border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.amount_bank ? 'S/. ' +
-        item?.amount_bank.toFixed(2) : ''
+                                        item?.amount_bank.toFixed(2) : ''
                                     }}
                                 </p>
                             </td>

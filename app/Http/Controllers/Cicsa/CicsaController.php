@@ -150,50 +150,6 @@ class CicsaController extends Controller
         return response()->noContent();
     }
 
-    public function chargeCicsa(Request $request)
-    {
-        if ($request->isMethod('get')) {
-            $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
-                ->whereNotNull('invoice_number')
-                ->whereNotNull('invoice_date')
-                ->whereNotNull('amount')
-                ->where(function ($query) {
-                    $query->orWhereNull('checking_account_amount')
-                        ->orWhereNull('amount_bank');
-                });
-            $dd = $charge_areas->get();
-            return Inertia::render('Cicsa/CicsaCollect', [
-                'charge_areas' => $charge_areas->paginate(20),
-                'total_amount' => $dd->sum('amount')
-            ]);
-        } else {
-            $item = $request->searchQuery;
-            $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
-                ->whereNotNull('invoice_number')
-                ->whereNotNull('invoice_date')
-                ->whereNotNull('amount')
-                ->where(function ($query) {
-                    $query->orWhereNull('checking_account_amount')
-                        ->orWhereNull('amount_bank');
-                })
-                ->where(function ($query) use ($item) {
-                    $query->whereHas('cicsa_assignation', function ($c) use ($item) {
-                        $c->where('project_name', 'like', "%$item%")
-                            ->orWhere('project_code', 'like', "%$item%")
-                            ->orWhere('cpe', 'like', "%$item%");
-                    })
-                        ->whereHas('cicsa_purchase_order', function ($e) use ($item) {
-                            $e->orWhere('oc_number', 'like', "%$item%");
-                        });
-                });
-            $dd = $charge_areas->get();
-            return response()->json([
-                'charge_areas' => $charge_areas->paginate(20),
-                'total_amount' => $dd->sum('amount')
-            ], 200);
-        }
-    }
-
     public function indexAssignation(Request $request)
     {
         if ($request->isMethod('get')) {
@@ -826,6 +782,50 @@ class CicsaController extends Controller
         abort(404, 'Imagen no encontrada');
     }
 
+    public function chargeCicsa(Request $request)
+    {
+        if ($request->isMethod('get')) {
+            $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
+                ->whereNotNull('invoice_number')
+                ->whereNotNull('invoice_date')
+                ->whereNotNull('amount')
+                ->where(function ($query) {
+                    $query->orWhereNull('checking_account_amount')
+                        ->orWhereNull('amount_bank');
+                });
+            $dd = $charge_areas->get();
+            return Inertia::render('Cicsa/CicsaCollect', [
+                'charge_areas' => $charge_areas->paginate(20),
+                'total_amount' => $dd->sum('amount')
+            ]);
+        } else {
+            $item = $request->searchQuery;
+            $charge_areas = CicsaChargeArea::with('cicsa_purchase_order', 'cicsa_assignation')
+                ->whereNotNull('invoice_number')
+                ->whereNotNull('invoice_date')
+                ->whereNotNull('amount')
+                ->where(function ($query) {
+                    $query->orWhereNull('checking_account_amount')
+                        ->orWhereNull('amount_bank');
+                })
+                ->where(function ($query) use ($item) {
+                    $query->whereHas('cicsa_assignation', function ($c) use ($item) {
+                        $c->where('project_name', 'like', "%$item%")
+                            ->orWhere('project_code', 'like', "%$item%")
+                            ->orWhere('cpe', 'like', "%$item%");
+                    })
+                        ->whereHas('cicsa_purchase_order', function ($e) use ($item) {
+                            $e->where('oc_number', 'like', "%$item%");
+                        });
+                });
+            $dd = $charge_areas->get();
+            return response()->json([
+                'charge_areas' => $charge_areas->paginate(20),
+                'total_amount' => $dd->sum('amount')
+            ], 200);
+        }
+    }
+
     public function getChargeAreaAccepted(Request $request)
     {
         if ($request->isMethod('get')) {
@@ -850,8 +850,8 @@ class CicsaController extends Controller
                             ->orWhere('project_code', 'like', "%$item%")
                             ->orWhere('cpe', 'like', "%$item%");
                     })
-                        ->whereHas('cicsa_purchase_order', function ($e) use ($item) {
-                            $e->orWhere('oc_number', 'like', "%$item%");
+                        ->orWhereHas('cicsa_purchase_order', function ($e) use ($item) {
+                            $e->where('oc_number', 'like', "%$item%");
                         });
                 });
 
