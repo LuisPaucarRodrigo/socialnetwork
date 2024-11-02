@@ -209,6 +209,10 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Saldo Contable
                         </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            Estado
+                        </th>
                         <th v-if="auth.user.role_id === 1"
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
@@ -223,7 +227,7 @@
                         <tr class="text-gray-700 bg-white hover:bg-slate-200">
                             <td class="w-2 border-b border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
                                 :class="[
-                                    item.state === 'No aplica' && 'bg-gray-400',
+                                    item.state === 'Abono' && 'bg-gray-400',
                                     item.state === 'Validado' && 'bg-green-400',
                                     item.state === 'No validado' && 'bg-red-400',
                                 ]"></td>
@@ -262,6 +266,16 @@
                             <td
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap">
                                 S/. {{ item.balance.toFixed(2) }}
+                            </td>
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
+                                :class="[
+                                    item.state === 'Abono' && 'text-gray-400',
+                                    item.state === 'Validado' && 'text-green-400',
+                                    item.state === 'No validado' && 'text-red-400',
+                                ]"
+                                >
+                                {{ item.state }}
                             </td>
                             <td v-if="auth.user.role_id === 1"
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px]">
