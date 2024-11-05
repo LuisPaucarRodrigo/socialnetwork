@@ -50,11 +50,13 @@ class AccountStatementController extends Controller
         return response()->json(['dataToRender'=>$data], 200);
     }
 
+    
     public function searchStatements(Request $request)
     {
         $data = $this->getAccountVariables($request->month, $request->all);
         return response()->json($data, 200);
     }
+
 
     public function importExcel (AccountStatementImportRequest $request){
         $data = $request->validated();
