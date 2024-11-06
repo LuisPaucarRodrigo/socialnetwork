@@ -523,7 +523,7 @@ class ApiController extends Controller
                     'error' => "No se encontraron proyectos pext al cual asignar su gasto."
                 ], 404);
             }
-            $validateData['pext_project_id'] = '1';
+            $validateData['pext_project_id'] = $pextProject->id;
             $docDate = Carbon::createFromFormat('d/m/Y', $validateData['doc_date']);
             $validateData['doc_date'] = $docDate->format('Y-m-d');
 
@@ -563,7 +563,12 @@ class ApiController extends Controller
     public function historyExpensesPext()
     {
         $user = Auth::user();
-        $expensesPext = PextProjectExpense::where('user_id', $user->id)->get();
+        $month = now()->format('Y-m');
+        $expensesPext = PextProjectExpense::where('user_id', $user->id)
+            ->whereHas('pext_project', function($query) use ($month){
+                $query->where('date',$month);
+            })
+            ->get();
         return response()->json($expensesPext, 200);
     }
 }
