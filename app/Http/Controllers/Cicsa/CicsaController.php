@@ -97,19 +97,28 @@ class CicsaController extends Controller
                 'cicsa_charge_area'
             );
 
-        if (!empty($request->assignation_date)) {
-            $assignationDate = $request->assignation_date;
-            if (!empty($request->project_deadline)) {
-                $deadLineDate = $request->project_deadline;
-                $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate)
-                    ->where('project_deadline', '<', $deadLineDate);
-            } else {
-                $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate);
-            }
+        // if (!empty($request->assignation_date)) {
+        //     $assignationDate = $request->assignation_date;
+        //     if (!empty($request->project_deadline)) {
+        //         $deadLineDate = $request->project_deadline;
+        //         $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate)
+        //             ->where('project_deadline', '<', $deadLineDate);
+        //     } else {
+        //         $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate);
+        //     }
+        // }
+        // if (!empty($request->project_deadline)) {
+        //     $selectedPS = $request->project_deadline;
+        //     $projectsCicsa = $projectsCicsa->where('project_deadline', '<', $request->project_deadline);
+        // }
+        if ($request->opNoDate) {
+            $projectsCicsa->where('assignation_date', null);
         }
-        if (!empty($request->project_deadline)) {
-            $selectedPS = $request->project_deadline;
-            $projectsCicsa = $projectsCicsa->where('project_deadline', '<', $request->project_deadline);
+        if ($request->opStartDate) {
+            $projectsCicsa->where('assignation_date', '>=', $request->opStartDate);
+        }
+        if ($request->opEndDate) {
+            $projectsCicsa->where('assignation_date', '<=', $request->opEndDate);
         }
 
         if (!empty($request->search)) {
@@ -749,7 +758,7 @@ class CicsaController extends Controller
 
         DB::beginTransaction();
         try {
-            $validateData['amount'] = intval($validateData['amount']);
+            $validateData['amount'] = floatval($validateData['amount']);
             if ($request->hasFile('document')) {
                 $document = $request->file('document');
                 $validateData['document'] = time() . '._' . $document->getClientOriginalName();

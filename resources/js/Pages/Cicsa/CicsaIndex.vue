@@ -36,7 +36,8 @@
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                     Por Cobrar
                     </Link>
-                    <TextInput data-tooltip-target="search_fields" type="text" v-model="filterForm.search" placeholder="Buscar ..." />
+                    <TextInput data-tooltip-target="search_fields" type="text" v-model="filterForm.search"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Proceso" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -57,7 +58,7 @@
                                 colspan="3"></th>
                             <th v-if="checkVisibility('Asignación')"
                                 class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="10">
+                                colspan="9">
                                 Asignación
                             </th>
                             <th v-if="
@@ -112,13 +113,13 @@
                                 class="bg-gray-700 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                             </th>
                         </tr>
-                        <tr class="border-b bg-gray-50 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                        <tr
+                            class=" border-b bg-gray-50 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                             <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[120px]">
-                                    <TableHeaderCicsaFilter label="Fecha de Asignación" labelClass="text-gray-600"
-                                        v-model="filterForm.assignation_date" />
-                                </div>
+                                <TableDateFilter labelClass="text-[11px]" label="Fecha de Asignación"
+                                    v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
+                                    v-model:noDate="filterForm.opNoDate" width="w-40" />
                             </th>
                             <th ref="thProjectName" :class="[
                                 'border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
@@ -159,13 +160,6 @@
                             <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Cliente
-                            </th>
-                            <th v-if="checkVisibility('Asignación')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[120px]">
-                                    <TableHeaderCicsaFilter label="Fecha Límite del Proyecto" labelClass="text-gray-600"
-                                        v-model="filterForm.project_deadline" />
-                                </div>
                             </th>
                             <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -486,12 +480,6 @@
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.customer }}
-                                </p>
-                            </td>
-                            <td :class="stateClass(item.project_deadline)" v-if="checkVisibility('Asignación')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.project_deadline) }}
                                 </p>
                             </td>
                             <td :class="stateClass(item.manager)" v-if="checkVisibility('Asignación')"
@@ -1061,7 +1049,8 @@
 
                             <td v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <div v-for="service_order in item?.cicsa_service_order" class="text-center text-red-500">
+                                <div v-for="service_order in item?.cicsa_service_order"
+                                    class="text-center text-red-500">
                                     <button v-if="service_order.document" type="button"
                                         @click="openPDF(service_order?.id, 'serviceOrder')">
                                         <EyeIcon class="w-4 h-4 text-green-600" />
@@ -1422,6 +1411,7 @@ import FilterProcess from "@/Components/FilterProcess.vue";
 import TableHeaderCicsaFilter from "@/Components/TableHeaderCicsaFilter.vue";
 import { ArrowPathIcon, ServerIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
+import TableDateFilter from "@/Components/TableDateFilter.vue";
 
 const { auth, projects } = defineProps({
     auth: Object,
@@ -1551,7 +1541,9 @@ const stats = ["Pendiente", "En Proceso", "Completado"];
 const initSearch = {
     project_status: [...stats],
     charge_status: [...stats],
-    assignation_date: "",
+    opStartDate: "",
+    opEndDate: "",
+    opNoDate: "",
     project_deadline: "",
     search: "",
 };
@@ -1561,7 +1553,9 @@ watch(
     () => [
         filterForm.value.project_status,
         filterForm.value.charge_status,
-        filterForm.value.assignation_date,
+        filterForm.value.opStartDate,
+        filterForm.value.opEndDate,
+        filterForm.value.opNoDate,
         filterForm.value.project_deadline,
         filterForm.value.search,
     ],

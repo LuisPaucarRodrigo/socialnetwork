@@ -585,9 +585,9 @@ const toggleDetails = (cicsa_charge_area) => {
     }
 }
 
-async function openPDF(purchaseOrderId) {
-    if (purchaseOrderId) {
-        const url = route('cicsa.charge_areas.showDocument', { purchaseOrder: purchaseOrderId });
+async function openPDF(chargeAreaId) {
+    if (chargeAreaId) {
+        const url = route('cicsa.charge_areas.showDocument', { chargeAreaOrder: chargeAreaId });
         await axios.get(url)
             .then(response => {
                 const imageUrl = response.data.url;
