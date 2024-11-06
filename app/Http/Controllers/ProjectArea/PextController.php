@@ -140,7 +140,7 @@ class PextController extends Controller
     {
         $validatedData = $request->validated();
         $validatedData['is_accepted'] = true;
-        $validatedData['amount'] = intval($validatedData['amount']);
+        $validatedData['amount'] = floatval($validatedData['amount']);
         $validatedData['state'] = json_decode($validatedData['state']);
 
         $validatedData['account_statement_id'] = null;

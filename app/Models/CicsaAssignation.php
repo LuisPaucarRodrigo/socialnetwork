@@ -20,7 +20,6 @@ class CicsaAssignation extends Model
         'project_code',
         'cpe',
         'zone',
-        'project_deadline',
         'manager',
         'user_name',
         'user_id'

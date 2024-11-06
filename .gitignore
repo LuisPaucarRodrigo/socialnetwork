@@ -3,6 +3,10 @@
 /public/build
 /public/hot
 /public/storage
+/public/documents/additionalcosts/*
+/public/documents/cicsa/cicsaChargeAreaOrder/*
+/public/documents/cicsa/cicsaPurchaseOrder/*
+/public/documents/cicsa/cicsaServiceOrder/*
 /public/documents/curriculum_vitae
 /public/documents/permissions
 /public/documents/documents

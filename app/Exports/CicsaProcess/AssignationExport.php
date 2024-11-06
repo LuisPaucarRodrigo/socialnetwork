@@ -22,7 +22,6 @@ class AssignationExport implements FromView, WithColumnWidths
                 'Cliente',
                 'Codigo de Proyecto',
                 'CPE',
-                'Fecha fin',
                 'Gestor',
                 'Encargado'
             ],
@@ -40,8 +39,7 @@ class AssignationExport implements FromView, WithColumnWidths
             'E' => 17,
             'F' => 17,
             'G' => 17,
-            'H' => 17, 
-            'I' => 30, 
+            'H' => 30,
         ];
     }
 }

@@ -29,7 +29,7 @@ class StoreOrUpdatePurchaseOrderRequest extends FormRequest
             'item3456' => 'required|string',
             'budget' => 'required|string',
             'document' => 'required',
-            'observation' => 'required|string',
+            'observation' => 'nullable|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
         ];

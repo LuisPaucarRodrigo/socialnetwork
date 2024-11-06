@@ -236,7 +236,7 @@ const showModal = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const errorModal = ref(false);
-const errorMessage = ref(null);
+const errorMessage = ref('');
 
 const props = defineProps({
     internal_guides: Object,
@@ -280,14 +280,23 @@ const submit = async () => {
         }
     })
     .then(res => {
-        openPreviewDocumentModal(res.data.guide_id);
-        close_add_code();
-        form.reset();
-        showModal.value = true;
-        setTimeout(() => {
-            showModal.value = false;
-        }, 2000);
-        router.visit(route('huawei.internalguides'));
+        if (res.data.file_error){
+            errorMessage.value = res.data.file_error;
+            errorModal.value = true;
+            setTimeout(() => {
+                errorModal.value = false;
+                errorMessage.value = '';
+            }, 3000);
+        }else{
+            close_add_code();
+            form.reset();
+            showModal.value = true;
+            openPreviewDocumentModal(res.data.guide_id);
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(route('huawei.internalguides'));
+            }, 2000);
+        }
     })
     .catch(error => {
         const fieldMessages = {
@@ -305,7 +314,7 @@ const submit = async () => {
         errorModal.value = true;
         setTimeout(() => {
             errorModal.value = false;
-            errorMessage.value = null;
+            errorMessage.value = '';
         }, 3000);
     });
 };
