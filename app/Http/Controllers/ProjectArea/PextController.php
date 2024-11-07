@@ -33,10 +33,18 @@ class PextController extends Controller
         }
     }
 
-    public function requestCicsa($name_cicsa)
+    public function requestCicsa($zone = null)
     {
         $cicsa = CicsaAssignation::select('id', 'project_name', 'customer')
-            ->where('project_name', 'like', "%$name_cicsa%")
+            ->where('zone',$zone)
+            ->orWhereHas('cicsa_charge_area', function ($subQuery) {
+                $subQuery->where(function ($subQuery) {
+                    $subQuery->whereNull('invoice_number')
+                        ->orWhereNull('invoice_date')
+                        ->orWhereNull('amount');
+                })
+                    ->whereNull('deposit_date');
+            })
             ->get();
         return response()->json($cicsa, 200);
     }
@@ -90,15 +98,19 @@ class PextController extends Controller
                 ]
             );
         } else {
+            $rejected = $request->rejected;
             $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name,cost_center'])
                 ->where('pext_project_id', $pext_project_id)
                 ->orderBy('created_at', 'desc');
             $expense = $request->state === false ? $expense->where('is_accepted', 0)
-                : $expense->where(function ($query) {
-                    $query->where('is_accepted', 1)
+                : $expense->where(function ($query) use ($rejected) {
+                    $query->where('is_accepted', $rejected)
                         ->orWhere('is_accepted', null);
                 });
-
+            
+            if ($rejected){
+                $expense->where('is_accepted',$request->rejected);
+            }
             if ($request->search) {
                 $searchTerms = $request->input('search');
                 $expense = $expense->where(function ($query) use ($searchTerms) {

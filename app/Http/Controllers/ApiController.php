@@ -504,7 +504,16 @@ class ApiController extends Controller
     public function cicsaProcess($zone)
     {
         $cicsaProcess = CicsaAssignation::select('id', 'project_name', 'zone')
-            ->where('zone', $zone)->get();
+            ->where('zone', $zone)
+            ->whereHas('cicsa_charge_area', function ($subQuery) {
+                $subQuery->where(function ($subQuery) {
+                    $subQuery->whereNull('invoice_number')
+                        ->orWhereNull('invoice_date')
+                        ->orWhereNull('amount');
+                })
+                    ->whereNull('deposit_date');
+            })
+            ->get();
         $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }
