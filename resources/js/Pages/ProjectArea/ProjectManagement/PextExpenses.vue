@@ -499,7 +499,7 @@
                                     Archivo
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png, .pdf"
+                                    <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.photo" />
                                 </div>
@@ -673,16 +673,17 @@ async function searchSubCostCenter() {
     try {
         const response = await axios.get(url)
         subCostCenterZone.value = response.data
-        console.log(subCostCenterZone.value)
     } catch (error) {
         console.error(error)
     }
 }
 
 function handleProjectNameAutocomplete(e) {
-    subCostCenter.value = subCostCenterZone.value.filter(item => item.project_name.toLowerCase().includes(e));
+    subCostCenter.value = subCostCenterZone.value.filter(item => item.project_name.includes(e));
     const cicsaAssignation = subCostCenter.value
+    console.log("cicsaAssignation ", cicsaAssignation)
     let cicsa_assignation = cicsaAssignation.find(item => item.project_name === e);
+    console.log("cicsa_assignation ", cicsa_assignation)
     if (cicsa_assignation) {
         form.cicsa_assignation_id = cicsa_assignation.id;
     } else {

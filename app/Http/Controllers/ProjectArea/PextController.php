@@ -166,7 +166,7 @@ class PextController extends Controller
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $validatedData['photo'] = time() . '._' . $photo->getClientOriginalName();
-            $photo->move(public_path('documents/additionalcosts/'), $validatedData['photo']);
+            $photo->move(public_path('documents/expensesPext/'), $validatedData['photo']);
         }
         $expense = PextProjectExpense::updateOrCreate(
             ['id' => $expense_id],
