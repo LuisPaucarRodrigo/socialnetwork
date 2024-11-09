@@ -17,7 +17,8 @@
                 </div>
 
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Asignación" />
 
                 </div>
@@ -43,11 +44,11 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Centro de Costo
+                                Cliente
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Cliente
+                                Centro de Costo
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -60,10 +61,6 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Zona
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha limite de Proyecto
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -90,14 +87,15 @@
                                     {{ formattedDate(item.assignation_date) }}
                                 </p>
                             </td>
+                            
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cost_center }}
+                                    {{ item.customer }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.customer }}
+                                    {{ item.cost_center }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -113,11 +111,6 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.zone }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.project_deadline) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -186,28 +179,33 @@
                             </div>
                         </div>
                         <div class="">
-                            <InputLabel for="cost_center">Centro de Costos</InputLabel>
+                            <InputLabel for="customer">Cliente</InputLabel>
                             <div class="mt-2">
-                                <select id="report" v-model="form.cost_center" autocomplete="off"
+                                <select id="customer" v-model="form.customer"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="">Seleccionar Centro de Costo</option>
-                                    <option>Planta Externa Claro</option>
-                                    <option>Instalaciones GTD</option>
-                                    <option>Planta Externa GTD-Averias</option>
+                                    <option value="">Seleccionar Cliente</option>
+                                    <option>CICSA</option>
                                     <option>STL</option>
-                                    <option>Densificacion</option>
-                                    <option>Adicionales</option>
-                                    <option>Instalaciones Claro</option>
                                 </select>
-                                <InputError :message="form.errors.cost_center" />
+                                <InputError :message="form.errors.customer" />
                             </div>
                         </div>
                         <div class="">
-                            <InputLabel for="customer">Cliente</InputLabel>
+                            <InputLabel for="cost_center">Centro de Costos</InputLabel>
                             <div class="mt-2">
-                                <input type="text" v-model="form.customer" autocomplete="off" id="customer"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.customer" />
+                                <select id="report" v-model="form.cost_center"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Centro de Costo</option>
+                                    <option v-if="form.customer === 'CICSA'">Mantto Pext Claro</option>
+                                    <option v-if="form.customer === 'CICSA'">Instalaciones GTD</option>
+                                    <option v-if="form.customer === 'CICSA'">Mantto Pext GTD</option>
+                                    <option v-if="form.customer === 'CICSA'">Densificacion</option>
+                                    <option v-if="form.customer === 'CICSA'">Adicionales</option>
+                                    <option v-if="form.customer === 'CICSA'">Instalaciones Claro</option>
+
+                                    <option v-if="form.customer === 'STL'">TSS</option>
+                                </select>
+                                <InputError :message="form.errors.cost_center" />
                             </div>
                         </div>
                         <div class="">
@@ -240,15 +238,6 @@
                                     <option>MDD</option>
                                 </select>
                                 <InputError :message="form.errors.zone" />
-                            </div>
-                        </div>
-                        <div class="">
-                            <InputLabel for="project_deadline">Fecha Limite del Proyecto</InputLabel>
-                            <div class="mt-2">
-                                <input type="date" v-model="form.project_deadline" autocomplete="off"
-                                    id="project_deadline"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.project_deadline" />
                             </div>
                         </div>
                     </div>
@@ -304,7 +293,6 @@ const initialState = {
     project_code: '',
     cpe: '',
     zone: '',
-    project_deadline: '',
     manager: '',
     user_name: auth.user.name,
 }

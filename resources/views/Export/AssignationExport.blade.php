@@ -15,7 +15,6 @@
             <td> {{ $assignation->customer }} </td>
             <td> {{ $assignation->project_code }} </td>
             <td> {{ $assignation->cpe }} </td>
-            <td> {{ $assignation->project_deadline }} </td>
             <td> {{ $assignation->manager }} </td>
             <td> {{ $assignation->user_name }} </td>
         </tr>

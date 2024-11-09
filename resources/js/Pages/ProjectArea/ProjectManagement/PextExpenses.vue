@@ -10,7 +10,7 @@
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
-                    <PrimaryButton v-if="hasPermission('ProjectManager')" @click="openCreateAdditionalModal"
+                    <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected" @click="openCreateAdditionalModal"
                         type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
@@ -29,23 +29,17 @@
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
 
-                    <!-- <button data-tooltip-target="rejected_tooltip" type="button"
-                        class="rounded-md bg-gray-100 px-4 py-1 text-center text-lg text-red-600 font-bold ring-2 ring-red-400 hover:bg-gray-100/2"
-                        @click="() =>
-                                router.visit(
-                                    route(
-                                        'projectmanagement.additionalCosts.rejected',
-                                        { project_id: project_id.id }
-                                    )
-                                )
-                            ">
-                        R
+                    <button data-tooltip-target="rejected_tooltip" type="button"
+                        class="rounded-md bg-gray-100 px-4 py-1 text-center text-lg font-bold ring-2 hover:bg-gray-100/2"
+                        :class="filterForm.rejected ? 'text-red-600 ring-red-400' : 'text-green-600 ring-green-400'"
+                        @click="rejectedExpenses">
+                        {{ filterForm.rejected ? "R" : "A" }}
                     </button>
                     <div id="rejected_tooltip" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div> -->
+                    </div>
                 </div>
 
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
@@ -64,7 +58,7 @@
                         <template #content class="origin-left">
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    <button @click="openCreateAdditionalModal"
+                                    <button v-if="hasPermission('ProjectManager') && filterForm.rejected" @click="openCreateAdditionalModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Agregar
                                     </button>
@@ -74,6 +68,13 @@
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Exportar
                                     </a>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <button type="button"
+                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-ouy"
+                                        @click="rejectedExpenses">
+                                        Rechazados
+                                    </button>
                                 </div>
                             </div>
                         </template>
@@ -98,24 +99,24 @@
                             Proyecto
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 whitespace-nowrap">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Centro de Costos" :options="costCenter"
                                 v-model="filterForm.selectedCostCenter" width="w-48" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
-                                v-model="filterForm.selectedZones" width="w-32" />
+                                v-model="filterForm.selectedZones" width="w-35" />
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
-                                v-model="filterForm.selectedExpenseTypes" width="w-48" />
+                                v-model="filterForm.selectedExpenseTypes" width="w-full" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
-                                v-model="filterForm.selectedDocTypes" width="w-32" />
+                                v-model="filterForm.selectedDocTypes" width="w-full" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -174,10 +175,12 @@
                             },
                         ]">
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             {{ item.cicsa_assignation?.project_name }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             {{ item.cicsa_assignation?.cost_center }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
@@ -305,11 +308,24 @@
         <Modal :show="create_additional" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Agregar Gasto
+                    {{ form.id ? "Actualizar" : "Agregar" }} Gasto
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
+                            <div>
+                                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.zone" id="zone"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Zona
+                                        </option>
+                                        <option v-for="op in zones">{{ op }}</option>
+                                    </select>
+                                    <InputError :message="form.errors.zone" />
+                                </div>
+                            </div>
                             <div>
                                 <InputLabel for="subCostCenter" class="font-medium leading-6 text-gray-900">Sub
                                     Centro de Costos
@@ -325,19 +341,6 @@
                                         </option>
                                     </datalist>
                                     <InputError :message="form.errors.cicsa_assignation_id" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.zone" id="zone"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option disabled value="">
-                                            Seleccionar
-                                        </option>
-                                        <option v-for="op in zones">{{ op }}</option>
-                                    </select>
-                                    <InputError :message="form.errors.zone" />
                                 </div>
                             </div>
                             <div>
@@ -496,7 +499,7 @@
                                     Archivo
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png, .pdf"
+                                    <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.photo" />
                                 </div>
@@ -558,6 +561,7 @@ const props = defineProps({
 
 const expenses = ref(props.expense);
 const filterMode = ref(false);
+const subCostCenterZone = ref(null);
 const subCostCenter = ref(null)
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -587,6 +591,7 @@ const form = useForm({
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
+const pext_project_zone = ref("");
 
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
@@ -594,6 +599,7 @@ const openCreateAdditionalModal = () => {
 
 const openEditAdditionalModal = (additional) => {
     Object.assign(form, additional)
+    pext_project_zone.value = additional.zone
     form.pext_project_name = additional.cicsa_assignation?.project_name
     create_additional.value = true;
 };
@@ -654,20 +660,34 @@ const handleRucDniAutocomplete = (e) => {
     }
 };
 
-async function handleProjectNameAutocomplete(e) {
-    let url = route('projectmanagement.pext.requestCicsa', { 'name_cicsa': e })
+watch(() => form.zone, (newVal) => {
+    if (pext_project_zone.value != form.zone) {
+        form.pext_project_name = ""
+        form.cicsa_assignation_id = ""
+    }
+    searchSubCostCenter()
+});
+
+async function searchSubCostCenter() {
+    let url = route('projectmanagement.pext.requestCicsa', { 'zone': form.zone })
     try {
         const response = await axios.get(url)
-        subCostCenter.value = response.data
-        const cicsaAssignation = subCostCenter.value
-        let cicsa_assignation = cicsaAssignation.find(item => item.project_name === e);
-        if (cicsa_assignation) {
-            form.cicsa_assignation_id = cicsa_assignation.id;
-        } else {
-            form.cicsa_assignation_id = "";
-        }
+        subCostCenterZone.value = response.data
     } catch (error) {
         console.error(error)
+    }
+}
+
+function handleProjectNameAutocomplete(e) {
+    subCostCenter.value = subCostCenterZone.value.filter(item => item.project_name.includes(e));
+    const cicsaAssignation = subCostCenter.value
+    console.log("cicsaAssignation ", cicsaAssignation)
+    let cicsa_assignation = cicsaAssignation.find(item => item.project_name === e);
+    console.log("cicsa_assignation ", cicsa_assignation)
+    if (cicsa_assignation) {
+        form.cicsa_assignation_id = cicsa_assignation.id;
+    } else {
+        form.cicsa_assignation_id = "";
     }
 }
 
@@ -726,6 +746,7 @@ const docTypes = [
 
 
 const filterForm = ref({
+    rejected: 1,
     search: "",
     selectedCostCenter: costCenter,
     selectedZones: zones,
@@ -736,6 +757,7 @@ const filterForm = ref({
 
 
 watch(() => [
+    filterForm.value.rejected,
     filterForm.value.search,
     filterForm.value.selectedCostCenter,
     filterForm.value.selectedZones,
@@ -743,7 +765,6 @@ watch(() => [
     filterForm.value.selectedDocTypes,
 ],
     () => {
-
         search_advance(filterForm.value);
     }
 );
@@ -820,5 +841,9 @@ function updateExpense(expense, action, state) {
         }
 
     }
+}
+
+async function rejectedExpenses() {
+    filterForm.value.rejected = !filterForm.value.rejected
 }
 </script>

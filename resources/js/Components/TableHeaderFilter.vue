@@ -1,5 +1,5 @@
 <template>
-    <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
+    <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
         <p :class="labelClass">{{ label }}</p>
         <button @click="togglePopup">
             <BarsArrowDownIcon class="h-5 w-5" />
