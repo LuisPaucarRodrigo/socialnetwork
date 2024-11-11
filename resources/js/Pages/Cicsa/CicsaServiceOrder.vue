@@ -26,7 +26,7 @@
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th colspan="2"
+                            <th colspan="3"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
                             </th>
@@ -50,7 +50,7 @@
                     <tbody>
                         <template v-for="item in service_orders.data ?? service_orders" :key="item.id">
                             <tr class="text-gray-700">
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_name }}
                                     </p>
@@ -108,6 +108,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Doc OS
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Hoja de Estimación
                                     </th>
                                     <th
@@ -124,7 +128,7 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Documento
+                                        Doc Fac
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -152,6 +156,12 @@
                                             {{ materialDetail?.service_order }}
                                         </p>
                                     </td>
+                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <button v-if="materialDetail?.document" type="button"
+                                            @click="openPDF(materialDetail?.id)">
+                                            <EyeIcon class="w-5 h-5 text-green-600" />
+                                        </button>
+                                    </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.estimate_sheet }}
@@ -173,10 +183,10 @@
                                         </p>
                                     </td>
                                     <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <button v-if="materialDetail?.document" type="button"
+                                        <!-- <button v-if="materialDetail?.document" type="button"
                                             @click="openPDF(materialDetail?.id)">
                                             <EyeIcon class="w-5 h-5 text-green-600" />
-                                        </button>
+                                        </button> -->
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
@@ -237,7 +247,13 @@
                                 <InputError :message="form.errors.service_order" />
                             </div>
                         </div>
-
+                        <div class="sm:col-span-1">
+                            <InputLabel for="document">Documento OS</InputLabel>
+                            <div>
+                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
+                                <InputError :message="form.errors.document" />
+                            </div>
+                        </div>
                         <div class="sm:col-span-1">
                             <InputLabel for="estimate_sheet">Hoja de Estimación</InputLabel>
                             <div class="mt-2">
@@ -293,13 +309,13 @@
                                 <InputError :message="form.errors.zip_invoice" />
                             </div>
                         </div>
-                        <div class="sm:col-span-1">
-                            <InputLabel for="document">Documento</InputLabel>
+                        <!-- <div class="sm:col-span-1">
+                            <InputLabel for="document">Documento Fac</InputLabel>
                             <div>
-                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
-                                <InputError :message="form.errors.document" />
+                                <InputFile type="file" v-model="form.documentFac" id="document" accept=".pdf" />
+                                <InputError :message="form.errors.documentFac" />
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -357,6 +373,7 @@ const initialState = {
     pdf_invoice: 'Pendiente',
     zip_invoice: 'Pendiente',
     document: '',
+    documentFac: '',
     user_name: '',
     cicsa_assignation_id: '',
     cicsa_purchase_order_id: '',

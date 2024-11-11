@@ -285,9 +285,9 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal" class="max-w-5xl">
+        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6 flex gap-6">
-                <div class="w-full" >
+                <div class="w-full h-full" >
                     <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                         {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number :
                             ""
@@ -341,14 +341,14 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
-                            <div class="sm:col-span-1">
+                            <!-- <div class="sm:col-span-1">
                                 <InputLabel for="amount">Doc Factura</InputLabel>
                                 <div class="mt-2">
                                     <button class="flex justify-center py-1.5" type="button" @click="togglePdfPreview">
                                         <EyeIcon class="w-5 h-5 text-green-600" />
                                     </button>
                                 </div>
-                            </div>
+                            </div> -->
                             <h2 class="sm:col-span-full text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                                 Pagos
                             </h2>
@@ -430,7 +430,7 @@
                         </div>
                     </form>
                 </div>
-                <div v-if="showPdfPreview" class="w-1/2 h-full bg-gray-100 rounded-lg p-4 overflow-y-auto">
+                <div v-if="showPdfPreview" class="w-200 h-1\2 bg-gray-100 rounded-lg p-4 overflow-y-auto bg-red-100">
                     <iframe :src="pdfUrl" class="w-full h-full border-none" frameborder="0"></iframe>
                 </div>
             </div>
